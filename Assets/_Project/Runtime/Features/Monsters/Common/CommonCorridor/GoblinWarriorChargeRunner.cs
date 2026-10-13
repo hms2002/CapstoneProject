@@ -71,7 +71,8 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
                 yield return CommonMonsterCombatUtility.WaitAttackWarning(
                     warningSeconds,
                     () => cancelRequested || owner.IsDead || IsCancelled(spec),
-                    () => UpdateWarning(context, warningSeconds));
+                    () => UpdateWarning(context, warningSeconds),
+                    owner.gameObject);
             }
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
@@ -115,7 +116,13 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
 
-            float deltaTime = Mathf.Min(Time.deltaTime, duration - elapsed);
+            if (CombatHitPause2D.IsParalyzedOn(owner.gameObject))
+            {
+                yield return null;
+                continue;
+            }
+
+            float deltaTime = Mathf.Min(CombatHitPause2D.GetActionDeltaTime(owner.gameObject), duration - elapsed);
             Vector2 desiredDelta = direction * (speed * deltaTime);
             Vector2 resolvedDelta = CommonMonsterCombatUtility.ResolveDashWallSlideDelta(
                 transform.position,

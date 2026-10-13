@@ -38,6 +38,7 @@ GameObject:
   - component: {fileID: 910000000000000001}
   - component: {fileID: 8543292152073095740}
   - component: {fileID: 5956380571222071686}
+  - component: {fileID: 1551848904823096104}
   m_Layer: 31
   m_Name: Pawn
   m_TagString: Enemy
@@ -716,6 +717,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gameplay::MonsterStatusRuntime
   electrocutedEffect: {fileID: 11400000, guid: 098ed5d6eb1548c884517bade6c21d73, type: 2}
+--- !u!114 &1551848904823096104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18a1857e5118414599ff746dbb13e4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::MonsterEncyclopediaIdentity
+  monsterId: monster.slime_pawn
 --- !u!1 &777000000000000010
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cced9dbb68169c46b92796d2d2222ad, type: 3}
+  m_Name: RL_ElectricThunderKnot
+  m_EditorClassIdentifier: Gameplay::RelicLogic_ChainShockExtension_Managed
+  effectTemplate: 
+  electrocutedStatusEffect: {fileID: 11400000, guid: 098ed5d6eb1548c884517bade6c21d73, type: 2}
+  extensionSecondsByLevel:
+  - 0.5
+  - 1
+  - 1.5

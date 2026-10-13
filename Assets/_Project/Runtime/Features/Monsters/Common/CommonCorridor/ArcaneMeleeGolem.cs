@@ -282,7 +282,8 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
                 yield return CommonMonsterCombatUtility.WaitAttackWarning(
                     warningSeconds,
                     () => cancelRequested || owner.IsDead || IsCancelled(spec),
-                    () => UpdateWarning(direction, step, warningSeconds));
+                    () => UpdateWarning(direction, step, warningSeconds),
+                    owner.gameObject);
             }
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
@@ -312,7 +313,13 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
 
-            float deltaTime = Mathf.Min(Time.deltaTime, duration - elapsed);
+            if (CombatHitPause2D.IsParalyzedOn(owner.gameObject))
+            {
+                yield return null;
+                continue;
+            }
+
+            float deltaTime = Mathf.Min(CombatHitPause2D.GetActionDeltaTime(owner.gameObject), duration - elapsed);
             Vector2 desiredDelta = safeDirection * (speed * deltaTime);
             Vector2 resolvedDelta = CommonMonsterCombatUtility.ResolveDashWallSlideDelta(
                 transform.position,

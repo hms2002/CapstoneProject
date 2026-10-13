@@ -1,0 +1,963 @@
+{
+  "status": [
+    " M Assets/_Project/Art/Shaders/PuddleShaderVisual.shader",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book SpriteSheet.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/1.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/10.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/11.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/12.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/13.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/14.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/15.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/16.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/17.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/18.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/2.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/3.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/4.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/5.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/6.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/7.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/8.png\"",
+    " M \"Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book/Book Content Appear/Style 1/9.png\"",
+    " M Assets/_Project/Data/Abilities/Definitions/AD_ApprenticeHeroSwordSkill2_DashStab.asset",
+    " M Assets/_Project/Data/Abilities/Definitions/AD_Dash.asset",
+    " M Assets/_Project/Data/Abilities/Definitions/AD_LightningSpearSkill1.asset",
+    " M Assets/_Project/Data/Abilities/Definitions/AD_RW_Skill1_Rush.asset",
+    " M Assets/_Project/Data/Abilities/Effects/GE_ElectricShockTrigger.asset",
+    " M Assets/_Project/Data/Encyclopedia/EncyclopediaCatalog.asset",
+    " M Assets/_Project/Data/Items/ItemDatabase.asset",
+    " M Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentShard.asset",
+    " M Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset",
+    " M Assets/_Project/Data/Items/Relics/Definitions/RD_HeavyBracelet.asset",
+    " M Assets/_Project/Data/Items/Relics/Definitions/RD_LastBreath.asset",
+    " M Assets/_Project/Data/Items/Relics/Definitions/RD_MasterWhetstone.asset",
+    " M Assets/_Project/Data/Items/Relics/Definitions/RD_RedContract.asset",
+    " M Assets/_Project/Data/Items/Relics/Definitions/RD_RotatingIornBall.asset",
+    " M Assets/_Project/Data/Items/Relics/Definitions/RD_WornWhetstone.asset",
+    " M \"Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_CurrentShard.asset\"",
+    " M \"Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_HeavyBracelet.asset\"",
+    " M \"Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_LastBreath.asset\"",
+    " M \"Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_MasterWhetstone.asset\"",
+    " M \"Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_RedContract.asset\"",
+    " M \"Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_WornWhetstone.asset\"",
+    " M \"Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Feather Orbit_Managed.asset\"",
+    " M \"Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Move Speed On Kill_Managed.asset\"",
+    " M \"Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hans SDF.asset\"",
+    " M \"Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant SDF.asset\"",
+    " M \"Assets/_Project/Data/Localization/Fonts/Galmuri/Galmuri9 Japanese SDF.asset\"",
+    " M \"Assets/_Project/Data/Localization/Fonts/NotoSansCJKtc-Regular SDF.asset\"",
+    " M \"Assets/_Project/Data/Localization/GameText Shared Data.asset\"",
+    " M Assets/_Project/Data/Localization/GameText_en.asset",
+    " M Assets/_Project/Data/Localization/GameText_ja.asset",
+    " M Assets/_Project/Data/Localization/GameText_ko.asset",
+    " M Assets/_Project/Data/Localization/GameText_zh-Hans.asset",
+    " M Assets/_Project/Data/Localization/GameText_zh-Hant.asset",
+    " M Assets/_Project/Data/SceneFlow/LoadingManifests/PrewarmTrace_nadom_DESKTOP-I2QAD8O.json",
+    " M Assets/_Project/Editor/Tools/Data/FullLocalizationAuthoring.cs",
+    " M Assets/_Project/Editor/Tools/Data/FullLocalizationValidation.cs",
+    " M Assets/_Project/Prefabs/Monsters/BeerMonster.prefab",
+    " M Assets/_Project/Prefabs/Monsters/Frog.prefab",
+    " M Assets/_Project/Prefabs/Monsters/Frog_BOSS.prefab",
+    " M Assets/_Project/Prefabs/Monsters/ShadowCorridor/CorridorCandlestickMonster.prefab",
+    " M Assets/_Project/Prefabs/Monsters/ShadowCorridor/Dead'sSkeleton.prefab",
+    " M Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowMonster.prefab",
+    " M Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/ShadowServant.prefab",
+    " M Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab",
+    " M Assets/_Project/Prefabs/Monsters/SlimeCorridor/Bishop.prefab",
+    " M Assets/_Project/Prefabs/Monsters/SlimeCorridor/Knight.prefab",
+    " M Assets/_Project/Prefabs/Monsters/SlimeCorridor/Pawn.prefab",
+    " M Assets/_Project/Prefabs/Monsters/SlimeCorridor/Rook.prefab",
+    " M Assets/_Project/Prefabs/Monsters/SlimeCorridor/Wizard.prefab",
+    " M Assets/_Project/Prefabs/Monsters/TreasureMonster.prefab",
+    " M Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+    " M Assets/_Project/Prefabs/UI/KeyMapRow.prefab",
+    " M Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab",
+    " M Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab",
+    " M Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/Panel_AbilityBlock_Encyclopedia.prefab",
+    " M Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/Panel_AbilityBlock.prefab",
+    " M Assets/_Project/Prefabs/UI/status_HUD_EntryView.prefab",
+    " M Assets/_Project/Runtime/Core/Abilities/AbilityDefinition.cs",
+    " M Assets/_Project/Runtime/Core/Abilities/AbilityExecutionCoordinator.cs",
+    " M Assets/_Project/Runtime/Core/Abilities/AbilitySystem.cs",
+    " M Assets/_Project/Runtime/Core/Abilities/AbilityTasks.cs",
+    " M Assets/_Project/Runtime/Core/Combat/CombatDamageAction.cs",
+    " M Assets/_Project/Runtime/Core/Combat/CombatDamageApplicator.cs",
+    " M Assets/_Project/Runtime/Core/Combat/CombatDamageSnapshot.cs",
+    " M Assets/_Project/Runtime/Core/Combat/CombatHitPause2D.cs",
+    " M Assets/_Project/Runtime/Core/Combat/CombatHitPayload.cs",
+    " M Assets/_Project/Runtime/Core/Combat/CombatHurtbox2D.cs",
+    " M Assets/_Project/Runtime/Core/Combat/DamageFormulaUtil.cs",
+    " M Assets/_Project/Runtime/Core/Combat/DamageSnapshotBuilder.cs",
+    " M Assets/_Project/Runtime/Core/Combat/SustainedHitArea2D.cs",
+    " M Assets/_Project/Runtime/Core/Effects/ActiveGameplayEffectRepository.cs",
+    " M Assets/_Project/Runtime/Core/Effects/GE_Damage_Spec.cs",
+    " M Assets/_Project/Runtime/Core/Effects/GameplayEffectRunner.cs",
+    " M Assets/_Project/Runtime/Core/Effects/GameplayEffectSpec.cs",
+    " M Assets/_Project/Runtime/Core/Elements/Effects/GE_ElectricShockTrigger.cs",
+    " M Assets/_Project/Runtime/Core/Elements/ElementGaugeSystem.cs",
+    " M Assets/_Project/Runtime/Core/Presentation/DamagePopupRequest.cs",
+    " M Assets/_Project/Runtime/Core/Presentation/GameTextAssetKeys.g.cs",
+    " M Assets/_Project/Runtime/Core/Save/GameData.cs",
+    " M Assets/_Project/Runtime/Core/Save/GamePlayData.cs",
+    " M Assets/_Project/Runtime/Core/Save/RunSessionStore.cs",
+    " M Assets/_Project/Runtime/Features/Bosses/DragonBoss/Abilities/AbilityLogic_DragonFireBreath.cs",
+    " M Assets/_Project/Runtime/Features/Combat/Status/Burn/BurnStatus2D.cs",
+    " M Assets/_Project/Runtime/Features/Encyclopedia/EncyclopediaCatalogSO.cs",
+    " M Assets/_Project/Runtime/Features/Enemies/Common/Enemy.cs",
+    " M Assets/_Project/Runtime/Features/Items/Relics/Procs/MoveSpeedOnKillProc.cs",
+    " M Assets/_Project/Runtime/Features/Items/Relics/RelicDetailCodes/FeatherOrbitRelic/FeatherOrbitController.cs",
+    " M Assets/_Project/Runtime/Features/Items/Relics/RelicInventory.cs",
+    " M Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_FeatherOrbit_Managed.cs",
+    " M Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_MoveSpeedOnKill_Managed.cs",
+    " M Assets/_Project/Runtime/Features/Items/Relics/RelicProcManager.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/Abilities/AttackBase.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/Abilities/FragmentShardActor.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/Abilities/HitboxVisualAnimatorPlayer.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearRuntimeState.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/Abilities/MeleeHitboxActor.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/ApprenticeHeroSword/ApprenticeHeroSwordHitConfig.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/AbilityLogic_CrimsonBoundaryAttack.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/AbilityLogic_CrimsonBoundaryBigExplosion.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/AbilityLogic_CrimsonBoundaryIgnite.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/CrimsonBoundaryLavaProjectile2D.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/CrimsonBoundaryProjectile2D.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/CrimsonBoundaryUtility.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/Flowering/AbilityLogic_FloweringAttack.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/Flowering/AbilityLogic_FloweringBaseAttack.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/Flowering/FloweringDashSlashHitboxActor.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/Flowering/FloweringRuntimeState.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/WeaponLogic/AbilityLogic_LightningSpearAttack.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/WeaponLogic/AbilityLogic_SwordCombo2D.cs",
+    " M Assets/_Project/Runtime/Features/Items/Weapons/WeaponLogic/FragmentBladeDamageUtility.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/Abilities/AbilityLogic_Tackle.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/BeerMonster/BeerMonster.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/Combat/MonsterHitFeedback2D.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/CommonCorridor/ArcaneMeleeGolem.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/CommonCorridor/ArcaneTankGolem.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/CommonCorridor/CommonMonsterCombatUtility.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/CommonCorridor/GoblinGunner.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/CommonCorridor/GoblinTank.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/CommonCorridor/GoblinWarriorChargeRunner.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/CommonCorridor/LizardMage.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/CommonCorridor/LizardWarrior.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/CorridorCandlestickMonster/CorridorCandlestickMonster.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/DeadsSkeleton/DeadsSkeleton.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/EnemyChaseIntent2D.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/EnemyFacing2D.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/FSM/MobAIContext.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/FSM/MobChaseState.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/FSM/MobRecoverState.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/FSM/MobStateTransitionUtility.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/Mob.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/MonsterReturnHome2D.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Common/TackleAttack.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Shadow/StrangeCandlestick/StrangeCandlestick.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Shadow/StrangeCandlestick/StrangeCandlestickAttackRunner.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Slime/KnightJumpSlamRunner.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Slime/PawnContactDamageDealer2D.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Slime/PawnOrbitContactIntent2D.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Slime/RookChargeRunner.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Slime/Slime.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Slime/SlimeSplitLandingMotion2D.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Slime/Wizard.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Slime/WizardScatterShotRunner.cs",
+    " M Assets/_Project/Runtime/Features/Monsters/Spawning/TilemapPathfinder2D.cs",
+    " M Assets/_Project/Runtime/Features/Player/Abilities/AbilityLogic_Dash2D.cs",
+    " M Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/SoulHeartGrantLevelRewardEffectSO.cs",
+    " M Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/RunLevelRewards.cs",
+    " M Assets/_Project/Runtime/Infrastructure/Save/GameDataManager.cs",
+    " M Assets/_Project/Runtime/Infrastructure/Save/GamePlayDataManager.cs",
+    " M Assets/_Project/Runtime/Infrastructure/Save/RunSessionProgressCommitPolicy.cs",
+    " M Assets/_Project/Runtime/Presentation/Map/Puddles/PuddleParticleVisual.cs",
+    " M Assets/_Project/Runtime/Presentation/Telegraph/AttackTelegraphService.cs",
+    " M Assets/_Project/Runtime/Presentation/Telegraph/AttackTelegraphView.cs",
+    " M Assets/_Project/Runtime/Presentation/VFX/ElectricChainRibbonVfx.cs",
+    " M Assets/_Project/Runtime/Presentation/VFX/TimedAnimatedHitEffect2D.cs",
+    " M Assets/_Project/Runtime/UI/Chest/ChestFirstOpenRevealPresentation.cs",
+    " M Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupFormatProfileSO.cs",
+    " M Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupService.cs",
+    " M Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupWorldText.cs",
+    " M Assets/_Project/Runtime/UI/Combat/StackStatus/MonsterStackStatusWorldView.cs",
+    " M Assets/_Project/Runtime/UI/Common/HoverUIController.cs",
+    " M Assets/_Project/Runtime/UI/Common/Interfaces/ITooltipView.cs",
+    " M Assets/_Project/Runtime/UI/Common/MenuButtonHighlightPresentation.cs",
+    " M Assets/_Project/Runtime/UI/Common/PopupStackState.cs",
+    " M Assets/_Project/Runtime/UI/Common/UIManager.cs",
+    " M Assets/_Project/Runtime/UI/Dialogue/DialogueController.cs",
+    " M Assets/_Project/Runtime/UI/Dialogue/SimpleTextAnimator.cs",
+    " M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaBookPresentation.cs",
+    " M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemRightPage.cs",
+    " M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemTab.cs",
+    " M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaScreen.cs",
+    " M Assets/_Project/Runtime/UI/HUD/RunTimer/RunTimerHUD.cs",
+    " M Assets/_Project/Runtime/UI/HUD/Status/StatusHudEntryView.cs",
+    " M Assets/_Project/Runtime/UI/HUD/Status/StatusHudTooltipView.cs",
+    " M Assets/_Project/Runtime/UI/HUD/SwapWeaponSkillHUD2D.cs",
+    " M Assets/_Project/Runtime/UI/HUD/WeaponSkillHUD2D.cs",
+    " M Assets/_Project/Runtime/UI/HUD/WeaponSkillHudSlotPresenter.cs",
+    " M Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/ItemDetailPanel.cs",
+    " M Assets/_Project/Runtime/UI/Inventory/Common/ItemSlotUI.cs",
+    " M Assets/_Project/Runtime/UI/Inventory/Common/PlayerInventoryPanelView.cs",
+    " M Assets/_Project/Runtime/UI/Localization/LocalizeTmpFontEvent.cs",
+    " M Assets/_Project/Runtime/UI/Progression/Leveling/LevelRewardCardView.cs",
+    " M Assets/_Project/Runtime/UI/Progression/Leveling/LevelRewardSelectionPresenter.cs",
+    " M Assets/_Project/Runtime/UI/Settings/GameSettingsService.cs",
+    " M Assets/_Project/Runtime/UI/Settings/KeyBindingPanelUI.cs",
+    " M Assets/_Project/Runtime/UI/Settings/KeyBindingRowUI.cs",
+    " M Assets/_Project/Runtime/UI/Settings/PauseMenuUI.cs",
+    " M Assets/_Project/Runtime/UI/Settings/SettingsPanelUI.cs",
+    " M Assets/_Project/Runtime/UI/Title/TitleMenuController.cs",
+    " M Assets/_Project/Runtime/UI/UI.asmdef",
+    " M Assets/_Project/Runtime/UI/Upgrade/UpgradeLakePresentation.cs",
+    " M Assets/_Project/Scenes/TitleScene.unity",
+    " M Assets/_Project/Tests/EditMode/CorePerformanceRegressionEditModeTests.cs",
+    " M Assets/_Project/Tests/PlayMode/Procedural/CombatFeelLootQuestPlayModeTests.cs",
+    " M Assets/_Project/Tests/PlayMode/Procedural/CombatPresentationRegressionPlayModeTests.cs",
+    " M Assets/_Project/Tests/PlayMode/Procedural/MonsterHealthAndWeaponSkillBalancePlayModeTests.cs",
+    " M Assets/_Project/Tests/PlayMode/Procedural/MonsterProjectileBurstCadencePlayModeTests.cs",
+    " M Assets/_Project/Tests/PlayMode/Procedural/MonsterWorldHudStatusTests.cs",
+    " M Assets/_Project/Tests/PlayMode/Procedural/PlayerControlAndChestRegressionPlayModeTests.cs",
+    " M Assets/_Project/Tests/PlayMode/Procedural/PuddleProjectileVisualPlayModeTests.cs",
+    " M Assets/_Project/Tests/PlayMode/Procedural/RoomMonsterWavePlayModeTests.cs",
+    " M Assets/_Project/Tests/PlayMode/Procedural/StatusHudPerformancePlayModeTests.cs",
+    " D CapstoneProject.slnx",
+    " M DataSheets/Localization/AssetInventory.json",
+    " M DataSheets/Localization/GameText.csv",
+    " M DataSheets/Localization/StaticUiBindings.json",
+    " M Docs/ActiveTasks/full-game-localization.md",
+    " M Docs/DecisionLog.md",
+    " M Docs/ErrorLog.md",
+    " M Docs/RefactorBacklog/CombatElementBuildUpSourceUnification.md",
+    " M Docs/RefactorBacklog/EncyclopediaDeferredCategories.md",
+    " M Docs/RefactorBacklog/LightningSpearTilemapClassification.md",
+    " M Docs/RefactorBacklog/RunSpecialNpcSceneAuthoringCompletion.md",
+    " M Docs/StructureMemory/CombatStatusHudLifetime.md",
+    " M Docs/StructureMemory/InputBindings.md",
+    " M Docs/StructureMemory/LocalizationFlow.md",
+    " M Docs/StructureMemory/MonsterSceneNavigation.md",
+    " M Docs/StructureMemory/MonsterWorldHudAndStatus.md",
+    " M Docs/StructureMemory/ScriptSystems/BossAndMobEncounterStructure.md",
+    " M Docs/StructureMemory/ScriptSystems/BurnStatusAndCrimsonBoundaryWeapon.md",
+    " M Docs/StructureMemory/ScriptSystems/EncyclopediaStructure.md",
+    " M Docs/StructureMemory/ScriptSystems/InventoryAndChestUIStructure.md",
+    " M Docs/StructureMemory/ScriptSystems/RelicRuntimeStructure.md",
+    " M Docs/StructureMemory/ScriptSystems/RunSpecialNpcStructure.md",
+    " M Docs/StructureMemory/ScriptSystems/WeaponAndGASStructure.md",
+    " M Docs/StructureMemory/UIFlowInputBlocking.md",
+    " M Docs/TaskIndex.md",
+    " M Tools/Validation/LightningRelicPlacementRegression.cs",
+    "?? Assets/_Project/Art/Font/UI_StatusProgress_BlackOutline.mat",
+    "?? Assets/_Project/Art/Font/UI_StatusProgress_BlackOutline.mat.meta",
+    "?? Assets/_Project/Art/Materials/MonsterHealthBarInstanced.mat",
+    "?? Assets/_Project/Art/Materials/MonsterHealthBarInstanced.mat.meta",
+    "?? Assets/_Project/Art/Meshes.meta",
+    "?? Assets/_Project/Art/Meshes/",
+    "?? Assets/_Project/Art/Shaders/MonsterHealthBarInstanced.shader",
+    "?? Assets/_Project/Art/Shaders/MonsterHealthBarInstanced.shader.meta",
+    "?? Assets/_Project/Art/SpriteAtlases.meta",
+    "?? Assets/_Project/Art/SpriteAtlases/",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_ConductorRing.asset",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_ConductorRing.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentJar.asset",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentJar.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_DashCoil.asset",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_DashCoil.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_EchoCoil.asset",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_EchoCoil.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_ResonanceBell.asset",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_ResonanceBell.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_StormStep.asset",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_StormStep.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderHeart.asset",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderHeart.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderKnot.asset",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderKnot.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_TinglingShackles.asset",
+    "?? Assets/_Project/Data/Items/Relics/Definitions/RD_TinglingShackles.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricConductorRing.asset",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricConductorRing.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricCurrentJar.asset",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricCurrentJar.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricDashCoil.asset",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricDashCoil.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricEchoCoil.asset",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricEchoCoil.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricResonanceBell.asset",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricResonanceBell.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricStormStep.asset",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricStormStep.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricThunderHeart.asset",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricThunderHeart.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricThunderKnot.asset",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricThunderKnot.asset.meta",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricTinglingShackles.asset",
+    "?? Assets/_Project/Data/Items/Relics/Strategies/RL_ElectricTinglingShackles.asset.meta",
+    "?? Assets/_Project/Editor/Build/UiBatchingAssetAuthoring.cs",
+    "?? Assets/_Project/Editor/Build/UiBatchingAssetAuthoring.cs.meta",
+    "?? Assets/_Project/Editor/Build/UiRectMaskAssetAuthoring.cs",
+    "?? Assets/_Project/Editor/Build/UiRectMaskAssetAuthoring.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Data/ElectricRelicAuthoring.cs",
+    "?? Assets/_Project/Editor/Tools/Data/ElectricRelicAuthoring.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Data/ElectricRelicDescriptionReadback.cs",
+    "?? Assets/_Project/Editor/Tools/Data/ElectricRelicDescriptionReadback.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Data/FixedAttackRelicAuthoring.cs",
+    "?? Assets/_Project/Editor/Tools/Data/FixedAttackRelicAuthoring.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaCreatureDataAuthoring.cs",
+    "?? Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaCreatureDataAuthoring.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaCreatureLocalizationAuthoring.cs",
+    "?? Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaCreatureLocalizationAuthoring.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaCreatureUIAuthoring.cs",
+    "?? Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaCreatureUIAuthoring.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Monsters/MonsterHealthBarMeshAuthoring.cs",
+    "?? Assets/_Project/Editor/Tools/Monsters/MonsterHealthBarMeshAuthoring.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Testing.meta",
+    "?? Assets/_Project/Editor/Tools/Testing/",
+    "?? Assets/_Project/Editor/Tools/UI.meta",
+    "?? Assets/_Project/Editor/Tools/UI/",
+    "?? Assets/_Project/Editor/Tools/Validation/FramePerformanceCpuBenchmarks.cs",
+    "?? Assets/_Project/Editor/Tools/Validation/FramePerformanceCpuBenchmarks.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Validation/FramePerformanceGpuBenchmarks.cs",
+    "?? Assets/_Project/Editor/Tools/Validation/FramePerformanceGpuBenchmarks.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Validation/FramePerformancePlayerBuild.cs",
+    "?? Assets/_Project/Editor/Tools/Validation/FramePerformancePlayerBuild.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Validation/FramePerformanceSceneBenchmarks.cs",
+    "?? Assets/_Project/Editor/Tools/Validation/FramePerformanceSceneBenchmarks.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Validation/FramePerformanceUiBenchmarks.cs",
+    "?? Assets/_Project/Editor/Tools/Validation/FramePerformanceUiBenchmarks.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Validation/LightningSpearPlacementBenchmark.cs",
+    "?? Assets/_Project/Editor/Tools/Validation/LightningSpearPlacementBenchmark.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Validation/LightningSpearStructureValidation.cs",
+    "?? Assets/_Project/Editor/Tools/Validation/LightningSpearStructureValidation.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Validation/MonsterHealthBarGpuValidation.cs",
+    "?? Assets/_Project/Editor/Tools/Validation/MonsterHealthBarGpuValidation.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Validation/UiBatchingLiveScenarios.cs",
+    "?? Assets/_Project/Editor/Tools/Validation/UiBatchingLiveScenarios.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Validation/UiBatchingStructuralScenarios.cs",
+    "?? Assets/_Project/Editor/Tools/Validation/UiBatchingStructuralScenarios.cs.meta",
+    "?? Assets/_Project/Editor/Tools/Validation/UiBatchingValidationRunner.cs",
+    "?? Assets/_Project/Editor/Tools/Validation/UiBatchingValidationRunner.cs.meta",
+    "?? Assets/_Project/Prefabs/Testing.meta",
+    "?? Assets/_Project/Prefabs/Testing/",
+    "?? Assets/_Project/Resources/Tags/Ability.Movement.asset",
+    "?? Assets/_Project/Resources/Tags/Ability.Movement.asset.meta",
+    "?? Assets/_Project/Runtime/Core/Save/MonsterEncyclopediaRunProgress.cs",
+    "?? Assets/_Project/Runtime/Core/Save/MonsterEncyclopediaRunProgress.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Common.meta",
+    "?? Assets/_Project/Runtime/Features/Common/",
+    "?? Assets/_Project/Runtime/Features/Encyclopedia/MonsterEncyclopediaIdentity.cs",
+    "?? Assets/_Project/Runtime/Features/Encyclopedia/MonsterEncyclopediaIdentity.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Encyclopedia/MonsterEncyclopediaProgress.cs",
+    "?? Assets/_Project/Runtime/Features/Encyclopedia/MonsterEncyclopediaProgress.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ChainShockExtension_Managed.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ChainShockExtension_Managed.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ElectricAttributeBonus_Managed.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ElectricAttributeBonus_Managed.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ElectricChainDamage_Managed.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ElectricChainDamage_Managed.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ElectricChainTargets_Managed.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ElectricChainTargets_Managed.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ElectricEcho_Managed.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ElectricEcho_Managed.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ElectricExpiryDamage_Managed.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ElectricExpiryDamage_Managed.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ShockParalysis_Managed.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_ShockParalysis_Managed.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearMarkPlacementPlanner.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearMarkPlacementPlanner.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementBeforeRefactor.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementBeforeRefactor.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementBeforeTools.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementBeforeTools.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementSearch.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementSearch.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementWorldQuery.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementWorldQuery.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearRuntimeState.PlacementBenchmark.cs",
+    "?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearRuntimeState.PlacementBenchmark.cs.meta",
+    "?? Assets/_Project/Runtime/Features/Player/Status/PlayerAlcoholExposure.cs",
+    "?? Assets/_Project/Runtime/UI/Combat/StackStatus/MonsterHealthBarMeshView.cs",
+    "?? Assets/_Project/Runtime/UI/Combat/StackStatus/MonsterHealthBarMeshView.cs.meta",
+    "?? Assets/_Project/Runtime/UI/Common/HybridRectClipView.cs",
+    "?? Assets/_Project/Runtime/UI/Common/HybridRectClipView.cs.meta",
+    "?? Assets/_Project/Runtime/UI/Common/UiRenderLayerLayout.cs",
+    "?? Assets/_Project/Runtime/UI/Common/UiRenderLayerLayout.cs.meta",
+    "?? Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaAffectionRewardView.cs",
+    "?? Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaAffectionRewardView.cs.meta",
+    "?? Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCharacterEntryView.cs",
+    "?? Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCharacterEntryView.cs.meta",
+    "?? Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCreatureDetailView.cs",
+    "?? Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCreatureDetailView.cs.meta",
+    "?? Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCreatureTab.cs",
+    "?? Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCreatureTab.cs.meta",
+    "?? Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaGradientGraphic.cs",
+    "?? Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaGradientGraphic.cs.meta",
+    "?? Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaPortraitUtility.cs",
+    "?? Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaPortraitUtility.cs.meta",
+    "?? Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/ItemKeywordTooltipView.cs",
+    "?? Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/ItemKeywordTooltipView.cs.meta",
+    "?? Assets/_Project/Runtime/UI/Testing.meta",
+    "?? Assets/_Project/Runtime/UI/Testing/",
+    "?? Assets/_Project/Scenes/Tests/",
+    "?? Assets/_Project/Tests/EditMode/EncyclopediaProgressEditModeTests.cs",
+    "?? Assets/_Project/Tests/EditMode/EncyclopediaProgressEditModeTests.cs.meta",
+    "?? Assets/_Project/Tests/Fixtures.meta",
+    "?? Assets/_Project/Tests/Fixtures/",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ChestRevealWidthRegressionPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ChestRevealWidthRegressionPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ElectricBoundAttackPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ElectricBoundAttackPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ElectricEchoConductorPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ElectricEchoConductorPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ElectricExpiryRelicPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ElectricExpiryRelicPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ElectricParalysisPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ElectricParalysisPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ElectricReapplicationGaugePlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ElectricReapplicationGaugePlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ElectricRelicPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ElectricRelicPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/EncyclopediaCreaturePlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/EncyclopediaCreaturePlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/FixedAttackRelicPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/FixedAttackRelicPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ItemKeywordTooltipPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ItemKeywordTooltipPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/LightningSpearPlacementStructurePlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/LightningSpearPlacementStructurePlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/MonsterHealthBarMeshPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/MonsterHealthBarMeshPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/PlacementToolCompositionPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/PlacementToolCompositionPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/PlayerInventorySlotReusePlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/PlayerInventorySlotReusePlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ReadyFlashMaterialLifecyclePlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/ReadyFlashMaterialLifecyclePlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/StatusSharedMaterialPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/StatusSharedMaterialPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/UiAtlasPixelEquivalencePlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/UiAtlasPixelEquivalencePlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/UiRectMaskRegressionPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/UiRectMaskRegressionPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/UiRenderLayerAuthoredPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/UiRenderLayerAuthoredPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/UiRenderLayerLayoutPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/UiRenderLayerLayoutPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/UiTextMeshRefreshRegressionPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/UiTextMeshRefreshRegressionPlayModeTests.cs.meta",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/UpgradeLakeMaterialSynchronizationPlayModeTests.cs",
+    "?? Assets/_Project/Tests/PlayMode/Procedural/UpgradeLakeMaterialSynchronizationPlayModeTests.cs.meta",
+    "?? Docs/ActiveTasks/chest-offer-width-consistency.md",
+    "?? Docs/ActiveTasks/electric-scaling-and-relics.md",
+    "?? Docs/ActiveTasks/encyclopedia-book-flat-top.md",
+    "?? Docs/ActiveTasks/encyclopedia-book-inner-padding.md",
+    "?? Docs/ActiveTasks/encyclopedia-creature-tabs.md",
+    "?? Docs/ActiveTasks/encyclopedia-tab-visibility-reveal.md",
+    "?? Docs/ActiveTasks/frame-performance-measurement.md",
+    "?? Docs/ActiveTasks/frame-performance-optimization.md",
+    "?? Docs/ActiveTasks/lightning-spear-placement-structure.md",
+    "?? Docs/ActiveTasks/lightning-spear-tool-composition.md",
+    "?? Docs/ActiveTasks/test-scene-and-lightning-placement.md",
+    "?? Docs/ActiveTasks/test-scene-boss-combat-and-breath-lock.md",
+    "?? Docs/ActiveTasks/ui-batching-optimization.md",
+    "?? Docs/ActiveTasks/ui-batching-structural-optimization.md",
+    "?? Docs/Portfolio/",
+    "?? Docs/RefactorBacklog/ItemTooltipLegacyPrefabParity.md",
+    "?? Docs/RefactorBacklog/PuddlePropertyBlockOwnership.md",
+    "?? Docs/RefactorBacklog/UIBatchingStructuralCandidates.md",
+    "?? Docs/SessionLogs/2026-10-05.md",
+    "?? Docs/SessionLogs/2026-10-07-boss-combat-and-breath/",
+    "?? Docs/SessionLogs/2026-10-07-frame-performance-measurement/",
+    "?? Docs/SessionLogs/2026-10-07-frame-performance/",
+    "?? Docs/SessionLogs/2026-10-07-test-scene-icon-grid/",
+    "?? Docs/SessionLogs/2026-10-07-test-scene/",
+    "?? Docs/SessionLogs/2026-10-07-ui-batching/",
+    "?? Docs/SessionLogs/2026-10-07.md",
+    "?? Docs/SessionLogs/2026-10-08-chest-width/",
+    "?? Docs/SessionLogs/2026-10-08-ui-batching-structural/",
+    "?? Docs/SessionLogs/2026-10-08.md",
+    "?? Docs/SessionLogs/2026-10-10-element-hits/",
+    "?? Docs/SessionLogs/2026-10-10-lightning-structure/",
+    "?? Docs/SessionLogs/2026-10-10-lightning-tools/",
+    "?? Docs/SessionLogs/2026-10-10.md",
+    "?? Docs/SessionLogs/2026-10-11-element-popup-ratio/",
+    "?? Docs/SessionLogs/2026-10-11.md",
+    "?? Docs/SessionLogs/2026-10-12.md",
+    "?? Docs/StructureMemory/DamagePopupPooling.md",
+    "?? Docs/StructureMemory/ElementDirectHitDamage.md",
+    "?? Docs/StructureMemory/EncyclopediaCreatureTabs.md",
+    "?? Docs/StructureMemory/FramePerformanceMeasurement.md",
+    "?? Docs/StructureMemory/LightningSpearPlacement.md",
+    "?? Docs/StructureMemory/PlacementTools.md",
+    "?? Docs/StructureMemory/TestScene.md",
+    "?? Docs/StructureMemory/UIBatchingOptimization.md",
+    "?? ProfilerCaptures/",
+    "?? Tools/Localization/expand_electric_relics.py",
+    "?? Tools/Localization/expand_fixed_attack_relics.py",
+    "?? Tools/Validation/UiKeyboardNavigationRegression.cs",
+    "?? output/",
+    "?? outputs/encyclopedia-book-flat-top-2026-10-11/",
+    "?? outputs/encyclopedia-book-illustration-frame-2026-10-11/",
+    "?? outputs/encyclopedia-book-inner-padding-2026-10-11/",
+    "?? outputs/encyclopedia-controls-polish-2026-10-11/",
+    "?? outputs/encyclopedia-implementation-2026-10-11/",
+    "?? outputs/encyclopedia-lines-scrollbar-2026-10-11/",
+    "?? outputs/encyclopedia-portrait-face-fit-2026-10-11/",
+    "?? outputs/encyclopedia-tab-visibility-reveal-2026-10-12/",
+    "?? outputs/encyclopedia-text-spacing-2026-10-11/",
+    "?? outputs/language-caption-title-fix-2026-10-10/",
+    "?? outputs/language-commit-review-2026-10-10/",
+    "?? outputs/settings-localization-review-2026-10-08/",
+    "?? tmp/pdfs/lightning-game-explainer/",
+    "?? tmp/pdfs/lightning-portfolio/",
+    "?? tmp/pdfs/lightning-spear-integrated-bookends.pdf"
+  ],
+  "createdAt": "2026-10-12 Asia/Seoul",
+  "protected": [
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\AudioManager.asset",
+      "hash": "282586EACD02FCA9B7B803B93641647ABEE5A9D1A7369381025546F0C9808CCF"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\BehaviorSettings.asset",
+      "hash": "08082D82AD5DE31729E062BC80D0BA5200A503C17FF8CF300B3CF2DC23036DCF"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\ClusterInputManager.asset",
+      "hash": "06A192320121E445DCFF1AE8DDAD2A948FF671CA134603C043D9F4E920427EA9"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\DynamicsManager.asset",
+      "hash": "7BF32032957EB76DEA137D4521B8F057FFDB55259ACBF130D0954C2D201EEC68"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\EditorBuildSettings.asset",
+      "hash": "8436F0C2ED5B429205AD47AB76073FEF555EF0FDD3015EC149FCB2D17A64F5BE"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\EditorSettings.asset",
+      "hash": "7827F85AC2D8CE213A15BAEA0157D2DF582EB6BE435654139C974C6E3EE5C969"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\GraphicsSettings.asset",
+      "hash": "842A1AC75BBF9FC824E40022658D487B2318B08EC896CD5679F9ACFC6317CACB"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\InkSettings.asset",
+      "hash": "5726FD0A90599997FD5A30E37FACF50D39AD0C2EC4E6F86F13B028B2B640CE9C"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\InputManager.asset",
+      "hash": "776C8B6C71E1101973E1F3AB569CF9058B857372A8A19210B50B3C1C6A1A42A6"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\MemorySettings.asset",
+      "hash": "A660CB9890D880DF92F3B80FA40723F183CC5EF2CB3ECC850B366191F05834C7"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\MultiplayerManager.asset",
+      "hash": "83DED116CA3ED35A6ACAC9B0FED830F04DFE5C008C185BE50B1C132C88AEA505"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\NavMeshAreas.asset",
+      "hash": "DECA65F3094943A1AF148CF64FD6C0DEB503219D12DE0E172B7F948D07A8E6A8"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\NetworkManager.asset",
+      "hash": "AA28E567E0F09D53D4DC57A068C913A4A9A0F09C602C49F0278990BF666550A9"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\PackageManagerSettings.asset",
+      "hash": "FFB0622DFC4909F7A67E773C7C0FEA32626C5499A9E838E4153F2055F7237F30"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\Physics2DSettings.asset",
+      "hash": "DBFB81493E3536EFF2A9690F46C4B718973CD2CB9CA5FB8EECE1A60DC868DC68"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\PresetManager.asset",
+      "hash": "6BA879310E2BE2E5BA18702578CDA93B26B030ECD88E883FEF22AB456A9F9697"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\ProjectSettings.asset",
+      "hash": "33D4EB966E845BCB14C154B3DE34E8F80977AAA112623EE4FFB8BBC827D7EF1D"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\ProjectVersion.txt",
+      "hash": "470B50FAF8F9101BB9E4E613F89C07E126499DD4BB5AD24236828E63B88FC36E"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\QualitySettings.asset",
+      "hash": "2F9C4C7BDBCCCA06C23EDE3E4996AA17DB072733EC9B4EDDC430785742747A4D"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\SceneTemplateSettings.json",
+      "hash": "BB9098B3BFCDE78D93E264B96F7B77B5430E64E8C57A7AAD7F5A5D9C3945E16A"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\ScriptableBuildPipeline.json",
+      "hash": "3BB1F2F633C111045634BAB34F3BD189B9D9B95223C49B26D0F6F041F48BA8BA"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\ShaderGraphSettings.asset",
+      "hash": "5C432C9C73FDF73FEE91C8823EA02AB98E3B7A8EDF341B5AE6901D699CCE52A7"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\TagManager.asset",
+      "hash": "CAD7E0551896293A54628B2AF126090FDC5368956C19D2722B0639B7F97CFE91"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\TimeManager.asset",
+      "hash": "6C320EE59AE1E55AA74558F012437F63CB9DE59D69FDA62FC321C4F1971C52CB"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\UnityConnectSettings.asset",
+      "hash": "210F1B07FA9D1209B4433E01699046F790DC5755A6101EF909263C642B4A4247"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\URPProjectSettings.asset",
+      "hash": "C7FB928E0AABAB57310310D78F03B61C028A8818EE6F183FC150B8EB6CA249A5"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\VersionControlSettings.asset",
+      "hash": "3FE15395F872B9CFE908A111A1E87BE2055C6EE367E2876E7E83A408C2B89D57"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\VFXManager.asset",
+      "hash": "A8950860670C6FA8F83A43E37DEB966BEACFD7B535721C4CD9C2A7E5B46305E8"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\XRSettings.asset",
+      "hash": "71F175773593BA28D42BF1AF0543B2A465E0316D3B8F435AEBF48EA66B31B621"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\DarkLord_Tutorial.unity",
+      "hash": "FC77E2020BF2C4B8754727DCE7664FBE0726CD86CB2EDB5158D0B257C2B1F577"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\DarkLord_Tutorial.unity.meta",
+      "hash": "891C7F3311F604F89BA1EA650AA94DE52FB70B7EE46651871D3C76831EB65466"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\DemonkingCorridor.unity",
+      "hash": "DFA2FEF43B1B167DC51A52647A6FA463F53C54A44CB4B6A08D41B05983C677F3"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\DemonkingCorridor.unity.meta",
+      "hash": "6FB85222B366BF639802E5EE06E5768A3EBD97DCA9FD1712A522C873774C9BC8"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\DragonCorridor 1.unity",
+      "hash": "01BAB6E6392C748E38C9F1EC015D9D8E049C6EDE58BC2FEDA8BC463E252B0C35"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\DragonCorridor 1.unity.meta",
+      "hash": "31D676A35250FEEE1C6C61DAF57EC5232237A759E1476E4A1AF5C370B76BF05B"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\DragonCorridor.unity",
+      "hash": "B241FDCE4E29EEC1918E86FE2602C42A69ED3C312AA85FB8B2024F9CF38B21CE"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\DragonCorridor.unity.meta",
+      "hash": "C7314316391D021ED446683D669F8E91A9CE5E44C33903742911009ED2605C47"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\Grand Hall.unity",
+      "hash": "D26F6FA50CDFAD7ACFC25664DFF2F4C4F15584A9298AEEB302168BC6EEC2FE59"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\Grand Hall.unity.meta",
+      "hash": "F1A474CCCB7B15ABD5ABC57FFF4D46923ADAA74FB3C4DB3FBB20D6A13A0DE1C7"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\HeoMinSeok_Boss_Dragon.unity",
+      "hash": "F8B2EC3939B74B19CB9CA6A6AC423ABEB42951C1D50D37906AC373FE2D4507D6"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\HeoMinSeok_Boss_Dragon.unity.meta",
+      "hash": "207BB65C49A7A89A1BA6B694B04BD5947957D79EFDC0535262D4FE33B944214E"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\HeoMinSeok_Boss_Shadow.unity",
+      "hash": "6BD5321A95F92A6D9FBD462829F57285C8A4D7BB640E0DE732B38C96913298DF"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\HeoMinSeok_Boss_Shadow.unity.meta",
+      "hash": "38ED31DE30EF51CF966E182E973041E1A487F379DA9564F9368BA19211B50C74"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\HeoMinSeokScene.unity",
+      "hash": "B8EB846DC393CCF4D09324B37F5207D413EFFB37A929A358EA29D2D019C148E9"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\HeoMinSeokScene.unity.meta",
+      "hash": "AEAEC62CCF85146C78AFB592923B17C57B55CAD953CFD2ABDCED86ED213ACDDA"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\LEeJunmo 1.unity",
+      "hash": "8675102BDC3363D218E3F43AD94D7ACC0D936B245CC5FE83DDCF702A52718DD2"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\LEeJunmo 1.unity.meta",
+      "hash": "6AED9EF2E5501622FF2E45C1929B94D000576B00799E857CB9F322895C5643EE"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\LeeJunmo_Boss_DemonKing.unity",
+      "hash": "36AD208E2BEF5112F37FC7357B9CC5A7B9DCAA06B0F9BB49DE5C47D2BC30C6DF"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\LeeJunmo_Boss_DemonKing.unity.meta",
+      "hash": "141A675632A745708814DAC56F9D598DFFD4F7BCDF0793396A852F7F796E8084"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\LEeJunmo.unity",
+      "hash": "55329986B3A2E1E31FF9EB9CF7B9B16B7526784868807CE378566D6B832ED0FC"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\LEeJunmo.unity.meta",
+      "hash": "35249EAA11844BA793DFFE46372031F6053D8D19B4ECCD7D04FD359FA7F92673"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\PixelLightTest.unity",
+      "hash": "F224068A41723AB978E6B401603F82E46D57D1CB7CCE58F431E6FE85EDB3619F"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\PixelLightTest.unity.meta",
+      "hash": "11F09338CD6324B79A85BA406FA76EA54E3D5EA352CE5C2876C8A48F00CCDF69"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProceduralDemonkingCorridor.unity",
+      "hash": "0686FCF10CE318687AD91AC9FF46D09476BFE03CE3BBA6A967BBB20F00844C87"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProceduralDemonkingCorridor.unity.meta",
+      "hash": "F0B90DC6A12D938AAD92C336AD619A0EB0A843D69829F57D4C2288973C18D98C"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProceduralDragonCorridor.unity",
+      "hash": "FDE591B5844739E3BC32F23CD80FE2A58134D6A163B57E1D15ACCE260606929F"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProceduralDragonCorridor.unity.meta",
+      "hash": "CFE531B41BC8D0E8E2006F55AEC7FD91EEECB1D4A0E1866B54F1BEAD773429D6"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProceduralDungeonV0Test.unity",
+      "hash": "0967A0D9A7619B572ECD84564D74DA32B4A7ED0C5C4CF0E671ED55AEB72BB690"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProceduralDungeonV0Test.unity.meta",
+      "hash": "FBFEA0F80D95B515381C714B49FB0A5D2625108D23C82E738F217C5DA5A473E5"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProceduralShadowCorridor.unity",
+      "hash": "7A9E386403C746D101C25359A5B37FD47B9E6D6DFAA1FA4E1ED06401E28A5490"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProceduralShadowCorridor.unity.meta",
+      "hash": "7045B389AEF64BC40C64D914341165A1F6C5A44AF2681FCE4C9709038369280B"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProceduralSlimeCorridor.unity",
+      "hash": "602A6BBB58518216F32384C42C0F783906505D5B6ED632A1A5A660D52B89BF9D"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProceduralSlimeCorridor.unity.meta",
+      "hash": "F84C1BF99E8E5F61BD2C39BD938B25B88D68447A28A3D976B69BB524C53CAE9A"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeBoss 1.unity",
+      "hash": "C7C695CB9BA8194F754173821EA7680BC47390635AEB9BA0CC4DBDD04651974E"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeBoss 1.unity.meta",
+      "hash": "888B50A3AA257A18154318E7E3AE70B5246394C1D40BEBE7754D68EA03ACE723"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeBoss 2.unity",
+      "hash": "B6FC33E86C75DC1E12AA119E655788C1E9FE5D270D2CE230B4C8F02E7DB851AD"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeBoss 2.unity.meta",
+      "hash": "45EBB70300FBE482164DC7D90998CEE0DCEE66240998516029FA682271F5A088"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeBoss 3.unity",
+      "hash": "4CCB084FE0D7E4935F23F7212DD974F1F6B71E7E9767576F550069A1E4EAACE4"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeBoss 3.unity.meta",
+      "hash": "CCD8FAB2E5EA71FF0347EF1E331BB7CBF83AFA1B15F4A035AD517A7F78675E99"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeBoss 4.unity",
+      "hash": "A0010AB06180773EFEF038EF037243432C76BB08052C76AC1019D056CF97DAD3"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeBoss 4.unity.meta",
+      "hash": "19401C1EEECDCAD35F11B0E62DD4F77346E308D5213E0E61203F5D1C1CE04DA1"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeBossLagacy.unity",
+      "hash": "F9D1805AC3EA45D74C5B651268FD0701F596141589B37B5E73D1B3EB4B93E11E"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeBossLagacy.unity.meta",
+      "hash": "39CA5200A0DB48AD8A431C572E1D6B68E8567CC391406C6CAEFE96EB4539B59C"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeCorridor 1.unity",
+      "hash": "BD7E101B4D5C1DB7160A6A17AFEE339590208CEB35029C5ABD63A92A6C1A8693"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeCorridor 1.unity.meta",
+      "hash": "CC762592360A36D593BEC3A074D5D4B950CA2FCD09FDBCD39AD51E27A28086A1"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeCorridor 2.unity",
+      "hash": "FF327B69DCFB80D4548713933126C3B0FD3D3B33AFC984A5C773D18A18955D76"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeCorridor 2.unity.meta",
+      "hash": "C7187FDBCCBCE529B37E48C5768895DDBDD6A7F2AD95A019BA26F901A995292F"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeCorridor 3.unity",
+      "hash": "852C8D56677F43EA28826C95B2A007608C3B5372897C9A8B1A93D55506D705E6"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeCorridor 3.unity.meta",
+      "hash": "A0D5C05798D3E3E43EEB0EBE6E9E7429273358002357A64A6FB7F43F12E8BD33"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeCorridor.unity",
+      "hash": "A616B568673FD2BE499C465728210945AFCBEDC41EAFAE4264FBE6CE1B7F9B88"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeCorridor.unity.meta",
+      "hash": "7D1A12B727EF1D10353F15EC366C23581C409191D5221C43EE4707B7DD0E367A"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeHub.unity",
+      "hash": "555D3DE0E8B22575387740822BD4D17DD8170C0D357D292B13C02DA598327D27"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeHub.unity.meta",
+      "hash": "ADF0B9BDD84B7D047F95371D916466E75456F8BC1FDA4784C362EC3EE24CAD9D"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeHubasf.unity",
+      "hash": "B4BE0376F490B14E9B77A57B57790533C63515934B9FCE0D775CFF438062D82F"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeHubasf.unity.meta",
+      "hash": "1BF4D2034659F7EC702449E14107E20C61CB509EC20689006517F0A6B8D485DA"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\PrototypeTutorialUpgradeScene.unity",
+      "hash": "585BE80A7BCC88DFC2CA4C354CB7C7260B9E5DB76342A7B17CFB6815D334845F"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\PrototypeTutorialUpgradeScene.unity.meta",
+      "hash": "FAB13B86B84F27F3C766CFD98A76362F5439FD824DF630238C557CB55E545237"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\SampleScene.meta",
+      "hash": "21DF2CD63403B781BBF6FF1F7E45A60281492C051DC9BD0B4B386DBD625B15CA"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\SangHyup_Boss_SlimeQueen.unity",
+      "hash": "2D926758016ED5FA186E0772D62786862DC96A789A330AB85102B540EBA8944B"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\SangHyup_Boss_SlimeQueen.unity.meta",
+      "hash": "AF25BFE62A2A1D6A8D63915FF0FDB0FB1315B22777957C88A9E3F5C38B1F7AAD"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\SangHyup_Hallway.unity",
+      "hash": "56BF85E630DACBCC57F348CC083CBDCE1A99340614D49F7A54575725B17A0F32"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\SangHyup_Hallway.unity.meta",
+      "hash": "BEC4D48B49634936B7FCE0C945E1099C1EB633E90F3636F65CB3497EA4535E7A"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ShadowCorridor.unity",
+      "hash": "DC0EC6B0C62143D495D6502BCA245191AF590BBB408715DC993E37D6E4734869"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ShadowCorridor.unity.meta",
+      "hash": "CE5193E653D0219FDC66DC3BDB19288256F3FD9F5CAA7721FFE4BE9BAACE516A"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ShopSlotPositionGroup.prefab",
+      "hash": "C660590641F3A9489B1E8166427B1D5BEE9F1CA0F5AEB4AA9757509BA7BD60C2"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ShopSlotPositionGroup.prefab.meta",
+      "hash": "D7300E8127F234A908F4F8A1042C9E44FAEF64855B50F65B2664DB2B58D21443"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\SlimeCorridor 1.unity",
+      "hash": "77510AB17C0D0FF92FD99B76936EA5B895F3271DE762B7FF95C4950CEF1F096B"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\SlimeCorridor 1.unity.meta",
+      "hash": "C9AC16928729A2FFB2931FFB33F65042C674D32718D140CA1AD52D8B2D43BD04"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\SlimeCorridor.unity",
+      "hash": "1E9ADB30C32B1AB34A01E0750B9772785588B58D3ABB9970645E12E3CC537FC8"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\SlimeCorridor.unity.meta",
+      "hash": "BD90D0CFD370355C9F0C4742DEB01B6012866CF6E44D382CE8F37186FE2C635B"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\Tests.meta",
+      "hash": "600D11430784EEFB6DF5455D4C4E4A77740717C8708238062711BBBA008BB91D"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\TitleScene.unity",
+      "hash": "49CC354401B2709AFA8EB76A6A925EE366D2CD6DCFCBEBAD934D8B40AF0A841F"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\TitleScene.unity.meta",
+      "hash": "9B69D0549739AFACCA24A6449627100A78207C83E5FFBA3928B7AEA7C8F5D4CF"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\TrainingDummyGroup.prefab",
+      "hash": "B1753CD28124787AA6B13CA0AC0163B3826E791A971F01F792C3AD62864A84A3"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\TrainingDummyGroup.prefab.meta",
+      "hash": "8CF36A20C841933755379F653CD924A0F6D900E1461555A6CECA0530BEAA7577"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\TutorialCorridor.unity",
+      "hash": "929D164DDD722EB62863A6CC6E44DF052A69B22B21C52CFFD8BCE25BB2A15AB9"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\TutorialCorridor.unity.meta",
+      "hash": "EECF0D1A0B4E0EE45A456B1757460A2700DCF6B2B56CE895CF4AD4135266EB92"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\SampleScene\\GameObject Profile.asset",
+      "hash": "52EC919AE5E4195BF2609F4E6C83233CD77DE0CF549202F8884BD4BCB0C83CDB"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\SampleScene\\GameObject Profile.asset.meta",
+      "hash": "A656904407DA060B07E0FE826F8EE713DBA2FFA6FAABFD6869EAE85B29166A1D"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\Tests\\TestScene.unity",
+      "hash": "90B6C4DB142246075D37CE8839C929B350C008EF606C620324248D67FDEEA850"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\Tests\\TestScene.unity.meta",
+      "hash": "2CF77A4604B06885B40FF9BB13E2F83E3163D53C70E24ABE7D1EFCAC0CC6B3C0"
+    }
+  ],
+  "commit": "80b48541fe46ad19eb06d2c74d7cc13a22916777"
+}

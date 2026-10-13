@@ -164,6 +164,7 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
     private bool hasRevealedOffer;
     private OfferPresentationIdentity lastRevealedOffer;
     private int sessionOpenedFrame = -1;
+    private ButtonNavigationGroup keyboardNavigation;
 
     public bool IsActive => panelRoot != null && panelRoot.activeSelf;
     public bool CanCloseOnEscape => !isApplyingSelection && !isTransitioning && !isClosing;
@@ -174,6 +175,13 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
     private void Awake()
     {
         CaptureCardAuthoredStates();
+        List<UnityEngine.UI.Button> cardButtons = new();
+        if (cardSlots != null)
+        {
+            foreach (CardSlotBinding slot in cardSlots)
+                cardButtons.Add(slot?.CardView?.SelectButton);
+        }
+        keyboardNavigation = new ButtonNavigationGroup(true, cardButtons.ToArray());
         if (panelRoot != null)
             panelRoot.SetActive(false);
     }
@@ -191,6 +199,7 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
         closeButton?.onClick.RemoveListener(RequestClose);
         rerollButton?.onClick.RemoveListener(RequestReroll);
         StopTransition(resetVisuals: true);
+        keyboardNavigation?.Reset();
     }
 
     private void RefreshRerollCountText()
@@ -205,13 +214,7 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
     {
         if (IsActive && sessionController != null && sessionController.IsSessionOpen)
             RefreshRerollCountText();
-        if (!IsActive ||
-            sessionController == null ||
-            !sessionController.IsSessionOpen ||
-            isApplyingSelection ||
-            isTransitioning ||
-            isClosing ||
-            Time.frameCount == sessionOpenedFrame)
+        if (!CanProcessCardInput())
         {
             return;
         }
@@ -228,6 +231,19 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
             RequestSelectByIndex(1);
         else if (InputActionQuery.WasKeyPressedThisFrame(KeyCode.Alpha3))
             RequestSelectByIndex(2);
+    }
+
+    private bool CanProcessCardInput()
+    {
+        return IsActive && sessionController != null && sessionController.IsSessionOpen &&
+               !isApplyingSelection && !isTransitioning && !isClosing &&
+               Time.frameCount != sessionOpenedFrame &&
+               (UIManager.Instance == null || UIManager.Instance.CanProcessNavigationInput(this));
+    }
+
+    private void LateUpdate()
+    {
+        keyboardNavigation?.Refresh(CanProcessCardInput());
     }
 
     public void OpenUI()
@@ -253,6 +269,7 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
 
     public void CloseUI()
     {
+        keyboardNavigation?.Reset();
         StopTransition(resetVisuals: true);
         ClearCards();
         ClearFeedback();
@@ -394,6 +411,7 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
         if (sessionController == null)
             return;
 
+        keyboardNavigation?.Reset();
         IReadOnlyList<LevelRewardDefinitionSO> candidates = sessionController.Candidates;
         int candidateCount = Mathf.Min(candidates?.Count ?? 0, MaximumCardCount);
         int authoredSlotCount = cardSlots?.Count ?? 0;
@@ -434,8 +452,7 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
 
     private void RequestSelect(string rewardId)
     {
-        if (isApplyingSelection || isTransitioning || isClosing ||
-            sessionController == null || string.IsNullOrWhiteSpace(rewardId))
+        if (!CanProcessCardInput() || string.IsNullOrWhiteSpace(rewardId))
         {
             return;
         }
@@ -463,8 +480,7 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
 
     private void RequestReroll()
     {
-        if (isApplyingSelection || isTransitioning || isClosing ||
-            sessionController == null || !sessionController.IsSessionOpen)
+        if (!CanProcessCardInput())
         {
             return;
         }
@@ -797,6 +813,8 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
 
     private void SetTransitioning(bool transitioning)
     {
+        if (transitioning)
+            keyboardNavigation?.Suspend();
         isTransitioning = transitioning;
         RefreshInteractionState();
     }

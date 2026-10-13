@@ -49,7 +49,7 @@ public sealed class MobAIContext
         this.attackThinkIntervalSeconds = Mathf.Max(0f, attackThinkIntervalSeconds);
         this.attackThinkInitialSpreadSeconds = Mathf.Max(0f, attackThinkInitialSpreadSeconds);
         this.attackThinkJitterSeconds = Mathf.Max(0f, attackThinkJitterSeconds);
-        nextAttackThinkTime = Time.time + Random.Range(0f, this.attackThinkInitialSpreadSeconds);
+        nextAttackThinkTime = UnityGAS.CombatHitPause2D.GetActionTime(Owner?.gameObject) + Random.Range(0f, this.attackThinkInitialSpreadSeconds);
     }
 
     /// <summary>
@@ -62,10 +62,10 @@ public sealed class MobAIContext
         if (attackThinkIntervalSeconds <= 0f)
             return true;
 
-        if (Time.time < nextAttackThinkTime)
+        if (UnityGAS.CombatHitPause2D.GetActionTime(Owner?.gameObject) < nextAttackThinkTime)
             return false;
 
-        nextAttackThinkTime = Time.time + attackThinkIntervalSeconds + Random.Range(0f, attackThinkJitterSeconds);
+        nextAttackThinkTime = UnityGAS.CombatHitPause2D.GetActionTime(Owner?.gameObject) + attackThinkIntervalSeconds + Random.Range(0f, attackThinkJitterSeconds);
         return true;
     }
 

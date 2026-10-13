@@ -68,7 +68,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ab56e3ce9940d9648a8a4896df560905, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d6bdf7801fb0ca54290fd90d7bc5aecb, type: 2}
   m_sharedMaterial: {fileID: 0}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -422,6 +422,7 @@ MonoBehaviour:
   durationFillImage: {fileID: 5882680222489377800}
   stackText: {fileID: 8077423629352576055}
   durationText: {fileID: 9047237295026957610}
+  progressTextMaterial: {fileID: 2100000, guid: c0a19cae9c1fc714b96f51f0c8e253d1, type: 2}
   entrySize: {x: 48, y: 48}
   backgroundColor: {r: 0.1, g: 0.12, b: 0.18, a: 0.9}
   highlightedBackgroundColor: {r: 0.33, g: 0.21, b: 0.08, a: 0.92}
@@ -583,7 +584,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ab56e3ce9940d9648a8a4896df560905, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d6bdf7801fb0ca54290fd90d7bc5aecb, type: 2}
   m_sharedMaterial: {fileID: 0}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

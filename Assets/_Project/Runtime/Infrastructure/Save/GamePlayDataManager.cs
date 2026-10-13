@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // 책임: 런 세션 데이터를 유지하고 Core RunSessionStore 백엔드를 등록해 런 시작/종료 상태를 중계한다.
-public sealed class GamePlayDataManager : MonoBehaviour, IRunSessionStoreBackend
+public sealed class GamePlayDataManager : MonoBehaviour, IRunSessionStoreBackend, IMonsterEncyclopediaRunProgressBackend
 {
     public static GamePlayDataManager Instance { get; private set; }
 
@@ -60,6 +60,22 @@ public sealed class GamePlayDataManager : MonoBehaviour, IRunSessionStoreBackend
         s_isQuitting = true;
     }
 
+    private void OnEnable()
+    {
+        GameDataStore.OnDataLoaded += HandleProfileLoaded;
+    }
+
+    private void OnDisable()
+    {
+        GameDataStore.OnDataLoaded -= HandleProfileLoaded;
+    }
+
+    private void HandleProfileLoaded(GameData profile, int slotIndex)
+    {
+        // Pending kills belong to the previous profile, including when that slot was reset/reloaded.
+        MonsterEncyclopediaRunProgress.Clear(Data);
+    }
+
     private void OnDestroy()
     {
         RunSessionStore.UnregisterBackend(this);
@@ -76,6 +92,14 @@ public sealed class GamePlayDataManager : MonoBehaviour, IRunSessionStoreBackend
 
     public void EndRun(RunEndReason reason)
     {
+        // Respect an installed run backend even for legacy callers holding this
+        // manager directly. TestScene's volatile adapter must not commit a save slot.
+        if (RunSessionStore.IsAvailable && !RunSessionStore.IsBackend(this))
+        {
+            RunSessionStore.EndRun(reason);
+            return;
+        }
+
         RunSessionLifecycleService.EndRun(
             Data,
             reason,
@@ -118,6 +142,16 @@ public sealed class GamePlayDataManager : MonoBehaviour, IRunSessionStoreBackend
     public void AddPendingAffectionDelta(int npcId, int delta)
     {
         RunSessionStateService.AddPendingAffectionDelta(Data, npcId, delta);
+    }
+
+    public bool RecordMonsterEncyclopediaKill(string monsterId)
+    {
+        return GameDataStore.Data != null && MonsterEncyclopediaRunProgress.RecordKill(Data, monsterId);
+    }
+
+    public int GetPendingMonsterEncyclopediaKillCount(string monsterId)
+    {
+        return MonsterEncyclopediaRunProgress.GetPendingKillCount(Data, monsterId);
     }
 
     public bool TryConsumeAffectionGain(int npcId)

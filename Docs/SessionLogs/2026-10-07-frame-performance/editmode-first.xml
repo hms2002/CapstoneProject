@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Failed(Child)" total="5" passed="3" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-07 07:24:31Z" end-time="2026-10-07 07:24:31Z" duration="0.2053548">
+  <test-suite type="TestSuite" id="1000" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2026-10-07 07:24:31Z" end-time="2026-10-07 07:24:31Z" duration="0.205355" total="5" passed="3" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1007" name="CorePerformanceRegressionEditModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/CorePerformanceRegressionEditModeTests.dll" runstate="Runnable" testcasecount="5" result="Failed" site="Child" start-time="2026-10-07 07:24:31Z" end-time="2026-10-07 07:24:31Z" duration="0.170759" total="5" passed="3" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="6868" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1001" name="CorePerformanceRegressionEditModeTests" fullname="CorePerformanceRegressionEditModeTests" classname="CorePerformanceRegressionEditModeTests" runstate="Runnable" testcasecount="5" result="Failed" site="Child" start-time="2026-10-07 07:24:31Z" end-time="2026-10-07 07:24:31Z" duration="0.166109" total="5" passed="3" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="1003" name="EffectQueries_MeasureCapturingSearchAllocationAgainstOriginalLookup" fullname="CorePerformanceRegressionEditModeTests.EffectQueries_MeasureCapturingSearchAllocationAgainstOriginalLookup" methodname="EffectQueries_MeasureCapturingSearchAllocationAgainstOriginalLookup" classname="CorePerformanceRegressionEditModeTests" runstate="Runnable" seed="992594435" result="Failed" start-time="2026-10-07 07:24:31Z" end-time="2026-10-07 07:24:31Z" duration="0.048405" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: same as <UnityGAS.ActiveGameplayEffect>
+  But was:  null
+]]></message>
+            <stack-trace><![CDATA[at CorePerformanceRegressionEditModeTests.EffectQueries_MeasureCapturingSearchAllocationAgainstOriginalLookup () [0x000eb] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\EditMode\CorePerformanceRegressionEditModeTests.cs:78
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Can not create instance of abstract class 'GameplayEffect'.
+]]></output>
+        </test-case>
+        <test-case id="1002" name="EffectQueries_PreserveFirstMatchExpiryAndUnityNullSourceSemantics" fullname="CorePerformanceRegressionEditModeTests.EffectQueries_PreserveFirstMatchExpiryAndUnityNullSourceSemantics" methodname="EffectQueries_PreserveFirstMatchExpiryAndUnityNullSourceSemantics" classname="CorePerformanceRegressionEditModeTests" runstate="Runnable" seed="344549172" result="Failed" start-time="2026-10-07 07:24:31Z" end-time="2026-10-07 07:24:31Z" duration="0.007869" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: same as <UnityGAS.ActiveGameplayEffect>
+  But was:  null
+]]></message>
+            <stack-trace><![CDATA[at CorePerformanceRegressionEditModeTests.EffectQueries_PreserveFirstMatchExpiryAndUnityNullSourceSemantics () [0x00063] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\EditMode\CorePerformanceRegressionEditModeTests.cs:33
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Can not create instance of abstract class 'GameplayEffect'.
+]]></output>
+        </test-case>
+        <test-case id="1004" name="LinkedValueCompensator_DoesNotUseLegacyResourcesPolicyLookup" fullname="CorePerformanceRegressionEditModeTests.LinkedValueCompensator_DoesNotUseLegacyResourcesPolicyLookup" methodname="LinkedValueCompensator_DoesNotUseLegacyResourcesPolicyLookup" classname="CorePerformanceRegressionEditModeTests" runstate="Runnable" seed="1787078368" result="Passed" start-time="2026-10-07 07:24:31Z" end-time="2026-10-07 07:24:31Z" duration="0.016626" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1006" name="RemoveModifiersFromSource_MatchingSource_RemovesOnlyThatSourcesModifiers" fullname="CorePerformanceRegressionEditModeTests.RemoveModifiersFromSource_MatchingSource_RemovesOnlyThatSourcesModifiers" methodname="RemoveModifiersFromSource_MatchingSource_RemovesOnlyThatSourcesModifiers" classname="CorePerformanceRegressionEditModeTests" runstate="Runnable" seed="490028435" result="Passed" start-time="2026-10-07 07:24:31Z" end-time="2026-10-07 07:24:31Z" duration="0.024749" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1005" name="RemoveModifiersFromSource_UnknownSource_DoesNotReportAChange" fullname="CorePerformanceRegressionEditModeTests.RemoveModifiersFromSource_UnknownSource_DoesNotReportAChange" methodname="RemoveModifiersFromSource_UnknownSource_DoesNotReportAChange" classname="CorePerformanceRegressionEditModeTests" runstate="Runnable" seed="724933026" result="Passed" start-time="2026-10-07 07:24:31Z" end-time="2026-10-07 07:24:31Z" duration="0.008170" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

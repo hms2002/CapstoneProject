@@ -67,11 +67,12 @@ public sealed class CrimsonBoundaryLavaProjectile2D : MonoBehaviour, IAttackColl
                 if (wall.collider != null && !wall.collider.isTrigger) { blocked = true; break; }
             if (blocked) continue;
             hitTargets.Add(target);
-            float damage = CrimsonBoundaryUtility.CalculateDirectDamage(owner, data.skill2BaseMultiplier, out bool critical, data.skillFireFormula);
+            float damage = CrimsonBoundaryUtility.CalculateDirectDamage(owner, data.skill2BaseMultiplier, out bool critical,
+                out ElementDamageResult[] elementHpDamages, data.skillFireFormula);
             var burn = target.GetComponent<BurnStatus2D>();
             int consumed = burn != null ? burn.ConsumeAll() : 0;
             damage += CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(owner, consumed, data.skill2BurnConsumptionMultiplier, data.skillFireFormula);
-            CrimsonBoundaryUtility.ApplyDamage(owner, spec, data.damageEffect, target, damage, critical, gameObject);
+            CrimsonBoundaryUtility.ApplyDamage(owner, spec, data.damageEffect, target, damage, critical, gameObject, elementHpDamages);
         }
         transform.position = origin + direction * wallDistance;
         if (!hitWall) return;

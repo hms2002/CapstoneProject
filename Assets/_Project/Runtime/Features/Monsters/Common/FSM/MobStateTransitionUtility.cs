@@ -22,10 +22,20 @@ public static class MobStateTransitionUtility
 
     public static bool TryHandleAttackTransition(MobStateMachine stateMachine, MobAIContext context)
     {
+        return TryHandleAttackTransition(stateMachine, context, out _);
+    }
+
+    public static bool TryHandleAttackTransition(MobStateMachine stateMachine, MobAIContext context, out bool? reusableDetection)
+    {
+        reusableDetection = null;
         if (context == null || context.Owner == null || context.Owner.IsDead)
             return false;
 
-        if (!context.HasDetectedTarget())
+        bool detected = context.HasDetectedTarget();
+        // Special detection may own state (for example Rook's room target lock).
+        if (context.Owner is not IMobTargetDetectionOverride)
+            reusableDetection = detected;
+        if (!detected)
             return false;
 
         if (context.AbilityBridge == null || context.AttackDecisionSource == null)
@@ -37,6 +47,8 @@ public static class MobStateTransitionUtility
         if (!context.ConsumeAttackThinkBudget())
             return false;
 
+        // Custom decision code may change targets or world state before the fallback check.
+        reusableDetection = null;
         if (!context.AttackDecisionSource.TryBuildAttackRequest(out MobAttackRequest request))
             return false;
 

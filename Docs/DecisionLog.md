@@ -3389,3 +3389,133 @@ Expand the existing Unity Localization tables rather than introduce another runt
 ## 2026-10-04 — Japanese Galmuri9 pixel font
 
 User authorized replacing the Japanese font after the actual JA path was found to use Noto CJK. Use a separate TMP asset built from official Galmuri9.ttf for JA, retaining existing Korean assets and authored material presets. Current JA table coverage is 1,062 unique visible characters with no missing glyphs. GameFonts owns the locale references; do not infer the active font from the original label asset name. Chinese locales retain Fusion Pixel. Source/license hashes are recorded in Fonts/Sources.json. Font coverage must be repeated when translations introduce new characters.
+
+## 2026-10-07 — Isolated TestScene and abandoned RunSpecialNpc scope
+
+TestScene uses the existing gameplay systems behind a scene-authored separate Canvas. Profile changes stay in a disposable GameDataStore backend, and a scene-owned RunSessionStore adapter intercepts terminal commits; legacy GamePlayDataManager.EndRun callers respect a registered alternate live backend. Ordinary registered-manager behavior and bootstrap remain unchanged. Instant reward removal requires a safe receipt; later resource changes can invalidate undo.
+
+The user confirmed that the RunSpecialNpc construction/teleport plan was abandoned during the procedural-map migration. Exclude those NPC event templates from current test scope; retain existing production legacy code/assets until a separately scoped removal. The old authoring backlog is closed by plan cancellation.
+
+Lightning Spear optimization preserves position/count/order and current layer rules. Internal-wall passage is a future gameplay/authoring slice. Editor-only baseline comparison excludes prefab creation and must not be described as game-wide FPS or zero-allocation results. See `Docs/StructureMemory/TestScene.md` and the 2026-10-07 session log.
+
+## 2026-10-08 — Conditional world HP mesh preserves authored overlap sorting
+
+The approved shared HP quad remains actor-owned under MonsterWorldHud. MonsterStackStatusWorldView retains attributes, trail timing, transform compensation, status projection and cleanup; MonsterHealthBarMeshView owns only an actor property block over shared authored assets. Statuses stay on the original Canvas. Native cross-actor raster comparisons found HP/status transparent-order differences, so any intersection of conservative published HUD bounds routes every current visible HUD to the retained six Images/Canvas before rendering. Separated actors use the shared mesh; dense overlap retains the original cost. No new manager, singleton, DDOL owner or runtime hierarchy is introduced. This is a visual preservation boundary, not a claim of general Player FPS improvement. See [world HUD map](StructureMemory/MonsterWorldHudAndStatus.md) and the [structural report](SessionLogs/2026-10-08-ui-batching-structural/README.md).
+
+## 2026-10-10 — Coordinate tools compose content placement flows
+
+사용자는 번개창 전용 알고리즘 모듈을 세분화하는 대신, 재사용 도구의 조합으로 동작을 표현하는 방향을 승인했다. 공통 Map/Physics/Candidate/Nearest/Session/Flow는 좌표·수치·reader·resolver를 입력받고 무기 data/actor/유물/GAS를 알지 않는다. 콘텐츠 연결은 대상 포함, 설정 변환, 도구 연결만 맡으며 live 생성·시간축·취소·정리는 기존 owner에 유지한다.
+
+공통 코드 재사용은 전역 mutable scratch 공유를 뜻하지 않는다. 도구·용량은 owner가 유지하고 기하 memo/소진·예약은 동기 요청에 한정한다. 기하 재사용은 고정 입력/월드와 증가하는 예약을 전제로 하며 live 간격 판정은 계속 수행한다. 다른 맵 정책/production 소비자 연결과 Architecture/Contracts 승격은 별도 검증 후 결정한다. 참조: [PlacementTools](StructureMemory/PlacementTools.md), [실제 검증](SessionLogs/2026-10-10-lightning-tools/README.md).
+
+## 2026-10-10 — Direct weapon hits add separate elemental HP constituents
+
+The user-approved direct-hit scope adds `BleedFinal` → Blood, FireFinal, PoisonFinal and ElectricFinal HP damage with the hit's existing HP postprocess multiplier and critical result, without a second critical roll. Gauge build-up/profile/modifier behavior remains independent and unchanged; legacy serialized element formulas do not author these HP constituents. Existing attack creation snapshots carry the values, while Crimson Lava retains its live hit-time calculation. Odd Iron's fixed physical damage stays multiplier 1 and noncritical, obtaining elemental final stats separately from its owner.
+
+Base plus extra constituents enter one damage GE and the existing outgoing/incoming, shield/invulnerability and hit-event pipeline once. Combat owns proportional constituent popups from actual HP damage, including synchronous auto-heal observation and GE/listener duplicate suppression. Critical element presentation keeps its element color; player damage remains red. Null extra HP data preserves legacy/DoT/puddle/relic-proc behavior. Crimson direct basic/skill paths capture explicitly; its kill-shot relic only gains Fire popup metadata. No assets, schemas, persistent enum values, `.meta`/GUIDs, manager or bootstrap changes are part of this approval. See [ElementDirectHitDamage](StructureMemory/ElementDirectHitDamage.md); validation evidence belongs in the task SessionLog.
+
+## 2026-10-11 — Creature encyclopedia projects profile progress and existing character data
+
+사용자는 검토한 Monster/Boss/NPC 도감 배치를 인게임에 구현하도록 승인했고 Item 작업은 제외했다. UI는 실제 게임 portrait, Idle 프레임, 현재 호감도와 등록된 보상·스토리를 읽어 표시한다. 보상을 지급하거나 새로운 캐릭터·보상·스토리 내용을 만들지 않는다. 슬롯/page/표정/전체 보기 상태는 UI owner에 두며 gameplay 및 저장 진행도는 기존 owner에 유지한다.
+
+몬스터 누적 처치 수는 현재 세이브 프로필의 stable species ID별 값이다. 실제 일반 몬스터의 단일 사망 이벤트를 active run 동안 대기분으로 모아 기존 run-end 정책에서 커밋한다. Tutorial/Test 씬과 테스트 backend는 제외하며 슬롯 전환·개발 reset은 대기분을 폐기한다. 피해 기여자 정보가 없으므로 환경사망도 포함하고, 기록이 없던 구형 세이브는 0에서 시작한다. UI 조회는 프로필 누적값과 현재 런 대기분의 합이며 UI가 저장을 소유하지 않는다. 참조: [Creature structure](StructureMemory/EncyclopediaCreatureTabs.md), [승인 범위](ActiveTasks/encyclopedia-creature-tabs.md).
+
+## 2026-10-11 — Electric chain damage preserves existing electrocution duration
+
+The user requested removal of electrocution-duration renewal from chain recipients. `GE_ElectricShockTrigger` applies or refreshes `GE_ElectrocutedStatus` only on the initial discharge target; already-electrocuted chain recipients receive the same electric damage while retaining their remaining status lifetime. Direct electric gauge completion can still renew the initial target's status. This narrows the status-reapplication behavior recorded in the 2026-05-18 electric-trigger decision; the shared duration-effect runner policy remains unchanged.
+
+The existing authored limit of 8 total targets per discharge (initial target included), nearest-neighbor selection and one visit per root are retained. The shared electrocution status asset remains unchanged. See [electric extension map](StructureMemory/ScriptSystems/WeaponAndGASStructure.md).
+
+## 2026-10-11 — Same-hit elemental popups group by element and scale by damage share
+
+The approved preview rule groups a tagged primary hit with its additional HP constituents of the same element, and combines repeated secondary tags within that single hit. Other elements retain separate colors and use a size factor of `0.42 + 0.43 * sqrt(clamp01(secondary / merged primary))`; the primary stays full size, with the largest element taking that role when base damage is zero. This changes presentation only: one combined damage effect still owns shielding, HP loss and hit events, while gauge/DoT behavior stays in its existing path. Actual popup placement remains the existing service allocator; the preview's arranged positions are not imported. Runtime-only request metadata avoids prefab, profile-schema and material changes. See [ElementDirectHitDamage](StructureMemory/ElementDirectHitDamage.md) and [the continuation record](SessionLogs/2026-10-11-element-popup-ratio/README.md).
+
+## 2026-10-11 — Electric discharge targets at most three units
+
+The user set `GE_ElectricShockTrigger.maxTargetsPerDischarge` to 3. The initial discharge target counts toward this limit, so at most two other already-electrocuted roots receive chain damage. The authored effect and new-instance default use the same value. Nearest-neighbor selection, one visit per root, damage and chain-recipient duration preservation remain as before.
+
+The existing `ui.item_keyword.electrocuted.description` additional explanation states the initial-inclusive limit and distinguishes chain hits from direct electrocution renewal. Its Korean fallback, CSV source and five localized String Table entries carry the same rules. This replaces the eight-target value retained in the earlier entry above. See [electric extension map](StructureMemory/ScriptSystems/WeaponAndGASStructure.md).
+
+## 2026-10-11 — Electric damage scales from attacker stats and conditional relics
+
+User selected initial discharge `5 + ElectricFinal × 1.0` and follow-on chain `5 + ElectricFinal × 0.5`. The trigger snapshots the instigator's final electric stat once before status callbacks, then applies existing discharge modifiers after coefficient calculation. No provider contributes zero; no causer-only stat borrowing, additional critical roll, persistent electric damage tick or separate gauge effect is added. Initial-inclusive cap 3 and chain lifetime preservation remain.
+
+Three Rare/maxLevel3/dropLevel1 relics use the existing token-owned proc framework: Thunder Heart adds 1/2/3 ElectricAdd per nearby living shocked enemy (radius6.5/cap3), Storm Step adds 1/2/3 per complete extra10% movement step (final/base/cap3), Dash Coil adds 2/3/4 for three seconds after completed global dash. Temporary buffs refresh without stacking and clear on detach/reapply; derived conditions recompute. Normal dash completion requires a spec marker, so hard-stop exits cannot falsely award the buff.
+
+A dash buff has a separate proc-owned modifier source. Ordinary detached previews retain it; upgrading its own relic removes it only from the projected snapshot, matching actual reapply cleanup. Manager destruction disposes registered procs and their tokens/subscriptions. Existing icons are reused, names/templates have five-language fixed keys, and no scene/prefab/asmdef/save-schema/bootstrap edits are part of this slice. See [relic map](StructureMemory/ScriptSystems/RelicRuntimeStructure.md), [completed scope](ActiveTasks/electric-scaling-and-relics.md).
+
+## 2026-10-11 — Electric relics use maximum-health cells and bounded chain extension
+
+사용자는 이동속도 기반 유물을 최대 체력 기반으로 교체하고, 최대 체력 1칸마다 강화 단계별 전기 속성 +1/+1/+2/+2/+3을 선택했다. 기존 기본안의 최대 3단위 상한은 유지해 완전한 최대 체력 칸을 3칸까지만 집계한다. `RD_StormStep`은 이름을 `생명의 전류`로 바꾸되 파일명·GUID·relicId를 보존하고, 기존 enum 값을 바꾸지 않고 `MaxHealth = 3`을 추가한다. 현재 체력 증감은 이 조건을 바꾸지 않는다. 천둥의 심장은 반경을 없애고 소유자의 현재 씬에서 살아 있고 활성 상태인 감전 적을 최대 3명까지 집계한다.
+
+새 Rare 3단계 유물 `뇌명의 매듭`은 후속 연쇄에 맞은 적의 기존 감전 잔여 시간을 +0.5/+1/+1.5초 늘린다. 잔여 시간은 기본 지속시간 4초까지만 늘고, 이미 상한보다 긴 상태는 줄이지 않는다. 최초 대상은 기존 상태 부여 규칙을 따르며, 만료·정화·사망으로 제거된 상태를 재생성하지 않는다. 이는 기본 연쇄가 감전 시간을 갱신하지 않는 규칙의 유물 예외이며, 효과 재적용이나 태그/cue 재발동이 아니다. 최초 포함 최대 3명과 전기 계수1.0/0.5는 유지한다. 유물의 source-owned 등록은 해제·재장착·복원·manager 파괴 시 정리한다.
+
+이 기록은 바로 앞 전기 유물 결정의 반경/이동속도/유물 수 기준을 대체한다. 레벨별 툴팁과 5개 locale 원본·테이블에 같은 기준을 반영한다. 후속 유물 8종은 [현재 범위 문서](ActiveTasks/electric-scaling-and-relics.md)의 Suggested Later에 미구현 기획으로만 남긴다. 구조와 확장 지점은 [유물 지도](StructureMemory/ScriptSystems/RelicRuntimeStructure.md)를 참조한다.
+
+## 2026-10-11 — Resonance Bell expands targets and shock paralysis preserves current actions
+
+사용자는 공명의 종을 연쇄 대상 수 +1/+2/+3명으로 구현하도록 승인했다. 기본 최대3명은 공유 effect asset에 유지하며, 장착자의 발현마다 최초 대상 포함4/5/6명을 한 번 계산한다. 이미 방문한 적을 중복 선택하지 않고, 기존 범위·피해 계수1.0/0.5와 기본 후속 감전 시간 보존 규칙을 유지한다. Rare/dropLevel1/maxLevel3이며 장착·강화·해제·복원은 기존 source-owned proc/token 수명을 따른다.
+
+저릿한 족쇄는 장착자가 직접 전기 발현으로 감전을 부여·갱신한 살아 있는 일반 적을0.1게임초 동안 마비시킨다. 보스는 기존 ICombatHitPauseImmune로 제외하며 후속 연쇄 피해·감전 잔여 시간 연장·복원에는 발동하지 않는다. 고정시간 단일 단계 Rare/dropLevel1/maxLevel1로 구성한다. 반복 부여는0.1초로 갱신하고 시간을 합산하지 않는다. 이미 더 긴 정지가 있으면 그 수명을 유지하며 메뉴 일시정지에서는 남은 마비 시간이 흐르지 않는다.
+
+마비는 현재 상태/ability/motion을 취소하거나 처음부터 시작하지 않는다. CombatHitPause2D가 소유하는 마비 전용 행동 시계가 실제 마비 구간만 제외하고, 일반 몬스터의 준비·돌진·연사·후딜·추적·본체 접촉 판정과 연결된 경고 표시/수명 및 근접·부착 공격체의 판정/수명을 보존한다. 기존 일반 피격 정지와 마비가 없는 경로의 시간 규칙은 유지한다. 이미 발사된 독립 투사체와 분리된 월드 효과는 계속 진행한다. 사망·비활성화로 끝난 공격은 재개하지 않는다. Core ICombatActionState는 Enemy의 기존 IsDead를 읽기만 하며 별도 생존 상태를 저장하지 않는다.
+
+이 결정으로 바로 앞 문서의 네 유물은 여섯 유물이 되었고, 기존 미래 후보인 공명의 종/저릿한 족쇄 효과를 대체한다. 남은 여섯 기획은 미구현이다. 씬·프리팹·기존 ID/GUID·serialized field/enum 값·asmdef·save/bootstrap 변경은 포함하지 않는다. 구조와 테스트 경계는 [유물 지도](StructureMemory/ScriptSystems/RelicRuntimeStructure.md), [일반 몬스터 행동 흐름](StructureMemory/ScriptSystems/BossAndMobEncounterStructure.md)을 참조한다.
+
+## 2026-10-11 — Relic attack percentages become fixed values and electric designs are revised
+
+사용자는 공격력 비율 유물7종을 고정값으로 변경하고 보수적인 기본안을 선택했다. 낡은 숫돌/장인의 숫돌은 공격력+1/+2/+3, 무거운 팔찌는+2/+3/+4, 마지막 숨은+3, 붉은 계약/회전하는 철구는+2, 하얀 깃털의 피해는3/4/5/6/7이다. 공격력 보너스는 AttackMul의 비율 보정에서 AttackAdd Flat으로 옮긴다. 발동 조건·지속시간·이동속도/공격속도/기본공격 피해 비율 효과는 유지한다. 이미 고정값인 힘 부적과 레벨업 보상 등은 변경 대상이 아니다.
+
+하얀 깃털은 AttackFinal과 무관한 고정 피해를 사용한다. `damageCoef`/`damageCoefByLevel`과 철구의 `attackPercentBonus` 등 기존 직렬화 이름은 ID/GUID/schema 호환을 위해 보존하되, 이7종의 authored 값과 설명·툴팁 및 런타임 사용 의미를 고정값으로 정렬한다. 이속 기반 공전/재타격 간격과 기존 피해 pipeline은 유지한다. 공격력 비율인지 판단할 때 UI의 퍼센트 표시만 보지 않고 attribute/composite/runtime 경로를 확인한다.
+
+감전의 유저 설명은 발현 피해·4초 지속·기본3명(최초 포함) 연쇄와 유물에 의한 대상 증가만 남긴다. 기존 공식/계수/게이지/시간 갱신 구현 세부는 이 companion card에서 제거하며 gameplay 수식은 바꾸지 않는다.
+
+미구현 전기 유물 기획은 사용자 지정으로 수정한다. 잔류 전류 항아리를 전류 항아리로 바꾸고 자연 감전 만료 피해를 ElectricFinal×0.4만 사용한다. 메아리 코일은 감전 발현을50%피해로1회 추가 발동하며 자신의 추가 발현을 다시 발동시키지 않는다. 도체 고리는 후속 연쇄 순서마다20%씩 가산해20/40/60/60…%로 제한하고 발현마다 초기화한다. 기존0.3초 메아리 지연은 이번 지정 수치에 포함하지 않는다. 이3종은 기획 수정이며 runtime 구현/등록 승인은 아니다. 메아리의 추가 상태/유물 효과 처리 경계는 구현 요청 때 확정한다. [현재 기획](ActiveTasks/electric-scaling-and-relics.md)을 참조한다.
+
+## 2026-10-12 — Current Jar, Echo Coil and Conductor Ring become authored runtime relics
+
+사용자가 세 유물의 구현을 명시적으로 승인했다. 전류 항아리는 내가 부여한 감전의 자연 만료 시 현재 적용자의 ElectricFinal×0.4만큼 피해를 준다. 고정 피해나 기존 발현 피해 증폭은 더하지 않는다. 정화·명시적 제거·사망·씬 정리와 유물 장착/해제는 발동하지 않는다. 복원은 미래 이벤트 구독만 연결하며, 적용자 정보가 있는 복원 감전의 이후 자연 만료는 처리할 수 있다.
+
+메아리 코일은 원래 발현의 최초 및 후속 대상에 제출된 피해를 한 번씩50%로 즉시 재적용한다. 원래 대상 목록과 확정 수치를 사용하며 새 탐색, 전기 속성 재계산, 감전 갱신, 지속시간 연장, 마비 및 재귀 메아리는 실행하지 않는다. 이미 사망하거나 비활성화/파괴된 대상은 건너뛴다.
+
+도체 고리는 최초 대상0%, 후속 순서20/40/60/60…%의 가산 보너스를 기존 발현 피해 수정보다 뒤에 곱한다. 발현마다 순서를 초기화하고 장착 규칙을 최초 상태 콜백 전에 읽는다. 기본3명으로는40%까지, 공명의 종으로 대상이 늘면60%까지 적용된다. 세 유물은1단계 Rare/drop1이며 기존 아이콘을 재사용한다.
+
+유물 proc이 구독을 소유한다. 자연 만료 알림은 기존 Runner 정리와 저장소 순회가 끝난 뒤 전달하여 추가 피해의 사망 정리가 순회 중 컬렉션을 바꾸지 않게 한다. 피해는 기존 전기 GE의 damage-only 경로를 공유한다. 별도 Manager/Singleton, 영속 enum/스키마 변경이나 씬/프리팹 편집은 추가하지 않는다. [범위](ActiveTasks/electric-scaling-and-relics.md), [유물 구조](StructureMemory/ScriptSystems/RelicRuntimeStructure.md)를 참조한다.
+
+## 2026-10-12 — Life Current has no health-cell cap; electric UI wording uses game terms
+
+사용자 정정에 따라 생명의 전류는 최대 체력의 모든 온전한1칸을 계산한다. 이전3칸 제한은 폐기한다. 단계별1/1/2/2/3 전기 속성 보너스와5단계, healthStep1은 유지하며 현재 체력은 계산하지 않는다. runtime과 획득/강화 미리보기는 같은 제한 없는 계산을 사용한다. maxUnits 직렬화 필드는 감전 적 수/기존 이동속도 모드에 남아 있고, 천둥의 심장 최대3명 조건은 유지한다.
+
+플레이어에게 보이는 전기 유물 이름·설명·효과 툴팁과 감전 설명에서 현재 씬/발현 같은 구현 용어를 제거한다. 감전, 전기 속성, 최대 체력, 대시, 연쇄 피해, 마비, 보스 등 게임 표현으로 설명한다. 내부 scene 조회, 이벤트/ID, 기본 연쇄3명, 계수/재적용/정리 규칙은 변경하지 않는다. 동일한 의미를5개 locale에 반영한다.
+
+실제 게임 설명 검토는 한국어 테이블을 로드한 뒤 DisplayName/GameText.Asset와 logic.BuildTooltip/DetailTextFormatter 경로를 실행해 추출한다. 기존 전류 조각과 추가9종,24개 authored level의 raw/표시 문구를 보존한다. 제안 문구를 실제 결과처럼 제시하지 않는다. [범위](ActiveTasks/electric-scaling-and-relics.md), [기록](SessionLogs/2026-10-12.md)을 참조한다.
+
+## 2026-10-12 — Electric relic curves, movement-use stacks and follower-only Echo
+
+사용자가 천둥의 심장 감전 적 수 제한을 폐기하고5단계1/1/2/2/3으로 지정했다. 전류 조각은6단계1/2/3/4/5/6으로 변경하며 기존 Common 등급/ID/GUID를 유지한다. 생명의 전류 제한 없는 최대 체력 조건은 그대로다.
+
+대시 코일은 이동 능력의 실제 실행 시작마다1중첩, 중첩당1/1/2 전기 속성, 최대4중첩을 사용한다. 사용자가 재사용 시 전체 중첩 지속시간3초 갱신을 명시했다. 최대중첩에서도 갱신한다. 기존 AbilityExecutionStarted와 AttributeModifier.TimeRemaining을 재사용해 별도 이벤트/타이머/Manager를 추가하지 않는다. 장착 token이 임시 modifier source와 구독을 소유하며 미리보기/강화/복원 정리 경계를 유지한다.
+
+이동 분류는 기존 AbilityDefinition.abilityTags에 Ability.Movement를 붙이며 identity/부모 태그 조회를 공유한다. 기본 대시, 견습 용사 검 돌진 찌르기, 번개창 표식 이동, 리얼 웨폰 돌진을 초기 대상으로 한다. 일반 공격 짧은 전진과 Bloom 강화는 초기 이동 분류가 아니다. 신규 Resources 태그의 serialized ID는 기존 ID를 바꾸지 않고 할당한다. 기존 TagRegistry의 runtime ID는 경로순 재구성되는 세션 값이며 이를 영속 ID로 간주하지 않는다. 새 스킬은 같은 태그로 분류할 수 있고 caster 상태 태그는 추가하지 않는다.
+
+메아리 코일은 후속 연쇄 피해와 연쇄 이펙트만1회 추가 적용한다. 피해는 원래 확정 피해의50%, 최초 대상의 피해/피격 snap은 반복하지 않는다. 첫 link의 시작점은 원래 최초 지점을 저장해 사용하고 재생 대상의 snap만 표시한다. 원래 스케일/색상/리듬은 유지하며50%는 피해 계수다. 기존 Play API를 보존하는 replay presentation capability로 연결한다. 감전 갱신/연장/마비/새 탐색/재귀는 하지 않는다.
+
+전류 항아리의 사망/감전 해제 피해 없음 문구는 플레이어 설명에서만 제거한다. 자연 만료·적용자·생존 조건은 유지한다. [범위](ActiveTasks/electric-scaling-and-relics.md), [구조](StructureMemory/ScriptSystems/RelicRuntimeStructure.md), [기록](SessionLogs/2026-10-12.md)을 참조한다.
+
+## 2026-10-12 — Direct re-electrocution doubles requirement until shock ends
+
+사용자가 직접 재감전 시 현재 요구 게이지를2배로 증가시키고, 연쇄/메아리는 제외한다고 지정했다. 감전 종료 후에는 기본값으로 초기화하는 선택도 명시했다. 이 내용은 게임 설명에 추가하지 않는다.
+
+기준값은 대상의 현재 MaxElectricElementGauge attribute에 private runtime 배율을 곱한다. 첫 감전은 기본값, 이미 감전된 적의 직접 재적용은2배(기본50→100→200→400→800)이며 기존 attribute max500에 clamp하지 않는다. authored definition/기본값/직렬화 schema는 변경하지 않는다. 실제 ActiveGameplayEffect 인스턴스에 연결해 만료·제거·교체·새 복원 시 배율을 버린다. 이미 활성인 감전을 복원/다른 경로로 부여한 뒤 직접 갱신하면 현재 기본 요구값에서2배가 된다.
+
+효과의 성공한 최초 대상 status 적용만 기록한다. follower/Echo 피해 및 ThunderKnot 지속시간 증가는 배율을 바꾸지 않는다. 전기 overflow는 매 completion 후 변경된 요구값을 읽어 다음 누적량을 소비한다. 다른 속성의 기존 처리, residual buildup, 죽음/disable 전역 정리 및 기존 ClearAll/Rebuild 소유권은 확대하지 않는다. player-facing 문구/에셋/저장/bootstrap/Manager는 그대로다. [범위](ActiveTasks/electric-scaling-and-relics.md), [구조](StructureMemory/ScriptSystems/WeaponAndGASStructure.md), [기록](SessionLogs/2026-10-12.md)을 참조한다.
+
+## 2026-10-12 — Recipient-owned alcohol exposure and Spiri level-1 reward
+
+사용자는 3초 충전/초과 시 발동, 마지막 장판 이탈 후1.5초 비움, 남은 양부터 재충전을 승인했다. 혼란은 일반 상하좌우 걷기만 반전하고 잔이 비워지면 즉시 끝난다. 스피리 호감도1 이상에서는 기존 이동+25%/공격속도 가산+0.4 버프를 대신 부여하며, 잔이 비워진 뒤5초를 유지한다. 이미 얻은 버프를 가진 채 재진입해도 지속시간을 갱신한다.
+
+PlayerAlcoholExposure가 겹친 장판의 충전/효과 수명을 소유하고, 장판은 hurtbox 접촉을 전달하며, 프리팹의 맥주잔은 결과만 표시한다. 현재 호감도와 기존 안내 보상을 사용하며 별도 unlock 저장필드나 Manager를 만들지 않는다. 술 노출의 임시 효과/태그는 씬 snapshot에서 제외하고 새 씬의 접촉으로 다시 시작한다. [범위](ActiveTasks/spiri-alcohol-exposure.md), [구조](StructureMemory/AlcoholExposure.md).
+
+## 2026-10-12 — Confusion also reverses directional dash
+
+술 노출 구현 후 사용자가 대시도 방향키 입력과 함께 반전하도록 기존 walking-only 선택을 변경했다. 일반 걷기와 기본 대시의 방향 입력은 PlayerIntentInput2D.ApplyConfusionToDirection을 공유한다. 대시의 cached raw 경로와 Update 전 직접 입력 조회 경로에 모두 적용하며 raw 입력, 다른 스킬 입력, 강제 이동, 방향 입력 없는 aim fallback은 유지한다. prefab/GE/save schema 변경은 없다. [구조](StructureMemory/AlcoholExposure.md), [범위](ActiveTasks/spiri-alcohol-exposure.md).

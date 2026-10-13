@@ -1,0 +1,27 @@
+SOURCE: before.log
+LIGHTNING_PLACEMENT_SUITE_PASS: 480 seeded A/B requests, exact output order/count/room, legacy-rule validity, nearest tie order, zero spacing and growing physics buffers. Reports: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Library\LightningSpearPlacementBenchmark
+LIGHTNING_STRUCTURE_VALIDATION_PASS: C:\Users\nadom\AppData\Local\Temp\LightningSpearStructure_20261010\before
+SOURCE: after-1-actual.log
+LIGHTNING_PLACEMENT_SUITE_PASS: 480 seeded A/B requests, exact output order/count/room, legacy-rule validity, nearest tie order, zero spacing and growing physics buffers. Reports: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Library\LightningSpearPlacementBenchmark
+LIGHTNING_STRUCTURE_VALIDATION_PASS: C:\Users\nadom\AppData\Local\Temp\LightningSpearStructure_20261010\after-1
+SOURCE: paired-1.log
+LIGHTNING_PLACEMENT_SUITE_PASS: 480 seeded A/B requests, exact output order/count/room, legacy-rule validity, nearest tie order, zero spacing and growing physics buffers. Reports: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Library\LightningSpearPlacementBenchmark
+LIGHTNING_STRUCTURE_VALIDATION_PASS: C:\Users\nadom\AppData\Local\Temp\LightningSpearStructure_20261010\paired-1
+SOURCE: paired-2.log
+LIGHTNING_PLACEMENT_SUITE_PASS: 480 seeded A/B requests, exact output order/count/room, legacy-rule validity, nearest tie order, zero spacing and growing physics buffers. Reports: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Library\LightningSpearPlacementBenchmark
+LIGHTNING_STRUCTURE_VALIDATION_PASS: C:\Users\nadom\AppData\Local\Temp\LightningSpearStructure_20261010\paired-2
+SOURCE: paired-3.log
+LIGHTNING_PLACEMENT_SUITE_PASS: 480 seeded A/B requests, exact output order/count/room, legacy-rule validity, nearest tie order, zero spacing and growing physics buffers. Reports: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Library\LightningSpearPlacementBenchmark
+LIGHTNING_STRUCTURE_VALIDATION_PASS: C:\Users\nadom\AppData\Local\Temp\LightningSpearStructure_20261010\paired-3
+SOURCE: paired-final.log
+LIGHTNING_PLACEMENT_SUITE_PASS: 480 seeded A/B requests, exact output order/count/room, legacy-rule validity, nearest tie order, zero spacing and growing physics buffers. Reports: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Library\LightningSpearPlacementBenchmark
+LIGHTNING_STRUCTURE_VALIDATION_PASS: C:\Users\nadom\AppData\Local\Temp\LightningSpearStructure_20261010\paired-final
+SOURCE: paired-cpu.log
+LIGHTNING_PLACEMENT_SUITE_PASS: 480 seeded A/B requests, exact output order/count/room, legacy-rule validity, nearest tie order, zero spacing and growing physics buffers. Reports: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Library\LightningSpearPlacementBenchmark
+LIGHTNING_STRUCTURE_VALIDATION_PASS: C:\Users\nadom\AppData\Local\Temp\LightningSpearStructure_20261010\paired-cpu
+SOURCE: tests.xml
+Extended Unity PlayMode 10/11; existing MarkOutline exact color equality fails.
+SOURCE: placement-tests.xml
+Final own placement structure fixture5/5; Unity CLI exit0.
+SOURCE: msbuild-editor-final.log / msbuild-tests-final.log
+Final MSBuild Editor.csproj exit0; ProceduralPlayModeTests.csproj exit0.

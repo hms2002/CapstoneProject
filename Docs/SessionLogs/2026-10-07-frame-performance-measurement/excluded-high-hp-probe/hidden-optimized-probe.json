@@ -1,0 +1,594 @@
+{
+    "variant": "optimized",
+    "status": "failed",
+    "reason": "Invalid workload: pause, actor count changed, or no actual rendered draws.",
+    "unity": "6000.4.2f1",
+    "cpu": "Intel(R) Core(TM) i7-10750H CPU @ 2.60GHz",
+    "gpu": "NVIDIA GeForce RTX 2060 with Max-Q Design",
+    "api": "Direct3D11",
+    "width": 1280,
+    "height": 720,
+    "scope": "Development Windows player, existing authored TestScene, uncapped 1280x720, no movement input (knockback remains), HP/resource test overrides, authored GoblinWarrior crowd and fixed-rate popup stream.",
+    "scenarios": [
+        {
+            "name": "crowd-0",
+            "requestedEnemies": 0,
+            "actualEnemies": 0,
+            "medianFrameMs": 85.78370000000035,
+            "p95FrameMs": 102.53880000000138,
+            "averageFps": 11.392408668483757,
+            "medianMainMs": 85.86359999999999,
+            "p95MainMs": 103.9931,
+            "mainCounterValid": true,
+            "allocationCounterValid": true,
+            "medianGcBytes": 13714,
+            "p95GcBytes": 23126,
+            "medianDrawCalls": -1,
+            "popupRequests": 0,
+            "playerStart": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "playerEnd": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "samples": [
+                {
+                    "frameMs": 107.67039999999995,
+                    "mainMs": 97.2379,
+                    "gcBytes": 14736,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 112.83969999999855,
+                    "mainMs": 106.1655,
+                    "gcBytes": 14730,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 99.8753999999984,
+                    "mainMs": 112.9936,
+                    "gcBytes": 14886,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 112.8290000000014,
+                    "mainMs": 98.7928,
+                    "gcBytes": 14796,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 107.46310000000037,
+                    "mainMs": 114.9075,
+                    "gcBytes": 16702,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 102.53880000000138,
+                    "mainMs": 105.92049999999999,
+                    "gcBytes": 14556,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 87.5776999999971,
+                    "mainMs": 103.9931,
+                    "gcBytes": 19076,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 84.19270000000268,
+                    "mainMs": 85.02839999999999,
+                    "gcBytes": 14516,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 81.97959999999682,
+                    "mainMs": 84.28309999999999,
+                    "gcBytes": 14750,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 85.05000000000251,
+                    "mainMs": 81.7862,
+                    "gcBytes": 14468,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 87.11169999999768,
+                    "mainMs": 86.6955,
+                    "gcBytes": 14410,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 87.00470000000138,
+                    "mainMs": 85.3213,
+                    "gcBytes": 16716,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 84.75149999999943,
+                    "mainMs": 87.0619,
+                    "gcBytes": 14456,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 82.62570000000125,
+                    "mainMs": 84.6617,
+                    "gcBytes": 14426,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 90.07760000000076,
+                    "mainMs": 83.5295,
+                    "gcBytes": 14440,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 85.78370000000035,
+                    "mainMs": 91.2902,
+                    "gcBytes": 15396,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 89.88719999999972,
+                    "mainMs": 84.07469999999999,
+                    "gcBytes": 12414,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 84.77059999999881,
+                    "mainMs": 91.1878,
+                    "gcBytes": 14168,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 84.95830000000027,
+                    "mainMs": 83.0174,
+                    "gcBytes": 3102,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 88.66739999999851,
+                    "mainMs": 85.3672,
+                    "gcBytes": 17090,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 94.3181000000024,
+                    "mainMs": 90.56439999999999,
+                    "gcBytes": 28666,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 94.24549999999954,
+                    "mainMs": 93.36269999999999,
+                    "gcBytes": 6878,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 87.6544999999993,
+                    "mainMs": 92.9559,
+                    "gcBytes": 3106,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 85.69719999999848,
+                    "mainMs": 87.4998,
+                    "gcBytes": 13654,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 87.56510000000262,
+                    "mainMs": 86.65339999999999,
+                    "gcBytes": 9824,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 86.244599999997,
+                    "mainMs": 86.7692,
+                    "gcBytes": 3266,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 85.14460000000313,
+                    "mainMs": 86.872,
+                    "gcBytes": 3098,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 91.6384999999984,
+                    "mainMs": 84.2067,
+                    "gcBytes": 3098,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 88.64859999999908,
+                    "mainMs": 91.6208,
+                    "gcBytes": 3102,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 91.0125000000015,
+                    "mainMs": 88.9092,
+                    "gcBytes": 3102,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 85.73029999999804,
+                    "mainMs": 92.0259,
+                    "gcBytes": 3102,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 85.10990000000263,
+                    "mainMs": 85.35119999999999,
+                    "gcBytes": 3270,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 85.41199999999805,
+                    "mainMs": 84.3955,
+                    "gcBytes": 3106,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 90.55230000000236,
+                    "mainMs": 86.5521,
+                    "gcBytes": 3106,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 85.52629999999795,
+                    "mainMs": 90.35029999999999,
+                    "gcBytes": 15380,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 98.52409999999878,
+                    "mainMs": 84.5714,
+                    "gcBytes": 14042,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 97.45680000000334,
+                    "mainMs": 100.9962,
+                    "gcBytes": 14560,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 96.77849999999921,
+                    "mainMs": 95.85029999999999,
+                    "gcBytes": 13668,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 87.10280000000026,
+                    "mainMs": 96.34559999999999,
+                    "gcBytes": 210640,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 88.3743999999993,
+                    "mainMs": 86.6749,
+                    "gcBytes": 3236,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 89.69919999999832,
+                    "mainMs": 89.47999999999999,
+                    "gcBytes": 16004,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 85.98640000000302,
+                    "mainMs": 90.317,
+                    "gcBytes": 14548,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 89.6714999999979,
+                    "mainMs": 84.16449999999999,
+                    "gcBytes": 12892,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.9938999999994,
+                    "mainMs": 90.2353,
+                    "gcBytes": 15802,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 86.48240000000129,
+                    "mainMs": 83.3775,
+                    "gcBytes": 14586,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 86.18799999999993,
+                    "mainMs": 87.5394,
+                    "gcBytes": 12580,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 86.0088999999995,
+                    "mainMs": 85.86359999999999,
+                    "gcBytes": 23126,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 87.41219999999928,
+                    "mainMs": 86.55839999999999,
+                    "gcBytes": 39716,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 84.75089999999952,
+                    "mainMs": 87.1952,
+                    "gcBytes": 8946,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 81.96069999999978,
+                    "mainMs": 83.73689999999999,
+                    "gcBytes": 15522,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 91.9173000000022,
+                    "mainMs": 83.7679,
+                    "gcBytes": 13710,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 84.09119999999959,
+                    "mainMs": 89.9183,
+                    "gcBytes": 13738,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 87.8243999999988,
+                    "mainMs": 85.8647,
+                    "gcBytes": 13758,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 85.84280000000178,
+                    "mainMs": 87.6468,
+                    "gcBytes": 13728,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 85.82099999999926,
+                    "mainMs": 86.0004,
+                    "gcBytes": 13836,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 86.12550000000141,
+                    "mainMs": 83.62729999999999,
+                    "gcBytes": 13748,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.11390000000074,
+                    "mainMs": 86.97829999999999,
+                    "gcBytes": 78364,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.72680000000088,
+                    "mainMs": 83.7796,
+                    "gcBytes": 22168,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 82.33549999999923,
+                    "mainMs": 83.45259999999999,
+                    "gcBytes": 16520,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 81.75579999999627,
+                    "mainMs": 81.25319999999999,
+                    "gcBytes": 13708,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 90.75080000000213,
+                    "mainMs": 84.0437,
+                    "gcBytes": 13850,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 84.70160000000249,
+                    "mainMs": 90.08529999999999,
+                    "gcBytes": 13628,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 88.10109999999583,
+                    "mainMs": 82.94969999999999,
+                    "gcBytes": 13666,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.76880000000142,
+                    "mainMs": 88.2254,
+                    "gcBytes": 13682,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.04329999999993,
+                    "mainMs": 83.65939999999999,
+                    "gcBytes": 13700,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 80.3648999999993,
+                    "mainMs": 83.0371,
+                    "gcBytes": 13758,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 84.7352999999984,
+                    "mainMs": 80.627,
+                    "gcBytes": 13460,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.41380000000243,
+                    "mainMs": 85.1989,
+                    "gcBytes": 13530,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.43270000000303,
+                    "mainMs": 84.4309,
+                    "gcBytes": 13446,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 84.26189999999423,
+                    "mainMs": 81.99419999999999,
+                    "gcBytes": 13420,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 82.61660000000149,
+                    "mainMs": 84.00489999999999,
+                    "gcBytes": 13488,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.95020000000386,
+                    "mainMs": 83.60369999999999,
+                    "gcBytes": 13692,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 82.79659999999467,
+                    "mainMs": 82.7237,
+                    "gcBytes": 13522,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 84.48960000000483,
+                    "mainMs": 84.7798,
+                    "gcBytes": 13650,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 84.0615999999983,
+                    "mainMs": 83.3228,
+                    "gcBytes": 13878,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 89.48430000000229,
+                    "mainMs": 84.44619999999999,
+                    "gcBytes": 13920,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.99239999999964,
+                    "mainMs": 89.4593,
+                    "gcBytes": 13792,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 87.35159999999809,
+                    "mainMs": 84.1004,
+                    "gcBytes": 13816,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 86.85580000000215,
+                    "mainMs": 86.797,
+                    "gcBytes": 13544,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.93419999999452,
+                    "mainMs": 88.0643,
+                    "gcBytes": 13532,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 87.29670000000312,
+                    "mainMs": 83.51129999999999,
+                    "gcBytes": 13628,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 84.19649999999735,
+                    "mainMs": 87.07119999999999,
+                    "gcBytes": 13676,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 81.35440000000216,
+                    "mainMs": 82.8356,
+                    "gcBytes": 13502,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 81.80420000000055,
+                    "mainMs": 81.699,
+                    "gcBytes": 13698,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 82.31930000000176,
+                    "mainMs": 81.5679,
+                    "gcBytes": 13660,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 85.46330000000069,
+                    "mainMs": 82.2588,
+                    "gcBytes": 13532,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.91559999999743,
+                    "mainMs": 86.4491,
+                    "gcBytes": 13602,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.83169999999751,
+                    "mainMs": 82.9456,
+                    "gcBytes": 13538,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 82.87960000000538,
+                    "mainMs": 83.7817,
+                    "gcBytes": 13714,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 83.0442999999974,
+                    "mainMs": 84.1689,
+                    "gcBytes": 13954,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 93.90400000000199,
+                    "mainMs": 83.3185,
+                    "gcBytes": 13906,
+                    "draws": -1
+                },
+                {
+                    "frameMs": 94.33659999999833,
+                    "mainMs": 93.3767,
+                    "gcBytes": 13678,
+                    "draws": -1
+                }
+            ]
+        }
+    ]
+}

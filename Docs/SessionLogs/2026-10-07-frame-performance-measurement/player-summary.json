@@ -1,0 +1,128 @@
+{
+  "method": "ABBA; two independent runs per variant; arithmetic mean of run medians/p95/FPS. Not pooled frames or confidence intervals.",
+  "scope": "Development Windows player, existing authored TestScene, uncapped 1280x720, no movement input, normal HP/resource/HUD counts, test-owned State.Invulnerable tag, authored GoblinWarrior crowd and fixed-rate popup stream.",
+  "cpu": "Intel(R) Core(TM) i7-10750H CPU @ 2.60GHz",
+  "gpu": "NVIDIA GeForce RTX 2060 with Max-Q Design",
+  "api": "Direct3D11",
+  "unity": "6000.4.2f1",
+  "rawFiles": [
+    "valid-baseline-1.json",
+    "valid-optimized-2.json",
+    "valid-optimized-3.json",
+    "valid-baseline-4.json"
+  ],
+  "results": [
+    {
+      "scenario": "crowd-0",
+      "baselineMeanRunMedianMs": 3.2564999999955546,
+      "optimizedMeanRunMedianMs": 3.2381000000007987,
+      "medianReductionPercent": 0.565023798396469,
+      "baselineMeanRunP95Ms": 14.300049999999231,
+      "optimizedMeanRunP95Ms": 13.791200000000003,
+      "baselineMeanFps": 161.61698063195377,
+      "optimizedMeanFps": 168.58545485292677,
+      "baselineMeanRunMedianGcBytes": 3494.0,
+      "optimizedMeanRunMedianGcBytes": 2878.0,
+      "baselineRunMedianMs": [
+        3.448899999995092,
+        3.0640999999960172
+      ],
+      "optimizedRunMedianMs": [
+        3.2341000000002396,
+        3.242100000001358
+      ],
+      "baselineRunFps": [
+        149.987595688083,
+        173.24636557582454
+      ],
+      "optimizedRunFps": [
+        168.66657631106062,
+        168.50433339479292
+      ]
+    },
+    {
+      "scenario": "crowd-30",
+      "baselineMeanRunMedianMs": 7.709150000003717,
+      "optimizedMeanRunMedianMs": 7.166049999998592,
+      "medianReductionPercent": 7.0448752457127455,
+      "baselineMeanRunP95Ms": 14.599800000002716,
+      "optimizedMeanRunP95Ms": 15.013650000000212,
+      "baselineMeanFps": 119.9251657754478,
+      "optimizedMeanFps": 119.91159603903577,
+      "baselineMeanRunMedianGcBytes": 16626.0,
+      "optimizedMeanRunMedianGcBytes": 16644.0,
+      "baselineRunMedianMs": [
+        7.541200000005688,
+        7.877100000001747
+      ],
+      "optimizedRunMedianMs": [
+        7.241899999996804,
+        7.0902000000003795
+      ],
+      "baselineRunFps": [
+        119.40315508598856,
+        120.44717646490702
+      ],
+      "optimizedRunFps": [
+        119.21566141892418,
+        120.60753065914734
+      ]
+    },
+    {
+      "scenario": "crowd-60",
+      "baselineMeanRunMedianMs": 8.913599999999633,
+      "optimizedMeanRunMedianMs": 8.360050000003838,
+      "medianReductionPercent": 6.210173218405779,
+      "baselineMeanRunP95Ms": 17.92119999999997,
+      "optimizedMeanRunP95Ms": 16.364200000001716,
+      "baselineMeanFps": 101.52124608842406,
+      "optimizedMeanFps": 108.00396981041621,
+      "baselineMeanRunMedianGcBytes": 46942.0,
+      "optimizedMeanRunMedianGcBytes": 46232.0,
+      "baselineRunMedianMs": [
+        9.749900000002754,
+        8.077299999996512
+      ],
+      "optimizedRunMedianMs": [
+        8.59540000000436,
+        8.124700000003315
+      ],
+      "baselineRunFps": [
+        91.39820981373043,
+        111.6442823631177
+      ],
+      "optimizedRunFps": [
+        104.11355531743159,
+        111.89438430340081
+      ]
+    },
+    {
+      "scenario": "popup-stream-120-per-second",
+      "baselineMeanRunMedianMs": 6.339150000002292,
+      "optimizedMeanRunMedianMs": 4.833050000002004,
+      "medianReductionPercent": 23.758705820176896,
+      "baselineMeanRunP95Ms": 13.987650000000684,
+      "optimizedMeanRunP95Ms": 14.624000000004855,
+      "baselineMeanFps": 123.73152930590919,
+      "optimizedMeanFps": 126.81791959774156,
+      "baselineMeanRunMedianGcBytes": 17198.0,
+      "optimizedMeanRunMedianGcBytes": 3168.0,
+      "baselineRunMedianMs": [
+        7.629399999999009,
+        5.048900000005574
+      ],
+      "optimizedRunMedianMs": [
+        5.344100000002072,
+        4.322000000001935
+      ],
+      "baselineRunFps": [
+        120.19724154710094,
+        127.26581706471744
+      ],
+      "optimizedRunFps": [
+        124.25676658017977,
+        129.37907261530336
+      ]
+    }
+  ]
+}

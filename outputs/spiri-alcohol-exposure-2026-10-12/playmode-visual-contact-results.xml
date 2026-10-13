@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="13" result="Passed" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-12 11:42:12Z" end-time="2026-10-12 11:42:14Z" duration="2.1195139">
+  <test-suite type="TestSuite" id="2400" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="1170" result="Passed" start-time="2026-10-12 11:42:12Z" end-time="2026-10-12 11:42:14Z" duration="2.119514" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2396" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="1163" result="Passed" start-time="2026-10-12 11:42:12Z" end-time="2026-10-12 11:42:14Z" duration="2.082097" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="22468" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1059" name="AlcoholExposurePlayerVisualPlayModeTests" fullname="AlcoholExposurePlayerVisualPlayModeTests" classname="AlcoholExposurePlayerVisualPlayModeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-12 11:42:12Z" end-time="2026-10-12 11:42:13Z" duration="1.047259" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1060" name="ActualPlayerPrefabReferencesAuthoredMugAndDroplets" fullname="AlcoholExposurePlayerVisualPlayModeTests.ActualPlayerPrefabReferencesAuthoredMugAndDroplets" methodname="ActualPlayerPrefabReferencesAuthoredMugAndDroplets" classname="AlcoholExposurePlayerVisualPlayModeTests" runstate="Runnable" seed="1340989263" result="Passed" start-time="2026-10-12 11:42:13Z" end-time="2026-10-12 11:42:13Z" duration="0.050096" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1063" name="DestroyedAuthoredRootKeepsTickAndDisableSafe" fullname="AlcoholExposurePlayerVisualPlayModeTests.DestroyedAuthoredRootKeepsTickAndDisableSafe" methodname="DestroyedAuthoredRootKeepsTickAndDisableSafe" classname="AlcoholExposurePlayerVisualPlayModeTests" runstate="Runnable" seed="2123919424" result="Passed" start-time="2026-10-12 11:42:13Z" end-time="2026-10-12 11:42:13Z" duration="0.008663" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1061" name="FillOverflowAndDrainReuseAuthoredRenderers" fullname="AlcoholExposurePlayerVisualPlayModeTests.FillOverflowAndDrainReuseAuthoredRenderers" methodname="FillOverflowAndDrainReuseAuthoredRenderers" classname="AlcoholExposurePlayerVisualPlayModeTests" runstate="Runnable" seed="669487403" result="Passed" start-time="2026-10-12 11:42:13Z" end-time="2026-10-12 11:42:13Z" duration="0.007063" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1062" name="HeadAnchorIgnoresOwnerMirroringAndDisableRestoresAuthoredPose" fullname="AlcoholExposurePlayerVisualPlayModeTests.HeadAnchorIgnoresOwnerMirroringAndDisableRestoresAuthoredPose" methodname="HeadAnchorIgnoresOwnerMirroringAndDisableRestoresAuthoredPose" classname="AlcoholExposurePlayerVisualPlayModeTests" runstate="Runnable" seed="1553018476" result="Passed" start-time="2026-10-12 11:42:13Z" end-time="2026-10-12 11:42:13Z" duration="0.013758" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1064" name="OverflowAnimatesWithScaledTimePausesAndStopsOnDrain" fullname="AlcoholExposurePlayerVisualPlayModeTests.OverflowAnimatesWithScaledTimePausesAndStopsOnDrain" methodname="OverflowAnimatesWithScaledTimePausesAndStopsOnDrain" classname="AlcoholExposurePlayerVisualPlayModeTests" runstate="Runnable" seed="1454274768" result="Passed" start-time="2026-10-12 11:42:13Z" end-time="2026-10-12 11:42:13Z" duration="0.381256" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CursorDiagnostic] phase=display-stable-2s frame=8 screen=640x480 mode=Windowed focused=False visible=True lock=None domain=Combat/Default hiddenOwners=0 backend=UnityCursorAPI cursorMode=Auto texture=light_cursor_spritesheet_31_Cursor_22x22 hotspot=(11.00, 11.00)
+]]></output>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1065" name="AlcoholPuddleContactPlayModeTests" fullname="AlcoholPuddleContactPlayModeTests" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-12 11:42:13Z" end-time="2026-10-12 11:42:14Z" duration="0.960249" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1074" name="AuthoredMugRendersChargeOverflowAndDrainToNativePngGrid" fullname="AlcoholPuddleContactPlayModeTests.AuthoredMugRendersChargeOverflowAndDrainToNativePngGrid" methodname="AuthoredMugRendersChargeOverflowAndDrainToNativePngGrid" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="178231915" result="Passed" start-time="2026-10-12 11:42:13Z" end-time="2026-10-12 11:42:14Z" duration="0.866895" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol contact recipient
+[PlayerStatusRuntime] Applied status 'puddle_alcohol_buff' (id=1, ownerKey=Puddle.Alcohol)
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'Alcohol contact recipient' (ownerKey=Puddle.Alcohol, duration=5.00, source=Alcohol contact recipient (UnityGAS.PlayerAlcoholExposure), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'Alcohol contact recipient' (ownerKey=Puddle.Alcohol, duration=5.00, source=Alcohol contact recipient (UnityGAS.PlayerAlcoholExposure), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'Alcohol contact recipient' (ownerKey=Puddle.Alcohol, duration=5.00, source=Alcohol contact recipient (UnityGAS.PlayerAlcoholExposure), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'Alcohol contact recipient' (ownerKey=Puddle.Alcohol, duration=5.00, source=Alcohol contact recipient (UnityGAS.PlayerAlcoholExposure), showOnPlayerHud=True).
+[PlayerStatusRuntime] Released status 'puddle_alcohol_buff' (id=1)
+]]></output>
+        </test-case>
+        <test-case id="1071" name="DisabledRecipientCannotBeRegrantedFromAnExistingTriggerStay" fullname="AlcoholPuddleContactPlayModeTests.DisabledRecipientCannotBeRegrantedFromAnExistingTriggerStay" methodname="DisabledRecipientCannotBeRegrantedFromAnExistingTriggerStay" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="1098744785" result="Passed" start-time="2026-10-12 11:42:14Z" end-time="2026-10-12 11:42:14Z" duration="0.004860" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1067" name="LandingInsideThePuddleRegistersFromStayWithoutAnotherEnter" fullname="AlcoholPuddleContactPlayModeTests.LandingInsideThePuddleRegistersFromStayWithoutAnotherEnter" methodname="LandingInsideThePuddleRegistersFromStayWithoutAnotherEnter" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="1080912631" result="Passed" start-time="2026-10-12 11:42:14Z" end-time="2026-10-12 11:42:14Z" duration="0.004477" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1073" name="NewRewardAndConfusionTextsHaveRuntimeKeysAndFiveLocaleValues" fullname="AlcoholPuddleContactPlayModeTests.NewRewardAndConfusionTextsHaveRuntimeKeysAndFiveLocaleValues" methodname="NewRewardAndConfusionTextsHaveRuntimeKeysAndFiveLocaleValues" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="1869246584" result="Passed" start-time="2026-10-12 11:42:14Z" end-time="2026-10-12 11:42:14Z" duration="0.036927" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1066" name="OneOfTwoHurtboxExitsKeepsContactUntilTheLastExit" fullname="AlcoholPuddleContactPlayModeTests.OneOfTwoHurtboxExitsKeepsContactUntilTheLastExit" methodname="OneOfTwoHurtboxExitsKeepsContactUntilTheLastExit" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="694468666" result="Passed" start-time="2026-10-12 11:42:14Z" end-time="2026-10-12 11:42:14Z" duration="0.003242" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1072" name="PlayerAndLevelOneRewardReferenceTheAuthoredConfusionAndExistingBuff" fullname="AlcoholPuddleContactPlayModeTests.PlayerAndLevelOneRewardReferenceTheAuthoredConfusionAndExistingBuff" methodname="PlayerAndLevelOneRewardReferenceTheAuthoredConfusionAndExistingBuff" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="1764827790" result="Passed" start-time="2026-10-12 11:42:14Z" end-time="2026-10-12 11:42:14Z" duration="0.023841" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1070" name="SourceDisableOrIgnitionReleasesTheRecipientImmediately" fullname="AlcoholPuddleContactPlayModeTests.SourceDisableOrIgnitionReleasesTheRecipientImmediately" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-12 11:42:14Z" end-time="2026-10-12 11:42:14Z" duration="0.012302" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1068" name="SourceDisableOrIgnitionReleasesTheRecipientImmediately(False)" fullname="AlcoholPuddleContactPlayModeTests.SourceDisableOrIgnitionReleasesTheRecipientImmediately(False)" methodname="SourceDisableOrIgnitionReleasesTheRecipientImmediately" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="1298966755" result="Passed" start-time="2026-10-12 11:42:14Z" end-time="2026-10-12 11:42:14Z" duration="0.004093" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1069" name="SourceDisableOrIgnitionReleasesTheRecipientImmediately(True)" fullname="AlcoholPuddleContactPlayModeTests.SourceDisableOrIgnitionReleasesTheRecipientImmediately(True)" methodname="SourceDisableOrIgnitionReleasesTheRecipientImmediately" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="1746968414" result="Passed" start-time="2026-10-12 11:42:14Z" end-time="2026-10-12 11:42:14Z" duration="0.002880" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

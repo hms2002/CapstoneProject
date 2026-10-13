@@ -61,7 +61,7 @@ public class CorridorCandlestickMonster : Mob
     /// </summary>
     private void TryIgniteAlcoholPuddle(Collider2D other)
     {
-        if (!igniteAlcoholPuddlesOnContact || IsDead || other == null)
+        if (!igniteAlcoholPuddlesOnContact || IsDead || other == null || CombatHitPause2D.IsParalyzedOn(gameObject))
             return;
 
         AlcoholPuddleArea alcohol = other.GetComponentInParent<AlcoholPuddleArea>();
@@ -69,10 +69,10 @@ public class CorridorCandlestickMonster : Mob
             return;
 
         float interval = Mathf.Max(0f, contactIgnitionInterval);
-        if (interval > 0f && Time.time < nextContactIgnitionTime)
+        if (interval > 0f && CombatHitPause2D.GetActionTime(gameObject) < nextContactIgnitionTime)
             return;
 
-        nextContactIgnitionTime = Time.time + interval;
+        nextContactIgnitionTime = CombatHitPause2D.GetActionTime(gameObject) + interval;
         alcohol.RequestIgnite();
     }
 

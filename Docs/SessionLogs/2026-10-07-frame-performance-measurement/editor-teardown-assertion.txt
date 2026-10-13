@@ -1,0 +1,72 @@
+Assertion failed on expression: 'go.IsActive()'
+0x00007ffff1c7a2fb (Unity) StackWalker::ShowCallstack
+0x00007ffff24674be (Unity) PlatformStacktrace::GetStacktrace
+0x00007ffff2477f85 (Unity) Stacktrace::GetStacktrace
+0x00007ffff2460289 (Unity) DebugStringToFile
+0x00007ffff245fd54 (Unity) AssertImplementation
+0x00007ffff1e8dd5d (Unity) FindActiveTransformWithPathImpl
+0x00007ffff1e8dc90 (Unity) FindActiveTransformWithPath
+0x00007ffff18e5eec (Unity) GameObject_CUSTOM_Find
+0x000002bcefa16cea (Mono JIT Code) (wrapper managed-to-native) UnityEngine.GameObject:Find_Injected (UnityEngine.Bindings.ManagedSpanWrapper&)
+0x000002bcefa16823 (Mono JIT Code) UnityEngine.GameObject:Find (string)
+0x000002bda216dd1b (Mono JIT Code) CapstoneRuntime.RuntimeServiceOwnership:EnsureRoot () (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Infrastructure/ServiceLifetime/RuntimeServiceOwnership.cs:42)
+0x000002bda216dbcb (Mono JIT Code) CapstoneRuntime.RuntimeServiceOwnership:CreateServiceHost (string) (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Infrastructure/ServiceLifetime/RuntimeServiceOwnership.cs:12)
+0x000002bdc94c198b (Mono JIT Code) CapstonePresentation.PresentationSpawnService:EnsureInstance () (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Infrastructure/Presentation/PresentationSpawnService.cs:97)
+0x000002bdf18a7a63 (Mono JIT Code) CapstonePresentation.PresentationSpawnService:SpawnOneShot (CapstonePresentation.SpawnedPresentationHook&,CapstonePresentation.WorldPresentationContext&) (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Infrastructure/Presentation/PresentationSpawnService.cs:103)
+0x000002bdf18a79f3 (Mono JIT Code) CapstonePresentation.WorldPresentationRuntime:SpawnVisual (CapstonePresentation.SpawnedPresentationHook&,CapstonePresentation.WorldPresentationContext&) (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Presentation/VFX/Presentation/WorldPresentationRuntime.cs:278)
+0x000002bdf18a73d3 (Mono JIT Code) CapstonePresentation.WorldPresentationRuntime:PlayMerged (CapstonePresentation.WorldPresentationHook&,CapstoneAudio.SoundRef,CameraShakeHook,CapstonePresentation.WorldPresentationContext&) (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Presentation/VFX/Presentation/WorldPresentationRuntime.cs:128)
+0x000002bdf18a7143 (Mono JIT Code) CapstonePresentation.WorldPresentationRuntime/WorldPresentationRuntimeBackend:PlayMerged (CapstonePresentation.WorldPresentationHook&,CapstoneAudio.SoundRef,CameraShakeHook,CapstonePresentation.WorldPresentationContext&) (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Presentation/VFX/Presentation/WorldPresentationRuntime.cs:36)
+0x000002bdf18a706b (Mono JIT Code) CapstonePresentation.WorldPresentationRuntime/WorldPresentationRuntimeBackend:CapstonePresentation.IWorldPresentationBackend.PlayMerged (CapstonePresentation.WorldPresentationHook modreq(System.Runtime.InteropServices.InAttribute)&,CapstoneAudio.SoundRef,CameraShakeHook,CapstonePresentation.WorldPresentationContext modreq(System.Runtime.InteropServices.InAttribute)&)
+0x000002bdf18a6f4e (Mono JIT Code) CapstonePresentation.WorldPresentationPlayback:PlayMerged (CapstonePresentation.WorldPresentationHook&,CapstoneAudio.SoundRef,CameraShakeHook,CapstonePresentation.WorldPresentationContext&) (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Core/Presentation/WorldPresentationHook.cs:64)
+0x000002be683f8ecb (Mono JIT Code) UnityGAS.GameplayEffectPresentationRouter:PlayRemove (UnityGAS.GameplayEffect,UnityEngine.GameObject,UnityEngine.GameObject,UnityEngine.GameObject,UnityEngine.Object,single,UnityGAS.GameplayEffectContext) (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Core/Presentation/GameplayEffectPresentationRouter.cs:180)
+0x000002be683f8493 (Mono JIT Code) UnityGAS.GameplayEffectRunner:PlayEndPresentation (UnityGAS.ActiveGameplayEffect) (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Core/Effects/GameplayEffectRunner.cs:723)
+0x000002be683f803b (Mono JIT Code) UnityGAS.GameplayEffectRunner:EndEffect (UnityGAS.ActiveGameplayEffect) (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Core/Effects/GameplayEffectRunner.cs:303)
+0x000002be683f7e0b (Mono JIT Code) UnityGAS.GameplayEffectRunner:EndEffectsBySourceObject (UnityEngine.GameObject,UnityGAS.GameplayEffect,UnityEngine.Object) (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Core/Effects/GameplayEffectRunner.cs:261)
+0x000002bdf18a125b (Mono JIT Code) OutOfCombatMoveSpeedRuntime:Release () (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Features/Progression/Upgrades/Effects/OutOfCombatMoveSpeedRuntime.cs:60)
+0x000002be683f7a03 (Mono JIT Code) OutOfCombatMoveSpeedRuntime:OnDisable () (at C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Runtime/Features/Progression/Upgrades/Effects/OutOfCombatMoveSpeedRuntime.cs:36)
+0x000002bdc73541d8 (Mono JIT Code) (wrapper runtime-invoke) object:runtime_invoke_void__this__ (object,intptr,intptr,intptr)
+0x00007ffff75b6c0e (mono-2.0-bdwgc) mono_jit_runtime_invoke (at C:/build/output/Unity-Technologies/mono/mono/mini/mini-runtime.c:3445)
+0x00007ffff74f8984 (mono-2.0-bdwgc) do_runtime_invoke (at C:/build/output/Unity-Technologies/mono/mono/metadata/object.c:3068)
+0x00007ffff74f8a70 (mono-2.0-bdwgc) mono_runtime_invoke (at C:/build/output/Unity-Technologies/mono/mono/metadata/object.c:3115)
+0x00007ffff1d3e115 (Unity) scripting_method_invoke
+0x00007ffff1d668be (Unity) ScriptingInvocation::Invoke
+0x00007ffff1d669ee (Unity) ScriptingInvocation::InvokeChecked
+0x00007ffff1cd322c (Unity) SerializableManagedRef::CallMethod
+0x00007ffff02870dc (Unity) MonoBehaviour::CallMethodInactive
+0x00007ffff1da518e (Unity) MonoBehaviour::RemoveFromManager
+0x00007ffff23ccfeb (Unity) GameObject::ActivateAwakeRecursivelyInternal
+0x00007ffff23cca93 (Unity) GameObject::ActivateAwakeRecursively
+0x00007ffff23cf539 (Unity) GameObject::Deactivate
+0x00007ffff204378a (Unity) DestroyObjectHighLevel_Internal
+0x00007ffff2043578 (Unity) DestroyObjectHighLevel
+0x00007ffff2043d56 (Unity) DestroyWorldObjects
+0x00007ffff01bc97d (Unity) EditorSceneManager::RestoreSceneBackups
+0x00007ffff05cf28c (Unity) PlayerLoopController::ExitPlayMode
+0x00007ffff05d1221 (Unity) PlayerLoopController::SetIsPlaying
+0x00007ffff05ea12a (Unity) Application::TickTimer
+0x00007fffeffdd4cc (Unity) MainMessageLoop
+0x00007fffeffe6033 (Unity) UnityMain
+0x00007ff6dcd32f2a (Unity) __scrt_common_main_seh
+0x00007ff92496cd87 (KERNEL32) BaseThreadInitThunk
+0x00007ff925a4caec (ntdll) RtlUserThreadStart
+
+[PlayerStatusRuntime] Released status 'upgrade_out_of_combat_speed' (id=1)
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object,UnityEngine.Object)
+UnityEngine.Debug:Log (object,UnityEngine.Object)
+CapstoneDiagnostics.EditorOnlyLog:Log (object,UnityEngine.Object) (at Assets/_Project/Runtime/Core/EditorOnlyLog.cs:13)
+PlayerStatusRuntime:Release (StatusHandle) (at Assets/_Project/Runtime/Features/Player/Status/PlayerStatusRuntime.cs:111)
+StatusHandle:Release () (at Assets/_Project/Runtime/Features/Player/Status/StatusHandle.cs:21)
+CombatBuffDebuffApplier:ReleaseTrackedPlayerStatus (CombatBuffDebuffApplier/TrackedPlayerStatusSync,bool) (at Assets/_Project/Runtime/Features/Player/Status/CombatBuffDebuffApplier.cs:285)
+CombatBuffDebuffApplier:ReleaseTrackedPlayerStatuses () (at Assets/_Project/Runtime/Features/Player/Status/CombatBuffDebuffApplier.cs:262)
+CombatBuffDebuffApplier:OnDisable () (at Assets/_Project/Runtime/Features/Player/Status/CombatBuffDebuffApplier.cs:116)
+
+(Filename: Assets/_Project/Runtime/Core/EditorOnlyLog.cs Line: 13)
+
+Some objects were not cleaned up when closing the scene. (Did you spawn new GameObjects from OnDestroy?)
+The following scene GameObjects were found:
+[RuntimeServices]
+Unloading 443 Unused Serialized files (Serialized files now loaded: 0)

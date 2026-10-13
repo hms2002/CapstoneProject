@@ -1,0 +1,95 @@
+{
+    "variant": "ui-final",
+    "scope": "Existing TestScene sandbox, actual GlobalUIRoot/controllers, two normal temporary weapons in initially empty slots. No HP/resource override, ability cast or reward effect selection.",
+    "temporaryWeapons": [
+        "Assets/_Project/Data/Items/Weapons/Definitions/WD_LightningSpear.asset",
+        "Assets/_Project/Data/Items/Weapons/Definitions/WD_OddIron.asset"
+    ],
+    "rewardOffers": [
+        {
+            "locale": "ko",
+            "rewardIds": [
+                "level_reward.high_voltage",
+                "level_reward.low_time_haste",
+                "level_reward.future_level_full_restore"
+            ],
+            "iconNames": [
+                "Void_Card_1",
+                "Thunder_Card_9",
+                "Thunder_Card_9"
+            ]
+        },
+        {
+            "locale": "en",
+            "rewardIds": [
+                "level_reward.high_voltage",
+                "level_reward.low_time_haste",
+                "level_reward.future_level_full_restore"
+            ],
+            "iconNames": [
+                "Void_Card_1",
+                "Thunder_Card_9",
+                "Thunder_Card_9"
+            ]
+        },
+        {
+            "locale": "ja",
+            "rewardIds": [
+                "level_reward.high_voltage",
+                "level_reward.low_time_haste",
+                "level_reward.future_level_full_restore"
+            ],
+            "iconNames": [
+                "Void_Card_1",
+                "Thunder_Card_9",
+                "Thunder_Card_9"
+            ]
+        },
+        {
+            "locale": "zh-Hans",
+            "rewardIds": [
+                "level_reward.high_voltage",
+                "level_reward.low_time_haste",
+                "level_reward.future_level_full_restore"
+            ],
+            "iconNames": [
+                "Void_Card_1",
+                "Thunder_Card_9",
+                "Thunder_Card_9"
+            ]
+        },
+        {
+            "locale": "zh-Hant",
+            "rewardIds": [
+                "level_reward.high_voltage",
+                "level_reward.low_time_haste",
+                "level_reward.future_level_full_restore"
+            ],
+            "iconNames": [
+                "Void_Card_1",
+                "Thunder_Card_9",
+                "Thunder_Card_9"
+            ]
+        }
+    ],
+    "settledFontGates": [
+        "hud-ko;locale=ko;activeBindings=28;stableLateUpdateFrames=2",
+        "inventory-ko;locale=ko;activeBindings=29;stableLateUpdateFrames=2",
+        "reward3-ko;locale=ko;activeBindings=9;stableLateUpdateFrames=2",
+        "hud-en;locale=en;activeBindings=29;stableLateUpdateFrames=2",
+        "inventory-en;locale=en;activeBindings=29;stableLateUpdateFrames=2",
+        "reward3-en;locale=en;activeBindings=9;stableLateUpdateFrames=2",
+        "hud-ja;locale=ja;activeBindings=29;stableLateUpdateFrames=2",
+        "inventory-ja;locale=ja;activeBindings=29;stableLateUpdateFrames=2",
+        "reward3-ja;locale=ja;activeBindings=9;stableLateUpdateFrames=2",
+        "hud-zh-Hans;locale=zh-Hans;activeBindings=29;stableLateUpdateFrames=2",
+        "inventory-zh-Hans;locale=zh-Hans;activeBindings=29;stableLateUpdateFrames=2",
+        "reward3-zh-Hans;locale=zh-Hans;activeBindings=9;stableLateUpdateFrames=2",
+        "hud-zh-Hant;locale=zh-Hant;activeBindings=29;stableLateUpdateFrames=2",
+        "inventory-zh-Hant;locale=zh-Hant;activeBindings=29;stableLateUpdateFrames=2",
+        "reward3-zh-Hant;locale=zh-Hant;activeBindings=9;stableLateUpdateFrames=2",
+        "pause;locale=zh-Hant;activeBindings=5;stableLateUpdateFrames=2",
+        "settings;locale=zh-Hant;activeBindings=26;stableLateUpdateFrames=2",
+        "keybind;locale=zh-Hant;activeBindings=54;stableLateUpdateFrames=2"
+    ]
+}

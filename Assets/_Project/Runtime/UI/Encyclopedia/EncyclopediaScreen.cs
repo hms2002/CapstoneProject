@@ -19,6 +19,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
     [Header("Scope")]
     [SerializeField] private bool enableMonsterCategory;
     [SerializeField] private bool enableBossCategory;
+    [SerializeField] private bool enableNpcCategory;
     [SerializeField] private bool hideDisabledCategoryTabs = true;
 
     [Header("Root")]
@@ -29,16 +30,21 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
     [Header("Item Tab")]
     [SerializeField] private EncyclopediaItemTab itemTab;
 
+    [Header("Creature Tabs")]
+    [SerializeField] private EncyclopediaCreatureTab creatureTab;
+
     [Header("Right Page Main Tabs")]
     [SerializeField] private Button itemMainTabButton;
     [SerializeField] private Button monsterMainTabButton;
     [SerializeField] private Button bossMainTabButton;
+    [SerializeField] private Button npcMainTabButton;
     [SerializeField] private Image itemMainTabIcon;
     [SerializeField] private Image monsterMainTabIcon;
     [SerializeField] private Image bossMainTabIcon;
     [SerializeField] private GameObject itemMainSelectedMarker;
     [SerializeField] private GameObject monsterMainSelectedMarker;
     [SerializeField] private GameObject bossMainSelectedMarker;
+    [SerializeField] private GameObject npcMainSelectedMarker;
 
     [Header("Presentation")]
     [SerializeField] private BookPixelRevealPresentation revealPresentation;
@@ -74,7 +80,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
             if (!requireDataSourceToOpen)
                 return true;
 
-            return itemTab != null && itemTab.HasDataSource;
+            return (itemTab != null && itemTab.HasDataSource) || (creatureTab != null && creatureTab.HasDataSource);
         }
     }
 
@@ -119,8 +125,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
 
     public void SetCatalog(EncyclopediaCatalogSO newCatalog)
     {
-        _ = newCatalog;
-        // Monster/Boss catalog data is outside the current Item-tab scope.
+        creatureTab?.SetCatalog(newCatalog);
     }
 
     public void SetItemDatabase(ItemDatabase newItemDatabase)
@@ -145,6 +150,8 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
 
     public void CloseUI()
     {
+        itemTab?.SetContentVisible(false);
+        creatureTab?.Hide();
         ClearCursorDomain();
         revealPresentation?.CancelAndHide();
         SetScreenActiveRootActive(false);
@@ -155,6 +162,8 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
 
     public bool TryHandleCloseRequest()
     {
+        if (creatureTab != null && creatureTab.TryCloseFullView())
+            return true;
         if (closePresentationComplete)
             return false;
 
@@ -168,6 +177,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
         SetInteractionEnabled(false);
         revealPresentation?.CancelAndHide();
         itemTab?.SetContentVisible(false);
+        creatureTab?.Hide();
         PlayClosePresentationThenPop();
         return true;
     }
@@ -193,6 +203,11 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
     public void OpenBossTab()
     {
         RequestMainTab(EncyclopediaMainTab.Boss);
+    }
+
+    public void OpenNpcTab()
+    {
+        RequestMainTab(EncyclopediaMainTab.NPC);
     }
 
     public void OpenWeaponSubTab()
@@ -286,6 +301,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
             currentMainTab = EncyclopediaMainTab.Item;
 
         RefreshMainTabState();
+        creatureTab?.Hide();
 
         if (itemTab != null)
         {
@@ -306,6 +322,8 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
         {
             if (tab == EncyclopediaMainTab.Item)
                 itemTab?.ShowCurrent();
+            else
+                creatureTab?.Show(tab);
 
             return;
         }
@@ -318,9 +336,15 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
             RefreshMainTabState();
 
             if (tab == EncyclopediaMainTab.Item)
+            {
+                creatureTab?.Hide();
                 itemTab?.ShowCurrent();
+            }
             else
-                itemTab?.Clear();
+            {
+                itemTab?.SetContentVisible(false);
+                creatureTab?.Show(tab);
+            }
         }
 
         if (bookPresentation != null && gameObject.activeInHierarchy)
@@ -384,6 +408,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
             EncyclopediaMainTab.Item => true,
             EncyclopediaMainTab.Monster => enableMonsterCategory,
             EncyclopediaMainTab.Boss => enableBossCategory,
+            EncyclopediaMainTab.NPC => enableNpcCategory,
             _ => false
         };
     }
@@ -393,6 +418,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
         SetMainTabState(itemMainTabButton, itemMainSelectedMarker, available: true, selected: currentMainTab == EncyclopediaMainTab.Item);
         SetMainTabState(monsterMainTabButton, monsterMainSelectedMarker, available: enableMonsterCategory, selected: currentMainTab == EncyclopediaMainTab.Monster);
         SetMainTabState(bossMainTabButton, bossMainSelectedMarker, available: enableBossCategory, selected: currentMainTab == EncyclopediaMainTab.Boss);
+        SetMainTabState(npcMainTabButton, npcMainSelectedMarker, available: enableNpcCategory, selected: currentMainTab == EncyclopediaMainTab.NPC);
     }
 
     private void SetInteractionEnabled(bool enabled)
@@ -407,6 +433,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
             closeButton.interactable = enabled;
 
         itemTab?.SetInteractionEnabled(enabled);
+        creatureTab?.SetInteractionEnabled(enabled);
 
         if (itemMainTabButton != null)
             itemMainTabButton.interactable = enabled;
@@ -414,6 +441,8 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
             monsterMainTabButton.interactable = enabled && enableMonsterCategory;
         if (bossMainTabButton != null)
             bossMainTabButton.interactable = enabled && enableBossCategory;
+        if (npcMainTabButton != null)
+            npcMainTabButton.interactable = enabled && enableNpcCategory;
     }
 
     private void BindListeners()
@@ -430,6 +459,8 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
             monsterMainTabButton.onClick.AddListener(OpenMonsterTab);
         if (bossMainTabButton != null)
             bossMainTabButton.onClick.AddListener(OpenBossTab);
+        if (npcMainTabButton != null)
+            npcMainTabButton.onClick.AddListener(OpenNpcTab);
 
         itemTab?.BindListeners();
 
@@ -450,6 +481,8 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
             monsterMainTabButton.onClick.RemoveListener(OpenMonsterTab);
         if (bossMainTabButton != null)
             bossMainTabButton.onClick.RemoveListener(OpenBossTab);
+        if (npcMainTabButton != null)
+            npcMainTabButton.onClick.RemoveListener(OpenNpcTab);
 
         itemTab?.UnbindListeners();
 
@@ -476,6 +509,8 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
             rootSlideFadePresentation = GetComponent<UISlideFadePresentation>();
 
         ResolveItemTabReferences();
+        if (creatureTab == null)
+            creatureTab = GetComponentInChildren<EncyclopediaCreatureTab>(true);
         ResolveRightPageTabReferences();
 
         if (itemTab != null)
@@ -571,6 +606,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
         bookPresentation?.SnapClosed();
         rootSlideFadePresentation?.SnapClosed(deactivate: false);
         itemTab?.Clear();
+        creatureTab?.Hide();
         closePresentationRequested = false;
         closePresentationComplete = false;
     }

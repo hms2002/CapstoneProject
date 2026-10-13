@@ -21,6 +21,8 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
     [Tooltip("이 태그가 있으면 WASD 대신 AimDirection 방향으로 강제 이동합니다.")]
     [SerializeField] private GameplayTag forcedMoveTag;
     [SerializeField] private GameplayTag moveBlockedTag;
+    [Tooltip("혼란 중에는 걷기와 방향 입력 기반 대시를 반전합니다.")]
+    [SerializeField] private GameplayTag confusionTag;
 
     /// <summary>
     /// 책임 :
@@ -38,6 +40,13 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
 
     // Lunge direction is intent, not the movement currently permitted by the attack lock.
     public Vector2 AbilityMoveInput => InputActionQuery.GetMoveVectorNormalized();
+
+    /// <summary>Applies the same confusion direction to walking and directional dash, preserving raw input.</summary>
+    public Vector2 ApplyConfusionToDirection(Vector2 direction)
+    {
+        bool confused = tagSystem != null && confusionTag != null && tagSystem.HasTag(confusionTag);
+        return confused ? -direction : direction;
+    }
 
     private PlayerCombatInput2D combatInput;
     private Rigidbody2D body;
@@ -92,7 +101,7 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
 
         if (!forced)
         {
-            MoveInput = RawMoveInput;
+            MoveInput = ApplyConfusionToDirection(RawMoveInput);
         }
         else
         {

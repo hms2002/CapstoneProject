@@ -20,8 +20,18 @@ public sealed class LocalizeTmpFontEvent : LocalizedAssetEvent<TMP_FontAsset, Lo
     private Material retainedMaterial;
     private bool layoutPending;
 
+    public event Action<Material> LocalizedFontApplied;
+
     public Material AuthoredMaterial => authoredMaterial;
     public void SetAuthoredMaterial(Material material) => authoredMaterial = material;
+
+    // Selects a shared authored style while the package continues to own locale/font loading.
+    public void ApplyAuthoredMaterialStyle(Material material)
+    {
+        target ??= GetComponent<TMP_Text>();
+        authoredMaterial = material != null ? material : target != null && target.font != null ? target.font.material : null;
+        if (target != null && target.font != null) ApplyLocalizedFont(target.font);
+    }
 
     protected override void OnEnable()
     {
@@ -49,9 +59,15 @@ public sealed class LocalizeTmpFontEvent : LocalizedAssetEvent<TMP_FontAsset, Lo
         if (previous != null && previous != matched) TMP_MaterialManager.ReleaseFallbackMaterial(previous);
         target.UpdateMeshPadding();
         layoutPending = true;
+        LocalizedFontApplied?.Invoke(matched);
     }
 
     private void LateUpdate()
+    {
+        FlushPendingLayout();
+    }
+
+    public void FlushPendingLayout()
     {
         if (!layoutPending || target == null) return;
         layoutPending = false;

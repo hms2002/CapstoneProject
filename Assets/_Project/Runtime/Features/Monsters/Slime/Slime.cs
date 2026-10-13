@@ -49,7 +49,7 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
     /// <summary>분열로 생성된 슬라임의 대기 시간과 타깃을 설정합니다.</summary>
     public virtual void InitSplit(Transform nextTarget)
     {
-        wakeTime = Time.time + SplitWakeSeconds;
+        wakeTime = CombatHitPause2D.GetActionTime(gameObject) + SplitWakeSeconds;
         isPitFallDeath = false;
         ApplyAppearance();
 
@@ -134,13 +134,13 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
     /// <summary>슬라임이 지금 행동 가능한 상태인지 확인합니다.</summary>
     protected bool CanAct()
     {
-        return !isDead && Time.time >= wakeTime;
+        return !isDead && !CombatHitPause2D.IsParalyzedOn(gameObject) && CombatHitPause2D.GetActionTime(gameObject) >= wakeTime;
     }
 
     /// <summary>분열 대기 시간이 끝났는지 확인합니다.</summary>
     protected bool CanMove()
     {
-        return Time.time >= wakeTime;
+        return !CombatHitPause2D.IsParalyzedOn(gameObject) && CombatHitPause2D.GetActionTime(gameObject) >= wakeTime;
     }
 
     /// <summary>플레이어 기본 이동속도 기준으로 추적 속도를 맞춥니다.</summary>

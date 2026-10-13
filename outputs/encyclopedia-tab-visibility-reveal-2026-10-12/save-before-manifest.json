@@ -1,0 +1,56 @@
+{
+  "saveRoot": "C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project",
+  "workspace": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject",
+  "files": [
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot1.json",
+      "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-tab-visibility-reveal-2026-10-12\\save-before\\save-0.backup",
+      "hash": "47F5455EB8BEA42CF32AD68EEC3399AF353C8A759EB45B7221741C9FCF2C27BA"
+    },
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot2.json",
+      "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-tab-visibility-reveal-2026-10-12\\save-before\\save-1.backup",
+      "hash": "D92EED72AF322272171C4DBD02D8EE2022AE41FAF962340D61D318156BDE7D68"
+    },
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot3.json",
+      "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-tab-visibility-reveal-2026-10-12\\save-before\\save-2.backup",
+      "hash": "F26C365731FF6B9087A37DA15710E51E14B52847BD172B100631E589919F1676"
+    },
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\Player-prev.log",
+      "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-tab-visibility-reveal-2026-10-12\\save-before\\save-3.backup",
+      "hash": "98C31F3C990E0B724C2C1005046D892BC6202AAD8299DAE08C577C2D4A0039A1"
+    },
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\Player.log",
+      "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-tab-visibility-reveal-2026-10-12\\save-before\\save-4.backup",
+      "hash": "5C7B48EF677F264F8F6968CB03F3197363731628DB5FC69F5AD33BC087D43D48"
+    },
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\PrewarmTrace.json",
+      "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-tab-visibility-reveal-2026-10-12\\save-before\\save-5.backup",
+      "hash": "1ACE9E3C5ABF0590BB98D13651C3B82BC726FD5CB69B0E0D80E235D48A520E7F"
+    },
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\TestResults.xml",
+      "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-tab-visibility-reveal-2026-10-12\\save-before\\save-6.backup",
+      "hash": "67EBC3F97BF2A41BEF56A47C7964037746F7AAA0C775873673ECDD5CD92CBE4B"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\GameData_Slot1.json",
+      "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-tab-visibility-reveal-2026-10-12\\save-before\\save-7.backup",
+      "hash": "47F5455EB8BEA42CF32AD68EEC3399AF353C8A759EB45B7221741C9FCF2C27BA"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\GameData_Slot2.json",
+      "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-tab-visibility-reveal-2026-10-12\\save-before\\save-8.backup",
+      "hash": "7A1DC80DB0F70075AB467D27139929F946E8481174C4E9D35083270102E58AD1"
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\GameData_Slot3.json",
+      "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-tab-visibility-reveal-2026-10-12\\save-before\\save-9.backup",
+      "hash": "3E4FF7D8C7E4AEA1D4B73994113C9CD38D972EA53EF22CA15BA1EDF1F8E8A5E5"
+    }
+  ]
+}

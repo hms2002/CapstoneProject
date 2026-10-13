@@ -1,0 +1,876 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="119" result="Passed" total="119" passed="119" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-07 14:28:58Z" end-time="2026-10-07 14:29:11Z" duration="13.4943765">
+  <test-suite type="TestSuite" id="2088" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="917" result="Passed" start-time="2026-10-07 14:28:58Z" end-time="2026-10-07 14:29:11Z" duration="13.494377" total="119" passed="119" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2084" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="910" result="Passed" start-time="2026-10-07 14:28:58Z" end-time="2026-10-07 14:29:11Z" duration="13.417311" total="119" passed="119" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="60152" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <output><![CDATA[[CursorDiagnostic] phase=display-stable-2s frame=6 screen=640x480 mode=Windowed focused=False visible=True lock=None domain=Combat/Default hiddenOwners=0 backend=UnityCursorAPI cursorMode=Auto texture=light_cursor_spritesheet_31_Cursor_22x22 hotspot=(11.00, 11.00)
+]]></output>
+      <test-suite type="TestFixture" id="1450" name="InputHudCleanupPlayModeTests" fullname="InputHudCleanupPlayModeTests" classname="InputHudCleanupPlayModeTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-10-07 14:28:58Z" end-time="2026-10-07 14:28:59Z" duration="0.747230" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1456" name="BossVanish_ReleasesHudWhileOwnerRemainsAlive" fullname="InputHudCleanupPlayModeTests.BossVanish_ReleasesHudWhileOwnerRemainsAlive" methodname="BossVanish_ReleasesHudWhileOwnerRemainsAlive" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="197623526" result="Passed" start-time="2026-10-07 14:28:59Z" end-time="2026-10-07 14:28:59Z" duration="0.024664" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1459" name="ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt" fullname="InputHudCleanupPlayModeTests.ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt" classname="InputHudCleanupPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-07 14:28:59Z" end-time="2026-10-07 14:28:59Z" duration="0.024386" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1457" name="ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt(&quot;WeaponSkillHUD2D&quot;)" fullname="InputHudCleanupPlayModeTests.ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt(&quot;WeaponSkillHUD2D&quot;)" methodname="ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="1572534985" result="Passed" start-time="2026-10-07 14:28:59Z" end-time="2026-10-07 14:28:59Z" duration="0.007074" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1458" name="ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt(&quot;SwapWeaponSkillHUD2D&quot;)" fullname="InputHudCleanupPlayModeTests.ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt(&quot;SwapWeaponSkillHUD2D&quot;)" methodname="ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="1667503557" result="Passed" start-time="2026-10-07 14:28:59Z" end-time="2026-10-07 14:28:59Z" duration="0.005189" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1454" name="ProceduralFader_RebuildsAfterPlacementAndDiscardsColorsBeforeReplacement" fullname="InputHudCleanupPlayModeTests.ProceduralFader_RebuildsAfterPlacementAndDiscardsColorsBeforeReplacement" methodname="ProceduralFader_RebuildsAfterPlacementAndDiscardsColorsBeforeReplacement" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="692902827" result="Passed" start-time="2026-10-07 14:28:59Z" end-time="2026-10-07 14:28:59Z" duration="0.067043" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1453" name="SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud" fullname="InputHudCleanupPlayModeTests.SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud" classname="InputHudCleanupPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-07 14:28:59Z" end-time="2026-10-07 14:28:59Z" duration="0.082494" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1451" name="SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud(&quot;WeaponSkillHUD2D&quot;)" fullname="InputHudCleanupPlayModeTests.SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud(&quot;WeaponSkillHUD2D&quot;)" methodname="SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="1615568573" result="Passed" start-time="2026-10-07 14:28:59Z" end-time="2026-10-07 14:28:59Z" duration="0.043449" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1452" name="SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud(&quot;SwapWeaponSkillHUD2D&quot;)" fullname="InputHudCleanupPlayModeTests.SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud(&quot;SwapWeaponSkillHUD2D&quot;)" methodname="SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="204486794" result="Passed" start-time="2026-10-07 14:28:59Z" end-time="2026-10-07 14:28:59Z" duration="0.010387" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1455" name="StatusProjection_DeduplicatesSameOwnerButPreservesDifferentSlots" fullname="InputHudCleanupPlayModeTests.StatusProjection_DeduplicatesSameOwnerButPreservesDifferentSlots" methodname="StatusProjection_DeduplicatesSameOwnerButPreservesDifferentSlots" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="2036751037" result="Passed" start-time="2026-10-07 14:28:59Z" end-time="2026-10-07 14:28:59Z" duration="0.036425" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1724" name="PlayerControlAndChestRegressionPlayModeTests" fullname="PlayerControlAndChestRegressionPlayModeTests" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" testcasecount="43" result="Passed" start-time="2026-10-07 14:28:59Z" end-time="2026-10-07 14:29:00Z" duration="1.550747" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1753" name="ChestSelection_ReadOnlyAdapterRejectsTransfersBeforeRelicMerge" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_ReadOnlyAdapterRejectsTransfersBeforeRelicMerge" methodname="ChestSelection_ReadOnlyAdapterRejectsTransfersBeforeRelicMerge" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1042070689" result="Passed" start-time="2026-10-07 14:28:59Z" end-time="2026-10-07 14:28:59Z" duration="0.023192" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1773" name="ChestSelection_SlotsMoveAndReturnInOriginalOrderWhilePaused_ClosingCancelsSelection" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_SlotsMoveAndReturnInOriginalOrderWhilePaused_ClosingCancelsSelection" methodname="ChestSelection_SlotsMoveAndReturnInOriginalOrderWhilePaused_ClosingCancelsSelection" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="361561929" result="Passed" start-time="2026-10-07 14:28:59Z" end-time="2026-10-07 14:29:00Z" duration="1.484999" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1751" name="DuplicatePotion_HighlightBudgetTracksAcquisitionsAndReturns" fullname="PlayerControlAndChestRegressionPlayModeTests.DuplicatePotion_HighlightBudgetTracksAcquisitionsAndReturns" methodname="DuplicatePotion_HighlightBudgetTracksAcquisitionsAndReturns" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="242671454" result="Passed" start-time="2026-10-07 14:29:00Z" end-time="2026-10-07 14:29:00Z" duration="0.011438" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1774" name="PlayerInventorySlotReusePlayModeTests" fullname="PlayerInventorySlotReusePlayModeTests" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-10-07 14:29:00Z" end-time="2026-10-07 14:29:01Z" duration="0.626866" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1781" name="ActiveOwnerDestroy_ReleasesAdaptersAndRetainedViews_ConfigureRemainsFillOnly" fullname="PlayerInventorySlotReusePlayModeTests.ActiveOwnerDestroy_ReleasesAdaptersAndRetainedViews_ConfigureRemainsFillOnly" methodname="ActiveOwnerDestroy_ReleasesAdaptersAndRetainedViews_ConfigureRemainsFillOnly" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="1431292875" result="Passed" start-time="2026-10-07 14:29:01Z" end-time="2026-10-07 14:29:01Z" duration="0.149996" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1778" name="ClearBinding_ResetsPanelInteractionState_WithoutChangingGenericChestDisableMeaning" fullname="PlayerInventorySlotReusePlayModeTests.ClearBinding_ResetsPanelInteractionState_WithoutChangingGenericChestDisableMeaning" methodname="ClearBinding_ResetsPanelInteractionState_WithoutChangingGenericChestDisableMeaning" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="1308318941" result="Passed" start-time="2026-10-07 14:29:01Z" end-time="2026-10-07 14:29:01Z" duration="0.054413" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1777" name="ConfigurationCountAndExternalParentChanges_DiscardOnlyAffectedGroupWithoutDormantExtras" fullname="PlayerInventorySlotReusePlayModeTests.ConfigurationCountAndExternalParentChanges_DiscardOnlyAffectedGroupWithoutDormantExtras" methodname="ConfigurationCountAndExternalParentChanges_DiscardOnlyAffectedGroupWithoutDormantExtras" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="1831089878" result="Passed" start-time="2026-10-07 14:29:01Z" end-time="2026-10-07 14:29:01Z" duration="0.153282" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1776" name="InactivePreparedBind_ClearAndRebind_DetachesSubscriptionsBeforeFirstEnable" fullname="PlayerInventorySlotReusePlayModeTests.InactivePreparedBind_ClearAndRebind_DetachesSubscriptionsBeforeFirstEnable" methodname="InactivePreparedBind_ClearAndRebind_DetachesSubscriptionsBeforeFirstEnable" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="946562351" result="Passed" start-time="2026-10-07 14:29:01Z" end-time="2026-10-07 14:29:01Z" duration="0.033947" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1780" name="MatchingHoverAndOwnedDrag_ClearBeforeAdapterDisposal" fullname="PlayerInventorySlotReusePlayModeTests.MatchingHoverAndOwnedDrag_ClearBeforeAdapterDisposal" methodname="MatchingHoverAndOwnedDrag_ClearBeforeAdapterDisposal" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="1406667779" result="Passed" start-time="2026-10-07 14:29:01Z" end-time="2026-10-07 14:29:01Z" duration="0.055255" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1775" name="RepeatedPlayerRebind_ReusesInstancesAndDisposesOldAdaptersWithSingleSubscriptions" fullname="PlayerInventorySlotReusePlayModeTests.RepeatedPlayerRebind_ReusesInstancesAndDisposesOldAdaptersWithSingleSubscriptions" methodname="RepeatedPlayerRebind_ReusesInstancesAndDisposesOldAdaptersWithSingleSubscriptions" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="604840268" result="Passed" start-time="2026-10-07 14:29:01Z" end-time="2026-10-07 14:29:01Z" duration="0.060358" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1779" name="ReusedSlots_ActualDropTransfer_UsesNewAdaptersAndPreservesItems" fullname="PlayerInventorySlotReusePlayModeTests.ReusedSlots_ActualDropTransfer_UsesNewAdaptersAndPreservesItems" methodname="ReusedSlots_ActualDropTransfer_UsesNewAdaptersAndPreservesItems" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="1765869278" result="Passed" start-time="2026-10-07 14:29:01Z" end-time="2026-10-07 14:29:01Z" duration="0.078847" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1850" name="ReadyFlashMaterialLifecyclePlayModeTests" fullname="ReadyFlashMaterialLifecyclePlayModeTests" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-10-07 14:29:01Z" end-time="2026-10-07 14:29:04Z" duration="2.600642" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1861" name="AuthoredMaskedSlots_MatchingSetup_ShareIdleAndStencilMaterialReferences" fullname="ReadyFlashMaterialLifecyclePlayModeTests.AuthoredMaskedSlots_MatchingSetup_ShareIdleAndStencilMaterialReferences" methodname="AuthoredMaskedSlots_MatchingSetup_ShareIdleAndStencilMaterialReferences" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="736852054" result="Passed" start-time="2026-10-07 14:29:01Z" end-time="2026-10-07 14:29:01Z" duration="0.031022" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1860" name="AuthoredSkillIcon_CurrentSharedIdle_MatchesFrozenZeroAllCanvasPixels" fullname="ReadyFlashMaterialLifecyclePlayModeTests.AuthoredSkillIcon_CurrentSharedIdle_MatchesFrozenZeroAllCanvasPixels" methodname="AuthoredSkillIcon_CurrentSharedIdle_MatchesFrozenZeroAllCanvasPixels" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="1476106476" result="Passed" start-time="2026-10-07 14:29:01Z" end-time="2026-10-07 14:29:03Z" duration="2.255993" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1859" name="AuthoredSkillIcon_FrozenReadyZeroVersusDefault_ReportsActualCanvasRgba" fullname="ReadyFlashMaterialLifecyclePlayModeTests.AuthoredSkillIcon_FrozenReadyZeroVersusDefault_ReportsActualCanvasRgba" methodname="AuthoredSkillIcon_FrozenReadyZeroVersusDefault_ReportsActualCanvasRgba" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="2037694770" result="Passed" start-time="2026-10-07 14:29:03Z" end-time="2026-10-07 14:29:04Z" duration="0.057004" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AuthoredReadyIdleCanvasDiagnostic={"masked":false,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"nontransparentPixels":3072,"differingPixels":1024,"maximumRgbDifference":1,"maximumAlphaDifference":64,"frozenOpaquePixel":{"r":8,"g":34,"b":81,"a":255},"originalOpaquePixel":{"r":8,"g":34,"b":81,"a":255},"frozenTranslucentPixel":{"r":2,"g":58,"b":4,"a":64},"originalTranslucentPixel":{"r":1,"g":58,"b":4,"a":128}}
+AuthoredReadyIdleCanvasDiagnostic={"masked":false,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"nontransparentPixels":3072,"differingPixels":3072,"maximumRgbDifference":0,"maximumAlphaDifference":60,"frozenOpaquePixel":{"r":4,"g":11,"b":19,"a":143},"originalOpaquePixel":{"r":4,"g":11,"b":19,"a":191},"frozenTranslucentPixel":{"r":1,"g":19,"b":1,"a":36},"originalTranslucentPixel":{"r":1,"g":19,"b":1,"a":96}}
+AuthoredReadyIdleCanvasDiagnostic={"masked":true,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"nontransparentPixels":1152,"differingPixels":384,"maximumRgbDifference":1,"maximumAlphaDifference":64,"frozenOpaquePixel":{"r":8,"g":34,"b":81,"a":255},"originalOpaquePixel":{"r":8,"g":34,"b":81,"a":255},"frozenTranslucentPixel":{"r":2,"g":58,"b":4,"a":64},"originalTranslucentPixel":{"r":1,"g":58,"b":4,"a":128}}
+AuthoredReadyIdleCanvasDiagnostic={"masked":true,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"nontransparentPixels":1152,"differingPixels":1152,"maximumRgbDifference":0,"maximumAlphaDifference":60,"frozenOpaquePixel":{"r":4,"g":11,"b":19,"a":143},"originalOpaquePixel":{"r":4,"g":11,"b":19,"a":191},"frozenTranslucentPixel":{"r":1,"g":19,"b":1,"a":36},"originalTranslucentPixel":{"r":1,"g":19,"b":1,"a":96}}
+]]></output>
+        </test-case>
+        <test-case id="1856" name="CurrentHud_DisableReenableDestroy_RestoresReusesAndReleasesOwnedMaterial" fullname="ReadyFlashMaterialLifecyclePlayModeTests.CurrentHud_DisableReenableDestroy_RestoresReusesAndReleasesOwnedMaterial" methodname="CurrentHud_DisableReenableDestroy_RestoresReusesAndReleasesOwnedMaterial" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="1975413403" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.021334" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1854" name="ExternalMaterialReplacement_ActiveAndIdle_PreservesLatestWriterAndSharedAssets" fullname="ReadyFlashMaterialLifecyclePlayModeTests.ExternalMaterialReplacement_ActiveAndIdle_PreservesLatestWriterAndSharedAssets" methodname="ExternalMaterialReplacement_ActiveAndIdle_PreservesLatestWriterAndSharedAssets" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="1462450193" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.012172" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1851" name="IdleSlots_ReadyPolling_ShareFrozenReadyZeroWithoutCreatingActiveInstances" fullname="ReadyFlashMaterialLifecyclePlayModeTests.IdleSlots_ReadyPolling_ShareFrozenReadyZeroWithoutCreatingActiveInstances" methodname="IdleSlots_ReadyPolling_ShareFrozenReadyZeroWithoutCreatingActiveInstances" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="1198910771" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.004007" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1855" name="PublicCooldownAndCastingSequence_PreservesCooldownTintAndReadyTransition" fullname="ReadyFlashMaterialLifecyclePlayModeTests.PublicCooldownAndCastingSequence_PreservesCooldownTintAndReadyTransition" methodname="PublicCooldownAndCastingSequence_PreservesCooldownTintAndReadyTransition" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="2057263204" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.012151" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1852" name="Pulse_UnscaledDuration_RestoresSharedMaterialAndReusesOwnedInstance" fullname="ReadyFlashMaterialLifecyclePlayModeTests.Pulse_UnscaledDuration_RestoresSharedMaterialAndReusesOwnedInstance" methodname="Pulse_UnscaledDuration_RestoresSharedMaterialAndReusesOwnedInstance" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="160163208" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.126213" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1858" name="ReadyShader_SharedIdlePixels_MatchFrozenZeroAndActivePixelsRetainFlash" fullname="ReadyFlashMaterialLifecyclePlayModeTests.ReadyShader_SharedIdlePixels_MatchFrozenZeroAndActivePixelsRetainFlash" methodname="ReadyShader_SharedIdlePixels_MatchFrozenZeroAndActivePixelsRetainFlash" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="1263492219" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.010912" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1863" name="SharedIdle_DifferentOriginalTextureSetups_KeepDistinctMaterials" fullname="ReadyFlashMaterialLifecyclePlayModeTests.SharedIdle_DifferentOriginalTextureSetups_KeepDistinctMaterials" methodname="SharedIdle_DifferentOriginalTextureSetups_KeepDistinctMaterials" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="1538282976" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.003262" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1862" name="SharedIdle_OriginalTextureKeysAndLastLeaseRelease_AreBounded" fullname="ReadyFlashMaterialLifecyclePlayModeTests.SharedIdle_OriginalTextureKeysAndLastLeaseRelease_AreBounded" methodname="SharedIdle_OriginalTextureKeysAndLastLeaseRelease_AreBounded" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="1804185179" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.010838" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1853" name="SimultaneousSlots_PulseAmountsAndRestoration_AreIndependent" fullname="ReadyFlashMaterialLifecyclePlayModeTests.SimultaneousSlots_PulseAmountsAndRestoration_AreIndependent" methodname="SimultaneousSlots_PulseAmountsAndRestoration_AreIndependent" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="1429111316" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.001579" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1857" name="SwapHud_DisableReenableDestroy_RestoresReusesAndReleasesOwnedMaterial" fullname="ReadyFlashMaterialLifecyclePlayModeTests.SwapHud_DisableReenableDestroy_RestoresReusesAndReleasesOwnedMaterial" methodname="SwapHud_DisableReenableDestroy_RestoresReusesAndReleasesOwnedMaterial" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="123473821" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.016290" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1944" name="StatusHudPerformancePlayModeTests" fullname="StatusHudPerformancePlayModeTests" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:05Z" duration="0.973374" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="1956" name="DurationText_PreservesRuntimeRoundingCultureAndReuse" fullname="StatusHudPerformancePlayModeTests.DurationText_PreservesRuntimeRoundingCultureAndReuse" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.114315" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1953" name="DurationText_PreservesRuntimeRoundingCultureAndReuse(&quot;en-US&quot;)" fullname="StatusHudPerformancePlayModeTests.DurationText_PreservesRuntimeRoundingCultureAndReuse(&quot;en-US&quot;)" methodname="DurationText_PreservesRuntimeRoundingCultureAndReuse" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="1652111302" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.047716" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1954" name="DurationText_PreservesRuntimeRoundingCultureAndReuse(&quot;fr-FR&quot;)" fullname="StatusHudPerformancePlayModeTests.DurationText_PreservesRuntimeRoundingCultureAndReuse(&quot;fr-FR&quot;)" methodname="DurationText_PreservesRuntimeRoundingCultureAndReuse" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="1842908514" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.032385" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1955" name="DurationText_PreservesRuntimeRoundingCultureAndReuse(&quot;ko-KR&quot;)" fullname="StatusHudPerformancePlayModeTests.DurationText_PreservesRuntimeRoundingCultureAndReuse(&quot;ko-KR&quot;)" methodname="DurationText_PreservesRuntimeRoundingCultureAndReuse" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="1190945173" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.030610" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1952" name="HighlightAndProgressLayoutRestoreAcrossReuse" fullname="StatusHudPerformancePlayModeTests.HighlightAndProgressLayoutRestoreAcrossReuse" methodname="HighlightAndProgressLayoutRestoreAcrossReuse" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="9415443" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.032778" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1960" name="Hover_FollowsMovingAnchorWithoutRebuildingUnchangedContent" fullname="StatusHudPerformancePlayModeTests.Hover_FollowsMovingAnchorWithoutRebuildingUnchangedContent" methodname="Hover_FollowsMovingAnchorWithoutRebuildingUnchangedContent" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="1872381370" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.093083" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[RuntimePresentationFallback] Status HUD tooltip visual fallback created runtime UI/presentation hierarchy. Author an authored StatusHudTooltipView prefab with background, icon, name, story, and effect references before treating this path as build-facing UI.
+]]></output>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1949" name="MeasureBinding" fullname="StatusHudPerformancePlayModeTests.MeasureBinding" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.357800" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1945" name="MeasureBinding(1,False)" fullname="StatusHudPerformancePlayModeTests.MeasureBinding(1,False)" methodname="MeasureBinding" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="1411034076" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.046175" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[HUDBENCH,entries=1,ticking=False,median_ms=0.001304,p95_ms=0.001724,setups=0,formats=0
+]]></output>
+          </test-case>
+          <test-case id="1946" name="MeasureBinding(8,False)" fullname="StatusHudPerformancePlayModeTests.MeasureBinding(8,False)" methodname="MeasureBinding" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="1872344004" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.069721" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[HUDBENCH,entries=8,ticking=False,median_ms=0.013334,p95_ms=0.021842,setups=0,formats=0
+]]></output>
+          </test-case>
+          <test-case id="1947" name="MeasureBinding(20,False)" fullname="StatusHudPerformancePlayModeTests.MeasureBinding(20,False)" methodname="MeasureBinding" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="1067412084" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.126954" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[HUDBENCH,entries=20,ticking=False,median_ms=0.037457,p95_ms=0.044774,setups=0,formats=0
+]]></output>
+          </test-case>
+          <test-case id="1948" name="MeasureBinding(8,True)" fullname="StatusHudPerformancePlayModeTests.MeasureBinding(8,True)" methodname="MeasureBinding" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="958999209" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.107379" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[HUDBENCH,entries=8,ticking=True,median_ms=0.025113,p95_ms=0.046078,setups=0,formats=0
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1963" name="MonsterHud_RepairsExternalLayoutChangesWithoutChangingOwnerProfile" fullname="StatusHudPerformancePlayModeTests.MonsterHud_RepairsExternalLayoutChangesWithoutChangingOwnerProfile" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.165447" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1961" name="MonsterHud_RepairsExternalLayoutChangesWithoutChangingOwnerProfile(&quot;SlimeCorridor/Pawn&quot;)" fullname="StatusHudPerformancePlayModeTests.MonsterHud_RepairsExternalLayoutChangesWithoutChangingOwnerProfile(&quot;SlimeCorridor/Pawn&quot;)" methodname="MonsterHud_RepairsExternalLayoutChangesWithoutChangingOwnerProfile" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="717734397" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.099242" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1962" name="MonsterHud_RepairsExternalLayoutChangesWithoutChangingOwnerProfile(&quot;SlimeCorridor/Knight&quot;)" fullname="StatusHudPerformancePlayModeTests.MonsterHud_RepairsExternalLayoutChangesWithoutChangingOwnerProfile(&quot;SlimeCorridor/Knight&quot;)" methodname="MonsterHud_RepairsExternalLayoutChangesWithoutChangingOwnerProfile" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="67600243" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:04Z" duration="0.054286" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1957" name="PopupQueries_PreserveStackOrderingAndDetachedMutationSnapshot" fullname="StatusHudPerformancePlayModeTests.PopupQueries_PreserveStackOrderingAndDetachedMutationSnapshot" methodname="PopupQueries_PreserveStackOrderingAndDetachedMutationSnapshot" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="572519192" result="Passed" start-time="2026-10-07 14:29:04Z" end-time="2026-10-07 14:29:05Z" duration="0.036563" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1958" name="RunTimerText_PreservesCeilingCustomFormatAndCultureChange" fullname="StatusHudPerformancePlayModeTests.RunTimerText_PreservesCeilingCustomFormatAndCultureChange" methodname="RunTimerText_PreservesCeilingCustomFormatAndCultureChange" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="1860754523" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.039666" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1959" name="SkillCharges_ReuseTextWhileFillTicksAndResetOnSlotRebind" fullname="StatusHudPerformancePlayModeTests.SkillCharges_ReuseTextWhileFillTicksAndResetOnSlotRebind" methodname="SkillCharges_ReuseTextWhileFillTicksAndResetOnSlotRebind" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="1562547154" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.045357" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1951" name="StableStacksDoNotReinitializeOrReformatButTimerStillUpdates" fullname="StatusHudPerformancePlayModeTests.StableStacksDoNotReinitializeOrReformatButTimerStillUpdates" methodname="StableStacksDoNotReinitializeOrReformatButTimerStillUpdates" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="729150880" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.034245" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1950" name="StackProgressTimerAndPoolReuseRemainCorrect" fullname="StatusHudPerformancePlayModeTests.StackProgressTimerAndPoolReuseRemainCorrect" methodname="StackProgressTimerAndPoolReuseRemainCorrect" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="1380582274" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.046120" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1964" name="StatusSharedMaterialPlayModeTests" fullname="StatusSharedMaterialPlayModeTests" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" testcasecount="17" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:09Z" duration="4.580872" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="1980" name="AuthoredProgressPixels_MatchFrozenOutlineSetterPath" fullname="StatusSharedMaterialPlayModeTests.AuthoredProgressPixels_MatchFrozenOutlineSetterPath" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.151915" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1973" name="AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Art/Font/Galmuri9 SDF BlackOutline.asset&quot;,False)" fullname="StatusSharedMaterialPlayModeTests.AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Art/Font/Galmuri9 SDF BlackOutline.asset&quot;,False)" methodname="AuthoredProgressPixels_MatchFrozenOutlineSetterPath" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="1257393963" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.029341" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1974" name="AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Art/Font/Galmuri9 SDF.asset&quot;,False)" fullname="StatusSharedMaterialPlayModeTests.AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Art/Font/Galmuri9 SDF.asset&quot;,False)" methodname="AuthoredProgressPixels_MatchFrozenOutlineSetterPath" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="250626783" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.015787" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1975" name="AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Data/Localization/Fonts/Galmuri/Galmuri9 Japanese SDF.asset&quot;,False)" fullname="StatusSharedMaterialPlayModeTests.AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Data/Localization/Fonts/Galmuri/Galmuri9 Japanese SDF.asset&quot;,False)" methodname="AuthoredProgressPixels_MatchFrozenOutlineSetterPath" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="1278070357" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.030662" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1976" name="AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hans SDF.asset&quot;,False)" fullname="StatusSharedMaterialPlayModeTests.AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hans SDF.asset&quot;,False)" methodname="AuthoredProgressPixels_MatchFrozenOutlineSetterPath" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="1598173456" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.016376" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1977" name="AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant SDF.asset&quot;,False)" fullname="StatusSharedMaterialPlayModeTests.AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant SDF.asset&quot;,False)" methodname="AuthoredProgressPixels_MatchFrozenOutlineSetterPath" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="603581849" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.018654" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1978" name="AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Art/Font/Galmuri9 SDF BlackOutline.asset&quot;,True)" fullname="StatusSharedMaterialPlayModeTests.AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Art/Font/Galmuri9 SDF BlackOutline.asset&quot;,True)" methodname="AuthoredProgressPixels_MatchFrozenOutlineSetterPath" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="31991675" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.017430" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1979" name="AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant SDF.asset&quot;,True)" fullname="StatusSharedMaterialPlayModeTests.AuthoredProgressPixels_MatchFrozenOutlineSetterPath(&quot;Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant SDF.asset&quot;,True)" methodname="AuthoredProgressPixels_MatchFrozenOutlineSetterPath" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="61354219" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.015775" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1972" name="DisableReuseAndRepeatedProgressSwitch_DoNotLeavePerEntryMaterials" fullname="StatusSharedMaterialPlayModeTests.DisableReuseAndRepeatedProgressSwitch_DoNotLeavePerEntryMaterials" methodname="DisableReuseAndRepeatedProgressSwitch_DoNotLeavePerEntryMaterials" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="167832098" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.016353" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1970" name="IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal" fullname="StatusSharedMaterialPlayModeTests.IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.035434" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1965" name="IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal(&quot;Assets/_Project/Art/Font/Galmuri9 SDF BlackOutline.asset&quot;)" fullname="StatusSharedMaterialPlayModeTests.IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal(&quot;Assets/_Project/Art/Font/Galmuri9 SDF BlackOutline.asset&quot;)" methodname="IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="390284164" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.006737" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1966" name="IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal(&quot;Assets/_Project/Art/Font/Galmuri9 SDF.asset&quot;)" fullname="StatusSharedMaterialPlayModeTests.IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal(&quot;Assets/_Project/Art/Font/Galmuri9 SDF.asset&quot;)" methodname="IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="838209553" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.005070" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1967" name="IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal(&quot;Assets/_Project/Data/Localization/Fonts/Galmuri/Galmuri9 Japanese SDF.asset&quot;)" fullname="StatusSharedMaterialPlayModeTests.IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal(&quot;Assets/_Project/Data/Localization/Fonts/Galmuri/Galmuri9 Japanese SDF.asset&quot;)" methodname="IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="429390016" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.005439" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1968" name="IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal(&quot;Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hans SDF.asset&quot;)" fullname="StatusSharedMaterialPlayModeTests.IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal(&quot;Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hans SDF.asset&quot;)" methodname="IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="1930828492" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.005308" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1969" name="IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal(&quot;Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant SDF.asset&quot;)" fullname="StatusSharedMaterialPlayModeTests.IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal(&quot;Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant SDF.asset&quot;)" methodname="IdenticalProgressStyleAndAtlas_ShareMaterialAndRestoreNormal" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="1263718765" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:05Z" duration="0.006061" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1982" name="InactiveProgressPool_LocaleChangesReenableAndNormalRestore_UseTheLatestPackageFont" fullname="StatusSharedMaterialPlayModeTests.InactiveProgressPool_LocaleChangesReenableAndNormalRestore_UseTheLatestPackageFont" methodname="InactiveProgressPool_LocaleChangesReenableAndNormalRestore_UseTheLatestPackageFont" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="649407827" result="Passed" start-time="2026-10-07 14:29:05Z" end-time="2026-10-07 14:29:07Z" duration="2.157244" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1971" name="LocaleChangesDuringProgress_KeepStyleAndUseTheNewAtlas" fullname="StatusSharedMaterialPlayModeTests.LocaleChangesDuringProgress_KeepStyleAndUseTheNewAtlas" methodname="LocaleChangesDuringProgress_KeepStyleAndUseTheNewAtlas" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="2106930868" result="Passed" start-time="2026-10-07 14:29:07Z" end-time="2026-10-07 14:29:07Z" duration="0.003556" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1983" name="OwnedSharedStyleReferences_PoolingRetainsAndDestroyReleasesThroughOnPreRender" fullname="StatusSharedMaterialPlayModeTests.OwnedSharedStyleReferences_PoolingRetainsAndDestroyReleasesThroughOnPreRender" methodname="OwnedSharedStyleReferences_PoolingRetainsAndDestroyReleasesThroughOnPreRender" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="1324710955" result="Passed" start-time="2026-10-07 14:29:07Z" end-time="2026-10-07 14:29:07Z" duration="0.037568" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1981" name="SelectedLocaleAsync_DuringProgressAndNormalRestore_UsesTheRenderedAtlas" fullname="StatusSharedMaterialPlayModeTests.SelectedLocaleAsync_DuringProgressAndNormalRestore_UsesTheRenderedAtlas" methodname="SelectedLocaleAsync_DuringProgressAndNormalRestore_UsesTheRenderedAtlas" classname="StatusSharedMaterialPlayModeTests" runstate="Runnable" seed="1886015149" result="Passed" start-time="2026-10-07 14:29:07Z" end-time="2026-10-07 14:29:09Z" duration="2.164152" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1984" name="UiAtlasPixelEquivalencePlayModeTests" fullname="UiAtlasPixelEquivalencePlayModeTests" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-07 14:29:09Z" end-time="2026-10-07 14:29:10Z" duration="0.671899" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="1993" name="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels" fullname="UiAtlasPixelEquivalencePlayModeTests.CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-07 14:29:09Z" end-time="2026-10-07 14:29:10Z" duration="0.302282" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1985" name="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Base&quot;,False)" fullname="UiAtlasPixelEquivalencePlayModeTests.CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Base&quot;,False)" methodname="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="2108443639" result="Passed" start-time="2026-10-07 14:29:09Z" end-time="2026-10-07 14:29:09Z" duration="0.057701" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Base.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":4434,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Base.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":4434,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="1986" name="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Description&quot;,False)" fullname="UiAtlasPixelEquivalencePlayModeTests.CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Description&quot;,False)" methodname="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="272554159" result="Passed" start-time="2026-10-07 14:29:09Z" end-time="2026-10-07 14:29:09Z" duration="0.028158" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Description.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":8526,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Description.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":8526,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="1987" name="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Title_1&quot;,False)" fullname="UiAtlasPixelEquivalencePlayModeTests.CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Title_1&quot;,False)" methodname="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="806826955" result="Passed" start-time="2026-10-07 14:29:09Z" end-time="2026-10-07 14:29:09Z" duration="0.036498" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Title_1.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":1652,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Title_1.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":1652,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="1988" name="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Outline_1&quot;,False)" fullname="UiAtlasPixelEquivalencePlayModeTests.CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Outline_1&quot;,False)" methodname="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="1070846029" result="Passed" start-time="2026-10-07 14:29:09Z" end-time="2026-10-07 14:29:09Z" duration="0.031438" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Outline_1.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":864,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Outline_1.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":864,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="1989" name="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Base&quot;,True)" fullname="UiAtlasPixelEquivalencePlayModeTests.CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Base&quot;,True)" methodname="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="1656609848" result="Passed" start-time="2026-10-07 14:29:09Z" end-time="2026-10-07 14:29:09Z" duration="0.032301" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Base.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":1364,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Base.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":1364,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="1990" name="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Description&quot;,True)" fullname="UiAtlasPixelEquivalencePlayModeTests.CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Description&quot;,True)" methodname="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="584456073" result="Passed" start-time="2026-10-07 14:29:09Z" end-time="2026-10-07 14:29:10Z" duration="0.031390" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Description.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":6324,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Description.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":6324,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="1991" name="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Title_1&quot;,True)" fullname="UiAtlasPixelEquivalencePlayModeTests.CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Title_1&quot;,True)" methodname="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="27099306" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.033657" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Title_1.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":1240,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Title_1.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":1240,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="1992" name="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Outline_1&quot;,True)" fullname="UiAtlasPixelEquivalencePlayModeTests.CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;Outline_1&quot;,True)" methodname="CardAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="660581094" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.044461" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Outline_1.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":248,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/LevelRewardCards/Outline_1.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":112,"y":144},"atlasSize":{"x":256,"y":128},"visibleOriginalPixels":248,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2004" name="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels" fullname="UiAtlasPixelEquivalencePlayModeTests.MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.363881" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1994" name="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;ButtonUI&quot;,&quot;Simple&quot;,False)" fullname="UiAtlasPixelEquivalencePlayModeTests.MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;ButtonUI&quot;,&quot;Simple&quot;,False)" methodname="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="738483084" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.109745" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/ButtonUI.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":100,"y":80},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":24536,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/ButtonUI.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":100,"y":80},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":24536,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="1995" name="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;ButtonUI&quot;,&quot;Simple&quot;,True)" fullname="UiAtlasPixelEquivalencePlayModeTests.MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;ButtonUI&quot;,&quot;Simple&quot;,True)" methodname="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="1673748094" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.024777" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/ButtonUI.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":100,"y":80},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":15872,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/ButtonUI.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":100,"y":80},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":15872,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="1996" name="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;ButtonUI&quot;,&quot;Sliced&quot;,False)" fullname="UiAtlasPixelEquivalencePlayModeTests.MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;ButtonUI&quot;,&quot;Sliced&quot;,False)" methodname="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="1595204114" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.025359" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/ButtonUI.png","imageMode":"Sliced","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":100,"y":80},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":24528,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/ButtonUI.png","imageMode":"Sliced","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":100,"y":80},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":24528,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="1997" name="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;ButtonUI&quot;,&quot;Sliced&quot;,True)" fullname="UiAtlasPixelEquivalencePlayModeTests.MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;ButtonUI&quot;,&quot;Sliced&quot;,True)" methodname="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="1849935831" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.027105" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/ButtonUI.png","imageMode":"Sliced","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":100,"y":80},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":15872,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/ButtonUI.png","imageMode":"Sliced","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":100,"y":80},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":15872,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="1998" name="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;UIPanel&quot;,&quot;Simple&quot;,False)" fullname="UiAtlasPixelEquivalencePlayModeTests.MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;UIPanel&quot;,&quot;Simple&quot;,False)" methodname="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="831485083" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.029563" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/UIPanel.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":126,"y":146},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":22972,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/UIPanel.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":126,"y":146},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":22972,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="1999" name="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;UIPanel&quot;,&quot;Simple&quot;,True)" fullname="UiAtlasPixelEquivalencePlayModeTests.MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;UIPanel&quot;,&quot;Simple&quot;,True)" methodname="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="1862814234" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.026093" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/UIPanel.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":126,"y":146},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":15302,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/UIPanel.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":126,"y":146},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":15302,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="2000" name="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;UIPanel&quot;,&quot;Sliced&quot;,False)" fullname="UiAtlasPixelEquivalencePlayModeTests.MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;UIPanel&quot;,&quot;Sliced&quot;,False)" methodname="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="102970413" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.027793" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/UIPanel.png","imageMode":"Sliced","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":126,"y":146},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":22773,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/UIPanel.png","imageMode":"Sliced","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":126,"y":146},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":22773,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="2001" name="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;UIPanel&quot;,&quot;Sliced&quot;,True)" fullname="UiAtlasPixelEquivalencePlayModeTests.MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;UIPanel&quot;,&quot;Sliced&quot;,True)" methodname="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="838369555" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.027577" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/UIPanel.png","imageMode":"Sliced","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":126,"y":146},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":15507,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/UIPanel.png","imageMode":"Sliced","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":126,"y":146},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":15507,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="2002" name="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;UITitle&quot;,&quot;Simple&quot;,False)" fullname="UiAtlasPixelEquivalencePlayModeTests.MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;UITitle&quot;,&quot;Simple&quot;,False)" methodname="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="579488018" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.025309" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/UITitle.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":66,"y":40},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":17504,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/UITitle.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":false,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":66,"y":40},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":17504,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+          <test-case id="2003" name="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;UITitle&quot;,&quot;Simple&quot;,True)" fullname="UiAtlasPixelEquivalencePlayModeTests.MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels(&quot;UITitle&quot;,&quot;Simple&quot;,True)" methodname="MenuAtlas_ActualPackedImage_MatchesOriginalImportedPixels" classname="UiAtlasPixelEquivalencePlayModeTests" runstate="Runnable" seed="32788837" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.029133" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/UITitle.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"sourceSize":{"x":66,"y":40},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":12256,"differentRgbaPixels":0,"maximumChannelDelta":0}
+UiAtlasImportedPixelEquivalence={"sourcePath":"Assets/_Project/Art/Sprites/UI/UITitle.png","imageMode":"Simple","sourceFormat":"RGBA32","atlasFormat":"RGBA32","masked":true,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"sourceSize":{"x":66,"y":40},"atlasSize":{"x":256,"y":256},"visibleOriginalPixels":12256,"differentRgbaPixels":0,"maximumChannelDelta":0}
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+      <test-suite type="TestFixture" id="2005" name="UiTextMeshRefreshRegressionPlayModeTests" fullname="UiTextMeshRefreshRegressionPlayModeTests" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.176995" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="2030" name="AuthoredMenuHighlight_ReusesBoundsAndKeepsPlacementDuringTransformLayoutChanges" fullname="UiTextMeshRefreshRegressionPlayModeTests.AuthoredMenuHighlight_ReusesBoundsAndKeepsPlacementDuringTransformLayoutChanges" methodname="AuthoredMenuHighlight_ReusesBoundsAndKeepsPlacementDuringTransformLayoutChanges" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="356378591" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.029676" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="2028" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" testcasecount="21" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.124932" total="21" passed="21" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2007" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;Plain text&quot;,0)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;Plain text&quot;,0)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="688414048" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.011873" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2008" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;Plain text&quot;,2)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;Plain text&quot;,2)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="1546532652" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.003238" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2009" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;Plain text&quot;,int.MaxValue)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;Plain text&quot;,int.MaxValue)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="728528355" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.004525" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2010" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=wave&gt;Wave&lt;/link&gt;&quot;,0)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=wave&gt;Wave&lt;/link&gt;&quot;,0)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="211464310" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.018303" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2011" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=wave&gt;Wave&lt;/link&gt;&quot;,2)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=wave&gt;Wave&lt;/link&gt;&quot;,2)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="107497607" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.004620" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2012" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=wave&gt;Wave&lt;/link&gt;&quot;,int.MaxValue)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=wave&gt;Wave&lt;/link&gt;&quot;,int.MaxValue)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="1055029656" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.003110" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2013" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=\&quot;wave\&quot;&gt;W a v e&lt;/link&gt;&quot;,0)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=\&quot;wave\&quot;&gt;W a v e&lt;/link&gt;&quot;,0)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="1833058047" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.003382" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2014" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=\&quot;wave\&quot;&gt;W a v e&lt;/link&gt;&quot;,2)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=\&quot;wave\&quot;&gt;W a v e&lt;/link&gt;&quot;,2)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="465668970" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.004442" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2015" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=\&quot;wave\&quot;&gt;W a v e&lt;/link&gt;&quot;,int.MaxValue)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=\&quot;wave\&quot;&gt;W a v e&lt;/link&gt;&quot;,int.MaxValue)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="278168020" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.003890" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2016" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=\&quot;shake\&quot;&gt;Sh a ke&lt;/link&gt;&quot;,0)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=\&quot;shake\&quot;&gt;Sh a ke&lt;/link&gt;&quot;,0)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="1087659032" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.006445" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2017" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=\&quot;shake\&quot;&gt;Sh a ke&lt;/link&gt;&quot;,2)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=\&quot;shake\&quot;&gt;Sh a ke&lt;/link&gt;&quot;,2)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="569546534" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.003292" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2018" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=\&quot;shake\&quot;&gt;Sh a ke&lt;/link&gt;&quot;,int.MaxValue)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=\&quot;shake\&quot;&gt;Sh a ke&lt;/link&gt;&quot;,int.MaxValue)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="1822032252" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.003331" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2019" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=other&gt;Other&lt;/link&gt;&quot;,0)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=other&gt;Other&lt;/link&gt;&quot;,0)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="491300093" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.004403" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2020" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=other&gt;Other&lt;/link&gt;&quot;,2)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=other&gt;Other&lt;/link&gt;&quot;,2)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="993320353" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.002980" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2021" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=other&gt;Other&lt;/link&gt;&quot;,int.MaxValue)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=other&gt;Other&lt;/link&gt;&quot;,int.MaxValue)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="2146811991" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.003990" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2022" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=wave&gt;A&lt;/link&gt;+&lt;link=shake&gt;B C&lt;/link&gt;&quot;,0)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=wave&gt;A&lt;/link&gt;+&lt;link=shake&gt;B C&lt;/link&gt;&quot;,0)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="2131562562" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.008850" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2023" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=wave&gt;A&lt;/link&gt;+&lt;link=shake&gt;B C&lt;/link&gt;&quot;,2)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=wave&gt;A&lt;/link&gt;+&lt;link=shake&gt;B C&lt;/link&gt;&quot;,2)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="1491777939" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.003490" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2024" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=wave&gt;A&lt;/link&gt;+&lt;link=shake&gt;B C&lt;/link&gt;&quot;,int.MaxValue)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=wave&gt;A&lt;/link&gt;+&lt;link=shake&gt;B C&lt;/link&gt;&quot;,int.MaxValue)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="968929463" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.003585" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2025" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=shake&gt;X&lt;/link&gt;&lt;link=wave&gt;Y&lt;/link&gt;&lt;link=other&gt;Z&lt;/link&gt;&quot;,0)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=shake&gt;X&lt;/link&gt;&lt;link=wave&gt;Y&lt;/link&gt;&lt;link=other&gt;Z&lt;/link&gt;&quot;,0)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="251040569" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.006184" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2026" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=shake&gt;X&lt;/link&gt;&lt;link=wave&gt;Y&lt;/link&gt;&lt;link=other&gt;Z&lt;/link&gt;&quot;,2)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=shake&gt;X&lt;/link&gt;&lt;link=wave&gt;Y&lt;/link&gt;&lt;link=other&gt;Z&lt;/link&gt;&quot;,2)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="1701110684" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.004767" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2027" name="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=shake&gt;X&lt;/link&gt;&lt;link=wave&gt;Y&lt;/link&gt;&lt;link=other&gt;Z&lt;/link&gt;&quot;,int.MaxValue)" fullname="UiTextMeshRefreshRegressionPlayModeTests.OriginalAndCurrentEffectGeometryAndRngRemainEquivalent(&quot;&lt;link=shake&gt;X&lt;/link&gt;&lt;link=wave&gt;Y&lt;/link&gt;&lt;link=other&gt;Z&lt;/link&gt;&quot;,int.MaxValue)" methodname="OriginalAndCurrentEffectGeometryAndRngRemainEquivalent" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="535255279" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.003185" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="2006" name="PlainStaticText_DoesNotForceUploadOrOverwriteExternalGeometry" fullname="UiTextMeshRefreshRegressionPlayModeTests.PlainStaticText_DoesNotForceUploadOrOverwriteExternalGeometry" methodname="PlainStaticText_DoesNotForceUploadOrOverwriteExternalGeometry" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="1099841655" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.004719" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2029" name="SwitchingTextAndFontProperties_ReclassifiesEffectsAndClearsOldOffsets" fullname="UiTextMeshRefreshRegressionPlayModeTests.SwitchingTextAndFontProperties_ReclassifiesEffectsAndClearsOldOffsets" methodname="SwitchingTextAndFontProperties_ReclassifiesEffectsAndClearsOldOffsets" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="612985624" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.010739" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="2031" name="UpgradeLakeMaterialSynchronizationPlayModeTests" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:11Z" duration="1.318686" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="2044" name="LakeProjection_RuntimePresetChangesAndDynamicTime_AreObservedOnNextUpdate" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.LakeProjection_RuntimePresetChangesAndDynamicTime_AreObservedOnNextUpdate" methodname="LakeProjection_RuntimePresetChangesAndDynamicTime_AreObservedOnNextUpdate" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="174388698" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.026844" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2045" name="LakeProjection_UnchangedUpdatesSkipPresetCopies_ButSourceChangesSynchronizeImmediately" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.LakeProjection_UnchangedUpdatesSkipPresetCopies_ButSourceChangesSynchronizeImmediately" methodname="LakeProjection_UnchangedUpdatesSkipPresetCopies_ButSourceChangesSynchronizeImmediately" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1627578675" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.005005" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="2043" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.021013" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2032" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;float&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;float&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="993044624" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.002416" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2033" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;color&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;color&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1155325688" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.000990" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2034" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;vector&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;vector&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="779187433" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.000662" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2035" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;texture&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;texture&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1288402684" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.000712" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2036" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;textureOffset&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;textureOffset&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1942027527" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.001109" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2037" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;textureScale&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;textureScale&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1669672742" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.001452" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2038" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;keyword&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;keyword&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1415523264" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.001070" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2039" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;renderQueue&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;renderQueue&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1375230542" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.000624" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2040" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;giFlags&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;giFlags&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="2112679033" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.001049" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2041" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;instancing&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;instancing&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1942020916" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.001369" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2042" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;doubleSidedGI&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;doubleSidedGI&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="465020583" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:10Z" duration="0.001366" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="2046" name="NativePresetCopyVersusUnchangedIdentityCrc_ReportsMatchedWarmedOperationCosts" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativePresetCopyVersusUnchangedIdentityCrc_ReportsMatchedWarmedOperationCosts" methodname="NativePresetCopyVersusUnchangedIdentityCrc_ReportsMatchedWarmedOperationCosts" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="2102360084" result="Passed" start-time="2026-10-07 14:29:10Z" end-time="2026-10-07 14:29:11Z" duration="1.260220" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[LakeMaterialOperationBenchmark={"unityVersion":"6000.4.2f1","samples":31,"operationsPerSample":2048,"baselineMedianNs":17116.6015625,"baselineP95Ns":20730.37109375,"unchangedIdentityCrcMedianNs":2124.12109375,"unchangedIdentityCrcP95Ns":3310.595703125,"emptyMedianNs":3.466796875,"baselineRawNs":[15293.603515625,17678.125,24846.337890625,15106.103515625,16837.841796875,15924.8046875,15359.130859375,17241.162109375,20273.53515625,16451.3671875,15772.216796875,17090.087890625,18356.34765625,16678.955078125,16571.38671875,16416.259765625,19188.96484375,19660.7421875,17946.728515625,17710.107421875,16397.509765625,18022.119140625,16603.125,16649.658203125,17690.13671875,16168.310546875,18062.3046875,17116.6015625,20730.37109375,19888.8671875,17223.14453125],"unchangedIdentityCrcRawNs":[2206.787109375,2091.796875,2449.853515625,1771.044921875,2112.40234375,2239.0625,2133.935546875,2088.57421875,1872.314453125,2000.634765625,2097.94921875,2122.119140625,1805.126953125,1823.33984375,3868.701171875,1901.46484375,1847.607421875,1745.21484375,2222.021484375,2133.251953125,2193.505859375,3310.595703125,2052.392578125,2531.787109375,2124.12109375,2207.568359375,2170.01953125,2155.95703125,2019.775390625,2224.658203125,2233.203125],"note":"Editor native operation cost; ns per operation from warmed batch means, not frame-time percentiles or Player measurements. No profiler recorder or allocation-byte inference."}
+Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

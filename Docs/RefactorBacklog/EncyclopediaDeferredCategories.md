@@ -1,54 +1,54 @@
 ---
-status: proposed
+status: resolved
 authority: refactor-backlog
 category: ui-encyclopedia
-last_reviewed: 2026-05-22
+last_reviewed: 2026-10-11
 ---
 
 # Encyclopedia Deferred Categories
 
 ## Current Problem
 
-The encyclopedia originally targeted Item, Monster, and Boss pages at once, but the item-side layout is the only authored area currently being worked on. Weapon, Relic, and Consumable item sub-tabs now have a code path, while Monster and Boss UI are still deferred. Finishing Monster and Boss UI in the same slice would slow down the item page and leave too many partially wired detail layouts.
+Resolved by the approved 2026-10-11 Monster/Boss/NPC extension. Dedicated non-item tab/detail presenters and a separate prefab-authoring path now exist. Final Unity authoring, 8/8 save EditMode tests, 19/19 creature PlayMode tests and native UI captures passed; full hub manual gameplay and Player build remain unexecuted validation limits.
 
 ## Why It Exists
 
-The current encyclopedia flow has an ItemTab path for `Weapon`, `Relic`, and `Consumable`, while earlier Monster/Boss catalog scaffolding still exists for later work. The layout work has moved toward a tabbed structure:
+The earlier item-first slice intentionally deferred Monster/Boss layout to protect the Item presenters. The accepted extension keeps that boundary and adds NPC to the non-item scope:
 
-- Top-level tabs: `Item`, `Monster`, `Boss`
+- Top-level tabs: `Item`, `Monster`, `Boss`, `NPC`
 - Item sub-tabs: `Weapon`, `Relic`, `Consumable`
-- Monster sub-tabs: boss-theme groups
-- Boss sub-tabs: individual bosses
+- Monster pages: registered species, Idle preview, description and profile cumulative kills
+- Boss/NPC pages: 2x2 character selection, actual portrait/expression controls, affection, registered rewards and story
 
-Only the Item tab has a concrete layout and detail presenter right now.
+Theme filtering and individual-boss sub-tabs from the early proposal are not requirements of the approved extension.
 
 ## Target Shape
 
-- Keep the current Item tab playable first across `Weapon`, `Relic`, and `Consumable`.
-- Add Monster theme filtering under the Monster tab.
-- Add Boss-specific tabs and a dedicated boss detail presenter rather than using `EncyclopediaDetailPanel` for affection/reward UI.
+- Preserve Item behavior and authored layout across `Weapon`, `Relic`, and `Consumable`.
+- Route Monster/Boss/NPC to `EncyclopediaCreatureTab` and `EncyclopediaCreatureDetailView`, without reactivating the legacy `EncyclopediaDetailPanel`.
+- Read existing portrait, affection, reward and story data; missing content remains unregistered.
 - Keep page index zero-based internally and display pages as one-based text.
 
 ## Risks
 
-- Enabling Monster/Boss before their detail presenters exist can expose unfinished UI.
-- Mixing Monster and Boss work with remaining Item detail polishing can expand the serialized contract too quickly.
-- Broad scene/prefab YAML edits are risky while the user is actively authoring the layout in Unity.
+- Automated authored-reference, rendering/input and Item-preservation checks passed. Full hub manual gameplay and Player build remain outside the executed validation.
+- Species IDs are persistent profile keys; future renames need an explicit migration.
+- New reward/story content and further filtering require separate scope.
 
 ## Refactor Trigger
 
-- User resumes Monster page layout work.
-- User resumes Boss page layout work.
-- The Item tab is accepted and ready to generalize the same presentation flow into Monster/Boss.
+The user approved the iterated Monster/Boss/NPC layout for in-game implementation on 2026-10-11, explicitly excluding Item work.
 
 ## Related Documents
 
-- `Docs/CurrentTask.md`
+- [Active scope](../ActiveTasks/encyclopedia-creature-tabs.md)
 - `Docs/DecisionLog.md` - `Encyclopedia Current Slice Is Item First`
 - `Docs/DecisionLog.md` - `Encyclopedia Item Detail Uses Dedicated Presenter`
 - `Docs/StructureMemory/ScriptSystems/EncyclopediaStructure.md`
 - `Docs/SessionLogs/2026-05-22.md`
+- [Creature structure](../StructureMemory/EncyclopediaCreatureTabs.md)
+- [2026-10-11 session](../SessionLogs/2026-10-11.md)
 
 ## Status
 
-`proposed`
+`resolved` — dedicated creature extension implemented and automatically verified; remaining manual/build limits are recorded in the completed task.

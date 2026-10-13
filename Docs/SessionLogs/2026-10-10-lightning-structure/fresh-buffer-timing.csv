@@ -1,0 +1,14 @@
+﻿case,pairs,repeats,beforeMedianMs,afterMedianMs,pairedMedianDeltaPct,beforeP95Ms,afterP95Ms,outputsEqual,rngEqual,workEqual
+crowded-marks-random,24,1,1.1318000000000001,0.9837499999999999,-15.010940558412189,2.0411,2.0577,True,True,True
+crowded-marks-targeted,24,1,2.58115,2.5476,2.0833551186232313,3.4298,3.7538,True,True,True
+no-ground-random,24,1,0.5087999999999999,0.54915,1.8852392466975676,0.7064,0.7416,True,True,True
+no-ground-targeted,24,1,0.627,0.6637500000000001,3.565653377413547,0.8686,0.9789,True,True,True
+open-random,24,1,0.15239999999999998,0.15515,-0.42958617732444804,0.1878,0.1895,True,True,True
+open-targeted,24,1,0.49005,0.49145,0.4388574271711132,1.0026,0.7008,True,True,True
+overlapping-floor-random,24,1,0.2048,0.20955000000000001,0.621834532326937,0.2686,0.2736,True,True,True
+overlapping-floor-targeted,24,1,1.0786,0.9975499999999999,-14.04780271940722,2.0287,1.285,True,True,True
+transformed-grid-random,24,1,0.33935,0.2783,-14.431447765940531,0.6141,0.4839,True,True,True
+transformed-grid-targeted,24,1,0.80355,0.774,-7.184603916918276,1.2338,1.1062,True,True,True
+walls-and-holes-random,24,1,0.2028,0.22825,-0.4927463328729842,0.3038,0.31,True,True,True
+walls-and-holes-targeted,24,1,0.62245,0.6178,3.4411416601884515,0.851,0.8859,True,True,True
+zero-spacing-targeted,24,1,0.35415,0.34125,-0.9869636379298719,0.5042,0.4447,True,True,True

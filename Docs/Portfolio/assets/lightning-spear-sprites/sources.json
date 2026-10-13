@@ -1,0 +1,77 @@
+[
+  {
+    "key": "player",
+    "source": "Assets/_Project/Art/Sprites/Player/Pixel_Plains_Premium_Pack/Characters 24x24/Character 1 v1.png",
+    "guid": "54afb36f0c9a5b347b44945f7a8e0f78",
+    "sprite": "Character 1 v1_0",
+    "fileID": -720365038908779728,
+    "png_box": [
+      4,
+      3,
+      19,
+      25
+    ],
+    "source_sha256": "7cd1c31643420ad9d605fde1e7930510b8de69718465d42ee5b0ff88b61390b9",
+    "frame_sha256": "b20ea0b71a776d2c94eb208523f91760aea0009661e3bf8d03363123ec832297"
+  },
+  {
+    "key": "monster",
+    "source": "Assets/_Project/Art/Sprites/Monsters/CommonMonster/Orc Kid Sprite Sheet.png",
+    "guid": "c17de35b8a7007b42beb8934de4bd0ef",
+    "sprite": "Orc Kid Sprite Sheet_0",
+    "fileID": 6853614053878161379,
+    "png_box": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "source_sha256": "c9409fae9c70deefd5599635d5c8221eadc40559a8a579926e5335d8e0dce421",
+    "frame_sha256": "9894664ade8c9ec5e2a17fe72cc2a91e4f27f33ed4f45c19e03362be37f618f3"
+  },
+  {
+    "key": "skill",
+    "source": "Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/WeaponSkill/LightningSpear/LinghtningSkill2Icon.png",
+    "guid": "0adc7957cb62497438400e9e92f01b19",
+    "sprite": null,
+    "fileID": 21300000,
+    "png_box": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "source_sha256": "ec4a05ca925ab8e16571d2a4d495cd14ba1825a204a6202c5de434d5e16b48bc",
+    "frame_sha256": "667141a5de4a44f0caa0ebdcbd2e8ec688134fa3faf2e150e3214f477d05618e"
+  },
+  {
+    "key": "lightning",
+    "source": "Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningDropMarkEffect.png",
+    "guid": "ee9ff37da3ea91b4b8e5fe9381560d9a",
+    "sprite": "LightningDropMarkEffect_1",
+    "fileID": -560235986209313622,
+    "png_box": [
+      58,
+      0,
+      116,
+      178
+    ],
+    "source_sha256": "6ddb9bbc6e9c2f1a615a6cb4f19399608549814a0e158910b1106c314fff0ad5",
+    "frame_sha256": "f38dfa63f491d9d33b9ed355635506eecf933e31e5085af7c2496b56d2e66b3f"
+  },
+  {
+    "key": "mark",
+    "source": "Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpearClone.png",
+    "guid": "b8b36d61a3ae6594b805a84e7bd83e62",
+    "sprite": null,
+    "fileID": 21300000,
+    "png_box": [
+      0,
+      0,
+      64,
+      64
+    ],
+    "source_sha256": "161f46f41e396f3b40287676a701426b2f1d271c3ca6ed8f705f9a091c911973",
+    "frame_sha256": "0d8694edc90236babaddcca2d200caacf91a1c75a8977392ef7acdb228473a8a"
+  }
+]

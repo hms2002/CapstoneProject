@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: monster-world-hud
-last_reviewed: 2026-09-16
+last_reviewed: 2026-10-08
 ---
 
 # Monster World HUD And Status
@@ -57,3 +57,17 @@ The shared HUD contains a white DamageTrail Image behind the red fill. Health da
 Unity authoring and reference validation passed for 19 monsters and 6 bosses. The editor validation exercised the production private presentation methods for immediate red decrease, hold, interpolation, repeat damage and healing. The generated prefab render was inspected. Live Play Mode combat and boss anchor positions have not been verified.
 
 The view resolves AttributeSet and MonsterStatusRuntime from the parent MonsterSizeProfile, allowing TrainingDummy2D targets without Enemy inheritance. Enemy death subscriptions/checks remain conditional. The dummy retains its existing damage readout and never-die behavior; no runtime HUD objects are created.
+
+## Conditional shared HP mesh projection (2026-10-08)
+
+The shared prefab now also authors a MeshFilter/MeshRenderer and MonsterHealthBarMeshView under the existing HP rectangle. `Art/Meshes/MonsterHealthBarQuad.asset`, `Art/Materials/MonsterHealthBarInstanced.mat` and `Art/Shaders/MonsterHealthBarInstanced.shader` supply shared immutable geometry/material. Each actor supplies width/height/health/trail through its own MaterialPropertyBlock, preserving border/frame/track/fill/highlight geometry and the existing actor sorting layer/order. No combat value, status source or trail timer moved into the mesh view.
+
+The original six Images and status Canvas remain authored. The existing MonsterStackStatusWorldView privately registers enabled configured views and resolves their final projection after LateUpdate through Canvas.preWillRenderCanvases. Disjoint HUDs use mesh HP; the Canvas submits only active statuses. If any HP/status bounds intersect, every registered visible HUD uses the original Images/Canvas in that frame, preserving the authored cross-actor HP/count/timer transparent order. Bounds include live status pulse and conservative preferred-text/SDF overflow; ignoring Z and loose text bounds favors the old sorting path. Dense overlap can therefore retain the original cost. This registry observes presentation only and creates no manager, singleton, DDOL object or hierarchy.
+
+Disable unsubscribes attributes/death/status pulse, unregisters the render callback membership, hides mesh, disables the configured Canvas and resets presentation health state. Destroy releases the property block and detached local membership; shared asset lifetimes remain project-owned. Status-only Pawn/boss/dummy HUDs retain their existing status behavior.
+
+`Editor/Tools/Monsters/MonsterHealthBarMeshAuthoring.cs` explicitly wires the shared renderer and six original Graphics using Unity APIs. When restoring an external original-HUD snapshot during this task, the original TMP font/null sharedMaterial is supplied through an optional command argument rather than a hardcoded developer temp path. Authoring must preserve the current persistent prefab's original text style and all existing GUIDs.
+
+The older MonsterWorldHudAuthoring builder reconstructs the shared HUD. Run the explicit mesh upgrade afterwards when retaining this path; that builder alone recreates the original Image/Canvas presentation. The runtime still accepts the unconfigured legacy shape, so rebuilding does not silently move gameplay state or create a new owner.
+
+`MonsterHealthBarMeshPlayModeTests` exercises three sizes/HP/trail states, flips/nonuniform transforms/camera clipping, damage hold/interpolation/repeated damage/heal/max rescale, status compact/pulse, death/disable/re-enable/destroy and cross-actor HP-only/HP-plus-count/timer overlap. Native raster comparisons reject pixels beyond their stated one/two-channel-unit tolerance; actual test counts and matched native measurements belong in the [structural report](../SessionLogs/2026-10-08-ui-batching-structural/README.md). Whole-game manual combat and target Player FPS remain separate evidence.

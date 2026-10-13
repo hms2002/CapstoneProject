@@ -24,6 +24,7 @@ public readonly struct DamagePopupRequest
     public readonly bool IsCritical;
     public readonly string TextOverride;
     public readonly bool IsPlayerTarget;
+    public readonly float SizeScale;
 
     public DamagePopupRequest(
         float amount,
@@ -32,7 +33,8 @@ public readonly struct DamagePopupRequest
         GameplayTag elementTag = null,
         bool isCritical = false,
         string textOverride = null,
-        bool isPlayerTarget = false)
+        bool isPlayerTarget = false,
+        float sizeScale = 1f)
     {
         Amount = amount;
         WorldPosition = worldPosition;
@@ -41,6 +43,7 @@ public readonly struct DamagePopupRequest
         IsCritical = isCritical;
         TextOverride = textOverride;
         IsPlayerTarget = isPlayerTarget;
+        SizeScale = Mathf.Clamp(sizeScale, 0.01f, 1f);
     }
 
     public static DamagePopupRequest Damage(
@@ -62,15 +65,18 @@ public readonly struct DamagePopupRequest
         float amount,
         Vector3 worldPosition,
         GameplayTag elementTag,
-        bool isPlayerTarget = false)
+        bool isPlayerTarget = false,
+        bool isCritical = false,
+        float sizeScale = 1f)
     {
         return new DamagePopupRequest(
             amount,
             worldPosition,
             DamagePopupKind.Element,
             elementTag,
-            isCritical: false,
-            isPlayerTarget: isPlayerTarget);
+            isCritical: isCritical,
+            isPlayerTarget: isPlayerTarget,
+            sizeScale: sizeScale);
     }
 
     public static DamagePopupRequest Text(string text, Vector3 worldPosition, bool isPlayerTarget = false)

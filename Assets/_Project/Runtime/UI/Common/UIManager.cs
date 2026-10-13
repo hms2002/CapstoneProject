@@ -137,8 +137,10 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
     {
         if (modalBackdrop == null) return;
         bool visible = false;
-        foreach (var ui in popupStack.Snapshot())
+        var entries = popupStack.ReadEntries();
+        for (int i = 0; i < entries.Count; i++)
         {
+            var ui = entries[i];
             if (ui is PauseMenuUI || ui is InventoryScreen inventory && inventory.IsChestMode)
             {
                 visible = true;
@@ -299,6 +301,15 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
 
         ApplyGameplayLockState();
         HideHoverImmediate();
+    }
+
+    public bool CanProcessNavigationInput(IStackableUI ui)
+    {
+        return ui != null && ui.IsActive &&
+               !IsInputBlockedByLoading() &&
+               popupStack.TryGetTop(out IStackableUI topUI) &&
+               ReferenceEquals(topUI, ui) &&
+               !IsEscapeBlockedFor(ui);
     }
 
     public void CloseTopUI()
@@ -545,14 +556,14 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
         if (canvas == null)
             return false;
 
-        var snapshot = popupStack.Snapshot();
-        if (snapshot == null || snapshot.Count == 0)
+        var entries = popupStack.ReadEntries();
+        if (entries.Count == 0)
             return false;
 
         Transform canvasTransform = canvas.transform;
-        for (int i = 0; i < snapshot.Count; i++)
+        for (int i = 0; i < entries.Count; i++)
         {
-            IStackableUI openedUi = snapshot[i];
+            IStackableUI openedUi = entries[i];
             if (openedUi == null || !openedUi.IsActive)
                 continue;
 
@@ -590,6 +601,12 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
     {
         if (hoverUIController != null)
             hoverUIController.ShowHover(view, targetRect, data, context);
+    }
+
+    public void ShowHover(StatusHudTooltipView view, RectTransform targetRect, in StatusHudEntry entry)
+    {
+        if (hoverUIController != null)
+            hoverUIController.ShowStatusHover(view, targetRect, entry);
     }
 
     public void HideHover(IHoverView view, RectTransform targetRect, bool immediate = false)

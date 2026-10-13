@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 /// <summary>
 /// 책임 :
 /// - Feather Orbit 유물의 런타임 컨트롤러다.
-/// - 깃털 생성/제거, 공전 위치 갱신, 이속 기반 회전속도/재타격 쿨다운/피해량 계산을 담당한다.
+/// - 깃털 생성/제거, 공전 위치 갱신, 이속 기반 회전속도/재타격 쿨다운과 고정 피해량을 담당한다.
 /// - Feather가 실제 적중할 때 사용할 공통 CombatHitPayload를 만들어 제공한다.
 /// </summary>
 public class FeatherOrbitController : MonoBehaviour
@@ -166,13 +166,8 @@ public class FeatherOrbitController : MonoBehaviour
 
     public float ComputeHpDamage()
     {
-        if (_statProvider != null)
-        {
-            float atk = _statProvider.Get(_cfg.attackStatId);
-            return Mathf.Max(0f, atk) * _cfg.damageCoef;
-        }
-
-        return 0f;
+        // The legacy coefficient field now carries authored fixed damage.
+        return Mathf.Max(0f, _cfg.damageCoef);
     }
 
     public float KnockbackImpulse => Mathf.Max(0f, _cfg.knockbackImpulse);

@@ -1,11 +1,13 @@
 ---
-status: partially-refactored
+status: resolved
 authority: refactor-backlog
 category: runtime-gameplay
-last_reviewed: 2026-05-20
+last_reviewed: 2026-10-07
 ---
 
 # Run Special NPC Scene Authoring Completion
+
+Closed because the user confirmed the RunSpecialNpc plan was abandoned during the procedural-map migration. The historical authoring work below is not a current implementation target. Existing legacy code/assets were retained; TestScene does not include the NPC templates.
 
 ## Current Problem
 
@@ -61,4 +63,4 @@ Start this when the SlimeCorridor shortcut layout is finalized or when adding th
 
 ## Status
 
-`partially-refactored`
+`resolved` — plan abandoned; no further authoring requested.

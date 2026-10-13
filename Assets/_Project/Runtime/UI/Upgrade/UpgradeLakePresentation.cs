@@ -521,6 +521,9 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
     private UILakeRippleGraphic rippleGraphic;
     private Material surfaceMaterial;
     private Material surfaceMaterialPreset;
+    [NonSerialized] private Material copiedSurfaceMaterialSource;
+    [NonSerialized] private int copiedSurfaceMaterialCrc;
+    [NonSerialized] private bool hasCopiedSurfaceMaterialSignature;
     private Material wakeBufferMaterial;
     private RenderTexture wakeReadBuffer;
     private RenderTexture wakeWriteBuffer;
@@ -539,6 +542,10 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
     private readonly List<SurfaceRipple> surfaceRipples = new List<SurfaceRipple>();
     private readonly Vector4[] surfaceRippleData = new Vector4[MaxSurfaceRipples];
     private readonly Vector4[] surfaceRippleExtra = new Vector4[MaxSurfaceRipples];
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    public int DiagnosticSurfacePresetCopyCount { get; private set; }
+#endif
 
     // 책임: 업그레이드 호수 표면에 발생한 단일 파문 시뮬레이션 값을 보관한다.
     private struct SurfaceRipple
@@ -799,7 +806,19 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
                     ownsSurfaceMaterial = true;
                 }
 
-                surfaceMaterial.CopyPropertiesFromMaterial(surfaceMaterialPreset);
+                int sourceCrc = surfaceMaterialPreset.ComputeCRC();
+                if (!hasCopiedSurfaceMaterialSignature ||
+                    copiedSurfaceMaterialSource != surfaceMaterialPreset ||
+                    copiedSurfaceMaterialCrc != sourceCrc)
+                {
+                    surfaceMaterial.CopyPropertiesFromMaterial(surfaceMaterialPreset);
+                    copiedSurfaceMaterialSource = surfaceMaterialPreset;
+                    copiedSurfaceMaterialCrc = sourceCrc;
+                    hasCopiedSurfaceMaterialSignature = true;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                    DiagnosticSurfacePresetCopyCount++;
+#endif
+                }
             }
             else
             {
@@ -1201,6 +1220,9 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
 
     private void DestroySurfaceMaterial()
     {
+        copiedSurfaceMaterialSource = null;
+        copiedSurfaceMaterialCrc = 0;
+        hasCopiedSurfaceMaterialSignature = false;
         if (surfaceMaterial == null)
             return;
 

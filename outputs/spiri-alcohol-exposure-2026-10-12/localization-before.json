@@ -1,0 +1,47 @@
+[
+  {
+    "hash": "3037D516DF86F34B56D0799C78B4A3F2F8BC4558A661631FE8D02C834DD95804",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\GameText.csv.before",
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\DataSheets\\Localization\\GameText.csv"
+  },
+  {
+    "hash": "152A9E98CBE1574A689732A33F1FE52C9E44C91F163A7EE8232EB25B3B514FC9",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\AssetInventory.json.before",
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\DataSheets\\Localization\\AssetInventory.json"
+  },
+  {
+    "hash": "6BF39AB617484B29B73542BA8902090857254BF726FC50671330807F501F9ACC",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\GameTextAssetKeys.g.cs.before",
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Core\\Presentation\\GameTextAssetKeys.g.cs"
+  },
+  {
+    "hash": "02B27055FE47B0AA17FF4B2BBDE13E5F762B285553FB6B5D0983C2CC67AB65B5",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\GameText Shared Data.asset.before",
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Localization\\GameText Shared Data.asset"
+  },
+  {
+    "hash": "3BD3D434D6D79A2155F785DDBCC39FD0D6E6C06DBA2DEA958E36A04701547887",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\GameText_ko.asset.before",
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Localization\\GameText_ko.asset"
+  },
+  {
+    "hash": "C5C7C1C09A667101ED96E2C57D439AACEB6CDA93CFA60B61A75D5F91A5C9A131",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\GameText_en.asset.before",
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Localization\\GameText_en.asset"
+  },
+  {
+    "hash": "BEBF9C6E25D9FFEB393635A6DF45D40991E7F21621DC477BDF5E4B678D34819A",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\GameText_ja.asset.before",
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Localization\\GameText_ja.asset"
+  },
+  {
+    "hash": "1B938E0B8CCF758008CBE1C0B25D0C27D7D54549DED75F2FDA1A7BC03229BA37",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\GameText_zh-Hans.asset.before",
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Localization\\GameText_zh-Hans.asset"
+  },
+  {
+    "hash": "4ADDD0AC072B2EB6B54241BF07F7C0E45A4C38098B6B91281BD374448CA231B9",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\GameText_zh-Hant.asset.before",
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Localization\\GameText_zh-Hant.asset"
+  }
+]

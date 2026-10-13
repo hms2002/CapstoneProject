@@ -1,0 +1,27 @@
+[
+  {
+    "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot1.json",
+    "hash": "C8AB21B203B40319D582B9CEBFFB7B25E8FC5E76A17C1958961814811267734F",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\GameSave_Slot1.json"
+  },
+  {
+    "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot2.json",
+    "hash": "D92EED72AF322272171C4DBD02D8EE2022AE41FAF962340D61D318156BDE7D68",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\GameSave_Slot2.json"
+  },
+  {
+    "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot3.json",
+    "hash": "F26C365731FF6B9087A37DA15710E51E14B52847BD172B100631E589919F1676",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\GameSave_Slot3.json"
+  },
+  {
+    "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\PrewarmTrace.json",
+    "hash": "1ACE9E3C5ABF0590BB98D13651C3B82BC726FD5CB69B0E0D80E235D48A520E7F",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\PrewarmTrace.json"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json",
+    "hash": "320DF1D50450AB0A70BD42AA957D326864F8C4F240A032B9BE47CCE2FEC673F1",
+    "backup": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\spiri-alcohol-exposure-2026-10-12\\preserved-runtime\\project-prewarm.json"
+  }
+]

@@ -16,11 +16,11 @@ public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
     public GameplayTag triggerTag;
 
     [Header("Buff")]
-    [Tooltip("공격력(%)을 담당하는 AttributeDefinition.")]
+    [Tooltip("고정 공격력 증가를 담당하는 AttributeDefinition. AttackAddAttribute를 사용합니다.")]
     public AttributeDefinition attackAttribute;
 
-    [Tooltip("공격력 증가량(Percent modifier). 0.10 = +10%")]
-    public float attackPercentBonus = 0.10f;
+    [Tooltip("기존 필드명을 유지한 고정 공격력 증가량(Flat modifier)입니다.")]
+    public float attackPercentBonus = 2f;
 
     [Tooltip("이동속도(%)를 담당하는 AttributeDefinition. (예: MoveSpeedMultiplier 혹은 MoveSpeed)")]
     public AttributeDefinition moveSpeedAttribute;
@@ -74,7 +74,8 @@ public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
                 attackPercentBonus,
                 durationSeconds,
                 refreshDuration,
-                null));
+                null,
+                modifierType: ModifierType.Flat));
         }
 
         if (moveSpeedAttribute != null)
@@ -97,7 +98,7 @@ public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
             new Dictionary<string, string>
             {
                 ["duration"] = RelicTooltipFormatter.FormatSeconds(durationSeconds),
-                ["attack_bonus"] = RelicTooltipFormatter.FormatSignedValueToken(attackPercentBonus, true),
+                ["attack_bonus"] = RelicTooltipFormatter.FormatSignedValueToken(attackPercentBonus, false),
                 ["move_speed_bonus"] = RelicTooltipFormatter.FormatSignedValueToken(percentBonus, true),
             });
     }

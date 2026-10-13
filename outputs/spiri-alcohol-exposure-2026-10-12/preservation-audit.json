@@ -1,0 +1,171 @@
+{
+  "authoring_report": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Library\\CodexSpiriAlcohol\\authoring.json",
+  "existing_metadata": {
+    "checked": 155,
+    "unchanged": 155,
+    "changed": [],
+    "passed": true
+  },
+  "protected_settings_scenes": {
+    "checked": 111,
+    "unchanged": 111,
+    "changed": [],
+    "passed": true
+  },
+  "assets": {
+    "PF Player.prefab": {
+      "original_records": 110,
+      "new_records": 16,
+      "missing": [],
+      "original_id_order_preserved": true,
+      "allowed_record_changes": [
+        {
+          "id": "8883617028798182002",
+          "class": 1,
+          "fields": [
+            "m_Component"
+          ]
+        },
+        {
+          "id": "8969203147945012884",
+          "class": 4,
+          "fields": [
+            "m_Children"
+          ]
+        },
+        {
+          "id": "5727091237041186888",
+          "class": 114,
+          "fields": [
+            "confusionTag"
+          ]
+        }
+      ],
+      "original_lists_preserved": {
+        "m_Component": true,
+        "m_Children": true
+      },
+      "unexpected_record_changes": [],
+      "passed": true
+    },
+    "DragonBossNpc.asset": {
+      "raw_fields_changed": [
+        "affectionRewards"
+      ],
+      "serialization_only_changes": [],
+      "behavior_fields_changed": [
+        "affectionRewards"
+      ],
+      "passed": true
+    },
+    "GE_Puddle_AlcoholBuff.asset": {
+      "raw_fields_changed": [
+        "duration"
+      ],
+      "serialization_only_changes": [],
+      "behavior_fields_changed": [
+        "duration"
+      ],
+      "passed": true
+    },
+    "AlcoholPuddle.prefab": {
+      "passed": true,
+      "unchanged": true
+    }
+  },
+  "localization": {
+    "csv": {
+      "old_rows": 1852,
+      "added_rows": 4,
+      "passed": true
+    },
+    "inventory": {
+      "old_rows": 696,
+      "added_rows": 4,
+      "passed": true
+    },
+    "runtime_key_map": {
+      "old_entries": 696,
+      "added_entries": 4,
+      "passed": true
+    },
+    "GameText Shared Data.asset": {
+      "old_entries": 1852,
+      "added_entries": 4,
+      "old_entries_changed": [],
+      "other_fields_changed": [],
+      "passed": true
+    },
+    "GameText_ko.asset": {
+      "old_entries": 1852,
+      "added_entries": 4,
+      "old_entries_changed": [],
+      "other_fields_changed": [],
+      "passed": true
+    },
+    "GameText_en.asset": {
+      "old_entries": 1852,
+      "added_entries": 4,
+      "old_entries_changed": [],
+      "other_fields_changed": [],
+      "passed": true
+    },
+    "GameText_ja.asset": {
+      "old_entries": 1852,
+      "added_entries": 4,
+      "old_entries_changed": [],
+      "other_fields_changed": [],
+      "passed": true
+    },
+    "GameText_zh-Hans.asset": {
+      "old_entries": 1852,
+      "added_entries": 4,
+      "old_entries_changed": [],
+      "other_fields_changed": [],
+      "passed": true
+    },
+    "GameText_zh-Hant.asset": {
+      "old_entries": 1852,
+      "added_entries": 4,
+      "old_entries_changed": [],
+      "other_fields_changed": [],
+      "passed": true
+    },
+    "passed": true
+  },
+  "new_guid_uniqueness": {
+    "new_metadata_checked": 14,
+    "search_roots": [
+      "Assets/_Project/Resources/Tags",
+      "Assets/_Project/Data/Abilities/Effects",
+      "Assets/_Project/Data/Dialogue/Affection",
+      "Assets/_Project/Art/Materials",
+      "Assets/_Project/Art/Shaders",
+      "Assets/_Project/Runtime/Features/Player/Status",
+      "Assets/_Project/Runtime/Presentation/Map/Puddles",
+      "Assets/_Project/Editor/Tools/Data",
+      "Assets/_Project/Tests/PlayMode/Procedural"
+    ],
+    "match_count": 14,
+    "missing_metadata": [],
+    "collisions": [],
+    "guids": {
+      "Assets/_Project/Resources/Tags/State.Confusion.asset": "cc2cb1742bf03044ba2861112f034fdf",
+      "Assets/_Project/Data/Abilities/Effects/GE_Puddle_Confusion.asset": "9448942bf1129af439a5268f1fb93be7",
+      "Assets/_Project/Data/Abilities/Effects/SHD_Puddle_Confusion.asset": "3a669323573b7c144be1d6c8d11798e1",
+      "Assets/_Project/Data/Abilities/Effects/CBD_Puddle_Confusion.asset": "6d957305979664843adabe62e7674a10",
+      "Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset": "8d10d760988b81f4c826f2a3b4582465",
+      "Assets/_Project/Art/Materials/M_AlcoholMugFill.mat": "71cdae8042309e748b93a24276671532",
+      "Assets/_Project/Art/Materials/M_AlcoholMugOverflowDrop.mat": "068834b11b6e9dc4d8c5426348be2b7d",
+      "Assets/_Project/Art/Shaders/AlcoholMugFill.shader": "8a0449ebfa06f3c4380a0d1b7f8d4a23",
+      "Assets/_Project/Runtime/Features/Player/Status/PlayerAlcoholExposure.cs": "0f0c2a86563911c4cb1a9283d6c4e7f9",
+      "Assets/_Project/Runtime/Presentation/Map/Puddles/AlcoholExposurePlayerVisual.cs": "185edc030c5e21d41bf6de42c36c1392",
+      "Assets/_Project/Editor/Tools/Data/SpiriAlcoholRewardAuthoring.cs": "239769ad97831e04998e70197c0781cd",
+      "Assets/_Project/Tests/PlayMode/Procedural/AlcoholExposurePlayModeTests.cs": "8c2082ee3b5ad2c4c83ace72735d93a6",
+      "Assets/_Project/Tests/PlayMode/Procedural/AlcoholExposurePlayerVisualPlayModeTests.cs": "08bcf3ee94694f94591249b5186678b2",
+      "Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs": "9dde85a4398c53440b606c890adf7e14"
+    },
+    "passed": true
+  },
+  "passed": true
+}

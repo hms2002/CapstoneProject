@@ -133,6 +133,18 @@ namespace UnityGAS
         /// </summary>
         public List<GameplayTag> abilityTags = new List<GameplayTag>();
 
+        /// <summary>Queries this ability's identity tags, including a tagged category's descendants.</summary>
+        public bool HasAbilityTag(GameplayTag category)
+        {
+            if (category == null || abilityTags == null)
+                return false;
+            for (int i = 0; i < abilityTags.Count; i++)
+                for (GameplayTag current = abilityTags[i]; current != null; current = current.Parent)
+                    if (current == category)
+                        return true;
+            return false;
+        }
+
         /// <summary>
         /// 책임 :
         /// - caster가 이 Ability를 발동하기 전에 반드시 가지고 있어야 하는 태그를 정의한다.

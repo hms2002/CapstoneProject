@@ -1,0 +1,26 @@
+[
+  {
+    "path": "Assets/_Project/Runtime/Core/Save/GameData.cs",
+    "sha256": "ECB55A9D82579CD63944F16A8BAE20A3F2969E506A372E313369B65C22AA50F2"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Core/Save/GamePlayData.cs",
+    "sha256": "0BD96E8277FE8BB049CF717B34CAA1CF69BF255E7BD3E1E05766C5EBF2CDCA27"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Core/Save/RunSessionStore.cs",
+    "sha256": "318602EA2CF3641876C7BCE516313CC5737C1A4B5C254C46AADB21931AB88580"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Infrastructure/Save/GamePlayDataManager.cs",
+    "sha256": "D293906E78AB17896DE564C18943BF6946812C187E1878C0DD9A8876E8F58623"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Infrastructure/Save/GameDataManager.cs",
+    "sha256": "C6EEA21E41989DCC40AA36ABF8BA5750EE985BBD05079FE97E1C2FC44D952EDD"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Infrastructure/Save/RunSessionProgressCommitPolicy.cs",
+    "sha256": "36C824D83614685748B3D4A8784B3DD8CA63B01F02D868EDDF8C748F77C52480"
+  }
+]

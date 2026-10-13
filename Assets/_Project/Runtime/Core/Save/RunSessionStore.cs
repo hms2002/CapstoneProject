@@ -48,6 +48,13 @@ public interface IRunSessionStoreBackend
     void ResetForDevelopmentStart();
 }
 
+/// <summary>프로필 진행도를 기록할 수 있는 런 저장소만 구현한다. 테스트씬의 임시 어댑터는 구현하지 않는다.</summary>
+public interface IMonsterEncyclopediaRunProgressBackend
+{
+    bool RecordMonsterEncyclopediaKill(string monsterId);
+    int GetPendingMonsterEncyclopediaKillCount(string monsterId);
+}
+
 /// <summary>
 /// 책임 : Core/Gameplay 코드가 Infrastructure 런 세션 매니저 타입 없이 현재 런 상태를 조회하고 명령을 보낸다.
 /// </summary>
@@ -61,6 +68,7 @@ public static class RunSessionStore
     public static bool IsAvailable => IsBackendAlive(backend);
     public static GamePlayData Data => IsAvailable ? backend.Data : null;
     public static bool IsRunActive => Data != null && Data.isRunActive;
+    public static bool IsBackend(IRunSessionStoreBackend candidate) => ReferenceEquals(backend, candidate);
 
     public static void RegisterBackend(IRunSessionStoreBackend storeBackend)
     {
@@ -119,6 +127,19 @@ public static class RunSessionStore
     {
         if (IsAvailable)
             backend.AddPendingAffectionDelta(npcId, delta);
+    }
+
+    public static bool RecordMonsterEncyclopediaKill(string monsterId)
+    {
+        return IsRunActive && backend is IMonsterEncyclopediaRunProgressBackend progress &&
+            progress.RecordMonsterEncyclopediaKill(monsterId);
+    }
+
+    public static int GetPendingMonsterEncyclopediaKillCount(string monsterId)
+    {
+        return IsRunActive && backend is IMonsterEncyclopediaRunProgressBackend progress
+            ? progress.GetPendingMonsterEncyclopediaKillCount(monsterId)
+            : 0;
     }
 
     public static bool TryConsumeAffectionGain(int npcId)

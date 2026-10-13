@@ -1,14 +1,13 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using UnityGAS;
 
 /// <summary>
 /// 장착 중인 번개 창의 live 표식 목록, Q/E 실행, 표식 선택 피드백, cleanup을 관리할 책임을 가집니다.
 /// </summary>
-public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWeaponAbilityHudIconOverrideProvider
+public sealed partial class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWeaponAbilityHudIconOverrideProvider
 {
     private const string FirstMarkRushTutorialId = "lightning-spear:first-mark-rush";
 
@@ -37,23 +36,12 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         public bool HasShots => shots != null && shots.Count > 0;
     }
 
-    // 책임: 번개창 표식 생성 위치와 해당 방 정보를 함께 전달한다.
-    private readonly struct MarkSpawnRequest
-    {
-        public readonly Vector2 position;
-        public readonly MonsterRoomArea2D room;
-
-        public MarkSpawnRequest(Vector2 position, MonsterRoomArea2D room)
-        {
-            this.position = position;
-            this.room = room;
-        }
-    }
-
     private readonly List<LightningSpearMarkActor> activeMarks = new List<LightningSpearMarkActor>();
-    private readonly List<MarkSpawnRequest> pendingMarkSpawns = new List<MarkSpawnRequest>();
-    private readonly List<Tilemap> groundTilemapCache = new List<Tilemap>();
-    private readonly List<Tilemap> wallTilemapCache = new List<Tilemap>();
+    private readonly LightningSpearPlacementWorldQuery placementWorld = new LightningSpearPlacementWorldQuery();
+    private LightningSpearMarkPlacementPlanner placementPlanner;
+    private LightningSpearMarkPlacementPlanner PlacementPlanner =>
+        placementPlanner ??= new LightningSpearMarkPlacementPlanner(placementWorld, activeMarks);
+
     private readonly List<LightningSpearRecoveredSpearActor> recoveredSpears = new List<LightningSpearRecoveredSpearActor>();
     private readonly List<LightningSpearRecoveredSpearActor> transientRecoveredSpears = new List<LightningSpearRecoveredSpearActor>();
     private readonly List<LightningSpearRecoveredSpearProjectile2D> recoveredProjectiles = new List<LightningSpearRecoveredSpearProjectile2D>();
@@ -81,8 +69,6 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
     private Vector2 forcedBufferedMarkRushOrigin;
     private float markRushInputBufferExpiresAt = -1f;
     private int recoveredSpearLayoutSideSign = 1;
-    private int groundTilemapCacheFrame = -1;
-    private int cachedGroundLayer = int.MinValue;
 
     private void Awake()
     {
@@ -365,14 +351,14 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             Vector2 ownerPosition = system.transform.position;
             bool targetedRain = WeaponExclusiveRelics.Has(system.gameObject, WeaponExclusiveRelics.SpearTargetedRain);
             // The persistent placement scratch list can also be used by third-strike marks.
-            List<MarkSpawnRequest> markSpawns = new(GenerateMarkPositions(loadout, data, ownerPosition));
+            List<PlacementPoint> markSpawns = new(GenerateMarkPositions(loadout, data, ownerPosition));
             if (markSpawns.Count > 0)
                 PlaySoundAt(data != null ? data.MarkRainSpawnStartSound : default, system, spec, ownerPosition, data);
 
             for (int i = 0; i < markSpawns.Count; i++)
             {
                 if (spec.Token != null && spec.Token.IsCancelled) yield break;
-                MarkSpawnRequest request = markSpawns[i];
+                PlacementPoint request = markSpawns[i];
                 SpawnMark(loadout, data, request.position, request.room, system, spec);
                 if (targetedRain && i + 1 < markSpawns.Count)
                 {
@@ -1086,48 +1072,19 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             loadout);
     }
 
-    private List<MarkSpawnRequest> GenerateMarkPositions(
-        LightningSpearLoadout loadout,
-        LightningSpearSkill2Data data,
-        Vector2 ownerPosition)
+    private List<PlacementPoint> GenerateMarkPositions(
+        LightningSpearLoadout loadout, LightningSpearSkill2Data data, Vector2 ownerPosition)
     {
-        pendingMarkSpawns.Clear();
+        bool targeted = ownerSystem != null &&
+            WeaponExclusiveRelics.Has(ownerSystem.gameObject, WeaponExclusiveRelics.SpearTargetedRain);
+        return GenerateMarkPositions(loadout, data, ownerPosition, targeted);
+    }
 
-        int targetCount = GetMarkRainCount(loadout, data);
-        if (targetCount <= 0)
-            return pendingMarkSpawns;
-
-        MonsterRoomArea2D ownerRoom = FindRoomContaining(ownerPosition);
-        if (ownerSystem != null && WeaponExclusiveRelics.Has(ownerSystem.gameObject, WeaponExclusiveRelics.SpearTargetedRain))
-        {
-            List<Transform> targets = FindMarkTargets(ownerPosition, GetFallbackCombatRadius(loadout, data));
-            // Give each enemy a direct strike first, then reserve the nearest free tiles around them.
-            while (pendingMarkSpawns.Count < targetCount)
-            {
-                int previousCount = pendingMarkSpawns.Count;
-                foreach (Transform target in targets)
-                {
-                    if (target == null || !TryFindNearestMarkPosition(loadout, data, ownerPosition,
-                        ownerRoom, target.position, out Vector2 candidate)) continue;
-                    pendingMarkSpawns.Add(new MarkSpawnRequest(candidate, ownerRoom != null ? ownerRoom : FindRoomContaining(candidate)));
-                    if (pendingMarkSpawns.Count >= targetCount) return pendingMarkSpawns;
-                }
-                if (pendingMarkSpawns.Count == previousCount) break;
-            }
-        }
-        int sampleCount = Mathf.Max(GetCandidateSamples(loadout, data), targetCount * 12);
-        for (int i = 0; i < sampleCount && pendingMarkSpawns.Count < targetCount; i++)
-        {
-            Vector2 candidate = SampleFallbackCandidate(ownerPosition, GetFallbackCombatRadius(loadout, data));
-
-            if (!ValidateMarkCandidate(loadout, data, ownerPosition, ownerRoom, candidate))
-                continue;
-
-            MonsterRoomArea2D markRoom = ownerRoom != null ? ownerRoom : FindRoomContaining(candidate);
-            pendingMarkSpawns.Add(new MarkSpawnRequest(candidate, markRoom));
-        }
-
-        return pendingMarkSpawns;
+    private List<PlacementPoint> GenerateMarkPositions(
+        LightningSpearLoadout loadout, LightningSpearSkill2Data data, Vector2 ownerPosition, bool targeted)
+    {
+        RemoveDestroyedMarks();
+        return PlacementPlanner.GenerateRain(loadout, data, ownerPosition, targeted);
     }
 
     public void SpawnThirdStrikeMark(AbilitySystem system, AbilitySpec spec, Vector2 attackTip)
@@ -1136,175 +1093,22 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         if (!TryResolveActiveLoadout(out LightningSpearLoadout loadout)) return;
         LightningSpearSkill2Data data = ResolveSkill2Data(loadout);
         if (GetMarkPrefab(loadout, data) == null) return;
-        pendingMarkSpawns.Clear();
-        Vector2 origin = system.transform.position;
-        MonsterRoomArea2D room = FindRoomContaining(origin);
-        var targets = FindMarkTargets(attackTip, 1.5f);
-        Vector2 preferred = targets.Count > 0 ? (Vector2)targets[0].position : attackTip;
-        if (TryFindNearestMarkPosition(loadout, data, origin, room, preferred, out Vector2 closest))
-        {
-            SpawnMark(loadout, data, closest, room != null ? room : FindRoomContaining(closest), system, spec);
-            return;
-        }
-        int samples = Mathf.Max(1, GetCandidateSamples(loadout, data));
-        for (int i = 0; i < samples; i++)
-        {
-            Vector2 candidate = i == 0 ? preferred : i == 1 ? attackTip : SampleFallbackCandidate(attackTip, 1.5f);
-            if (!ValidateMarkCandidate(loadout, data, origin, room, candidate)) continue;
-            SpawnMark(loadout, data, candidate, room != null ? room : FindRoomContaining(candidate), system, spec);
-            return;
-        }
+        RemoveDestroyedMarks();
+        if (PlacementPlanner.TryPlanThirdStrike(loadout, data, system.transform.position, attackTip,
+            out PlacementPoint request))
+            SpawnMark(loadout, data, request.position, request.room, system, spec);
     }
 
-    // Training dummies are damageable but deliberately do not inherit Enemy.
-    // Keep this exception local to spear placement, not other relics' enemy/kill targeting.
-    private static List<Transform> FindMarkTargets(Vector2 center, float radius)
+    private void RemoveDestroyedMarks()
     {
-        var targets = new List<Transform>();
-        var seen = new HashSet<Transform>();
-        foreach (Collider2D hit in Physics2D.OverlapCircleAll(center, radius))
+        int write = 0;
+        for (int read = 0; read < activeMarks.Count; read++)
         {
-            Transform target;
-            Enemy enemy = hit.GetComponentInParent<Enemy>();
-            if (enemy != null)
-            {
-                if (enemy.IsDead || !enemy.isActiveAndEnabled) continue;
-                target = enemy.transform;
-            }
-            else
-            {
-                TrainingDummy2D dummy = hit.GetComponentInParent<TrainingDummy2D>();
-                if (dummy == null || !dummy.isActiveAndEnabled) continue;
-                target = dummy.transform;
-            }
-            if (seen.Add(target)) targets.Add(target);
+            if (activeMarks[read] != null)
+                activeMarks[write++] = activeMarks[read];
         }
-        targets.Sort((a, b) => ((Vector2)a.position - center).sqrMagnitude.CompareTo(
-            ((Vector2)b.position - center).sqrMagnitude));
-        return targets;
-    }
-
-    private bool TryFindNearestMarkPosition(LightningSpearLoadout loadout, LightningSpearSkill2Data data,
-        Vector2 ownerPosition, MonsterRoomArea2D room, Vector2 preferred, out Vector2 result)
-    {
-        // Never snap a valid enemy position to a tile center: the first choice is directly beneath it.
-        if (ValidateMarkCandidate(loadout, data, ownerPosition, room, preferred))
-        {
-            result = preferred;
-            return true;
-        }
-
-        float range = GetFallbackCombatRadius(loadout, data);
-        float rangeSquared = range * range;
-        var candidates = new List<Vector2>();
-        foreach (Tilemap tilemap in ResolveGroundTilemaps())
-        {
-            // Bound enumeration to casting range, not the entire dungeon floor tilemap.
-            Vector3Int lower = tilemap.WorldToCell(ownerPosition - Vector2.one * range);
-            Vector3Int upper = lower;
-            for (int corner = 1; corner < 4; corner++)
-            {
-                Vector2 offset = new Vector2((corner & 1) == 0 ? -range : range, (corner & 2) == 0 ? -range : range);
-                Vector3Int cell = tilemap.WorldToCell(ownerPosition + offset);
-                lower = Vector3Int.Min(lower, cell);
-                upper = Vector3Int.Max(upper, cell);
-            }
-            BoundsInt bounds = tilemap.cellBounds;
-            lower = Vector3Int.Max(bounds.min, lower);
-            upper = Vector3Int.Min(bounds.max, upper + Vector3Int.one);
-            if (lower.x >= upper.x || lower.y >= upper.y || lower.z >= upper.z) continue;
-            bounds.SetMinMax(lower, upper);
-            foreach (Vector3Int cell in bounds.allPositionsWithin)
-            {
-                Vector2 point = tilemap.GetCellCenterWorld(cell);
-                if ((point - ownerPosition).sqrMagnitude <= rangeSquared && tilemap.HasTile(cell))
-                    candidates.Add(point);
-            }
-        }
-        candidates.Sort((a, b) =>
-        {
-            int distance = (a - preferred).sqrMagnitude.CompareTo((b - preferred).sqrMagnitude);
-            if (distance != 0) return distance;
-            int x = a.x.CompareTo(b.x);
-            return x != 0 ? x : a.y.CompareTo(b.y);
-        });
-        foreach (Vector2 candidate in candidates)
-        {
-            if (!ValidateMarkCandidate(loadout, data, ownerPosition, room, candidate)) continue;
-            result = candidate;
-            return true;
-        }
-        result = default;
-        return false;
-    }
-
-    private static Vector2 SampleFallbackCandidate(Vector2 origin, float radius)
-    {
-        return origin + Random.insideUnitCircle * Mathf.Max(0.01f, radius);
-    }
-
-    private bool ValidateMarkCandidate(
-        LightningSpearLoadout loadout,
-        LightningSpearSkill2Data data,
-        Vector2 ownerPosition,
-        MonsterRoomArea2D ownerRoom,
-        Vector2 candidate)
-    {
-        if (!float.IsFinite(candidate.x) || !float.IsFinite(candidate.y))
-            return false;
-
-        if (Vector2.Distance(ownerPosition, candidate) > GetFallbackCombatRadius(loadout, data))
-            return false;
-
-        if (ownerRoom != null && !ownerRoom.Contains(candidate))
-            return false;
-
-        // Wall tiles reject placement even when their collider only represents an outline.
-        if (HasWallTileAt(candidate))
-            return false;
-
-        if (HasPlacementBlocker(ownerPosition, candidate, loadout.MarkRushBodyRadius, loadout.StrictRushBlockMask))
-            return false;
-
-        if (Vector2.Distance(ownerPosition, candidate) < GetMinPlayerDistance(loadout, data))
-            return false;
-
-        if (!IsLandingValid(loadout, data, candidate))
-            return false;
-
-        if (!HasRequiredSpacing(loadout, data, candidate))
-            return false;
-
-        return true;
-    }
-
-    private bool HasRequiredSpacing(LightningSpearLoadout loadout, LightningSpearSkill2Data data, Vector2 candidate)
-    {
-        float minSpacing = GetMinMarkSpacing(loadout, data);
-        if (minSpacing <= 0f)
-            return true;
-
-        float minSpacingSqr = minSpacing * minSpacing;
-        for (int i = activeMarks.Count - 1; i >= 0; i--)
-        {
-            LightningSpearMarkActor mark = activeMarks[i];
-            if (mark == null)
-            {
-                activeMarks.RemoveAt(i);
-                continue;
-            }
-
-            if (((Vector2)mark.transform.position - candidate).sqrMagnitude < minSpacingSqr)
-                return false;
-        }
-
-        for (int i = 0; i < pendingMarkSpawns.Count; i++)
-        {
-            if ((pendingMarkSpawns[i].position - candidate).sqrMagnitude < minSpacingSqr)
-                return false;
-        }
-
-        return true;
+        if (write < activeMarks.Count)
+            activeMarks.RemoveRange(write, activeMarks.Count - write);
     }
 
     private static void TryPlayAnimationTrigger(AbilitySystem system, AbilityDefinition definition, string trigger)
@@ -1738,10 +1542,10 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             return false;
 
         Vector2 markPosition = mark.transform.position;
-        if (!IsLandingValid(loadout, ResolveSkill2Data(loadout), markPosition))
+        if (!placementWorld.IsLandingValid(loadout, ResolveSkill2Data(loadout), markPosition))
             return false;
 
-        MonsterRoomArea2D ownerRoom = FindRoomContaining(ownerPosition);
+        MonsterRoomArea2D ownerRoom = placementWorld.FindRoomContaining(ownerPosition);
         MonsterRoomArea2D markRoom = ResolveMarkRoom(mark, markPosition);
         int blockerMask;
 
@@ -1757,7 +1561,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             blockerMask = loadout.StrictRushBlockMask;
         }
 
-        return !HasBlocker(ownerPosition, markPosition, GetMarkRushBodyRadius(loadout, data), blockerMask);
+        return !LightningSpearPlacementWorldQuery.HasBlocker(ownerPosition, markPosition, GetMarkRushBodyRadius(loadout, data), blockerMask);
     }
 
     private MonsterRoomArea2D ResolveMarkRoom(LightningSpearMarkActor mark, Vector2 markPosition)
@@ -1765,218 +1569,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         if (mark != null && mark.RoomArea != null && mark.RoomArea.Contains(markPosition))
             return mark.RoomArea;
 
-        return FindRoomContaining(markPosition);
-    }
-
-    private bool IsLandingValid(LightningSpearLoadout loadout, LightningSpearSkill2Data data, Vector2 position)
-    {
-        if (loadout == null)
-            return false;
-
-        float radius = GetLandingProbeRadius(loadout, data);
-
-        int blockedMask = loadout.LandingBlockedMask;
-        if (blockedMask != 0 &&
-            Physics2D.OverlapCircle(position, radius, blockedMask) != null)
-        {
-            return false;
-        }
-
-        return HasGroundTileAt(position) || HasRequiredGroundOverlap(loadout, position, radius);
-    }
-
-    private bool HasWallTileAt(Vector2 position)
-    {
-        ResolveGroundTilemaps();
-        for (int i = 0; i < wallTilemapCache.Count; i++)
-        {
-            Tilemap tilemap = wallTilemapCache[i];
-            if (tilemap != null && tilemap.isActiveAndEnabled && tilemap.gameObject.activeInHierarchy &&
-                tilemap.HasTile(tilemap.WorldToCell(position)))
-                return true;
-        }
-
-        return false;
-    }
-
-    private bool HasGroundTileAt(Vector2 position)
-    {
-        List<Tilemap> groundTilemaps = ResolveGroundTilemaps();
-        if (groundTilemaps.Count == 0)
-            return false;
-
-        for (int i = 0; i < groundTilemaps.Count; i++)
-        {
-            Tilemap tilemap = groundTilemaps[i];
-            if (!IsUsableGroundTilemap(tilemap))
-                continue;
-
-            if (tilemap.HasTile(tilemap.WorldToCell(position)))
-                return true;
-        }
-
-        return false;
-    }
-
-    private bool HasRequiredGroundOverlap(LightningSpearLoadout loadout, Vector2 position, float radius)
-    {
-        int requiredMask = loadout != null ? loadout.RequiredGroundLayers.value : 0;
-        if (requiredMask == 0)
-            return false;
-
-        return Physics2D.OverlapCircle(position, radius, requiredMask) != null;
-    }
-
-    private List<Tilemap> ResolveGroundTilemaps()
-    {
-        if (groundTilemapCacheFrame == Time.frameCount)
-            return groundTilemapCache;
-
-        groundTilemapCacheFrame = Time.frameCount;
-        groundTilemapCache.Clear();
-        wallTilemapCache.Clear();
-
-        int groundLayer = ResolveGroundLayer();
-        int wallLayer = LayerMask.NameToLayer("Wall");
-#if UNITY_2023_1_OR_NEWER || UNITY_6000_0_OR_NEWER
-        Tilemap[] tilemaps = Object.FindObjectsByType<Tilemap>(
-            FindObjectsInactive.Exclude,
-            FindObjectsSortMode.None);
-#else
-        Tilemap[] tilemaps = Object.FindObjectsOfType<Tilemap>();
-#endif
-        for (int i = 0; i < tilemaps.Length; i++)
-        {
-            Tilemap tilemap = tilemaps[i];
-            if (!IsUsableGroundTilemap(tilemap))
-                continue;
-
-            // Authored prototype Wall tilemaps also use the Ground physics layer.
-            if (tilemap.gameObject.layer == wallLayer || tilemap.name == "Wall")
-                wallTilemapCache.Add(tilemap);
-            else if (tilemap.gameObject.layer == groundLayer)
-                groundTilemapCache.Add(tilemap);
-        }
-
-        return groundTilemapCache;
-    }
-
-    private int ResolveGroundLayer()
-    {
-        if (cachedGroundLayer != int.MinValue)
-            return cachedGroundLayer;
-
-        int groundLayer = LayerMask.NameToLayer("Ground");
-        cachedGroundLayer = groundLayer >= 0 ? groundLayer : 7;
-        return cachedGroundLayer;
-    }
-
-    private static bool IsUsableGroundTilemap(Tilemap tilemap)
-    {
-        return tilemap != null && tilemap.isActiveAndEnabled && tilemap.gameObject.activeInHierarchy;
-    }
-
-    private static bool HasBlocker(Vector2 start, Vector2 end, float radius, int layerMask)
-    {
-        if (layerMask == 0)
-            return false;
-
-        Vector2 delta = end - start;
-        float distance = delta.magnitude;
-        if (distance <= 0.0001f)
-            return false;
-
-        Vector2 direction = delta / distance;
-        if (radius > 0f)
-        {
-            RaycastHit2D[] hits = Physics2D.CircleCastAll(start, radius, direction, distance, layerMask);
-            for (int i = 0; i < hits.Length; i++)
-            {
-                Collider2D collider = hits[i].collider;
-                if (collider == null)
-                    continue;
-
-                if (IsInitialPlacementOverlapMovingAway(start, direction, collider, hits[i]))
-                    continue;
-
-                return true;
-            }
-
-            return false;
-        }
-
-        return Physics2D.Linecast(start, end, layerMask).collider != null;
-    }
-
-    private static bool HasPlacementBlocker(Vector2 start, Vector2 end, float radius, int layerMask)
-    {
-        if (layerMask == 0)
-            return false;
-
-        Vector2 delta = end - start;
-        float distance = delta.magnitude;
-        if (distance <= 0.0001f)
-            return false;
-
-        Vector2 direction = delta / distance;
-        if (radius <= 0f)
-            return Physics2D.Linecast(start, end, layerMask).collider != null;
-
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(start, radius, direction, distance, layerMask);
-        for (int i = 0; i < hits.Length; i++)
-        {
-            Collider2D collider = hits[i].collider;
-            if (collider == null)
-                continue;
-
-            if (IsInitialPlacementOverlapMovingAway(start, direction, collider, hits[i]))
-                continue;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private static bool IsInitialPlacementOverlapMovingAway(
-        Vector2 start,
-        Vector2 direction,
-        Collider2D collider,
-        RaycastHit2D hit)
-    {
-        if (hit.distance > 0.001f && hit.fraction > 0.0001f)
-            return false;
-
-        Vector2 closest = collider.ClosestPoint(start);
-        Vector2 awayFromCollider = start - closest;
-        if (awayFromCollider.sqrMagnitude <= 0.000001f)
-            return false;
-
-        return Vector2.Dot(direction, awayFromCollider.normalized) >= -0.05f;
-    }
-
-    private MonsterRoomArea2D FindRoomContaining(Vector2 position)
-    {
-        MonsterRoomArea2D[] rooms = FindRooms();
-        for (int i = 0; i < rooms.Length; i++)
-        {
-            MonsterRoomArea2D room = rooms[i];
-            if (room != null && room.Contains(position))
-                return room;
-        }
-
-        return null;
-    }
-
-    private static MonsterRoomArea2D[] FindRooms()
-    {
-#if UNITY_2023_1_OR_NEWER
-        return Object.FindObjectsByType<MonsterRoomArea2D>(
-            FindObjectsInactive.Exclude,
-            FindObjectsSortMode.None);
-#else
-        return Object.FindObjectsOfType<MonsterRoomArea2D>();
-#endif
+        return placementWorld.FindRoomContaining(markPosition);
     }
 
     private bool IsSkill1Ready(LightningSpearLoadout loadout)

@@ -65,6 +65,12 @@ namespace UnityGAS
 
             ElementDamageResult[] elementBuildUps = CaptureElementBuildUps(elementSource, config);
             bool hasResolvedElementBuildUps = elementSource != null;
+            // Fixed-damage weapons may omit the physical provider but still own elemental stats.
+            IStatProvider elementProvider = statProvider ?? (elementSource != null
+                ? elementSource.GetComponent<IStatProvider>() ??
+                  AbilityStatProviderFactory.Create(elementSource.GetComponent<AbilitySystem>()) : null);
+            ElementDamageResult[] elementHpDamages = ElementHitDamageCalculator.Capture(
+                elementProvider, result.isCrit, result.hpDamageMultiplier);
 
             return new CombatDamageSnapshot(
                 finalHpDamage: result.hpDamage,
@@ -72,7 +78,8 @@ namespace UnityGAS
                 finalKnockbackImpulse: baseKnockback,
                 isCriticalHit: result.isCrit,
                 finalElementBuildUps: elementBuildUps,
-                hasResolvedElementBuildUps: hasResolvedElementBuildUps
+                hasResolvedElementBuildUps: hasResolvedElementBuildUps,
+                finalElementHpDamages: elementHpDamages
             );
         }
 
@@ -108,6 +115,54 @@ namespace UnityGAS
                 "produces applied element build-up. Element build-up is resolved from the attacker's " +
                 "ElementOffenseSource at CombatDamageAction application time.");
 #endif
+        }
+    }
+
+    /// <summary>Captures direct-hit HP channels independently from gauge build-up rules.</summary>
+    public static class ElementHitDamageCalculator
+    {
+        private static readonly StatId[] SourceStats =
+        {
+            StatId.BleedFinal, StatId.FireFinal, StatId.PoisonFinal, StatId.ElectricFinal
+        };
+        private static readonly string[] TagPaths =
+        {
+            "Tags/Element.Blood", "Tags/Element.Fire", "Tags/Element.Poison", "Tags/Element.Electric"
+        };
+        private static readonly GameplayTag[] ElementTags = new GameplayTag[4];
+
+        public static ElementDamageResult[] Capture(IStatProvider provider, bool isCritical,
+            float? hpDamageMultiplier = null)
+        {
+            if (provider == null)
+                return System.Array.Empty<ElementDamageResult>();
+
+            float multiplier = hpDamageMultiplier ?? (Mathf.Max(0f, provider.Get(StatId.FinalMul)) *
+                (isCritical ? Mathf.Max(0f, provider.Get(StatId.CritMultiplier)) : 1f));
+            List<ElementDamageResult> result = null;
+            for (int i = 0; i < SourceStats.Length; i++)
+            {
+                float damage = Mathf.Max(0f, provider.Get(SourceStats[i])) * Mathf.Max(0f, multiplier);
+                if (damage <= 0f)
+                    continue;
+                if (ElementTags[i] == null)
+                    ElementTags[i] = Resources.Load<GameplayTag>(TagPaths[i]);
+                if (ElementTags[i] == null)
+                    continue;
+                result ??= new List<ElementDamageResult>(4);
+                result.Add(new ElementDamageResult { elementType = ElementTags[i], damage = damage });
+            }
+            return result != null ? result.ToArray() : System.Array.Empty<ElementDamageResult>();
+        }
+
+        public static float Sum(float baseDamage, ElementDamageResult[] elements)
+        {
+            float total = Mathf.Max(0f, baseDamage);
+            if (elements != null)
+                for (int i = 0; i < elements.Length; i++)
+                    if (elements[i].elementType != null)
+                        total += Mathf.Max(0f, elements[i].damage);
+            return total;
         }
     }
 }

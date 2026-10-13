@@ -16,6 +16,14 @@ public sealed class PopupStackState
         return stack.ToArray();
     }
 
+    // Only for synchronous queries that do not push/pop/close UI while iterating.
+    // Mutation paths keep Snapshot so callbacks cannot change their traversal.
+    public IReadOnlyList<IStackableUI> ReadEntries()
+    {
+        PruneDeadEntries();
+        return stack;
+    }
+
     public void Push(IStackableUI ui)
     {
         if (ui == null)

@@ -77,6 +77,7 @@ public class ItemSlotUI : MonoBehaviour,
     private bool isPointerPressed;
     private bool isDraggingThisSlot;
     private InventoryScreen ownerInventoryScreen;
+    private bool presentationInitialized;
 
     public RectTransform SlotRect
     {
@@ -96,6 +97,14 @@ public class ItemSlotUI : MonoBehaviour,
 
     private void Awake()
     {
+        EnsurePresentationInitialized();
+    }
+
+    private void EnsurePresentationInitialized()
+    {
+        if (presentationInitialized)
+            return;
+        presentationInitialized = true;
         if (slotRect == null)
             slotRect = transform as RectTransform;
 
@@ -121,6 +130,7 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void Bind(IItemContainer container, int index)
     {
+        EnsurePresentationInitialized();
         if (this.container != null)
             this.container.OnChanged -= Refresh;
 
@@ -136,6 +146,36 @@ public class ItemSlotUI : MonoBehaviour,
             this.container.OnChanged += Refresh;
 
         Refresh();
+    }
+
+    // PlayerInventoryPanelView calls this reusable-view boundary before disposing its adapters.
+    // Generic OnDisable retains the chest selection/snapshot binding semantics above.
+    public void ClearBinding()
+    {
+        EnsurePresentationInitialized();
+        IItemContainer previousContainer = container;
+        int previousIndex = index;
+        bool ownedDrag = isDraggingThisSlot ||
+            (previousContainer != null && ItemDragContext.Source == previousContainer && ItemDragContext.SourceIndex == previousIndex);
+        if (previousContainer != null)
+            previousContainer.OnChanged -= Refresh;
+        container = null;
+        index = -1;
+        selectionClicked = null;
+        chestSelectionOverlay = false;
+        wasChestReturnCandidate = false;
+        SetSelectionBlocked(false);
+        isPointerOver = false;
+        isPointerPressed = false;
+        isDraggingThisSlot = false;
+        ownerInventoryScreen = null;
+        ItemHoverController.Instance?.UnhoverSlot(SlotRect);
+        if (ownedDrag)
+            ItemDragContext.CancelActiveDragSession();
+        MouseCursorService.Instance?.SetDragging(this, false);
+        MouseCursorService.Instance?.SetInteractable(this, false);
+        ClearIconAndLevel();
+        SetHoverHighlightImmediate(false);
     }
 
     public void Refresh()

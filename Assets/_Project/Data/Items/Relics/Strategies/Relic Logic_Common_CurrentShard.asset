@@ -11,14 +11,18 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe2f2aa3b7d897b4882187f548f45df1, type: 3}
   m_Name: Relic Logic_Common_CurrentShard
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
+  effectTemplate: 
   entries:
   - attribute: {fileID: 11400000, guid: f79c86d599c44c8e95bdf6949914f4e3, type: 2}
-    displayNameOverride: "전기 속성"
+    displayNameOverride: "\uC804\uAE30 \uC18D\uC131"
     type: 0
-    value: 2
+    value: 1
     valueByLevel:
+    - 1
     - 2
+    - 3
     - 4
+    - 5
     - 6
     duration: 0

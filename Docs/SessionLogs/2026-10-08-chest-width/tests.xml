@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="11" result="Passed" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-08 07:59:10Z" end-time="2026-10-08 07:59:13Z" duration="3.4563824">
+  <test-suite type="TestSuite" id="2124" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="944" result="Passed" start-time="2026-10-08 07:59:10Z" end-time="2026-10-08 07:59:13Z" duration="3.456382" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2120" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="937" result="Passed" start-time="2026-10-08 07:59:10Z" end-time="2026-10-08 07:59:13Z" duration="3.402940" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="36944" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1062" name="ChestRevealWidthRegressionPlayModeTests" fullname="ChestRevealWidthRegressionPlayModeTests" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-08 07:59:10Z" end-time="2026-10-08 07:59:11Z" duration="1.159468" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="1066" name="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" fullname="ChestRevealWidthRegressionPlayModeTests.AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-08 07:59:11Z" end-time="2026-10-08 07:59:11Z" duration="0.379610" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1063" name="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(4)" fullname="ChestRevealWidthRegressionPlayModeTests.AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(4)" methodname="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1986969474" result="Passed" start-time="2026-10-08 07:59:11Z" end-time="2026-10-08 07:59:11Z" duration="0.253094" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1064" name="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(5)" fullname="ChestRevealWidthRegressionPlayModeTests.AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(5)" methodname="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="302321597" result="Passed" start-time="2026-10-08 07:59:11Z" end-time="2026-10-08 07:59:11Z" duration="0.044612" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1065" name="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(8)" fullname="ChestRevealWidthRegressionPlayModeTests.AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(8)" methodname="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1245680465" result="Passed" start-time="2026-10-08 07:59:11Z" end-time="2026-10-08 07:59:11Z" duration="0.042621" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1072" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-08 07:59:11Z" end-time="2026-10-08 07:59:11Z" duration="0.050441" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1068" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(False,56.0f,100.0f,13.0f)" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(False,56.0f,100.0f,13.0f)" methodname="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1178567420" result="Passed" start-time="2026-10-08 07:59:11Z" end-time="2026-10-08 07:59:11Z" duration="0.004402" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1069" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,-1.0f,56.0f)" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,-1.0f,56.0f)" methodname="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1747685869" result="Passed" start-time="2026-10-08 07:59:11Z" end-time="2026-10-08 07:59:11Z" duration="0.000636" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1070" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,80.0f,80.0f)" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,80.0f,80.0f)" methodname="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="899291849" result="Passed" start-time="2026-10-08 07:59:11Z" end-time="2026-10-08 07:59:11Z" duration="0.000668" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1071" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,40.0f,56.0f)" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,40.0f,56.0f)" methodname="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="209861562" result="Passed" start-time="2026-10-08 07:59:11Z" end-time="2026-10-08 07:59:11Z" duration="0.000734" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1067" name="SelectionRerollAndReopen_KeepTheCapturedFrameUntilExplicitRelease" fullname="ChestRevealWidthRegressionPlayModeTests.SelectionRerollAndReopen_KeepTheCapturedFrameUntilExplicitRelease" methodname="SelectionRerollAndReopen_KeepTheCapturedFrameUntilExplicitRelease" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="635177535" result="Passed" start-time="2026-10-08 07:59:11Z" end-time="2026-10-08 07:59:11Z" duration="0.080046" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1745" name="PlayerControlAndChestRegressionPlayModeTests" fullname="PlayerControlAndChestRegressionPlayModeTests" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" testcasecount="43" result="Passed" start-time="2026-10-08 07:59:11Z" end-time="2026-10-08 07:59:13Z" duration="2.097816" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1776" name="ChestSelection_AllAuthoredChestPrefabsHavePanelAndConfirmReferences" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_AllAuthoredChestPrefabsHavePanelAndConfirmReferences" methodname="ChestSelection_AllAuthoredChestPrefabsHavePanelAndConfirmReferences" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="860224633" result="Passed" start-time="2026-10-08 07:59:11Z" end-time="2026-10-08 07:59:12Z" duration="0.579127" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1775" name="ChestSelection_CompletionKeepsDimmedOpenChestWithoutCollisionOrReopening" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_CompletionKeepsDimmedOpenChestWithoutCollisionOrReopening" methodname="ChestSelection_CompletionKeepsDimmedOpenChestWithoutCollisionOrReopening" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="311770495" result="Passed" start-time="2026-10-08 07:59:12Z" end-time="2026-10-08 07:59:12Z" duration="0.019495" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1794" name="ChestSelection_SlotsMoveAndReturnInOriginalOrderWhilePaused_ClosingCancelsSelection" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_SlotsMoveAndReturnInOriginalOrderWhilePaused_ClosingCancelsSelection" methodname="ChestSelection_SlotsMoveAndReturnInOriginalOrderWhilePaused_ClosingCancelsSelection" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="277086582" result="Passed" start-time="2026-10-08 07:59:12Z" end-time="2026-10-08 07:59:13Z" duration="1.462687" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

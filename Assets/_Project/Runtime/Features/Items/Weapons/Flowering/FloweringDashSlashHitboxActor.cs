@@ -16,6 +16,7 @@ public sealed class FloweringDashSlashHitboxSpawnContext : AttackSpawnContext
 public sealed class FloweringDashSlashHitboxActor : AttackBase
 {
     private readonly HashSet<int> hitTargetIds = new();
+    private readonly List<Collider2D> overlapResults = new(16);
     private BoxCollider2D boxCollider;
     private Vector2 lineOfSightSource;
     private Vector2 hitboxSize = Vector2.one;
@@ -71,13 +72,18 @@ public sealed class FloweringDashSlashHitboxActor : AttackBase
 
     private void PerformOverlapScan()
     {
-        Collider2D[] results = Physics2D.OverlapBoxAll(transform.position, hitboxSize, rotationDegrees);
-        if (results == null || results.Length == 0)
+        // Preserve OverlapBoxAll's default layer/depth/trigger rules and native result order.
+        ContactFilter2D filter = new();
+        filter.SetLayerMask(Physics2D.DefaultRaycastLayers);
+        filter.SetDepth(float.NegativeInfinity, float.PositiveInfinity);
+        filter.useTriggers = Physics2D.queriesHitTriggers;
+        int count = Physics2D.OverlapBox(transform.position, hitboxSize, rotationDegrees, filter, overlapResults);
+        if (count == 0)
             return;
 
-        for (int i = 0; i < results.Length; i++)
+        for (int i = 0; i < count; i++)
         {
-            Collider2D other = results[i];
+            Collider2D other = overlapResults[i];
             if (other == null)
                 continue;
 
@@ -90,6 +96,10 @@ public sealed class FloweringDashSlashHitboxActor : AttackBase
                 continue;
 
             if (!MatchesDamageLayer(other, targetRoot))
+                continue;
+
+            // Check membership without consuming a first hit before the line-of-sight gate.
+            if (hitOncePerTarget && hitTargetIds.Contains(targetRoot.GetInstanceID()))
                 continue;
 
             if (!HasLineOfSight(targetRoot, other))

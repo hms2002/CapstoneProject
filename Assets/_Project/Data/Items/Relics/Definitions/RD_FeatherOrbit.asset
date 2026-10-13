@@ -16,7 +16,10 @@ MonoBehaviour:
   displayName: "\uD558\uC580 \uAE43\uD138"
   icon: {fileID: 21300000, guid: 07e2e0377cda6d94eb4680ca1b68ab8c, type: 3}
   rarity: 1
-  description: "플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 공격력의 35/45/55/65/75% 피해를 주며, 이동속도가 높을수록 더 빠르게 회전합니다."
+  description: "\uD50C\uB808\uC774\uC5B4 \uC8FC\uC704\uB97C \uB3C4\uB294 \uAE43\uD138\uC744
+    \uC0DD\uC131\uD569\uB2C8\uB2E4. \uB808\uBCA8\uC5D0 \uB530\uB77C \uACE0\uC815
+    \uD53C\uD574 3/4/5/6/7\uC744 \uC8FC\uBA70, \uC774\uB3D9\uC18D\uB3C4\uAC00 \uB192\uC744\uC218\uB85D
+    \uB354 \uBE60\uB974\uAC8C \uD68C\uC804\uD569\uB2C8\uB2E4."
   maxLevel: 5
   dropLevel: 1
   logic: {fileID: 11400000, guid: 74bcbc64a07fc854ca2dade608e8c24c, type: 2}

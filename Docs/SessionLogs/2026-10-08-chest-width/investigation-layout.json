@@ -1,0 +1,30 @@
+{
+    "unity": "6000.4.2f1",
+    "before": {
+        "label": "before-31766cfc",
+        "inactiveRightWidth": 56.0,
+        "activeRightWidth": 56.0,
+        "capturedWidth": 511.0,
+        "activeNaturalWidth": 511.0,
+        "gridX": 58.0,
+        "gridRight": 453.0,
+        "rightX": 455.0,
+        "gridOverlap": 0.0,
+        "fourthSlotRight": 443.0,
+        "fourthSlotOverlap": 0.0
+    },
+    "after": {
+        "label": "after-31766cfc",
+        "inactiveRightWidth": 13.0,
+        "activeRightWidth": 56.0,
+        "capturedWidth": 468.0,
+        "activeNaturalWidth": 511.0,
+        "gridX": 56.0,
+        "gridRight": 451.0,
+        "rightX": 412.0,
+        "gridOverlap": 39.0,
+        "fourthSlotRight": 441.0,
+        "fourthSlotOverlap": 29.0
+    },
+    "passed": true
+}

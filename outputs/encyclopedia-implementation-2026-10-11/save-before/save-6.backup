@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-10 11:11:55Z" end-time="2026-10-10 11:11:56Z" duration="1.0075809">
+  <test-suite type="TestSuite" id="2174" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="985" result="Passed" start-time="2026-10-10 11:11:55Z" end-time="2026-10-10 11:11:56Z" duration="1.007581" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2170" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="978" result="Passed" start-time="2026-10-10 11:11:55Z" end-time="2026-10-10 11:11:56Z" duration="0.964915" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="58376" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1073" name="CombatFeelLootQuestPlayModeTests" fullname="CombatFeelLootQuestPlayModeTests" classname="CombatFeelLootQuestPlayModeTests" runstate="Runnable" testcasecount="76" result="Passed" start-time="2026-10-10 11:11:55Z" end-time="2026-10-10 11:11:55Z" duration="0.677702" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1151" name="PlayerPopupColors_OverrideDamageStylesButPreserveOtherTargets" fullname="CombatFeelLootQuestPlayModeTests.PlayerPopupColors_OverrideDamageStylesButPreserveOtherTargets" methodname="PlayerPopupColors_OverrideDamageStylesButPreserveOtherTargets" classname="CombatFeelLootQuestPlayModeTests" runstate="Runnable" seed="1720424801" result="Passed" start-time="2026-10-10 11:11:55Z" end-time="2026-10-10 11:11:55Z" duration="0.046278" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1508" name="MonsterHealthAndWeaponSkillBalancePlayModeTests" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" testcasecount="124" result="Passed" start-time="2026-10-10 11:11:55Z" end-time="2026-10-10 11:11:56Z" duration="0.233179" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <output><![CDATA[[CursorDiagnostic] phase=display-stable-2s frame=8 screen=640x480 mode=Windowed focused=False visible=True lock=None domain=Combat/Default hiddenOwners=0 backend=UnityCursorAPI cursorMode=Auto texture=light_cursor_spritesheet_31_Cursor_22x22 hotspot=(11.00, 11.00)
+]]></output>
+        <test-case id="1578" name="CrimsonDamage_MissingSourceDoesNotProduceFlatDamage" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.CrimsonDamage_MissingSourceDoesNotProduceFlatDamage" methodname="CrimsonDamage_MissingSourceDoesNotProduceFlatDamage" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="1103111048" result="Passed" start-time="2026-10-10 11:11:55Z" end-time="2026-10-10 11:11:55Z" duration="0.008637" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1577" name="CrimsonDamage_SeparatesNormalIgniteAndSkill2ScalingAndPreservesPostProcessing" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.CrimsonDamage_SeparatesNormalIgniteAndSkill2ScalingAndPreservesPostProcessing" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-10 11:11:55Z" end-time="2026-10-10 11:11:56Z" duration="0.209731" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1575" name="CrimsonDamage_SeparatesNormalIgniteAndSkill2ScalingAndPreservesPostProcessing(5.0f,65.0f,260.0f,10.0f,30.0f)" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.CrimsonDamage_SeparatesNormalIgniteAndSkill2ScalingAndPreservesPostProcessing(5.0f,65.0f,260.0f,10.0f,30.0f)" methodname="CrimsonDamage_SeparatesNormalIgniteAndSkill2ScalingAndPreservesPostProcessing" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="723065791" result="Passed" start-time="2026-10-10 11:11:55Z" end-time="2026-10-10 11:11:56Z" duration="0.174262" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1576" name="CrimsonDamage_SeparatesNormalIgniteAndSkill2ScalingAndPreservesPostProcessing(10.0f,84.0f,338.0f,13.0f,39.0f)" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.CrimsonDamage_SeparatesNormalIgniteAndSkill2ScalingAndPreservesPostProcessing(10.0f,84.0f,338.0f,13.0f,39.0f)" methodname="CrimsonDamage_SeparatesNormalIgniteAndSkill2ScalingAndPreservesPostProcessing" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="1543807728" result="Passed" start-time="2026-10-10 11:11:56Z" end-time="2026-10-10 11:11:56Z" duration="0.004293" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

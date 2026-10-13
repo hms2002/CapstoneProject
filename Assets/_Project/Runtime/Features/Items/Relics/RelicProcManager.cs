@@ -6,13 +6,14 @@ using Object = UnityEngine.Object;
 /// <summary>
 /// 책임 :
 /// - 장착된 유물 proc 집합을 관리하고, 공용 gameplay event relay를 통해 받은 이벤트를 각 proc에 분배한다.
-/// - 유물 개별 구현이 ASC 이벤트 채널을 직접 구독하지 않게 만들어 proc 등록/해제와 이벤트 소비를 한 계층에 모은다.
+/// - 일반 gameplay event는 relay로 전달하고, 기능별 상태/수명 구독은 등록된 proc이 소유하여 Dispose에서 정리한다.
 /// </summary>
 public class RelicProcManager : MonoBehaviour, IAbilityGameplayEventListener
 {
     [SerializeField] private AbilitySystem abilitySystem;
     [SerializeField] private AbilityGameplayEventRelay gameplayEventRelay;
     private readonly List<IRelicProc> procs = new();
+    public IReadOnlyList<IRelicProc> RegisteredProcs => procs;
 
     private void Update()
     {
@@ -40,6 +41,18 @@ public class RelicProcManager : MonoBehaviour, IAbilityGameplayEventListener
     private void OnDisable()
     {
         gameplayEventRelay?.Unregister(this);
+    }
+
+    private void OnDestroy()
+    {
+        gameplayEventRelay?.Unregister(this);
+        while (procs.Count > 0)
+        {
+            int index = procs.Count - 1;
+            var proc = procs[index];
+            procs.RemoveAt(index);
+            proc?.Dispose();
+        }
     }
 
     public void HandleGameplayEvent(GameplayTag tag, in AbilityEventData data)

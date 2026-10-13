@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-09-17
+last_reviewed: 2026-10-10
 ---
 
 # Burn Status And Crimson Boundary Weapon
@@ -68,6 +68,7 @@ The source table labels `홍련의 왕관` as maximum level 5 but defines only t
 
 - Attack / left click: cooldown 0.5 seconds, Fire Damage, Burn 3, destroy on enemy or wall. Every successful enemy or wall hit applies the same shot payload and Burn 3 to nearby targets in a diameter-2.5 top-down ellipse (Y scale 0.70), excluding the already-hit direct target, owner, dead enemies and targets blocked by WallLayers. Target roots are deduplicated and the impact is claimed before secondary damage; bursts do not recursively explode. Wall impact uses the same area damage and Burn; the impact guard prevents duplicate damage while wall line-of-sight blocks targets behind the wall. The existing Fireball_Hit prefab uses Fire_Explosion frames with an approximately 2.5 x 1.75 visible maximum footprint, remains upright, and retains Crimson runtime ownership/cleanup. Ignite relic homing shots reuse this same normal-projectile behavior.
 - Skill 1 / right click: cooldown 5 seconds, consumes up to 5 Burn from every visible Burn target, and creates overlapping diameter-5 explosions. With no eligible visible target the runtime state consumes input before ability commit, so cooldown does not start.
+- `한계선의 잔불 추격` / Ignite kill shot: `SpawnRelicKillShot` selects the nearest living enemy at spawn, then `CrimsonBoundaryProjectile2D` steers toward that target's current position on each attack tick, turning at up to 720 degrees/second. Movement, sprite rotation and both collision sweeps share the steered direction; speed, lifetime, damage and Burn retain the basic-projectile data. A dead, inactive, disabled or destroyed target triggers an immediate nearest-active-enemy search within radius 40 of the projectile's current position, reusing `WeaponExclusiveRelics.FindEnemies`. A valid current target is retained even if another enemy becomes closer. Empty searches leave the last heading intact and retry every 0.1 gameplay seconds while the original lifetime remains; zero-delta ticks do not search or steer. The projectile's nonserialized homing flag remains set when its target disappears, allowing retries and dead-hurtbox exclusion. `Setup` clears the flag, target and retry timer before the relic supplies a new target; normal attacks do not acquire targets. Existing weapon-transient cleanup ownership is unchanged.
 - Skill 2 / Q: cooldown 12 seconds, locks cursor impact position, warns for 0.6 seconds, and consumes each target's full Burn. Its normalized skill Fire value is multiplied by 13 for base damage and by 2 per consumed stack. Both the falling explosion and Crimson Lava Ball relic path use these Skill-2-only coefficients; Skill 1 retains its separate authored burn-consumption multiplier of 6.
 
 ## Lean Presentation Sorting

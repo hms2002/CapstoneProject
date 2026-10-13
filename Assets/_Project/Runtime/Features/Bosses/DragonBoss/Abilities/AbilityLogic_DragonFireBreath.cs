@@ -298,38 +298,55 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
         AbilitySpec spec)
     {
         dragon.PlayPatternTrigger(DragonAnimationKeys.FirePrepare);
-        ConeAimSnapshot aim = default;
+        ConeAimSnapshot aim = ResolveAimSnapshot(dragon, syncFacing: true);
         List<FollowedPresentationVisual> inhalePrepareVisuals = SpawnInhalePreparePresentation(dragon);
+        float trackingSeconds = warningTelegraphStyle != null && warningTelegraphStyle.blinkFrequency > 0f
+            ? Mathf.Max(0f, prepareSeconds) * Mathf.Clamp01(warningTelegraphStyle.blinkStartNormalized)
+            : prepareSeconds;
+        float warningStartTime = Time.time;
+        bool facingLocked = false;
 
         try
         {
-            float elapsed = 0f;
-            while (elapsed < prepareSeconds)
+            try
             {
-                if (IsBreathCancelled(dragon, spec))
-                    yield break;
+                float elapsed = 0f;
+                while (elapsed < prepareSeconds)
+                {
+                    if (IsBreathCancelled(dragon, spec))
+                        yield break;
 
-                aim = ResolveAimSnapshot(dragon, syncFacing: true);
-                UpdateFollowedPresentationVisuals(inhalePrepareVisuals, dragon, aim.FireDirection);
-                ShowOrUpdateWarningTelegraph(telegraphService, aim, prepareSeconds);
-                elapsed += Time.deltaTime;
-                yield return null;
+                    // Match the view's uncurved progress clock; blinking commits the last tracked aim.
+                    if (!facingLocked && Time.time - warningStartTime >= trackingSeconds)
+                    {
+                        dragon.PushFaceTargetLock();
+                        facingLocked = true;
+                    }
+
+                    if (!facingLocked)
+                        aim = ResolveAimSnapshot(dragon, syncFacing: true);
+                    UpdateFollowedPresentationVisuals(inhalePrepareVisuals, dragon, aim.FireDirection);
+                    ShowOrUpdateWarningTelegraph(telegraphService, aim, prepareSeconds);
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
             }
-        }
-        finally
-        {
-            ReleaseFollowedPresentationVisuals(inhalePrepareVisuals);
-        }
+            finally
+            {
+                ReleaseFollowedPresentationVisuals(inhalePrepareVisuals);
+            }
 
-        if (IsBreathCancelled(dragon, spec))
-            yield break;
+            if (IsBreathCancelled(dragon, spec))
+                yield break;
 
-        aim = ResolveAimSnapshot(dragon, syncFacing: true);
-        ShowOrUpdateWarningTelegraph(telegraphService, aim, prepareSeconds);
+            if (!facingLocked)
+            {
+                aim = ResolveAimSnapshot(dragon, syncFacing: true);
+                ShowOrUpdateWarningTelegraph(telegraphService, aim, prepareSeconds);
+                dragon.PushFaceTargetLock();
+                facingLocked = true;
+            }
 
-        dragon.PushFaceTargetLock();
-        try
-        {
             yield return WaitForSecondsUnlessCancelled(preFireDelaySeconds, spec);
             if (IsBreathCancelled(dragon, spec))
                 yield break;
@@ -341,7 +358,8 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
         }
         finally
         {
-            dragon.PopFaceTargetLock();
+            if (facingLocked)
+                dragon.PopFaceTargetLock();
         }
     }
 

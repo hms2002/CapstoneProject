@@ -1,0 +1,36 @@
+{
+  "protectedFiles": [
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemTab.cs",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemLeftPage.cs",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemRightPage.cs",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\GlobalUIRoot.prefab",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Encyclopedia\\EncyclopediaCatalog.asset",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaAffectionRewardView.cs",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Tests\\PlayMode\\Procedural\\EncyclopediaCreaturePlayModeTests.cs",
+      "unchanged": true
+    }
+  ],
+  "postTestPrefabBytesUnchanged": true,
+  "sourceWhitespaceAndMarkersPassed": true,
+  "markdownLinksPassed": true,
+  "presentationHtmlChanged": false
+}

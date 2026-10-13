@@ -199,6 +199,305 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(CrimsonBoundaryProjectile2D.ImpactBurstDiameter, Is.EqualTo(2.5f));
     }
 
+    [Test]
+    public void CrimsonHoming_MovingTargetCurvesAtBoundedSpeedAndKeepsFlightRotation()
+    {
+        var root = new GameObject("Crimson homing probe");
+        root.transform.position = new Vector3(10000f, 10000f, 0f);
+        try
+        {
+            var projectile = CreateCrimsonFlightProbe(root, out var context);
+            var target = new GameObject("Moving homing target");
+            target.transform.SetParent(root.transform, false);
+            target.transform.localPosition = Vector3.right * 10f;
+            projectile.SetHomingTarget(target.transform);
+            TickCrimsonFlight(projectile, 0.02f);
+
+            target.transform.localPosition = new Vector3(-10f, 10f);
+            Vector3 start = projectile.transform.position;
+            TickCrimsonFlight(projectile, 0.02f);
+            Vector2 movement = projectile.transform.position - start;
+            float firstAngle = Mathf.DeltaAngle(0f, projectile.transform.eulerAngles.z);
+            Assert.That(firstAngle, Is.GreaterThan(0f).And.LessThanOrEqualTo(14.5f),
+                "A reversed target must bend the path rather than snap it toward the new position.");
+            Assert.That(movement.magnitude, Is.EqualTo(context.speed * 0.02f).Within(0.002f));
+            Assert.That(Vector2.Dot(movement.normalized, projectile.transform.right), Is.EqualTo(1f).Within(0.001f));
+
+            TickCrimsonFlight(projectile, 0.02f);
+            float secondAngle = Mathf.DeltaAngle(0f, projectile.transform.eulerAngles.z);
+            Assert.That(secondAngle, Is.GreaterThan(firstAngle));
+            Assert.That(secondAngle - firstAngle, Is.LessThanOrEqualTo(14.5f));
+            target.transform.localPosition = new Vector3(-10f, -10f);
+            TickCrimsonFlight(projectile, 0.02f);
+            float changedAngle = Mathf.DeltaAngle(0f, projectile.transform.eulerAngles.z);
+            Assert.That(changedAngle, Is.LessThan(secondAngle), "Steering must use the target's current position.");
+
+            Vector3 pausedPosition = projectile.transform.position;
+            float pausedAngle = projectile.transform.eulerAngles.z;
+            target.transform.localPosition = Vector3.up * 10f;
+            TickCrimsonFlight(projectile, 0f);
+            Assert.That(projectile.transform.position, Is.EqualTo(pausedPosition));
+            Assert.That(Mathf.Abs(Mathf.DeltaAngle(pausedAngle, projectile.transform.eulerAngles.z)), Is.LessThan(0.01f));
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
+
+    [Test]
+    public void CrimsonBasicFlight_StaysStraightAndSetupClearsPreviousHomingTarget()
+    {
+        var root = new GameObject("Crimson straight flight probe");
+        root.transform.position = new Vector3(10000f, 10000f, 0f);
+        try
+        {
+            var projectile = CreateCrimsonFlightProbe(root, out var context);
+            var target = Object.Instantiate(Load<GameObject>(Prefabs + "CommonCorridor/GoblinWarrior.prefab"),
+                root.transform.position + Vector3.up * 10f, Quaternion.identity, root.transform);
+            Physics2D.SyncTransforms();
+            Vector3 start = projectile.transform.position;
+            TickCrimsonFlight(projectile, 0.02f);
+            Assert.That(projectile.transform.position.x - start.x, Is.EqualTo(context.speed * 0.02f).Within(0.002f));
+            Assert.That(projectile.transform.position.y, Is.EqualTo(start.y));
+
+            projectile.SetHomingTarget(target.transform);
+            projectile.Setup(context, 0, null);
+            start = projectile.transform.position;
+            TickCrimsonFlight(projectile, 0.02f);
+            Assert.That(projectile.transform.position.x - start.x, Is.EqualTo(context.speed * 0.02f).Within(0.002f));
+            Assert.That(projectile.transform.position.y, Is.EqualTo(start.y));
+            Assert.That(Mathf.DeltaAngle(0f, projectile.transform.eulerAngles.z), Is.EqualTo(0f).Within(0.01f));
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
+
+    [TestCase("destroyed")]
+    [TestCase("inactive")]
+    [TestCase("dead")]
+    public void CrimsonHoming_LostTargetContinuesAlongLastHeading(string targetState)
+    {
+        var root = new GameObject("Crimson lost target probe");
+        root.transform.position = new Vector3(10000f, 10000f, 0f);
+        try
+        {
+            var projectile = CreateCrimsonFlightProbe(root, out var context);
+            var target = Object.Instantiate(Load<GameObject>(Prefabs + "CommonCorridor/GoblinWarrior.prefab"),
+                root.transform.position + Vector3.up * 10f, Quaternion.identity, root.transform);
+            projectile.SetHomingTarget(target.transform);
+            TickCrimsonFlight(projectile, 0.02f);
+            target.transform.localPosition = Vector3.down * 10f;
+            if (targetState == "destroyed") Object.DestroyImmediate(target);
+            else if (targetState == "inactive") target.SetActive(false);
+            else typeof(Enemy).GetField("isDead", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(target.GetComponent<Enemy>(), true);
+
+            Vector3 start = projectile.transform.position;
+            Vector2 heading = projectile.transform.right;
+            float angle = projectile.transform.eulerAngles.z;
+            TickCrimsonFlight(projectile, 0.02f);
+            Vector2 movement = projectile.transform.position - start;
+            Assert.That(movement.magnitude, Is.EqualTo(context.speed * 0.02f).Within(0.002f));
+            Assert.That(Vector2.Dot(movement.normalized, heading), Is.EqualTo(1f).Within(0.001f));
+            Assert.That(Mathf.Abs(Mathf.DeltaAngle(angle, projectile.transform.eulerAngles.z)), Is.LessThan(0.01f));
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
+
+    [TestCase("dead")]
+    [TestCase("destroyed")]
+    [TestCase("inactive")]
+    [TestCase("disabled")]
+    public void CrimsonHoming_LostTargetReacquiresNearestLivingEnemyFromCurrentPosition(string targetState)
+    {
+        var root = new GameObject("Crimson reacquire probe");
+        root.transform.position = new Vector3(10000f, 10000f, 0f);
+        const BindingFlags hidden = BindingFlags.Instance | BindingFlags.NonPublic;
+        GameObject SpawnEnemy(Vector3 offset) => Object.Instantiate(
+            Load<GameObject>(Prefabs + "CommonCorridor/GoblinWarrior.prefab"),
+            root.transform.position + offset, Quaternion.identity, root.transform);
+        try
+        {
+            var projectile = CreateCrimsonFlightProbe(root, out _);
+            var previous = SpawnEnemy(new Vector3(10f, -10f));
+            Transform previousTransform = previous.transform;
+            projectile.SetHomingTarget(previousTransform);
+            projectile.transform.position += Vector3.right * 10f;
+            var nearestFromFlight = SpawnEnemy(new Vector3(15f, 5f));
+            SpawnEnemy(new Vector3(0f, 1f)); // Near the launch position, farther from the in-flight projectile.
+            var dead = SpawnEnemy(new Vector3(11f, 2f));
+            typeof(Enemy).GetField("isDead", hidden).SetValue(dead.GetComponent<Enemy>(), true);
+            SpawnEnemy(new Vector3(11f, -2f)).GetComponent<Enemy>().enabled = false;
+            if (targetState == "destroyed") Object.DestroyImmediate(previous);
+            else if (targetState == "inactive") previous.SetActive(false);
+            else if (targetState == "disabled") previous.GetComponent<Enemy>().enabled = false;
+            else typeof(Enemy).GetField("isDead", hidden).SetValue(previous.GetComponent<Enemy>(), true);
+            Physics2D.SyncTransforms();
+
+            FieldInfo targetField = typeof(CrimsonBoundaryProjectile2D).GetField("homingTarget", hidden);
+            Vector3 pausedPosition = projectile.transform.position;
+            TickCrimsonFlight(projectile, 0f);
+            Assert.That(targetField.GetValue(projectile), Is.SameAs(previousTransform),
+                "A zero delta must not search for a replacement target.");
+            Assert.That(projectile.transform.position, Is.EqualTo(pausedPosition));
+            TickCrimsonFlight(projectile, 0.02f);
+            Assert.That(targetField.GetValue(projectile), Is.SameAs(nearestFromFlight.transform),
+                "Reacquisition must use the projectile's current position and exclude dead or disabled enemies.");
+            Assert.That(Mathf.DeltaAngle(0f, projectile.transform.eulerAngles.z), Is.GreaterThan(0f).And.LessThan(45f));
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
+
+    [Test]
+    public void CrimsonHoming_KeepsValidTargetWhenCloserEnemyAppears()
+    {
+        var root = new GameObject("Crimson retained target probe");
+        root.transform.position = new Vector3(10000f, 10000f, 0f);
+        try
+        {
+            var projectile = CreateCrimsonFlightProbe(root, out _);
+            var target = Object.Instantiate(Load<GameObject>(Prefabs + "CommonCorridor/GoblinWarrior.prefab"),
+                root.transform.position + Vector3.up * 10f, Quaternion.identity, root.transform);
+            projectile.SetHomingTarget(target.transform);
+            Physics2D.SyncTransforms();
+            TickCrimsonFlight(projectile, 0.02f);
+            float firstAngle = Mathf.DeltaAngle(0f, projectile.transform.eulerAngles.z);
+            Object.Instantiate(Load<GameObject>(Prefabs + "CommonCorridor/GoblinWarrior.prefab"),
+                root.transform.position + Vector3.right * 2f, Quaternion.identity, root.transform);
+            target.transform.localPosition = Vector3.down * 10f;
+            Physics2D.SyncTransforms();
+            TickCrimsonFlight(projectile, 0.02f);
+            Assert.That(typeof(CrimsonBoundaryProjectile2D).GetField("homingTarget", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(projectile), Is.SameAs(target.transform));
+            Assert.That(Mathf.DeltaAngle(0f, projectile.transform.eulerAngles.z), Is.LessThan(firstAngle),
+                "The existing live target must remain selected and its moving position must still drive steering.");
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
+
+    [Test]
+    public void CrimsonHoming_NoCandidateRetriesAndFindsLaterEnemy()
+    {
+        var root = new GameObject("Crimson reacquire retry probe");
+        root.transform.position = new Vector3(10000f, 10000f, 0f);
+        try
+        {
+            var projectile = CreateCrimsonFlightProbe(root, out _);
+            var previous = Object.Instantiate(Load<GameObject>(Prefabs + "CommonCorridor/GoblinWarrior.prefab"),
+                root.transform.position + Vector3.up * 10f, Quaternion.identity, root.transform);
+            projectile.SetHomingTarget(previous.transform);
+            TickCrimsonFlight(projectile, 0.02f);
+            Object.DestroyImmediate(previous);
+            Physics2D.SyncTransforms();
+            TickCrimsonFlight(projectile, 0.02f); // No candidate: fly on and start the retry interval.
+            FieldInfo targetField = typeof(CrimsonBoundaryProjectile2D).GetField("homingTarget", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(targetField.GetValue(projectile), Is.Null);
+            float lastAngle = projectile.transform.eulerAngles.z;
+
+            var next = Object.Instantiate(Load<GameObject>(Prefabs + "CommonCorridor/GoblinWarrior.prefab"),
+                root.transform.position + Vector3.up * 10f, Quaternion.identity, root.transform);
+            Physics2D.SyncTransforms();
+            TickCrimsonFlight(projectile, 0.02f);
+            Assert.That(targetField.GetValue(projectile), Is.Null, "An empty search must wait for the 0.1-second retry interval.");
+            Assert.That(Mathf.Abs(Mathf.DeltaAngle(lastAngle, projectile.transform.eulerAngles.z)), Is.LessThan(0.01f));
+            TickCrimsonFlight(projectile, 0.09f);
+            Assert.That(targetField.GetValue(projectile), Is.SameAs(next.transform));
+            Assert.That(Mathf.DeltaAngle(lastAngle, projectile.transform.eulerAngles.z), Is.GreaterThan(0f));
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
+
+    [Test]
+    public void CrimsonHoming_WallSweepStopsFlightBeforeTarget()
+    {
+        var root = new GameObject("Crimson homing wall probe");
+        root.transform.position = new Vector3(10000f, 10000f, 0f);
+        try
+        {
+            var projectile = CreateCrimsonFlightProbe(root, out _);
+            var target = new GameObject("Target behind wall");
+            target.transform.SetParent(root.transform, false);
+            target.transform.localPosition = Vector3.right * 10f;
+            projectile.SetHomingTarget(target.transform);
+            var wall = new GameObject("Homing front wall");
+            wall.transform.SetParent(root.transform, false);
+            wall.transform.localPosition = Vector3.right;
+            wall.layer = 30;
+            wall.AddComponent<BoxCollider2D>().size = new Vector2(0.1f, 4f);
+            Physics2D.SyncTransforms();
+            TickCrimsonFlight(projectile, 0.1f);
+            Assert.That(projectile.transform.position.x - root.transform.position.x,
+                Is.GreaterThan(0.85f).And.LessThan(0.91f));
+            Vector3 stoppedPosition = projectile.transform.position;
+            TickCrimsonFlight(projectile, 0.1f);
+            Assert.That(projectile.transform.position, Is.EqualTo(stoppedPosition));
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
+
+    [Test]
+    public void CrimsonRelicKillShot_AuthoredSpawnTracksMovingEnemy()
+    {
+        var root = new GameObject("Crimson relic spawn probe");
+        root.transform.position = new Vector3(10000f, 10000f, 0f);
+        CrimsonBoundaryProjectile2D projectile = null;
+        try
+        {
+            var fixture = CreateCrimsonFlightProbe(root, out var context);
+            Object.DestroyImmediate(fixture.gameObject);
+            var data = Load<CrimsonBoundaryWeaponData>(LogicData + "ALData_CrimsonBoundary.asset");
+            var target = Object.Instantiate(Load<GameObject>(Prefabs + "CommonCorridor/GoblinWarrior.prefab"),
+                root.transform.position + Vector3.right * 10f, Quaternion.identity, root.transform);
+            Physics2D.SyncTransforms();
+            CrimsonBoundaryUtility.SpawnRelicKillShot(context.ownerSystem, null, data, null, root.transform.position, null);
+            foreach (var candidate in Object.FindObjectsByType<CrimsonBoundaryProjectile2D>(FindObjectsSortMode.None))
+                if (Vector3.Distance(candidate.transform.position, root.transform.position) < 0.01f) projectile = candidate;
+            Assert.That(projectile, Is.Not.Null, "The real relic spawn path must produce the authored projectile.");
+            projectile.transform.SetParent(root.transform, true);
+            projectile.enabled = false;
+            Assert.That(typeof(CrimsonBoundaryProjectile2D).GetField("homingTarget", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(projectile), Is.SameAs(target.transform));
+            target.transform.localPosition = Vector3.up * 10f;
+            TickCrimsonFlight(projectile, 0.02f);
+            Assert.That(projectile.transform.position.y, Is.GreaterThan(root.transform.position.y));
+            Assert.That(Mathf.DeltaAngle(0f, projectile.transform.eulerAngles.z), Is.GreaterThan(0f).And.LessThan(90f));
+        }
+        finally
+        {
+            if (projectile != null) Object.DestroyImmediate(projectile.gameObject);
+            Object.DestroyImmediate(root);
+        }
+    }
+
+    private static CrimsonBoundaryProjectile2D CreateCrimsonFlightProbe(GameObject root, out ProjectileAttackSpawnContext context)
+    {
+        var owner = new GameObject("Crimson flight owner");
+        owner.transform.SetParent(root.transform, false);
+        owner.AddComponent<AttributeSet>();
+        owner.AddComponent<TagSystem>();
+        owner.AddComponent<GameplayEffectRunner>();
+        var system = owner.AddComponent<AbilitySystem>();
+        var data = Load<CrimsonBoundaryWeaponData>(LogicData + "ALData_CrimsonBoundary.asset");
+        var visual = Object.Instantiate(data.projectilePrefab, root.transform.position, Quaternion.identity, root.transform);
+        var projectile = visual.GetComponent<CrimsonBoundaryProjectile2D>();
+        context = new ProjectileAttackSpawnContext
+        {
+            ownerSystem = system, ignoreTarget = owner, lifetime = data.projectileLifetime,
+            wallLayers = data.wallLayers, damageLayers = data.damageLayers,
+            direction = Vector2.right, speed = data.projectileSpeed,
+            hitPayload = new CombatHitPayload
+            {
+                sourceSystem = system, damageEffect = data.damageEffect, causer = visual.gameObject,
+                elementBuildUps = System.Array.Empty<ElementDamageResult>(), hasResolvedElementBuildUps = true
+            }
+        };
+        projectile.Setup(context, 0, null);
+        projectile.enabled = false;
+        Physics2D.SyncTransforms();
+        return projectile;
+    }
+
+    private static void TickCrimsonFlight(CrimsonBoundaryProjectile2D projectile, float deltaTime) =>
+        typeof(CrimsonBoundaryProjectile2D).GetMethod("TickAttack", BindingFlags.Instance | BindingFlags.NonPublic)
+            .Invoke(projectile, new object[] { deltaTime });
+
     [TestCase(10f, false, false)]
     [TestCase(50f, false, false)]
     [TestCase(10f, true, false)]
@@ -288,6 +587,156 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         {
             for (int i = objects.Count - 1; i >= 0; i--)
                 if (objects[i] != null) Object.DestroyImmediate(objects[i]);
+        }
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void FloweringDashSlash_PreservesLosGateAndConsumedFailedHitAcrossRepeatedScans(bool initialPayloadMissing)
+    {
+        var objects = new System.Collections.Generic.List<GameObject>();
+        var health = LoadGuid<AttributeDefinition>("3ff045849daafe84d97370c69cd17747");
+        const BindingFlags hidden = BindingFlags.Instance | BindingFlags.NonPublic;
+        Vector3 origin = new(10000f, 10000f, 0f);
+        try
+        {
+            var owner = new GameObject("Flowering probe owner");
+            objects.Add(owner);
+            owner.transform.position = origin;
+            owner.AddComponent<AttributeSet>();
+            owner.AddComponent<TagSystem>();
+            owner.AddComponent<GameplayEffectRunner>();
+            var system = owner.AddComponent<AbilitySystem>();
+            var target = Object.Instantiate(Load<GameObject>(Prefabs + "CommonCorridor/GoblinWarrior.prefab"),
+                origin + Vector3.right * 2f, Quaternion.identity);
+            objects.Add(target);
+            var extra = new GameObject("Flowering second hurtbox");
+            extra.transform.SetParent(target.transform, false);
+            var extraCollider = extra.AddComponent<BoxCollider2D>();
+            extraCollider.isTrigger = true;
+            extra.AddComponent<CombatHurtbox2D>();
+            var wall = new GameObject("Flowering LOS wall");
+            objects.Add(wall);
+            wall.layer = 30;
+            wall.transform.position = origin + Vector3.right;
+            var wallCollider = wall.AddComponent<BoxCollider2D>();
+            wallCollider.size = new Vector2(0.1f, 4f);
+            wallCollider.enabled = !initialPayloadMissing;
+            var hitbox = new GameObject("Flowering probe hitbox");
+            objects.Add(hitbox);
+            var actor = hitbox.AddComponent<FloweringDashSlashHitboxActor>();
+            var payload = new CombatHitPayload
+            {
+                sourceSystem = system,
+                damageEffect = Load<FloweringBloomData>(LogicData + "ALData_FloweringBloom.asset").DashSlashDamageEffect,
+                finalHpDamage = 5f, causer = owner,
+                elementBuildUps = System.Array.Empty<ElementDamageResult>(), hasResolvedElementBuildUps = true
+            };
+            var context = new FloweringDashSlashHitboxSpawnContext
+            {
+                ownerSystem = system, ignoreTarget = owner, lifetime = 1f,
+                wallLayers = 1 << 30, damageLayers = 1 << target.layer,
+                hitPayload = initialPayloadMissing ? null : payload,
+                worldPosition = target.transform.position, hitboxSize = Vector2.one * 3f,
+                lineOfSightSource = origin, hitOncePerTarget = true
+            };
+            Physics2D.SyncTransforms();
+            actor.Setup(context);
+            Assert.That(target.GetComponent<AttributeSet>().GetAttributeValue(health), Is.EqualTo(45f));
+            context.hitPayload = payload;
+            actor.SetupBase(context); // This must not reset the hit IDs consumed by a failed application.
+            wallCollider.enabled = false;
+            Physics2D.SyncTransforms();
+            var scan = typeof(FloweringDashSlashHitboxActor).GetMethod("PerformOverlapScan", hidden);
+            scan.Invoke(actor, null);
+            scan.Invoke(actor, null);
+            typeof(AttackBase).GetMethod("OnTriggerStay2D", hidden).Invoke(actor, new object[] { extraCollider });
+            Assert.That(target.GetComponent<AttributeSet>().GetAttributeValue(health),
+                Is.EqualTo(initialPayloadMissing ? 45f : 40f).Within(0.01f),
+                "LOS rejection permits a later first hit; failed application still consumes that hit, and child/trigger repeats never duplicate it.");
+        }
+        finally
+        {
+            for (int i = objects.Count - 1; i >= 0; i--)
+                if (objects[i] != null) Object.DestroyImmediate(objects[i]);
+        }
+    }
+
+    [TestCase(true, 0f)]
+    [TestCase(false, 0f)]
+    [TestCase(true, 37f)]
+    [TestCase(false, 37f)]
+    public void FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges(bool queryTriggers, float angle)
+    {
+        bool previousQueriesHitTriggers = Physics2D.queriesHitTriggers;
+        var root = new GameObject("Flowering overlap comparison");
+        Vector2 origin = new(15000f, 15000f);
+        Vector2 size = new(8f, 6f);
+        Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
+        Collider2D AddBox(string name, Vector2 localPosition, float z, int layer, bool trigger)
+        {
+            var child = new GameObject(name);
+            child.transform.SetParent(root.transform, false);
+            child.layer = layer;
+            child.transform.position = (Vector3)origin + rotation * new Vector3(localPosition.x, localPosition.y, z);
+            child.transform.rotation = rotation;
+            var box = child.AddComponent<BoxCollider2D>();
+            box.size = Vector2.one * 0.2f;
+            box.isTrigger = trigger;
+            return box;
+        }
+
+        try
+        {
+            Physics2D.queriesHitTriggers = queryTriggers;
+            int[] layers = { 0, 1, 4, 5, 30, 31 };
+            for (int i = 0; i < 240; i++)
+            {
+                // Both trigger modes exceed 100 results; repeated Z values exercise native tie order.
+                Vector2 position = new((i % 16 - 7.5f) * 0.25f, (i / 16 - 7f) * 0.25f);
+                AddBox($"Crowded collider {i}", position, (i % 13 - 6) * 0.1f,
+                    i % 11 == 0 ? 2 : layers[i % layers.Length], i % 2 == 0);
+            }
+            Collider2D ignored = AddBox("IgnoreRaycast collider", Vector2.zero, 0f, 2, false);
+            Collider2D triggerProbe = AddBox("Trigger inclusion probe", Vector2.zero, 0f, 0, true);
+            Collider2D insideEdge = AddBox("Overlapping query edge", new Vector2(4.05f, 0f), -120f, 0, false);
+            Collider2D outsideEdge = AddBox("Outside query edge", new Vector2(4.15f, 0f), 120f, 0, false);
+            Collider2D highDepth = AddBox("Unbounded positive depth", new Vector2(-3.95f, 2.95f), 120f, 0, false);
+            Physics2D.SyncTransforms();
+
+            Collider2D[] expected = Physics2D.OverlapBoxAll(origin, size, angle);
+            Assert.That(expected.Length, Is.GreaterThan(100));
+            CollectionAssert.DoesNotContain(expected, ignored);
+            Assert.That(System.Array.IndexOf(expected, triggerProbe) >= 0, Is.EqualTo(queryTriggers));
+            CollectionAssert.Contains(expected, insideEdge);
+            CollectionAssert.DoesNotContain(expected, outsideEdge);
+            CollectionAssert.Contains(expected, highDepth);
+
+            ContactFilter2D filter = new();
+            filter.SetLayerMask(Physics2D.DefaultRaycastLayers);
+            filter.SetDepth(float.NegativeInfinity, float.PositiveInfinity);
+            filter.useTriggers = Physics2D.queriesHitTriggers;
+            var reusable = new System.Collections.Generic.List<Collider2D>(16) { outsideEdge };
+            void CompareReferences()
+            {
+                int count = Physics2D.OverlapBox(origin, size, angle, filter, reusable);
+                Assert.That(count, Is.EqualTo(expected.Length));
+                Assert.That(reusable.Count, Is.EqualTo(expected.Length));
+                for (int i = 0; i < count; i++)
+                    Assert.That(reusable[i], Is.SameAs(expected[i]),
+                        $"Result {i} changed order: triggers={queryTriggers}, angle={angle}.");
+            }
+
+            CompareReferences();
+            Assert.That(reusable.Capacity, Is.GreaterThan(16), "Crowded results must grow rather than truncate.");
+            Assert.That(Physics2D.OverlapBox(origin + Vector2.right * 50f, size, angle, filter, reusable), Is.Zero);
+            Assert.That(reusable.Count, Is.Zero, "An empty reused query must remove previous results.");
+            CompareReferences();
+        }
+        finally
+        {
+            Physics2D.queriesHitTriggers = previousQueriesHitTriggers;
+            Object.DestroyImmediate(root);
         }
     }
 
@@ -570,7 +1019,7 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
     [TestCase("Relic Logic_WindTablet.asset", "entries", 1, "valueByLevel", 4, -1f)]
     [TestCase("Relic Logic_Common_BluntShield.asset", "entries", 1, "valueByLevel", 2, 2f)]
     [TestCase("Relic Logic_Common_BrokenCrown.asset", "entries", 0, "valueByLevel", 2, 0.13f)]
-    [TestCase("Relic Logic_Common_HeavyBracelet.asset", "entries", 1, "valueByLevel", 2, 0.16f)]
+    [TestCase("Relic Logic_Common_HeavyBracelet.asset", "entries", 1, "valueByLevel", 2, 4f)]
     [TestCase("Relic Logic_Common_BerserkerCord.asset", "entries", 1, "valueByLevel", 2, 0.16f)]
     [TestCase("Relic Logic_Common_SurvivorNecklace.asset", "entries", 1, "valueByLevel", 2, 0.07f)]
     [TestCase("Relic Logic_Common_ThinArmorShard.asset", "entries", 1, "valueByLevel", 2, 0.04f)]
@@ -602,8 +1051,8 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         {
             SerializedProperty values = serialized.FindProperty("damageCoefByLevel");
             Assert.That(values.arraySize, Is.EqualTo(5));
-            Assert.That(values.GetArrayElementAtIndex(0).floatValue, Is.EqualTo(0.35f).Within(0.0001f));
-            Assert.That(values.GetArrayElementAtIndex(4).floatValue, Is.EqualTo(0.75f).Within(0.0001f));
+            Assert.That(values.GetArrayElementAtIndex(0).floatValue, Is.EqualTo(3f).Within(0.0001f));
+            Assert.That(values.GetArrayElementAtIndex(4).floatValue, Is.EqualTo(7f).Within(0.0001f));
         }
 
         ScriptableObject tonic = Load<ScriptableObject>(
@@ -681,7 +1130,7 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         using (var serialized = new SerializedObject(ironBall.logic))
         {
             Assert.That(serialized.FindProperty("attackPercentBonus").floatValue,
-                Is.EqualTo(0.1f).Within(0.0001f));
+                Is.EqualTo(2f).Within(0.0001f));
             Assert.That(serialized.FindProperty("percentBonus").floatValue,
                 Is.EqualTo(0.1f).Within(0.0001f));
             Assert.That(serialized.FindProperty("durationSeconds").floatValue,
@@ -695,6 +1144,7 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(ironBallTooltip, Does.Contain("공격력"));
         Assert.That(ironBallTooltip, Does.Contain("이동속도"));
         Assert.That(ironBallTooltip, Does.Contain("+10%"));
+        Assert.That(ironBallTooltip, Does.Contain("[+2]"));
 
         RelicDefinition feather = Load<RelicDefinition>(
             "Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset");
@@ -702,7 +1152,8 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
             feather,
             1,
             default).effectText;
-        Assert.That(featherTooltip, Does.Contain("35%"));
+        Assert.That(featherTooltip, Does.Contain("{val:3}"));
+        Assert.That(featherTooltip, Does.Not.Contain("%"));
     }
 
     [Test]

@@ -98,16 +98,26 @@ namespace UnityGAS
 
             _hitFlash?.PlayFlash();
 
-            yield return new WaitForSeconds(hitEnterSeconds);
+            yield return WaitReactionSeconds(hitEnterSeconds);
 
             // 2) 피격 중
             SetHitLoop(true);
-            yield return new WaitForSeconds(hitActiveSeconds);
+            yield return WaitReactionSeconds(hitActiveSeconds);
 
             // 3) 종료
             SetHitLoop(false);
             ClearReactionTags();
             _reactionRoutine = null;
+        }
+
+        private IEnumerator WaitReactionSeconds(float seconds)
+        {
+            float remaining = Mathf.Max(0f, seconds);
+            while (remaining > 0f)
+            {
+                yield return null;
+                remaining -= CombatHitPause2D.GetActionDeltaTime(gameObject);
+            }
         }
 
         /// <summary>

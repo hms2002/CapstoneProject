@@ -91,6 +91,14 @@ namespace UnityGAS
         private bool isInitialized;
         // Per attack entity, even when several projectiles share the same payload.
         private readonly HashSet<GameObject> evadeFeedbackTargets = new();
+        private readonly Dictionary<Animator, float> boundAnimatorSpeeds = new();
+        private bool boundVisualsCaptured;
+        private GameObject actionOwner;
+
+        // A melee cast remains action-bound even when its authored setup leaves it in world space.
+        public bool IsActionBound { get; private set; }
+        public GameObject ActionOwner => IsActionBound ? actionOwner : null;
+        protected bool HasStoppedActionOwner => IsActionBound && CombatHitPause2D.IsActionStoppedOn(actionOwner);
 
         /// <summary>
         /// 책임 :
@@ -114,6 +122,8 @@ namespace UnityGAS
             }
 
             OwnerSystem = context.ownerSystem;
+            IsActionBound = this is MeleeHitboxActor || transform.IsChildOf(OwnerSystem.transform);
+            actionOwner = IsActionBound ? OwnerSystem.gameObject : null;
             evadeFeedbackTargets.Clear();
             SourceSpec = context.sourceSpec;
             Causer = context.causer != null ? context.causer : context.ownerSystem.gameObject;
@@ -199,15 +209,60 @@ namespace UnityGAS
         {
             if (!isInitialized)
                 return;
+            if (HasStoppedActionOwner) { DestroySelf(); return; }
 
-            TickAttack(Time.deltaTime);
+            GameObject actionOwner = ActionOwner;
+            UpdateBoundVisualPause(actionOwner);
+            if (CombatHitPause2D.IsParalyzedOn(actionOwner))
+                return;
 
-            lifeRemaining -= Time.deltaTime;
+            float deltaTime = actionOwner != null ? CombatHitPause2D.GetActionDeltaTime(actionOwner) : Time.deltaTime;
+            TickAttack(deltaTime);
+
+            lifeRemaining -= deltaTime;
             if (lifeRemaining <= 0f)
             {
                 OnLifetimeExpired();
                 DestroySelf();
             }
+        }
+
+        protected virtual void OnDisable()
+        {
+            if (IsActionBound) isInitialized = false;
+            RestoreBoundVisuals();
+        }
+
+        private void UpdateBoundVisualPause(GameObject actionOwner)
+        {
+            // Parented visuals are already captured by the owner's pause component.
+            if (actionOwner == null || !(this is MeleeHitboxActor) || transform.IsChildOf(actionOwner.transform))
+                return;
+            if (CombatHitPause2D.IsParalyzedOn(actionOwner))
+            {
+                if (!boundVisualsCaptured)
+                {
+                    foreach (Animator animator in GetComponentsInChildren<Animator>())
+                        boundAnimatorSpeeds[animator] = CombatHitPause2D.GetUnpausedAnimatorSpeed(animator);
+                    boundVisualsCaptured = true;
+                }
+                foreach (var entry in boundAnimatorSpeeds)
+                    if (entry.Key != null) entry.Key.speed = 0f;
+            }
+            else if (CombatHitPause2D.IsPausedOn(actionOwner))
+            {
+                foreach (var entry in boundAnimatorSpeeds)
+                    if (entry.Key != null) entry.Key.speed = 0f;
+            }
+            else RestoreBoundVisuals();
+        }
+
+        private void RestoreBoundVisuals()
+        {
+            foreach (var entry in boundAnimatorSpeeds)
+                if (entry.Key != null) entry.Key.speed = entry.Value;
+            boundAnimatorSpeeds.Clear();
+            boundVisualsCaptured = false;
         }
 
         protected virtual void OnTriggerEnter2D(Collider2D other)
@@ -227,7 +282,7 @@ namespace UnityGAS
         /// </summary>
         private void TryHandleTriggerCollision(Collider2D other)
         {
-            if (!isInitialized || other == null) return;
+            if (!isInitialized || other == null || HasStoppedActionOwner || CombatHitPause2D.IsParalyzedOn(ActionOwner)) return;
 
             int wallLayerBit = 1 << other.gameObject.layer;
             if ((WallLayers.value & wallLayerBit) != 0)
@@ -287,7 +342,7 @@ namespace UnityGAS
         /// </summary>
         protected bool TryApplyHit(GameObject target, Collider2D hitCollider = null)
         {
-            if (target == null || HitPayload == null)
+            if (target == null || HitPayload == null || HasStoppedActionOwner || CombatHitPause2D.IsParalyzedOn(ActionOwner))
                 return false;
 
             Vector3 hitWorldPosition = ResolveHitWorldPosition(target, hitCollider);

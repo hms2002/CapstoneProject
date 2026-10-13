@@ -1,0 +1,24 @@
+{
+  "prefabChangedRecords": 1,
+  "fitterFileId": 7102142945211176764,
+  "change": "EnvelopeParent (4) -> FitInParent (3)",
+  "allOtherPrefabBytesPreserved": true,
+  "protectedFiles": [
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemTab.cs",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemLeftPage.cs",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemRightPage.cs",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\GlobalUIRoot.prefab",
+      "unchanged": true
+    }
+  ]
+}

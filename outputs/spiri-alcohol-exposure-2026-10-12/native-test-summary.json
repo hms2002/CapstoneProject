@@ -1,0 +1,197 @@
+{
+  "uniqueCases": 38,
+  "cases": [
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholBuffPlayerVisualPlayModeTests.ActualPlayerPrefabReferencesAlcoholAndArrow"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholBuffPlayerVisualPlayModeTests.OverlappingSourcesReuseOneSetAndExpirationHidesIt"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholBuffPlayerVisualPlayModeTests.SourceRemovalDoesNotHideRemainingBuffButCleanseAndDisableDo"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholExposurePlayerVisualPlayModeTests.ActualPlayerPrefabReferencesAuthoredMugAndDroplets"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholExposurePlayerVisualPlayModeTests.DestroyedAuthoredRootKeepsTickAndDisableSafe"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholExposurePlayerVisualPlayModeTests.FillOverflowAndDrainReuseAuthoredRenderers"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholExposurePlayerVisualPlayModeTests.HeadAnchorIgnoresOwnerMirroringAndDisableRestoresAuthoredPose"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholExposurePlayerVisualPlayModeTests.OverflowAnimatesWithScaledTimePausesAndStopsOnDrain"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.ChargeFillsAtThreeSecondsButEffectStartsOnlyAfterThreeSeconds"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.CleanseIsReappliedOnlyWhileExposureStillMaintainsTheEffect"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.ConfusionPersistsDuringDrainAndClearsWhenGlassEmpties"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(-1.0f,0.0f)"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(0.0f,-1.0f)"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(0.0f,1.0f)"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(1.0f,0.0f)"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(1.0f,1.0f)"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.DisabledAndDestroyedSourcesBeginDrainWithoutTriggerExit"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.EarnedBuffKeepsActualModifiersAndStartsFiveSecondsAfterDrain"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.LatestAffinitySwitchesOverflowEffectWithoutStacking"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.LeavingBeforeOverflowDrainsStartingFillForOneAndAHalfSeconds"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.OverlappingAndRepeatedSourcesShareOneChargeAndEffect"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.RecipientDisableRemovesOwnedEffectsAndResetsAllExposureState"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.ReenteringWithResidualBuffRefreshesItBeforeNewOverflow"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.ReentryResumesRemainingFillInsteadOfRestartingCharge"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.SavedAffinityIsAvailableBeforeManagerCacheLoads"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.SceneCaptureOmitsOwnedConfusionAndTagButPreservesUnrelatedState"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "AlcoholExposurePlayModeTests.SceneCaptureOmitsResidualAlcoholBuffWithoutChangingCurrentHudTimer"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholPuddleContactPlayModeTests.AuthoredMugRendersChargeOverflowAndDrainToNativePngGrid"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholPuddleContactPlayModeTests.DisabledRecipientCannotBeRegrantedFromAnExistingTriggerStay"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholPuddleContactPlayModeTests.LandingInsideThePuddleRegistersFromStayWithoutAnotherEnter"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholPuddleContactPlayModeTests.NewRewardAndConfusionTextsHaveRuntimeKeysAndFiveLocaleValues"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholPuddleContactPlayModeTests.OneOfTwoHurtboxExitsKeepsContactUntilTheLastExit"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholPuddleContactPlayModeTests.PlayerAndLevelOneRewardReferenceTheAuthoredConfusionAndExistingBuff"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholPuddleContactPlayModeTests.SourceDisableOrIgnitionReleasesTheRecipientImmediately(False)"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-visual-contact-results.xml",
+      "name": "AlcoholPuddleContactPlayModeTests.SourceDisableOrIgnitionReleasesTheRecipientImmediately(True)"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "MonsterProjectileBurstCadencePlayModeTests.OverlappingAlcoholSources_KeepOneHudHandleUntilEffectExpires"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "StatusHudPerformancePlayModeTests.StableStacksDoNotReinitializeOrReformatButTimerStillUpdates"
+    },
+    {
+      "result": "Passed",
+      "report": "playmode-final-results.xml",
+      "name": "StatusHudPerformancePlayModeTests.StackProgressTimerAndPoolReuseRemainCorrect"
+    }
+  ],
+  "failed": 0,
+  "passed": 38
+}

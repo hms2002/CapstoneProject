@@ -17,6 +17,9 @@ Navigation aid, not an Architecture or Contracts source of truth.
 
 ## Per-query search optimization
 
+- Basic chase checks its existing detection distance/room exception before the door-perception raycast. Chase FSM reuses a basic detection result only within the current synchronous transition attempt's pre-decision guards. Custom detection overrides retain repeated calls, and custom attack decisions invalidate reuse before fallback detection. Idle retains its original checks because some movement predicates update attributes.
+- `ResolveChaseDirection` reuses a failed direct-segment result only within that one call when path lookup also fails. Later calls still observe geometry changes; no frame/time cache or changed search interval was introduced.
+
 - `TilemapPathfinder2D` reuses walkability and minimum-goal-heuristic results only within one synchronous search. Both dictionaries clear at the start of every request; different bodies, changed floor tiles and moved/closed doors do not share results across requests.
 - Swept edge wall/hole checks remain unchanged. Cached cell occupancy must never replace segment validation. The open list and tie order remain unchanged; fixed neighbor offsets replace iterator allocation.
 - Dictionary capacity remains with the scene-local finder until destruction. Diagnostic evaluation counters are Editor/Development-only, not runtime logging.

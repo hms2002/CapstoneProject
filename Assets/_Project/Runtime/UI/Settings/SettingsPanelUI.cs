@@ -391,11 +391,18 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
     private void RefreshLanguageStepper(GameSettingsService settings)
     {
         int index = GetLanguageOptionIndex(settings.CurrentLanguage);
+        // Buttons follow the latest request; the caption follows the locale currently on screen.
+        // Native names such as 日本語 must not be put into the previous locale's font while loading.
         SetStepperState(
             languageStepper,
-            settings.GetLanguageLabel(LanguageOptions[index]),
+            settings.GetLanguageLabel(settings.DisplayedLanguage),
             index > 0,
             index < LanguageOptions.Length - 1);
+    }
+
+    public void RefreshAppliedLanguage()
+    {
+        if (GameSettingsService.Instance != null) RefreshLanguageStepper(GameSettingsService.Instance);
     }
 
     private void UpdateApplyDisplayButton(GameSettingsService settings)

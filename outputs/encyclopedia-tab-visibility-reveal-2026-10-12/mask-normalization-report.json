@@ -1,0 +1,111 @@
+{
+  "size": {
+    "width": 896,
+    "height": 720
+  },
+  "flatTop": 197,
+  "columnRanges": [
+    [
+      138,
+      436
+    ],
+    [
+      468,
+      759
+    ]
+  ],
+  "maxBoundaryLookaheadRows": 2,
+  "records": [
+    {
+      "frame": 1,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 2,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 3,
+      "addedOpaquePixels": 2218,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 4,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 5,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 6,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 7,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 8,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 9,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 10,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 11,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 12,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 13,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 14,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 15,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 16,
+      "addedOpaquePixels": 2140,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 17,
+      "addedOpaquePixels": 2092,
+      "existingNontransparentPixelsPreserved": true
+    },
+    {
+      "frame": 18,
+      "addedOpaquePixels": 665,
+      "existingNontransparentPixelsPreserved": true
+    }
+  ],
+  "endpointFrame19Preserved": true
+}

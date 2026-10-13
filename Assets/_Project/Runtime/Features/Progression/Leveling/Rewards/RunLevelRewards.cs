@@ -175,6 +175,49 @@ public static class RunLevelRewards
         }
     }
 
+    /// <summary>
+    /// Removes one exact selection and rebuilds its live effects. Instant rewards require
+    /// the caller to have safely reverted their resource changes before acknowledging removal.
+    /// Removing a reward does not refund a level or a pending selection.
+    /// </summary>
+    public static bool TryRemoveSelection(
+        LevelRewardSelectionState selection,
+        out string failureReason,
+        bool instantEffectsAlreadyReverted = false)
+    {
+        failureReason = null;
+        LevelProgressionState progression = RunLevelProgression.State;
+        if (!RunSessionStore.IsRunActive || selection == null ||
+            progression?.selectedRewards == null || !progression.selectedRewards.Contains(selection))
+        {
+            failureReason = "현재 런에서 선택한 효과가 아닙니다.";
+            return false;
+        }
+
+        if (!TryGetDefinition(selection.rewardId, out LevelRewardDefinitionSO definition))
+        {
+            failureReason = "선택한 효과의 정의를 찾을 수 없습니다.";
+            return false;
+        }
+
+        for (int i = 0; i < definition.Effects.Count; i++)
+        {
+            if (definition.Effects[i] != null &&
+                definition.Effects[i].Lifetime == LevelRewardEffectLifetime.InstantOnce &&
+                !instantEffectsAlreadyReverted)
+            {
+                failureReason = "즉시 지급한 자원을 안전하게 되돌린 뒤에만 제거할 수 있습니다.";
+                return false;
+            }
+        }
+
+        progression.selectedRewards.Remove(selection);
+        progression.activeRewardOffer?.Clear();
+        RebuildActiveEffects();
+        RewardsChanged?.Invoke();
+        return true;
+    }
+
     private static void ApplySelection(
         PlayerInteractor2D player,
         LevelProgressionState progression,

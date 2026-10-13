@@ -98,15 +98,18 @@ public sealed class DamagePopupFormatProfileSO : ScriptableObject
     {
         FormatEntry entry = ResolveEntry(request);
         string content = ResolveText(request, entry);
+        FormatEntry colorEntry = request.Kind == DamagePopupKind.Element
+            ? FindElementEntry(request.ElementTag) ?? elementFallback ?? entry
+            : entry;
 
         return new DamagePopupViewModel(
             content,
-            ResolvePlayerColor(request, entry != null ? entry.textColor : Color.white),
+            ResolvePlayerColor(request, colorEntry != null ? colorEntry.textColor : Color.white),
             entry != null ? entry.moveVelocity : new Vector3(0.45f, 1.25f, 0f),
             entry != null ? Mathf.Max(0.05f, entry.lifetime) : 0.75f,
             entry != null ? Mathf.Clamp01(entry.fadeOutRatio) : 0.55f,
-            entry != null ? Mathf.Max(0.01f, entry.startScale) : 0.9f,
-            entry != null ? Mathf.Max(0.01f, entry.endScale) : 1.1f,
+            (entry != null ? Mathf.Max(0.01f, entry.startScale) : 0.9f) * request.SizeScale,
+            (entry != null ? Mathf.Max(0.01f, entry.endScale) : 1.1f) * request.SizeScale,
             entry != null ? entry.fontSize : 0f,
             entry != null && entry.fontSize > 0f);
     }
@@ -125,14 +128,14 @@ public sealed class DamagePopupFormatProfileSO : ScriptableObject
 
     private FormatEntry ResolveEntry(DamagePopupRequest request)
     {
+        if (request.IsCritical || request.Kind == DamagePopupKind.Critical)
+            return critical ?? normal;
+
         if (request.Kind == DamagePopupKind.Element)
         {
             FormatEntry exact = FindElementEntry(request.ElementTag);
             return exact ?? elementFallback ?? normal;
         }
-
-        if (request.IsCritical || request.Kind == DamagePopupKind.Critical)
-            return critical ?? normal;
 
         if (request.Kind == DamagePopupKind.Text)
             return textFallback ?? normal;

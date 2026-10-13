@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityGAS;
 
 [DisallowMultipleComponent]
 public sealed class MonsterReturnHome2D : MonoBehaviour, IMonsterSpawnContextReceiver
@@ -44,6 +45,9 @@ public sealed class MonsterReturnHome2D : MonoBehaviour, IMonsterSpawnContextRec
             return;
         }
 
+        if (CombatHitPause2D.IsParalyzedOn(enemy.gameObject))
+            return;
+
         if (ShouldResumeChase())
         {
             ResetReturnState();
@@ -52,7 +56,7 @@ public sealed class MonsterReturnHome2D : MonoBehaviour, IMonsterSpawnContextRec
 
         if (ShouldStartReturn())
         {
-            lostTargetTime += Time.deltaTime;
+            lostTargetTime += CombatHitPause2D.GetActionDeltaTime(enemy.gameObject);
             if (lostTargetTime >= returnDelay)
                 EnsureReturnPath();
 
@@ -143,7 +147,7 @@ public sealed class MonsterReturnHome2D : MonoBehaviour, IMonsterSpawnContextRec
     /// <summary>복귀 중에는 주기적으로 경로를 다시 계산해 막힘에 대응합니다.</summary>
     private void RefreshReturnPathIfNeeded()
     {
-        if (Time.time < nextRepathTime)
+        if (CombatHitPause2D.GetActionTime(enemy != null ? enemy.gameObject : gameObject) < nextRepathTime)
             return;
 
         RebuildPath();
@@ -152,7 +156,7 @@ public sealed class MonsterReturnHome2D : MonoBehaviour, IMonsterSpawnContextRec
     /// <summary>현재 위치에서 홈 위치까지의 경로를 다시 계산합니다.</summary>
     private void RebuildPath()
     {
-        nextRepathTime = Time.time + Mathf.Max(0.05f, repathInterval);
+        nextRepathTime = CombatHitPause2D.GetActionTime(enemy != null ? enemy.gameObject : gameObject) + Mathf.Max(0.05f, repathInterval);
 
         if (spawnContext.Pathfinder == null)
             return;

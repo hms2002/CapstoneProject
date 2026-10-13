@@ -431,7 +431,13 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
 
-            elapsed += Time.deltaTime;
+            if (CombatHitPause2D.IsParalyzedOn(owner.gameObject))
+            {
+                yield return null;
+                continue;
+            }
+
+            elapsed += CombatHitPause2D.GetActionDeltaTime(owner.gameObject);
             float t = Mathf.Clamp01(elapsed / duration);
             transform.position = Vector3.Lerp(start, end, t);
             float height = Mathf.Sin(t * Mathf.PI) * context.JumpVisualHeight;
@@ -513,7 +519,13 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
 
-            elapsed += Time.deltaTime;
+            if (CombatHitPause2D.IsParalyzedOn(owner.gameObject))
+            {
+                yield return null;
+                continue;
+            }
+
+            elapsed += CombatHitPause2D.GetActionDeltaTime(owner.gameObject);
             float t = Mathf.Clamp01(elapsed / duration);
             float eased = t * t;
             for (int i = 0; i < visuals.Count; i++)

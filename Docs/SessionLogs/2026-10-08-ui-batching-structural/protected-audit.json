@@ -1,0 +1,69 @@
+{
+  "protectedFiles": 1216,
+  "differences": [
+    {
+      "path": "Assets/_Project/Editor/Tools/Validation/UiBatchingLiveScenarios.cs",
+      "status": "changed",
+      "allowed": true
+    },
+    {
+      "path": "Assets/_Project/Editor/Tools/Validation/UiBatchingStructuralScenarios.cs",
+      "status": "changed",
+      "allowed": true
+    },
+    {
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "status": "changed",
+      "allowed": true
+    },
+    {
+      "path": "Assets/_Project/Prefabs/UI/KeyMapRow.prefab",
+      "status": "changed",
+      "allowed": true
+    },
+    {
+      "path": "Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab",
+      "status": "changed",
+      "allowed": true
+    },
+    {
+      "path": "Assets/_Project/Runtime/UI/Combat/StackStatus/MonsterStackStatusWorldView.cs",
+      "status": "changed",
+      "allowed": true
+    },
+    {
+      "path": "Assets/_Project/Runtime/UI/Settings/KeyBindingPanelUI.cs",
+      "status": "changed",
+      "allowed": true
+    },
+    {
+      "path": "Assets/_Project/Runtime/UI/Settings/KeyBindingRowUI.cs",
+      "status": "changed",
+      "allowed": true
+    },
+    {
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "status": "changed",
+      "allowed": true
+    }
+  ],
+  "unexpectedDifferences": 0,
+  "existingMetaDifferences": 0,
+  "profiles": [
+    {
+      "name": "GameSave_Slot1.json",
+      "matched": true,
+      "sha256": "A928A9D004E64309E7B1573AB0D51A63EDBC1E06B203640D41B9090D4F057D75"
+    },
+    {
+      "name": "GameSave_Slot2.json",
+      "matched": true,
+      "sha256": "D92EED72AF322272171C4DBD02D8EE2022AE41FAF962340D61D318156BDE7D68"
+    },
+    {
+      "name": "GameSave_Slot3.json",
+      "matched": true,
+      "sha256": "F26C365731FF6B9087A37DA15710E51E14B52847BD172B100631E589919F1676"
+    }
+  ]
+}

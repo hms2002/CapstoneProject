@@ -1,0 +1,589 @@
+{
+    "scene": "TitleScene",
+    "locale": "ja",
+    "screen": "keybindings",
+    "image": "outputs/language-caption-title-fix-2026-10-10/ja-keybindings.png",
+    "labels": [
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "ミニマップ縮小",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "ミニマップ拡大",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "レベル報酬を開く",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "アイテムを捨てる",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "所持品",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "消耗品4",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "消耗品3",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "消耗品2",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "消耗品1",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "武器切替",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "スキル2",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "スキル1",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "ダッシュ",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "調べる",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "攻撃",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "右に移動",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "左に移動",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "下に移動",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "リセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "上に移動",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "画面モード",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Previous_Render/Previous",
+            "text": "<",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "日本語",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "言語",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "画面の揺れ",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Next_Render/Next",
+            "text": ">",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Next_Render/Next",
+            "text": ">",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+            "text": "適用",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "ゲーム開始",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Next_Render/Next",
+            "text": ">",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Next_Render/Next",
+            "text": ">",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "マスター音量",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Previous_Render/Previous",
+            "text": "<",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "フルスクリーン",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+            "text": "キー設定",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 60.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Controls/KeyMapping_Render/KeyMapping/OptionText",
+            "text": "キー割り当て",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "解像度",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "62%",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+            "text": "適用",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "BGM音量",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "オン",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+            "text": "戻る",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Previous_Render/Previous",
+            "text": "<",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+            "text": "設定",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 60.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "1920 x 1080",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "設定",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+            "text": "戻る",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Previous_Render/Previous",
+            "text": "<",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "24%",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "ゲーム終了",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "34%",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "効果音の音量",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+            "text": "設定をリセット",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 40.0
+        }
+    ]
+}

@@ -1,0 +1,58 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "native_tests_26_passed",
+      "passed": true,
+      "counts": {
+        "id": "2",
+        "testcasecount": "26",
+        "result": "Passed",
+        "total": "26",
+        "passed": "26",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-12 10:32:34Z",
+        "end-time": "2026-10-12 10:33:02Z",
+        "duration": "27.8191011"
+      }
+    },
+    {
+      "name": "independent_preservation",
+      "passed": true,
+      "count": 23
+    },
+    {
+      "name": "restored_files_still_equal_snapshot",
+      "passed": true,
+      "count": 10
+    },
+    {
+      "name": "native_phase_visibility",
+      "passed": true
+    },
+    {
+      "name": "scoped_git_whitespace",
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "updated_markdown_links",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "name": "logs_access_tokens_redacted",
+      "passed": true,
+      "redactions": {
+        "authoring-unity.log": 1,
+        "playmode-final-unity.log": 1,
+        "playmode-unity.log": 1
+      }
+    }
+  ]
+}

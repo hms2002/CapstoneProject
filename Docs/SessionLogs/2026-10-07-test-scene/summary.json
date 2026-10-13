@@ -1,0 +1,119 @@
+[
+  {
+    "Case": "crowded-marks-random",
+    "Pairs": 40,
+    "BaseMs": 3.6246,
+    "OptMs": 2.6523,
+    "ReductionPct": 26.8,
+    "Equivalent": true,
+    "Valid": true
+  },
+  {
+    "Case": "crowded-marks-targeted",
+    "Pairs": 40,
+    "BaseMs": 5.8653,
+    "OptMs": 4.0751,
+    "ReductionPct": 30.5,
+    "Equivalent": true,
+    "Valid": true
+  },
+  {
+    "Case": "no-ground-random",
+    "Pairs": 40,
+    "BaseMs": 2.6344,
+    "OptMs": 2.8311,
+    "ReductionPct": -7.5,
+    "Equivalent": true,
+    "Valid": true
+  },
+  {
+    "Case": "no-ground-targeted",
+    "Pairs": 40,
+    "BaseMs": 2.6253,
+    "OptMs": 3.1451,
+    "ReductionPct": -19.8,
+    "Equivalent": true,
+    "Valid": true
+  },
+  {
+    "Case": "open-random",
+    "Pairs": 40,
+    "BaseMs": 1.2979,
+    "OptMs": 1.2923,
+    "ReductionPct": 0.4,
+    "Equivalent": true,
+    "Valid": true
+  },
+  {
+    "Case": "open-targeted",
+    "Pairs": 40,
+    "BaseMs": 3.0242,
+    "OptMs": 1.7055,
+    "ReductionPct": 43.6,
+    "Equivalent": true,
+    "Valid": true
+  },
+  {
+    "Case": "overlapping-floor-random",
+    "Pairs": 40,
+    "BaseMs": 1.1045,
+    "OptMs": 1.1531,
+    "ReductionPct": -4.4,
+    "Equivalent": true,
+    "Valid": true
+  },
+  {
+    "Case": "overlapping-floor-targeted",
+    "Pairs": 40,
+    "BaseMs": 4.0577,
+    "OptMs": 1.9348,
+    "ReductionPct": 52.3,
+    "Equivalent": true,
+    "Valid": true
+  },
+  {
+    "Case": "transformed-grid-random",
+    "Pairs": 40,
+    "BaseMs": 1.1584,
+    "OptMs": 1.2755,
+    "ReductionPct": -10.1,
+    "Equivalent": true,
+    "Valid": true
+  },
+  {
+    "Case": "transformed-grid-targeted",
+    "Pairs": 40,
+    "BaseMs": 4.036,
+    "OptMs": 2.043,
+    "ReductionPct": 49.4,
+    "Equivalent": true,
+    "Valid": true
+  },
+  {
+    "Case": "walls-and-holes-random",
+    "Pairs": 40,
+    "BaseMs": 1.3152,
+    "OptMs": 1.2889,
+    "ReductionPct": 2.0,
+    "Equivalent": true,
+    "Valid": true
+  },
+  {
+    "Case": "walls-and-holes-targeted",
+    "Pairs": 40,
+    "BaseMs": 4.2489,
+    "OptMs": 2.3514,
+    "ReductionPct": 44.7,
+    "Equivalent": true,
+    "Valid": true
+  },
+  {
+    "Case": "zero-spacing-targeted",
+    "Pairs": 16,
+    "BaseMs": 1.5246,
+    "OptMs": 1.4802,
+    "ReductionPct": 2.9,
+    "Equivalent": true,
+    "Valid": true
+  }
+]

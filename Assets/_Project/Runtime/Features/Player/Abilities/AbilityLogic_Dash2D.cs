@@ -15,10 +15,12 @@ namespace UnityGAS.Sample
     {
         public const string TutorialForwardKey = "Dash2D.TutorialForward";
         public const string InvulnerableKey = "Dash2D.Invulnerable";
+        public const string CompletedKey = "Dash2D.Completed";
         private const string MotionVersionKey = "Dash2D.MotionVersion";
 
         public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
         {
+            spec?.SetInt(CompletedKey, 0);
             if (system == null || spec == null || spec.Definition == null) yield break;
 
             var data = spec.Definition.sourceObject as Dash2DData;
@@ -106,6 +108,8 @@ namespace UnityGAS.Sample
                     yield return null;
                 }
 
+                // Keep this result through cleanup for AbilityExecutionEnded listeners.
+                spec.SetInt(CompletedKey, 1);
                 dashAugment?.HandleDashFinished(
                     system,
                     spec,
@@ -183,11 +187,11 @@ namespace UnityGAS.Sample
         {
             var intent = system.GetComponent<PlayerIntentInput2D>();
             if (intent != null && intent.RawMoveInput.sqrMagnitude > 0.0001f)
-                return intent.RawMoveInput.normalized;
+                return intent.ApplyConfusionToDirection(intent.RawMoveInput).normalized;
 
             Vector2 move = InputActionQuery.GetMoveVectorRaw();
             if (move.sqrMagnitude > 0.0001f)
-                return move.normalized;
+                return (intent != null ? intent.ApplyConfusionToDirection(move) : move).normalized;
 
             if (fallbackToAim)
             {

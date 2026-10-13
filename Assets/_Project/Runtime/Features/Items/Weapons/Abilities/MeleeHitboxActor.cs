@@ -272,6 +272,7 @@ namespace UnityGAS
         /// </summary>
         protected override bool CanHitTarget(GameObject target)
         {
+            if (HasStoppedActionOwner || CombatHitPause2D.IsParalyzedOn(ActionOwner)) return false;
             if (!hitOncePerTarget || target == null)
                 return true;
 

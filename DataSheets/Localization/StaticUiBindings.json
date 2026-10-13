@@ -273,14 +273,6 @@
       "text": "인벤토리 확인"
     },
     {
-      "key": "ui.b5eaeac079f751342ba74d3465688636.1153145813432247256",
-      "path": "Assets/_Project/Prefabs/UI/KeyMapRow.prefab",
-      "type": "TMPro.TextMeshProUGUI",
-      "owner": "KeyMapRow/OptionText",
-      "field": "m_text",
-      "text": "화면 모드"
-    },
-    {
       "key": "ui.cd86442ed1495fd4d8436f3c23100177.881201560",
       "path": "Assets/_Project/Scenes/TitleScene.unity",
       "type": "TMPro.TextMeshProUGUI",
@@ -3743,6 +3735,14 @@
       "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/TitleTextPanel/TopText",
       "field": "m_text",
       "text": "슬롯 2"
+    },
+    {
+      "key": "ui.keybinding.reset",
+      "path": "Assets/_Project/Prefabs/UI/KeyMapRow.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "KeyMapRow/Stepper/Button (2)_Layout/Button (2)_Render/Button (2)/Text (TMP)_Layout/Text (TMP)_Render/Text (TMP)",
+      "field": "m_text",
+      "text": "초기화"
     }
   ]
 }

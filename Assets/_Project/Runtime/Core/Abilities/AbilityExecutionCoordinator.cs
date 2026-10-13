@@ -107,7 +107,7 @@ namespace UnityGAS
                     yield break;
 
                 yield return null;
-                if (!CombatHitPause2D.IsPausedOn(system.gameObject)) remaining -= Time.deltaTime;
+                if (!CombatHitPause2D.IsPausedOn(system.gameObject)) remaining -= CombatHitPause2D.GetActionDeltaTime(system.gameObject);
             }
         }
 

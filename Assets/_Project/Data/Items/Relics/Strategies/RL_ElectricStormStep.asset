@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c820046c2a00e154cabc5c32a0044165, type: 3}
+  m_Name: RL_ElectricStormStep
+  m_EditorClassIdentifier: Gameplay::RelicLogic_ElectricAttributeBonus_Managed
+  effectTemplate: 
+  mode: 3
+  electricAddAttribute: {fileID: 11400000, guid: f79c86d599c44c8e95bdf6949914f4e3, type: 2}
+  electrocutedTag: {fileID: 11400000, guid: 91af69d21bca4a2fb9e29a76190e8979, type: 2}
+  triggerDashAbility: {fileID: 11400000, guid: dadc84cd2fffcae45905741575af20c3, type: 2}
+  nearbyRadius: 6.5
+  maxUnits: 3
+  bonusMoveStep: 0.1
+  bonusPerUnitByLevel:
+  - 1
+  - 1
+  - 2
+  - 2
+  - 3
+  maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  healthStep: 1
+  flatBonusByLevel:
+  - 2
+  - 3
+  - 4
+  durationSeconds: 3

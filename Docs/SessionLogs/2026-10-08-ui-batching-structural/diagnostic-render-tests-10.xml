@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Failed(Child)" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-07 19:59:06Z" end-time="2026-10-07 20:00:43Z" duration="97.0982401">
+  <test-suite type="TestSuite" id="2113" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="936" result="Failed" site="Child" start-time="2026-10-07 19:59:06Z" end-time="2026-10-07 20:00:43Z" duration="97.098240" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2109" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="929" result="Failed" site="Child" start-time="2026-10-07 19:59:06Z" end-time="2026-10-07 20:00:43Z" duration="97.048701" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="41100" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="2023" name="UiRenderLayerAuthoredPlayModeTests" fullname="UiRenderLayerAuthoredPlayModeTests" classname="UiRenderLayerAuthoredPlayModeTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-10-07 19:59:06Z" end-time="2026-10-07 20:00:43Z" duration="97.017026" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="2025" name="ActualKeyRow_PrimarySecondaryResetClicks_TogglesAndStaticProjectionPreserveOwnership" fullname="UiRenderLayerAuthoredPlayModeTests.ActualKeyRow_PrimarySecondaryResetClicks_TogglesAndStaticProjectionPreserveOwnership" methodname="ActualKeyRow_PrimarySecondaryResetClicks_TogglesAndStaticProjectionPreserveOwnership" classname="UiRenderLayerAuthoredPlayModeTests" runstate="Runnable" seed="1798313527" result="Passed" start-time="2026-10-07 19:59:07Z" end-time="2026-10-07 19:59:11Z" duration="4.100704" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CursorDiagnostic] phase=display-stable-2s frame=8 screen=640x480 mode=Windowed focused=False visible=True lock=None domain=Combat/Default hiddenOwners=0 backend=UnityCursorAPI cursorMode=Auto texture=light_cursor_spritesheet_31_Cursor_22x22 hotspot=(11.00, 11.00)
+UIBATCH_APP_LOCALE_READY,zh-Hans
+AUTHORED_LAYER_PIXELS,secondary-hidden,visible=484180,changed=0,maxRGBA=0,tolerance=1
+]]></output>
+        </test-case>
+        <test-case id="2024" name="LegacyVsLayered_FiveLocaleGeometryPixelsScrollAndListeningRemainEquivalent" fullname="UiRenderLayerAuthoredPlayModeTests.LegacyVsLayered_FiveLocaleGeometryPixelsScrollAndListeningRemainEquivalent" methodname="LegacyVsLayered_FiveLocaleGeometryPixelsScrollAndListeningRemainEquivalent" classname="UiRenderLayerAuthoredPlayModeTests" runstate="Runnable" seed="1747423159" result="Failed" start-time="2026-10-07 19:59:11Z" end-time="2026-10-07 20:00:43Z" duration="92.419313" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Background[0]/ContentsMask[0]/Contents[0]/UISize[0]/OptionText[0] text
+  Expected string length 4 but was 8. Strings differ at index 2.
+  Expected: "UI크기"
+  But was:  "UI Scale"
+  -------------^
+]]></message>
+            <stack-trace><![CDATA[at UiRenderLayerAuthoredPlayModeTests+Pair.AssertGeometryAndFonts () [0x001cd] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\PlayMode\Procedural\UiRenderLayerAuthoredPlayModeTests.cs:425
+at UiRenderLayerAuthoredPlayModeTests+<LegacyVsLayered_FiveLocaleGeometryPixelsScrollAndListeningRemainEquivalent>d__16.MoveNext () [0x00302] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\PlayMode\Procedural\UiRenderLayerAuthoredPlayModeTests.cs:64
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@76560ee600cb\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[UIBATCH_APP_LOCALE_READY,zh-Hans
+AUTHORED_LAYER_PIXELS,SettingUI/ko/scroll=1,visible=480832,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,SettingUI/ko/scroll=0.5,visible=480832,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,SettingUI/ko/scroll=0,visible=480832,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,SettingUI/ko/reopen,visible=480832,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,TitleSettingUI/ko/scroll=1,visible=480832,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,TitleSettingUI/ko/scroll=0.5,visible=480832,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,TitleSettingUI/ko/scroll=0,visible=480832,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,TitleSettingUI/ko/reopen,visible=480832,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,KeyMappingUI/ko/scroll=1,visible=484180,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,KeyMappingUI/ko/scroll=0.5,visible=484180,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,KeyMappingUI/ko/scroll=0,visible=484180,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,ko/listening=(1.00, 0.00),visible=484180,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,ko/listening=(0.00, 1.00),visible=484180,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,ko/listening=(0.00, 0.00),visible=484180,changed=0,maxRGBA=0,tolerance=1
+AUTHORED_LAYER_PIXELS,KeyMappingUI/ko/reopen,visible=484180,changed=0,maxRGBA=0,tolerance=1
+Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -72,7 +72,7 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
         // Hash the instance without consuming gameplay RNG; pooled reuse restarts its clock.
         uint hash = unchecked((uint)GetInstanceID() * 2654435761u);
         crawlPhaseOffset = (hash & 0x00ffffffu) / 16777216f;
-        crawlEpoch = Time.timeAsDouble;
+        crawlEpoch = CombatHitPause2D.GetActionTimeAsDouble(gameObject);
         ResetNavigation();
     }
 
@@ -127,7 +127,7 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
     {
         float moveSeconds = Mathf.Max(0.02f, crawlMoveSeconds);
         float cycleSeconds = moveSeconds + Mathf.Max(0f, crawlRestSeconds);
-        double elapsed = Time.timeAsDouble - crawlEpoch + crawlPhaseOffset * cycleSeconds;
+        double elapsed = CombatHitPause2D.GetActionTimeAsDouble(gameObject) - crawlEpoch + crawlPhaseOffset * cycleSeconds;
         float phase = (float)(elapsed % cycleSeconds);
         if (phase >= moveSeconds)
             return IntentMovementData.None;
@@ -177,7 +177,7 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
         cachedPathfinder = null;
         navigationBodiesDirty = true;
         nextFinderSearchTime = 0f;
-        nextPathSearchTime = Time.time + crawlPhaseOffset * 0.15f;
+        nextPathSearchTime = CombatHitPause2D.GetActionTime(gameObject) + crawlPhaseOffset * 0.15f;
     }
 
     private MonsterNavigationFootprint2D GetNavigationFootprint()
@@ -206,8 +206,8 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
             return cachedPathfinder = candidate;
         }
 
-        if (Time.time < nextFinderSearchTime) return null;
-        nextFinderSearchTime = Time.time + 1f + crawlPhaseOffset * 0.2f;
+        if (CombatHitPause2D.GetActionTime(gameObject) < nextFinderSearchTime) return null;
+        nextFinderSearchTime = CombatHitPause2D.GetActionTime(gameObject) + 1f + crawlPhaseOffset * 0.2f;
         cachedPathfinder = null;
         approachPath.Clear();
         waypointIndex = 0;
@@ -227,7 +227,7 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
                (approachPath[waypointIndex] - position).sqrMagnitude <= WaypointReachDistance * WaypointReachDistance)
             waypointIndex++;
 
-        float now = Time.time;
+        float now = CombatHitPause2D.GetActionTime(gameObject);
         if (now - lastPathProgressSample > Mathf.Max(0.25f, Time.fixedDeltaTime * 3f) ||
             (position - pathProgressPosition).sqrMagnitude >= 0.05f * 0.05f)
         {
@@ -238,11 +238,11 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
         bool stalled = now - pathProgressTime >= Mathf.Max(1f, (crawlMoveSeconds + crawlRestSeconds) * 2f);
         bool exhausted = waypointIndex >= approachPath.Count;
         bool targetMoved = (target - pathTarget).sqrMagnitude > 0.35f * 0.35f;
-        if ((exhausted || targetMoved || stalled) && Time.time >= nextPathSearchTime && lastPawnSearchFrame != Time.frameCount)
+        if ((exhausted || targetMoved || stalled) && CombatHitPause2D.GetActionTime(gameObject) >= nextPathSearchTime && lastPawnSearchFrame != Time.frameCount)
         {
             // At most one Pawn A* search per rendered frame, including frames with several physics ticks.
             lastPawnSearchFrame = Time.frameCount;
-            nextPathSearchTime = Time.time + PathRetrySeconds + crawlPhaseOffset * 0.1f;
+            nextPathSearchTime = CombatHitPause2D.GetActionTime(gameObject) + PathRetrySeconds + crawlPhaseOffset * 0.1f;
             pathTarget = target;
             approachPath.Clear();
             waypointIndex = 0;
@@ -303,10 +303,10 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
         if (enemy.Target != null)
             return true;
 
-        if (Time.time < nextTargetAcquireTime)
+        if (CombatHitPause2D.GetActionTime(gameObject) < nextTargetAcquireTime)
             return false;
 
-        nextTargetAcquireTime = Time.time + Mathf.Max(0.05f, targetAcquireInterval);
+        nextTargetAcquireTime = CombatHitPause2D.GetActionTime(gameObject) + Mathf.Max(0.05f, targetAcquireInterval);
         float searchRange = detectionRange;
         if (spawnContext.RoomArea != null && spawnContext.RoomArea.Contains(transform.position))
         {

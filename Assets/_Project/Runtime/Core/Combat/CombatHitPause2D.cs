@@ -6,6 +6,7 @@ using UnityEngine;
 namespace UnityGAS
 {
     public interface ICombatHitPauseImmune { }
+    public interface ICombatActionState { bool IsDead { get; } }
 
     [Serializable]
     public struct CombatHitFeelTiming
@@ -22,14 +23,85 @@ namespace UnityGAS
         private float worldPauseUntil;
         private bool ownsWorldPause;
         private float impactRemaining;
+        private double paralysisStartTime;
+        private double paralysisEndTime;
+        private double elapsedParalysisTime;
+        private bool paralysisClockOpen;
         private Rigidbody2D impactBody;
         private RigidbodyConstraints2D impactConstraints;
         private bool holdsBody;
         private readonly Dictionary<Animator, float> animationSpeeds = new();
-        public bool IsPaused => isActiveAndEnabled && (Time.time < until || impactRemaining > 0f);
+        public bool IsParalyzed => isActiveAndEnabled && paralysisClockOpen && Time.timeAsDouble < paralysisEndTime;
+        public bool IsPaused => isActiveAndEnabled && (Time.time < until || impactRemaining > 0f || IsParalyzed);
 
         public static bool IsPausedOn(GameObject owner) => TimeScalePausePlayback.IsPaused ||
             (owner != null && owner.TryGetComponent<CombatHitPause2D>(out var pause) && pause.IsPaused);
+
+        public static bool IsParalyzedOn(GameObject owner) =>
+            owner != null && owner.TryGetComponent<CombatHitPause2D>(out var pause) && pause.IsParalyzed;
+
+        public static bool IsActionStoppedOn(GameObject owner) => owner == null || !owner.activeInHierarchy ||
+            (owner.TryGetComponent<ICombatActionState>(out var state) && state.IsDead);
+
+        // Only paralysis changes this clock; existing hit-pause/global timing keeps its prior behavior.
+        public static float GetActionTime(GameObject owner) => owner != null &&
+            owner.TryGetComponent<CombatHitPause2D>(out var pause)
+                ? (float)pause.ReadActionTime() : Time.time;
+
+        public static double GetActionTimeAsDouble(GameObject owner) => owner != null &&
+            owner.TryGetComponent<CombatHitPause2D>(out var pause)
+                ? pause.ReadActionTime() : Time.timeAsDouble;
+
+        public static float GetActionDeltaTime(GameObject owner)
+        {
+            if (owner == null || !owner.TryGetComponent<CombatHitPause2D>(out var pause)) return Time.deltaTime;
+            if (pause.IsParalyzed) return 0f;
+            double now = Time.timeAsDouble;
+            double overlap = Math.Max(0d, Math.Min(now, pause.paralysisEndTime) -
+                Math.Max(now - Time.deltaTime, pause.paralysisStartTime));
+            return Mathf.Max(0f, Time.deltaTime - (float)overlap);
+        }
+
+        private double ReadActionTime()
+        {
+            double now = Time.timeAsDouble;
+            double pending = paralysisClockOpen ? Math.Max(0d, Math.Min(now, paralysisEndTime) - paralysisStartTime) : 0d;
+            return now - elapsedParalysisTime - pending;
+        }
+
+        public static void ApplyParalysis(GameObject owner, float seconds)
+        {
+            if (IsActionStoppedOn(owner) || !float.IsFinite(seconds) || seconds <= 0f) return;
+            if (owner.GetComponentInParent<ICombatHitPauseImmune>() != null) return;
+            var pause = owner.GetComponent<CombatHitPause2D>();
+            if (pause == null) pause = owner.AddComponent<CombatHitPause2D>();
+            if (!pause.isActiveAndEnabled) return;
+            pause.CommitParalysisTime();
+            if (!pause.IsPaused) pause.RestoreAnimations();
+            if (!pause.paralysisClockOpen)
+            {
+                pause.paralysisStartTime = Time.timeAsDouble;
+                pause.paralysisClockOpen = true;
+            }
+            pause.paralysisEndTime = Math.Max(pause.paralysisEndTime, Time.timeAsDouble + seconds);
+            pause.CaptureAnimations();
+            owner.GetComponent<MovementMotor2D>()?.StopAllMotion(clearExternal: false, clearMotion: false);
+        }
+
+        public static void ClearParalysis(GameObject owner)
+        {
+            if (owner == null || !owner.TryGetComponent<CombatHitPause2D>(out var pause)) return;
+            pause.paralysisEndTime = Math.Min(pause.paralysisEndTime, Time.timeAsDouble);
+            pause.CommitParalysisTime();
+            if (!pause.IsPaused) pause.RestoreAnimations();
+        }
+
+        private void CommitParalysisTime()
+        {
+            if (!paralysisClockOpen || Time.timeAsDouble < paralysisEndTime) return;
+            elapsedParalysisTime += Math.Max(0d, paralysisEndTime - paralysisStartTime);
+            paralysisClockOpen = false;
+        }
 
         public static void ApplyWorldPause(GameObject owner, float seconds)
         {
@@ -133,6 +205,7 @@ namespace UnityGAS
 
         private void LateUpdate()
         {
+            CommitParalysisTime();
             float delta = TimeScalePausePlayback.IsPaused ? 0f : Time.unscaledDeltaTime;
             impactRemaining = Mathf.Max(0f, impactRemaining - delta);
             if (ownsWorldPause)
@@ -140,13 +213,19 @@ namespace UnityGAS
                 worldPauseUntil -= delta;
                 if (worldPauseUntil <= 0f) ReleaseWorldPause();
             }
-            if (GetComponentInParent<ICombatHitPauseImmune>() != null) until = 0f;
+            if (GetComponentInParent<ICombatHitPauseImmune>() != null) { until = 0f; ClearParalysis(gameObject); }
             if (!IsPaused) { RestoreAnimations(); return; }
             foreach (var entry in animationSpeeds)
                 if (entry.Key != null) entry.Key.speed = 0f;
         }
 
-        private void OnDisable() { ReleaseWorldPause(); until = 0f; impactRemaining = 0f; RestoreAnimations(); }
+        private void OnDisable()
+        {
+            ReleaseWorldPause(); until = 0f; impactRemaining = 0f;
+            paralysisStartTime = paralysisEndTime = elapsedParalysisTime = 0d;
+            paralysisClockOpen = false;
+            RestoreAnimations();
+        }
         private void RestoreAnimations()
         {
             if (holdsBody && impactBody != null) impactBody.constraints = impactConstraints;

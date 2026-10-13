@@ -36,6 +36,7 @@ GameObject:
   - component: {fileID: 3011797597724767587}
   - component: {fileID: 3502414480706725571}
   - component: {fileID: 5115026447728282675}
+  - component: {fileID: 7888355008726888788}
   m_Layer: 31
   m_Name: Knight
   m_TagString: Enemy
@@ -641,6 +642,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gameplay::MonsterStatusRuntime
   electrocutedEffect: {fileID: 11400000, guid: 098ed5d6eb1548c884517bade6c21d73, type: 2}
+--- !u!114 &7888355008726888788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18a1857e5118414599ff746dbb13e4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::MonsterEncyclopediaIdentity
+  monsterId: monster.slime_knight
 --- !u!1 &110000
 GameObject:
   m_ObjectHideFlags: 0

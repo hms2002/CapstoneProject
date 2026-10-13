@@ -1328,7 +1328,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337620
-    m_Localized: Reduces movement speed but greatly increases attack power.
+    m_Localized: Reduces movement speed by a percentage and increases Attack by a
+      fixed amount.
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337621
@@ -1344,7 +1345,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337624
-    m_Localized: Increases attack power while HP is low.
+    m_Localized: While HP is at most 50%, increases Attack by 3.
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337625
@@ -1369,7 +1370,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337630
-    m_Localized: Increases attack power.
+    m_Localized: Increases Attack by a fixed amount.
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337631
@@ -1377,7 +1378,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337632
-    m_Localized: Increases attack power and basic attack damage.
+    m_Localized: Increases Attack by a fixed amount and basic attack damage by a
+      percentage.
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337633
@@ -1430,7 +1432,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337645
-    m_Localized: Defeating an enemy briefly increases attack power.
+    m_Localized: Killing an enemy increases Attack by 2 for 4 seconds.
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337646
@@ -1446,8 +1448,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531906
-    m_Localized: Defeating an enemy increases attack power and movement speed by
-      10% for 4 seconds.
+    m_Localized: Killing an enemy increases Attack by 2 and movement speed by 10%
+      for 4 seconds.
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531907
@@ -5066,9 +5068,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 50606289883180
-    m_Localized: Creates a feather that orbits you. Deals 35/45/55/65/75% of attack
-      power as damage depending on level, and orbits faster with higher movement
-      speed.
+    m_Localized: Creates feathers that orbit the player. They deal fixed damage of
+      3/4/5/6/7 by level and orbit faster at higher movement speed.
     m_Metadata:
       m_Items: []
   - m_Id: 50606289883181
@@ -5960,9 +5961,9 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 57923735556097
-    m_Localized: "\u25CF {feather_count} feathers orbit you and attack enemies\n\u25CF
-      Feather damage: {damage_coef} of [[\uACF5\uACA9\uB825]]\n\u25CF Orbit radius:
-      {radius}\n\u25CF Base interval for hitting the same enemy: {hit_cooldown}"
+    m_Localized: "\u25CF {feather_count} feathers orbit you and attack enemies\r\n\u25CF
+      Feather damage {damage_coef}\r\n\u25CF Orbit radius {radius}\r\n\u25CF Base
+      repeat-hit interval against the same enemy {hit_cooldown}"
     m_Metadata:
       m_Items: []
   - m_Id: 57923735556098
@@ -7614,6 +7615,254 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 192956156776470
     m_Localized: Boss Room
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1806331794067456
+    m_Localized: Press a key...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1806331936673792
+    m_Localized: Reset
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2622680689684480
+    m_Localized: Electrocuted
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2622680836485120
+    m_Localized: 'Electrocution deals damage, and the electrocuted state lasts for
+      4 seconds.
+
+      Damage chains through nearby electrocuted enemies, hitting
+      a base maximum of 3 targets.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2622680836485121
+    m_Localized: 'By default, Burn consumes 1 stack every second to deal damage equal
+      to 50% of the Fire Damage stat.
+
+
+      Burn can stack up to 99 times.
+
+
+      Its
+      damage cannot critically hit by default.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758622642176
+    m_Localized: NPC
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758832357376
+    m_Localized: '{0} / {1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758832357377
+    m_Localized: '{0} entries'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758832357378
+    m_Localized: No registered entries
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758832357379
+    m_Localized: 'Total kills: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758832357380
+    m_Localized: Description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758832357381
+    m_Localized: Current affection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758832357382
+    m_Localized: Affection rewards
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758832357383
+    m_Localized: "Description \xB7 Story"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758832357384
+    m_Localized: Illustration pending
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758832357385
+    m_Localized: Affection {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758832357386
+    m_Localized: Full view
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3025758832357387
+    m_Localized: Close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892226887680
+    m_Localized: "\u25CF [[\uC804\uAE30 \uC18D\uC131]] {value} per [[\uAC10\uC804]]
+      enemy within {radius}m\n\u25CF Counts up to {cap} enemies"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328192
+    m_Localized: "\u25CF [[\uC804\uAE30 \uC18D\uC131]] {value} per {step} [[\uCD94\uAC00
+      \uC774\uB3D9\uC18D\uB3C4]]\n\u25CF Up to {cap} steps"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328193
+    m_Localized: "\u25CF Using a movement skill grants [[\uC804\uAE30 \uC18D\uC131]]
+      {value} for {duration}\n\u25CF Up to 4 stacks; another use refreshes all stack
+      durations"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328194
+    m_Localized: Thunder Heart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328195
+    m_Localized: Electric increases with the number of electrocuted enemies.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328196
+    m_Localized: Life Current
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328197
+    m_Localized: Electric increases with maximum HP.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328198
+    m_Localized: Dash Coil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328199
+    m_Localized: Using a movement skill increases Electric for 3 seconds, up to 4
+      stacks. Another use refreshes all stack durations.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3053829903937536
+    m_Localized: "\u25CF [[\uC804\uAE30 \uC18D\uC131]] {value} per [[\uAC10\uC804]]
+      enemy"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3053830046543872
+    m_Localized: "\u25CF [[\uC804\uAE30 \uC18D\uC131]] {value} per {health_step}
+      cell of [[\uCD5C\uB300 \uCCB4\uB825]]"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3053830046543873
+    m_Localized: "\u25CF Extend the [[\uAC10\uC804]] duration of enemies hit by a
+      chain by {extension}\n\u25CF Up to {cap}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3053830050738176
+    m_Localized: Thunder Knot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3053830050738177
+    m_Localized: Extends electrocution duration on enemies hit by a chain, up to
+      4 seconds.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3068729934016512
+    m_Localized: "\u25CF Maximum electric chain targets {value}\n\u25CF Base count:
+      3, including the initial target"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3068730034679808
+    m_Localized: "\u25CF Applying [[\uAC10\uC804]] causes paralysis for {duration}\n\u25CF
+      Does not affect bosses"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3068730034679809
+    m_Localized: Resonance Bell
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3068730034679810
+    m_Localized: Increases the maximum number of targets an electric chain can hit.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3068730034679811
+    m_Localized: Tingling Shackles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3068730034679812
+    m_Localized: Applying electrocution to an enemy paralyzes it for 0.1 seconds.
+      Does not affect bosses.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3084505597251584
+    m_Localized: "\u25CF Killing an enemy: [[\uACF5\uACA9\uB825]] {attack_bonus}
+      for {duration}\r\n\u25CF [[\uC774\uB3D9\uC18D\uB3C4]] {move_speed_bonus}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3084505723080704
+    m_Localized: "\u25CF {feather_count} feathers orbit you and attack enemies\r\n\u25CF
+      Feather damage {damage_coef}\r\n\u25CF Orbit radius {radius}\r\n\u25CF Base
+      repeat-hit interval against the same enemy {hit_cooldown}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035113558016
+    m_Localized: "\u25CF When the duration of [[\uAC10\uC804]] you applied ends,
+      deal {electric_ratio} of [[\uC804\uAE30 \uC18D\uC131]] as damage"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164352
+    m_Localized: "\u25CF Repeat chain lightning once more at {damage_ratio} damage\n\u25CF
+      Excludes the initial target; [[\uAC10\uC804]] duration is not extended"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164353
+    m_Localized: "\u25CF Each chain step increases chain damage by {step_bonus}\n\u25CF
+      Up to {max_bonus} extra damage"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164354
+    m_Localized: Current Jar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164355
+    m_Localized: When the duration of electrocution you applied ends, deals 40% of
+      Electric as damage.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164356
+    m_Localized: Echo Coil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164357
+    m_Localized: Repeats chain lightning once more at 50% damage. Excludes the initial
+      target and does not extend electrocution duration.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164358
+    m_Localized: Conductor Ring
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164359
+    m_Localized: Each chain step increases chain damage by 20%, up to 60%.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3397458332942336
+    m_Localized: Confusion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3397459079528448
+    m_Localized: Alcohol clouds your sense of direction.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3397459196968960
+    m_Localized: Normal walking inputs are reversed in all four directions. Ends
+      when the mug empties after leaving the puddle.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3397459331186688
+    m_Localized: Filling the mug for 3 seconds in an alcohol puddle grants +25% movement
+      speed and +40% attack speed instead of confusion. The duration refreshes inside
+      the puddle. After leaving, the mug drains for 1.5 seconds, then the buff lasts
+      5 seconds.
     m_Metadata:
       m_Items: []
   references:

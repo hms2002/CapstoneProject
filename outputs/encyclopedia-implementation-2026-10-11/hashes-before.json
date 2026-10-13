@@ -1,0 +1,34 @@
+[
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaScreen.cs",
+    "Hash": "67F618E43A3B98C2560948F7B43EA2876E64565C724FA88AF95C894CEC3C75A2"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Encyclopedia\\EncyclopediaCatalogSO.cs",
+    "Hash": "00062DD2CA715126F494077436572858B4FFC7AD8F7B32DADBDCEBF0508CBD56"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\PopupUI\\Encyclopedia\\EncyclopediaUI.prefab",
+    "Hash": "B9C6073474F1F4FFB69EDA849A0D8F1C2EF49FB62531D9B27DA0E6F9FB0E66A9"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\GlobalUIRoot.prefab",
+    "Hash": "02EFAB5C9922894E842CFA8A5C087EE8DC32D07BA3BB09603E8C0DC5D13C7598"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Encyclopedia\\EncyclopediaCatalog.asset",
+    "Hash": "B4A2147A4D44610F0B26A9C8C12DB83B8999869F75AC9C7844354CFEE63BE8F8"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemTab.cs",
+    "Hash": "4573461141C7941DE02EF9A5E1C863008244E6D32CF72AA626399D04F17760DB"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemLeftPage.cs",
+    "Hash": "7637FAD5E52AD5AF56AAF70FAA1BABB885C9F01218D9CA67CD502FB6166849E0"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemRightPage.cs",
+    "Hash": "E925C25719BEF7E978DBA12B97DD308371DA05F96A96A6D44C108DE433EEFAD2"
+  }
+]

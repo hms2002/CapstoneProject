@@ -71,12 +71,17 @@ public class WizardScatterShotRunner : MonoBehaviour, IMobPatternRunner
             while (elapsed < prepareSeconds)
             {
                 if (cancelRequested || owner.IsDead || IsCancelled(spec)) yield break;
+                if (CombatHitPause2D.IsParalyzedOn(owner.gameObject))
+                {
+                    yield return null;
+                    continue;
+                }
                 if (elapsed < trackingSeconds && owner.TryBuildShotContext(system, spec, initialTarget, out Wizard.ScatterShotContext trackedContext))
                 {
                     context = trackedContext;
                     ShowTelegraph(context, prepareSeconds);
                 }
-                elapsed += Time.deltaTime;
+                elapsed += CombatHitPause2D.GetActionDeltaTime(owner.gameObject);
                 yield return null;
             }
 

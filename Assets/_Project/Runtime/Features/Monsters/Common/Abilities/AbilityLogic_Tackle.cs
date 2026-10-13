@@ -101,8 +101,14 @@ public class AL_Tackle : AbilityLogic
                     if (IsCancelled(spec))
                         break;
 
+                    if (CombatHitPause2D.IsParalyzedOn(caster.gameObject))
+                    {
+                        yield return null;
+                        continue;
+                    }
+
                     context = tackle.UpdateTelegraphFromCurrentPosition(context, warningSeconds, telegraphStyle);
-                    elapsed += Time.deltaTime;
+                    elapsed += CombatHitPause2D.GetActionDeltaTime(caster.gameObject);
                     yield return null;
                 }
             }

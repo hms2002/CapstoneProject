@@ -1,0 +1,16 @@
+{
+  "filesChecked": 918,
+  "changedOriginalFiles": [],
+  "allOriginalPreserved": true,
+  "stageSourceExact": [
+    {
+      "path": "Assets\\_Project\\Runtime\\UI\\Dialogue\\SpeechBubble\\SpeechBubble.cs",
+      "equal": true
+    },
+    {
+      "path": "Assets\\_Project\\Runtime\\UI\\Localization\\LocalizeTmpFontEvent.cs",
+      "equal": true
+    }
+  ],
+  "mainEditorStillRunning": true
+}

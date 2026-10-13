@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using System.Globalization;
 
 /// <summary>
 /// 책임 :
@@ -16,6 +17,7 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
     [SerializeField] private Image durationFillImage;
     [SerializeField] private TMP_Text stackText;
     [SerializeField] private TMP_Text durationText;
+    [SerializeField] private Material progressTextMaterial;
 
     [Header("Style")]
     [SerializeField] private Vector2 entrySize = new(48f, 48f);
@@ -48,9 +50,13 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
     private float originalStackFontSize, originalStackOutlineWidth;
     private Color32 originalStackOutlineColor;
     private Color originalStackColor;
+    private Material originalStackAuthoredMaterial;
+    private LocalizeTmpFontEvent stackFontBinding;
     private Outline entryOutline;
     private bool visualTreeReady;
     private bool hasBoundEntry;
+    private readonly HudDisplayTextCache durationDisplayText = new();
+    private string stackNegativeSign;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
     public int DiagnosticVisualSetupCount { get; private set; }
     public int DiagnosticStackFormatCount { get; private set; }
@@ -65,6 +71,7 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
     private void OnDisable()
     {
         hasBoundEntry = false;
+        durationDisplayText.Clear();
         HideHoverIfNeeded();
     }
 
@@ -80,7 +87,9 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
     {
         EnsureVisualTree();
         bool updateStack = !hasBoundEntry || currentEntry.ShowStacks != entry.ShowStacks ||
-            currentEntry.StackCount != entry.StackCount || currentEntry.ProgressText != entry.ProgressText;
+            currentEntry.StackCount != entry.StackCount || currentEntry.ProgressText != entry.ProgressText ||
+            stackNegativeSign != CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
+        stackNegativeSign = CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
         currentEntry = entry;
 
         gameObject.SetActive(entry.IsVisible);
@@ -106,7 +115,7 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
             stackText.text = hasProgress ? entry.ProgressText
                 : entry.ShowStacks && entry.StackCount > 0 ? FormatStack(entry.StackCount) : string.Empty;
         durationText.text = entry.ShowDuration && entry.RemainingTime > 0f
-            ? entry.RemainingTime.ToString("0.0")
+            ? durationDisplayText.Decimal(entry.RemainingTime)
             : string.Empty;
 
         if (entry.ShowDuration && entry.MaxTime > 0f && entry.RemainingTime > 0f)
@@ -150,6 +159,9 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
             originalStackColor = stackText.color;
             originalStackOutlineColor = stackText.outlineColor;
             originalStackOutlineWidth = stackText.outlineWidth;
+            stackFontBinding ??= stackText.GetComponent<LocalizeTmpFontEvent>();
+            originalStackAuthoredMaterial = stackFontBinding != null
+                ? stackFontBinding.AuthoredMaterial : stackText.fontSharedMaterial;
             textRect.anchorMin = Vector2.zero;
             textRect.anchorMax = Vector2.one;
             textRect.offsetMin = new Vector2(1f, 1f);
@@ -157,8 +169,14 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
             stackText.alignment = TextAlignmentOptions.Center;
             stackText.fontSize = Mathf.Max(13f, originalStackFontSize);
             stackText.color = Color.white;
-            stackText.outlineColor = Color.black;
-            stackText.outlineWidth = 0.2f;
+            if (progressTextMaterial != null)
+                ApplyStackMaterial(progressTextMaterial);
+            else
+            {
+                // Preserve the existing unconfigured/fallback view's authored presentation.
+                stackText.outlineColor = Color.black;
+                stackText.outlineWidth = 0.2f;
+            }
         }
         else
         {
@@ -169,10 +187,27 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
             stackText.alignment = originalStackAlignment;
             stackText.fontSize = originalStackFontSize;
             stackText.color = originalStackColor;
-            stackText.outlineColor = originalStackOutlineColor;
-            stackText.outlineWidth = originalStackOutlineWidth;
+            if (progressTextMaterial != null)
+                ApplyStackMaterial(originalStackAuthoredMaterial);
+            else
+            {
+                stackText.outlineColor = originalStackOutlineColor;
+                stackText.outlineWidth = originalStackOutlineWidth;
+            }
         }
         progressLayoutActive = enabled;
+    }
+
+    private void ApplyStackMaterial(Material style)
+    {
+        if (stackFontBinding != null)
+            stackFontBinding.ApplyAuthoredMaterialStyle(style);
+        else
+        {
+            stackText.fontSharedMaterial = style != null ? style : stackText.font.material;
+            if (stackText is TextMeshProUGUI ui) ui.canvasRenderer.SetTexture(stackText.fontSharedMaterial.mainTexture);
+            stackText.UpdateMeshPadding();
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

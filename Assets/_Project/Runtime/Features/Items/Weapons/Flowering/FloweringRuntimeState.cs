@@ -536,7 +536,7 @@ public sealed class FloweringRuntimeState :
             baseKnockback,
             system.gameObject);
 
-        if (snapshot.FinalHpDamage <= 0f)
+        if (snapshot.TotalHpDamage <= 0f)
             return null;
 
         return CombatHitPayload.FromSnapshot(

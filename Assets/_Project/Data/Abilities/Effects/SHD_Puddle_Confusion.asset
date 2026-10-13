@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8f3b7b0879f4661acd56b78a4c1e3f2, type: 3}
+  m_Name: SHD_Puddle_Confusion
+  m_EditorClassIdentifier: Core::StatusHudDefinition
+  statusId: puddle_confusion
+  group: 2
+  priority: 80
+  icon: {fileID: -6033280328393917619, guid: 6381a51d56edf6c4089caf6be074034b, type: 3}
+  nameText: "\uD63C\uB780"
+  storyText: "\uC220\uAE30\uC6B4\uC5D0 \uBC29\uD5A5 \uAC10\uAC01\uC774 \uD750\uB824\uC9C4\uB2E4."
+  effectText: "\uC77C\uBC18 \uAC77\uAE30\uC758 \uC0C1\uD558\uC88C\uC6B0 \uC785\uB825\uC774
+    \uBC18\uC804\uB429\uB2C8\uB2E4. \uC7A5\uD310\uC744 \uBC97\uC5B4\uB098 \uB9E5\uC8FC\uC794\uC774
+    \uBE44\uC6CC\uC9C0\uBA74 \uD574\uC81C\uB429\uB2C8\uB2E4."
+  showStacksByDefault: 0
+  showDurationByDefault: 0

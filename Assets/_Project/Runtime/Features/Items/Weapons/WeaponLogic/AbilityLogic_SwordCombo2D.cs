@@ -254,7 +254,7 @@ namespace UnityGAS.Sample
                 elementSource: system.gameObject
             );
 
-            if (snapshot.FinalHpDamage <= 0f)
+            if (snapshot.TotalHpDamage <= 0f)
                 return;
 
             // 책임 :

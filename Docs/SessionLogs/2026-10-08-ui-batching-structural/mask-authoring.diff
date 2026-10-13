@@ -1,0 +1,114 @@
+diff --git a/C:/Users/nadom/AppData/Local/Temp/CapstoneUiStructural_20261008/Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab b/Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab
+index f905102b..b2e49f3e 100644
+--- a/C:/Users/nadom/AppData/Local/Temp/CapstoneUiStructural_20261008/Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab
++++ b/Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab
+@@ -34438,6 +34438,8 @@ GameObject:
+   - component: {fileID: 7939637571556109000}
+   - component: {fileID: 7488894043510565255}
+   - component: {fileID: 8310665254024247948}
++  - component: {fileID: 1771286437717460144}
++  - component: {fileID: 7131044634088737846}
+   m_Layer: 0
+   m_Name: ContentsMask
+   m_TagString: Untagged
+@@ -34516,6 +34518,41 @@ MonoBehaviour:
+   m_Name: 
+   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Mask
+   m_ShowMaskGraphic: 0
++--- !u!114 &1771286437717460144
++MonoBehaviour:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 5196513830030626668}
++  m_Enabled: 0
++  m_EditorHideFlags: 0
++  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
++  m_Name: 
++  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
++  m_Padding: {x: 0, y: 0, z: 0, w: 0}
++  m_Softness: {x: 0, y: 0}
++--- !u!114 &7131044634088737846
++MonoBehaviour:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 5196513830030626668}
++  m_Enabled: 1
++  m_EditorHideFlags: 0
++  m_Script: {fileID: 11500000, guid: 4fee2e8c6a031384d842786a97c9d4f6, type: 3}
++  m_Name: 
++  m_EditorClassIdentifier: UI::HybridRectClipView
++  originalMask: {fileID: 8310665254024247948}
++  rectMask: {fileID: 1771286437717460144}
++  maskImage: {fileID: 7488894043510565255}
++  viewport: {fileID: 3625278786537879823}
++  rootCanvas: {fileID: 4927727796378230666}
++  originalImageColor: {r: 1, g: 1, b: 1, a: 1}
++  originalImageEnabled: 1
++  originalMaskEnabled: 1
++  originalCullTransparentMesh: 1
+ --- !u!1 &5217038301881922078
+ GameObject:
+   m_ObjectHideFlags: 0
+@@ -47592,6 +47629,8 @@ GameObject:
+   - component: {fileID: 6019433703658767092}
+   - component: {fileID: 2790776656670051822}
+   - component: {fileID: 6723169741129062909}
++  - component: {fileID: 3028442921376598398}
++  - component: {fileID: 8207914531306425840}
+   m_Layer: 0
+   m_Name: ContentsMask
+   m_TagString: Untagged
+@@ -47670,6 +47709,41 @@ MonoBehaviour:
+   m_FillOrigin: 0
+   m_UseSpriteMesh: 0
+   m_PixelsPerUnitMultiplier: 1
++--- !u!114 &3028442921376598398
++MonoBehaviour:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 8098673227382283892}
++  m_Enabled: 0
++  m_EditorHideFlags: 0
++  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
++  m_Name: 
++  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
++  m_Padding: {x: 0, y: 0, z: 0, w: 0}
++  m_Softness: {x: 0, y: 0}
++--- !u!114 &8207914531306425840
++MonoBehaviour:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 8098673227382283892}
++  m_Enabled: 1
++  m_EditorHideFlags: 0
++  m_Script: {fileID: 11500000, guid: 4fee2e8c6a031384d842786a97c9d4f6, type: 3}
++  m_Name: 
++  m_EditorClassIdentifier: UI::HybridRectClipView
++  originalMask: {fileID: 6019433703658767092}
++  rectMask: {fileID: 3028442921376598398}
++  maskImage: {fileID: 6723169741129062909}
++  viewport: {fileID: 5830535558817673276}
++  rootCanvas: {fileID: 4927727796378230666}
++  originalImageColor: {r: 1, g: 1, b: 1, a: 1}
++  originalImageEnabled: 1
++  originalMaskEnabled: 1
++  originalCullTransparentMesh: 1
+ --- !u!1 &8123456701990000000
+ GameObject:
+   m_ObjectHideFlags: 0
+@@ -48999,6 +49073,7 @@ MonoBehaviour:
+   rowContainer: {fileID: 1156508343739884859}
+   rowPrefab: {fileID: 4785651073591497516, guid: b5eaeac079f751342ba74d3465688636, type: 3}
+   actionOrder: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e000000
++  renderLayout: {fileID: 0}
+   guideRoot: {fileID: 2497450933994634778}
+   guideText: {fileID: 1700410697533105678}
+   guideButtonGroup: {fileID: 3035133127647819038}

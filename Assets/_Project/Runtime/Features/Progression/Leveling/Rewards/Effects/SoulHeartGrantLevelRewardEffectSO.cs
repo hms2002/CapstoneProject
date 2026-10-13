@@ -9,6 +9,8 @@ public sealed class SoulHeartGrantLevelRewardEffectSO : LevelRewardEffectSO
 
     public override LevelRewardEffectLifetime Lifetime => LevelRewardEffectLifetime.InstantOnce;
 
+    public AttributeDefinition GrantedAttribute => soulHeartAttribute;
+
     public override bool CanApply(LevelRewardEligibilityContext context, out string failureReason)
     {
         if (!base.CanApply(context, out failureReason)) return false;

@@ -1,0 +1,2 @@
+Left to right: contact/empty, half charge, full before overflow, overflow, half drain, drained/hidden.
+Native URP camera capture of the actual authored player mug hierarchy/materials; no gameplay scene or profile changes.

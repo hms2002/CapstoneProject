@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="36" result="Failed(Child)" total="36" passed="28" failed="8" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-12 11:34:18Z" end-time="2026-10-12 11:34:20Z" duration="1.9982685">
+  <test-suite type="TestSuite" id="2398" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="1168" result="Failed" site="Child" start-time="2026-10-12 11:34:18Z" end-time="2026-10-12 11:34:20Z" duration="1.998269" total="36" passed="28" failed="8" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2394" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="1161" result="Failed" site="Child" start-time="2026-10-12 11:34:18Z" end-time="2026-10-12 11:34:20Z" duration="1.949688" total="36" passed="28" failed="8" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="43572" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1034" name="AlcoholBuffPlayerVisualPlayModeTests" fullname="AlcoholBuffPlayerVisualPlayModeTests" classname="AlcoholBuffPlayerVisualPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-12 11:34:18Z" end-time="2026-10-12 11:34:18Z" duration="0.675197" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1035" name="ActualPlayerPrefabReferencesAlcoholAndArrow" fullname="AlcoholBuffPlayerVisualPlayModeTests.ActualPlayerPrefabReferencesAlcoholAndArrow" methodname="ActualPlayerPrefabReferencesAlcoholAndArrow" classname="AlcoholBuffPlayerVisualPlayModeTests" runstate="Runnable" seed="1591010023" result="Passed" start-time="2026-10-12 11:34:18Z" end-time="2026-10-12 11:34:18Z" duration="0.030474" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1036" name="OverlappingSourcesReuseOneSetAndExpirationHidesIt" fullname="AlcoholBuffPlayerVisualPlayModeTests.OverlappingSourcesReuseOneSetAndExpirationHidesIt" methodname="OverlappingSourcesReuseOneSetAndExpirationHidesIt" classname="AlcoholBuffPlayerVisualPlayModeTests" runstate="Runnable" seed="865916376" result="Passed" start-time="2026-10-12 11:34:18Z" end-time="2026-10-12 11:34:18Z" duration="0.031502" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1037" name="SourceRemovalDoesNotHideRemainingBuffButCleanseAndDisableDo" fullname="AlcoholBuffPlayerVisualPlayModeTests.SourceRemovalDoesNotHideRemainingBuffButCleanseAndDisableDo" methodname="SourceRemovalDoesNotHideRemainingBuffButCleanseAndDisableDo" classname="AlcoholBuffPlayerVisualPlayModeTests" runstate="Runnable" seed="1940454805" result="Passed" start-time="2026-10-12 11:34:18Z" end-time="2026-10-12 11:34:18Z" duration="0.002444" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1059" name="AlcoholExposurePlayerVisualPlayModeTests" fullname="AlcoholExposurePlayerVisualPlayModeTests" classname="AlcoholExposurePlayerVisualPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-12 11:34:18Z" end-time="2026-10-12 11:34:19Z" duration="0.042345" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1060" name="ActualPlayerPrefabReferencesAuthoredMugAndDroplets" fullname="AlcoholExposurePlayerVisualPlayModeTests.ActualPlayerPrefabReferencesAuthoredMugAndDroplets" methodname="ActualPlayerPrefabReferencesAuthoredMugAndDroplets" classname="AlcoholExposurePlayerVisualPlayModeTests" runstate="Runnable" seed="366623804" result="Passed" start-time="2026-10-12 11:34:18Z" end-time="2026-10-12 11:34:19Z" duration="0.012164" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1061" name="FillOverflowAndDrainReuseAuthoredRenderers" fullname="AlcoholExposurePlayerVisualPlayModeTests.FillOverflowAndDrainReuseAuthoredRenderers" methodname="FillOverflowAndDrainReuseAuthoredRenderers" classname="AlcoholExposurePlayerVisualPlayModeTests" runstate="Runnable" seed="947856024" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.011489" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1062" name="HeadAnchorIgnoresOwnerMirroringAndDisableRestoresAuthoredPose" fullname="AlcoholExposurePlayerVisualPlayModeTests.HeadAnchorIgnoresOwnerMirroringAndDisableRestoresAuthoredPose" methodname="HeadAnchorIgnoresOwnerMirroringAndDisableRestoresAuthoredPose" classname="AlcoholExposurePlayerVisualPlayModeTests" runstate="Runnable" seed="1391750458" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.012381" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1038" name="AlcoholExposurePlayModeTests" fullname="AlcoholExposurePlayModeTests" classname="AlcoholExposurePlayModeTests" runstate="Runnable" testcasecount="19" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.412277" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1039" name="ChargeFillsAtThreeSecondsButEffectStartsOnlyAfterThreeSeconds" fullname="AlcoholExposurePlayModeTests.ChargeFillsAtThreeSecondsButEffectStartsOnlyAfterThreeSeconds" methodname="ChargeFillsAtThreeSecondsButEffectStartsOnlyAfterThreeSeconds" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="882565981" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.116692" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-case id="1049" name="CleanseIsReappliedOnlyWhileExposureStillMaintainsTheEffect" fullname="AlcoholExposurePlayModeTests.CleanseIsReappliedOnlyWhileExposureStillMaintainsTheEffect" methodname="CleanseIsReappliedOnlyWhileExposureStillMaintainsTheEffect" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="472297938" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.015267" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-case id="1044" name="ConfusionPersistsDuringDrainAndClearsWhenGlassEmpties" fullname="AlcoholExposurePlayModeTests.ConfusionPersistsDuringDrainAndClearsWhenGlassEmpties" methodname="ConfusionPersistsDuringDrainAndClearsWhenGlassEmpties" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="1070519105" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.067124" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1058" name="ConfusionReversesWalkingButPreservesRawDashAndAbilityInput" fullname="AlcoholExposurePlayModeTests.ConfusionReversesWalkingButPreservesRawDashAndAbilityInput" classname="AlcoholExposurePlayModeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.077799" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1053" name="ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(1.0f,0.0f)" fullname="AlcoholExposurePlayModeTests.ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(1.0f,0.0f)" methodname="ConfusionReversesWalkingButPreservesRawDashAndAbilityInput" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="946396417" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.016664" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+          </test-case>
+          <test-case id="1054" name="ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(-1.0f,0.0f)" fullname="AlcoholExposurePlayModeTests.ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(-1.0f,0.0f)" methodname="ConfusionReversesWalkingButPreservesRawDashAndAbilityInput" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="1800999714" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.007814" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+          </test-case>
+          <test-case id="1055" name="ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(0.0f,1.0f)" fullname="AlcoholExposurePlayModeTests.ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(0.0f,1.0f)" methodname="ConfusionReversesWalkingButPreservesRawDashAndAbilityInput" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="308949040" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.007302" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+          </test-case>
+          <test-case id="1056" name="ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(0.0f,-1.0f)" fullname="AlcoholExposurePlayModeTests.ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(0.0f,-1.0f)" methodname="ConfusionReversesWalkingButPreservesRawDashAndAbilityInput" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="536529677" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.008290" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+          </test-case>
+          <test-case id="1057" name="ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(1.0f,1.0f)" fullname="AlcoholExposurePlayModeTests.ConfusionReversesWalkingButPreservesRawDashAndAbilityInput(1.0f,1.0f)" methodname="ConfusionReversesWalkingButPreservesRawDashAndAbilityInput" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="1480946188" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.009168" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-case id="1043" name="DisabledAndDestroyedSourcesBeginDrainWithoutTriggerExit" fullname="AlcoholExposurePlayModeTests.DisabledAndDestroyedSourcesBeginDrainWithoutTriggerExit" methodname="DisabledAndDestroyedSourcesBeginDrainWithoutTriggerExit" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="720822532" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.006842" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-case id="1045" name="EarnedBuffKeepsActualModifiersAndStartsFiveSecondsAfterDrain" fullname="AlcoholExposurePlayModeTests.EarnedBuffKeepsActualModifiersAndStartsFiveSecondsAfterDrain" methodname="EarnedBuffKeepsActualModifiersAndStartsFiveSecondsAfterDrain" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="1243755518" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.021445" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-case id="1047" name="LatestAffinitySwitchesOverflowEffectWithoutStacking" fullname="AlcoholExposurePlayModeTests.LatestAffinitySwitchesOverflowEffectWithoutStacking" methodname="LatestAffinitySwitchesOverflowEffectWithoutStacking" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="2027936644" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.008726" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-case id="1040" name="LeavingBeforeOverflowDrainsStartingFillForOneAndAHalfSeconds" fullname="AlcoholExposurePlayModeTests.LeavingBeforeOverflowDrainsStartingFillForOneAndAHalfSeconds" methodname="LeavingBeforeOverflowDrainsStartingFillForOneAndAHalfSeconds" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="472365320" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.009968" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-case id="1042" name="OverlappingAndRepeatedSourcesShareOneChargeAndEffect" fullname="AlcoholExposurePlayModeTests.OverlappingAndRepeatedSourcesShareOneChargeAndEffect" methodname="OverlappingAndRepeatedSourcesShareOneChargeAndEffect" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="1213272139" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.007025" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-case id="1050" name="RecipientDisableRemovesOwnedEffectsAndResetsAllExposureState" fullname="AlcoholExposurePlayModeTests.RecipientDisableRemovesOwnedEffectsAndResetsAllExposureState" methodname="RecipientDisableRemovesOwnedEffectsAndResetsAllExposureState" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="2055220038" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.009832" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-case id="1046" name="ReenteringWithResidualBuffRefreshesItBeforeNewOverflow" fullname="AlcoholExposurePlayModeTests.ReenteringWithResidualBuffRefreshesItBeforeNewOverflow" methodname="ReenteringWithResidualBuffRefreshesItBeforeNewOverflow" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="1343665831" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.007581" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-case id="1041" name="ReentryResumesRemainingFillInsteadOfRestartingCharge" fullname="AlcoholExposurePlayModeTests.ReentryResumesRemainingFillInsteadOfRestartingCharge" methodname="ReentryResumesRemainingFillInsteadOfRestartingCharge" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="1326485459" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.005160" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-case id="1048" name="SavedAffinityIsAvailableBeforeManagerCacheLoads" fullname="AlcoholExposurePlayModeTests.SavedAffinityIsAvailableBeforeManagerCacheLoads" methodname="SavedAffinityIsAvailableBeforeManagerCacheLoads" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="1733669450" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.006293" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-case id="1051" name="SceneCaptureOmitsOwnedConfusionAndTagButPreservesUnrelatedState" fullname="AlcoholExposurePlayModeTests.SceneCaptureOmitsOwnedConfusionAndTagButPreservesUnrelatedState" methodname="SceneCaptureOmitsOwnedConfusionAndTagButPreservesUnrelatedState" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="2080984942" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.015909" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+        <test-case id="1052" name="SceneCaptureOmitsResidualAlcoholBuffWithoutChangingCurrentHudTimer" fullname="AlcoholExposurePlayModeTests.SceneCaptureOmitsResidualAlcoholBuffWithoutChangingCurrentHudTimer" methodname="SceneCaptureOmitsResidualAlcoholBuffWithoutChangingCurrentHudTimer" classname="AlcoholExposurePlayModeTests" runstate="Runnable" seed="212072566" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.007566" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=Alcohol exposure recipient
+]]></output>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1063" name="AlcoholPuddleContactPlayModeTests" fullname="AlcoholPuddleContactPlayModeTests" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.125604" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="1072" name="AuthoredMugRendersChargeOverflowAndDrainToNativePngGrid" fullname="AlcoholPuddleContactPlayModeTests.AuthoredMugRendersChargeOverflowAndDrainToNativePngGrid" methodname="AuthoredMugRendersChargeOverflowAndDrainToNativePngGrid" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="2005463478" result="Failed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.037197" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[SetUp : Unhandled log message: '[Exception] NullReferenceException: Object reference not set to an instance of an object'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+            <stack-trace><![CDATA[PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Adding component failed. Add required component of type 'BoxCollider2D' or 'CapsuleCollider2D' or 'CircleCollider2D' or 'CompositeCollider2D' or 'CustomCollider2D' or 'EdgeCollider2D' or 'PolygonCollider2D' or 'TilemapCollider2D' to the game object 'InteractionSensor' first.
+NullReferenceException: Object reference not set to an instance of an object
+PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></output>
+        </test-case>
+        <test-case id="1069" name="DisabledRecipientCannotBeRegrantedFromAnExistingTriggerStay" fullname="AlcoholPuddleContactPlayModeTests.DisabledRecipientCannotBeRegrantedFromAnExistingTriggerStay" methodname="DisabledRecipientCannotBeRegrantedFromAnExistingTriggerStay" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="1440715424" result="Failed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.006395" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[SetUp : Unhandled log message: '[Exception] NullReferenceException: Object reference not set to an instance of an object'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+            <stack-trace><![CDATA[PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Adding component failed. Add required component of type 'BoxCollider2D' or 'CapsuleCollider2D' or 'CircleCollider2D' or 'CompositeCollider2D' or 'CustomCollider2D' or 'EdgeCollider2D' or 'PolygonCollider2D' or 'TilemapCollider2D' to the game object 'InteractionSensor' first.
+NullReferenceException: Object reference not set to an instance of an object
+PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></output>
+        </test-case>
+        <test-case id="1065" name="LandingInsideThePuddleRegistersFromStayWithoutAnotherEnter" fullname="AlcoholPuddleContactPlayModeTests.LandingInsideThePuddleRegistersFromStayWithoutAnotherEnter" methodname="LandingInsideThePuddleRegistersFromStayWithoutAnotherEnter" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="840113174" result="Failed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.006539" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[SetUp : Unhandled log message: '[Exception] NullReferenceException: Object reference not set to an instance of an object'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+            <stack-trace><![CDATA[PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Adding component failed. Add required component of type 'BoxCollider2D' or 'CapsuleCollider2D' or 'CircleCollider2D' or 'CompositeCollider2D' or 'CustomCollider2D' or 'EdgeCollider2D' or 'PolygonCollider2D' or 'TilemapCollider2D' to the game object 'InteractionSensor' first.
+NullReferenceException: Object reference not set to an instance of an object
+PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></output>
+        </test-case>
+        <test-case id="1071" name="NewRewardAndConfusionTextsHaveRuntimeKeysAndFiveLocaleValues" fullname="AlcoholPuddleContactPlayModeTests.NewRewardAndConfusionTextsHaveRuntimeKeysAndFiveLocaleValues" methodname="NewRewardAndConfusionTextsHaveRuntimeKeysAndFiveLocaleValues" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="971265944" result="Failed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.005934" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[SetUp : Unhandled log message: '[Exception] NullReferenceException: Object reference not set to an instance of an object'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+            <stack-trace><![CDATA[PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Adding component failed. Add required component of type 'BoxCollider2D' or 'CapsuleCollider2D' or 'CircleCollider2D' or 'CompositeCollider2D' or 'CustomCollider2D' or 'EdgeCollider2D' or 'PolygonCollider2D' or 'TilemapCollider2D' to the game object 'InteractionSensor' first.
+NullReferenceException: Object reference not set to an instance of an object
+PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></output>
+        </test-case>
+        <test-case id="1064" name="OneOfTwoHurtboxExitsKeepsContactUntilTheLastExit" fullname="AlcoholPuddleContactPlayModeTests.OneOfTwoHurtboxExitsKeepsContactUntilTheLastExit" methodname="OneOfTwoHurtboxExitsKeepsContactUntilTheLastExit" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="340273422" result="Failed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.005971" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[SetUp : Unhandled log message: '[Exception] NullReferenceException: Object reference not set to an instance of an object'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+            <stack-trace><![CDATA[PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Adding component failed. Add required component of type 'BoxCollider2D' or 'CapsuleCollider2D' or 'CircleCollider2D' or 'CompositeCollider2D' or 'CustomCollider2D' or 'EdgeCollider2D' or 'PolygonCollider2D' or 'TilemapCollider2D' to the game object 'InteractionSensor' first.
+NullReferenceException: Object reference not set to an instance of an object
+PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></output>
+        </test-case>
+        <test-case id="1070" name="PlayerAndLevelOneRewardReferenceTheAuthoredConfusionAndExistingBuff" fullname="AlcoholPuddleContactPlayModeTests.PlayerAndLevelOneRewardReferenceTheAuthoredConfusionAndExistingBuff" methodname="PlayerAndLevelOneRewardReferenceTheAuthoredConfusionAndExistingBuff" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="296132418" result="Failed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.005973" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[SetUp : Unhandled log message: '[Exception] NullReferenceException: Object reference not set to an instance of an object'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+            <stack-trace><![CDATA[PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Adding component failed. Add required component of type 'BoxCollider2D' or 'CapsuleCollider2D' or 'CircleCollider2D' or 'CompositeCollider2D' or 'CustomCollider2D' or 'EdgeCollider2D' or 'PolygonCollider2D' or 'TilemapCollider2D' to the game object 'InteractionSensor' first.
+NullReferenceException: Object reference not set to an instance of an object
+PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></output>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1068" name="SourceDisableOrIgnitionReleasesTheRecipientImmediately" fullname="AlcoholPuddleContactPlayModeTests.SourceDisableOrIgnitionReleasesTheRecipientImmediately" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.042689" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1066" name="SourceDisableOrIgnitionReleasesTheRecipientImmediately(False)" fullname="AlcoholPuddleContactPlayModeTests.SourceDisableOrIgnitionReleasesTheRecipientImmediately(False)" methodname="SourceDisableOrIgnitionReleasesTheRecipientImmediately" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="334897647" result="Failed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.010455" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[SetUp : Unhandled log message: '[Exception] NullReferenceException: Object reference not set to an instance of an object'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+              <stack-trace><![CDATA[PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Adding component failed. Add required component of type 'BoxCollider2D' or 'CapsuleCollider2D' or 'CircleCollider2D' or 'CompositeCollider2D' or 'CustomCollider2D' or 'EdgeCollider2D' or 'PolygonCollider2D' or 'TilemapCollider2D' to the game object 'InteractionSensor' first.
+NullReferenceException: Object reference not set to an instance of an object
+PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></output>
+          </test-case>
+          <test-case id="1067" name="SourceDisableOrIgnitionReleasesTheRecipientImmediately(True)" fullname="AlcoholPuddleContactPlayModeTests.SourceDisableOrIgnitionReleasesTheRecipientImmediately(True)" methodname="SourceDisableOrIgnitionReleasesTheRecipientImmediately" classname="AlcoholPuddleContactPlayModeTests" runstate="Runnable" seed="434100344" result="Failed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.007764" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[SetUp : Unhandled log message: '[Exception] NullReferenceException: Object reference not set to an instance of an object'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+              <stack-trace><![CDATA[PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Adding component failed. Add required component of type 'BoxCollider2D' or 'CapsuleCollider2D' or 'CircleCollider2D' or 'CompositeCollider2D' or 'CustomCollider2D' or 'EdgeCollider2D' or 'PolygonCollider2D' or 'TilemapCollider2D' to the game object 'InteractionSensor' first.
+NullReferenceException: Object reference not set to an instance of an object
+PlayerInteractionSensor2D.EnsureFor (UnityEngine.Transform playerRoot, UnityEngine.Collider2D sourceCollider, PlayerInteractableTracker2D tracker) (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractionSensor2D.cs:36)
+PlayerInteractor2D.ResolveComponents () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:135)
+PlayerInteractor2D.Awake () (at Assets/_Project/Runtime/Features/Player/Interaction/PlayerInteractor2D.cs:45)
+UnityEngine.GameObject:SetActive(Boolean)
+AlcoholPuddleContactPlayModeTests:Setup() (at Assets/_Project/Tests/PlayMode/Procedural/AlcoholPuddleContactPlayModeTests.cs:54)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+      <test-suite type="TestFixture" id="1876" name="MonsterProjectileBurstCadencePlayModeTests" fullname="MonsterProjectileBurstCadencePlayModeTests" classname="MonsterProjectileBurstCadencePlayModeTests" runstate="Runnable" testcasecount="72" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.363630" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1903" name="OverlappingAlcoholSources_KeepOneHudHandleUntilEffectExpires" fullname="MonsterProjectileBurstCadencePlayModeTests.OverlappingAlcoholSources_KeepOneHudHandleUntilEffectExpires" methodname="OverlappingAlcoholSources_KeepOneHudHandleUntilEffectExpires" classname="MonsterProjectileBurstCadencePlayModeTests" runstate="Runnable" seed="827736976" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:19Z" duration="0.328915" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=GoblinGunner(Clone)
+[PlayerStatusRuntime] Applied status 'puddle_alcohol_buff' (id=1, ownerKey=Puddle.Alcohol)
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'GoblinGunner(Clone)' (ownerKey=Puddle.Alcohol, duration=0.35, source=AlcoholSourceA (UnityEngine.GameObject), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'GoblinGunner(Clone)' (ownerKey=Puddle.Alcohol, duration=0.35, source=AlcoholSourceB (UnityEngine.GameObject), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'GoblinGunner(Clone)' (ownerKey=Puddle.Alcohol, duration=0.35, source=AlcoholSourceA (UnityEngine.GameObject), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'GoblinGunner(Clone)' (ownerKey=Puddle.Alcohol, duration=0.35, source=AlcoholSourceB (UnityEngine.GameObject), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'GoblinGunner(Clone)' (ownerKey=Puddle.Alcohol, duration=0.35, source=AlcoholSourceA (UnityEngine.GameObject), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'GoblinGunner(Clone)' (ownerKey=Puddle.Alcohol, duration=0.35, source=AlcoholSourceB (UnityEngine.GameObject), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'GoblinGunner(Clone)' (ownerKey=Puddle.Alcohol, duration=0.35, source=AlcoholSourceA (UnityEngine.GameObject), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'GoblinGunner(Clone)' (ownerKey=Puddle.Alcohol, duration=0.35, source=AlcoholSourceB (UnityEngine.GameObject), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'GoblinGunner(Clone)' (ownerKey=Puddle.Alcohol, duration=0.35, source=AlcoholSourceA (UnityEngine.GameObject), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'GoblinGunner(Clone)' (ownerKey=Puddle.Alcohol, duration=0.35, source=AlcoholSourceB (UnityEngine.GameObject), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'GoblinGunner(Clone)' (ownerKey=Puddle.Alcohol, duration=0.35, source=AlcoholSourceA (UnityEngine.GameObject), showOnPlayerHud=True).
+[CombatBuffDebuffApplier] Applied 'GE_Puddle_AlcoholBuff' to 'GoblinGunner(Clone)' (ownerKey=Puddle.Alcohol, duration=0.35, source=AlcoholSourceB (UnityEngine.GameObject), showOnPlayerHud=True).
+[PlayerStatusRuntime] Released status 'puddle_alcohol_buff' (id=1)
+]]></output>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="2239" name="StatusHudPerformancePlayModeTests" fullname="StatusHudPerformancePlayModeTests" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:20Z" duration="0.126424" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="2246" name="StableStacksDoNotReinitializeOrReformatButTimerStillUpdates" fullname="StatusHudPerformancePlayModeTests.StableStacksDoNotReinitializeOrReformatButTimerStillUpdates" methodname="StableStacksDoNotReinitializeOrReformatButTimerStillUpdates" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="1007456327" result="Passed" start-time="2026-10-12 11:34:19Z" end-time="2026-10-12 11:34:20Z" duration="0.039810" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2245" name="StackProgressTimerAndPoolReuseRemainCorrect" fullname="StatusHudPerformancePlayModeTests.StackProgressTimerAndPoolReuseRemainCorrect" methodname="StackProgressTimerAndPoolReuseRemainCorrect" classname="StatusHudPerformancePlayModeTests" runstate="Runnable" seed="734774885" result="Passed" start-time="2026-10-12 11:34:20Z" end-time="2026-10-12 11:34:20Z" duration="0.046661" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

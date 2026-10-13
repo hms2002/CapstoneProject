@@ -7,6 +7,20 @@ last_reviewed: 2026-09-14
 
 # Error Log
 
+## 2026-10-10 — native language name and title alignment escaped validation
+
+SettingsPanelUI.ChangeLanguage refreshes the stepper immediately after SetLanguage. Reading pending CurrentLanguage for the native name placed 日本語 into the still-active Korean font and produced U+8A9E replacement squares. Display the applied SelectedLocale's native name while arrows use the pending choice. Prior render checks covered fixed StringEvents/fonts, not this dynamic value, and called SetLanguage directly instead of the actual button listener. Add dynamic caption/replacement-glyph checks and invoke real button listeners. The title width layout also reset authored y=-40 to full-sprite center; retain that offset as top80/bottom0 padding in the fixed-height panel. Width/line-count checks alone do not prove visual centering.
+
+## 2026-10-10 — localization preloads must survive locale cache release
+
+LocalizedDatabase.OnLocaleChanged calls ReleaseAllTables. Loading next-locale tables/fonts before setting SelectedLocale alone does not preserve their cache ownership across selection. Keep explicit acquired table/font handles through the commit, release them in finally, and project visible bindings at SelectedLocaleChanged after initialization. Render-time tests must wait for initial saved-language initialization before auditing an actual user change; do not count that startup state as a successful transition.
+
+Batch-mode regression checks also exposed a timing trap: `ItemKeywordTooltipPlayModeTests.WaitForLocalization` uses a fixed 180-frame budget, which can expire before asynchronous initialization completes even while source-preserving native renders pass in all five locales. A failed locale teardown can leave its restore flag set and cause later teardown failures. Preserve the initial failure and any unchanged successful retry; do not suppress the failure or treat a retry as proof that startup is stable. A future fixture repair should use an appropriate elapsed-time initialization budget and explicit teardown state cleanup. See the [tooltip layout session](SessionLogs/2026-10-10.md).
+
+## 2026-10-08 — copied static localization overwrites key-row action names
+
+KeyMapRow's actionLabel retained a Screen Mode LocalizeStringEvent from its source row. KeyBindingRowUI.Refresh already owns the action's localized caption; asynchronous fixed-string completion can overwrite it afterward. Remove the action-label fixed event, retain font localization, and attach fixed events only to authored captions such as Reset. Review the spawned row after localization settles, not only GetActionLabel's return value.
+
 ## 2026-09-14 - Boss HP Tests Validated Orphan Profiles Instead Of Runtime Wiring
 
 Symptom: the balance fixture reported Slime Queen HP as 500/300/300 and the Shadow Witch as 1000, but the playable Slime Queen bodies each initialized at 100 while the Shadow boss scene replaced its prefab profile with the Demon King's 2800 profile.
@@ -182,6 +196,14 @@ Outro and title-intro cleanup now use explicit Unity null checks before hiding t
 
 Prevention:
 Do not use `?.` for cleanup calls on `UnityEngine.Object` references that may be destroyed during scene unload, disable, or global UI replacement. Use `if (obj != null)` before calling methods so Unity's destroyed-object null semantics are respected.
+
+2026-10-12 alcohol exposure follow-up: the native mug capture destroyed its
+authored child before disabling the owning view. `Hide` must validate the live
+root, mug and droplets separately even after caching. Editor authoring also uses
+explicit Unity null checks before `AddComponent`; `GetComponent<T>() ?? ...` can
+retain an Editor fake-null reference. Focused destroyed-child, disable, motion
+and authored capture tests cover these paths. See
+[AlcoholExposure](StructureMemory/AlcoholExposure.md).
 
 2026-09-03 follow-up - Slime death blocked by expired telegraph handles:
 The July 6 commit `0229db83` changed Knight and SlimeQueen warning references from `AttackTelegraphView` to `IAttackTelegraphHandle`. Interface null checks do not use Unity's destroyed-object comparison. `AttackTelegraphService` can destroy a detached view when its duration expires, leaving the caller's interface reference behind. Existing `Editor-prev.log` stacks confirmed `AttackTelegraphView.Release()` throwing during both Knight and SlimeQueen death cleanup. `Enemy.Die()` had already set `isDead`, so the exception skipped the remaining death flow before the EXP notification and prevented subsequent death attempts.
@@ -2215,6 +2237,7 @@ These are verified code/diagnostic issues, not proven causes of the run-entry na
 - Observed: the chest selection coroutine test failed on repeated `IOException: Win32 IO returned 1224` from `PrewarmTraceRuntime.Flush`, while the seven synchronous cases passed. The stack ran through `EditorApplication.update` and wrote `PrewarmTrace_HOSEO_LG17090.json`; AssetDatabase was also importing that generated trace file. This was unrelated to inventory assertions.
 - Test isolation: the UI coroutine temporarily unregisters only the recorder's `FlushIfNeeded` editor update delegate and re-registers it during teardown. Do not globally ignore error logs to make the test pass. The next batch run passed all eight cases.
 - The production recorder is unchanged. Treat resilient editor trace flushing as a separate follow-up, and remove only test-generated trace-session changes when cleaning the task diff.
+- 2026-10-11 recurrence: the electric relic suite hit the same Windows1224 exception while writing `PrewarmTrace_nadom_DESKTOP-I2QAD8O.json`. Re-running with the existing `TestScenePresentationTraceIsolation` command-line option `-uiBatchValidationTests` removed recorder I/O from disposable fixtures without suppressing errors or changing production flushing. A later dash-duration assertion failure was separately diagnosed as fixture timing; it was not attributed to the recorder. See [electric revision record](./SessionLogs/2026-10-11.md).
 
 ## 2026-09-18 — Guided tutorial dash retained its own UI control lock
 
@@ -2421,3 +2444,99 @@ The title/global keybinding row lists omitted DialogueAdvance, but the service s
 - RunTimerHUD는 TMP outlineColor/outlineWidth를 설정한다. 설치된 UGUI/TMP TextMeshProUGUI.SetOutlineThickness는 CanvasRenderer.SetMaterial(material, texture)를 사용해 renderer texture override도 지정한다. 반면 UpdateMaterial은 SetMaterial(material,0)만 호출한다.
 - LocalizeTmpFontEvent가 font/fontSharedMaterial을 바꿔도 기존 renderer override가 남으면 `15:00` 문자열과 새 UV는 정상인데 이전 atlas의 이미지 조각을 그린다. material.mainTexture와 font.atlasTexture 비교만으로는 이 override를 검출하지 못한다.
 - 글꼴 교체 시 TextMeshProUGUI의 canvasRenderer.SetTexture(matched.mainTexture)를 함께 호출한다. 추가 머티리얼 인스턴스/매 프레임 보정/타이머 로직 변경 없이 대상 atlas를 맞춘다. 실제 Play Mode의 타이머 픽셀도 확인해야 한다.
+
+## 2026-10-05 - Encyclopedia ScrollRect layout and scrollbar authoring traps
+
+- ItemDetailPanel의 활성 VerticalLayoutGroup이 ScrollRect.content인 ContentPanel의 위치/높이를 제어했다. 이동하는 Content의 위치는 ScrollRect가 제어해야 하며, 콘텐츠 내부 배치용 LayoutGroup과 구분해야 한다. 부모 레이아웃 갱신은 사용자가 이동한 위치를 덮어쓸 수 있다.
+- 스크롤바는 높이 0, Sliding Area는 폭 0/높이 -20인 설정이었다. 참조가 연결돼 있다는 사실만으로 조작 가능 여부를 판단하지 말고 실제 RectTransform 크기와 레이아웃 제외 여부도 확인한다.
+- 세로 ScrollRect의 normalized position은 1이 위, 0이 아래다. 연결된 Scrollbar는 BottomToTop 방향으로 설정해야 손잡이 위치와 본문 위치가 일치한다.
+- GlobalUIRoot의 nested prefab override가 손잡이 AnchorMax.x를 0으로 고정하고 있었다. 기본 프리팹 수정 뒤에도 기존 인스턴스 재정의가 폭/방향/위치를 덮어쓰는지 확인한다.
+- 위 설정을 수정하고 ID/참조 보존 및 nested override 대조를 통과했다. 실제 Play Mode 입력/시각 검증은 미실행이며, 상세 범위와 수동 확인 절차는 `Docs/SessionLogs/2026-10-05.md`에 기록했다.
+- 후속 본문 폰트 편집에서 PrefabUtility.LoadPrefabContents가 TMP의 null sharedMaterial을 채우고 Scrollbar가 손잡이 anchor를 구동하여 본문 외 값이 저장됐다. 저장 성공만으로 변경 범위를 검증하지 말고 작업 전 사본과 컴포넌트별 실질적 차이를 확인한다. 이 작업은 원본 prefab asset의 Unity API 저장으로 부작용을 정리하여 기존 스크롤 설정을 보존했다.
+- BlackOutline 재질만 연결해도 TMP vertex color가 검정/진회색이면 본문과 검은 외곽선이 구분되지 않는다. 본문 글자색과 LocalizeTmpFontEvent.authoredMaterial도 함께 확인하고, 중첩 인스턴스의 오래된 font/material/cache override가 원본 수정 내용을 가리지 않는지 검증한다. 스킬 본문의 일반 Galmuri authoredMaterial을 BlackOutline으로 수정했으며 5개 언어의 스타일/atlas 연결 35개 검사를 통과했다.
+- 2026-10-11 creature authoring에서 loaded prefab의 native component를 `EditorJsonUtility.ToJson` → `FromJsonOverwrite`로 복원하면 내부 fileID/native reference가 정상 remap되지 않아 기존 참조가 사라졌다. 기존 prefab 사본을 복구하고 JSON round-trip 복원을 제거했다. prefab 내부 객체 참조의 보존은 원본/결과 컴포넌트별 serialized reference와 실질적 diff를 비교하며, 필요한 값만 명시적인 Unity serialization/property 경로로 보존한다. JSON snapshot이 만들어졌거나 Unity batch exit가 0이라는 사실만으로 authoring 성공을 판정하지 않는다. 최종 reference/semantic 비교는 해당 작업의 검증 자료에 기록한다.
+- 같은 authoring에서 prefab load/preview가 기존 TMP/monster HUD material 값을 변경하고, metadata identity의 `RequireComponent(Mob)`가 legacy elite Frog의 누락된 required motion component까지 추가했다. metadata component는 기존 gameplay dependency를 강제하지 않도록 requirement를 제거했고, 승인된 identity 추가 외 원래 monster document 값을 복원·비교했다. Unity 자동 dependency 추가와 editor preview 값은 사용자 승인 범위를 넓히지 않는다. 최종 보존 비교는 [검증 report](../outputs/encyclopedia-implementation-2026-10-11/serialized-preservation-report.json)를 참고한다.
+
+### 2026-10-12 - Creature tabs must hide the complete Item detail and share PageCover
+
+- ItemRightPage의 내부 Content만 숨기면 형제인 이름·스토리·힌트·배경이 Creature 상세 뒤에 남는다. presenter가 붙은 RightPage 전체를 끄면 같은 root의 책갈피도 사라진다. authored ItemDetailPanel 전체를 별도 표시 경계로 연결하고 기존 내부 projection root는 유지한다.
+- 새 Creature pages가 PageCover 다음 sibling이면 같은 Canvas에서 Reveal 위에 그려진다. Content pages → PageCover → full illustration 순서를 authoring에 유지하고 실제 first/mid/post-reveal 화면을 검토한다. 책 상단/프레임을 바꾼 후에는 mask alpha도 대조해야 한다. 이번 기존 둥근 상단 틈은 sibling 순서만 고쳐도 확대된 portrait 일부를 노출했다.
+- Item presenter를 제거하고 root를 미리 숨기는 isolated fixture는 실제 Item→Creature 통합 검증이 아니다. 실제 presenter·제목·스토리·책갈피를 보존한 round-trip과 hidden 입력/locale 검증을 별도로 실행한다. native 한글 캡처는 실제 LocalizeTmpFontEvent 로딩/적용 완료 뒤 수행한다.
+- 숨긴 Item presenter가 책갈피 root에서 계속 활성인 경우 locale callback을 단순 무시하면 같은 Item selection 복귀의 early-return 때문에 이전 언어가 남는다. 숨김 시 pending만 기록하고 표시 시 현재 선택 projection을 갱신한다. [구조/검증 경로](StructureMemory/EncyclopediaCreatureTabs.md).
+
+## 2026-10-07 — Test boss startup and blank hurtbox ownership
+
+- TestScene instantiated active boss prefabs with their normal BossEncounterDirector. OnEnable disabled combat and acquired player protection/input/state locks before the spawn method returned. The open catalog independently blocked attack input. User Editor logs showed the Dragon entering its intro and then failing to find a DialogueController in TestScene.
+- Test spawn now disables instance intro/death controllers in the same frame, lets OnDisable release their owners, calls FinishEncounterIntro before Start enters SpawnState and then BeginCombatEncounter. Successful actor generation closes the catalog and releases test input. Production prefab cinematic authoring is unchanged.
+- A real hurtbox/GAS damage check exposed an additional DragonBoss authoring trap: CombatHurtbox2D.ownedColliders contained `[null]`. Awake's old Length>0 guard treated it as configured, so OwnsCollider rejected every actual collider. Entirely blank arrays now follow the existing own-collider fallback; arrays containing an authored collider preserve their explicit boundary. No prefab/schema edit was needed.
+- Prevention: prefab instantiation proves neither combat readiness nor damage target resolution. Check Start/OnEnable owners and actual physical hurtbox-to-GAS HP reduction. Validate arrays for usable references rather than length alone; do not widen an explicitly authored collider list.
+- Source and focused regression checks: `TestSceneValidation.VerifyBossCombat`, `CombatPresentationRegressionPlayModeTests.Hurtbox_*` and the active boss-combat task. Final runtime evidence is recorded in the 2026-10-07 SessionLog.
+
+## 2026-10-08 — Inactive chest size snapshot covered the fourth offer
+
+- `31766cfc` changed GlobalUIRoot RightMiddleFrame's stored Rect width56 to13 but retained LayoutElement.minWidth56. The first-open cache was already present. uGUI LayoutUtility ignores inactive Behaviours, so capture under inactive InventoryRoot used13 and cached total468; active arrangement later used56 and covered39 units of the grid (29 of the fourth slot). The previous total511 had no overlap.
+- ChestScreen/ChestFirstOpenRevealPresentation sources matched the pre-UI-optimization manifest, and the compared chest subtree matched semantically. This was an older authored-data/lifecycle interaction, rather than the player inventory slot-reuse change.
+- Fix: inactive width measurement also reads enabled authored LayoutElement min/preferred widths. Active uGUI measurement and disabled-layout behavior are retained; no scene/prefab/GUID change or UI activation is needed.
+- Prevention: capture and display must use the same layout constraints. Test real authored inactive-bind→active-reveal geometry and both viewport containment and foreground-decoration overlap; a correctly placed grid or a basic nonblank image test does not establish unobscured icons.
+- Evidence: isolated Unity6000.4.2f1 before/after layout probe and focused ChestRevealWidthRegressionPlayModeTests. Final tests and preserved-authoring hashes are recorded in the 2026-10-08 SessionLog.
+
+## 2026-10-07 — Performance fixture MaxHP inflated the heart HUD
+
+- Symptom: the first Player probes showed about 85–100 ms idle frames and multi-second crowd frames. These numbers were rejected as game-performance evidence.
+- Cause: the measurement helper raised linked maximum attributes to 100000 for survival. `PlayerHealthHeartHUD.GetHeartCount` divides MaxHP by `healthPerHeart` (1), and `EnsureHeartTokenCount` instantiates that many UI tokens; HP changes then traverse all tokens again. The fixture requested about 100000 hearts.
+- Correction: measurement-only helpers preserve normal HP/resource values and hold one counted existing `State.Invulnerable` tag, releasing only their own count on cleanup. The player probe records actual heart-token counts and rejects counts over 128. No production HUD or authored asset was changed.
+- Prevention: keep representative gameplay values in performance fixtures; check presentation object counts before interpreting slow frames. Separate byte-unit calibration from allocation-event counts: this backend reports `GC.Alloc` values as TimeNanoseconds, not bytes.
+- Evidence: `Docs/SessionLogs/2026-10-07-frame-performance-measurement/README.md` and its excluded-probe archive. Final results use corrected fixtures only.
+
+## 2026-10-08 — UI batching equivalence and asynchronous capture boundaries
+
+- Symptom: replacing a zero-amount ready-flash material with UI/Default appeared similar in RGB but changed translucent alpha (actual authored Canvas sample 64 versus 128). Initial UI captures also showed extra fallback batches because locale font callbacks were not settled.
+- Cause: the ready shader uses a different alpha blend even when its effect amount is zero. Fixed frame waits do not prove package font loading completed; GameSettingsService can also apply the saved language after its asynchronous String Table load.
+- Correction: retain the same ready shader in shared immutable idle materials and compare exact RGBA/stencil output. Capture only after the app's saved-language initialization, successful global preload, active font handle/result agreement and two stable LateUpdates. Rapid overlapping test locale preloads and incomplete teardown were repaired through awaited test sequencing; logs were not suppressed.
+- Prevention: distinguish rendering equivalence from visually similar RGB, runtime recorder samples from Editor native frame history, batch transitions from unique material counts, and permanent authored cells from generated selection slots. Native vertex zero/blank previews are unavailable evidence.
+- Evidence: [UI batching report](SessionLogs/2026-10-07-ui-batching/README.md), 119/119 native regressions and the matched 18-screen capture pair. No localization package/bootstrap or general shutdown lifecycle fix was bundled.
+- Fixture asset trap: cloning only one menu button left a serialized sibling sword reference pointing into the prefab asset. Awake/OnEnable hiding then changed that asset before the ownership assertion failed. Clone the minimum common subtree, inspect remapped references while inactive and compare protected asset hashes afterwards. The two defaults were restored to the exact starting snapshot and the guarded regression passed. Prefab API roundtrips can add unrelated nested overrides; review the complete diff rather than assuming a two-property edit produced only two differences.
+- Structural authoring follow-up: LoadPrefabContents can select TMP default font materials and drive Scrollbar handle anchors before a scoped save. GetPropertyModifications/SetPropertyModifications also filtered redundant authored nested overrides in this project, stripping unrelated inheritance intent. Snapshot original persistent TMP/RectTransform values and the PrefabInstance's raw serialized modification array before loading; bind internal references while the hierarchy is unchanged, restore original font/style and raw modifications, then clear the loaded Scrollbar tracker and restore original handle values before saving. Verify the complete saved diff. Saving successfully or preserving modification count alone is insufficient. Windows mapped imported files can reject an in-place snapshot overwrite (1224); exact recovery used an atomic whole-file replacement with the Editor closed and SHA256 verification, never hand-edited YAML.
+- Render-order follow-up: preserve a whole row-root Selectable subtree so its child Graphics retain original Button ancestry. The first paired pointer failure probed a hidden UISize child using activeSelf and hit an unrelated button from its stale transform; snapshot activeInHierarchy with each side rendered and keep strict checks for visible controls. Separately, attaching an anchor from an inactive logical owner to an active layer briefly fired locale OnEnable before hiding it. Set initial anchor visibility before reparenting; inactive text equality exposed this real lifecycle difference.
+- World HUD follow-up: shared HP mesh and per-actor status Canvas reorder transparent cross-actor overlaps even when single-HUD RGBA matches. Test HP-only plus HP/count/timer intersections at equal/different Z and routes back to the legacy projection. Native crowd fixtures must separately record actual mesh/legacy rendering paths. Intentional overlapped rigidbodies moved through collision resolution; fixed-pose sorting/draw captures temporarily suspend only disposable actor physics with explicit restoration/metadata. Reject position/visibility failures as performance evidence.
+
+## 2026-10-11 — Manager destruction must dispose relic procs and temporary tokens
+
+The new dash relic exposed an existing ownership gap: RelicProcManager unregistered its gameplay relay on disable, but neither it nor RelicInventory disposed procs on owner destruction. A HideAndDontSave RelicRuntimeToken does not automatically die with the owning GameObject. Explicit unequip-only cleanup was insufficient.
+
+RelicProcManager.OnDestroy now unregisters the relay and removes each proc from its list before calling Dispose, so reentrant unregistering is safe. Disable retains equipment state. Proc disposal removes its exact modifier/subscriptions and destroys its separate temporary token. The focused manager-destruction test checks the live owner's electric bonus returns to zero, the token is Unity-null, and later ability completion cannot reapply it. See `ElectricRelicPlayModeTests.DestroyingProcManager_ClearsDashBonusSubscriptionAndOwnedTemporaryToken` and [relic map](StructureMemory/ScriptSystems/RelicRuntimeStructure.md).
+
+## 2026-10-11 — Local paralysis needs action time and stable attack ownership
+
+Freezing a monster's Animator/FSM/coroutine does not freeze global Time.time deadlines or native WaitForSeconds. Rook dash, Mob recovery, ranged rest, detached warning expiry and attached attack lifetimes used such independent clocks. The approved paralysis adds a target-owned action clock that excludes only paralysis intervals, including the expired interval before LateUpdate has committed it. Ordinary hit pause and unbound world effects retain prior timing. Standalone coroutine terminal work must also wait when paralysis begins on its last yielded frame.
+
+MeleeHitboxActor's immediate scan consumed a shared target ID before the base damage gate, so pausing only the base trigger could lose the hit permanently. Gate before ID insertion and preserve registries through resume. Bound classification must be cached separately from the Unity owner reference: destroyed owners become Unity-null, but their attached attack must not turn into an independent projectile. Death/disable stops bound work and prevents reopening a canceled timed effect after re-enable. Core reads Enemy's existing IsDead through ICombatActionState; it does not duplicate life state. New feature53/53 native cases passed, including remaining time, shared IDs, owner death/disable/destruction and independent projectile continuation. See [task record](SessionLogs/2026-10-11.md).
+
+Suggested Later: expanded validation found `CombatFeelLootQuestPlayModeTests.Impact_FreezesParticipants_SlowsWorld_AndPreservesMenuPause` expects an ICombatHitPauseImmune boss to freeze, while the existing FreezeVictim method returns before adding a pause to that boss. The method is byte-identical between HEAD and the current source; the failure occurs at the immediate victim assertion before any frame/LateUpdate. Selected suite130/131 passed. Do not hide the failure or alter this unrelated impact policy within the electric slice; reconcile the test expectation and current boss impact policy separately.
+
+## 2026-10-12 — Natural expiry must stay separate from restore cleanup and damage callbacks
+
+- Trap: restoring an effect snapshot with remainingTime0 left it active until the next timer tick. A new natural-expiry listener would then treat this already-expired restore as a fresh expiry and trigger Current Jar damage.
+- Correction: after restoring remaining time, an exhausted snapshot ends through ordinary cleanup and repository removal, without natural notification. Positive-time restoration reconnects state and permits its later genuine expiry.
+- Related lifecycle risk: expiry damage can kill a target and clear its effect collection. The Runner queues natural expirations, finishes repository iteration and tag/payload cleanup, clears the pending queue, then notifies listeners. Jar disposes its source-owned subscription and also guards a previously captured delegate after disposal.
+- Verification route: ElectricExpiryRelicPlayModeTests checks zero/positive restore, natural vs explicit removal, death/owner isolation, and collection clearing from expiry damage. Native results are recorded in [the session log](SessionLogs/2026-10-12.md).
+
+## 2026-10-12 — Windows CSV text output changed localized field newlines
+
+- Exact Unity String Table readback rejected the Korean shock description because CSV fields contained CRLF while the prepared translation JSON contained LF. The values displayed similarly, but the files were not equal.
+- Cause: `Path.write_text` used default Windows newline translation on CSV text whose record writer already emitted CRLF. It also converted intentional field LF and created blank CRCRLF records.
+- Fix: write the electric subset CSV with `newline=''`, preserving the CSV writer's record separator and the original field values. Do not normalize away differences in the exact native readback assertion.
+- Verification: parsed CSV has31 rows (header+30), each with6 columns; all150 values exactly match the sidecar. Native LocalizeBatch retry compares the same150 values successfully. See [session log](SessionLogs/2026-10-12.md).
+
+## 2026-10-12 — Temporary effect tags can outlive their scene owner after snapshot restore
+
+새 혼란 GE의 granted tag는 TagSystem의 explicit count에도 들어간다. PlayerRuntimeCaptureCoordinator가 explicit tag와 GE를 함께 캡처하면, 복원 시 explicit count와 GE 부여 count가 겹쳐 GE 제거 후에도 조작 반전 태그가 남을 수 있다. 또한 술 노출 owner/충전량은 복원되지 않아 머리 연출과 실제 상태가 어긋난다.
+
+술 노출은 현재 owner의 정확한 GE/source와 granted tag만 scene snapshot에서 제외한다. 다른 상태의 저장 규칙이나 DTO schema를 바꾸지 않는다. 앞으로 source-local 상태를 추가할 때 effect snapshot만이 아니라 explicit tag snapshot도 함께 확인한다. 기존 ISceneReappliedEffectSource marker는 HUD duration을 숨기는 부수 효과가 있어 이번5초 버프에는 그대로 적용하지 않는다. [구조](StructureMemory/AlcoholExposure.md), [범위](ActiveTasks/spiri-alcohol-exposure.md).
+
+## 2026-10-12 — Localized font replacement detached SpeechBubble theme materials
+
+- 증상: 한국어 서기관 말풍선 본문이 밝은 배경 위의 흰색 글씨로 표시됐다. 같은 공용 프리팹을 쓰는 NPC와 보스 테마도 영향 경로를 공유한다.
+- 원인: SpeechBubble은 Awake에서 만든 전용 재질의 `_FaceColor`를 바꾸고 Vertex Color를 흰색으로 유지한다. 번역 폰트 callback은 표시 재질을 공유 fallback으로 교체하지만, 기존 테마 코드는 이전 전용 재질을 계속 수정했다. Vertex Color의 흰색은 2026-04-12부터 정상 동작의 일부였으며, 기본 글자 Outline도 번역 전부터0이었다. 실제 화면색과 프리팹 저장값/런타임 Vertex Color를 구분해야 한다.
+- 수정: LocalizeTmpFontEvent가 폰트·atlas·참조 적용 뒤 `LocalizedFontApplied`를 알리고, SpeechBubble이 새 localized 재질을 복제해 현재 테마색을 재적용한다. 풀 비활성화 동안 구독을 유지하고 파괴 때 해제한다. 공유 원본은 변경하지 않으며 이전/최종 전용 재질은 말풍선이 정리한다. 이전 atlas를 가진 재질을 다시 연결하거나 색을 Vertex Color로 옮겨 rich-text 색 곱셈을 바꾸지 않는다.
+- 검증 경로: `Tools/Validation/SpeechBubbleLocalizationRegression.cs`의 실제 공용 프리팹,5언어 폰트 콜백, 기본/보스 테마, 두 화자 색 분리, 풀 재사용과 재질 정리. 실행 결과와 제한은 [SessionLog](SessionLogs/2026-10-12.md)에 기록한다. 현재 구조는 [LocalizationFlow](StructureMemory/LocalizationFlow.md)를 참고한다.

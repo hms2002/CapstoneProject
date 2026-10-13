@@ -1,0 +1,42 @@
+[
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaCreatureDetailView.cs",
+    "Hash": "EB5E3358345935DD8567F7F40FC2CAD736152F5CCCF57DC972E9B2436CFD51ED"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaCreatureTab.cs",
+    "Hash": "F456D8CDAC8856FE777AAC92850AF06BECEF0791607AE5D7F0468A2CF051AA9A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemTab.cs",
+    "Hash": "4573461141C7941DE02EF9A5E1C863008244E6D32CF72AA626399D04F17760DB"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemLeftPage.cs",
+    "Hash": "7637FAD5E52AD5AF56AAF70FAA1BABB885C9F01218D9CA67CD502FB6166849E0"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemRightPage.cs",
+    "Hash": "E925C25719BEF7E978DBA12B97DD308371DA05F96A96A6D44C108DE433EEFAD2"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\GlobalUIRoot.prefab",
+    "Hash": "02EFAB5C9922894E842CFA8A5C087EE8DC32D07BA3BB09603E8C0DC5D13C7598"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Encyclopedia\\EncyclopediaCatalog.asset",
+    "Hash": "36FEAD9A57822C5BC32D921E9E318F6BDDD80AECBE03DA35E44D5A08A422E167"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\Inventory Book SpriteSheet.png",
+    "Hash": "48D3A80A00E5DE46D6CBBA1416872EBA1AC1DF16253FEB5B8B7F2908BDB9067E"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\Inventory Book SpriteSheet.png.meta",
+    "Hash": "7FCA62976A41197934149CBAE1F199A9851CD1297944F46D04783866FA1685E1"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Tests\\PlayMode\\Procedural\\EncyclopediaCreaturePlayModeTests.cs",
+    "Hash": "E74D2D0A3542596D1A4AA98749AFB13E742A8CACF2A5924F09C501B131A4EE43"
+  }
+]

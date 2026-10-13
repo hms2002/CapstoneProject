@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="11" result="Failed(Child)" total="11" passed="10" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-10 08:32:34Z" end-time="2026-10-10 08:32:36Z" duration="1.9365605">
+  <test-suite type="TestSuite" id="2135" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="953" result="Failed" site="Child" start-time="2026-10-10 08:32:34Z" end-time="2026-10-10 08:32:36Z" duration="1.936561" total="11" passed="10" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2131" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="946" result="Failed" site="Child" start-time="2026-10-10 08:32:34Z" end-time="2026-10-10 08:32:36Z" duration="1.895082" total="11" passed="10" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="13000" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1073" name="CombatFeelLootQuestPlayModeTests" fullname="CombatFeelLootQuestPlayModeTests" classname="CombatFeelLootQuestPlayModeTests" runstate="Runnable" testcasecount="76" result="Passed" start-time="2026-10-10 08:32:34Z" end-time="2026-10-10 08:32:35Z" duration="0.959421" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="1096" name="LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker" fullname="CombatFeelLootQuestPlayModeTests.LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker" classname="CombatFeelLootQuestPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-10 08:32:35Z" end-time="2026-10-10 08:32:35Z" duration="0.455636" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <output><![CDATA[[CursorDiagnostic] phase=display-stable-2s frame=8 screen=640x480 mode=Windowed focused=False visible=True lock=None domain=Combat/Default hiddenOwners=0 backend=UnityCursorAPI cursorMode=Auto texture=light_cursor_spritesheet_31_Cursor_22x22 hotspot=(11.00, 11.00)
+]]></output>
+          <test-case id="1092" name="LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker(Sweep,0.12f,1.4f,1)" fullname="CombatFeelLootQuestPlayModeTests.LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker(Sweep,0.12f,1.4f,1)" methodname="LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker" classname="CombatFeelLootQuestPlayModeTests" runstate="Runnable" seed="1043258080" result="Passed" start-time="2026-10-10 08:32:35Z" end-time="2026-10-10 08:32:35Z" duration="0.360821" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.
+[GE_Damage_Spec] : target=TrainingDummy(Clone), element=none, skip show: tag=null, target=TrainingDummy(Clone), attributeSet=ok, healthAttribute=HealthAttribute
+[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.
+[GE_Damage_Spec] : target=TrainingDummy(Clone), element=none, skip show: tag=null, target=TrainingDummy(Clone), attributeSet=ok, healthAttribute=HealthAttribute
+]]></output>
+          </test-case>
+          <test-case id="1093" name="LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker(Rush,0.1f,0.9f,1)" fullname="CombatFeelLootQuestPlayModeTests.LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker(Rush,0.1f,0.9f,1)" methodname="LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker" classname="CombatFeelLootQuestPlayModeTests" runstate="Runnable" seed="364512420" result="Passed" start-time="2026-10-10 08:32:35Z" end-time="2026-10-10 08:32:35Z" duration="0.018943" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.
+[GE_Damage_Spec] : target=TrainingDummy(Clone), element=none, skip show: tag=null, target=TrainingDummy(Clone), attributeSet=ok, healthAttribute=HealthAttribute
+[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.
+[GE_Damage_Spec] : target=TrainingDummy(Clone), element=none, skip show: tag=null, target=TrainingDummy(Clone), attributeSet=ok, healthAttribute=HealthAttribute
+]]></output>
+          </test-case>
+          <test-case id="1094" name="LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker(RecoveredShot,0.0f,0.0f,0)" fullname="CombatFeelLootQuestPlayModeTests.LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker(RecoveredShot,0.0f,0.0f,0)" methodname="LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker" classname="CombatFeelLootQuestPlayModeTests" runstate="Runnable" seed="720555066" result="Passed" start-time="2026-10-10 08:32:35Z" end-time="2026-10-10 08:32:35Z" duration="0.018241" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.
+[GE_Damage_Spec] : target=TrainingDummy(Clone), element=none, skip show: tag=null, target=TrainingDummy(Clone), attributeSet=ok, healthAttribute=HealthAttribute
+[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.
+[GE_Damage_Spec] : target=TrainingDummy(Clone), element=none, skip show: tag=null, target=TrainingDummy(Clone), attributeSet=ok, healthAttribute=HealthAttribute
+]]></output>
+          </test-case>
+          <test-case id="1095" name="LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker(Landing,0.0f,0.0f,1)" fullname="CombatFeelLootQuestPlayModeTests.LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker(Landing,0.0f,0.0f,1)" methodname="LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker" classname="CombatFeelLootQuestPlayModeTests" runstate="Runnable" seed="1983770944" result="Passed" start-time="2026-10-10 08:32:35Z" end-time="2026-10-10 08:32:35Z" duration="0.020682" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.
+[GE_Damage_Spec] : target=TrainingDummy(Clone), element=none, skip show: tag=null, target=TrainingDummy(Clone), attributeSet=ok, healthAttribute=HealthAttribute
+[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.
+[GE_Damage_Spec] : target=TrainingDummy(Clone), element=none, skip show: tag=null, target=TrainingDummy(Clone), attributeSet=ok, healthAttribute=HealthAttribute
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+      <test-suite type="TestFixture" id="1482" name="LightningSpearPlacementStructurePlayModeTests" fullname="LightningSpearPlacementStructurePlayModeTests" classname="LightningSpearPlacementStructurePlayModeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-10 08:32:35Z" end-time="2026-10-10 08:32:36Z" duration="0.773255" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1487" name="DelayedRain_CancellationStopsFurtherSpawns_AndDisableClearsExistingMark" fullname="LightningSpearPlacementStructurePlayModeTests.DelayedRain_CancellationStopsFurtherSpawns_AndDisableClearsExistingMark" methodname="DelayedRain_CancellationStopsFurtherSpawns_AndDisableClearsExistingMark" classname="LightningSpearPlacementStructurePlayModeTests" runstate="Runnable" seed="940859610" result="Passed" start-time="2026-10-10 08:32:35Z" end-time="2026-10-10 08:32:36Z" duration="0.328107" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1486" name="DelayedRain_KeepsItsCopiedPlan_WhenThirdStrikeReusesPlannerScratch" fullname="LightningSpearPlacementStructurePlayModeTests.DelayedRain_KeepsItsCopiedPlan_WhenThirdStrikeReusesPlannerScratch" methodname="DelayedRain_KeepsItsCopiedPlan_WhenThirdStrikeReusesPlannerScratch" classname="LightningSpearPlacementStructurePlayModeTests" runstate="Runnable" seed="164958438" result="Passed" start-time="2026-10-10 08:32:36Z" end-time="2026-10-10 08:32:36Z" duration="0.373388" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1485" name="FailedThirdStrike_ReleasesRequestAndCanRetryAfterGroundReturns" fullname="LightningSpearPlacementStructurePlayModeTests.FailedThirdStrike_ReleasesRequestAndCanRetryAfterGroundReturns" methodname="FailedThirdStrike_ReleasesRequestAndCanRetryAfterGroundReturns" classname="LightningSpearPlacementStructurePlayModeTests" runstate="Runnable" seed="1077852882" result="Passed" start-time="2026-10-10 08:32:36Z" end-time="2026-10-10 08:32:36Z" duration="0.013033" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1484" name="IndependentPlanners_DoNotShareReservationsOrOverwriteBorrowedResults" fullname="LightningSpearPlacementStructurePlayModeTests.IndependentPlanners_DoNotShareReservationsOrOverwriteBorrowedResults" methodname="IndependentPlanners_DoNotShareReservationsOrOverwriteBorrowedResults" classname="LightningSpearPlacementStructurePlayModeTests" runstate="Runnable" seed="1942017524" result="Passed" start-time="2026-10-10 08:32:36Z" end-time="2026-10-10 08:32:36Z" duration="0.012870" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1483" name="Planner_ProducesRainAndThirdStrikeWithoutCreatingOrOwningActors" fullname="LightningSpearPlacementStructurePlayModeTests.Planner_ProducesRainAndThirdStrikeWithoutCreatingOrOwningActors" methodname="Planner_ProducesRainAndThirdStrikeWithoutCreatingOrOwningActors" classname="LightningSpearPlacementStructurePlayModeTests" runstate="Runnable" seed="836492613" result="Passed" start-time="2026-10-10 08:32:36Z" end-time="2026-10-10 08:32:36Z" duration="0.008335" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1756" name="PlayerControlAndChestRegressionPlayModeTests" fullname="PlayerControlAndChestRegressionPlayModeTests" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" testcasecount="43" result="Failed" site="Child" start-time="2026-10-10 08:32:36Z" end-time="2026-10-10 08:32:36Z" duration="0.073048" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="1769" name="WeaponFeedback_FirstMarkRushGuidanceCompletionIsPerSaveSlot" fullname="PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_FirstMarkRushGuidanceCompletionIsPerSaveSlot" methodname="WeaponFeedback_FirstMarkRushGuidanceCompletionIsPerSaveSlot" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1944372748" result="Passed" start-time="2026-10-10 08:32:36Z" end-time="2026-10-10 08:32:36Z" duration="0.012513" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[AffectionManager] Reloaded affection data for slot 2. NPC count: 0
+[AffectionManager] Reloaded affection data for slot 1. NPC count: 0
+]]></output>
+        </test-case>
+        <test-case id="1768" name="WeaponFeedback_MarkOutlineAndKeyFollowAvailabilityAndRebinding" fullname="PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_MarkOutlineAndKeyFollowAvailabilityAndRebinding" methodname="WeaponFeedback_MarkOutlineAndKeyFollowAvailabilityAndRebinding" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1603056856" result="Failed" start-time="2026-10-10 08:32:36Z" end-time="2026-10-10 08:32:36Z" duration="0.048501" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: RGBA(0.000, 0.627, 0.902, 1.000)
+  But was:  RGBA(0.000, 0.627, 0.902, 1.000)
+]]></message>
+            <stack-trace><![CDATA[at PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_MarkOutlineAndKeyFollowAvailabilityAndRebinding () [0x0015f] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\PlayMode\Procedural\PlayerControlAndChestRegressionPlayModeTests.cs:134
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

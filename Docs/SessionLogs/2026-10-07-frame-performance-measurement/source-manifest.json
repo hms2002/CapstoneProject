@@ -1,0 +1,102 @@
+[
+  {
+    "path": "Assets/_Project/Art/Shaders/PuddleShaderVisual.shader",
+    "optimized_sha256": "009734d015caad27e8e664d257217d673d372aa09709f9cc188d835a202c8bc5",
+    "baseline_sha256": "b5cf997a9b47fefa211bc05d72e418dd18c93a18cd085b4bb2bce3474cf0784d"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Core/Effects/ActiveGameplayEffectRepository.cs",
+    "optimized_sha256": "34953dd0a86b18fee940d03f1496608080d5203ce6086b770fb265736aea6dca",
+    "baseline_sha256": "f44ecb203de3ac2c19517601f8ca6fb9262f2ffdf94ff7028ec0e7a9a10affdf"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Items/Weapons/Flowering/FloweringDashSlashHitboxActor.cs",
+    "optimized_sha256": "d05b46037488face5619487d0d1ef15c78fa985f3bdd2713e5bc0027f690b356",
+    "baseline_sha256": "c166ee8d998574d354f60124e8213ff322a988549cf570e1d1e44a5157b86674"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Monsters/Common/EnemyChaseIntent2D.cs",
+    "optimized_sha256": "beccd0cef24e5abfc217af7ceafde1d85d25ddb2d80dae4c3e6ee3e064d97ff1",
+    "baseline_sha256": "aaa32c7957ff0a37c7faca0c947a321821241fcbf0da633acc767ffafd6a4551"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Monsters/Common/Mob.cs",
+    "optimized_sha256": "f4693684839e20ef8ce41a82bd9552003bb28167cae4c9696443b609a21d7bff",
+    "baseline_sha256": "4cf2ab004599fa5573748113fb9e2bdf71ce5b6e6eec5f65b22ddf18e0ddb487"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Presentation/Map/Puddles/PuddleParticleVisual.cs",
+    "optimized_sha256": "39e96d0379d5d19d79df00ff38620dc6136a3ea02350a350d629d022fc1b3472",
+    "baseline_sha256": "b5fef1e53e4a1adc370f587680fa2ee2d2be2aacdc63b7a0ead52b2c7f648113"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/HoverUIController.cs",
+    "optimized_sha256": "8474b1594833f3505f066052da3aada77c292783202fa5c646f2562c3c48c1c5",
+    "baseline_sha256": "0a08ad5899942329b6cf277b6ce5a6f587fffe391a387f7c11fbbc920face90a"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/PopupStackState.cs",
+    "optimized_sha256": "33f8d51bbc4c25763b89ee6848b9d96ad109415261d394d502f30116cc63d420",
+    "baseline_sha256": "775a3d823bad1f741126b72e75fc611206373087f9cf708cb26da7f9cd0cd327"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/UIManager.cs",
+    "optimized_sha256": "23f7ef9cd5b6a3d5358f212e0f61dec85fd56ad68345b8db08746b857247057d",
+    "baseline_sha256": "c361ee639906c33d623a334f389084076704e8820fa242165c2170dceb4b441b"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/WeaponSkillHUD2D.cs",
+    "optimized_sha256": "1a88da8914506e8c618dec4013a28eb28f7fd62d7bf685ba7a71cf19807590bf",
+    "baseline_sha256": "071499aac912fc1609257fff5cfad743090c26caccf6367e343c859ebaf27a4a"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/WeaponSkillHudSlotPresenter.cs",
+    "optimized_sha256": "641127cc8b1fe8e11f70dc6610bd423ace7513798a314228dac340c8ed62e9b0",
+    "baseline_sha256": "622e50203a91e14377476c88b30bae48fec2f15a759da708afa0bd0bdfac8b6b"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupService.cs",
+    "optimized_sha256": "34d020565e4c4924cfe1ba6bf26b7a133c78745a260076164bb3355f749e3bfd",
+    "baseline_sha256": "35c97fb3bab4c317bcd61acdd4298d46bcc534458a0afe8051e03a307a78ceab"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupWorldText.cs",
+    "optimized_sha256": "d13e3f51bd21ba389d58c1d268f3f6f09f4b1391b4f465c791929273bba392df",
+    "baseline_sha256": "41b6dc9f987deefdf588a9252b709845b5c58c7728174f7c532133bd46c78c86"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/StackStatus/MonsterStackStatusWorldView.cs",
+    "optimized_sha256": "75a5378fc5bac4b52c154cc4ed200f4c0f7dc491ac6334d1e50498054cfc49bf",
+    "baseline_sha256": "f2551317354de8a1640508f05840d2724f5d3bf521b0d8143c87bfb7e63397ba"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/RunTimer/RunTimerHUD.cs",
+    "optimized_sha256": "a9bbdf4f3220f263023a794205dcb44286c9b44a7142769e6f4d73a0019dd81e",
+    "baseline_sha256": "9b39504e5ca34debef8f6671782165238a2c0d2edb6173f0ce0c896aced70d3c"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/Status/StatusHudEntryView.cs",
+    "optimized_sha256": "140870ed2cd94f6518427a7d77f87ac19a324b8ca2e71da3924ece442f2195f1",
+    "baseline_sha256": "65577365d1a672f59de2423f90c4f70ab3979a490f005cb3d0585f13c6d400ca"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/Status/StatusHudTooltipView.cs",
+    "optimized_sha256": "a3bcc8289a34b95574f688fd64df7784ea56efe2ebf8eb82931f63e6d784285d",
+    "baseline_sha256": "d297b03a4dad500df63b3a31a24b0ebee370410c052f950809334a2c4240ee1e"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Monsters/Common/FSM/MobStateTransitionUtility.cs",
+    "optimized_sha256": "b3d7796978947ff8c1fa7aa45737658257141df6471e8cb4ceb3483e4a17993b",
+    "baseline_sha256": "3e830c3c4114cb090d5782a675f3d26622bfc00a8262b547f7459092e8db609e"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Monsters/Common/FSM/MobChaseState.cs",
+    "optimized_sha256": "0ad1d0f3dad84a85ac2b7510d84a42e6ac28b55da4c50ad352f801c6acafcc5f",
+    "baseline_sha256": "693db54d4948e24c8b8819b4914563047ecebbe925bc976ca8f9c6dc35dfaec2"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+    "optimized_sha256": "f856190bf919c8c016e15fdb7e4e5ea5c68c5e42f314ae884aa0ec989bf7a609",
+    "baseline_sha256": "1643f865a3abd82e756e34e4ed5f34987a9401d70515f2d91d78284fe69ec64f"
+  }
+]

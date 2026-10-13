@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-11 11:06:35Z" end-time="2026-10-11 11:06:35Z" duration="0.1641981">
+  <test-suite type="TestSuite" id="1000" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-10-11 11:06:35Z" end-time="2026-10-11 11:06:35Z" duration="0.164198" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1016" name="CorePerformanceRegressionEditModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/CorePerformanceRegressionEditModeTests.dll" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-10-11 11:06:35Z" end-time="2026-10-11 11:06:35Z" duration="0.146937" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="49352" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1007" name="EncyclopediaProgressEditModeTests" fullname="EncyclopediaProgressEditModeTests" classname="EncyclopediaProgressEditModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-11 11:06:35Z" end-time="2026-10-11 11:06:35Z" duration="0.142861" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1011" name="ActiveRunKillsStayPendingUntilCommitAndCommitOnlyOnce" fullname="EncyclopediaProgressEditModeTests.ActiveRunKillsStayPendingUntilCommitAndCommitOnlyOnce" methodname="ActiveRunKillsStayPendingUntilCommitAndCommitOnlyOnce" classname="EncyclopediaProgressEditModeTests" runstate="Runnable" seed="742005217" result="Passed" start-time="2026-10-11 11:06:35Z" end-time="2026-10-11 11:06:35Z" duration="0.100764" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1015" name="CountOverflowSaturatesInsteadOfBecomingNegative" fullname="EncyclopediaProgressEditModeTests.CountOverflowSaturatesInsteadOfBecomingNegative" methodname="CountOverflowSaturatesInsteadOfBecomingNegative" classname="EncyclopediaProgressEditModeTests" runstate="Runnable" seed="1562346790" result="Passed" start-time="2026-10-11 11:06:35Z" end-time="2026-10-11 11:06:35Z" duration="0.000365" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1012" name="InactiveRunAndMissingIdsDoNotAccumulate" fullname="EncyclopediaProgressEditModeTests.InactiveRunAndMissingIdsDoNotAccumulate" methodname="InactiveRunAndMissingIdsDoNotAccumulate" classname="EncyclopediaProgressEditModeTests" runstate="Runnable" seed="1786068656" result="Passed" start-time="2026-10-11 11:06:35Z" end-time="2026-10-11 11:06:35Z" duration="0.001620" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1014" name="MissingNestedSaveRecordsAndPendingDataAreSafe" fullname="EncyclopediaProgressEditModeTests.MissingNestedSaveRecordsAndPendingDataAreSafe" methodname="MissingNestedSaveRecordsAndPendingDataAreSafe" classname="EncyclopediaProgressEditModeTests" runstate="Runnable" seed="201486935" result="Passed" start-time="2026-10-11 11:06:35Z" end-time="2026-10-11 11:06:35Z" duration="0.000718" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1010" name="NormalizationMergesDuplicateIdsAndDiscardsInvalidRecords" fullname="EncyclopediaProgressEditModeTests.NormalizationMergesDuplicateIdsAndDiscardsInvalidRecords" methodname="NormalizationMergesDuplicateIdsAndDiscardsInvalidRecords" classname="EncyclopediaProgressEditModeTests" runstate="Runnable" seed="49124623" result="Passed" start-time="2026-10-11 11:06:35Z" end-time="2026-10-11 11:06:35Z" duration="0.000850" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1008" name="OldProfileWithoutEncyclopediaFieldStartsAtZeroAndPreservesOtherProgress" fullname="EncyclopediaProgressEditModeTests.OldProfileWithoutEncyclopediaFieldStartsAtZeroAndPreservesOtherProgress" methodname="OldProfileWithoutEncyclopediaFieldStartsAtZeroAndPreservesOtherProgress" classname="EncyclopediaProgressEditModeTests" runstate="Runnable" seed="849305971" result="Passed" start-time="2026-10-11 11:06:35Z" end-time="2026-10-11 11:06:35Z" duration="0.000989" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1009" name="ProfileRoundTripPreservesSpeciesCountsAndOtherFields" fullname="EncyclopediaProgressEditModeTests.ProfileRoundTripPreservesSpeciesCountsAndOtherFields" methodname="ProfileRoundTripPreservesSpeciesCountsAndOtherFields" classname="EncyclopediaProgressEditModeTests" runstate="Runnable" seed="1920226526" result="Passed" start-time="2026-10-11 11:06:35Z" end-time="2026-10-11 11:06:35Z" duration="0.002501" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1013" name="ProfileSwitchOrDevelopmentResetDiscardsPendingKills" fullname="EncyclopediaProgressEditModeTests.ProfileSwitchOrDevelopmentResetDiscardsPendingKills" methodname="ProfileSwitchOrDevelopmentResetDiscardsPendingKills" classname="EncyclopediaProgressEditModeTests" runstate="Runnable" seed="872416586" result="Passed" start-time="2026-10-11 11:06:35Z" end-time="2026-10-11 11:06:35Z" duration="0.000487" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

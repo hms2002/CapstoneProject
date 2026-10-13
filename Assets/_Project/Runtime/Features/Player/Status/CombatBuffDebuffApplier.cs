@@ -244,7 +244,7 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
             isVisible: true,
             showStacksOverride: activeEffect.StackCount > 1 ? (bool?)true : null,
             showDurationOverride: tracked.SourceObject is ISceneReappliedEffectSource
-                ? false : remainingTime > 0f ? (bool?)true : null);
+                ? false : null);
 
         if (tracked.Handle.IsValid)
         {

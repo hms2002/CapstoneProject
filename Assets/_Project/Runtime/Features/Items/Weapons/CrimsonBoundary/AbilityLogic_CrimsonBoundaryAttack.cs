@@ -37,7 +37,7 @@ public sealed class AbilityLogic_CrimsonBoundaryAttack : AbilityLogic
         runtime.MarkProjectileReleased();
         Vector3 position = PlayerAttackOrigin.Resolve(system, direction, data.wallLayers);
         bool critical;
-        float damage = CrimsonBoundaryUtility.CalculateDirectDamage(system, 1f, out critical);
+        float damage = CrimsonBoundaryUtility.CalculateDirectDamage(system, 1f, out critical, out ElementDamageResult[] elementHpDamages);
 
         var payload = new CombatHitPayload
         {
@@ -48,7 +48,9 @@ public sealed class AbilityLogic_CrimsonBoundaryAttack : AbilityLogic
             causer = system.gameObject,
             isCriticalHit = critical,
             elementBuildUps = System.Array.Empty<ElementDamageResult>(),
-            hasResolvedElementBuildUps = true
+            hasResolvedElementBuildUps = true,
+            elementHpDamages = elementHpDamages,
+            damagePopupElementTag = CrimsonBoundaryUtility.FireDamageTag
         };
 
         var visual = CrimsonBoundaryVisual2D.Spawn(data.projectilePrefab, position, Quaternion.identity, runtime);

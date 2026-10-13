@@ -589,6 +589,179 @@ public sealed class MonsterProjectileBurstCadencePlayModeTests
     }
 
     [Test]
+    public void OutsideDetectionRange_SkipsSightProbe_WhileRoomAndExplicitOverridesStillObserveChanges()
+    {
+        Mob owner = CreateMonster("CommonCorridor/GoblinGunner.prefab");
+        var chase = owner.GetComponent<EnemyChaseIntent2D>();
+        SetField(chase, "usePathfindingWhenDirectPathBlocked", false);
+        var target = new GameObject("RangeProbeTarget");
+        target.transform.position = owner.transform.position + Vector3.right * 12f;
+        typeof(Enemy).GetField("target", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(owner, target.transform);
+        var wall = new GameObject("RangeProbeWall");
+        wall.transform.position = owner.transform.position + Vector3.right;
+        wall.AddComponent<BoxCollider2D>().size = new Vector2(0.2f, 4f);
+        var blocker = wall.AddComponent<MonsterSightProbeTestBlocker>();
+        Physics2D.SyncTransforms();
+        chase.StartChase();
+
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.False);
+        Assert.That(chase.GetIntent().Direction, Is.EqualTo(Vector2.zero));
+        Assert.That(blocker.SightQueries, Is.Zero, "Out-of-range targets need no sight query.");
+
+        var room = new GameObject("RangeProbeRoom");
+        room.transform.position = owner.transform.position;
+        var bounds = room.AddComponent<BoxCollider2D>();
+        bounds.isTrigger = true;
+        bounds.size = Vector2.one * 30f;
+        var area = room.AddComponent<MonsterRoomArea2D>();
+        area.Configure(bounds);
+        Physics2D.SyncTransforms();
+        chase.ApplySpawnContext(new MonsterSpawnContext(owner.transform.position, Quaternion.identity, area, null));
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.False);
+        Assert.That(blocker.SightQueries, Is.GreaterThan(0), "Room-local range override must still check closed doors.");
+        blocker.BlocksSight = false;
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.True, "A second query in the same frame observes the door change.");
+        Assert.That(chase.GetIntent().Direction.x, Is.GreaterThan(0f));
+
+        chase.ApplySpawnContext(default);
+        chase.SetIgnoreDetectionRange(true);
+        blocker.BlocksSight = true;
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.False);
+        blocker.BlocksSight = false;
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.True);
+    }
+
+    private sealed class CountingFsmChase : IEnemyChaseIntent
+    {
+        public System.Func<bool> Detect;
+        public int Queries;
+        public void StartChase() { }
+        public void StopChase() { }
+        public bool IsTargetWithinDetectionRange() { Queries++; return Detect?.Invoke() ?? true; }
+    }
+
+    private sealed class FsmGuardBridge : IMobAbilityBridge
+    {
+        public bool Busy;
+        public bool IsAbilityExecutionBusy => Busy;
+        public bool IsAbilityExecutionSuppressed => false;
+        public bool TryStartAbility(AbilityDefinition ability, GameObject target = null) => false;
+        public void CancelActiveAbility(bool force) { }
+        public bool HasStateTag(GameplayTag tag) => false;
+        public bool TryBeginRunner(IMobPatternRunner runner) => false;
+        public void EndRunner(IMobPatternRunner runner) { }
+    }
+
+    private sealed class MutatingFsmDecision : IMobAttackDecisionSource
+    {
+        public System.Action BeforeRequest;
+        public int Requests;
+        public bool TryBuildAttackRequest(out MobAttackRequest request)
+        {
+            Requests++;
+            BeforeRequest?.Invoke();
+            request = default;
+            return false;
+        }
+        public void OnAttackStateEntered(MobAttackRequest request) { }
+        public void OnAttackStateExited(MobAttackRequest request, bool wasCancelled) { }
+    }
+
+    [TestCase("busy")]
+    [TestCase("budget")]
+    [TestCase("missingBridge")]
+    [TestCase("missingDecision")]
+    [TestCase("undetected")]
+    public void ChaseFsm_PreDecisionGuardsReuseOnlyTheCurrentBasicDetection(string guard)
+    {
+        Mob owner = CreateMonster("CommonCorridor/GoblinGunner.prefab");
+        var target = new GameObject("FsmGuardTarget");
+        typeof(Enemy).GetField("target", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(owner, target.transform);
+        var chase = new CountingFsmChase { Detect = () => guard != "undetected" };
+        var bridge = new FsmGuardBridge { Busy = guard == "busy" };
+        var decision = new MutatingFsmDecision();
+        var context = new MobAIContext(owner, chase, guard == "missingBridge" ? null : bridge,
+            guard == "missingDecision" ? null : decision, System.Array.Empty<IMobPatternRunner>(),
+            System.Array.Empty<IMobPresentationCleanup>(), 10f, 0f, 0f);
+        if (guard == "budget") Assert.That(context.ConsumeAttackThinkBudget(), Is.True);
+        var machine = new MobStateMachine();
+        machine.SetInitialState(new MobChaseState(), context);
+        machine.Tick(context);
+        Assert.That(chase.Queries, Is.EqualTo(1));
+        Assert.That(decision.Requests, Is.Zero);
+        Assert.That(machine.CurrentState, guard == "undetected" ? Is.TypeOf<MobIdleState>() : Is.TypeOf<MobChaseState>());
+        machine.Tick(context);
+        Assert.That(chase.Queries, Is.GreaterThan(1), "A later Tick must evaluate detection again.");
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void ChaseFsm_CustomDetectionOverrideKeepsItsRepeatedCalls(bool detected)
+    {
+        var owner = new GameObject("SpecialFsmDetection").AddComponent<MonsterFsmDetectionTestOverride>();
+        owner.Detected = detected;
+        var target = new GameObject("SpecialFsmTarget");
+        typeof(Enemy).GetField("target", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(owner, target.transform);
+        var context = new MobAIContext(owner, new CountingFsmChase(), new FsmGuardBridge { Busy = true },
+            new MutatingFsmDecision(), System.Array.Empty<IMobPatternRunner>(),
+            System.Array.Empty<IMobPresentationCleanup>(), 0f, 0f, 0f);
+        var machine = new MobStateMachine();
+        machine.SetInitialState(new MobChaseState(), context);
+        machine.Tick(context);
+        Assert.That(owner.DetectionQueries, Is.EqualTo(2), "Special detection may mutate owned state on each call.");
+    }
+
+    [Test]
+    public void ChaseFsm_CustomDecisionTargetMutationIsObservedByFallbackDetection()
+    {
+        Mob owner = CreateMonster("CommonCorridor/GoblinGunner.prefab");
+        var before = new GameObject("FsmTargetBeforeDecision");
+        var after = new GameObject("FsmTargetAfterDecision");
+        var targetField = typeof(Enemy).GetField("target", BindingFlags.Instance | BindingFlags.NonPublic);
+        targetField.SetValue(owner, before.transform);
+        var chase = new CountingFsmChase { Detect = () => owner.Target == before.transform };
+        var decision = new MutatingFsmDecision { BeforeRequest = () => targetField.SetValue(owner, after.transform) };
+        var context = new MobAIContext(owner, chase, new FsmGuardBridge(), decision,
+            System.Array.Empty<IMobPatternRunner>(), System.Array.Empty<IMobPresentationCleanup>(), 0f, 0f, 0f);
+        var machine = new MobStateMachine();
+        machine.SetInitialState(new MobChaseState(), context);
+        machine.Tick(context);
+        Assert.That(decision.Requests, Is.EqualTo(1));
+        Assert.That(chase.Queries, Is.EqualTo(2));
+        Assert.That(machine.CurrentState, Is.TypeOf<MobIdleState>(), "Fallback must observe state changed by custom decision code.");
+    }
+
+    [Test]
+    public void UnavailableChasePath_ChecksIdenticalDirectSegmentOnce_AndNextCallObservesGeometry()
+    {
+        Mob owner = CreateMonster("CommonCorridor/GoblinGunner.prefab");
+        var chase = owner.GetComponent<EnemyChaseIntent2D>();
+        var target = new GameObject("DirectProbeTarget");
+        target.transform.position = owner.transform.position + Vector3.right * 2f;
+        typeof(Enemy).GetField("target", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(owner, target.transform);
+        var finder = new GameObject("DirectProbeFinder").AddComponent<TilemapPathfinder2D>();
+        var wall = new GameObject("DirectProbeWall");
+        wall.layer = 30;
+        wall.transform.position = owner.transform.position + Vector3.right;
+        wall.AddComponent<BoxCollider2D>().size = new Vector2(0.2f, 4f);
+        chase.ApplySpawnContext(new MonsterSpawnContext(owner.transform.position, Quaternion.identity, null, finder));
+        SetField(chase, "nextPathRebuildTime", float.PositiveInfinity);
+        SetField(chase, "stopRange", 0.1f);
+        SetField(chase, "nextShotLaneCheckTime", float.PositiveInfinity);
+        chase.StartChase();
+        Physics2D.SyncTransforms();
+
+        int before = finder.DiagnosticSegmentProbes;
+        Assert.That(chase.GetIntent().Direction, Is.EqualTo(Vector2.zero));
+        Assert.That(finder.DiagnosticSegmentProbes - before, Is.EqualTo(1));
+        wall.transform.position += Vector3.up * 10f;
+        Physics2D.SyncTransforms();
+        before = finder.DiagnosticSegmentProbes;
+        Assert.That(chase.GetIntent().Direction.x, Is.GreaterThan(0f));
+        Assert.That(finder.DiagnosticSegmentProbes - before, Is.EqualTo(1), "Only the current call reuses its result.");
+    }
+
+    [Test]
     public void BlockedShotLane_DoesNotDiscardAnUnfinishedPath()
     {
         var chase = new GameObject("StablePath").AddComponent<EnemyChaseIntent2D>();
@@ -971,5 +1144,25 @@ public sealed class MonsterProjectileBurstCadencePlayModeTests
                 break;
         }
     }
+}
+
+public sealed class MonsterSightProbeTestBlocker : MonoBehaviour, ICombatPathBlocker2D
+{
+    public bool BlocksSight = true;
+    public int SightQueries { get; private set; }
+
+    public bool BlocksCombatPath(Collider2D collider, GameObject requester, CombatPathBlockerQuery query)
+    {
+        if (query != CombatPathBlockerQuery.Sight) return false;
+        SightQueries++;
+        return BlocksSight;
+    }
+}
+
+public sealed class MonsterFsmDetectionTestOverride : Mob, IMobTargetDetectionOverride
+{
+    public bool Detected;
+    public int DetectionQueries { get; private set; }
+    public bool HasDetectedTargetForMobFsm() { DetectionQueries++; return Detected; }
 }
 #endif

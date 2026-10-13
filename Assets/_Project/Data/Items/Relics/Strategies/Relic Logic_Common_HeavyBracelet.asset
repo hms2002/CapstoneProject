@@ -11,10 +11,11 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe2f2aa3b7d897b4882187f548f45df1, type: 3}
   m_Name: Relic Logic_Common_HeavyBracelet
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
+  effectTemplate: 
   entries:
   - attribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
-    displayNameOverride: "이동속도"
+    displayNameOverride: "\uC774\uB3D9\uC18D\uB3C4"
     type: 1
     value: -0.02
     valueByLevel:
@@ -22,12 +23,12 @@ MonoBehaviour:
     - -0.03
     - -0.02
     duration: 0
-  - attribute: {fileID: 11400000, guid: 2c8e2b555f632824fbc8a39cd7bcfc86, type: 2}
-    displayNameOverride: "공격력"
-    type: 1
-    value: 0.06
+  - attribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
+    displayNameOverride: "\uACF5\uACA9\uB825"
+    type: 0
+    value: 2
     valueByLevel:
-    - 0.06
-    - 0.11
-    - 0.16
+    - 2
+    - 3
+    - 4
     duration: 0

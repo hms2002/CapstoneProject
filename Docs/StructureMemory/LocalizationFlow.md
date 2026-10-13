@@ -1,8 +1,14 @@
 # Localization Flow
 
+Settings follow-up (2026-10-08): KeyMapRow action captions have a single dynamic writer; the copied Screen Mode static event was removed. Reset/listening now have explicit five-language keys. SettingsPanelUI's existing TitleTextPanel uses horizontal preferred-size ContentSizeFitter plus HorizontalLayoutGroup (100 left/right padding, original 400 minimum width, fixed height). OptionTitle is NoWrap. ApplySettingsFixBatch authors this in GlobalUIRoot and TitleScene through Unity APIs; ReviewSettingsScreensBatch captures the two actual screens per language.
+
 2026-10-03. 공식 계약이 아닌 현재 구현 지도.
 
 ## 소유권과 입력
+
+- Settings language stepper: pending CurrentLanguage controls arrow stepping; GameSettingsService.DisplayedLanguage (set at commit) controls the native language caption. Do not display 日本語/简体中文 into the old locale's font during preparation. TitleTextPanel's preferred-width layout preserves authored y=-40 via top80/bottom0 padding because the sprite contains decoration above the text plate. ReviewLanguageButtonBatch exercises the existing button listeners and dynamic captions; Editor's direct Locale dropdown still bypasses the settings service preparation.
+
+- 언어 변경 준비/적용(2026-10-10): GameSettingsService가 대상 GameText/GameFonts 테이블과 해당 폰트 assets를 비동기로 준비한다. 준비 중 표시 locale은 유지하고 최신 선택만 commit한다. Localization의 locale-change cache release를 넘겨 참조를 Acquire/Release하며, SelectedLocaleChanged의 적용 단계에서 활성 font/string event와 레이아웃을 flush한다. LocalizeTmpFontEvent.FlushPendingLayout은 LateUpdate와 같은 경로다. 글리프 사전 생성/atlas 변경은 포함하지 않는다. UI asmdef의 Unity.Addressables 참조는 이 명시적 resource ownership에 필요하다.
 
 - 기존 GameSettingsService: 5개 언어/settings.language 저장, Korean=0 유지, Auto 없음. 저장값 우선; 최초 Steam → OS → 영어. Steam 수명은 기존 RuntimeServices의 SteamPlatformService 소유. [SteamIntegration](SteamIntegration.md).
 - Unity Localization 1.5.13: SelectedLocale/테이블/로딩 소유. 새 Manager/Singleton 없음.
@@ -26,6 +32,7 @@
 - SettingsPanel/ItemDetailPanel 활성 동안 event 구독/해제. 기존 초기화 coroutine은 마지막 언어 요청 적용. 유물 프리뷰 레벨 유지. World prompt는 기존 LateUpdate 갱신.
 - UI text/font 이벤트는 저작 자산 persistent listener. 프리팹 인스턴스 override는 RecordPrefabInstancePropertyModifications로 기록한다. 런타임 UI 계층 추가 없음.
 - 폰트 listener는 LocalizeTmpFontEvent.ApplyLocalizedFont를 호출한다. authoredMaterial의 스타일을 TMP_MaterialManager.GetFallbackMaterial로 대상 atlas에 적용하고 Add/ReleaseFallbackMaterialReference로 수명을 관리한다. 교체 후 한 번 mesh padding/layout 갱신; disabled 동안 참조 유지, destroy 시 해제.
+- SpeechBubble은 `LocalizedFontApplied` 알림에서 새 locale atlas/style을 가진 재질을 자기 런타임 재질로 복제하고 마지막 테마의 `_FaceColor`를 다시 적용한다. Vertex Color는 기존 흰색을 유지한다. 구독은 풀 비활성화 동안 유지하고 파괴 때 해제하며, 교체된 이전 복제 재질과 최종 복제 재질은 말풍선이 정리한다. 로컬라이저의 공유 fallback/원본 재질은 수정하지 않는다. 관련 회귀는 `Tools/Validation/SpeechBubbleLocalizationRegression.cs`의 실제 공용 프리팹·언어 콜백·풀 재사용 경로다.
 - DialogueController는 locale 변경 시 NPCParticipantRegistry의 현재 DisplayName을 DialogueView.RefreshSpeakerName에 반영한다. 대사 대기/전환 중에도 이름 갱신, Ink 진행 없음. 스탯 패널은 기존 LateUpdate에 갱신을 모으고 도감/상세는 선택·유물 프리뷰 레벨을 유지한다.
 - SectionListView.Clear는 이전 섹션을 즉시 비활성화한 뒤 Destroy한다. 같은 프레임의 새 섹션과 이전 섹션이 함께 레이아웃에 계산되는 것을 방지한다. 문장 길이에 따른 정상 높이 변화는 유지한다.
 

@@ -214,7 +214,8 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
                 yield return CommonMonsterCombatUtility.WaitAttackWarning(
                     warningSeconds,
                     () => cancelRequested || owner.IsDead || IsCancelled(spec),
-                    () => UpdateWarning(context, warningSeconds));
+                    () => UpdateWarning(context, warningSeconds),
+                    owner.gameObject);
             }
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec))

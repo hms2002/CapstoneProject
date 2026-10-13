@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class HoverUIController : MonoBehaviour
 {
@@ -26,6 +27,41 @@ public class HoverUIController : MonoBehaviour
     private Coroutine _hideRoutine;
     private Coroutine _repositionRoutine;
     private int _serial;
+    private readonly Vector3[] _worldCorners = new Vector3[4];
+    private bool _layoutDirty = true;
+    private Canvas _layoutCanvas;
+    private Rect _layoutCanvasRect;
+    private Vector2 _layoutViewSize;
+    private float _layoutScaleFactor;
+    private Camera _layoutCamera;
+    private Rect _layoutCameraRect;
+    private int _layoutScreenWidth, _layoutScreenHeight;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    public int DiagnosticLayoutRefreshCount { get; private set; }
+#endif
+
+    private void OnEnable()
+    {
+        TMPro_EventManager.TEXT_CHANGED_EVENT.Add(HandleTextChanged);
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
+        _layoutDirty = true;
+    }
+
+    private void OnDisable()
+    {
+        TMPro_EventManager.TEXT_CHANGED_EVENT.Remove(HandleTextChanged);
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
+        _layoutDirty = true;
+    }
+
+    private void HandleTextChanged(Object changed)
+    {
+        if (_currentView?.Rect != null && changed is TMP_Text text &&
+            text.transform.IsChildOf(_currentView.Rect))
+            _layoutDirty = true;
+    }
+
+    private void HandleLocaleChanged(UnityEngine.Localization.Locale locale) => _layoutDirty = true;
 
     private void Awake()
     {
@@ -61,6 +97,7 @@ public class HoverUIController : MonoBehaviour
             _currentView.HideHover();
 
         _currentView = view;
+        _layoutDirty = true;
 
         if (_currentView is MonoBehaviour currentViewBehaviour)
         {
@@ -72,6 +109,23 @@ public class HoverUIController : MonoBehaviour
         _currentView.ShowHover(data, context);
         PositionNextToTarget(_targetSlotRect);
         ScheduleDeferredReposition();
+    }
+
+    // Rebinding a ticking status must not box the entry or restart the hover session.
+    public void ShowStatusHover(StatusHudTooltipView view, RectTransform targetRect, in StatusHudEntry entry)
+    {
+        if (view == null || targetRect == null) return;
+        if (_currentView != view || _targetSlotRect != targetRect || !_isHovering || !view.IsActive)
+        {
+            ShowHover(view, targetRect, entry, null);
+            return;
+        }
+        if (view.RefreshEntry(entry))
+        {
+            _layoutDirty = true;
+            PositionNextToTarget(targetRect);
+            ScheduleDeferredReposition();
+        }
     }
 
     public void HideHover(IHoverView view, RectTransform targetRect, bool immediate = false)
@@ -93,6 +147,7 @@ public class HoverUIController : MonoBehaviour
         CancelDeferredReposition();
         _isHovering = false;
         _targetSlotRect = null;
+        _layoutDirty = true;
 
         if (_currentView != null)
         {
@@ -195,8 +250,7 @@ public class HoverUIController : MonoBehaviour
         if (_currentView == null || _targetSlotRect == null)
             yield break;
 
-        Canvas.ForceUpdateCanvases();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_currentView.Rect);
+        _layoutDirty = true;
         PositionNextToTarget(_targetSlotRect);
         _repositionRoutine = null;
     }
@@ -211,16 +265,14 @@ public class HoverUIController : MonoBehaviour
 
         RectTransform viewRect = _currentView.Rect;
 
-        Canvas.ForceUpdateCanvases();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(viewRect);
-
         RectTransform canvasRect = canvas.transform as RectTransform;
         Camera cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
+        RefreshLayoutIfNeeded(viewRect, canvasRect, cam);
 
         Rect targetLocalRect = GetLocalRect(targetRect, canvasRect, cam);
         Rect canvasLocalRect = canvasRect.rect;
 
-        Vector3[] corners = new Vector3[4];
+        Vector3[] corners = _worldCorners;
         targetRect.GetWorldCorners(corners);
 
         Vector2 rightTopScreen = RectTransformUtility.WorldToScreenPoint(cam, corners[2]);
@@ -236,6 +288,14 @@ public class HoverUIController : MonoBehaviour
 
         Vector2 size = viewRect.rect.size;
         Vector2 pivot = viewRect.pivot;
+        if (_currentView is IHoverBoundsProvider boundsProvider)
+        {
+            Rect visualBounds = boundsProvider.GetHoverLocalBounds();
+            size = visualBounds.size;
+            // anchoredPosition remains the panel origin when cards extend its bounds.
+            if (size.x > 0f) pivot.x = -visualBounds.xMin / size.x;
+            if (size.y > 0f) pivot.y = -visualBounds.yMin / size.y;
+        }
 
         float rightLeftEdge = rightLocal.x + offset;
         Vector2 posRight = new Vector2(rightLeftEdge + pivot.x * size.x, rightLocal.y);
@@ -264,6 +324,32 @@ public class HoverUIController : MonoBehaviour
                 $"offset={offset}, edgePadding={edgePadding}",
                 this);
         }
+    }
+
+    private void RefreshLayoutIfNeeded(RectTransform viewRect, RectTransform canvasRect, Camera camera)
+    {
+        Rect cameraRect = camera != null ? camera.pixelRect : default;
+        if (!_layoutDirty && _layoutCanvas == canvas && _layoutCanvasRect == canvasRect.rect &&
+            _layoutViewSize == viewRect.rect.size && _layoutScaleFactor == canvas.scaleFactor &&
+            _layoutCamera == camera && _layoutCameraRect == cameraRect &&
+            _layoutScreenWidth == Screen.width && _layoutScreenHeight == Screen.height)
+            return;
+
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(viewRect);
+        // TMP emits change notifications while the rebuild runs; this pass already consumed them.
+        _layoutDirty = false;
+        _layoutCanvas = canvas;
+        _layoutCanvasRect = canvasRect.rect;
+        _layoutViewSize = viewRect.rect.size;
+        _layoutScaleFactor = canvas.scaleFactor;
+        _layoutCamera = camera;
+        _layoutCameraRect = camera != null ? camera.pixelRect : default;
+        _layoutScreenWidth = Screen.width;
+        _layoutScreenHeight = Screen.height;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        DiagnosticLayoutRefreshCount++;
+#endif
     }
 
     private Vector2 ChoosePosAvoidOverlap(Rect canvasLocalRect, Rect targetRect, Vector2 panelSize, Vector2 pivot, Vector2 rightPos, Vector2 leftPos)
@@ -309,7 +395,7 @@ public class HoverUIController : MonoBehaviour
 
     private Rect GetLocalRect(RectTransform rectTransform, RectTransform canvasRect, Camera cam)
     {
-        Vector3[] worldCorners = new Vector3[4];
+        Vector3[] worldCorners = _worldCorners;
         rectTransform.GetWorldCorners(worldCorners);
         Vector2 p0 = ScreenToCanvasLocal(worldCorners[0], canvasRect, cam);
         Vector2 p2 = ScreenToCanvasLocal(worldCorners[2], canvasRect, cam);

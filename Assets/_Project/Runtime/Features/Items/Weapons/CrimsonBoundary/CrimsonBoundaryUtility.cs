@@ -26,13 +26,16 @@ public static class CrimsonBoundaryUtility
             {
                 sourceSystem = system, sourceSpec = spec, damageEffect = data.damageEffect,
                 finalHpDamage = damage, causer = visual.gameObject, isCriticalHit = critical,
-                elementBuildUps = Array.Empty<ElementDamageResult>(), hasResolvedElementBuildUps = true
+                elementBuildUps = Array.Empty<ElementDamageResult>(), hasResolvedElementBuildUps = true,
+                damagePopupElementTag = FireDamageTag
             }
         }, data.attackBurnStacks, data.damageEffect, data.projectileHitPrefab, data.burnTickPrefab, runtime, data.burnSustainPrefab);
         projectile.SetHomingTarget(target.transform);
     }
     private static readonly Collider2D[] HitBuffer = new Collider2D[128];
     private static readonly ElementDamageResult[] NoElementBuildUp = Array.Empty<ElementDamageResult>();
+
+    public static GameplayTag FireDamageTag => TagRegistry.GetTag(TagRegistry.GetIdByPath("Element.Fire"));
 
     public static float ReadFire(AbilitySystem system)
     {
@@ -47,6 +50,21 @@ public static class CrimsonBoundaryUtility
         DamageResult result = DamageFormulaUtil.PostProcess(provider, ResolveFire(system, provider, fireFormula) * multiplier, 0f);
         critical = result.isCrit;
         return Mathf.Round(result.hpDamage);
+    }
+
+    public static float CalculateDirectDamage(AbilitySystem system, float multiplier, out bool critical,
+        out ElementDamageResult[] elementHpDamages, ScaledStatFormula fireFormula = null)
+    {
+        IStatProvider provider = AbilityStatProviderFactory.Create(system);
+        DamageResult result = DamageFormulaUtil.PostProcess(provider, ResolveFire(system, provider, fireFormula) * multiplier, 0f);
+        critical = result.isCrit;
+        elementHpDamages = ElementHitDamageCalculator.Capture(provider, critical, result.hpDamageMultiplier);
+        return Mathf.Round(result.hpDamage);
+    }
+
+    public static ElementDamageResult[] CaptureElementHpDamages(AbilitySystem system, bool critical)
+    {
+        return ElementHitDamageCalculator.Capture(AbilityStatProviderFactory.Create(system), critical);
     }
 
     public static float CalculateBurnConsumptionDamage(AbilitySystem system, int consumedStacks, float fireMultiplier,
@@ -65,9 +83,12 @@ public static class CrimsonBoundaryUtility
         return formula != null ? Mathf.Max(0f, formula.Evaluate(system.AttributeSet, provider, fire)) : fire;
     }
 
-    public static void ApplyDamage(AbilitySystem system, AbilitySpec spec, GameplayEffect effect, GameObject target, float damage, bool critical, GameObject causer)
+    public static void ApplyDamage(AbilitySystem system, AbilitySpec spec, GameplayEffect effect, GameObject target, float damage, bool critical, GameObject causer,
+        ElementDamageResult[] elementHpDamages)
     {
-        if (system == null || effect == null || target == null || damage <= 0f) return;
+        if (system == null || effect == null || target == null) return;
+        float totalDamage = ElementHitDamageCalculator.Sum(damage, elementHpDamages);
+        if (totalDamage <= 0f) return;
         CombatDamageAction.ApplyDamageAndEmitHit(
             system: system,
             spec: spec,
@@ -82,7 +103,9 @@ public static class CrimsonBoundaryUtility
             causer: causer,
             isCriticalHit: critical,
             elementBuildUps: NoElementBuildUp,
-            hasResolvedElementBuildUps: true);
+            hasResolvedElementBuildUps: true,
+            elementHpDamages: elementHpDamages,
+            damagePopupElementTag: FireDamageTag);
     }
 
     public static List<GameObject> CollectTargets(Vector2 center, float diameter, LayerMask damageLayers)

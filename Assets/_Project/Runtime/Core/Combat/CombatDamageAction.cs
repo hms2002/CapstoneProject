@@ -173,7 +173,9 @@ public static class CombatDamageAction
         HitStopActivation hitStopGroup = null,
         CameraShakeRequest? impactCameraOverride = null,
         float? hitCameraScale = null,
-        HashSet<GameObject> evadeFeedbackTargets = null)
+        HashSet<GameObject> evadeFeedbackTargets = null,
+        ElementDamageResult[] elementHpDamages = null,
+        GameplayTag damagePopupElementTag = null)
     {
         ApplyDamageAndEmitHitInternal(
             system,
@@ -196,7 +198,9 @@ public static class CombatDamageAction
             hitStopGroup,
             impactCameraOverride,
             hitCameraScale,
-            evadeFeedbackTargets);
+            evadeFeedbackTargets,
+            elementHpDamages,
+            damagePopupElementTag);
     }
 
     private static void ApplyDamageAndEmitHitInternal(
@@ -220,7 +224,9 @@ public static class CombatDamageAction
         HitStopActivation hitStopGroup,
         CameraShakeRequest? impactCameraOverride,
         float? hitCameraScale,
-        HashSet<GameObject> evadeFeedbackTargets)
+        HashSet<GameObject> evadeFeedbackTargets,
+        ElementDamageResult[] elementHpDamages,
+        GameplayTag damagePopupElementTag)
     {
         if (!Validate(system, damageEffect, target))
             return;
@@ -243,8 +249,12 @@ public static class CombatDamageAction
         var geDamage = damageEffect as GE_Damage_Spec;
         var hpCheck = CaptureHpCheck(target, geDamage);
 
+        float requestedBaseDamage = Mathf.Max(0f, finalHpDamage);
+        float requestedTotalDamage = ElementHitDamageCalculator.Sum(requestedBaseDamage, elementHpDamages);
+        bool hasElementPresentation = damagePopupElementTag != null ||
+            (elementHpDamages != null && elementHpDamages.Length > 0);
         finalHpDamage = CombatOutgoingDamageModifiers.Apply(
-            new CombatOutgoingDamageContext(system, spec, target, finalHpDamage));
+            new CombatOutgoingDamageContext(system, spec, target, requestedTotalDamage));
 
         var damageSpec = BuildDamageSpec(
             system,
@@ -253,13 +263,20 @@ public static class CombatDamageAction
             geDamage,
             finalHpDamage,
             causer);
+        if (hasElementPresentation && damageSpec.Context != null)
+            damageSpec.Context.DamagePopupHandledByCombat = true;
 
         ReserveFallbackDamagePopupSuppression(target, hpCheck, geDamage, finalHpDamage);
         // Observe the damage event itself: training targets can heal synchronously in that event.
         bool tookHpDamage = false;
+        float observedHpDamage = 0f;
         void ObserveHpDamage(AttributeDefinition attribute, float oldValue, float newValue)
         {
-            if (attribute == hpCheck.HpAttr && newValue < oldValue) tookHpDamage = true;
+            if (attribute == hpCheck.HpAttr && newValue < oldValue)
+            {
+                tookHpDamage = true;
+                observedHpDamage = Mathf.Max(observedHpDamage, oldValue - newValue);
+            }
         }
         if (hpCheck.IsValid) hpCheck.TargetAttrs.OnAttributeChanged += ObserveHpDamage;
         try { runner.ApplyEffectSpec(damageSpec, target); }
@@ -268,7 +285,9 @@ public static class CombatDamageAction
             if (hpCheck.IsValid) hpCheck.TargetAttrs.OnAttributeChanged -= ObserveHpDamage;
         }
 
-        TryShowHpDamagePopup(target, hpCheck, hitWorldPosition, isCriticalHit);
+        TryShowHpDamagePopup(target, hpCheck, hitWorldPosition, isCriticalHit,
+            requestedBaseDamage, requestedTotalDamage, elementHpDamages, damagePopupElementTag,
+            hasElementPresentation ? observedHpDamage : 0f);
 
         EmitDamagedTaken(system, damageEffect, target, spec, causer, hpCheck);
 
@@ -442,19 +461,96 @@ public static class CombatDamageAction
         GameObject target,
         HpCheckData hpCheck,
         Vector3 hitWorldPosition,
-        bool isCriticalHit)
+        bool isCriticalHit,
+        float requestedBaseDamage,
+        float requestedTotalDamage,
+        ElementDamageResult[] elementHpDamages,
+        GameplayTag damagePopupElementTag,
+        float observedHpDamage)
     {
         if (!hpCheck.IsValid || target == null)
             return;
 
         float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
-        float appliedDamage = Mathf.Max(0f, hpCheck.PreHp - postHp);
+        float appliedDamage = Mathf.Max(observedHpDamage, Mathf.Max(0f, hpCheck.PreHp - postHp));
         if (appliedDamage <= 0f)
             return;
 
         Vector3 popupPosition = hitWorldPosition != Vector3.zero ? hitWorldPosition : target.transform.position;
-        DamagePopupPlayback.Show(DamagePopupRequest.Damage(appliedDamage, popupPosition, isCriticalHit, isPlayerTarget: target.CompareTag("Player")));
+        bool isPlayerTarget = target.CompareTag("Player");
+        if (requestedTotalDamage > 0f && (damagePopupElementTag != null ||
+            (elementHpDamages != null && elementHpDamages.Length > 0)))
+        {
+            // Shield, incoming/outgoing modifiers and lethal clamping affect the entire hit once.
+            // Attribute the resulting HP loss in the original component proportions.
+            float ratio = appliedDamage / requestedTotalDamage;
+            GameplayTag primaryTag = damagePopupElementTag;
+            float primaryWeight = requestedBaseDamage;
+            if (primaryTag != null)
+                primaryWeight += GetElementPopupWeight(elementHpDamages, primaryTag);
+
+            // Element-only hits use their largest grouped channel as the full-size reference.
+            if (primaryWeight <= 0f && elementHpDamages != null)
+                for (int i = 0; i < elementHpDamages.Length; i++)
+                {
+                    GameplayTag tag = elementHpDamages[i].elementType;
+                    if (tag == null)
+                        continue;
+                    float weight = GetElementPopupWeight(elementHpDamages, tag);
+                    if (weight > primaryWeight)
+                    {
+                        primaryTag = tag;
+                        primaryWeight = weight;
+                    }
+                }
+
+            if (primaryWeight > 0f)
+                DamagePopupPlayback.Show(primaryTag != null
+                    ? DamagePopupRequest.Element(primaryWeight * ratio, popupPosition, primaryTag, isPlayerTarget, isCriticalHit)
+                    : DamagePopupRequest.Damage(primaryWeight * ratio, popupPosition, isCriticalHit, isPlayerTarget));
+            if (elementHpDamages != null)
+                for (int i = 0; i < elementHpDamages.Length; i++)
+                {
+                    ElementDamageResult element = elementHpDamages[i];
+                    if (element.elementType == null || element.damage <= 0f || element.elementType == primaryTag)
+                        continue;
+
+                    bool alreadyShown = false;
+                    for (int j = 0; j < i; j++)
+                        if (elementHpDamages[j].elementType == element.elementType && elementHpDamages[j].damage > 0f)
+                        {
+                            alreadyShown = true;
+                            break;
+                        }
+                    if (alreadyShown)
+                        continue;
+
+                    float weight = GetElementPopupWeight(elementHpDamages, element.elementType);
+                    DamagePopupPlayback.Show(DamagePopupRequest.Element(
+                        weight * ratio, popupPosition, element.elementType, isPlayerTarget, isCriticalHit,
+                        sizeScale: ResolveElementPopupScale(weight, primaryWeight)));
+                }
+        }
+        else
+            DamagePopupPlayback.Show(DamagePopupRequest.Damage(appliedDamage, popupPosition, isCriticalHit, isPlayerTarget));
         DamagePopupDuplicateSuppressor.Register(target, appliedDamage);
+    }
+
+    private static float GetElementPopupWeight(ElementDamageResult[] elements, GameplayTag tag)
+    {
+        float weight = 0f;
+        if (elements != null)
+            for (int i = 0; i < elements.Length; i++)
+                if (elements[i].elementType == tag)
+                    weight += Mathf.Max(0f, elements[i].damage);
+        return weight;
+    }
+
+    private static float ResolveElementPopupScale(float weight, float primaryWeight)
+    {
+        // Keep secondary channels smaller while retaining readable low-damage numbers.
+        float share = primaryWeight > 0f ? Mathf.Clamp01(weight / primaryWeight) : 1f;
+        return 0.42f + 0.43f * Mathf.Sqrt(share);
     }
 
     private static void EmitDamagedTaken(

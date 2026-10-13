@@ -1206,6 +1206,11 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             return 0f;
 
         float preferredWidth = LayoutUtility.GetPreferredWidth(rect);
+        // The first-open snapshot is taken under an inactive InventoryRoot.
+        // LayoutUtility skips its components, but authored size constraints still
+        // apply when the captured frame is subsequently displayed.
+        if (!rect.gameObject.activeInHierarchy && rect.TryGetComponent(out LayoutElement layout) && layout.enabled)
+            preferredWidth = Mathf.Max(preferredWidth, Mathf.Max(layout.minWidth, layout.preferredWidth));
         if (preferredWidth > 0f)
             return preferredWidth;
 

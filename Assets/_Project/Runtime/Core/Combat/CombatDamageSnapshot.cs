@@ -13,6 +13,9 @@ namespace UnityGAS
         public readonly bool IsCriticalHit;
         public readonly ElementDamageResult[] FinalElementBuildUps;
         public readonly bool HasResolvedElementBuildUps;
+        public readonly ElementDamageResult[] FinalElementHpDamages;
+
+        public float TotalHpDamage => ElementHitDamageCalculator.Sum(FinalHpDamage, FinalElementHpDamages);
 
         public CombatDamageSnapshot(
             float finalHpDamage,
@@ -35,7 +38,8 @@ namespace UnityGAS
             float finalKnockbackImpulse,
             bool isCriticalHit,
             ElementDamageResult[] finalElementBuildUps,
-            bool hasResolvedElementBuildUps)
+            bool hasResolvedElementBuildUps,
+            ElementDamageResult[] finalElementHpDamages = null)
         {
             FinalHpDamage = finalHpDamage;
             FinalStaggerBuildUp = finalStaggerBuildUp;
@@ -43,6 +47,7 @@ namespace UnityGAS
             IsCriticalHit = isCriticalHit;
             FinalElementBuildUps = finalElementBuildUps;
             HasResolvedElementBuildUps = hasResolvedElementBuildUps;
+            FinalElementHpDamages = finalElementHpDamages;
         }
     }
 }

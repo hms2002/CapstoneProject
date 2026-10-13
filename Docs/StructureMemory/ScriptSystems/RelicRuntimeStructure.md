@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-09-14
+last_reviewed: 2026-10-12
 ---
 
 # Relic Runtime Structure
@@ -17,11 +17,20 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - `RelicLogic` assets own runtime behavior and tooltip body generation through `BuildTooltip(...)`.
 - `ItemDatabase.asset` lists available relic definitions in both `allRelics` and `defaultUnlockedRelics` for default drop/unlock availability.
 - Common always-on stat relics use `RelicLogic_StatModifiers`.
+- Authored Attack bonuses use `ModifierType.Flat` on `AttackAddAttribute`, which
+  enters `(AttackBase + AttackAdd) * AttackMul`. Worn/Master Whetstone use 1/2/3;
+  Heavy Bracelet uses 2/3/4; Last Breath grants 3 at Health <= 50%; Red Contract
+  grants 2 for four seconds after a kill. Master's basic-attack damage percentage
+  and Heavy Bracelet's movement-speed penalty keep their existing separate entries.
 - Critical-hit movement stacking uses the existing `RelicLogic_MoveSpeedStackOnCriticalHit_Managed`.
 - Event-timed stat buffs use `RelicLogic_TimedStatOnGameplayEvent_Managed`.
 - `RelicLogic_MoveSpeedOnKill_Managed` registers separate token-owned temporary
-  modifiers for its attack and movement attributes. `회전하는 철구` uses both
-  at +10% for four seconds, while the movement proc alone owns its status HUD.
+  modifiers for its attack and movement attributes. `회전하는 철구` grants AttackAdd
+  +2 and movement speed +10% for four seconds, refreshing without stacking.
+  The serialized `attackPercentBonus` name remains for compatibility but stores
+  a flat value. `MoveSpeedOnKillProc` receives Flat only for the attack branch;
+  its optional modifier type defaults to Percent for existing movement callers.
+  The movement proc alone owns its status HUD; disposal removes each buff source.
 - Health-threshold stat buffs use `RelicLogic_StatWhileHealthRatio_Managed`.
 - Timed event buffs can use `valueByLevel`; an empty list preserves the scalar
   `value` fallback for existing assets.
@@ -29,8 +38,18 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
   starter through `RelicProcManager`. `BurnSourceRuntime` owns the token-scoped
   minimum Fire value used only by burn ticks, so it does not increase native
   weapon Fire damage.
-- `RelicLogic_FeatherOrbit_Managed.damageCoefByLevel` provides an explicit damage
-  curve for Feather Orbit.
+- Feather Orbit uses fixed base damage 3/4/5/6/7 across its five levels.
+  `RelicLogic_FeatherOrbit_Managed` keeps serialized `damageCoef` and
+  `damageCoefByLevel` names but now stores fixed damage; `attackStatId` remains
+  as a compatibility field and no longer influences `ComputeHpDamage()`.
+  Orbit speed, per-target cooldown, prefab/effect references and token cleanup
+  retain their existing paths. The `{damage_coef}` tooltip token now formats a
+  number, while its existing code key remains
+  `code.reliclogic_featherorbit_managed.cef8ff8aec`.
+- Conditional/kill/feather tooltip templates retain `effectTemplate` and their
+  `asset.<strategy GUID>.effectTemplate` identities. Last Breath and Red Contract
+  keep their existing bindings; iron ball and feather templates use the same
+  asset-key route through `GameTextAssetKeys.g.cs`, with values from runtime logic.
 - Firm Step, Tonic Gombangdae, and Portable Brazier use dedicated hit-confirm
   procs. Firm Step accumulates critical chance after non-critical hits and clears
   it on a critical hit; Tonic Gombangdae refreshes a three-second critical-chance
@@ -53,6 +72,31 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 
 ## Key Files
 
+### Electric conditional relics (2026-10-12)
+
+- `RelicLogic_ElectricAttributeBonus_Managed.cs` handles uncapped scene-wide shocked-enemy count, uncapped maximum-health cells and accepted movement-ability stacks. Persistent mode values remain0/1/2/3; legacy movement fields, triggerDashAbility and unused nearbyRadius are retained for compatibility. maxUnits now limits only the legacy movement conversion.
+- `RD_ThunderHeart` grants ElectricAdd1/1/2/2/3 per living, active electrocuted enemy across five levels, without an enemy-count cap. The uncapped `Enemy.CountLivingWithTagInScene(scene, tag)` overload reuses the existing registry, includes distant enemies in that scene, and excludes dead/inactive/disabled enemies and enemies in other additive or persistent scenes. The proc polls at0.1 seconds and changes its modifier only when the bonus changes; radius/maxUnits no longer affects this mode.
+- `RD_StormStep` retains its filename, GUID, and `Relic.Electric.StormStep` identity and displays as `생명의 전류`. It counts every full maximum-health cell at healthStep1 without a gameplay cap, granting1/1/2/2/3 ElectricAdd across five levels. Maximum-health changes include current modifiers; current HP and ElectricAdd changes are irrelevant. Runtime and detached acquisition/upgrade previews share this calculation. maxUnits does not limit this mode.
+- `RD_DashCoil` grants ElectricAdd1/1/2 per accepted movement-ability use for three seconds, stacking up to four. Every use replaces one timed total modifier and refreshes all stacks, even at cap. `AttributeModifier.TimeRemaining` is the authoritative lifetime; an expired reference resets the next use to one stack even when the proc manager was disabled. The nine new electric relics are Rare/dropLevel1: ThunderHeart, StormStep (`생명의 전류`), DashCoil, ThunderKnot, Bell, Shackles, Jar, Echo and Conductor. ThunderHeart and StormStep have five levels; Shackles/Jar/Echo/Conductor one; DashCoil/ThunderKnot/Bell three. Existing Common `RD_CurrentShard` now has six levels and flat ElectricAdd1/2/3/4/5/6. Definitions/strategies and stable IDs/GUIDs remain in their existing routes; database lists contain each once.
+- Coil subscribes to instance `AbilityExecutionStarted`, emitted after accepted activation enters execution. Failed/blocked casts, pending queues and cancelled windup do not start a buff; interruption after accepted start does not undo the granted use. Existing `AbilityLogic_Dash2D.CompletedKey` remains unrelated to this revised proc. `AbilityDefinition.HasAbilityTag(category)` matches identity tags and parent ancestry without adding serialized schema. `Ability.Movement` is classification only, not a caster state grant. The initial four authored members are AD_Dash, AD_ApprenticeHeroSwordSkill2_DashStab, AD_LightningSpearSkill1 and AD_RW_Skill1_Rush. Basic-attack lunges and Bloom enhancement are not initial members; future reposition skills opt in through abilityTags.
+- Equipment token owns the proc. Dash modifier uses a separate proc-owned temporary token so ordinary acquisition previews preserve an active buff. Upgrading that relic removes its temporary source only from detached preview attributes, matching actual reapply cleanup. Count/stat conditions recompute on attach; temporary dash bonus is not restored across scenes.
+- `RelicProcManager` destroys all registered procs on owner/manager destruction. Each proc removes modifiers/subscriptions and destroys its temporary token. Disable/reenable retains the existing equipment state.
+- `RelicInventory.ProjectAcquisitions` recomputes `MaxHealth` and legacy movement-derived electric bonuses in its second conditional pass, after health-based conditions. The health relic reads detached attributes with the same cell calculation as runtime. The UI remains a projection and never starts a dash buff.
+- `RD_ThunderKnot` uses `RelicLogic_ChainShockExtension_Managed` to register an owner-filtered, disposable `ElectricChainDurationBonuses` hook in Core. Each follower's chain hit adds 0.5/1/1.5 seconds to existing electrocution, capped at the status effect's authored duration (currently four seconds). Initial targets receive no relic extension; expired, missing, or death-cleared effects are not recreated, and a remaining duration already above the cap is left intact. Its `electrocutedStatusEffect` reference keeps the tooltip cap aligned with the status data. Unequip, level reapply, and manager destruction dispose the registration.
+- `공명의 종` uses `RelicLogic_ElectricChainTargets_Managed` and owner-filtered `ElectricChainTargetBonuses` registration to add 1/2/3 targets. The authored baseline remains three total targets including the initial target; that relic's three levels permit four/five/six total targets. The existing visited-root rule still prevents hitting the same target twice within one discharge.
+- `저릿한 족쇄` uses `RelicLogic_ShockParalysis_Managed` and `ElectricShockApplications` registration. After its owner's direct initial discharge successfully applies or renews shock, it requests a fixed 0.1-second local paralysis on a living, active normal enemy. Bosses retain `ICombatHitPauseImmune`. Follower damage, remaining-time extension, and saved-status restoration do not emit this application hook. The equipment token owns future-trigger registration; the target's `CombatHitPause2D` owns the brief pause already applied.
+- Target paralysis preserves its current FSM state, AbilitySpec/token, coroutine position, movement progress, and hit records. Its actor clock excludes only paralysis intervals; repeat requests refresh the expiration without adding durations, full UI pause retains the remaining game-time pause, and older overlapping hit stun still governs final animation restoration. Owner-bound timers/telegraphs/attack windows resume from remaining progress; existing detached effects and launched projectiles continue independently. Death clears paralysis before existing death cleanup, and disable ends the owner-bound execution rather than resuming it later. The detailed actor boundary is mapped in [Boss And Mob Encounter Structure](BossAndMobEncounterStructure.md#electric-paralysis-and-local-monster-action-time-2026-10-11).
+- `전류 항아리` uses `RelicLogic_ElectricExpiryDamage_Managed`. Its token-owned listener filters `GameplayEffectRunner.NaturallyExpired` by exact shock asset and applying owner. It reads that owner's current ElectricFinal and sends E×0.4 through the configured electric damage effect, with no flat addition or discharge modifiers. Explicit remove/cleanse/death/scene cleanup and attach/detach do not emit natural expiry. Dead/inactive/missing actors are skipped. Restore only reconnects the listener; a restored shock can expire normally later if its instigator is supplied.
+- `GameplayEffectRunner.TickEffects` queues natural expirations through existing end cleanup, finishes repository iteration, then clears the pending list before notifying listeners. Expiry damage may kill a target and clear other effects without invalidating the tick collection. The runner owns effect lifetime; the relic owns its event subscription and disposes it on unequip/reapply/manager destruction.
+- `도체 고리` and `메아리 코일` use their existing managed logic and owner-filtered `ElectricDischargeRelicBonuses`. Conductor multiplies resolved discharge damage by1/1.2/1.4/1.6/1.6… in each burst. Echo records only positive follower submissions and repeats them once at50%, skipping dead/inactive/missing targets; the initial target never receives Echo damage. It keeps the saved initial origin and follower points for replay VFX. `IChainReplayPresentation.PlayReplay` supplements the original interface; ElectricChainRibbonVfx renders the same links/scale/rhythm but starts hit snaps at follower index1. No-chain bursts have no Echo damage/VFX. No new search/stat calculation/status renewal/duration extension/paralysis occurs. `ApplySecondaryElectricDamage` remains the shared damage-only route.
+- `ElectricRelicAuthoring.ApplyBatch` authors data/coefficient references; `LocalizeBatch` imports the reviewed30-key electric content subset. `Tools/Localization/expand_electric_relics.py` maintains their CSV, inventory and additive asset-name lookup entries. Authored runtime tooltip templates use `relic.electric.scene/health/dash/extension/targets/paralysis/expiry/echo/conductor.template`; the movement template remains for the compatibility mode.
+- Player-facing text omits scene/activation terminology. Jar's death/cleanse exclusion sentence is removed from UI only; its filters remain. `ElectricRelicDescriptionReadback.ExportBatch` loads the actual Korean table and uses DisplayName/GameText.Asset/BuildTooltip/DetailTextFormatter to export ten relics across29 authored levels. The native readback writes only to Library; the reviewed source subset remains30 keys and all lookup identities stay stable.
+- The corresponding `GE_ElectricShockTrigger` snapshots ElectricFinal, duration bonuses, target-count bonuses and Conductor/Echo rules before initial status callbacks, then calculates base 5 + E×1 for initial / base 5 + E×0.5 for followers before existing discharge modifiers and Conductor's multiplier. Baseline chains preserve remaining shock time, with `ThunderKnot` adding bounded remaining time after follower damage without reapplying the status. The source-owned registration handles are disposed on unequip/reapply and manager destruction; restoration reconnects future hooks without replaying paralysis or damage.
+- Known pitfall: the game consumes maximum health as complete cells, while `AttributeValue` suppresses change notifications for absolute deltas at or below 0.001 except depletion. A sub-threshold fractional change can cross a cell boundary without immediately refreshing an attribute-watching relic; the shared notification threshold is unchanged.
+- Verification boundary: this structure map describes source and authoring responsibilities. Native compile/test results belong in the current task's verification record; full authored-monster combat, resumed-hit timing, and six-relic tooltip/visual review still require their own evidence.
+
+### Existing relic file routes
+
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Relics/RelicDefinition.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Relics/Runtime/RelicLogic.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Relics/Runtime/RelicLogic_StatModifiers.cs`
@@ -66,6 +110,10 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - `Assets/_Project/Runtime/Features/Items/Relics/RelicKillRewardMultiplierRuntime.cs`
 - `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_DashCooldownMultiplier.cs`
 - `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_LastStandCritical.cs`
+- `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_MoveSpeedOnKill_Managed.cs`
+- `Assets/_Project/Runtime/Features/Items/Relics/Procs/MoveSpeedOnKillProc.cs`
+- `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_FeatherOrbit_Managed.cs`
+- `Assets/_Project/Runtime/Features/Items/Relics/RelicDetailCodes/FeatherOrbitRelic/FeatherOrbitController.cs`
 - `Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/`
 - `Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/`
 - `Assets/LeeJunMo/Datas/Looting/ItemDatabase.asset`

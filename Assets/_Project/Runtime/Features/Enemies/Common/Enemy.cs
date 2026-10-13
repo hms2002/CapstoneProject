@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityGAS;
 
 /// <summary>
@@ -12,7 +13,7 @@ using UnityGAS;
 [RequireComponent(typeof(TagSystem))]
 [RequireComponent(typeof(MovementMotor2D), typeof(AttributeStatSource), typeof(AbilityMotionController2D))]
 [RequireComponent(typeof(ExternalMovementController2D), typeof(KnockbackReceiver2D))]
-public class Enemy : MonoBehaviour, ICombatDeathCommand
+public class Enemy : MonoBehaviour, ICombatDeathCommand, ICombatActionState
 {
     private const float DeathStateEnterTimeout = 1f;
     private const float DeathDestroyFailSafeTimeout = 5f;
@@ -82,6 +83,69 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         }
 
         return false;
+    }
+
+    public static int CountNearbyLivingWithTag(
+        Vector2 origin,
+        float radius,
+        GameplayTag tag,
+        int maximumCount)
+    {
+        if (tag == null || radius < 0f || maximumCount <= 0)
+            return 0;
+
+        int count = 0;
+        float radiusSquared = radius * radius;
+        for (int i = ActiveEnemies.Count - 1; i >= 0; i--)
+        {
+            Enemy enemy = ActiveEnemies[i];
+            if (enemy == null)
+            {
+                ActiveEnemies.RemoveAt(i);
+                continue;
+            }
+
+            if (!enemy.isActiveAndEnabled || enemy.IsDead || enemy.tagSystem == null)
+                continue;
+
+            if (((Vector2)enemy.transform.position - origin).sqrMagnitude > radiusSquared ||
+                !enemy.tagSystem.HasTag(tag))
+                continue;
+
+            if (++count >= maximumCount)
+                return count;
+        }
+
+        return count;
+    }
+
+    public static int CountLivingWithTagInScene(Scene scene, GameplayTag tag)
+        => CountLivingWithTagInScene(scene, tag, int.MaxValue);
+
+    public static int CountLivingWithTagInScene(Scene scene, GameplayTag tag, int maximumCount)
+    {
+        if (!scene.IsValid() || tag == null || maximumCount <= 0)
+            return 0;
+
+        int count = 0;
+        for (int i = ActiveEnemies.Count - 1; i >= 0; i--)
+        {
+            Enemy enemy = ActiveEnemies[i];
+            if (enemy == null)
+            {
+                ActiveEnemies.RemoveAt(i);
+                continue;
+            }
+
+            if (!enemy.isActiveAndEnabled || enemy.IsDead || enemy.gameObject.scene != scene ||
+                enemy.tagSystem == null || !enemy.tagSystem.HasTag(tag))
+                continue;
+
+            if (++count >= maximumCount)
+                return count;
+        }
+
+        return count;
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -483,6 +547,7 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         if (isDead) return;
 
         isDead = true;
+        CombatHitPause2D.ClearParalysis(gameObject);
         GetComponent<MonsterStatusRuntime>()?.ClearAll();
         deathStartStateHash = animator != null ? animator.GetCurrentAnimatorStateInfo(0).fullPathHash : 0;
         OnDeathStarted();

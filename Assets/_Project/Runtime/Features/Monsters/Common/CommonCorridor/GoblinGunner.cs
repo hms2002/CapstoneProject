@@ -90,7 +90,7 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource, IMobProjectile
     public bool TryBuildAttackRequest(out MobAttackRequest request)
     {
         request = default;
-        if (burstCadence.IsResting(Time.time))
+        if (burstCadence.IsResting(CombatHitPause2D.GetActionTime(gameObject)))
             return false;
 
         GameObject targetObject = Target != null ? Target.gameObject : null;
@@ -105,7 +105,7 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource, IMobProjectile
     public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
     {
         return Mathf.Max(base.ResolvePostAttackRecoverSeconds(scaledRecoverSeconds),
-            burstCadence.GetRemainingRestSeconds(Time.time));
+            burstCadence.GetRemainingRestSeconds(CombatHitPause2D.GetActionTime(gameObject)));
     }
 
     /// <summary>공격 상태 진입 시 조준 준비 애니메이션을 요청한다.</summary>
@@ -130,7 +130,7 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource, IMobProjectile
     public bool TryBuildShotContext(AbilitySystem system, AbilitySpec spec, GameObject explicitTarget, out ShotContext context)
     {
         context = default;
-        if (burstCadence.IsResting(Time.time))
+        if (burstCadence.IsResting(CombatHitPause2D.GetActionTime(gameObject)))
             return false;
 
         GameObject targetObject = explicitTarget != null ? explicitTarget : Target != null ? Target.gameObject : null;
@@ -167,7 +167,7 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource, IMobProjectile
 
     public void FireProjectile(ShotContext context, System.Action<LightBeadProjectile2D> onSpawned = null)
     {
-        if (burstCadence.IsResting(Time.time))
+        if (burstCadence.IsResting(CombatHitPause2D.GetActionTime(gameObject)))
             return;
 
         AbilityLogic_GoblinGunnerShot logic = Logic;
@@ -204,7 +204,7 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource, IMobProjectile
             direction = context.Direction,
             speed = context.ProjectileSpeed
         });
-        burstCadence.RecordShot(Time.time);
+        burstCadence.RecordShot(CombatHitPause2D.GetActionTime(gameObject));
         onSpawned?.Invoke(projectile);
     }
 
@@ -323,12 +323,17 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
             {
                 if (cancelRequested || owner.IsDead || IsCancelled(spec))
                     yield break;
+                if (CombatHitPause2D.IsParalyzedOn(owner.gameObject))
+                {
+                    yield return null;
+                    continue;
+                }
                 if (elapsed < trackingSeconds && owner.TryBuildShotContext(system, spec, initialTarget, out GoblinGunner.ShotContext trackedContext))
                 {
                     context = trackedContext;
                     UpdateWarning(context, warningSeconds);
                 }
-                elapsed += Time.deltaTime;
+                elapsed += CombatHitPause2D.GetActionDeltaTime(owner.gameObject);
                 yield return null;
             }
             if (cancelRequested || owner.IsDead || IsCancelled(spec))

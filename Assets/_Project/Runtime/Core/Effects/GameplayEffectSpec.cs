@@ -73,6 +73,8 @@ namespace UnityGAS
         /// - 게이지 축적 수치와 발현 피해 표시를 분리하기 위한 presentation 메타데이터다.
         /// </summary>
         public GameplayTag DamagePopupElementTag { get; set; }
+        // Composite direct hits let CombatDamageAction display the individual HP channels.
+        public bool DamagePopupHandledByCombat { get; set; }
         public RaycastHit? Hit3D { get; set; }
         public RaycastHit2D? Hit2D { get; set; }
         public bool HasWorldPosition { get; private set; }

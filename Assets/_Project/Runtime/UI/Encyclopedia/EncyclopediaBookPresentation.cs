@@ -16,6 +16,7 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
     [SerializeField] private Graphic dimPanelGraphic;
     [SerializeField] private RectTransform bookMotionRoot;
     [SerializeField] private CanvasGroup pageContentGroup;
+    [SerializeField] private CanvasGroup[] additionalContentGroups;
     [SerializeField] private GameObject[] pageContentRoots;
     [SerializeField] private Animator bookAnimator;
     [SerializeField] private Image pageCoverImage;
@@ -524,7 +525,7 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
 
     private void SetContentHiddenForLayout()
     {
-        if (pageContentGroup == null)
+        if (pageContentGroup == null && (additionalContentGroups == null || additionalContentGroups.Length == 0))
         {
             SetContentVisible(false);
             return;
@@ -545,6 +546,17 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
             pageContentGroup.alpha = visible ? 1f : 0f;
             pageContentGroup.interactable = visible;
             pageContentGroup.blocksRaycasts = visible;
+        }
+
+        if (additionalContentGroups != null)
+        {
+            foreach (CanvasGroup group in additionalContentGroups)
+            {
+                if (group == null) continue;
+                group.alpha = visible ? 1f : 0f;
+                group.interactable = visible;
+                group.blocksRaycasts = visible;
+            }
         }
 
         if (!setContentRootsActive || pageContentRoots == null)

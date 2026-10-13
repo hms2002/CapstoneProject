@@ -436,19 +436,19 @@ asset.2a030bcc770946f8abfe827a9bb0afc0.description,경험치 획득량이 10% �
 asset.7d7ef88dcbf743f7b79623379d0cd8c6.displayName,송골매의 증표,Falcon Emblem,ハヤブサの証,猎隼徽记,獵隼徽記
 asset.7d7ef88dcbf743f7b79623379d0cd8c6.description,추가 이동속도 20%마다 공격 회피 확률이 3% 증가합니다.,Increases evasion chance by 3% for every 20% bonus movement speed.,追加移動速度20%ごとに、攻撃回避率が3%増加する。,每增加20%移动速度，攻击闪避率提高3%。,每增加20%移動速度，攻擊閃避率提高3%。
 asset.16ad7526693d4a44a3183bcc3df90f61.displayName,무거운 팔찌,Heavy Bracelet,重い腕輪,沉重手镯,沉重手鐲
-asset.16ad7526693d4a44a3183bcc3df90f61.description,이동속도가 감소하지만 공격력이 크게 증가합니다.,Reduces movement speed but greatly increases attack power.,移動速度が減少するが、攻撃力が大幅に増加する。,降低移动速度，但大幅提高攻击力。,降低移動速度，但大幅提高攻擊力。
+asset.16ad7526693d4a44a3183bcc3df90f61.description,"이동속도가 비율로 감소하고, 공격력이 고정 수치로 증가합니다.",Reduces movement speed by a percentage and increases Attack by a fixed amount.,移動速度が割合で低下し、攻撃力が固定値で増加します。,移动速度按比例降低，攻击力增加固定数值。,移動速度按比例降低，攻擊力增加固定數值。
 asset.81eca7800b7446598237331ab25b00c8.displayName,사냥꾼의 표식,Hunter's Mark,狩人の印,猎人印记,獵人印記
 asset.81eca7800b7446598237331ab25b00c8.description,치명타 확률이 증가합니다.,Increases critical chance.,クリティカル率が増加する。,提高暴击率。,提高暴擊率。
 asset.4a278341ae1b4ef4b8886c04f3517f71.displayName,마지막 숨,Last Breath,最後の息,最后一息,最後一息
-asset.4a278341ae1b4ef4b8886c04f3517f71.description,체력이 낮을 때 공격력이 증가합니다.,Increases attack power while HP is low.,HPが低いとき、攻撃力が増加する。,生命值较低时提高攻击力。,生命值較低時提高攻擊力。
+asset.4a278341ae1b4ef4b8886c04f3517f71.description,체력이 50% 이하일 때 공격력이 3 증가합니다.,"While HP is at most 50%, increases Attack by 3.",HPが50%以下のとき、攻撃力が3増加します。,生命值不高于50%时，攻击力增加3。,生命值不高於50%時，攻擊力增加3。
 asset.d866e0f16ecf48d0948bda26ce39842a.displayName,최후의 저항,Last Stand,最後の抵抗,背水一战,背水一戰
 asset.d866e0f16ecf48d0948bda26ce39842a.description,현재 체력이 1 이하일 경우 모든 공격이 반드시 치명타로 적중.,All attacks are guaranteed critical hits while current HP is 1 or lower.,現在のHPが1以下の場合、すべての攻撃が必ずクリティカルになる。,当前生命值不高于1时，所有攻击必定暴击。,目前生命值不高於1時，所有攻擊必定暴擊。
 asset.211ffa758fea44fd94388e8bd6e4eb4a.displayName,가벼운 끈,Light Strap,軽い紐,轻巧束带,輕巧束帶
 asset.211ffa758fea44fd94388e8bd6e4eb4a.description,이동속도가 증가합니다.,Increases movement speed.,移動速度が増加する。,提高移动速度。,提高移動速度。
 asset.a73c39a704801a1488033afff3b7f340.description,이동속도가 증가합니다.,Increases movement speed.,移動速度が増加する。,提高移动速度。,提高移動速度。
-asset.eef19b108eae4400bb49fc1753e4aa14.description,공격력이 증가합니다.,Increases attack power.,攻撃力が増加する。,提高攻击力。,提高攻擊力。
+asset.eef19b108eae4400bb49fc1753e4aa14.description,공격력이 고정 수치로 증가합니다.,Increases Attack by a fixed amount.,攻撃力が固定値で増加します。,攻击力增加固定数值。,攻擊力增加固定數值。
 asset.5dfae16cf310446b821ffaf6e7a1bae3.displayName,장인의 숫돌,Artisan's Whetstone,職人の砥石,匠人磨刀石,匠人磨刀石
-asset.5dfae16cf310446b821ffaf6e7a1bae3.description,공격력과 기본공격 피해가 증가합니다.,Increases attack power and basic attack damage.,攻撃力と通常攻撃ダメージが増加する。,提高攻击力和普通攻击伤害。,提高攻擊力和普通攻擊傷害。
+asset.5dfae16cf310446b821ffaf6e7a1bae3.description,"공격력이 고정 수치로 증가하고, 기본공격 피해가 비율로 증가합니다.",Increases Attack by a fixed amount and basic attack damage by a percentage.,攻撃力が固定値で、通常攻撃ダメージが割合で増加します。,攻击力增加固定数值，普通攻击伤害按比例增加。,攻擊力增加固定數值，普通攻擊傷害按比例增加。
 asset.067dff54d17a4beaac628b7f0b1d05ab.displayName,녹아내린 종,Molten Bell,溶けた鐘,熔化之钟,熔化之鐘
 asset.067dff54d17a4beaac628b7f0b1d05ab.description,화상 소모 주기가 빨라집니다.,Burn stacks are consumed more frequently.,火傷スタックの消費間隔が短くなる。,缩短灼烧层数的消耗间隔。,縮短灼燒層數的消耗間隔。
 asset.fcd257e9b1924b26bd998dd2bfae2bca.displayName,날렵한 망토,Agile Cloak,俊敏なマント,灵巧披风,靈巧披風
@@ -461,11 +461,11 @@ asset.ddead4c1dd0048d8a332a78cd84cc690.displayName,추격자의 발톱,Pursuer's
 asset.ddead4c1dd0048d8a332a78cd84cc690.description,적을 처치하면 잠시 이동속도가 증가합니다.,Defeating an enemy briefly increases movement speed.,敵を倒すと、一時的に移動速度が増加する。,击败敌人后短暂提高移动速度。,擊敗敵人後短暫提高移動速度。
 asset.b7ac0f2e281a44768c35210163fd6aba.displayName,회복의 팬턴트,Healing Pendant,回復のペンダント,治愈吊坠,治癒吊墜
 asset.6e61f67002664297a735902776929cf5.displayName,붉은 계약,Crimson Pact,赤い契約,赤红契约,赤紅契約
-asset.6e61f67002664297a735902776929cf5.description,적을 처치하면 잠시 공격력이 증가합니다.,Defeating an enemy briefly increases attack power.,敵を倒すと、一時的に攻撃力が増加する。,击败敌人后短暂提高攻击力。,擊敗敵人後短暫提高攻擊力。
+asset.6e61f67002664297a735902776929cf5.description,적 처치 시 4초 동안 공격력이 2 증가합니다.,Killing an enemy increases Attack by 2 for 4 seconds.,敵を倒すと4秒間攻撃力が2増加します。,击杀敌人后，攻击力增加2，持续4秒。,擊殺敵人後，攻擊力增加2，持續4秒。
 asset.1a3c46c0c9914eea8cdcba66be7916eb.displayName,균열석,Rift Stone,亀裂石,裂隙石,裂隙石
 asset.1a3c46c0c9914eea8cdcba66be7916eb.description,최종 피해가 증가합니다.,Increases final damage.,最終ダメージが増加する。,提高最终伤害。,提高最終傷害。
 asset.d492a6f1c1a7fc84bb3b44a619dcfd4f.displayName,회전하는 철구,Spinning Iron Ball,回転する鉄球,旋转铁球,旋轉鐵球
-asset.d492a6f1c1a7fc84bb3b44a619dcfd4f.description,적 처치 시 4초 동안 공격력과 이동속도가 10% 증가합니다.,Defeating an enemy increases attack power and movement speed by 10% for 4 seconds.,敵を倒すと、4秒間攻撃力と移動速度が10%増加する。,击败敌人后攻击力和移动速度提高10%，持续4秒。,擊敗敵人後攻擊力和移動速度提高10%，持續4秒。
+asset.d492a6f1c1a7fc84bb3b44a619dcfd4f.description,적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다.,Killing an enemy increases Attack by 2 and movement speed by 10% for 4 seconds.,敵を倒すと4秒間攻撃力が2、移動速度が10%増加します。,击杀敌人后，攻击力增加2，移动速度增加10%，持续4秒。,擊殺敵人後，攻擊力增加2，移動速度增加10%，持續4秒。
 asset.3f678aae4cb94331bd3caeb317c659ce.displayName,도망자의 신발,Fugitive's Shoes,逃亡者の靴,逃亡者之靴,逃亡者之靴
 asset.3f678aae4cb94331bd3caeb317c659ce.description,피해를 받으면 잠시 회피율이 증가합니다.,Taking damage briefly increases evasion.,ダメージを受けると、一時的に回避率が増加する。,受到伤害后短暂提高闪避率。,受到傷害後短暫提高閃避率。
 asset.c0e9e82eb0ce4caa9efb337cb57764ff.displayName,달리는 장부,Running Ledger,走る帳簿,奔跑账簿,奔跑帳簿
@@ -1654,7 +1654,7 @@ asset.2bb8e243fd06444ebd62bbf51567ee7c.storyText,지워지는 숫자만큼 발�
 asset.ee7005012672461fa93d7839b0e8eb8d.storyText,"짙은 어둠이 시야를 가려, 발밑을 유심히 확인하게 만듭니다.","Dense darkness obscures your vision, forcing you to watch your footing closely.",深い闇が視界を遮り、足元を注意深く確かめさせる。,浓重黑暗遮蔽视野，让你不得不仔细观察脚下。,濃重黑暗遮蔽視野，讓你不得不仔細觀察腳下。
 asset.6c6c92ecdb89485ca634667cf8ab6788.storyText,"그림자 안개가 눈앞을 덜어 내, 주변을 분간하기 어렵게 만듭니다.","Shadow mist veils your sight, making it difficult to distinguish your surroundings.",影の霧が視界を奪い、周囲を見分けにくくする。,暗影迷雾遮挡眼前，难以辨清周围。,暗影迷霧遮擋眼前，難以辨清周圍。
 asset.6b22cb4e0ab0a194b968acb6b169cbfb.description,● [[체력]] {pos:[+1]} 회복,● Restore {pos:[+1]} [[체력]],● [[체력]]を{pos:[+1]}回復,● 恢复{pos:[+1]}[[체력]],● 恢復{pos:[+1]}[[체력]]
-asset.eb057c0a7b239b742a001ee568ef4027.description,"플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 공격력의 35/45/55/65/75% 피해를 주며, 이동속도가 높을수록 더 빠르게 회전합니다.","Creates a feather that orbits you. Deals 35/45/55/65/75% of attack power as damage depending on level, and orbits faster with higher movement speed.",周囲を回る羽根を生成する。レベルに応じて攻撃力の35/45/55/65/75%のダメージを与え、移動速度が高いほど速く回る。,生成环绕玩家的羽毛。根据等级造成攻击力35/45/55/65/75%的伤害，移动速度越高旋转越快。,生成環繞玩家的羽毛。根據等級造成攻擊力35/45/55/65/75%的傷害，移動速度越高旋轉越快。
+asset.eb057c0a7b239b742a001ee568ef4027.description,"플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 고정 피해 3/4/5/6/7을 주며, 이동속도가 높을수록 더 빠르게 회전합니다.",Creates feathers that orbit the player. They deal fixed damage of 3/4/5/6/7 by level and orbit faster at higher movement speed.,プレイヤーの周囲を回る羽を生成します。レベルに応じて3/4/5/6/7の固定ダメージを与え、移動速度が高いほど速く回転します。,生成环绕玩家的羽毛。各等级造成3/4/5/6/7固定伤害，移动速度越高，旋转越快。,生成環繞玩家的羽毛。各等級造成3/4/5/6/7固定傷害，移動速度越高，旋轉越快。
 asset.6657f14bf85d4440b1a6353e784e9c3e.description,"치명타가 아닌 공격 적중 시 치명타 확률이 2/3/4% 증가합니다. 최대 8회 중첩되며, 치명타 발생 시 초기화됩니다.",Non-critical hits increase critical chance by 2/3/4%. Stacks up to 8 times and resets on a critical hit.,非クリティカル攻撃が命中すると、クリティカル率が2/3/4%増加する。最大8回累積し、クリティカル発生時にリセットされる。,非暴击攻击命中时暴击率提高2/3/4%。最多叠加8次，暴击时重置。,非暴擊攻擊命中時暴擊率提高2/3/4%。最多疊加8次，暴擊時重設。
 asset.6f66b76c2399491ab2b555651f017664.description,"개화 전용 유물
 개화 중 적 처치 시 개화 지속 시간이 1초 증가합니다.","Exclusive relic for Bloom
@@ -2015,21 +2015,21 @@ code.reliclogic_timedstatongameplayevent_managed.d590a85e62,● {trigger} {durat
 code.reliclogic_critfrombonusmovespeed_managed.5e968816b5,● [[추가 이동속도]] {bonus_move_step}마다 [[치명타 확률]] {crit_gain_per_step} 추가,● Every {bonus_move_step} [[추가 이동속도]] grants {crit_gain_per_step} [[치명타 확률]],● [[추가 이동속도]]{bonus_move_step}ごとに[[치명타 확률]]{crit_gain_per_step}追加,● 每{bonus_move_step}[[추가 이동속도]]额外获得{crit_gain_per_step}[[치명타 확률]],● 每{bonus_move_step}[[추가 이동속도]]額外獲得{crit_gain_per_step}[[치명타 확률]]
 code.reliclogic_evasionfrombonusmovespeed_managed.dd6534d473,● [[추가 이동속도]] {bonus_move_step}마다 [[공격을 회피할 확률]] {evasion_gain_per_step} 추가,● Every {bonus_move_step} [[추가 이동속도]] grants {evasion_gain_per_step} [[공격을 회피할 확률]],● [[추가 이동속도]]{bonus_move_step}ごとに[[공격을 회피할 확률]]{evasion_gain_per_step}追加,● 每{bonus_move_step}[[추가 이동속도]]额外获得{evasion_gain_per_step}[[공격을 회피할 확률]],● 每{bonus_move_step}[[추가 이동속도]]額外獲得{evasion_gain_per_step}[[공격을 회피할 확률]]
 code.reliclogic_featherorbit_managed.cef8ff8aec,"● 깃털 {feather_count}개가 주위를 회전하며 적을 공격
-● 깃털 피해는 [[공격력]]의 {damage_coef}
+● 깃털 피해 {damage_coef}
 ● 회전 반경 {radius}
 ● 같은 적을 다시 공격하는 기본 간격 {hit_cooldown}","● {feather_count} feathers orbit you and attack enemies
-● Feather damage: {damage_coef} of [[공격력]]
-● Orbit radius: {radius}
-● Base interval for hitting the same enemy: {hit_cooldown}","● {feather_count}個の羽根が周囲を回って敵を攻撃
-● 羽根のダメージは[[공격력]]の{damage_coef}
-● 回転半径：{radius}
-● 同じ敵への基本攻撃間隔：{hit_cooldown}","● {feather_count}片羽毛环绕自身攻击敌人
-● 羽毛伤害为[[공격력]]的{damage_coef}
-● 旋转半径{radius}
-● 再次攻击同一敌人的基础间隔{hit_cooldown}","● {feather_count}片羽毛環繞自身攻擊敵人
-● 羽毛傷害為[[공격력]]的{damage_coef}
-● 旋轉半徑{radius}
-● 再次攻擊同一敵人的基礎間隔{hit_cooldown}"
+● Feather damage {damage_coef}
+● Orbit radius {radius}
+● Base repeat-hit interval against the same enemy {hit_cooldown}","● {feather_count}枚の羽が周囲を回り、敵を攻撃
+● 羽のダメージ {damage_coef}
+● 回転半径 {radius}
+● 同じ敵を再攻撃する基本間隔 {hit_cooldown}","● {feather_count}片羽毛环绕并攻击敌人
+● 羽毛伤害 {damage_coef}
+● 旋转半径 {radius}
+● 再次攻击同一敌人的基础间隔 {hit_cooldown}","● {feather_count}片羽毛環繞並攻擊敵人
+● 羽毛傷害 {damage_coef}
+● 旋轉半徑 {radius}
+● 再次攻擊同一敵人的基礎間隔 {hit_cooldown}"
 code.reliclogic_floweringbloomextension_managed.53cbe2f08d,"● {em:개화} 전용 유물
 ● {em:개화 상태}에서 적 처치 시 {pos:지속 시간 증가} {extension_seconds}","● Exclusive relic for {em:Bloom}
 ● Kills during {em:Bloom} {pos:extend duration} by {extension_seconds}","● {em:開花}専用の遺物
@@ -2567,3 +2567,141 @@ location.shadow_corridor,그림자 감옥,Shadow Prison,影の牢獄,暗影牢�
 location.slime_boss,멜타의 방,Melta's Room,メルタの部屋,梅尔塔的房间,梅爾塔的房間
 location.slime_corridor,슬라임 왕국,Slime Kingdom,スライム王国,史莱姆王国,史萊姆王國
 location.boss_room,보스룸,Boss Room,ボスの部屋,首领房间,首領房間
+ui.keybinding.listening,입력 대기...,Press a key...,キー入力待ち...,等待输入...,等待輸入...
+ui.keybinding.reset,초기화,Reset,リセット,重置,重設
+term.감전,감전,Electrocuted,感電,感电,感電
+ui.item_keyword.electrocuted.description,"감전 시 피해를 주고, 감전 상태는 4초 동안 지속됩니다.
+주변 감전 적을 따라 기본 최대 3명에게 피해가 연쇄됩니다.","Electrocution deals damage, and the electrocuted state lasts for 4 seconds.
+Damage chains through nearby electrocuted enemies, hitting a base maximum of 3 targets.","感電時にダメージを与え、感電状態は4秒間続きます。
+周囲の感電中の敵へダメージが連鎖し、基本で最大3体に命中します。","感电时造成伤害，感电状态持续4秒。
+伤害沿附近已感电的敌人连锁传播，基础最多命中3个目标。","感電時造成傷害，感電狀態持續4秒。
+傷害沿附近已感電的敵人連鎖傳播，基礎最多命中3個目標。"
+ui.item_keyword.burn.description,"기본적으로 1초마다 1중첩을 소모해 화염 피해 수치의 50%만큼 피해를 줍니다.
+
+최대 99중첩까지 쌓을 수 있습니다.
+
+기본 화상 피해에는 치명타가 발생하지 않습니다.","By default, Burn consumes 1 stack every second to deal damage equal to 50% of the Fire Damage stat.
+
+Burn can stack up to 99 times.
+
+Its damage cannot critically hit by default.","基本的に、1秒ごとに1スタックを消費し、火炎ダメージの値の50%分のダメージを与えます。
+
+最大99スタックまで蓄積できます。
+
+基本的に、火傷ダメージでは会心が発生しません。","默认每秒消耗1层，造成相当于火焰伤害数值50%的伤害。
+
+最多可叠加99层。
+
+默认灼烧伤害无法暴击。","預設每秒消耗1層，造成相當於火焰傷害數值50%的傷害。
+
+最多可疊加99層。
+
+預設灼燒傷害無法暴擊。"
+encyclopedia.tab_npc,NPC,NPC,NPC,NPC,NPC
+encyclopedia.page_indicator,{0} / {1},{0} / {1},{0} / {1},{0} / {1},{0} / {1}
+encyclopedia.entry_count,{0}종,{0} entries,{0}種,{0}种,{0}種
+encyclopedia.entries_pending,등록된 항목 없음,No registered entries,登録された項目なし,暂无登记条目,尚無登記項目
+encyclopedia.monster_kill_count,누적 처치 수 {0}회,Total kills: {0},累計討伐数 {0}体,累计击败 {0}次,累計擊敗 {0}次
+encyclopedia.description,설명,Description,説明,说明,說明
+encyclopedia.current_affection,현재 호감도,Current affection,現在の好感度,当前好感度,目前好感度
+encyclopedia.affection_rewards,호감도 보상,Affection rewards,好感度報酬,好感度奖励,好感度獎勵
+encyclopedia.character_story,설명 · 스토리,Description · Story,説明・ストーリー,说明 · 故事,說明 · 故事
+encyclopedia.portrait_pending,일러스트 준비 중,Illustration pending,イラスト準備中,插画准备中,插畫準備中
+encyclopedia.affection_reward_level,호감도 {0},Affection {0},好感度 {0},好感度 {0},好感度 {0}
+encyclopedia.full_view,전체 보기,Full view,全体表示,查看全图,查看全圖
+encyclopedia.close_full_view,닫기,Close,閉じる,关闭,關閉
+relic.electric.nearby.template,"● 반경 {radius}m 안의 [[감전]]된 적 1명당 [[전기 속성]] {value}
+● 최대 {cap}명까지 적용","● [[전기 속성]] {value} per [[감전]] enemy within {radius}m
+● Counts up to {cap} enemies","● 半径{radius}m以内の[[감전]]中の敵1体につき[[전기 속성]] {value}
+● 最大{cap}体まで","● 半径{radius}m内，每个[[감전]]的敌人提供[[전기 속성]] {value}
+● 最多计算{cap}个敌人","● 半徑{radius}m內，每個[[감전]]的敵人提供[[전기 속성]] {value}
+● 最多計算{cap}個敵人"
+relic.electric.move.template,"● [[추가 이동속도]] {step}마다 [[전기 속성]] {value}
+● 최대 {cap}단계까지 적용","● [[전기 속성]] {value} per {step} [[추가 이동속도]]
+● Up to {cap} steps","● [[추가 이동속도]]{step}ごとに[[전기 속성]] {value}
+● 最大{cap}段階まで","● 每{step}[[추가 이동속도]]提供[[전기 속성]] {value}
+● 最多{cap}档","● 每{step}[[추가 이동속도]]提供[[전기 속성]] {value}
+● 最多{cap}階"
+relic.electric.dash.template,"● 이동 스킬 사용 시 {duration} 동안 [[전기 속성]] {value}
+● 최대 4중첩, 다시 사용하면 모든 중첩의 지속시간 갱신","● Using a movement skill grants [[전기 속성]] {value} for {duration}
+● Up to 4 stacks; another use refreshes all stack durations","● 移動スキル使用時、{duration}の間[[전기 속성]] {value}
+● 最大4重複、再使用するとすべての重複の持続時間を更新","● 使用移动技能时，[[전기 속성]] {value}，持续{duration}
+● 最多4层，再次使用刷新所有层的持续时间","● 使用移動技能時，[[전기 속성]] {value}，持續{duration}
+● 最多4層，再次使用刷新所有層的持續時間"
+asset.f38b7d86e797dd94987df9469a009fc6.displayName,천둥의 심장,Thunder Heart,雷鳴の心臓,雷鸣之心,雷鳴之心
+asset.f38b7d86e797dd94987df9469a009fc6.description,감전된 적의 수에 비례해 전기 속성이 증가합니다.,Electric increases with the number of electrocuted enemies.,感電中の敵の数に応じて電気属性が増加します。,电属性随感电敌人的数量增加。,電屬性隨感電敵人的數量增加。
+asset.97084fb613250744aa79efe393f5d8e8.displayName,생명의 전류,Life Current,生命の電流,生命电流,生命電流
+asset.97084fb613250744aa79efe393f5d8e8.description,최대 체력에 비례해 전기 속성이 증가합니다.,Electric increases with maximum HP.,最大HPに応じて電気属性が増加します。,电属性随生命值上限增加。,電屬性隨生命值上限增加。
+asset.9a870ebedac30b24085e330264e88eb0.displayName,대시 코일,Dash Coil,ダッシュコイル,冲刺线圈,衝刺線圈
+asset.9a870ebedac30b24085e330264e88eb0.description,이동 스킬을 사용하면 3초 동안 전기 속성이 증가합니다. 최대 4중첩이며 다시 사용하면 모든 중첩의 지속시간이 갱신됩니다.,"Using a movement skill increases Electric for 3 seconds, up to 4 stacks. Another use refreshes all stack durations.",移動スキルを使うと3秒間電気属性が増加し、最大4重複します。再使用するとすべての重複の持続時間が更新されます。,使用移动技能后，电属性增加，持续3秒，最多4层。再次使用刷新所有层的持续时间。,使用移動技能後，電屬性增加，持續3秒，最多4層。再次使用刷新所有層的持續時間。
+relic.electric.scene.template,● [[감전]]된 적 1명당 [[전기 속성]] {value},● [[전기 속성]] {value} per [[감전]] enemy,● [[감전]]中の敵1体につき[[전기 속성]] {value},● 每个[[감전]]的敌人提供[[전기 속성]] {value},● 每個[[감전]]的敵人提供[[전기 속성]] {value}
+relic.electric.health.template,● [[최대 체력]] {health_step}칸마다 [[전기 속성]] {value},● [[전기 속성]] {value} per {health_step} cell of [[최대 체력]],● [[최대 체력]]{health_step}ごとに[[전기 속성]] {value},● 每{health_step}格[[최대 체력]]提供[[전기 속성]] {value},● 每{health_step}格[[최대 체력]]提供[[전기 속성]] {value}
+relic.electric.extension.template,"● 연쇄에 맞은 적의 [[감전]] 지속시간 {extension} 증가
+● 최대 {cap}까지 증가","● Extend the [[감전]] duration of enemies hit by a chain by {extension}
+● Up to {cap}","● 連鎖に命中した敵の[[감전]]持続時間を{extension}延長
+● 最大{cap}まで延長","● 连锁命中敌人的[[감전]]持续时间增加{extension}
+● 最多延长至{cap}","● 連鎖命中敵人的[[감전]]持續時間增加{extension}
+● 最多延長至{cap}"
+asset.c89e3a71c9cffd24e8c1a0e0a868e907.displayName,뇌명의 매듭,Thunder Knot,雷鳴の結び目,雷鸣之结,雷鳴之結
+asset.c89e3a71c9cffd24e8c1a0e0a868e907.description,연쇄에 맞은 적의 감전 지속시간이 늘어납니다. 최대 4초까지 늘어납니다.,"Extends electrocution duration on enemies hit by a chain, up to 4 seconds.",連鎖に命中した敵の感電持続時間が最大4秒まで延長されます。,连锁命中敌人的感电持续时间延长，最多延长至4秒。,連鎖命中敵人的感電持續時間延長，最多延長至4秒。
+relic.electric.targets.template,"● 전기 연쇄의 최대 대상 수 {value} 증가
+● 최초 대상 포함 기본 3명","● Maximum electric chain targets {value}
+● Base count: 3, including the initial target","● 電気の連鎖の最大対象数 {value}
+● 最初の対象を含め基本3体","● 电连锁最大目标数 {value}
+● 基础3个，包括最初的目标","● 電連鎖最大目標數 {value}
+● 基礎3個，包括最初的目標"
+relic.electric.paralysis.template,"● [[감전]] 부여 시 {duration} 동안 마비
+● 보스에게는 적용되지 않음","● Applying [[감전]] causes paralysis for {duration}
+● Does not affect bosses","● [[감전]]を付与すると{duration}の間麻痺
+● ボスには無効","● 施加[[감전]]时，麻痹{duration}
+● 对首领无效","● 施加[[감전]]時，麻痺{duration}
+● 對首領無效"
+asset.4fc8d9217c22c384f89b21f375268227.displayName,공명의 종,Resonance Bell,共鳴の鐘,共鸣之钟,共鳴之鐘
+asset.4fc8d9217c22c384f89b21f375268227.description,전기 연쇄가 맞힐 수 있는 최대 대상 수가 증가합니다.,Increases the maximum number of targets an electric chain can hit.,電気の連鎖が命中できる最大対象数が増加します。,增加电连锁可命中的最大目标数。,增加電連鎖可命中的最大目標數。
+asset.fe1d21ace548ebb42bc9885269f0cc58.displayName,저릿한 족쇄,Tingling Shackles,痺れの足枷,麻痹镣铐,麻痺鐐銬
+asset.fe1d21ace548ebb42bc9885269f0cc58.description,적에게 감전을 부여하면 0.1초 동안 마비시킵니다. 보스에게는 적용되지 않습니다.,Applying electrocution to an enemy paralyzes it for 0.1 seconds. Does not affect bosses.,敵に感電を付与すると0.1秒間麻痺させます。ボスには無効です。,对敌人施加感电时，使其麻痹0.1秒，对首领无效。,對敵人施加感電時，使其麻痺0.1秒，對首領無效。
+asset.24602c35b51a9f64f8622e1094c8f5b2.effectTemplate,"● 적 처치 시 {duration} 동안 [[공격력]] {attack_bonus}
+● [[이동속도]] {move_speed_bonus}","● Killing an enemy: [[공격력]] {attack_bonus} for {duration}
+● [[이동속도]] {move_speed_bonus}","● 敵を倒すと{duration}間[[공격력]] {attack_bonus}
+● [[이동속도]] {move_speed_bonus}","● 击杀敌人后，[[공격력]] {attack_bonus}，持续{duration}
+● [[이동속도]] {move_speed_bonus}","● 擊殺敵人後，[[공격력]] {attack_bonus}，持續{duration}
+● [[이동속도]] {move_speed_bonus}"
+asset.74bcbc64a07fc854ca2dade608e8c24c.effectTemplate,"● 깃털 {feather_count}개가 주위를 회전하며 적을 공격
+● 깃털 피해 {damage_coef}
+● 회전 반경 {radius}
+● 같은 적을 다시 공격하는 기본 간격 {hit_cooldown}","● {feather_count} feathers orbit you and attack enemies
+● Feather damage {damage_coef}
+● Orbit radius {radius}
+● Base repeat-hit interval against the same enemy {hit_cooldown}","● {feather_count}枚の羽が周囲を回り、敵を攻撃
+● 羽のダメージ {damage_coef}
+● 回転半径 {radius}
+● 同じ敵を再攻撃する基本間隔 {hit_cooldown}","● {feather_count}片羽毛环绕并攻击敌人
+● 羽毛伤害 {damage_coef}
+● 旋转半径 {radius}
+● 再次攻击同一敌人的基础间隔 {hit_cooldown}","● {feather_count}片羽毛環繞並攻擊敵人
+● 羽毛傷害 {damage_coef}
+● 旋轉半徑 {radius}
+● 再次攻擊同一敵人的基礎間隔 {hit_cooldown}"
+relic.electric.expiry.template,● 내가 부여한 [[감전]]의 지속시간이 끝나면 [[전기 속성]]의 {electric_ratio} 피해,"● When the duration of [[감전]] you applied ends, deal {electric_ratio} of [[전기 속성]] as damage",● 自分が付与した[[감전]]の持続時間が終わると[[전기 속성]]の{electric_ratio}のダメージ,● 自己施加的[[감전]]持续时间结束时，造成[[전기 속성]]的{electric_ratio}伤害,● 自己施加的[[감전]]持續時間結束時，造成[[전기 속성]]的{electric_ratio}傷害
+relic.electric.echo.template,"● 연쇄 번개를 한 번 더 반복하며, 피해는 {damage_ratio} 적용
+● 최초 대상은 제외하며 [[감전]] 지속시간은 늘어나지 않음","● Repeat chain lightning once more at {damage_ratio} damage
+● Excludes the initial target; [[감전]] duration is not extended","● 連鎖する雷をもう一度繰り返し、ダメージは{damage_ratio}
+● 最初の対象を除き、[[감전]]持続時間は延長されない","● 连锁闪电以{damage_ratio}伤害再重复一次
+● 不包括最初的目标，[[감전]]持续时间不会延长","● 連鎖閃電以{damage_ratio}傷害再重複一次
+● 不包括最初的目標，[[감전]]持續時間不會延長"
+relic.electric.conductor.template,"● 연쇄될 때마다 연쇄 피해 {step_bonus} 증가
+● 최대 {max_bonus} 증가","● Each chain step increases chain damage by {step_bonus}
+● Up to {max_bonus} extra damage","● 連鎖するたびに連鎖ダメージが{step_bonus}増加
+● 最大{max_bonus}増加","● 每次连锁使连锁伤害增加{step_bonus}
+● 最多增加{max_bonus}","● 每次連鎖使連鎖傷害增加{step_bonus}
+● 最多增加{max_bonus}"
+asset.793dd35173233de479547ef030201574.displayName,전류 항아리,Current Jar,電流の壺,电流罐,電流罐
+asset.793dd35173233de479547ef030201574.description,내가 부여한 감전의 지속시간이 끝나면 전기 속성의 40%만큼 피해를 줍니다.,"When the duration of electrocution you applied ends, deals 40% of Electric as damage.",自分が付与した感電の持続時間が終わると、電気属性の40%のダメージを与えます。,自己施加的感电持续时间结束时，造成电属性40%的伤害。,自己施加的感電持續時間結束時，造成電屬性40%的傷害。
+asset.e7fc658e74db2a840b6fc0f9fb067d3a.displayName,메아리 코일,Echo Coil,エコーコイル,回声线圈,回聲線圈
+asset.e7fc658e74db2a840b6fc0f9fb067d3a.description,연쇄 번개를 50% 피해로 한 번 더 반복합니다. 최초 대상은 제외하며 감전 지속시간은 늘어나지 않습니다.,Repeats chain lightning once more at 50% damage. Excludes the initial target and does not extend electrocution duration.,連鎖する雷を50%のダメージでもう一度繰り返します。最初の対象を除き、感電持続時間は延長されません。,连锁闪电以50%伤害再重复一次，不包括最初的目标，感电持续时间不会延长。,連鎖閃電以50%傷害再重複一次，不包括最初的目標，感電持續時間不會延長。
+asset.875bf515b62c5bf44a0f67ab48330b66.displayName,도체 고리,Conductor Ring,導体の輪,导体环,導體環
+asset.875bf515b62c5bf44a0f67ab48330b66.description,연쇄될 때마다 연쇄 피해가 20%씩 증가합니다. 최대 60%까지 증가합니다.,"Each chain step increases chain damage by 20%, up to 60%.",連鎖するたびに連鎖ダメージが20%ずつ増加し、最大60%まで増加します。,每次连锁使连锁伤害增加20%，最多增加60%。,每次連鎖使連鎖傷害增加20%，最多增加60%。
+asset.3a669323573b7c144be1d6c8d11798e1.nameText,혼란,Confusion,混乱,混乱,混亂
+asset.3a669323573b7c144be1d6c8d11798e1.storyText,술기운에 방향 감각이 흐려진다.,Alcohol clouds your sense of direction.,酔いで方向感覚が鈍る。,醉意让方向感变得模糊。,醉意讓方向感變得模糊。
+asset.3a669323573b7c144be1d6c8d11798e1.effectText,일반 걷기의 상하좌우 입력이 반전됩니다. 장판을 벗어나 맥주잔이 비워지면 해제됩니다.,Normal walking inputs are reversed in all four directions. Ends when the mug empties after leaving the puddle.,通常歩行の上下左右の入力が反転します。酒の床から離れ、ジョッキが空になると解除されます。,普通行走的上下左右输入反转。离开酒液区域后，啤酒杯清空时解除。,普通行走的上下左右輸入反轉。離開酒液區域後，啤酒杯清空時解除。
+asset.8d10d760988b81f4c826f2a3b4582465.rewardText,"술 장판에서 3초 동안 술을 채우면 혼란 대신 이동 속도 +25%, 공격 속도 +40% 버프를 얻습니다. 장판 안에서는 지속시간을 갱신하며, 장판을 벗어나 1.5초 동안 잔이 비워진 뒤 5초 동안 유지됩니다.","Filling the mug for 3 seconds in an alcohol puddle grants +25% movement speed and +40% attack speed instead of confusion. The duration refreshes inside the puddle. After leaving, the mug drains for 1.5 seconds, then the buff lasts 5 seconds.",酒の床で3秒かけてジョッキを満たすと、混乱の代わりに移動速度+25%、攻撃速度+40%のバフを得ます。床の上では持続時間が更新されます。離れてから1.5秒でジョッキが空になり、その後5秒間バフが続きます。,在酒液区域中用3秒填满酒杯后，获得移动速度+25%、攻击速度+40%的增益，替代混乱。区域内会刷新持续时间。离开后，酒杯用1.5秒清空，随后增益持续5秒。,在酒液區域中用3秒填滿酒杯後，獲得移動速度+25%、攻擊速度+40%的增益，替代混亂。區域內會刷新持續時間。離開後，酒杯用1.5秒清空，隨後增益持續5秒。

@@ -27,7 +27,7 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource, IMobProjectileLa
     public LayerMask ShotWallLayers => Logic != null ? Logic.WallLayers : 0;
     public int ShotCount => Logic != null ? Logic.ShotCount : 0;
     public float ShotInterval => Logic != null ? Logic.ShotInterval : 0f;
-    public bool IsRestingBetweenBursts => burstCadence.IsResting(Time.time);
+    public bool IsRestingBetweenBursts => burstCadence.IsResting(CombatHitPause2D.GetActionTime(gameObject));
 
     // 책임: 리자드 마법사 연사 공격의 타겟, 조준 방향, 사거리, 피해 정보를 보관한다.
     public readonly struct BurstContext
@@ -107,7 +107,7 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource, IMobProjectileLa
     public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
     {
         return Mathf.Max(base.ResolvePostAttackRecoverSeconds(scaledRecoverSeconds),
-            burstCadence.GetRemainingRestSeconds(Time.time));
+            burstCadence.GetRemainingRestSeconds(CombatHitPause2D.GetActionTime(gameObject)));
     }
 
     /// <summary>공격 상태 진입 시 마법 준비 애니메이션을 요청한다.</summary>
@@ -205,7 +205,7 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource, IMobProjectileLa
             direction = direction,
             speed = context.ProjectileSpeed
         });
-        burstCadence.RecordShot(Time.time);
+        burstCadence.RecordShot(CombatHitPause2D.GetActionTime(gameObject));
     }
 
     /// <summary>리자드 메이지의 각 마법탄 발사 타이밍에 사운드를 재생합니다.</summary>
@@ -297,12 +297,17 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
             {
                 if (cancelRequested || owner.IsDead || IsCancelled(spec))
                     yield break;
+                if (CombatHitPause2D.IsParalyzedOn(owner.gameObject))
+                {
+                    yield return null;
+                    continue;
+                }
                 if (elapsed < trackingSeconds && owner.TryBuildBurstContext(system, spec, initialTarget, out LizardMage.BurstContext trackedContext))
                 {
                     context = trackedContext;
                     UpdateWarning(context, warningSeconds);
                 }
-                elapsed += Time.deltaTime;
+                elapsed += CombatHitPause2D.GetActionDeltaTime(owner.gameObject);
                 yield return null;
             }
             if (cancelRequested || owner.IsDead || IsCancelled(spec))

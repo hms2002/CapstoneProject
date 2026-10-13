@@ -128,6 +128,54 @@ public sealed class RoomMonsterWavePlayModeTests
         yield return Until(() => spawned.Count == 2);
     }
 
+    [Test]
+    public void LockUnit_ObservesConcreteMobDeath_AndDestroyedComponentReplacement()
+    {
+        // Authored monsters have RequireComponent dependents that prevent removing their Mob.
+        var root = Own(new GameObject("ReplaceableConcreteMob"));
+        root.transform.position = new Vector3(10000f, 10000f);
+        var mob = root.AddComponent<Mob>();
+        var group = Own(new GameObject("RootMobLockGroup")).AddComponent<MonsterSpawnRoomGroup>();
+        group.NotifyMonsterSpawned(root);
+        object unit = ((IList)Get(group, "runtimeSpawnedMonsterUnits"))[0];
+        var alive = unit.GetType().GetMethod("HasAliveMember");
+
+        Assert.That((bool)alive.Invoke(unit, null), Is.True);
+        typeof(Enemy).GetField("isDead", PrivateInstance).SetValue(mob, true);
+        Assert.That((bool)alive.Invoke(unit, null), Is.False);
+        Object.DestroyImmediate(mob);
+        Assert.That(mob == null, Is.True, "The fixture must actually remove the cached component.");
+        Assert.That((bool)alive.Invoke(unit, null), Is.True, "A surviving generic root keeps the existing alive semantics.");
+        var replacement = root.AddComponent<Enemy>();
+        typeof(Enemy).GetField("isDead", PrivateInstance).SetValue(replacement, true);
+        Assert.That((bool)alive.Invoke(unit, null), Is.False, "A destroyed cached component must fall back to the current root.");
+    }
+
+    [Test]
+    public void LockUnit_GenericRootStillFindsLateAndReplacedChildEnemy()
+    {
+        var root = Own(new GameObject("GenericLockRoot"));
+        var group = Own(new GameObject("GenericLockGroup")).AddComponent<MonsterSpawnRoomGroup>();
+        group.NotifyMonsterSpawned(root);
+        object unit = ((IList)Get(group, "runtimeSpawnedMonsterUnits"))[0];
+        var alive = unit.GetType().GetMethod("HasAliveMember");
+        Assert.That((bool)alive.Invoke(unit, null), Is.True);
+
+        var child = Own(new GameObject("LateChildEnemy"));
+        child.transform.SetParent(root.transform, false);
+        var enemy = child.AddComponent<Enemy>();
+        typeof(Enemy).GetField("isDead", PrivateInstance).SetValue(enemy, true);
+        Assert.That((bool)alive.Invoke(unit, null), Is.False);
+        Object.DestroyImmediate(child);
+        Assert.That((bool)alive.Invoke(unit, null), Is.True);
+        var replacementChild = Own(new GameObject("ReplacementChildEnemy"));
+        replacementChild.transform.SetParent(root.transform, false);
+        replacementChild.SetActive(false);
+        enemy = replacementChild.AddComponent<Enemy>();
+        typeof(Enemy).GetField("isDead", PrivateInstance).SetValue(enemy, true);
+        Assert.That((bool)alive.Invoke(unit, null), Is.False, "Inactive child lookup remains dynamic and includes inactive objects.");
+    }
+
     [UnityTest]
     public IEnumerator ExternalEncounterHoldAndMonster_DoNotBlockWaveAdvance()
     {

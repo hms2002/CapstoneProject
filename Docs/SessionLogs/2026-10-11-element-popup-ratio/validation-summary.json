@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-11",
+  "mode": "Implementation",
+  "unityVersion": "6000.4.2f1",
+  "unityCliExit": 0,
+  "tests": {
+    "total": 25,
+    "passed": 25,
+    "failed": 0,
+    "skipped": 0,
+    "elementHit": 18,
+    "playerColor": 1,
+    "crimsonFormulas": 3,
+    "popupPooling": 3
+  },
+  "msbuild": {
+    "editor": 0,
+    "proceduralPlayModeTests": 0,
+    "generatedProjectsManuallyEdited": false
+  },
+  "protectedFiles": {
+    "checked": 253,
+    "changed": 0
+  },
+  "sizeRule": "0.42 + 0.43 * sqrt(clamp01(secondary / merged primary))",
+  "placement": "Existing random/overlap allocator",
+  "finalSourceHashes": [
+    {
+      "path": "Assets/_Project/Runtime/Core/Combat/CombatDamageAction.cs",
+      "sha256": "6E768ED2A8C8BAB7FBB2170F238116191DA5AD09BED0E2B847B9CE32182C8CE3"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Core/Presentation/DamagePopupRequest.cs",
+      "sha256": "227D4A58FBD7FFB2C2E5DD8E75C91366EE4E14B86A8616CAA0FE2180C6E2C5A3"
+    },
+    {
+      "path": "Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupFormatProfileSO.cs",
+      "sha256": "A76D32EFF14FA999D502EE24DE69E25ADEC120FDC85E751B1196DFF1BAB730C3"
+    },
+    {
+      "path": "Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupService.cs",
+      "sha256": "8489ABD27A1CEC5AC5BED700E9A9D612C1687CB5774B3F300E20050C54EF6197"
+    },
+    {
+      "path": "Assets/_Project/Tests/PlayMode/Procedural/CombatPresentationRegressionPlayModeTests.cs",
+      "sha256": "A2DBE7EA194F838D8EDB679AAFDBDB7DC24894E168BBEA98FE252A861359B0FE"
+    }
+  ],
+  "limitations": [
+    "No interactive all-weapon playtest",
+    "No Player build",
+    "Existing per-popup integer rounding retained"
+  ]
+}

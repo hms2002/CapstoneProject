@@ -65,12 +65,13 @@ public sealed class AbilityLogic_CrimsonBoundaryBigExplosion : AbilityLogic
         {
             GameObject target = targets[i];
             bool critical;
-            float baseDamage = CrimsonBoundaryUtility.CalculateDirectDamage(system, data.skill2BaseMultiplier, out critical, data.skillFireFormula);
+            float baseDamage = CrimsonBoundaryUtility.CalculateDirectDamage(system, data.skill2BaseMultiplier, out critical,
+                out ElementDamageResult[] elementHpDamages, data.skillFireFormula);
             BurnStatus2D burn = target.GetComponent<BurnStatus2D>();
             int consumed = burn != null ? burn.ConsumeAll() : 0;
             float totalDamage = baseDamage +
                 CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, consumed, data.skill2BurnConsumptionMultiplier, data.skillFireFormula);
-            CrimsonBoundaryUtility.ApplyDamage(system, spec, data.damageEffect, target, totalDamage, critical, system.gameObject);
+            CrimsonBoundaryUtility.ApplyDamage(system, spec, data.damageEffect, target, totalDamage, critical, system.gameObject, elementHpDamages);
         }
 
     }

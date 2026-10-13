@@ -794,7 +794,7 @@ namespace UnityGAS
                 return;
 
             if (CombatHitPause2D.IsPausedOn(gameObject)) return;
-            castTimeRemaining -= Time.deltaTime;
+            castTimeRemaining -= CombatHitPause2D.GetActionDeltaTime(gameObject);
             if (castTimeRemaining <= 0f)
                 CompleteCast();
         }

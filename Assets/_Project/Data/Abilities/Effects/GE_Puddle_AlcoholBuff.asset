@@ -15,7 +15,7 @@ MonoBehaviour:
   effectName: GE_Puddle_AlcoholBuff
   description: 술 장판 이동 속도 및 공격 속도 버프.
   icon: {fileID: 0}
-  duration: 0.35
+  duration: 5
   canStack: 0
   maxStacks: 1
   grantedTags: []
