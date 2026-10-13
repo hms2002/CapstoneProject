@@ -2,7 +2,66 @@
 // Source: Notion "슬라임 대사 스크립트"
 // Notion ID 1004 is adapted to project NPC id 3001.
 
--> SLIME_QUEEN_01
+-> SLIME_QUEEN_SPIRI_ACCESS_BAN
+
+= SLIME_QUEEN_SPIRI_ACCESS_BAN
+# speaker: 3001
+# face: 3001: Angry
+# anim: angry
+하지만 그보다 이리 와서 들어보도록! 지금 짐에게 아주 중대한 국정 현안이 있다! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.8750439a52
+
+# face: 3001: Angry
+# anim: angry
+취룡 스피리가 또 짐의 백성을 술안주처럼 우물거려, 기껏 어엿하게 자란 아이를 손바닥만 한 꼬맹이로 되돌려 놓았다! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.ec64e12488
+
+# speaker: 슬라임들
+술도 얻어 마셨어요! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.b425152719
+몸도 가벼워졌어요! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.ead5d0beb0
+
+# speaker: 3001
+# face: 3001: Angry
+# anim: angry
+그걸 좋아하면 짐은 누구에게 화를 내란 말이냐! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.1db66961d3
+
++ [술안주 허가제를 만들자. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.382acf40a6]
+    # add_aff: 1
+    -> MELTA_SPIRI_ACCESS_BAN_APPROVED
+
++ [스피리에게서 술을 전부 빼앗자! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.e54547855a]
+    -> MELTA_SPIRI_ACCESS_BAN_REJECTED
+
+= MELTA_SPIRI_ACCESS_BAN_APPROVED
+# speaker: 3001
+# face: 3001: Smile
+# anim: normal
+호오… 술안주 허가제라. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.0234737204
+
+# face: 3001: Veryjoy
+# anim: normal
+백성의 선택도, 여왕의 관리 책임도 지키는 훌륭한 슬권 행정이구나! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.0b27058d3d
+-> MELTA_SPIRI_ACCESS_BAN_END
+
+= MELTA_SPIRI_ACCESS_BAN_REJECTED
+# speaker: 3001
+# face: 3001: Angry
+# anim: angry
+무, 무슨 소리냐! 그럼 스피리가 깨어나면 어쩌려고! 그거야말로 마왕성의 종말이다! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.b233f9ae6b
+
+# face: 3001: Funny
+# anim: normal
+…짐은 방금 아무 말도 하지 않았다. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.a6ed2b7bb8
+-> MELTA_SPIRI_ACCESS_BAN_END
+
+= MELTA_SPIRI_ACCESS_BAN_END
+# speaker: 3001
+# face: 3001: Smile
+# anim: normal
+좋다. 할 일이 많군. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.2b0dceac49
+
+# face: 3001: Funny
+# anim: normal
+우선 네놈부터 처리하고, 그다음 스피리 문제도 정리하겠노라! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.d2cd8de590
+-> END
 
 = SLIME_QUEEN_01
 # speaker: 3001
