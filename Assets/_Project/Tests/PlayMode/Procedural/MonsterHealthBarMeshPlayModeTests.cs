@@ -346,6 +346,235 @@ public sealed class MonsterHealthBarMeshPlayModeTests
         }
     }
 
+    [Test]
+    public void GroggyMerge_StaggerCanvasAndRows_RespectOptInAndDisableLifecycle()
+    {
+        using (var assets = new SharedAssets())
+        using (var fixture = new HudFixture(true, assets, true))
+        {
+            fixture.Configure(MonsterSizeCategory.Medium, .7f, .9f);
+            Assert.That(fixture.Statuses.TryGetActive("Burn", out _), Is.False);
+            Assert.That(fixture.StaggerBar.gameObject.activeInHierarchy, Is.True);
+            Assert.That(fixture.Canvas.enabled, Is.True, "A separate HP mesh must not suppress the ordinary stagger Graphics.");
+            Assert.That(fixture.Renderer.enabled, Is.True);
+            AssertLegacyGraphics(fixture, false);
+            Assert.That(fixture.StatusRow.anchoredPosition, Is.EqualTo(new Vector2(-50f, -24f)));
+            fixture.Gauge.AddBuildUp(25f, fixture.Root, fixture.Root);
+            Assert.That(fixture.StaggerRatio, Is.EqualTo(.75f).Within(.0001f));
+
+            fixture.Gauge.enabled = false;
+            fixture.Tick();
+            Assert.That(fixture.StaggerBar.gameObject.activeSelf, Is.False);
+            Assert.That(fixture.Canvas.enabled, Is.False);
+            Assert.That(fixture.Renderer.enabled, Is.True);
+            Assert.That(fixture.StatusRow.anchoredPosition, Is.EqualTo(new Vector2(-50f, -15f)));
+            fixture.Gauge.enabled = true;
+            fixture.Tick();
+            Assert.That(fixture.StaggerRatio, Is.EqualTo(.75f).Within(.0001f));
+            Assert.That(fixture.Canvas.enabled && fixture.Renderer.enabled, Is.True);
+
+            fixture.ShowHealth(false);
+            fixture.Tick();
+            Assert.That(fixture.StaggerBar.gameObject.activeSelf || fixture.Renderer.enabled || fixture.Canvas.enabled, Is.False);
+            Assert.That(fixture.StatusRow.anchoredPosition, Is.EqualTo(new Vector2(-50f, 0f)));
+            fixture.ShowHealth(true);
+            fixture.Root.SetActive(false);
+            Assert.That(fixture.Canvas.enabled || fixture.Renderer.enabled, Is.False);
+            Assert.That(GaugeSubscriberCount(fixture.Gauge), Is.Zero);
+            fixture.Root.SetActive(true);
+            fixture.Configure(MonsterSizeCategory.Medium, .7f, .9f);
+            Assert.That(fixture.Canvas.enabled && fixture.Renderer.enabled, Is.True);
+            Assert.That(GaugeSubscriberCount(fixture.Gauge), Is.EqualTo(1), "Pool reactivation must subscribe once.");
+            fixture.Gauge.AddBuildUp(25f, fixture.Root, fixture.Root);
+            Assert.That(fixture.StaggerRatio, Is.EqualTo(.5f).Within(.0001f));
+        }
+        using (var assets = new SharedAssets())
+        using (var ordinary = new HudFixture(true, assets))
+        using (var notOptedIn = new HudFixture(true, assets, true, false))
+        {
+            notOptedIn.Root.transform.position = Vector3.right * 3f;
+            ordinary.Tick(); notOptedIn.Tick();
+            Assert.That(ordinary.StaggerBar.gameObject.activeSelf || notOptedIn.StaggerBar.gameObject.activeSelf, Is.False);
+            Assert.That(ordinary.Canvas.enabled || notOptedIn.Canvas.enabled, Is.False);
+            Assert.That(ordinary.Renderer.enabled && notOptedIn.Renderer.enabled, Is.True);
+            Assert.That(ordinary.StatusRow.anchoredPosition.y, Is.EqualTo(-15f));
+            Assert.That(notOptedIn.StatusRow.anchoredPosition.y, Is.EqualTo(-15f));
+        }
+    }
+
+    [Test]
+    public void GroggyMerge_RecoveryAdvancesWithoutFurtherGaugeEvents_AndDestroyUnsubscribes()
+    {
+        using (var assets = new SharedAssets())
+        using (var fixture = new HudFixture(true, assets, true))
+        using (var survivor = new HudFixture(true, assets))
+        {
+            survivor.Root.transform.position = Vector3.right * 3f;
+            survivor.Tick();
+            int gaugeEvents = 0;
+            Action<float, float> observe = (_, __) => gaugeEvents++;
+            fixture.Gauge.OnGaugeChanged += observe;
+            fixture.Gauge.AddBuildUp(100f, fixture.Root, fixture.Root);
+            fixture.Tick();
+            Assert.That(fixture.Runner.HasActiveEffect(fixture.GroggyEffect, fixture.Root), Is.True);
+            Assert.That(fixture.StaggerRatio, Is.Zero.Within(.0001f));
+            int atTrigger = gaugeEvents;
+            typeof(GameplayEffectRunner).GetMethod("TickEffects", Fields).Invoke(fixture.Runner, new object[] { 1f });
+            fixture.Tick();
+            Assert.That(fixture.StaggerRatio, Is.EqualTo(1f / 3f).Within(.0001f));
+            Assert.That(gaugeEvents, Is.EqualTo(atTrigger), "Time projection must progress without another gauge event.");
+            typeof(GameplayEffectRunner).GetMethod("TickEffects", Fields).Invoke(fixture.Runner, new object[] { 1f });
+            fixture.Tick();
+            Assert.That(fixture.StaggerRatio, Is.EqualTo(2f / 3f).Within(.0001f));
+            Assert.That(gaugeEvents, Is.EqualTo(atTrigger));
+            typeof(GameplayEffectRunner).GetMethod("TickEffects", Fields).Invoke(fixture.Runner, new object[] { 1.1f });
+            fixture.Tick();
+            Assert.That(fixture.Runner.HasActiveEffect(fixture.GroggyEffect, fixture.Root), Is.False);
+            Assert.That(fixture.StaggerRatio, Is.EqualTo(1f).Within(.0001f));
+            fixture.Gauge.OnGaugeChanged -= observe;
+            Assert.That(GaugeSubscriberCount(fixture.Gauge), Is.EqualTo(1));
+            Object.DestroyImmediate(fixture.Hud);
+            Assert.That(GaugeSubscriberCount(fixture.Gauge), Is.Zero);
+            fixture.Gauge.AddBuildUp(1f, fixture.Root, fixture.Root);
+            survivor.Tick();
+            Assert.That(survivor.Renderer.enabled, Is.True);
+            Assert.That(survivor.Canvas.enabled, Is.False);
+            Assert.That(assets.Material != null && assets.Mesh != null, Is.True);
+        }
+    }
+
+    [UnityTest]
+    public IEnumerator GroggyMerge_StaggerOnlyIntersection_PreservesLegacyRasterAndRestoresMesh()
+    {
+        if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null)
+            Assert.Ignore("Requires actual graphics for stagger-to-HP cross-actor sorting equivalence.");
+        using (var assets = new SharedAssets())
+        using (var legacyFirst = new HudFixture(false, assets, true))
+        using (var legacySecond = new HudFixture(false, assets))
+        using (var meshFirst = new HudFixture(true, assets, true))
+        using (var meshSecond = new HudFixture(true, assets))
+        using (var camera = new RenderFixture(.4f))
+        {
+            yield return null;
+            meshFirst.Root.SetActive(false); meshSecond.Root.SetActive(false);
+            PrepareStaggerIntersection(legacyFirst, legacySecond);
+            Color32[] expected = camera.Capture();
+            legacyFirst.Root.SetActive(false); legacySecond.Root.SetActive(false);
+            meshFirst.Root.SetActive(true); meshSecond.Root.SetActive(true);
+            PrepareStaggerIntersection(meshFirst, meshSecond);
+            Assert.That(meshFirst.Renderer.enabled || meshSecond.Renderer.enabled, Is.False,
+                "A stagger-only crossing must select original whole-Canvas ordering.");
+            Assert.That(meshFirst.Canvas.enabled && meshSecond.Canvas.enabled, Is.True);
+            AssertLegacyGraphics(meshFirst, true); AssertLegacyGraphics(meshSecond, true);
+            AssertPixelsMatch(expected, camera.Capture(), "Stagger rectangle crosses another actor HP without HP-to-HP overlap");
+            meshSecond.Root.transform.position = Vector3.right * 3f;
+            meshSecond.Tick();
+            Assert.That(meshFirst.Renderer.enabled && meshSecond.Renderer.enabled, Is.True);
+            Assert.That(meshFirst.Canvas.enabled, Is.True, "Stagger remains visible after leaving legacy sorting.");
+            Assert.That(meshSecond.Canvas.enabled, Is.False);
+        }
+    }
+
+    private static void PrepareStaggerIntersection(HudFixture first, HudFixture second)
+    {
+        first.Root.transform.position = Vector3.zero;
+        second.Root.transform.position = Vector3.zero;
+        first.Attributes.TrySetBaseValue(first.CurrentGauge, 50f, first.Root);
+        first.Configure(MonsterSizeCategory.Medium, .25f, .8f);
+        second.Configure(MonsterSizeCategory.Medium, .72f, .9f);
+        Rect firstHp = WorldRect(first.HealthBar);
+        Rect secondHp = WorldRect(second.HealthBar);
+        second.Root.transform.position = new Vector3(.12f, firstHp.yMin - .003f - secondHp.yMax, 0f);
+        second.Tick();
+        Assert.That(WorldRect(first.HealthBar).Overlaps(WorldRect(second.HealthBar)), Is.False,
+            "The fixture must isolate stagger-only overlap, not the existing HP overlap case.");
+        Assert.That(WorldRect(first.StaggerBar).Overlaps(WorldRect(second.HealthBar)), Is.True);
+    }
+
+    [Test]
+    public void GroggyMerge_ThreeAuthoredTankProfiles_UseHealthThirdAndReactToMaxHealthChanges()
+    {
+        var sharedHud = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab");
+        Assert.That(sharedHud, Is.Not.Null);
+        var hudView = sharedHud.GetComponent(ViewType);
+        Assert.That(hudView, Is.Not.Null);
+        var hudData = new SerializedObject(hudView);
+        var meshView = hudData.FindProperty("meshHealthBar").objectReferenceValue as Component;
+        var statusCanvas = hudData.FindProperty("statusCanvas").objectReferenceValue as Canvas;
+        var staggerBar = hudData.FindProperty("staggerBar").objectReferenceValue as RectTransform;
+        var staggerFill = hudData.FindProperty("staggerFill").objectReferenceValue as Component;
+        Assert.That(meshView, Is.Not.Null, "Merged shared prefab must retain its authored HP mesh reference.");
+        Assert.That(meshView.GetType(), Is.EqualTo(MeshViewType));
+        Assert.That((bool)MeshViewType.GetProperty("IsConfigured").GetValue(meshView), Is.True);
+        Assert.That(statusCanvas, Is.SameAs(sharedHud.GetComponent<Canvas>()));
+        Assert.That(staggerBar, Is.SameAs(sharedHud.transform.Find("Visual/StaggerBar") as RectTransform));
+        Assert.That(staggerBar, Is.Not.Null);
+        Assert.That(staggerFill, Is.Not.Null);
+        Assert.That(staggerFill.GetType(), Is.EqualTo(ImageType));
+        Assert.That(staggerFill.transform.IsChildOf(staggerBar), Is.True, "Stagger fill must remain inside its authored bar.");
+        var legacy = new SerializedObject(meshView).FindProperty("legacyGraphics");
+        Assert.That(legacy.arraySize, Is.EqualTo(6));
+        Transform healthBar = sharedHud.transform.Find("Visual/HealthBar");
+        for (int i = 0; i < legacy.arraySize; i++)
+        {
+            var image = legacy.GetArrayElementAtIndex(i).objectReferenceValue as Component;
+            Assert.That(image, Is.Not.Null);
+            Assert.That(image.GetType(), Is.EqualTo(ImageType));
+            Assert.That(image, Is.Not.SameAs(staggerFill), "HP fallback must not disable the separate stagger fill.");
+            Assert.That(image.transform.IsChildOf(healthBar), Is.True);
+        }
+        string[] paths = { "CommonCorridor/GoblinTank", "CommonCorridor/ArcaneTankGolem", "SlimeCorridor/Rook" };
+        string[] profiles = { "GoblinTank", "ArcaneTankGolem", "Rook" };
+        for (int i = 0; i < paths.Length; i++)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Monsters/" + paths[i] + ".prefab");
+            Assert.That(prefab, Is.Not.Null, paths[i]);
+            var authored = prefab.GetComponent<StaggerGaugeSystem>();
+            Assert.That(authored, Is.Not.Null, paths[i]);
+            Assert.That(authored.HasHealthScaledGauge, Is.True, paths[i]);
+            var serialized = new SerializedObject(authored);
+            var maxHealth = serialized.FindProperty("maxHealthAttribute").objectReferenceValue as AttributeDefinition;
+            float multiplier = serialized.FindProperty("maxGaugePerMaxHealth").floatValue;
+            Assert.That(maxHealth, Is.Not.Null);
+            Assert.That(multiplier, Is.EqualTo(1f / 3f).Within(.0001f), paths[i]);
+            var init = AssetDatabase.LoadAssetAtPath<AttributeInitProfileSO>(
+                "Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/" + profiles[i] + "AttributeOverrideInitProfile.asset");
+            Assert.That(init, Is.Not.Null);
+            float health = -1f, gauge = -1f;
+            foreach (var entry in init.Entries)
+            {
+                if (entry.attribute == maxHealth) health = entry.baseValue;
+                if (entry.attribute == authored.maxGaugeAttribute) gauge = entry.baseValue;
+            }
+            Assert.That(health, Is.GreaterThan(0f), paths[i]);
+            Assert.That(gauge, Is.EqualTo(health * multiplier).Within(.0001f), paths[i]);
+            using (var assets = new SharedAssets())
+            using (var fixture = new HudFixture(true, assets, true))
+            {
+                Assert.That(fixture.Attributes.TrySetBaseValue(fixture.MaxHealth, health * 2f, fixture.Root), Is.True);
+                Assert.That(fixture.Attributes.GetAttributeValue(fixture.MaxGauge), Is.EqualTo(health * 2f / 3f).Within(.0001f));
+                fixture.Gauge.AddBuildUp(health / 3f, fixture.Root, fixture.Root);
+                fixture.Tick();
+                Assert.That(fixture.StaggerRatio, Is.EqualTo(.5f).Within(.0001f));
+            }
+        }
+    }
+
+    private static int GaugeSubscriberCount(StaggerGaugeSystem gauge) =>
+        ((Delegate)typeof(StaggerGaugeSystem).GetField("OnGaugeChanged", Fields).GetValue(gauge))?.GetInvocationList().Length ?? 0;
+
+    private static Rect WorldRect(RectTransform transform)
+    {
+        var corners = new Vector3[4]; transform.GetWorldCorners(corners);
+        return Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
+    }
+
+    private sealed class GroggyProbeEffect : GameplayEffect
+    {
+        public override void Apply(GameObject target, GameObject instigator, int stackCount = 1) { }
+        public override void Remove(GameObject target, GameObject instigator) { }
+    }
+
     private sealed class TestStatus : IMonsterStatusSource
     {
         public string StatusId { get; }
@@ -385,17 +614,52 @@ public sealed class MonsterHealthBarMeshPlayModeTests
         public readonly MonsterSizeProfile Profile;
         public readonly MonsterStatusRuntime Statuses;
         public readonly Transform Anchor;
+        public readonly AttributeSet Attributes;
+        public readonly StaggerGaugeSystem Gauge;
+        public readonly GameplayEffectRunner Runner;
+        public readonly AttributeDefinition CurrentGauge, MaxGauge, MaxHealth;
+        public readonly GameplayEffect GroggyEffect;
+        private readonly System.Collections.Generic.List<Object> owned = new();
+        public RectTransform HealthBar => (RectTransform)Hud.transform.Find("Visual/HealthBar");
+        public RectTransform StaggerBar => (RectTransform)Hud.transform.Find("Visual/StaggerBar");
+        public RectTransform StatusRow => (RectTransform)Hud.transform.Find("Visual/Statuses");
+        public float StaggerRatio => ((RectTransform)((Component)ViewType.GetField("staggerFill", Fields).GetValue(View)).transform).anchorMax.x;
         public Canvas Canvas => Hud.GetComponent<Canvas>();
         public MeshRenderer Renderer => Hud.transform.Find("Visual/HealthBar/HPGeometry")?.GetComponent<MeshRenderer>();
-        public HudFixture(bool migrate, SharedAssets assets)
+        public HudFixture(bool migrate, SharedAssets assets, bool withGauge = false, bool optedIn = true)
         {
             Root = new GameObject("Controlled HP actor"); Root.SetActive(false);
             Profile = Root.AddComponent<MonsterSizeProfile>();
             Statuses = Root.AddComponent<MonsterStatusRuntime>();
             Anchor = new GameObject("HudAnchor").transform; Anchor.SetParent(Root.transform, false);
             var profile = new SerializedObject(Profile); profile.FindProperty("hudAnchor").objectReferenceValue = Anchor; profile.ApplyModifiedPropertiesWithoutUndo();
+            AttributeDefinition health = null;
+            if (withGauge)
+            {
+                health = Attribute("Groggy merge health", 300f);
+                MaxHealth = Attribute("Groggy merge max health", 300f);
+                CurrentGauge = Attribute("Groggy merge current gauge", 0f);
+                MaxGauge = Attribute("Groggy merge max gauge", 100f);
+                var catalog = ScriptableObject.CreateInstance<AttributeCatalogSO>(); owned.Add(catalog);
+                typeof(AttributeCatalogSO).GetField("attributes", Fields).SetValue(catalog, new[] { health, MaxHealth, CurrentGauge, MaxGauge });
+                Attributes = Root.AddComponent<AttributeSet>();
+                typeof(AttributeSet).GetField("attributeCatalog", Fields).SetValue(Attributes, catalog);
+                Runner = Root.AddComponent<GameplayEffectRunner>();
+                Gauge = Root.AddComponent<StaggerGaugeSystem>();
+                Gauge.currentGaugeAttribute = CurrentGauge; Gauge.maxGaugeAttribute = MaxGauge;
+                typeof(StaggerGaugeSystem).GetField("maxHealthAttribute", Fields).SetValue(Gauge, MaxHealth);
+                typeof(StaggerGaugeSystem).GetField("maxGaugePerMaxHealth", Fields).SetValue(Gauge, optedIn ? 1f / 3f : 0f);
+                GroggyEffect = ScriptableObject.CreateInstance<GroggyProbeEffect>(); owned.Add(GroggyEffect);
+                GroggyEffect.name = "Groggy merge timed probe"; GroggyEffect.duration = 3f;
+                Gauge.staggeredEffect = GroggyEffect;
+            }
             Hud = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab"), Root.transform, false);
             View = Hud.GetComponent(ViewType);
+            if (withGauge)
+            {
+                ViewType.GetField("healthAttribute", Fields).SetValue(View, health);
+                ViewType.GetField("maxHealthAttribute", Fields).SetValue(View, MaxHealth);
+            }
             ViewType.GetField("meshHealthBar", Fields).SetValue(View, null);
             ViewType.GetField("statusCanvas", Fields).SetValue(View, null);
             Transform bar = Hud.transform.Find("Visual/HealthBar");
@@ -404,7 +668,22 @@ public sealed class MonsterHealthBarMeshPlayModeTests
             if (migrate) AuthorType.GetMethod("ApplyToLoadedHud").Invoke(null, new object[] { Hud, assets.Mesh, assets.Material });
             foreach (Transform transform in Root.GetComponentsInChildren<Transform>(true)) transform.gameObject.layer = 28;
             Root.SetActive(true);
+            if (withGauge)
+            {
+                typeof(StaggerGaugeSystem).GetMethod("Start", Fields).Invoke(Gauge, null);
+                Runner.enabled = false; // Recovery tests advance the real runner deterministically.
+            }
             Configure(MonsterSizeCategory.Medium, 1f, 1f);
+        }
+        private AttributeDefinition Attribute(string name, float initial)
+        {
+            var attribute = ScriptableObject.CreateInstance<AttributeDefinition>(); owned.Add(attribute);
+            attribute.name = name; attribute.defaultBaseValue = initial; attribute.minValue = 0f; attribute.maxValue = 10000f;
+            return attribute;
+        }
+        public void ShowHealth(bool enabled)
+        {
+            var profile = new SerializedObject(Profile); profile.FindProperty("showHealthBar").boolValue = enabled; profile.ApplyModifiedPropertiesWithoutUndo();
         }
         public void Configure(MonsterSizeCategory size, float health, float trail)
         {
@@ -421,7 +700,11 @@ public sealed class MonsterHealthBarMeshPlayModeTests
             ViewType.GetMethod("LateUpdate", Fields).Invoke(View, null);
             RenderPhase();
         }
-        public void Dispose() => Object.DestroyImmediate(Root);
+        public void Dispose()
+        {
+            Object.DestroyImmediate(Root);
+            foreach (Object item in owned) if (item != null) Object.DestroyImmediate(item);
+        }
     }
 
     private sealed class RenderFixture : IDisposable

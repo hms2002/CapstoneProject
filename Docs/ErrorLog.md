@@ -2540,3 +2540,10 @@ Suggested Later: expanded validation found `CombatFeelLootQuestPlayModeTests.Imp
 - 원인: SpeechBubble은 Awake에서 만든 전용 재질의 `_FaceColor`를 바꾸고 Vertex Color를 흰색으로 유지한다. 번역 폰트 callback은 표시 재질을 공유 fallback으로 교체하지만, 기존 테마 코드는 이전 전용 재질을 계속 수정했다. Vertex Color의 흰색은 2026-04-12부터 정상 동작의 일부였으며, 기본 글자 Outline도 번역 전부터0이었다. 실제 화면색과 프리팹 저장값/런타임 Vertex Color를 구분해야 한다.
 - 수정: LocalizeTmpFontEvent가 폰트·atlas·참조 적용 뒤 `LocalizedFontApplied`를 알리고, SpeechBubble이 새 localized 재질을 복제해 현재 테마색을 재적용한다. 풀 비활성화 동안 구독을 유지하고 파괴 때 해제한다. 공유 원본은 변경하지 않으며 이전/최종 전용 재질은 말풍선이 정리한다. 이전 atlas를 가진 재질을 다시 연결하거나 색을 Vertex Color로 옮겨 rich-text 색 곱셈을 바꾸지 않는다.
 - 검증 경로: `Tools/Validation/SpeechBubbleLocalizationRegression.cs`의 실제 공용 프리팹,5언어 폰트 콜백, 기본/보스 테마, 두 화자 색 분리, 풀 재사용과 재질 정리. 실행 결과와 제한은 [SessionLog](SessionLogs/2026-10-12.md)에 기록한다. 현재 구조는 [LocalizationFlow](StructureMemory/LocalizationFlow.md)를 참고한다.
+
+## 2026-10-14 — HUD mesh routing must include newly merged Canvas graphics
+
+- 충돌: 로컬 HP Mesh 최적화와 원격 그로기 바 추가가 같은 HUD 필드·초기화·배치와 프리팹 참조에 인접한 변경을 넣었다. 네 참조와 양쪽 계층을 모두 유지해도 의미상 충돌은 남을 수 있다.
+- 함정: 기존 Canvas 활성 조건은 상태 슬롯 또는 HP 겹침만 고려했다. 새 그로기 바는 같은 Canvas의 일반 Graphic이므로 status 없는 독립 몬스터에서 숨겨진다. 겹침 bounds에 그로기 영역을 넣지 않으면 이웃 HP와 겹치는 경우에도 분리된 Mesh/Canvas 순서를 계속 사용한다.
+- 수정 경계: 보이는 그로기 바를 Canvas 활성 조건과 projection bounds에 포함한다. 기존 Mesh 등록·fallback·정리와 원격 게이지/회복 계산을 보존하며, 시간에 따른 회복은 LateUpdate에서 갱신한다. prefab marker 해소에서는 새 GUID/fileID를 만들지 않고 양쪽 레코드 합집합을 유지한다.
+- 검증: 실제 합쳐진 prefab의 네 typed 참조와 legacy HP Image6개, status 없는 Canvas, 그로기 영역만 교차하는 raster/sorting, 게이지·HP 숨김·회복·재사용·구독 해제를 함께 확인한다. 프리팹 비교 fixture가 참조를 재저작하는 경우 원본 prefab typed readback을 별도로 추가해야 한다. [결과](SessionLogs/2026-10-14.md), [구조](StructureMemory/MonsterWorldHudAndStatus.md).

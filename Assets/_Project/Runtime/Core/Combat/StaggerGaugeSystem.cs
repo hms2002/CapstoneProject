@@ -34,6 +34,10 @@ namespace UnityGAS
         public GameplayEffect staggeredEffect;
         public bool allowOverflow = true;
 
+        [Header("Optional Max Gauge Scaling")]
+        [SerializeField] private AttributeDefinition maxHealthAttribute;
+        [SerializeField, Min(0f)] private float maxGaugePerMaxHealth;
+
         [Header("Presentation")]
         [SerializeField] private bool allowPresentationOffset;
         [SerializeField] private Vector3 presentationWorldOffset = new(0f, 1.6f, 0f);
@@ -50,6 +54,7 @@ namespace UnityGAS
         private MonoBehaviour _spawnedGroggyTimer;
 
         public bool AllowPresentationOffset => allowPresentationOffset;
+        public bool HasHealthScaledGauge => maxHealthAttribute != null && maxGaugePerMaxHealth > 0f;
         public Vector3 PresentationWorldOffset => presentationWorldOffset;
         public Transform PresentationAnchor => presentationAnchor != null ? presentationAnchor : transform;
         public SpriteRenderer PresentationBoundsSource => presentationBoundsSource;
@@ -62,7 +67,35 @@ namespace UnityGAS
 
         private void Start()
         {
+            SyncMaxGaugeWithHealth();
             EnsureGroggyTimerInstance();
+        }
+
+        private void OnEnable()
+        {
+            if (_attr != null && maxHealthAttribute != null && maxGaugePerMaxHealth > 0f)
+                _attr.OnAttributeChanged += OnAttributeChanged;
+        }
+
+        private void OnDisable()
+        {
+            if (_attr != null)
+                _attr.OnAttributeChanged -= OnAttributeChanged;
+        }
+
+        private void OnAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
+        {
+            if (attribute == maxHealthAttribute)
+                SyncMaxGaugeWithHealth();
+        }
+
+        private void SyncMaxGaugeWithHealth()
+        {
+            if (_attr == null || maxHealthAttribute == null || maxGaugeAttribute == null || maxGaugePerMaxHealth <= 0f)
+                return;
+
+            float maximum = _attr.GetAttributeValue(maxHealthAttribute) * maxGaugePerMaxHealth;
+            _attr.TrySetBaseValue(maxGaugeAttribute, Mathf.Max(0f, maximum), this);
         }
 
         public void Clear()

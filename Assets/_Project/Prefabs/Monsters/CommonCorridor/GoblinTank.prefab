@@ -68,6 +68,7 @@ GameObject:
   - component: {fileID: 2030336360334136749}
   - component: {fileID: 1586467015597888958}
   - component: {fileID: 1158441616690841017}
+  - component: {fileID: 1647788532839632986}
   m_Layer: 31
   m_Name: GoblinTank
   m_TagString: Enemy
@@ -421,13 +422,13 @@ MonoBehaviour:
   groggyTag: {fileID: 0}
   followAnchor: {fileID: 2659726163241547920}
   boundsSource: {fileID: 8522039032582460435}
-  effectPrefab: {fileID: 2456809460785590275, guid: 80d266c90ff9c4d458d715b8d37a677b, type: 3}
+  effectPrefab: {fileID: 1300715046430871899, guid: 08b77e82d78534d45abd893363571c52, type: 3}
   effectParent: {fileID: 0}
   instantiateOnAwake: 0
   destroyInstanceWhenHidden: 1
   usePooling: 1
   maxPooledInstancesPerPrefab: 16
-  worldOffset: {x: 0, y: 0.18, z: 0}
+  worldOffset: {x: 0, y: -2, z: 0}
   fallbackHeight: 1.2
   followEveryFrame: 1
   scaleByBoundsHeight: 1
@@ -667,6 +668,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gameplay::MonsterStatusRuntime
   electrocutedEffect: {fileID: 11400000, guid: 098ed5d6eb1548c884517bade6c21d73, type: 2}
+--- !u!114 &1647788532839632986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827981175415890305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e232de7843f92745a254698e2054f4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Core::UnityGAS.StaggerGaugeSystem
+  currentGaugeAttribute: {fileID: 11400000, guid: 122086249f809784c84b56e9b99e367e, type: 2}
+  maxGaugeAttribute: {fileID: 11400000, guid: ddbd05a9b77349441a875c479e48212d, type: 2}
+  resistancePercentAttribute: {fileID: 0}
+  staggeredEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
+  allowOverflow: 1
+  maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  maxGaugePerMaxHealth: 0.33333334
+  allowPresentationOffset: 0
+  presentationWorldOffset: {x: 0, y: 1.6, z: 0}
+  presentationAnchor: {fileID: 0}
+  presentationBoundsSource: {fileID: 0}
+  groggyTimerPrefab: {fileID: 0}
+  groggyTimerParent: {fileID: 0}
 --- !u!1 &1014265358309527293
 GameObject:
   m_ObjectHideFlags: 0
