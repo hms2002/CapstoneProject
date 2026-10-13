@@ -824,6 +824,12 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
         presentation.GetType().GetMethod("SnapOpen").Invoke(presentation, null);
         var grid = (Transform)screenType.GetField("chestGridRoot", Private).GetValue(screen);
         var selected = (Transform)screenType.GetField("selectedItemsRoot", Private).GetValue(screen);
+        Assert.That(selected.childCount, Is.EqualTo(2), "SelectedItemsGrid owns two permanent authored cells.");
+        Transform firstCell = selected.GetChild(0);
+        Transform secondCell = selected.GetChild(1);
+        Assert.That(firstCell.name, Is.EqualTo("SelectedItemSlot_1"));
+        Assert.That(secondCell.name, Is.EqualTo("SelectedItemSlot_2"));
+        Type slotType = Type.GetType("ItemSlotUI, UI", true);
         var slots = (IList)screenType.GetField("spawnedChestSlots", Private).GetValue(screen);
         Assert.That(slots.Count, Is.EqualTo(3), "Empty chest slots must not be instantiated.");
         object middle = slots[1];
@@ -833,12 +839,23 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
             Time.timeScale = 0f;
             Call(screen, "ToggleSelection", middle);
             yield return new WaitForSecondsRealtime(0.35f);
-            Assert.That(selected.childCount, Is.EqualTo(1));
+            Assert.That(selected.childCount, Is.EqualTo(2));
+            Assert.That(selected.GetChild(0), Is.SameAs(firstCell));
+            Assert.That(selected.GetChild(1), Is.SameAs(secondCell));
+            Assert.That(((IList)screenType.GetField("selectedSlots", Private).GetValue(screen)).Count, Is.EqualTo(1));
+            Assert.That(((Component)middle).transform.parent, Is.SameAs(firstCell));
+            Assert.That(firstCell.GetComponentsInChildren(slotType, true).Length, Is.EqualTo(1));
+            Assert.That(secondCell.GetComponentsInChildren(slotType, true).Length, Is.Zero);
             Assert.That(grid.childCount, Is.EqualTo(2));
             Assert.That(chest.Get(3), Is.SameAs(weapon), "Selection must not acquire the item.");
             Call(screen, "ToggleSelection", middle);
             yield return new WaitForSecondsRealtime(0.35f);
-            Assert.That(selected.childCount, Is.Zero);
+            Assert.That(selected.childCount, Is.EqualTo(2));
+            Assert.That(selected.GetChild(0), Is.SameAs(firstCell));
+            Assert.That(selected.GetChild(1), Is.SameAs(secondCell));
+            Assert.That(((IList)screenType.GetField("selectedSlots", Private).GetValue(screen)).Count, Is.Zero);
+            Assert.That(firstCell.GetComponentsInChildren(slotType, true).Length, Is.Zero);
+            Assert.That(secondCell.GetComponentsInChildren(slotType, true).Length, Is.Zero);
             Assert.That(grid.GetChild(1), Is.SameAs(((Component)middle).transform));
             Call(screen, "ToggleSelection", middle);
             clone.SetActive(false); // Interrupt the tween through the same disable cleanup used on close.

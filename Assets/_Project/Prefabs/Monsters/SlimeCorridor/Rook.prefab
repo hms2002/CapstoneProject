@@ -39,6 +39,7 @@ GameObject:
   - component: {fileID: 910000000000000001}
   - component: {fileID: 3941589020429139668}
   - component: {fileID: 2130166334749931604}
+  - component: {fileID: 4656116799782102029}
   m_Layer: 31
   m_Name: Rook
   m_TagString: Enemy
@@ -722,6 +723,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gameplay::MonsterStatusRuntime
   electrocutedEffect: {fileID: 11400000, guid: 098ed5d6eb1548c884517bade6c21d73, type: 2}
+--- !u!114 &4656116799782102029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18a1857e5118414599ff746dbb13e4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::MonsterEncyclopediaIdentity
+  monsterId: monster.slime_rook
 --- !u!1 &991000000000003001
 GameObject:
   m_ObjectHideFlags: 0

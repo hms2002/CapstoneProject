@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="28" result="Passed" total="28" passed="28" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-07 08:14:25Z" end-time="2026-10-07 08:14:27Z" duration="2.072536">
+  <test-suite type="TestSuite" id="1976" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="818" result="Passed" start-time="2026-10-07 08:14:25Z" end-time="2026-10-07 08:14:27Z" duration="2.072536" total="28" passed="28" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1972" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="811" result="Passed" start-time="2026-10-07 08:14:25Z" end-time="2026-10-07 08:14:27Z" duration="2.037129" total="28" passed="28" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="6324" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <output><![CDATA[IOException: Win32 IO returned 1224. Path: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Data\SceneFlow\LoadingManifests\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.StreamWriter..ctor (System.String path) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string)
+System.IO.File.WriteAllText (System.String path, System.String contents) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+PrewarmTraceRuntime.Flush () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:272)
+PrewarmTraceRuntime.FlushIfNeeded () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:220)
+UnityEditor.EditorApplication.Internal_CallUpdateFunctions () (at <6af99b88526b45e691c9c0a43494187d>:0)
+
+]]></output>
+      <test-suite type="TestFixture" id="1147" name="FramePerformancePopupPlayModeTests" fullname="FramePerformancePopupPlayModeTests" classname="FramePerformancePopupPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-07 08:14:25Z" end-time="2026-10-07 08:14:26Z" duration="1.000321" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <output><![CDATA[IOException: Win32 IO returned 1224. Path: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Data\SceneFlow\LoadingManifests\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.StreamWriter..ctor (System.String path) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string)
+System.IO.File.WriteAllText (System.String path, System.String contents) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+PrewarmTraceRuntime.Flush () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:272)
+PrewarmTraceRuntime.FlushIfNeeded () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:220)
+UnityEditor.EditorApplication.Internal_CallUpdateFunctions () (at <6af99b88526b45e691c9c0a43494187d>:0)
+
+]]></output>
+        <test-case id="1150" name="OwnerCleanup_DestroysInactiveLocalizedPopups" fullname="FramePerformancePopupPlayModeTests.OwnerCleanup_DestroysInactiveLocalizedPopups" methodname="OwnerCleanup_DestroysInactiveLocalizedPopups" classname="FramePerformancePopupPlayModeTests" runstate="Runnable" seed="350916190" result="Passed" start-time="2026-10-07 08:14:25Z" end-time="2026-10-07 08:14:26Z" duration="0.737542" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CursorDiagnostic] phase=display-stable-2s frame=9 screen=640x480 mode=Windowed focused=False visible=True lock=None domain=Combat/Default hiddenOwners=0 backend=UnityCursorAPI cursorMode=Auto texture=light_cursor_spritesheet_31_Cursor_22x22 hotspot=(11.00, 11.00)
+]]></output>
+        </test-case>
+        <test-case id="1149" name="ReusedActivePopup_BelongsToItsOriginalParentSceneAndDiesOnUnload" fullname="FramePerformancePopupPlayModeTests.ReusedActivePopup_BelongsToItsOriginalParentSceneAndDiesOnUnload" methodname="ReusedActivePopup_BelongsToItsOriginalParentSceneAndDiesOnUnload" classname="FramePerformancePopupPlayModeTests" runstate="Runnable" seed="197072864" result="Passed" start-time="2026-10-07 08:14:26Z" end-time="2026-10-07 08:14:26Z" duration="0.171763" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1148" name="ReusedPopup_RestoresDefaultFontColorTransformAndLifetime" fullname="FramePerformancePopupPlayModeTests.ReusedPopup_RestoresDefaultFontColorTransformAndLifetime" methodname="ReusedPopup_RestoresDefaultFontColorTransformAndLifetime" classname="FramePerformancePopupPlayModeTests" runstate="Runnable" seed="1375554331" result="Passed" start-time="2026-10-07 08:14:26Z" end-time="2026-10-07 08:14:26Z" duration="0.021234" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1464" name="MonsterHealthAndWeaponSkillBalancePlayModeTests" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" testcasecount="111" result="Passed" start-time="2026-10-07 08:14:26Z" end-time="2026-10-07 08:14:27Z" duration="0.432612" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <output><![CDATA[IOException: Win32 IO returned 1224. Path: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Data\SceneFlow\LoadingManifests\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.StreamWriter..ctor (System.String path) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string)
+System.IO.File.WriteAllText (System.String path, System.String contents) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+PrewarmTraceRuntime.Flush () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:272)
+PrewarmTraceRuntime.FlushIfNeeded () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:220)
+UnityEditor.EditorApplication.Internal_CallUpdateFunctions () (at <6af99b88526b45e691c9c0a43494187d>:0)
+
+]]></output>
+        <test-suite type="ParameterizedMethod" id="1510" name="FloweringDashSlash_PreservesLosGateAndConsumedFailedHitAcrossRepeatedScans" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.FloweringDashSlash_PreservesLosGateAndConsumedFailedHitAcrossRepeatedScans" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-07 08:14:26Z" end-time="2026-10-07 08:14:27Z" duration="0.289871" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <output><![CDATA[IOException: Win32 IO returned 1224. Path: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Data\SceneFlow\LoadingManifests\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.StreamWriter..ctor (System.String path) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string)
+System.IO.File.WriteAllText (System.String path, System.String contents) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+PrewarmTraceRuntime.Flush () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:272)
+PrewarmTraceRuntime.FlushIfNeeded () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:220)
+UnityEditor.EditorApplication.Internal_CallUpdateFunctions () (at <6af99b88526b45e691c9c0a43494187d>:0)
+
+]]></output>
+          <test-case id="1508" name="FloweringDashSlash_PreservesLosGateAndConsumedFailedHitAcrossRepeatedScans(False)" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.FloweringDashSlash_PreservesLosGateAndConsumedFailedHitAcrossRepeatedScans(False)" methodname="FloweringDashSlash_PreservesLosGateAndConsumedFailedHitAcrossRepeatedScans" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="494909783" result="Passed" start-time="2026-10-07 08:14:26Z" end-time="2026-10-07 08:14:27Z" duration="0.187673" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[CombatTargetResolver2D] 충돌한 콜라이더에 CombatHurtbox2D가 없습니다. name=BodyCollision, path=GoblinWarrior(Clone)/BodyCollision, layer=TEMP_Enemy_LAYER(31), isTrigger=False, attachedRigidbody=GoblinWarrior(Clone), 상위에도 CombatHurtbox2D가 없습니다.
+[GE_Damage_Spec] GE_Damage_Spec: shield skipped: no shield. target=GoblinWarrior(Clone), shield=0
+[GE_Damage_Spec] GE_Damage_Spec: hp modify. target=GoblinWarrior(Clone), damage=5, hp=45->40, modifyResult=True
+[GE_Damage_Spec] GE_Damage_Spec: target=GoblinWarrior(Clone), element=none, skip show: tag=null, target=GoblinWarrior(Clone), attributeSet=ok, healthAttribute=HealthAttribute
+[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.
+]]></output>
+          </test-case>
+          <test-case id="1509" name="FloweringDashSlash_PreservesLosGateAndConsumedFailedHitAcrossRepeatedScans(True)" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.FloweringDashSlash_PreservesLosGateAndConsumedFailedHitAcrossRepeatedScans(True)" methodname="FloweringDashSlash_PreservesLosGateAndConsumedFailedHitAcrossRepeatedScans" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="1376454507" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.009654" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[CombatTargetResolver2D] 충돌한 콜라이더에 CombatHurtbox2D가 없습니다. name=BodyCollision, path=GoblinWarrior(Clone)/BodyCollision, layer=TEMP_Enemy_LAYER(31), isTrigger=False, attachedRigidbody=GoblinWarrior(Clone), 상위에도 CombatHurtbox2D가 없습니다.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1515" name="FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.116528" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <output><![CDATA[IOException: Win32 IO returned 1224. Path: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Data\SceneFlow\LoadingManifests\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.StreamWriter..ctor (System.String path) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string)
+System.IO.File.WriteAllText (System.String path, System.String contents) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+PrewarmTraceRuntime.Flush () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:272)
+PrewarmTraceRuntime.FlushIfNeeded () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:220)
+UnityEditor.EditorApplication.Internal_CallUpdateFunctions () (at <6af99b88526b45e691c9c0a43494187d>:0)
+
+]]></output>
+          <test-case id="1511" name="FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges(True,0.0f)" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges(True,0.0f)" methodname="FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="1615338092" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.037542" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1512" name="FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges(False,0.0f)" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges(False,0.0f)" methodname="FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="1873730277" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.021446" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1513" name="FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges(True,37.0f)" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges(True,37.0f)" methodname="FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="1348777510" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.028229" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1514" name="FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges(False,37.0f)" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges(False,37.0f)" methodname="FloweringOverlapList_MatchesAllReferenceOrderForCrowdsLayersTriggersDepthAndEdges" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="1407912610" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.019956" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+      </test-suite>
+      <test-suite type="TestFixture" id="1814" name="PuddleProjectileVisualPlayModeTests" fullname="PuddleProjectileVisualPlayModeTests" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" testcasecount="17" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.468316" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <output><![CDATA[IOException: Win32 IO returned 1224. Path: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Data\SceneFlow\LoadingManifests\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.StreamWriter..ctor (System.String path) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string)
+System.IO.File.WriteAllText (System.String path, System.String contents) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+PrewarmTraceRuntime.Flush () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:272)
+PrewarmTraceRuntime.FlushIfNeeded () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:220)
+UnityEditor.EditorApplication.Internal_CallUpdateFunctions () (at <6af99b88526b45e691c9c0a43494187d>:0)
+
+]]></output>
+        <test-suite type="ParameterizedMethod" id="1824" name="AuthoredPuddle_ContainsInactiveNestedAnimationPrefab_WithoutGameplayComponents" fullname="PuddleProjectileVisualPlayModeTests.AuthoredPuddle_ContainsInactiveNestedAnimationPrefab_WithoutGameplayComponents" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.085857" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <output><![CDATA[IOException: Win32 IO returned 1224. Path: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Data\SceneFlow\LoadingManifests\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.StreamWriter..ctor (System.String path) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string)
+System.IO.File.WriteAllText (System.String path, System.String contents) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+PrewarmTraceRuntime.Flush () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:272)
+PrewarmTraceRuntime.FlushIfNeeded () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:220)
+UnityEditor.EditorApplication.Internal_CallUpdateFunctions () (at <6af99b88526b45e691c9c0a43494187d>:0)
+
+]]></output>
+          <test-case id="1822" name="AuthoredPuddle_ContainsInactiveNestedAnimationPrefab_WithoutGameplayComponents(&quot;Fire&quot;)" fullname="PuddleProjectileVisualPlayModeTests.AuthoredPuddle_ContainsInactiveNestedAnimationPrefab_WithoutGameplayComponents(&quot;Fire&quot;)" methodname="AuthoredPuddle_ContainsInactiveNestedAnimationPrefab_WithoutGameplayComponents" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="1665711834" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.046059" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1823" name="AuthoredPuddle_ContainsInactiveNestedAnimationPrefab_WithoutGameplayComponents(&quot;Alcohol&quot;)" fullname="PuddleProjectileVisualPlayModeTests.AuthoredPuddle_ContainsInactiveNestedAnimationPrefab_WithoutGameplayComponents(&quot;Alcohol&quot;)" methodname="AuthoredPuddle_ContainsInactiveNestedAnimationPrefab_WithoutGameplayComponents" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="1873324938" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.029592" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1834" name="BothPuddles_GrowDuringPreparation_AndRestoreOrConsumeWithoutNewObjects" fullname="PuddleProjectileVisualPlayModeTests.BothPuddles_GrowDuringPreparation_AndRestoreOrConsumeWithoutNewObjects" methodname="BothPuddles_GrowDuringPreparation_AndRestoreOrConsumeWithoutNewObjects" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="68142576" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.161276" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1815" name="BuffArrows_AuthoredOnlyOnAlcohol" fullname="PuddleProjectileVisualPlayModeTests.BuffArrows_AuthoredOnlyOnAlcohol" methodname="BuffArrows_AuthoredOnlyOnAlcohol" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="919760885" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.001542" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1817" name="BuffArrows_HideOnTransitionsAndReuseChildren" fullname="PuddleProjectileVisualPlayModeTests.BuffArrows_HideOnTransitionsAndReuseChildren" methodname="BuffArrows_HideOnTransitionsAndReuseChildren" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="1577366942" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.010892" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1816" name="BuffArrows_IgnoreSurfaceQuadScaleAndStayInsideRadius" fullname="PuddleProjectileVisualPlayModeTests.BuffArrows_IgnoreSurfaceQuadScaleAndStayInsideRadius" methodname="BuffArrows_IgnoreSurfaceQuadScaleAndStayInsideRadius" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="952099967" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.015397" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1818" name="BuffStreaks_RepairPresentationPropertiesWithoutResettingTheirClock" fullname="PuddleProjectileVisualPlayModeTests.BuffStreaks_RepairPresentationPropertiesWithoutResettingTheirClock" methodname="BuffStreaks_RepairPresentationPropertiesWithoutResettingTheirClock" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="360875417" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.005725" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1819" name="GroundProperties_RepairExternalBlockWritesAndApplySettersImmediately" fullname="PuddleProjectileVisualPlayModeTests.GroundProperties_RepairExternalBlockWritesAndApplySettersImmediately" methodname="GroundProperties_RepairExternalBlockWritesAndApplySettersImmediately" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="75421805" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.005122" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1820" name="GroundUpdate_ObservesParentMovementAndRepairsLocalScale" fullname="PuddleProjectileVisualPlayModeTests.GroundUpdate_ObservesParentMovementAndRepairsLocalScale" methodname="GroundUpdate_ObservesParentMovementAndRepairsLocalScale" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="1497698418" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.005461" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1833" name="MissingProjectileReference_PreservesLegacyShaderPresentation" fullname="PuddleProjectileVisualPlayModeTests.MissingProjectileReference_PreservesLegacyShaderPresentation" methodname="MissingProjectileReference_PreservesLegacyShaderPresentation" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="537545711" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.001156" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1832" name="Preparing_RestoresNonUnitAuthoredScaleAcrossDisableAndRepeatedAbsorption" fullname="PuddleProjectileVisualPlayModeTests.Preparing_RestoresNonUnitAuthoredScaleAcrossDisableAndRepeatedAbsorption" methodname="Preparing_RestoresNonUnitAuthoredScaleAcrossDisableAndRepeatedAbsorption" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="1060444663" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.002978" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1831" name="Preparing_ShrinksCachedGroundMeshAndGrowsAuthoredScale_WithoutShaderMorph" fullname="PuddleProjectileVisualPlayModeTests.Preparing_ShrinksCachedGroundMeshAndGrowsAuthoredScale_WithoutShaderMorph" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.021632" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1829" name="Preparing_ShrinksCachedGroundMeshAndGrowsAuthoredScale_WithoutShaderMorph(&quot;Fire&quot;)" fullname="PuddleProjectileVisualPlayModeTests.Preparing_ShrinksCachedGroundMeshAndGrowsAuthoredScale_WithoutShaderMorph(&quot;Fire&quot;)" methodname="Preparing_ShrinksCachedGroundMeshAndGrowsAuthoredScale_WithoutShaderMorph" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="682702763" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.008675" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1830" name="Preparing_ShrinksCachedGroundMeshAndGrowsAuthoredScale_WithoutShaderMorph(&quot;Alcohol&quot;)" fullname="PuddleProjectileVisualPlayModeTests.Preparing_ShrinksCachedGroundMeshAndGrowsAuthoredScale_WithoutShaderMorph(&quot;Alcohol&quot;)" methodname="Preparing_ShrinksCachedGroundMeshAndGrowsAuthoredScale_WithoutShaderMorph" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="861326912" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.005227" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1827" name="ProjectileVisual_PlaysAuthoredFrames_WithoutMovingTheRotationRoot" fullname="PuddleProjectileVisualPlayModeTests.ProjectileVisual_PlaysAuthoredFrames_WithoutMovingTheRotationRoot" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.011481" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1825" name="ProjectileVisual_PlaysAuthoredFrames_WithoutMovingTheRotationRoot(&quot;Fire&quot;,&quot;Lavaball_&quot;)" fullname="PuddleProjectileVisualPlayModeTests.ProjectileVisual_PlaysAuthoredFrames_WithoutMovingTheRotationRoot(&quot;Fire&quot;,&quot;Lavaball_&quot;)" methodname="ProjectileVisual_PlaysAuthoredFrames_WithoutMovingTheRotationRoot" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="1375629971" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.004962" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1826" name="ProjectileVisual_PlaysAuthoredFrames_WithoutMovingTheRotationRoot(&quot;Alcohol&quot;,&quot;Alcholeball_&quot;)" fullname="PuddleProjectileVisualPlayModeTests.ProjectileVisual_PlaysAuthoredFrames_WithoutMovingTheRotationRoot(&quot;Alcohol&quot;,&quot;Alcholeball_&quot;)" methodname="ProjectileVisual_PlaysAuthoredFrames_WithoutMovingTheRotationRoot" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="1476604686" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.001457" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1821" name="ShaderPixels_MatchOriginalForGroundIgnitionAndBothProjectilePaths" fullname="PuddleProjectileVisualPlayModeTests.ShaderPixels_MatchOriginalForGroundIgnitionAndBothProjectilePaths" methodname="ShaderPixels_MatchOriginalForGroundIgnitionAndBothProjectilePaths" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="120555307" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.115870" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[PUDDLEPIXELS,mode=Ground,element=0,ignition=0,progress=0,authored=False,visiblePixels=7610,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=Ground,element=1,ignition=1,progress=0,authored=False,visiblePixels=7610,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=Igniting,element=0,ignition=0.25,progress=0,authored=False,visiblePixels=7610,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=Igniting,element=0,ignition=0.75,progress=0,authored=False,visiblePixels=7610,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=AbsorbPreparing,element=0,ignition=0,progress=0,authored=False,visiblePixels=7610,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=AbsorbPreparing,element=0,ignition=0,progress=0.5,authored=False,visiblePixels=5640,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=AbsorbPreparing,element=0,ignition=0,progress=0.79,authored=False,visiblePixels=3590,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=AbsorbPreparing,element=0,ignition=0,progress=0.95,authored=False,visiblePixels=2767,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=AbsorbPreparing,element=1,ignition=1,progress=1,authored=False,visiblePixels=3410,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=AbsorbProjectile,element=0,ignition=0,progress=0.25,authored=False,visiblePixels=3089,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=AbsorbProjectile,element=0,ignition=0,progress=1,authored=False,visiblePixels=3089,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=AbsorbProjectile,element=1,ignition=1,progress=0.5,authored=False,visiblePixels=3410,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=AbsorbPreparing,element=0,ignition=0,progress=0.5,authored=True,visiblePixels=7610,maximumChannelDelta=0,tolerance=1
+PUDDLEPIXELS,mode=AbsorbPreparing,element=1,ignition=1,progress=0.95,authored=True,visiblePixels=7610,maximumChannelDelta=0,tolerance=1
+]]></output>
+        </test-case>
+        <test-case id="1828" name="VisualModes_RestoreGroundAndHideConsumed_AndUseWorldSpaceFacing" fullname="PuddleProjectileVisualPlayModeTests.VisualModes_RestoreGroundAndHideConsumed_AndUseWorldSpaceFacing" methodname="VisualModes_RestoreGroundAndHideConsumed_AndUseWorldSpaceFacing" classname="PuddleProjectileVisualPlayModeTests" runstate="Runnable" seed="996421623" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.003214" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1867" name="RoomMonsterWavePlayModeTests" fullname="RoomMonsterWavePlayModeTests" classname="RoomMonsterWavePlayModeTests" runstate="Runnable" testcasecount="17" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.043761" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1873" name="LockUnit_GenericRootStillFindsLateAndReplacedChildEnemy" fullname="RoomMonsterWavePlayModeTests.LockUnit_GenericRootStillFindsLateAndReplacedChildEnemy" methodname="LockUnit_GenericRootStillFindsLateAndReplacedChildEnemy" classname="RoomMonsterWavePlayModeTests" runstate="Runnable" seed="817496602" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.021791" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[MovementMotor2D] LateChildEnemy: IIntentMovementSource2D를 찾지 못했습니다.
+[MovementMotor2D] LateChildEnemy: IStatProvider를 찾지 못했습니다. (예: AttributeStatSource 필요)
+]]></output>
+        </test-case>
+        <test-case id="1872" name="LockUnit_ObservesConcreteMobDeath_AndDestroyedComponentReplacement" fullname="RoomMonsterWavePlayModeTests.LockUnit_ObservesConcreteMobDeath_AndDestroyedComponentReplacement" methodname="LockUnit_ObservesConcreteMobDeath_AndDestroyedComponentReplacement" classname="RoomMonsterWavePlayModeTests" runstate="Runnable" seed="1462413844" result="Passed" start-time="2026-10-07 08:14:27Z" end-time="2026-10-07 08:14:27Z" duration="0.006502" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[MovementMotor2D] ReplaceableConcreteMob: IIntentMovementSource2D를 찾지 못했습니다.
+[MovementMotor2D] ReplaceableConcreteMob: IStatProvider를 찾지 못했습니다. (예: AttributeStatSource 필요)
+Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

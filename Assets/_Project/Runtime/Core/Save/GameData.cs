@@ -16,6 +16,65 @@ public class ItemSaveData
     public List<string> unlockedRelicIDs = new List<string>();
 }
 
+/// <summary>프로필에 커밋된 몬스터 종별 누적 처치 수다. 표시 이름 대신 도감 ID를 저장한다.</summary>
+[System.Serializable]
+public sealed class MonsterEncyclopediaKillRecord
+{
+    public string monsterId;
+    public int count;
+
+    public MonsterEncyclopediaKillRecord(string monsterId, int count)
+    {
+        this.monsterId = monsterId;
+        this.count = count;
+    }
+}
+
+[System.Serializable]
+public sealed class MonsterEncyclopediaSaveData
+{
+    public List<MonsterEncyclopediaKillRecord> killRecords = new List<MonsterEncyclopediaKillRecord>();
+
+    public int GetKillCount(string monsterId)
+    {
+        if (string.IsNullOrWhiteSpace(monsterId) || killRecords == null)
+            return 0;
+
+        long count = 0;
+        string normalizedId = monsterId.Trim();
+        foreach (MonsterEncyclopediaKillRecord record in killRecords)
+            if (record != null && string.Equals(record.monsterId, normalizedId, System.StringComparison.Ordinal))
+                count += System.Math.Max(0, record.count);
+        return (int)System.Math.Min(int.MaxValue, count);
+    }
+
+    public void AddKills(string monsterId, int count)
+    {
+        if (string.IsNullOrWhiteSpace(monsterId) || count <= 0)
+            return;
+
+        killRecords ??= new List<MonsterEncyclopediaKillRecord>();
+        string normalizedId = monsterId.Trim();
+        MonsterEncyclopediaKillRecord record = killRecords.Find(candidate => candidate != null &&
+            string.Equals(candidate.monsterId, normalizedId, System.StringComparison.Ordinal));
+        if (record == null)
+            killRecords.Add(new MonsterEncyclopediaKillRecord(normalizedId, count));
+        else
+            record.count = (int)System.Math.Min(int.MaxValue, (long)System.Math.Max(0, record.count) + count);
+    }
+
+    public void Normalize()
+    {
+        List<MonsterEncyclopediaKillRecord> previous = killRecords;
+        killRecords = new List<MonsterEncyclopediaKillRecord>();
+        if (previous == null)
+            return;
+        foreach (MonsterEncyclopediaKillRecord record in previous)
+            if (record != null)
+                AddKills(record.monsterId, record.count);
+    }
+}
+
 // =========================================================
 // [기존] 숏컷/맵 데이터
 // =========================================================
@@ -321,6 +380,7 @@ public class GameData
     public BossClearProgressSaveData bossClearProgressData = new BossClearProgressSaveData();
     public RunSpecialNpcSaveData runSpecialNpcData = new RunSpecialNpcSaveData();
     public TutorialSaveData tutorialData = new TutorialSaveData();
+    public MonsterEncyclopediaSaveData monsterEncyclopediaData = new MonsterEncyclopediaSaveData();
     // NPC introductions are profile progress, independent of generated room/run IDs.
     public List<string> completedNpcRoomIntroductions = new List<string>();
 

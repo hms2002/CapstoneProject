@@ -126,6 +126,9 @@ public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
             Data.tutorialData = new TutorialSaveData();
         Data.tutorialData.Normalize();
 
+        Data.monsterEncyclopediaData ??= new MonsterEncyclopediaSaveData();
+        Data.monsterEncyclopediaData.Normalize();
+
         ItemManager itemManager = ItemManager.Instance;
         if (itemManager != null && itemManager.IsReady)
         {
@@ -159,6 +162,8 @@ public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
         Data.runSpecialNpcData.constructionRecords ??= new System.Collections.Generic.List<RunSpecialNpcConstructionRecord>();
         Data.tutorialData ??= new TutorialSaveData();
         Data.tutorialData.Normalize();
+        Data.monsterEncyclopediaData ??= new MonsterEncyclopediaSaveData();
+        Data.monsterEncyclopediaData.Normalize();
     }
 
     private void OnApplicationQuit()

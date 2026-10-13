@@ -1,0 +1,57 @@
+[
+  {
+    "path": "Assets/_Project/Runtime/UI/Upgrade/UpgradeLakePresentation.cs",
+    "startingSha256": "32c231e0e85e56c5c03c73671562281a3eb5591d4295af89d4beb944f4a3f175",
+    "sha256": "9efa5984cd95d2f86591669d49ee04b0f0d6c587d9b8583d5fcae1ce11d1070a"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/MenuButtonHighlightPresentation.cs",
+    "startingSha256": "406391aa32177a5098c74fa9658c52caefcf0210fc87abf24a41c173383026da",
+    "sha256": "cbe1f29e91aa023be7c2c15da71c8e87e5c5f10d70982cd68257b888b6145691"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/SimpleTextAnimator.cs",
+    "startingSha256": "61d0f11f330b450fad08a96b281afd3abd96a5f55ef9c00e7fbb8e0cb46c29af",
+    "sha256": "223c52037d9c52ef759e22a912550bd150c1f74a091551ba3e162c2ccfd199f9"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Localization/LocalizeTmpFontEvent.cs",
+    "startingSha256": "498ea431355e3300b6d6b3f172dc4007518bc6d5196c13579e837992a585aa5b",
+    "sha256": "b65de5ab12fac6e43cde1c68092ae2593b13b4d507379210fba839dfb5652de8"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/PlayerInventoryPanelView.cs",
+    "startingSha256": "0d9021614b83f2a3d15f23f2add3d9e779331a02ec22e79fe847d2e12c779652",
+    "sha256": "9970b963675efb3ebe72939712103fb1a66ddcbf853114d1d2e197bd58dc5ce2"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/ItemSlotUI.cs",
+    "startingSha256": "ef6c8ebd82a263ca07459064522f136c883090638b133f554547f8b0cbc0f7e6",
+    "sha256": "35e83fc723ef40d5d519c63e8394da1110c3b1f760345ee269383c500659949b"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/SwapWeaponSkillHUD2D.cs",
+    "startingSha256": "05af0da3fce04e42ea94a419a5c3d4d540f9490e31297212128da42694690796",
+    "sha256": "34a7ed87f7de508b02857816ab38a81d81b4ebe50fd29a7faf9f338026e699a8"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/WeaponSkillHudSlotPresenter.cs",
+    "startingSha256": "641127cc8b1fe8e11f70dc6610bd423ace7513798a314228dac340c8ed62e9b0",
+    "sha256": "2f39fdbfcc1860989c36c5c6224f3ebd19bf974533b6559c8604fc532f779b8c"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/WeaponSkillHUD2D.cs",
+    "startingSha256": "1a88da8914506e8c618dec4013a28eb28f7fd62d7bf685ba7a71cf19807590bf",
+    "sha256": "bd37b3abd88538cb58452ea16767b40cc4d2f9f942997f678c7a41aaf00b3fb3"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/Status/StatusHudEntryView.cs",
+    "startingSha256": "140870ed2cd94f6518427a7d77f87ac19a324b8ca2e71da3924ece442f2195f1",
+    "sha256": "a4064f9619a19dc90684bc370160d0f4dcff591ba05329714a766e13b9466c7c"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/status_HUD_EntryView.prefab",
+    "startingSha256": "019f4ab238bd7e789e299bddb404edbd6632b44996a27de5361cf4f58bd7ff8f",
+    "sha256": "73502ac6d2937911cfa0c709c66141f022a91d5308289a7b7fc66d8822f8d157"
+  }
+]

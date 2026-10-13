@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="18" result="Passed" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-11 11:00:39Z" end-time="2026-10-11 11:00:44Z" duration="4.1802073">
+  <test-suite type="TestSuite" id="2194" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="1003" result="Passed" start-time="2026-10-11 11:00:39Z" end-time="2026-10-11 11:00:44Z" duration="4.180207" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2190" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="996" result="Passed" start-time="2026-10-11 11:00:39Z" end-time="2026-10-11 11:00:44Z" duration="4.142510" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="49488" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1476" name="EncyclopediaCreaturePlayModeTests" fullname="EncyclopediaCreaturePlayModeTests" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-11 11:00:39Z" end-time="2026-10-11 11:00:44Z" duration="4.118725" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1494" name="ActualCreaturePages_RenderAt1920x1080" fullname="EncyclopediaCreaturePlayModeTests.ActualCreaturePages_RenderAt1920x1080" methodname="ActualCreaturePages_RenderAt1920x1080" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="2141750373" result="Passed" start-time="2026-10-11 11:00:40Z" end-time="2026-10-11 11:00:43Z" duration="3.159194" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CursorDiagnostic] phase=display-stable-2s frame=10 screen=640x480 mode=Windowed focused=False visible=True lock=None domain=Combat/Default hiddenOwners=0 backend=UnityCursorAPI cursorMode=Auto texture=light_cursor_spritesheet_31_Cursor_22x22 hotspot=(11.00, 11.00)
+]]></output>
+        </test-case>
+        <test-case id="1489" name="AuthoredCharacterCards_UseCurrentPortraitsFilledHeartsAndNoCardDots" fullname="EncyclopediaCreaturePlayModeTests.AuthoredCharacterCards_UseCurrentPortraitsFilledHeartsAndNoCardDots" methodname="AuthoredCharacterCards_UseCurrentPortraitsFilledHeartsAndNoCardDots" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="832165182" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.022196" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1488" name="DefaultPortrait_UsesActualIdleInsteadOfFirstRegisteredSpiriPose" fullname="EncyclopediaCreaturePlayModeTests.DefaultPortrait_UsesActualIdleInsteadOfFirstRegisteredSpiriPose" methodname="DefaultPortrait_UsesActualIdleInsteadOfFirstRegisteredSpiriPose" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="1049873373" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.002482" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1487" name="DotWindow_PreservesRequestedBoundaryPosition" fullname="EncyclopediaCreaturePlayModeTests.DotWindow_PreservesRequestedBoundaryPosition" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.016596" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1477" name="DotWindow_PreservesRequestedBoundaryPosition(0,0,System.Int32[],System.Int32[])" fullname="EncyclopediaCreaturePlayModeTests.DotWindow_PreservesRequestedBoundaryPosition(0,0,System.Int32[],System.Int32[])" methodname="DotWindow_PreservesRequestedBoundaryPosition" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="2010077967" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.001260" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1478" name="DotWindow_PreservesRequestedBoundaryPosition(1,0,System.Int32[],System.Int32[])" fullname="EncyclopediaCreaturePlayModeTests.DotWindow_PreservesRequestedBoundaryPosition(1,0,System.Int32[],System.Int32[])" methodname="DotWindow_PreservesRequestedBoundaryPosition" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="262294425" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.000327" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1479" name="DotWindow_PreservesRequestedBoundaryPosition(2,0,System.Int32[],System.Int32[])" fullname="EncyclopediaCreaturePlayModeTests.DotWindow_PreservesRequestedBoundaryPosition(2,0,System.Int32[],System.Int32[])" methodname="DotWindow_PreservesRequestedBoundaryPosition" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="2033373654" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.000293" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1480" name="DotWindow_PreservesRequestedBoundaryPosition(2,1,System.Int32[],System.Int32[])" fullname="EncyclopediaCreaturePlayModeTests.DotWindow_PreservesRequestedBoundaryPosition(2,1,System.Int32[],System.Int32[])" methodname="DotWindow_PreservesRequestedBoundaryPosition" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="303517821" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.000235" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1481" name="DotWindow_PreservesRequestedBoundaryPosition(3,0,System.Int32[],System.Int32[])" fullname="EncyclopediaCreaturePlayModeTests.DotWindow_PreservesRequestedBoundaryPosition(3,0,System.Int32[],System.Int32[])" methodname="DotWindow_PreservesRequestedBoundaryPosition" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="315094643" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.000246" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1482" name="DotWindow_PreservesRequestedBoundaryPosition(3,1,System.Int32[],System.Int32[])" fullname="EncyclopediaCreaturePlayModeTests.DotWindow_PreservesRequestedBoundaryPosition(3,1,System.Int32[],System.Int32[])" methodname="DotWindow_PreservesRequestedBoundaryPosition" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="760882875" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.000260" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1483" name="DotWindow_PreservesRequestedBoundaryPosition(3,2,System.Int32[],System.Int32[])" fullname="EncyclopediaCreaturePlayModeTests.DotWindow_PreservesRequestedBoundaryPosition(3,2,System.Int32[],System.Int32[])" methodname="DotWindow_PreservesRequestedBoundaryPosition" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="407367180" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.000249" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1484" name="DotWindow_PreservesRequestedBoundaryPosition(7,0,System.Int32[],System.Int32[])" fullname="EncyclopediaCreaturePlayModeTests.DotWindow_PreservesRequestedBoundaryPosition(7,0,System.Int32[],System.Int32[])" methodname="DotWindow_PreservesRequestedBoundaryPosition" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="1426290543" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.000251" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1485" name="DotWindow_PreservesRequestedBoundaryPosition(7,3,System.Int32[],System.Int32[])" fullname="EncyclopediaCreaturePlayModeTests.DotWindow_PreservesRequestedBoundaryPosition(7,3,System.Int32[],System.Int32[])" methodname="DotWindow_PreservesRequestedBoundaryPosition" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="144006215" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.000238" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1486" name="DotWindow_PreservesRequestedBoundaryPosition(7,6,System.Int32[],System.Int32[])" fullname="EncyclopediaCreaturePlayModeTests.DotWindow_PreservesRequestedBoundaryPosition(7,6,System.Int32[],System.Int32[])" methodname="DotWindow_PreservesRequestedBoundaryPosition" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="729808774" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.000251" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1493" name="MissingCharacterData_UsesAuthoredEmptyStateAndZeroHearts" fullname="EncyclopediaCreaturePlayModeTests.MissingCharacterData_UsesAuthoredEmptyStateAndZeroHearts" methodname="MissingCharacterData_UsesAuthoredEmptyStateAndZeroHearts" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="964978190" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.121313" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1490" name="NativePaging_BindsFourBossesAndBothNpcPagesWithoutChangingProgress" fullname="EncyclopediaCreaturePlayModeTests.NativePaging_BindsFourBossesAndBothNpcPagesWithoutChangingProgress" methodname="NativePaging_BindsFourBossesAndBothNpcPagesWithoutChangingProgress" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="62706828" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.143827" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1492" name="PausedMonsterPreview_AdvancesAuthoredFramesWithoutSpawningEnemies" fullname="EncyclopediaCreaturePlayModeTests.PausedMonsterPreview_AdvancesAuthoredFramesWithoutSpawningEnemies" methodname="PausedMonsterPreview_AdvancesAuthoredFramesWithoutSpawningEnemies" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="1581718716" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.116688" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1495" name="ScreenRouting_ActivatesNativeTabsAndPreservesMainBookmarkRail" fullname="EncyclopediaCreaturePlayModeTests.ScreenRouting_ActivatesNativeTabsAndPreservesMainBookmarkRail" methodname="ScreenRouting_ActivatesNativeTabsAndPreservesMainBookmarkRail" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="1003337285" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:43Z" duration="0.141533" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[EncyclopediaScreen] EncyclopediaItemTab is not assigned. Item tab UI cannot be populated.
+]]></output>
+        </test-case>
+        <test-case id="1491" name="SevenPortraits_BindRealImagesSyncCardDotsAndCloseFullViewBeforeBook" fullname="EncyclopediaCreaturePlayModeTests.SevenPortraits_BindRealImagesSyncCardDotsAndCloseFullViewBeforeBook" methodname="SevenPortraits_BindRealImagesSyncCardDotsAndCloseFullViewBeforeBook" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="1286751140" result="Passed" start-time="2026-10-11 11:00:43Z" end-time="2026-10-11 11:00:44Z" duration="0.358888" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[EncyclopediaScreen] EncyclopediaItemTab is not assigned. Item tab UI cannot be populated.
+Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

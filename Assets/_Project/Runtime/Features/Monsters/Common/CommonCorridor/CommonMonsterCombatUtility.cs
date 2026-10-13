@@ -137,7 +137,8 @@ public static class CommonMonsterCombatUtility
     public static IEnumerator WaitAttackWarning(
         float duration,
         Func<bool> shouldCancel,
-        Action updateWarningGeometry)
+        Action updateWarningGeometry,
+        GameObject actionOwner = null)
     {
         float safeDuration = Mathf.Max(0f, duration);
         float elapsed = 0f;
@@ -146,8 +147,14 @@ public static class CommonMonsterCombatUtility
             if (shouldCancel != null && shouldCancel())
                 yield break;
 
+            if (CombatHitPause2D.IsParalyzedOn(actionOwner))
+            {
+                yield return null;
+                continue;
+            }
+
             updateWarningGeometry?.Invoke();
-            elapsed += Time.deltaTime;
+            elapsed += CombatHitPause2D.GetActionDeltaTime(actionOwner);
             yield return null;
         }
     }

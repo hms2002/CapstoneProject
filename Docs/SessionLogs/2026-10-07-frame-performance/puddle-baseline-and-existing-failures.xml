@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="7" result="Failed(Child)" total="7" passed="3" failed="4" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.6463483">
+  <test-suite type="TestSuite" id="1976" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="818" result="Failed" site="Child" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.646348" total="7" passed="3" failed="4" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1972" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="811" result="Failed" site="Child" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.618336" total="7" passed="3" failed="4" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="7112" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1464" name="MonsterHealthAndWeaponSkillBalancePlayModeTests" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" testcasecount="111" result="Failed" site="Child" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.312163" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="1549" name="ChestRefreshUpgrade_UsesApprovedSingleRefresh" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.ChestRefreshUpgrade_UsesApprovedSingleRefresh" methodname="ChestRefreshUpgrade_UsesApprovedSingleRefresh" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="1151643643" result="Failed" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.022711" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: 1
+  But was:  5
+]]></message>
+            <stack-trace><![CDATA[at MonsterHealthAndWeaponSkillBalancePlayModeTests.ChestRefreshUpgrade_UsesApprovedSingleRefresh () [0x00010] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\PlayMode\Procedural\MonsterHealthAndWeaponSkillBalancePlayModeTests.cs:640
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1548" name="StageLootTables_UseApprovedCandidateCounts" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.007420" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1545" name="StageLootTables_UseApprovedCandidateCounts(&quot;Assets/_Project/Data/Loot/Tables/Table_Stage1.asset&quot;)" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts(&quot;Assets/_Project/Data/Loot/Tables/Table_Stage1.asset&quot;)" methodname="StageLootTables_UseApprovedCandidateCounts" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="734453869" result="Failed" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.002109" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: 2
+  But was:  0
+]]></message>
+              <stack-trace><![CDATA[at MonsterHealthAndWeaponSkillBalancePlayModeTests.AssertFixedCountProfile (UnityEditor.SerializedProperty profile, System.Int32 expected) [0x00010] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\PlayMode\Procedural\MonsterHealthAndWeaponSkillBalancePlayModeTests.cs:915
+at MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts (System.String path) [0x0000c] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\PlayMode\Procedural\MonsterHealthAndWeaponSkillBalancePlayModeTests.cs:628
+]]></stack-trace>
+            </failure>
+          </test-case>
+          <test-case id="1546" name="StageLootTables_UseApprovedCandidateCounts(&quot;Assets/_Project/Data/Loot/Tables/Table_Stage2.asset&quot;)" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts(&quot;Assets/_Project/Data/Loot/Tables/Table_Stage2.asset&quot;)" methodname="StageLootTables_UseApprovedCandidateCounts" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="227205377" result="Failed" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.000379" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: 2
+  But was:  0
+]]></message>
+              <stack-trace><![CDATA[at MonsterHealthAndWeaponSkillBalancePlayModeTests.AssertFixedCountProfile (UnityEditor.SerializedProperty profile, System.Int32 expected) [0x00010] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\PlayMode\Procedural\MonsterHealthAndWeaponSkillBalancePlayModeTests.cs:915
+at MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts (System.String path) [0x0000c] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\PlayMode\Procedural\MonsterHealthAndWeaponSkillBalancePlayModeTests.cs:628
+]]></stack-trace>
+            </failure>
+          </test-case>
+          <test-case id="1547" name="StageLootTables_UseApprovedCandidateCounts(&quot;Assets/_Project/Data/Loot/Tables/Table_Stage3.asset&quot;)" fullname="MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts(&quot;Assets/_Project/Data/Loot/Tables/Table_Stage3.asset&quot;)" methodname="StageLootTables_UseApprovedCandidateCounts" classname="MonsterHealthAndWeaponSkillBalancePlayModeTests" runstate="Runnable" seed="1595182165" result="Failed" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.000320" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: 2
+  But was:  0
+]]></message>
+              <stack-trace><![CDATA[at MonsterHealthAndWeaponSkillBalancePlayModeTests.AssertFixedCountProfile (UnityEditor.SerializedProperty profile, System.Int32 expected) [0x00010] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\PlayMode\Procedural\MonsterHealthAndWeaponSkillBalancePlayModeTests.cs:915
+at MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts (System.String path) [0x0000c] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\PlayMode\Procedural\MonsterHealthAndWeaponSkillBalancePlayModeTests.cs:628
+]]></stack-trace>
+            </failure>
+          </test-case>
+        </test-suite>
+      </test-suite>
+      <test-suite type="TestFixture" id="1835" name="RenderingCostPlayModeTests" fullname="RenderingCostPlayModeTests" classname="RenderingCostPlayModeTests" runstate="Runnable" testcasecount="22" result="Passed" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.265559" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="1845" name="GroundPuddleUpdateCost" fullname="RenderingCostPlayModeTests.GroundPuddleUpdateCost" classname="RenderingCostPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.250896" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1842" name="GroundPuddleUpdateCost(1)" fullname="RenderingCostPlayModeTests.GroundPuddleUpdateCost(1)" methodname="GroundPuddleUpdateCost" classname="RenderingCostPlayModeTests" runstate="Runnable" seed="300004179" result="Passed" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.015842" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[RENDERCPU,ground-puddle,count=1,median_ms=0.000857,p95_batch_ms=0.000881
+]]></output>
+          </test-case>
+          <test-case id="1843" name="GroundPuddleUpdateCost(20)" fullname="RenderingCostPlayModeTests.GroundPuddleUpdateCost(20)" methodname="GroundPuddleUpdateCost" classname="RenderingCostPlayModeTests" runstate="Runnable" seed="1803089970" result="Passed" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.062919" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[RENDERCPU,ground-puddle,count=20,median_ms=0.018125,p95_batch_ms=0.018986
+]]></output>
+          </test-case>
+          <test-case id="1844" name="GroundPuddleUpdateCost(50)" fullname="RenderingCostPlayModeTests.GroundPuddleUpdateCost(50)" methodname="GroundPuddleUpdateCost" classname="RenderingCostPlayModeTests" runstate="Runnable" seed="1418511298" result="Passed" start-time="2026-10-07 07:36:15Z" end-time="2026-10-07 07:36:15Z" duration="0.163383" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[RENDERCPU,ground-puddle,count=50,median_ms=0.048216,p95_batch_ms=0.049038
+Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

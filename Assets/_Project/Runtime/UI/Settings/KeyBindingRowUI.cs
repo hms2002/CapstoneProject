@@ -18,8 +18,15 @@ public sealed class KeyBindingRowUI : MonoBehaviour
     private KeyBindingPanelUI owner;
     private InputActionId action;
     private bool listenersBound;
+    private UiRenderLayerLayout renderLayout;
 
     public InputActionId Action => action;
+
+    public void BindRenderLayout(UiRenderLayerLayout owner)
+    {
+        if (renderLayout == null) renderLayout = GetComponent<UiRenderLayerLayout>();
+        if (renderLayout != null) renderLayout.BindTo(owner);
+    }
 
     public void Bind(KeyBindingPanelUI panel, InputActionId boundAction)
     {
@@ -62,10 +69,10 @@ public sealed class KeyBindingRowUI : MonoBehaviour
     public void SetListeningState(bool primary, bool secondary)
     {
         if (primary)
-            InputGlyphVisualUtility.ApplyRaw(primaryBindingLabel, primaryBindingIcon, "Input...", null);
+            InputGlyphVisualUtility.ApplyRaw(primaryBindingLabel, primaryBindingIcon, GameText.Get("ui.keybinding.listening", "입력 대기..."), null);
 
         if (secondary)
-            InputGlyphVisualUtility.ApplyRaw(secondaryBindingLabel, secondaryBindingIcon, "Input...", null);
+            InputGlyphVisualUtility.ApplyRaw(secondaryBindingLabel, secondaryBindingIcon, GameText.Get("ui.keybinding.listening", "입력 대기..."), null);
 
         if (primaryBindingButton != null)
             primaryBindingButton.interactable = false;

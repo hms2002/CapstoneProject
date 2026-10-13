@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-07 07:27:08Z" end-time="2026-10-07 07:27:09Z" duration="0.1494551">
+  <test-suite type="TestSuite" id="1000" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-10-07 07:27:08Z" end-time="2026-10-07 07:27:09Z" duration="0.149455" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1007" name="CorePerformanceRegressionEditModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/CorePerformanceRegressionEditModeTests.dll" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-07 07:27:08Z" end-time="2026-10-07 07:27:09Z" duration="0.115901" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="40624" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1001" name="CorePerformanceRegressionEditModeTests" fullname="CorePerformanceRegressionEditModeTests" classname="CorePerformanceRegressionEditModeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-07 07:27:08Z" end-time="2026-10-07 07:27:09Z" duration="0.112697" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1003" name="EffectQueries_MeasureCapturingSearchAllocationAgainstOriginalLookup" fullname="CorePerformanceRegressionEditModeTests.EffectQueries_MeasureCapturingSearchAllocationAgainstOriginalLookup" methodname="EffectQueries_MeasureCapturingSearchAllocationAgainstOriginalLookup" classname="CorePerformanceRegressionEditModeTests" runstate="Runnable" seed="1035821654" result="Passed" start-time="2026-10-07 07:27:09Z" end-time="2026-10-07 07:27:09Z" duration="0.029600" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[EFFECTALLOC,queries=1024,counter=False,original_bytes=0,optimized_bytes=0
+]]></output>
+        </test-case>
+        <test-case id="1002" name="EffectQueries_PreserveFirstMatchExpiryAndUnityNullSourceSemantics" fullname="CorePerformanceRegressionEditModeTests.EffectQueries_PreserveFirstMatchExpiryAndUnityNullSourceSemantics" methodname="EffectQueries_PreserveFirstMatchExpiryAndUnityNullSourceSemantics" classname="CorePerformanceRegressionEditModeTests" runstate="Runnable" seed="1690798106" result="Passed" start-time="2026-10-07 07:27:09Z" end-time="2026-10-07 07:27:09Z" duration="0.009573" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1004" name="LinkedValueCompensator_DoesNotUseLegacyResourcesPolicyLookup" fullname="CorePerformanceRegressionEditModeTests.LinkedValueCompensator_DoesNotUseLegacyResourcesPolicyLookup" methodname="LinkedValueCompensator_DoesNotUseLegacyResourcesPolicyLookup" classname="CorePerformanceRegressionEditModeTests" runstate="Runnable" seed="1511094907" result="Passed" start-time="2026-10-07 07:27:09Z" end-time="2026-10-07 07:27:09Z" duration="0.006559" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1006" name="RemoveModifiersFromSource_MatchingSource_RemovesOnlyThatSourcesModifiers" fullname="CorePerformanceRegressionEditModeTests.RemoveModifiersFromSource_MatchingSource_RemovesOnlyThatSourcesModifiers" methodname="RemoveModifiersFromSource_MatchingSource_RemovesOnlyThatSourcesModifiers" classname="CorePerformanceRegressionEditModeTests" runstate="Runnable" seed="1699290574" result="Passed" start-time="2026-10-07 07:27:09Z" end-time="2026-10-07 07:27:09Z" duration="0.019056" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1005" name="RemoveModifiersFromSource_UnknownSource_DoesNotReportAChange" fullname="CorePerformanceRegressionEditModeTests.RemoveModifiersFromSource_UnknownSource_DoesNotReportAChange" methodname="RemoveModifiersFromSource_UnknownSource_DoesNotReportAChange" classname="CorePerformanceRegressionEditModeTests" runstate="Runnable" seed="1278141554" result="Passed" start-time="2026-10-07 07:27:09Z" end-time="2026-10-07 07:27:09Z" duration="0.005439" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

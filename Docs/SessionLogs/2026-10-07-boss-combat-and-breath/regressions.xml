@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Passed" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-07 08:57:21Z" end-time="2026-10-07 08:57:25Z" duration="4.2263217">
+  <test-suite type="TestSuite" id="1983" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="824" result="Passed" start-time="2026-10-07 08:57:21Z" end-time="2026-10-07 08:57:25Z" duration="4.226322" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1979" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="817" result="Passed" start-time="2026-10-07 08:57:21Z" end-time="2026-10-07 08:57:25Z" duration="4.200558" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="57972" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <output><![CDATA[IOException: Win32 IO returned 1224. Path: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Data\SceneFlow\LoadingManifests\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.StreamWriter..ctor (System.String path) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string)
+System.IO.File.WriteAllText (System.String path, System.String contents) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+PrewarmTraceRuntime.Flush () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:272)
+PrewarmTraceRuntime.FlushIfNeeded () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:220)
+UnityEditor.EditorApplication.Internal_CallUpdateFunctions () (at <6af99b88526b45e691c9c0a43494187d>:0)
+
+]]></output>
+      <test-suite type="TestFixture" id="1151" name="CombatPresentationRegressionPlayModeTests" fullname="CombatPresentationRegressionPlayModeTests" classname="CombatPresentationRegressionPlayModeTests" runstate="Runnable" testcasecount="21" result="Passed" start-time="2026-10-07 08:57:21Z" end-time="2026-10-07 08:57:25Z" duration="4.162927" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <output><![CDATA[IOException: Win32 IO returned 1224. Path: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Data\SceneFlow\LoadingManifests\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+System.IO.StreamWriter..ctor (System.String path) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+(wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string)
+System.IO.File.WriteAllText (System.String path, System.String contents) (at <f713e1c3c5f545ce9b1df47230f4f853>:0)
+PrewarmTraceRuntime.Flush () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:272)
+PrewarmTraceRuntime.FlushIfNeeded () (at Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs:220)
+UnityEditor.EditorApplication.Internal_CallUpdateFunctions () (at <6af99b88526b45e691c9c0a43494187d>:0)
+
+]]></output>
+        <test-case id="1152" name="DragonBreath_BlinkLocksWarningFacingAndFireDirection" fullname="CombatPresentationRegressionPlayModeTests.DragonBreath_BlinkLocksWarningFacingAndFireDirection" methodname="DragonBreath_BlinkLocksWarningFacingAndFireDirection" classname="CombatPresentationRegressionPlayModeTests" runstate="Runnable" seed="713899520" result="Passed" start-time="2026-10-07 08:57:21Z" end-time="2026-10-07 08:57:24Z" duration="2.629095" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[MovementMotor2D] BreathLockTestDragon: IIntentMovementSource2D를 찾지 못했습니다.
+[MovementMotor2D] BreathLockTestDragon: IStatProvider를 찾지 못했습니다. (예: AttributeStatSource 필요)
+: No target found with tag 'Player'
+[BossFSM] BreathLockTestDragon: 스폰을 시작합니다.
+[BossFSM] BreathLockTestDragon: 전투를 고릅니다. 0.20초 대기합니다.
+[CursorDiagnostic] phase=display-stable-2s frame=304 screen=640x480 mode=Windowed focused=False visible=True lock=None domain=Combat/Default hiddenOwners=0 backend=UnityCursorAPI cursorMode=Auto texture=light_cursor_spritesheet_31_Cursor_22x22 hotspot=(11.00, 11.00)
+]]></output>
+        </test-case>
+        <test-case id="1158" name="DragonBreath_CancellationDuringBlinkReleasesFacingLock" fullname="CombatPresentationRegressionPlayModeTests.DragonBreath_CancellationDuringBlinkReleasesFacingLock" methodname="DragonBreath_CancellationDuringBlinkReleasesFacingLock" classname="CombatPresentationRegressionPlayModeTests" runstate="Runnable" seed="1894570784" result="Passed" start-time="2026-10-07 08:57:24Z" end-time="2026-10-07 08:57:25Z" duration="1.461603" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[MovementMotor2D] BreathLockTestDragon: IIntentMovementSource2D를 찾지 못했습니다.
+[MovementMotor2D] BreathLockTestDragon: IStatProvider를 찾지 못했습니다. (예: AttributeStatSource 필요)
+: No target found with tag 'Player'
+[BossFSM] BreathLockTestDragon: 스폰을 시작합니다.
+[BossFSM] BreathLockTestDragon: 전투를 고릅니다. 0.20초 대기합니다.
+]]></output>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1156" name="Hurtbox_BlankAuthoredColliderArrayFallsBackToOwnCollider" fullname="CombatPresentationRegressionPlayModeTests.Hurtbox_BlankAuthoredColliderArrayFallsBackToOwnCollider" classname="CombatPresentationRegressionPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-07 08:57:25Z" end-time="2026-10-07 08:57:25Z" duration="0.013766" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1153" name="Hurtbox_BlankAuthoredColliderArrayFallsBackToOwnCollider(0)" fullname="CombatPresentationRegressionPlayModeTests.Hurtbox_BlankAuthoredColliderArrayFallsBackToOwnCollider(0)" methodname="Hurtbox_BlankAuthoredColliderArrayFallsBackToOwnCollider" classname="CombatPresentationRegressionPlayModeTests" runstate="Runnable" seed="1191949012" result="Passed" start-time="2026-10-07 08:57:25Z" end-time="2026-10-07 08:57:25Z" duration="0.006611" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1154" name="Hurtbox_BlankAuthoredColliderArrayFallsBackToOwnCollider(1)" fullname="CombatPresentationRegressionPlayModeTests.Hurtbox_BlankAuthoredColliderArrayFallsBackToOwnCollider(1)" methodname="Hurtbox_BlankAuthoredColliderArrayFallsBackToOwnCollider" classname="CombatPresentationRegressionPlayModeTests" runstate="Runnable" seed="1261761655" result="Passed" start-time="2026-10-07 08:57:25Z" end-time="2026-10-07 08:57:25Z" duration="0.000828" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1155" name="Hurtbox_BlankAuthoredColliderArrayFallsBackToOwnCollider(3)" fullname="CombatPresentationRegressionPlayModeTests.Hurtbox_BlankAuthoredColliderArrayFallsBackToOwnCollider(3)" methodname="Hurtbox_BlankAuthoredColliderArrayFallsBackToOwnCollider" classname="CombatPresentationRegressionPlayModeTests" runstate="Runnable" seed="1831751032" result="Passed" start-time="2026-10-07 08:57:25Z" end-time="2026-10-07 08:57:25Z" duration="0.000854" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1157" name="Hurtbox_ExplicitOwnershipListDoesNotAdoptUnlistedCollider" fullname="CombatPresentationRegressionPlayModeTests.Hurtbox_ExplicitOwnershipListDoesNotAdoptUnlistedCollider" methodname="Hurtbox_ExplicitOwnershipListDoesNotAdoptUnlistedCollider" classname="CombatPresentationRegressionPlayModeTests" runstate="Runnable" seed="912937462" result="Passed" start-time="2026-10-07 08:57:25Z" end-time="2026-10-07 08:57:25Z" duration="0.001202" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

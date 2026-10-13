@@ -1,0 +1,174 @@
+{
+  "date": "2026-10-07",
+  "implementation_status": "completed",
+  "reports": {
+    "editmode.xml": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0,
+      "failures": []
+    },
+    "playmode-first.xml": {
+      "total": 291,
+      "passed": 286,
+      "failed": 5,
+      "failures": [
+        {
+          "name": "MonsterHealthAndWeaponSkillBalancePlayModeTests.ChestRefreshUpgrade_UsesApprovedSingleRefresh",
+          "message": "  Expected: 1\n  But was:  5\n"
+        },
+        {
+          "name": "MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts(\"Assets/_Project/Data/Loot/Tables/Table_Stage1.asset\")",
+          "message": "  Expected: 2\n  But was:  0\n"
+        },
+        {
+          "name": "MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts(\"Assets/_Project/Data/Loot/Tables/Table_Stage2.asset\")",
+          "message": "  Expected: 2\n  But was:  0\n"
+        },
+        {
+          "name": "MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts(\"Assets/_Project/Data/Loot/Tables/Table_Stage3.asset\")",
+          "message": "  Expected: 2\n  But was:  0\n"
+        },
+        {
+          "name": "RoomMonsterWavePlayModeTests.LockUnit_ObservesConcreteMobDeath_AndDestroyedComponentReplacement",
+          "message": "  A surviving generic root keeps the existing alive semantics.\n  Expected: True\n  But was:  False\n"
+        }
+      ]
+    },
+    "playmode.xml": {
+      "total": 291,
+      "passed": 285,
+      "failed": 6,
+      "failures": [
+        {
+          "name": "FramePerformancePopupPlayModeTests.OwnerCleanup_DestroysInactiveLocalizedPopups",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "FramePerformancePopupPlayModeTests.ReusedActivePopup_BelongsToItsOriginalParentSceneAndDiesOnUnload",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "MonsterHealthAndWeaponSkillBalancePlayModeTests.ChestRefreshUpgrade_UsesApprovedSingleRefresh",
+          "message": "  Expected: 1\n  But was:  5\n"
+        },
+        {
+          "name": "MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts(\"Assets/_Project/Data/Loot/Tables/Table_Stage1.asset\")",
+          "message": "  Expected: 2\n  But was:  0\n"
+        },
+        {
+          "name": "MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts(\"Assets/_Project/Data/Loot/Tables/Table_Stage2.asset\")",
+          "message": "  Expected: 2\n  But was:  0\n"
+        },
+        {
+          "name": "MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts(\"Assets/_Project/Data/Loot/Tables/Table_Stage3.asset\")",
+          "message": "  Expected: 2\n  But was:  0\n"
+        }
+      ]
+    },
+    "puddle-baseline-and-existing-failures.xml": {
+      "total": 7,
+      "passed": 3,
+      "failed": 4,
+      "failures": [
+        {
+          "name": "MonsterHealthAndWeaponSkillBalancePlayModeTests.ChestRefreshUpgrade_UsesApprovedSingleRefresh",
+          "message": "  Expected: 1\n  But was:  5\n"
+        },
+        {
+          "name": "MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts(\"Assets/_Project/Data/Loot/Tables/Table_Stage1.asset\")",
+          "message": "  Expected: 2\n  But was:  0\n"
+        },
+        {
+          "name": "MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts(\"Assets/_Project/Data/Loot/Tables/Table_Stage2.asset\")",
+          "message": "  Expected: 2\n  But was:  0\n"
+        },
+        {
+          "name": "MonsterHealthAndWeaponSkillBalancePlayModeTests.StageLootTables_UseApprovedCandidateCounts(\"Assets/_Project/Data/Loot/Tables/Table_Stage3.asset\")",
+          "message": "  Expected: 2\n  But was:  0\n"
+        }
+      ]
+    },
+    "final-targeted-with-trace-errors.xml": {
+      "total": 29,
+      "passed": 18,
+      "failed": 11,
+      "failures": [
+        {
+          "name": "RoomMonsterWavePlayModeTests.Door_StaysClosedBetweenWaves_AndOpensAfterFinalClear",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "RoomMonsterWavePlayModeTests.ExplicitChest_OnlyWaitsForLinkedWaves_NotEntireRoom",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "RoomMonsterWavePlayModeTests.ExternalEncounterHoldAndMonster_DoNotBlockWaveAdvance",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "RoomMonsterWavePlayModeTests.LegacyRoom_SpawnsOnce_AndDoesNotRestartOnReentry",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "RoomMonsterWavePlayModeTests.LegacySpawnProfile_KeepsItsConfiguredCount",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "RoomMonsterWavePlayModeTests.MissingSpawner_CompletesWithoutPermanentLocks",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "RoomMonsterWavePlayModeTests.PendingVfx_DisableReenable_ReleasesAndReacquiresReservations",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "RoomMonsterWavePlayModeTests.ReorderedWaves_KeepStableMonsterMembership",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "RoomMonsterWavePlayModeTests.RestoreDelay_SkipsEarlierWaves_AndPreservesRemainingTime",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "RoomMonsterWavePlayModeTests.SplitMember_BlocksAdvance_UntilLastChildDies",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "RoomMonsterWavePlayModeTests.Waves_KeepFutureChestAndRoomLocks_AndWaitForDelay",
+          "message": "Unhandled log message: '[Exception] IOException: Win32 IO returned 1224. Path: C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\SceneFlow\\LoadingManifests\\PrewarmTrace_nadom_DESKTOP-I2QAD8O.json'. Use UnityEngine.TestTools.LogAssert.Expect"
+        }
+      ]
+    },
+    "final-targeted.xml": {
+      "total": 28,
+      "passed": 28,
+      "failed": 0,
+      "failures": []
+    }
+  },
+  "shader_pixel_conditions": [
+    "PUDDLEPIXELS,mode=Ground,element=0,ignition=0,progress=0,authored=False,visiblePixels=7610,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=Ground,element=1,ignition=1,progress=0,authored=False,visiblePixels=7610,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=Igniting,element=0,ignition=0.25,progress=0,authored=False,visiblePixels=7610,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=Igniting,element=0,ignition=0.75,progress=0,authored=False,visiblePixels=7610,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=AbsorbPreparing,element=0,ignition=0,progress=0,authored=False,visiblePixels=7610,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=AbsorbPreparing,element=0,ignition=0,progress=0.5,authored=False,visiblePixels=5640,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=AbsorbPreparing,element=0,ignition=0,progress=0.79,authored=False,visiblePixels=3590,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=AbsorbPreparing,element=0,ignition=0,progress=0.95,authored=False,visiblePixels=2767,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=AbsorbPreparing,element=1,ignition=1,progress=1,authored=False,visiblePixels=3410,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=AbsorbProjectile,element=0,ignition=0,progress=0.25,authored=False,visiblePixels=3089,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=AbsorbProjectile,element=0,ignition=0,progress=1,authored=False,visiblePixels=3089,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=AbsorbProjectile,element=1,ignition=1,progress=0.5,authored=False,visiblePixels=3410,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=AbsorbPreparing,element=0,ignition=0,progress=0.5,authored=True,visiblePixels=7610,maximumChannelDelta=0,tolerance=1",
+    "PUDDLEPIXELS,mode=AbsorbPreparing,element=1,ignition=1,progress=0.95,authored=True,visiblePixels=7610,maximumChannelDelta=0,tolerance=1"
+  ],
+  "shader_maximum_channel_delta": 0,
+  "managed_allocation_counter_available": false,
+  "gameplay_fps_measured": false,
+  "gpu_cost_measured": false,
+  "puddle_runtime_property_scale_comparison_retained": false,
+  "unchanged_balance_failures": 4,
+  "existing_editor_trace_issue": "Docs/ErrorLog.md:2213",
+  "presentation_html_changed": false
+}

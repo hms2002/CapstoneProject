@@ -12,16 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 742dc3560081f1f489552b97d2d82704, type: 3}
   m_Name: Relic Logic_Feather Orbit_Managed
   m_EditorClassIdentifier: 
+  effectTemplate: "\u25CF \uAE43\uD138 {feather_count}\uAC1C\uAC00 \uC8FC\uC704\uB97C
+    \uD68C\uC804\uD558\uBA70 \uC801\uC744 \uACF5\uACA9\n\u25CF \uAE43\uD138 \uD53C\uD574
+    {damage_coef}\n\u25CF \uD68C\uC804 \uBC18\uACBD {radius}\n\u25CF \uAC19\uC740
+    \uC801\uC744 \uB2E4\uC2DC \uACF5\uACA9\uD558\uB294 \uAE30\uBCF8 \uAC04\uACA9
+    {hit_cooldown}"
   featherPrefab: {fileID: 4527847940610973352, guid: f36c0e7c42383ef478d9227fe3cf8030, type: 3}
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  knockbackEffect: {fileID: 0}
   attackStatId: 13
-  damageCoef: 0.35
+  damageCoef: 3
   damageCoefByLevel:
-  - 0.35
-  - 0.45
-  - 0.55
-  - 0.65
-  - 0.75
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
   knockbackImpulse: 0
   hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
   featherCount: 1

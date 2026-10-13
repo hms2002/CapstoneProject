@@ -69,7 +69,7 @@ public sealed class PawnContactDamageDealer2D : MonoBehaviour
             hitWorldPosition: hitPoint,
             causer: owner != null ? owner.gameObject : gameObject);
 
-        nextDamageTime = Time.time + CombatTimingService.ScaleSeconds(
+        nextDamageTime = CombatHitPause2D.GetActionTime(owner.gameObject) + CombatTimingService.ScaleSeconds(
             abilitySystem,
             contactDamageInterval,
             CombatTimingSlot.AttackInterval);
@@ -78,7 +78,8 @@ public sealed class PawnContactDamageDealer2D : MonoBehaviour
     /// <summary>피해 쿨다운과 필수 전투 의존성이 준비되었는지 확인한다.</summary>
     private bool CanHit()
     {
-        if (owner == null || owner.IsDead || !owner.CanDealContactDamage || Time.time < nextDamageTime)
+        if (owner == null || owner.IsDead || CombatHitPause2D.IsParalyzedOn(owner.gameObject) ||
+            !owner.CanDealContactDamage || CombatHitPause2D.GetActionTime(owner.gameObject) < nextDamageTime)
             return false;
 
         bool isValid = abilitySystem != null && damageEffect != null;

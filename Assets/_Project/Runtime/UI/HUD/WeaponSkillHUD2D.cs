@@ -64,6 +64,12 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
         [System.NonSerialized] public Color readyFlashBaseIconColor;
         [System.NonSerialized] public Material readyFlashOriginalMaterial;
         [System.NonSerialized] public Material readyFlashMaterialInstance;
+        [System.NonSerialized] internal Material readyFlashIdleMaterial;
+        [System.NonSerialized] internal Shader readyFlashIdleShader;
+        [System.NonSerialized] internal Texture readyFlashIdleTexture;
+        [System.NonSerialized] internal bool readyFlashIdleMaterialLeased;
+        [System.NonSerialized] internal HudDisplayTextCache cooldownDisplayText = new();
+        [System.NonSerialized] internal HudDisplayTextCache chargeDisplayText = new();
     }
 
     [Header("Refs")]
@@ -127,6 +133,9 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
     private void OnDisable()
     {
         tooltipPresenter.Hide();
+        WeaponSkillHudSlotPresenter.CancelReadyFlash(attackUI);
+        WeaponSkillHudSlotPresenter.CancelReadyFlash(skill1UI);
+        WeaponSkillHudSlotPresenter.CancelReadyFlash(skill2UI);
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
         UnbindInventoryEvents();
@@ -376,6 +385,9 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
     {
         if (cachedInputBindingService != null)
             cachedInputBindingService.BindingChanged -= HandleBindingChanged;
+        WeaponSkillHudSlotPresenter.ReleaseReadyFlashMaterial(attackUI);
+        WeaponSkillHudSlotPresenter.ReleaseReadyFlashMaterial(skill1UI);
+        WeaponSkillHudSlotPresenter.ReleaseReadyFlashMaterial(skill2UI);
     }
 
     private void UpdateDynamicIcon(SkillSlotUI ui, WeaponAbilitySlot slot, AbilityDefinition def)

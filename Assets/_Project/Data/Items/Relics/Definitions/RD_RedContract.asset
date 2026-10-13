@@ -16,8 +16,8 @@ MonoBehaviour:
   displayName: "\uBD89\uC740 \uACC4\uC57D"
   icon: {fileID: 6897696648242941555, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
   rarity: 1
-  description: "\uC801\uC744 \uCC98\uCE58\uD558\uBA74 \uC7A0\uC2DC \uACF5\uACA9\uB825\uC774
-    \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  description: "\uC801 \uCC98\uCE58 \uC2DC 4\uCD08 \uB3D9\uC548 \uACF5\uACA9\uB825\uC774
+    2 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   maxLevel: 1
   dropLevel: 1
   logic: {fileID: 11400000, guid: 44860a1e49e148fa8cdb24678044cc9e, type: 2}

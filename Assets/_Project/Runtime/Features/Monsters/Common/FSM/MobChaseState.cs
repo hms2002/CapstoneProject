@@ -16,10 +16,10 @@ public sealed class MobChaseState : IMobState
         if (MobStateTransitionUtility.TryHandleStaggerTransition(stateMachine, context))
             return;
 
-        if (MobStateTransitionUtility.TryHandleAttackTransition(stateMachine, context))
+        if (MobStateTransitionUtility.TryHandleAttackTransition(stateMachine, context, out bool? reusableDetection))
             return;
 
-        if (context == null || !context.HasDetectedTarget())
+        if (context == null || !(reusableDetection ?? context.HasDetectedTarget()))
         {
             context?.Owner?.LogFsmDebug("Chase -> Idle 전이. 타겟 감지 실패.");
             stateMachine.ChangeState(new MobIdleState(), context);

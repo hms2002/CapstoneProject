@@ -34,6 +34,9 @@ MonoBehaviour:
     stageText: "\uB4DC\uB798\uACE4 \uB8E8\uD2B8"
     storyText: "\uC220\uAE30\uC6B4\uC5D0 \uC7A0\uC2DD\uB41C \uD558\uAE09 \uBAAC\uC2A4\uD130\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+    previewFrames:
+    - {fileID: -6033280328393917619, guid: 6381a51d56edf6c4089caf6be074034b, type: 3}
+    previewFrameRate: 12
   - id: monster.treasure
     displayName: Treasure Monster
     image: {fileID: -2987867392972033973, guid: 15c91a5b134cee44185165d194272923, type: 3}
@@ -43,6 +46,9 @@ MonoBehaviour:
     storyText: "\uBCF4\uBB3C\uCC98\uB7FC \uBCF4\uC774\uC9C0\uB9CC \uC804\uD22C\uB97C
       \uC720\uB3C4\uD558\uB294 \uBAAC\uC2A4\uD130\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 625522859161183429, guid: 47229d8a0d124e00b991425e8e86546e, type: 3}
+    previewFrames:
+    - {fileID: -2987867392972033973, guid: 15c91a5b134cee44185165d194272923, type: 3}
+    previewFrameRate: 12
   - id: monster.frog
     displayName: Frog
     image: {fileID: 1559784003, guid: 04c50facf069bad43845261d3131b7df, type: 3}
@@ -52,6 +58,16 @@ MonoBehaviour:
     storyText: "\uBE60\uB974\uAC8C \uAC70\uB9AC\uB97C \uC881\uD788\uB294 \uAC1C\uAD6C\uB9AC\uD615
       \uBAAC\uC2A4\uD130\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 625522859161183429, guid: 32536a7c661f3a445bd9698a356583ad, type: 3}
+    previewFrames:
+    - {fileID: 1559784003, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: 456523487, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: 1167052626, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: 1191945684, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: 624265829, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: 592694536, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: -1383006522, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: -180910916, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    previewFrameRate: 12
   - id: monster.frog_elite
     displayName: Frog
     image: {fileID: 1559784003, guid: 04c50facf069bad43845261d3131b7df, type: 3}
@@ -61,6 +77,16 @@ MonoBehaviour:
     storyText: "\uC77C\uBC18 \uAC1C\uAD6C\uB9AC\uBCF4\uB2E4 \uAC15\uD55C \uC815\uC608
       \uAC1C\uCCB4\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 625522859161183429, guid: e492e2e1fd271664d932906e5d8debd8, type: 3}
+    previewFrames:
+    - {fileID: 1559784003, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: 456523487, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: 1167052626, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: 1191945684, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: 624265829, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: 592694536, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: -1383006522, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    - {fileID: -180910916, guid: 04c50facf069bad43845261d3131b7df, type: 3}
+    previewFrameRate: 12
   - id: monster.slime_pawn
     displayName: Pawn
     image: {fileID: 1614426717862407760, guid: 1ed6c7e45fac4ae45a372d6b86033752, type: 3}
@@ -70,6 +96,9 @@ MonoBehaviour:
     storyText: "\uB0AE\uC740 \uC704\uD611\uB3C4\uC758 \uC2AC\uB77C\uC784 \uCCB4\uC2A4
       \uBCD1\uC0AC\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 625522859161183429, guid: 2327e9837a564ed58b0ae70d7c8e00b1, type: 3}
+    previewFrames:
+    - {fileID: -2074013794, guid: 1921a38ea9bc71c47817fd2c437f2f66, type: 3}
+    previewFrameRate: 12
   - id: monster.slime_rook
     displayName: Rook
     image: {fileID: 5243682370759810228, guid: 0aa624ae775e0694280091e8d8bfeae3, type: 3}
@@ -79,6 +108,9 @@ MonoBehaviour:
     storyText: "\uBB35\uC9C1\uD558\uAC8C \uC804\uC5F4\uC744 \uBC00\uC5B4\uBD99\uC774\uB294
       \uC2AC\uB77C\uC784\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 625522859161183429, guid: 4a7ea9f5e4df4e39877c3818b6700007, type: 3}
+    previewFrames:
+    - {fileID: 2762096629116607745, guid: 660c1a84d0a18f6499eb14f7ba92dcc8, type: 3}
+    previewFrameRate: 12
   - id: monster.slime_knight
     displayName: Knight
     image: {fileID: 8748819513765163098, guid: bf17ab823a307a94994dfc2d34269f30, type: 3}
@@ -88,6 +120,9 @@ MonoBehaviour:
     storyText: "\uC608\uCE21\uD558\uAE30 \uC5B4\uB824\uC6B4 \uC774\uB3D9\uC73C\uB85C
       \uC811\uADFC\uD558\uB294 \uC2AC\uB77C\uC784\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 100000, guid: a1365e9c0af9480b9dc3169f803a951d, type: 3}
+    previewFrames:
+    - {fileID: 6552813186526701887, guid: 2ed2f4140059f244697c7f7ee698371c, type: 3}
+    previewFrameRate: 12
   - id: monster.slime_bishop
     displayName: Bishop
     image: {fileID: -9091553445489480716, guid: 5e4d0cd73f103a54fa9b3dd6be0487a5, type: 3}
@@ -96,6 +131,12 @@ MonoBehaviour:
     stageText: "\uC2AC\uB77C\uC784 \uBCF5\uB3C4"
     storyText: "\uC0AC\uC120 \uC704\uD611\uC744 \uB2F4\uB2F9\uD558\uB294 \uC2AC\uB77C\uC784\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 100000, guid: 4c120d14b57b4436a325443f7b0caa3f, type: 3}
+    previewFrames:
+    - {fileID: 4071256717814935889, guid: 671f5d2f7d123904d89d54d06004f714, type: 3}
+    - {fileID: -3743160354564959950, guid: 671f5d2f7d123904d89d54d06004f714, type: 3}
+    - {fileID: 7349721594923562276, guid: 671f5d2f7d123904d89d54d06004f714, type: 3}
+    - {fileID: -2915288166871370710, guid: 671f5d2f7d123904d89d54d06004f714, type: 3}
+    previewFrameRate: 12
   - id: monster.slime_wizard
     displayName: Wizard
     image: {fileID: 197248267109820313, guid: e94f2a3ff4476de48b32bf5c664635c2, type: 3}
@@ -104,6 +145,9 @@ MonoBehaviour:
     stageText: "\uC2AC\uB77C\uC784 \uBCF5\uB3C4"
     storyText: "\uB9C8\uBC95 \uACF5\uACA9\uC744 \uC0AC\uC6A9\uD558\uB294 \uC2AC\uB77C\uC784\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 100000, guid: d18966565254432a82dc5a7b4acdb6cb, type: 3}
+    previewFrames:
+    - {fileID: 2941724131493569441, guid: 00e14fb0365f4564bb434a6db18a81bc, type: 3}
+    previewFrameRate: 12
   - id: monster.candlestick_corridor
     displayName: Corridor Candlestick Monster
     image: {fileID: -7070716281622634784, guid: 0cd15dfdc5f4f624ca832f6db92b3067, type: 3}
@@ -113,6 +157,9 @@ MonoBehaviour:
     storyText: "\uC5B4\uB460 \uC18D \uC2DC\uC57C\uC640 \uC704\uCE58\uB97C \uC555\uBC15\uD558\uB294
       \uCD1B\uB300\uD615 \uBAAC\uC2A4\uD130\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 625522859161183429, guid: a4a67a3598fb4cfbb4bfda7759db598a, type: 3}
+    previewFrames:
+    - {fileID: -7070716281622634784, guid: 0cd15dfdc5f4f624ca832f6db92b3067, type: 3}
+    previewFrameRate: 12
   - id: monster.deads_skeleton
     displayName: Deads' Skeleton
     image: {fileID: 1208040618, guid: 65633814affcc704fbd9de0c57f8591b, type: 3}
@@ -122,6 +169,12 @@ MonoBehaviour:
     storyText: "\uC8FD\uC740 \uC790\uC758 \uC794\uD754\uC774 \uB0A8\uC740 \uD574\uACE8
       \uBAAC\uC2A4\uD130\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 625522859161183429, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
+    previewFrames:
+    - {fileID: 1208040618, guid: 65633814affcc704fbd9de0c57f8591b, type: 3}
+    - {fileID: 296404449, guid: 65633814affcc704fbd9de0c57f8591b, type: 3}
+    - {fileID: -2078283290, guid: 65633814affcc704fbd9de0c57f8591b, type: 3}
+    - {fileID: 1942611105, guid: 65633814affcc704fbd9de0c57f8591b, type: 3}
+    previewFrameRate: 12
   - id: monster.shadow
     displayName: Shadow Monster
     image: {fileID: -7803983009448536926, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
@@ -131,6 +184,20 @@ MonoBehaviour:
     storyText: "\uC5B4\uB460\uACFC \uD568\uAED8 \uC6C0\uC9C1\uC774\uB294 \uADF8\uB9BC\uC790
       \uBAAC\uC2A4\uD130\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+    previewFrames:
+    - {fileID: -7803983009448536926, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
+    - {fileID: -6793586972012973261, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
+    - {fileID: -6548765020324769682, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
+    - {fileID: 8253106163122591052, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
+    - {fileID: -5564880712660473209, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
+    - {fileID: -802477049419198818, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
+    - {fileID: -3197296319428916775, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
+    - {fileID: -3311389303801494112, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
+    - {fileID: 3600464709661626050, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
+    - {fileID: 6071617247171454999, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
+    - {fileID: 9168230112029394207, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
+    - {fileID: 4939684502434636983, guid: d5ff37767c10f0a41bfb6b71b379437c, type: 3}
+    previewFrameRate: 12
   - id: monster.shadow_servant
     displayName: Shadow Servant
     image: {fileID: -653279953, guid: 78ad9bb39ac5f284bbe1dc2c6595339d, type: 3}
@@ -140,6 +207,12 @@ MonoBehaviour:
     storyText: "\uC548\uAC1C\uC640 \uD568\uAED8 \uC804\uC7A5\uC744 \uD750\uB9AC\uB294
       \uADF8\uB9BC\uC790 \uD558\uC218\uC778\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 625522859161183429, guid: aa497140abd1a2e4cb58421e0a525ae7, type: 3}
+    previewFrames:
+    - {fileID: -653279953, guid: 78ad9bb39ac5f284bbe1dc2c6595339d, type: 3}
+    - {fileID: 823397001, guid: 78ad9bb39ac5f284bbe1dc2c6595339d, type: 3}
+    - {fileID: -1152864677, guid: 78ad9bb39ac5f284bbe1dc2c6595339d, type: 3}
+    - {fileID: -1124634541, guid: 78ad9bb39ac5f284bbe1dc2c6595339d, type: 3}
+    previewFrameRate: 12
   - id: monster.strange_candlestick
     displayName: Strange Candlestick
     image: {fileID: -1716854004214877319, guid: 2d370c720c67ace438e1a523e59bf411, type: 3}
@@ -149,6 +222,16 @@ MonoBehaviour:
     storyText: "\uD074\uB85C\uC5D0 \uC804\uD22C \uD750\uB984\uACFC \uC5F0\uACB0\uB418\uB294
       \uAE30\uBB18\uD55C \uCD1B\uB300\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
+    previewFrames:
+    - {fileID: -1716854004214877319, guid: 2d370c720c67ace438e1a523e59bf411, type: 3}
+    - {fileID: -4159602736907127587, guid: 2d370c720c67ace438e1a523e59bf411, type: 3}
+    - {fileID: -8293632666255842000, guid: 2d370c720c67ace438e1a523e59bf411, type: 3}
+    - {fileID: 3071578968833367416, guid: 2d370c720c67ace438e1a523e59bf411, type: 3}
+    - {fileID: -7159185617392984146, guid: 2d370c720c67ace438e1a523e59bf411, type: 3}
+    - {fileID: -836786614080922797, guid: 2d370c720c67ace438e1a523e59bf411, type: 3}
+    - {fileID: -7497116801281650522, guid: 2d370c720c67ace438e1a523e59bf411, type: 3}
+    - {fileID: -6404243067029014787, guid: 2d370c720c67ace438e1a523e59bf411, type: 3}
+    previewFrameRate: 12
   bossEntries:
   - id: boss.slime_queen
     displayName: Slime Queen
@@ -158,7 +241,22 @@ MonoBehaviour:
     stageText: "\uBA5C\uD0C0\uC758 \uBC29"
     storyText: "\uC2AC\uB77C\uC784 \uB8E8\uD2B8\uC758 \uC5EC\uC655 \uBCF4\uC2A4\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 1000000, guid: d84fb7a441404cf4ba049fe22336cdb3, type: 3}
-    npcData: {fileID: 0}
+    npcData: {fileID: 11400000, guid: 8b199e36e6724de0af3a3e8504571e0a, type: 2}
+    portraits:
+    - label: Idle
+      sprite: {fileID: 21300000, guid: bd783ac71f9946b58a6d1b451cb282f1, type: 3}
+    - label: Funny
+      sprite: {fileID: 21300000, guid: d5f3e0a527644bf6ae46b94c89d7a25b, type: 3}
+    - label: Smile
+      sprite: {fileID: 21300000, guid: f0a7d8ce4d68463485bd7719ce0d2ea4, type: 3}
+    - label: joy
+      sprite: {fileID: 21300000, guid: aa381e10e5834e7987aaef1622198899, type: 3}
+    - label: Veryjoy
+      sprite: {fileID: 21300000, guid: b4e61653f79d408daf1cf148b9ff24f4, type: 3}
+    - label: VeryVeryjoy
+      sprite: {fileID: 21300000, guid: c92892d29a884b9c82dde3963c803fdf, type: 3}
+    - label: Angry
+      sprite: {fileID: 21300000, guid: e7cd4998878046cf9603a9bdac777441, type: 3}
   - id: boss.witch_chloe
     displayName: "\uD074\uB85C\uC5D0"
     image: {fileID: 739828523011928573, guid: 7f270a471d0074a4cb5cae87b3df06bc, type: 3}
@@ -169,6 +267,13 @@ MonoBehaviour:
       \uB9C8\uB140 \uBCF4\uC2A4\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 4104743717894493410, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
     npcData: {fileID: 11400000, guid: 4a2fd65cb07d41d2b4925014a094b1fe, type: 2}
+    portraits:
+    - label: Normal
+      sprite: {fileID: 21300000, guid: f309aae6e82882b43837c57b28a49628, type: 3}
+    - label: Panic
+      sprite: {fileID: 21300000, guid: 067f07352189de9448aa613af3827417, type: 3}
+    - label: Surprise
+      sprite: {fileID: 21300000, guid: e171763e5c5586d4f99a77e766aee7a3, type: 3}
   - id: boss.dragon
     displayName: Dragon
     image: {fileID: 21300000, guid: 086022e6486c3f8499d774773f161528, type: 3}
@@ -178,6 +283,19 @@ MonoBehaviour:
     storyText: "\uC220\uAE30\uC6B4\uC744 \uB450\uB978 \uB4DC\uB798\uACE4 \uBCF4\uC2A4\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 5055118451258413439, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
     npcData: {fileID: 11400000, guid: 5bcbe73d9f694da4b971d02f13b9d8e1, type: 2}
+    portraits:
+    - label: Spiri_Idle
+      sprite: {fileID: 4410287023350739978, guid: 87addf85fa8b5234bbcb900d04fa6921, type: 3}
+    - label: Spiri_Dragon
+      sprite: {fileID: -5244108214742962476, guid: 2c76e3a74016c7641a876767a4fd54f1, type: 3}
+    - label: Spiri_Drink
+      sprite: {fileID: 4018392636136513170, guid: b916c2a7f849aa94aabbe18761d9884a, type: 3}
+    - label: Spiri_DrunkRelax
+      sprite: {fileID: 3825925869027057488, guid: 257f6b01c40d1084fb65b49500f47ae0, type: 3}
+    - label: Spiri_DrunkShout
+      sprite: {fileID: -9122104208230050258, guid: e9205611ec75a2b4b92c57a14939c822, type: 3}
+    - label: Spiri_Smile
+      sprite: {fileID: 6440980619396084247, guid: d61bdeddfb182904d8c875a9f334bbf0, type: 3}
   - id: boss.demon_king
     displayName: "\uB9C8\uC655"
     image: {fileID: 0}
@@ -187,3 +305,42 @@ MonoBehaviour:
     storyText: "\uCD5C\uC885 \uB8E8\uD2B8\uC758 \uB9C8\uC655 \uBCF4\uC2A4\uC785\uB2C8\uB2E4."
     sourcePrefab: {fileID: 0}
     npcData: {fileID: 11400000, guid: 47d475aabd71d0245a47a8fa56c6546a, type: 2}
+    portraits:
+    - label: Normal
+      sprite: {fileID: 21300000, guid: b3287ed3fca20324d904e25f0e659af8, type: 3}
+    - label: Smile
+      sprite: {fileID: 21300000, guid: de149d8ef92377f49bba4de8429971df, type: 3}
+    - label: Panic
+      sprite: {fileID: 21300000, guid: 5a9f3745554df954a8e5dcb910d7557f, type: 3}
+    - label: Surprise
+      sprite: {fileID: 21300000, guid: 06426fc467dffe040936cfbc8bfe0d06, type: 3}
+    - label: Sad
+      sprite: {fileID: 21300000, guid: 495a33ee4edfc294cbeb5ffe7713e328, type: 3}
+    - label: Tutorial
+      sprite: {fileID: 21300000, guid: 56283158b474adc4c820207e12447588, type: 3}
+  npcEntries:
+  - npcData: {fileID: 11400000, guid: d9ef2aea03d3ddf4488a762102786dde, type: 2}
+    storyText: 
+    portraits:
+    - label: Normal
+      sprite: {fileID: 21300000, guid: b83e15b332c652242a1bee028b89af00, type: 3}
+  - npcData: {fileID: 11400000, guid: f569d34990ab7514fa546779656d80cb, type: 2}
+    storyText: 
+    portraits:
+    - label: Normal
+      sprite: {fileID: 21300000, guid: 9da0883a2d2679849b2508136ec1943c, type: 3}
+  - npcData: {fileID: 11400000, guid: 8449766b286c473eade9c2c78583fc81, type: 2}
+    storyText: 
+    portraits:
+    - label: Normal
+      sprite: {fileID: 21300000, guid: 8b6c9ac5e32547098b24982ba57853fe, type: 3}
+  - npcData: {fileID: 11400000, guid: 980fbb411bbbb904eac3c3e6c8377f2a, type: 2}
+    storyText: 
+    portraits:
+    - label: Normal
+      sprite: {fileID: 21300000, guid: 14efbd1cfc333b24e8deca50d9f985ea, type: 3}
+  - npcData: {fileID: 11400000, guid: aa9f6fae912883847a3c95403c6183ee, type: 2}
+    storyText: 
+    portraits:
+    - label: Normal
+      sprite: {fileID: 21300000, guid: f3afd25a7d0e07043943947cf95e752f, type: 3}

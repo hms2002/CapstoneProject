@@ -111,7 +111,7 @@ public class DialogueController : MonoBehaviour
         }
 
         if (!Input.GetMouseButtonDown(0) &&
-            !input.WasPressedThisFrame(InputActionId.DialogueAdvance))
+            !WasDialogueConfirmPressed(input))
             return;
 
         if (sessionState.IsTyping)
@@ -614,8 +614,15 @@ public class DialogueController : MonoBehaviour
             view.ChangeChoiceSelection(-1);
         else if (input.WasPressedThisFrame(InputActionId.MoveDown))
             view.ChangeChoiceSelection(1);
-        else if (input.WasPressedThisFrame(InputActionId.DialogueAdvance))
+        else if (WasDialogueConfirmPressed(input))
             view.ConfirmChoice();
+    }
+
+    private static bool WasDialogueConfirmPressed(InputBindingService input)
+    {
+        return input.WasPressedThisFrame(InputActionId.DialogueAdvance) ||
+               InputKeyCompatibility.WasPressedThisFrame(KeyCode.Return) ||
+               InputKeyCompatibility.WasPressedThisFrame(KeyCode.KeypadEnter);
     }
 
     private bool TryHandleChoiceShortcutInput()
@@ -700,7 +707,9 @@ public class DialogueController : MonoBehaviour
     private bool IsChoiceConfirmInputHeld(InputBindingService input)
     {
         return Input.GetMouseButton(0) ||
-               (input != null && input.IsPressed(InputActionId.DialogueAdvance));
+               (input != null && input.IsPressed(InputActionId.DialogueAdvance)) ||
+               InputKeyCompatibility.IsPressed(KeyCode.Return) ||
+               InputKeyCompatibility.IsPressed(KeyCode.KeypadEnter);
     }
 
     private void PlayCurrentLine(

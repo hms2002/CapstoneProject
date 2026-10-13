@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityGAS;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Animator))]
@@ -130,7 +131,20 @@ public sealed class HitboxVisualAnimatorPlayer : MonoBehaviour
         duration += destroyDelayPadding;
 
         if (duration > 0f)
-            yield return new WaitForSeconds(duration);
+        {
+            var melee = GetComponentInParent<MeleeHitboxActor>();
+            if (melee == null) yield return new WaitForSeconds(duration);
+            else
+            {
+                // Play can run before SetupBase assigns the owner, so resolve it after each yielded frame.
+                while (duration > 0f)
+                {
+                    yield return null;
+                    if (melee == null || (melee.IsActionBound && CombatHitPause2D.IsActionStoppedOn(melee.ActionOwner))) break;
+                    duration -= CombatHitPause2D.GetActionDeltaTime(melee != null ? melee.ActionOwner : null);
+                }
+            }
+        }
 
         destroyRoutine = null;
 

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Passed" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-10 11:09:36Z" end-time="2026-10-10 11:09:37Z" duration="1.2514402">
+  <test-suite type="TestSuite" id="2174" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="985" result="Passed" start-time="2026-10-10 11:09:36Z" end-time="2026-10-10 11:09:37Z" duration="1.251440" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2170" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="978" result="Passed" start-time="2026-10-10 11:09:36Z" end-time="2026-10-10 11:09:37Z" duration="1.198467" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="35020" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1188" name="ElementHitDamagePlayModeTests" fullname="ElementHitDamagePlayModeTests" classname="ElementHitDamagePlayModeTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-10-10 11:09:36Z" end-time="2026-10-10 11:09:37Z" duration="1.150173" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="1198" name="AbsorbShieldAndLethalClamp_ReportActualHpLossPerChannel_WithSingleEvents" fullname="ElementHitDamagePlayModeTests.AbsorbShieldAndLethalClamp_ReportActualHpLossPerChannel_WithSingleEvents" classname="ElementHitDamagePlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.304528" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1195" name="AbsorbShieldAndLethalClamp_ReportActualHpLossPerChannel_WithSingleEvents(100.0f,5.0f,85.0f,15.0f,False)" fullname="ElementHitDamagePlayModeTests.AbsorbShieldAndLethalClamp_ReportActualHpLossPerChannel_WithSingleEvents(100.0f,5.0f,85.0f,15.0f,False)" methodname="AbsorbShieldAndLethalClamp_ReportActualHpLossPerChannel_WithSingleEvents" classname="ElementHitDamagePlayModeTests" runstate="Runnable" seed="1884365178" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.240735" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1196" name="AbsorbShieldAndLethalClamp_ReportActualHpLossPerChannel_WithSingleEvents(6.0f,5.0f,0.0f,6.0f,True)" fullname="ElementHitDamagePlayModeTests.AbsorbShieldAndLethalClamp_ReportActualHpLossPerChannel_WithSingleEvents(6.0f,5.0f,0.0f,6.0f,True)" methodname="AbsorbShieldAndLethalClamp_ReportActualHpLossPerChannel_WithSingleEvents" classname="ElementHitDamagePlayModeTests" runstate="Runnable" seed="298786917" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.008167" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1197" name="AbsorbShieldAndLethalClamp_ReportActualHpLossPerChannel_WithSingleEvents(100.0f,25.0f,100.0f,0.0f,False)" fullname="ElementHitDamagePlayModeTests.AbsorbShieldAndLethalClamp_ReportActualHpLossPerChannel_WithSingleEvents(100.0f,25.0f,100.0f,0.0f,False)" methodname="AbsorbShieldAndLethalClamp_ReportActualHpLossPerChannel_WithSingleEvents" classname="ElementHitDamagePlayModeTests" runstate="Runnable" seed="1902103200" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.003977" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1192" name="ElementOnlyHit_ZeroPhysicalDamageStillReducesHpAndConfirmsOnce" fullname="ElementHitDamagePlayModeTests.ElementOnlyHit_ZeroPhysicalDamageStillReducesHpAndConfirmsOnce" methodname="ElementOnlyHit_ZeroPhysicalDamageStillReducesHpAndConfirmsOnce" classname="ElementHitDamagePlayModeTests" runstate="Runnable" seed="354387440" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.009858" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1191" name="ElementSnapshot_ReusesPhysicalCritAndFinalMultiplier_AndFreezesAttackStats" fullname="ElementHitDamagePlayModeTests.ElementSnapshot_ReusesPhysicalCritAndFinalMultiplier_AndFreezesAttackStats" classname="ElementHitDamagePlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.074794" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1189" name="ElementSnapshot_ReusesPhysicalCritAndFinalMultiplier_AndFreezesAttackStats(False)" fullname="ElementHitDamagePlayModeTests.ElementSnapshot_ReusesPhysicalCritAndFinalMultiplier_AndFreezesAttackStats(False)" methodname="ElementSnapshot_ReusesPhysicalCritAndFinalMultiplier_AndFreezesAttackStats" classname="ElementHitDamagePlayModeTests" runstate="Runnable" seed="64688004" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.015682" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1190" name="ElementSnapshot_ReusesPhysicalCritAndFinalMultiplier_AndFreezesAttackStats(True)" fullname="ElementHitDamagePlayModeTests.ElementSnapshot_ReusesPhysicalCritAndFinalMultiplier_AndFreezesAttackStats(True)" methodname="ElementSnapshot_ReusesPhysicalCritAndFinalMultiplier_AndFreezesAttackStats" classname="ElementHitDamagePlayModeTests" runstate="Runnable" seed="1755702209" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.003148" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1201" name="FourElementCriticalPopups_DefaultResourceProfileKeepsElementColorsAndCriticalFormat" fullname="ElementHitDamagePlayModeTests.FourElementCriticalPopups_DefaultResourceProfileKeepsElementColorsAndCriticalFormat" methodname="FourElementCriticalPopups_DefaultResourceProfileKeepsElementColorsAndCriticalFormat" classname="ElementHitDamagePlayModeTests" runstate="Runnable" seed="1416223074" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.024945" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1199" name="HitDamageModifiers_ApplyOnceToCombinedPhysicalAndElementHp" fullname="ElementHitDamagePlayModeTests.HitDamageModifiers_ApplyOnceToCombinedPhysicalAndElementHp" methodname="HitDamageModifiers_ApplyOnceToCombinedPhysicalAndElementHp" classname="ElementHitDamagePlayModeTests" runstate="Runnable" seed="1731708463" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.010811" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1194" name="Invulnerability_BlocksWholeHitAndAllElementPopups" fullname="ElementHitDamagePlayModeTests.Invulnerability_BlocksWholeHitAndAllElementPopups" methodname="Invulnerability_BlocksWholeHitAndAllElementPopups" classname="ElementHitDamagePlayModeTests" runstate="Runnable" seed="1955032017" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.011118" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1200" name="LegacyDirectCall_DefaultNullElementChannelsDoNotAddAttackerElementStats" fullname="ElementHitDamagePlayModeTests.LegacyDirectCall_DefaultNullElementChannelsDoNotAddAttackerElementStats" methodname="LegacyDirectCall_DefaultNullElementChannelsDoNotAddAttackerElementStats" classname="ElementHitDamagePlayModeTests" runstate="Runnable" seed="413852699" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.021932" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1193" name="OneHitShield_ConsumesOneChargeAndBlocksPhysicalAndAllElementHp" fullname="ElementHitDamagePlayModeTests.OneHitShield_ConsumesOneChargeAndBlocksPhysicalAndAllElementHp" methodname="OneHitShield_ConsumesOneChargeAndBlocksPhysicalAndAllElementHp" classname="ElementHitDamagePlayModeTests" runstate="Runnable" seed="966583480" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.003840" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1202" name="SynchronousTargetHeal_ShowsConstituentPopupsAndSuppressesExactIncomingDamageFallback" fullname="ElementHitDamagePlayModeTests.SynchronousTargetHeal_ShowsConstituentPopupsAndSuppressesExactIncomingDamageFallback" methodname="SynchronousTargetHeal_ShowsConstituentPopupsAndSuppressesExactIncomingDamageFallback" classname="ElementHitDamagePlayModeTests" runstate="Runnable" seed="2059019268" result="Passed" start-time="2026-10-10 11:09:37Z" end-time="2026-10-10 11:09:37Z" duration="0.009726" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

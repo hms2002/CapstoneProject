@@ -15,6 +15,125 @@ using UnityEngine.TextCore.LowLevel;
 
 internal static class FullLocalizationAuthoring
 {
+    public static void ApplySettingsFixBatch()
+    {
+        try
+        {
+            fontTables = AssetDatabase.LoadAssetAtPath<AssetTableCollection>(Folder + "/GameFonts.asset");
+            foreach (var pair in new[] { ("ja", "jp"), ("zh-Hans", "sc"), ("zh-Hant", "tc") }) Fonts[pair.Item1] = EnsureFont(pair.Item2);
+            var strings = AssetDatabase.LoadAssetAtPath<StringTableCollection>(Folder + "/GameText.asset");
+            string[] codes = { "ko", "en", "ja", "zh-Hans", "zh-Hant" };
+            string[] waiting = { "입력 대기...", "Press a key...", "キー入力待ち...", "等待输入...", "等待輸入..." };
+            string[] reset = { "초기화", "Reset", "リセット", "重置", "重設" };
+            for (int i = 0; i < codes.Length; i++)
+            {
+                var table = strings.StringTables.First(t => t.LocaleIdentifier.Code == codes[i]);
+                table.AddEntry("ui.keybinding.listening", waiting[i]);
+                table.AddEntry("ui.keybinding.reset", reset[i]);
+                EditorUtility.SetDirty(table);
+            }
+            EditorUtility.SetDirty(strings.SharedData);
+            const string rowPath = "Assets/_Project/Prefabs/UI/KeyMapRow.prefab";
+            var rowRoot = PrefabUtility.LoadPrefabContents(rowPath);
+            try
+            {
+                var row = rowRoot.GetComponent<KeyBindingRowUI>();
+                var so = new SerializedObject(row);
+                var action = (TMP_Text)so.FindProperty("actionLabel").objectReferenceValue;
+                var incorrectStatic = action.GetComponent<LocalizeStringEvent>();
+                if (incorrectStatic != null) UnityEngine.Object.DestroyImmediate(incorrectStatic);
+                var button = (UnityEngine.UI.Button)so.FindProperty("resetButton").objectReferenceValue;
+                var label = button.GetComponentInChildren<TMP_Text>(true);
+                bindings = new Dictionary<string, string> { [rowPath + "::" + Hierarchy(label.transform)] = "ui.keybinding.reset" };
+                Bind(rowPath, rowRoot.GetComponentsInChildren<TMP_Text>(true));
+                PrefabUtility.SaveAsPrefabAsset(rowRoot, rowPath);
+                if (action.GetComponent<LocalizeStringEvent>() != null) throw new InvalidOperationException("Dynamic action still has a static writer.");
+            }
+            finally { PrefabUtility.UnloadPrefabContents(rowRoot); }
+            const string globalPath = "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab";
+            var global = PrefabUtility.LoadPrefabContents(globalPath);
+            try { FitSettingsTitles(global); PrefabUtility.SaveAsPrefabAsset(global, globalPath); }
+            finally { PrefabUtility.UnloadPrefabContents(global); }
+            var scene = EditorSceneManager.OpenScene("Assets/_Project/Scenes/TitleScene.unity");
+            foreach (var root in scene.GetRootGameObjects()) FitSettingsTitles(root);
+            EditorSceneManager.SaveScene(scene);
+            AssetDatabase.SaveAssets();
+            Debug.Log("[SettingsFix] Row ownership, localized reset/listening and title preferred-width authoring passed.");
+            EditorApplication.delayCall += () => EditorApplication.Exit(0);
+        }
+        catch (Exception e) { Debug.LogException(e); EditorApplication.delayCall += () => EditorApplication.Exit(1); }
+    }
+
+    private static void FitSettingsTitles(GameObject root)
+    {
+        foreach (var panel in root.GetComponentsInChildren<SettingsPanelUI>(true))
+        foreach (var text in panel.GetComponentsInChildren<TMP_Text>(true).Where(t => t.name == "OptionTitle"))
+        {
+            var parent = (RectTransform)text.transform.parent;
+            if (parent.parent.GetComponent<UnityEngine.UI.LayoutGroup>() != null)
+                throw new InvalidOperationException("Title parent layout must be reviewed: " + Hierarchy(parent));
+            const float minWidth = 400f; // Authored panel minimum; a fitted rect may load with sizeDelta.x=0.
+            var group = parent.GetComponent<UnityEngine.UI.HorizontalLayoutGroup>() ?? parent.gameObject.AddComponent<UnityEngine.UI.HorizontalLayoutGroup>();
+            // Original title was y=-40: the sprite includes decoration above the text plate.
+            group.padding = new RectOffset(100, 100, 80, 0);
+            group.childAlignment = TextAnchor.MiddleCenter;
+            group.childControlWidth = true;
+            group.childControlHeight = false;
+            group.childForceExpandWidth = false;
+            group.childForceExpandHeight = false;
+            var element = parent.GetComponent<UnityEngine.UI.LayoutElement>() ?? parent.gameObject.AddComponent<UnityEngine.UI.LayoutElement>();
+            element.minWidth = minWidth;
+            element.preferredWidth = -1;
+            element.flexibleWidth = 0;
+            var childElement = text.GetComponent<UnityEngine.UI.LayoutElement>();
+            if (childElement != null) { childElement.minWidth = -1; childElement.preferredWidth = -1; childElement.flexibleWidth = 0; }
+            var fitter = parent.GetComponent<UnityEngine.UI.ContentSizeFitter>() ?? parent.gameObject.AddComponent<UnityEngine.UI.ContentSizeFitter>();
+            fitter.horizontalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize;
+            fitter.verticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.Unconstrained;
+            text.textWrappingMode = TextWrappingModes.NoWrap;
+            var original = text.text;
+            var originalFont = text.font;
+            var originalMaterial = text.fontSharedMaterial;
+            foreach (var code in new[] { "ko", "en", "ja", "zh-Hans", "zh-Hant" })
+            {
+                text.text = code == "en" ? "Settings" : code == "ja" ? "設定" : code == "ko" ? "설정" : code == "zh-Hans" ? "设置" : "設定";
+                if (Fonts.TryGetValue(code, out var font)) text.font = font;
+                UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(parent);
+                text.ForceMeshUpdate(true);
+                if (parent.rect.width + .5f < text.preferredWidth + 200 || text.textInfo.lineCount > 1)
+                    throw new InvalidOperationException("Title fit failed: " + code);
+                if (Mathf.Abs(text.rectTransform.localPosition.y + 40f) > .5f)
+                    throw new InvalidOperationException("Title vertical offset lost: " + code);
+                Debug.Log("[SettingsFix] " + code + " title width=" + parent.rect.width + " text=" + text.preferredWidth + " lines=" + text.textInfo.lineCount);
+            }
+            text.text = original; text.font = originalFont; text.fontSharedMaterial = originalMaterial;
+            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(parent);
+        }
+    }
+    public static void InspectSettingsBatch()
+    {
+        var root = PrefabUtility.LoadPrefabContents("Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab");
+        try { InspectSettingsRoot(root); }
+        finally { PrefabUtility.UnloadPrefabContents(root); }
+        var scene = EditorSceneManager.OpenScene("Assets/_Project/Scenes/TitleScene.unity");
+        foreach (var go in scene.GetRootGameObjects()) InspectSettingsRoot(go);
+    }
+
+    private static void InspectSettingsRoot(GameObject root)
+    {
+        foreach (var panel in root.GetComponentsInChildren<KeyBindingPanelUI>(true))
+        {
+            var so = new SerializedObject(panel);
+            var row = so.FindProperty("rowPrefab").objectReferenceValue as KeyBindingRowUI;
+            Debug.Log("[SettingsInspect] row=" + AssetDatabase.GetAssetPath(row));
+            if (row != null)
+                foreach (var text in row.GetComponentsInChildren<TMP_Text>(true))
+                    Debug.Log("[SettingsInspect] " + Hierarchy(text.transform) + " text=" + text.text + " string=" + (text.GetComponent<LocalizeStringEvent>() != null) + " font=" + (text.GetComponent<LocalizeTmpFontEvent>() != null));
+        }
+        foreach (var panel in root.GetComponentsInChildren<SettingsPanelUI>(true))
+            foreach (var text in panel.GetComponentsInChildren<TMP_Text>(true).Where(t => t.name == "OptionTitle"))
+                Debug.Log("[SettingsInspect] title=" + Hierarchy(text.transform) + " rect=" + text.rectTransform.rect + " parent=" + ((RectTransform)text.transform.parent).rect + " components=" + string.Join(",", text.transform.parent.GetComponents<Component>().Select(c=>c.GetType().Name)));
+    }
     [Serializable] private sealed class Row { public string key, path, owner; }
     [Serializable] private sealed class Document { public List<Row> rows; }
     private const string Folder = "Assets/_Project/Data/Localization";

@@ -11,16 +11,17 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 013657e56ada445a9df99cb03d7409a2, type: 3}
   m_Name: Relic Logic_Common_RedContract
-  m_EditorClassIdentifier:
-  effectTemplate: "● {trigger} {duration} 동안 [[{stat}]] {value}"
+  m_EditorClassIdentifier: 
+  effectTemplate: "\u25CF {trigger} {duration} \uB3D9\uC548 [[{stat}]] {value}"
   triggerTag: {fileID: 11400000, guid: 165fc11102fdbfb40b1ce7b341ecc8bb, type: 2}
   actorFilter: 1
-  triggerLabel: "적 처치 시"
+  triggerLabel: "\uC801 \uCC98\uCE58 \uC2DC"
   passiveEntries: []
-  attribute: {fileID: 11400000, guid: 2c8e2b555f632824fbc8a39cd7bcfc86, type: 2}
-  displayNameOverride: "공격력"
-  modifierType: 1
-  value: 0.15
+  attribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
+  displayNameOverride: "\uACF5\uACA9\uB825"
+  modifierType: 0
+  value: 2
+  valueByLevel: []
   durationSeconds: 4
   refreshDuration: 1
   statusDefinition: {fileID: 0}

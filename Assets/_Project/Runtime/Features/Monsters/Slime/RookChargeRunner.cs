@@ -161,7 +161,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
             while (!cancelRequested &&
                    !owner.IsDead &&
                    !hitWall &&
-                   Time.time < dashEndTime)
+                   CombatHitPause2D.GetActionTime(gameObject) < dashEndTime)
             {
                 yield return null;
             }
@@ -194,6 +194,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     public void HandleBodyCollision(Collision2D collision)
     {
         if (!isDashing) return;
+        if (CombatHitPause2D.IsParalyzedOn(owner != null ? owner.gameObject : gameObject)) return;
         if (collision == null) return;
 
         TryHitCollisionPlayer(collision);
@@ -209,6 +210,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     public void HandleTrigger(Collider2D other)
     {
         if (!isDashing) return;
+        if (CombatHitPause2D.IsParalyzedOn(owner != null ? owner.gameObject : gameObject)) return;
         if (other == null) return;
 
         TryHitTriggerPlayer(other);
@@ -264,7 +266,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         if (dashTime <= 0f) return;
 
         isDashing = true;
-        dashEndTime = Time.time + dashTime;
+        dashEndTime = CombatHitPause2D.GetActionTime(gameObject) + dashTime;
         ApplyChargeStaggerImmunity();
         owner.PlayChargeAnimation();
         owner.SetChargeAnimationActive(true);
@@ -369,7 +371,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         if (cancelRequested || owner == null || owner.IsDead || hitWall)
             return;
 
-        if (Time.time < dashEndTime)
+        if (CombatHitPause2D.GetActionTime(gameObject) < dashEndTime)
             return;
 
         PlayWallImpactCameraShake();

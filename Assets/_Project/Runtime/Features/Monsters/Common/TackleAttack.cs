@@ -124,6 +124,9 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
             return;
         }
 
+        if (CombatHitPause2D.IsParalyzedOn(mob.gameObject))
+            return;
+
         TickDelay();
         UpdateTags();
 
@@ -137,6 +140,9 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
             return;
 
         if (mob == null || mob.IsDead)
+            return;
+
+        if (CombatHitPause2D.IsParalyzedOn(mob.gameObject))
             return;
 
         if (abilityCoordinator != null && abilityCoordinator.IsAbilityExecutionSuppressed)
@@ -175,7 +181,7 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     {
         if (delayTime <= 0f) return;
 
-        delayTime -= Time.deltaTime;
+        delayTime -= CombatHitPause2D.GetActionDeltaTime(mob != null ? mob.gameObject : gameObject);
         if (delayTime < 0f)
             delayTime = 0f;
     }

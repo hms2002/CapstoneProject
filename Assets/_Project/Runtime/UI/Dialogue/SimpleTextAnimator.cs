@@ -1,10 +1,21 @@
 using UnityEngine;
 using TMPro;
+using System;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(TMP_Text))]
 public class SimpleTextAnimator : MonoBehaviour
 {
     private TMP_Text textComponent;
+    private bool effectLinksDirty = true;
+    private bool hasAnimatedLinks;
+    private string observedText;
+    private TMP_Style observedStyle;
+    private bool observedRichText;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    public int DiagnosticForceMeshRefreshCount { get; private set; }
+    public int DiagnosticGeometryUploadCount { get; private set; }
+#endif
 
     [Header("효과 설정")]
     public float waveSpeed = 10f;   // 물결 속도
@@ -16,13 +27,57 @@ public class SimpleTextAnimator : MonoBehaviour
         textComponent = GetComponent<TMP_Text>();
     }
 
+    private void OnEnable()
+    {
+        textComponent ??= GetComponent<TMP_Text>();
+        effectLinksDirty = true;
+        TMPro_EventManager.TEXT_CHANGED_EVENT.Add(HandleTextChanged);
+    }
+
+    private void OnDisable()
+    {
+        TMPro_EventManager.TEXT_CHANGED_EVENT.Remove(HandleTextChanged);
+        effectLinksDirty = true;
+    }
+
+    private void HandleTextChanged(UnityEngine.Object changed)
+    {
+        if (changed == textComponent) effectLinksDirty = true;
+    }
+
     private void Update()
     {
         // 텍스트가 없으면 실행 안 함
         if (textComponent.textInfo.characterCount == 0) return;
 
-        // 텍스트 메시 정보를 강제로 최신화해서 가져옴
-        textComponent.ForceMeshUpdate();
+        if (observedText != textComponent.text || observedStyle != textComponent.textStyle ||
+            observedRichText != textComponent.richText)
+            effectLinksDirty = true;
+
+        bool refreshed = false;
+        if ((effectLinksDirty || textComponent.havePropertiesChanged) &&
+            (hasAnimatedLinks || MayContainLinks()))
+        {
+            RefreshMesh();
+            refreshed = true;
+            effectLinksDirty = true;
+        }
+
+        if (effectLinksDirty)
+            RefreshEffectLinks();
+
+        // Ordinary text is rendered by TMP's normal lifecycle. Do not overwrite
+        // geometry owned by another text effect when there is no wave/shake link.
+        if (!hasAnimatedLinks) return;
+
+        // Retain the original regenerate-then-offset path for real effects. A
+        // base-vertex cache could accidentally absorb another animator's offsets.
+        if (!refreshed)
+        {
+            RefreshMesh();
+            RefreshEffectLinks();
+            if (!hasAnimatedLinks) return;
+        }
         TMP_TextInfo textInfo = textComponent.textInfo;
 
         // 텍스트 안의 모든 <link> 태그를 순회
@@ -70,6 +125,43 @@ public class SimpleTextAnimator : MonoBehaviour
         {
             textInfo.meshInfo[i].mesh.vertices = textInfo.meshInfo[i].vertices;
             textComponent.UpdateGeometry(textInfo.meshInfo[i].mesh, i);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DiagnosticGeometryUploadCount++;
+#endif
         }
+    }
+
+    private bool MayContainLinks()
+    {
+        if (!textComponent.richText) return false;
+        string content = textComponent.text ?? string.Empty;
+        // Styles may expand into link tags, so let TMP parse changed rich input
+        // rather than recognizing only one authored spelling of a link tag.
+        return content.IndexOf("<link", StringComparison.OrdinalIgnoreCase) >= 0 ||
+               content.IndexOf("<style", StringComparison.OrdinalIgnoreCase) >= 0 ||
+               textComponent.textStyle.hashCode != TMP_Style.NormalStyle.hashCode;
+    }
+
+    private void RefreshMesh()
+    {
+        textComponent.ForceMeshUpdate();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        DiagnosticForceMeshRefreshCount++;
+#endif
+    }
+
+    private void RefreshEffectLinks()
+    {
+        hasAnimatedLinks = false;
+        TMP_TextInfo info = textComponent.textInfo;
+        for (int i = 0; i < info.linkCount; i++)
+        {
+            string id = info.linkInfo[i].GetLinkID();
+            if (id == "wave" || id == "shake") { hasAnimatedLinks = true; break; }
+        }
+        observedText = textComponent.text;
+        observedStyle = textComponent.textStyle;
+        observedRichText = textComponent.richText;
+        effectLinksDirty = false;
     }
 }

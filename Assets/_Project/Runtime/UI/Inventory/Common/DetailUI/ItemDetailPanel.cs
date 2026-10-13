@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// - 공용 상세 패널의 헤더와 각 아이템 타입별 상세 뷰를 연결한다.
 /// - 유물 프리뷰 가이드와 헤더 제목 병합처럼 공통 헤더 렌더링 규칙을 관리한다.
 /// </summary>
-public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetProvider
+public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetProvider, IHoverBoundsProvider
 {
     public static ItemDetailPanel Instance { get; private set; }
 
@@ -44,6 +44,9 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
     [Header("Glossary (optional)")]
     [SerializeField] private GlossaryDatabase glossary;
     [SerializeField] private GlossaryPopup glossaryPopup;
+
+    [Header("Keyword Descriptions")]
+    [SerializeField] private ItemKeywordTooltipView keywordTooltips;
 
     [Header("Services")]
     [SerializeField] private TooltipColorPalette tooltipColorPalette;
@@ -89,6 +92,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
         actionHintContext = null;
         currentContext = null;
         showDetailedDescription = false;
+        keywordTooltips?.Clear();
     }
 
     private void HandleHintBindingChanged(InputActionId action)
@@ -113,10 +117,12 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
             relicView.RefreshLocalizedText();
         else if (consumableView != null && consumableView.gameObject.activeSelf)
             consumableView.Show(currentDefinition, currentContext, _services);
+        keywordTooltips?.Refresh();
     }
 
     public RectTransform Rect => transform as RectTransform;
     public Vector2 HoverPositionOffset => hoverPositionOffset;
+    public Rect GetHoverLocalBounds() => keywordTooltips != null ? keywordTooltips.GetLocalBounds() : Rect.rect;
     public bool IsActive => gameObject.activeSelf && (isAnimating || (canvasGroup != null && canvasGroup.alpha > 0.01f));
 
     public void OpenUI()
@@ -175,6 +181,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
                 weaponView.Show(currentDefinition, currentContext, _services, showDetailedDescription);
             weaponDescriptionHint.Refresh(true, showDetailedDescription);
             glossaryPopup?.Hide();
+            keywordTooltips?.Refresh();
             Canvas.ForceUpdateCanvases();
         }
 
@@ -305,6 +312,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
 
         RefreshActionHint(ctx);
         weaponDescriptionHint.Refresh(definition is WeaponDefinition, showDetailedDescription);
+        keywordTooltips?.Refresh();
         Canvas.ForceUpdateCanvases();
         PlayOpenPresentation(animateOpen, serial);
     }
@@ -350,6 +358,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
         weaponDescriptionHint.Refresh(false, false);
         currentHeaderLevelSuffix = string.Empty;
         SetHeaderTitle(string.Empty);
+        keywordTooltips?.Clear();
     }
 
     private void ResolvePresentationReferences()

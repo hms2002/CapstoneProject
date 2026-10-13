@@ -19,8 +19,9 @@ namespace UnityGAS
 
         private void Awake()
         {
-            if (ownedColliders != null && ownedColliders.Length > 0)
-                return;
+            if (ownedColliders != null)
+                foreach (Collider2D collider in ownedColliders)
+                    if (collider != null) return;
 
             Collider2D ownCollider = GetComponent<Collider2D>();
             if (ownCollider != null)

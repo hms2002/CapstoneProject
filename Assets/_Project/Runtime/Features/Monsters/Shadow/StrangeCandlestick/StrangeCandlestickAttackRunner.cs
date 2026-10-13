@@ -79,12 +79,18 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner, 
                 if (IsCancelled(spec) || cancelRequested || IsSuppressed() || !owner.CanContinueAttack(context.TargetObject))
                     yield break;
 
+                if (CombatHitPause2D.IsParalyzedOn(owner.gameObject))
+                {
+                    yield return null;
+                    continue;
+                }
+
                 if (elapsed < trackingSeconds)
                 {
                     lockedWarning = owner.MakeLockOnSpec(context.TargetObject, delaySeconds);
                     telegraphPresenter?.UpdateCurrentGeometry(lockedWarning);
                 }
-                elapsed += Time.deltaTime;
+                elapsed += CombatHitPause2D.GetActionDeltaTime(owner.gameObject);
                 yield return null;
             }
 

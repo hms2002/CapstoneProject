@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8a88dac5c5e28b4696aaccbf80aa53a, type: 3}
   m_Name: Relic Logic_Move Speed On Kill_Managed
   m_EditorClassIdentifier: 
+  effectTemplate: "\u25CF \uC801 \uCC98\uCE58 \uC2DC {duration} \uB3D9\uC548 [[\uACF5\uACA9\uB825]]
+    {attack_bonus}\n\u25CF [[\uC774\uB3D9\uC18D\uB3C4]] {move_speed_bonus}"
   triggerTag: {fileID: 11400000, guid: 165fc11102fdbfb40b1ce7b341ecc8bb, type: 2}
-  attackAttribute: {fileID: 11400000, guid: 2c8e2b555f632824fbc8a39cd7bcfc86, type: 2}
-  attackPercentBonus: 0.1
+  attackAttribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
+  attackPercentBonus: 2
   moveSpeedAttribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
   percentBonus: 0.1
   durationSeconds: 4

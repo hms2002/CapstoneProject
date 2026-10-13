@@ -1,0 +1,38 @@
+[
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\PopupUI\\Encyclopedia\\EncyclopediaUI.prefab",
+    "Hash": "D0237F1894A20E47BEDFF3810EE18712D3997C68C3C652B814693E257D116DED"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Editor\\Tools\\Encyclopedia\\EncyclopediaCreatureUIAuthoring.cs",
+    "Hash": "BDD8FB1FC15207FD6F43753819D8966CDD655556222DF1AA6B3E84C35696949A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\Inventory Book SpriteSheet.png.meta",
+    "Hash": "7FCA62976A41197934149CBAE1F199A9851CD1297944F46D04783866FA1685E1"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\Book.controller",
+    "Hash": "9BBA0797D1BF424D6B8D0E07FF31CF40FA99899670E6D74131D746619460AC95"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\BookIdle.anim",
+    "Hash": "515C41E15A14F6546DF2013356D6C4413D0FBCD12AF7210A8F0AD50B45A09E9C"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\BookOpen.anim",
+    "Hash": "282EA46112818505C77DCCF63496E8FB2C1F0A903F898AC39C50F3B3A101E3F5"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\BookClose.anim",
+    "Hash": "216B1C417B3B8566B7F6AFE8A3699682B051A42B578D86BBC6931CA4B7B85FFF"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\BookLeftPage.anim",
+    "Hash": "F6D985DE8722949F86B55EECCECE300D7016E0D17AADFFE9D402E678CE097E79"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\BookRightPage.anim",
+    "Hash": "58D69E66580226238A4FDCDE785AB8C86A4BCB98EF2AFFE825BDFDD0CBD9FD1D"
+  }
+]

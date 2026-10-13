@@ -148,7 +148,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource, IMobProjectileL
         if (isDead)
             return false;
 
-        if (Time.time < nextProjectileFireTime || burstCadence.IsResting(Time.time))
+        if (CombatHitPause2D.GetActionTime(gameObject) < nextProjectileFireTime || burstCadence.IsResting(CombatHitPause2D.GetActionTime(gameObject)))
             return false;
 
         if (helperAccess != null &&
@@ -257,7 +257,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource, IMobProjectileL
     public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
     {
         return Mathf.Max(base.ResolvePostAttackRecoverSeconds(scaledRecoverSeconds),
-            burstCadence.GetRemainingRestSeconds(Time.time));
+            burstCadence.GetRemainingRestSeconds(CombatHitPause2D.GetActionTime(gameObject)));
     }
 
     /// <summary>공격 상태 진입 시 StrangeCandlestick이 추가로 처리할 것이 없어 비워 둡니다.</summary>
@@ -291,7 +291,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource, IMobProjectileL
 
     public bool FireProjectile(GameObject explicitTarget, Vector2 origin, Vector2 shotDirection)
     {
-        if (explicitTarget == null || burstCadence.IsResting(Time.time))
+        if (explicitTarget == null || burstCadence.IsResting(CombatHitPause2D.GetActionTime(gameObject)))
             return false;
 
         AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
@@ -330,8 +330,8 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource, IMobProjectileL
 
         PlayShotFireSound();
         lightBead.Setup(context);
-        burstCadence.RecordShot(Time.time);
-        nextProjectileFireTime = Time.time + CombatTimingService.ScaleSeconds(
+        burstCadence.RecordShot(CombatHitPause2D.GetActionTime(gameObject));
+        nextProjectileFireTime = CombatHitPause2D.GetActionTime(gameObject) + CombatTimingService.ScaleSeconds(
             abilitySystem,
             GetPostShotCooldown(),
             CombatTimingSlot.AttackInterval);

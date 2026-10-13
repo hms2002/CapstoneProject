@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 책임 : 데미지 팝업 생성 요청을 받아 월드 좌표에 실제 팝업 프리팹을 생성한다.
@@ -63,6 +64,7 @@ public sealed class DamagePopupService : MonoBehaviour
     private bool hasWarnedMissingFormatProfile;
     private DamagePopupFormatProfileSO runtimeFormatProfile;
     private readonly List<SlotReservation> slotReservations = new();
+    private readonly Stack<DamagePopupWorldText> inactivePopups = new();
     private static readonly Vector2Int[] SlotDirections =
     {
         new Vector2Int(0, 0),
@@ -111,7 +113,76 @@ public sealed class DamagePopupService : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         DamagePopupPlayback.RegisterBackend(s_playbackBackend);
         ResolveFormatProfile();
+        SceneManager.activeSceneChanged += HandleActiveSceneChanged;
         LogPopupServiceLifecycle("awake and registered as Instance");
+    }
+
+    private void HandleActiveSceneChanged(Scene previous, Scene next) => ClearInactivePopups();
+
+    private void OnDestroy()
+    {
+        SceneManager.activeSceneChanged -= HandleActiveSceneChanged;
+        ClearInactivePopups();
+        if (Instance == this)
+            Instance = null;
+    }
+
+    private void ClearInactivePopups()
+    {
+        while (inactivePopups.Count > 0)
+        {
+            DamagePopupWorldText popup = inactivePopups.Pop();
+            if (popup != null)
+                Destroy(popup.gameObject);
+        }
+    }
+
+    private DamagePopupWorldText AcquirePopup(Vector3 position, Transform parent)
+    {
+        DamagePopupWorldText popup = null;
+        while (inactivePopups.Count > 0 && popup == null)
+        {
+            popup = inactivePopups.Pop();
+            if (popup != null && popup.PoolPrefab != popupPrefab)
+            {
+                Destroy(popup.gameObject);
+                popup = null;
+            }
+        }
+
+        if (popup == null)
+            popup = Instantiate(popupPrefab, position, Quaternion.identity, parent);
+        else
+        {
+            popup.transform.SetParent(parent, false);
+            if (parent == null)
+            {
+                // An active popup still belongs to the scene that would own a fresh clone.
+                Scene scene = SceneManager.GetActiveScene();
+                if (scene.IsValid() && scene.isLoaded)
+                    SceneManager.MoveGameObjectToScene(popup.gameObject, scene);
+            }
+            popup.transform.SetPositionAndRotation(position, Quaternion.identity);
+            popup.PrepareForReuse();
+        }
+
+        popup.SetPoolOwner(this, popupPrefab);
+        return popup;
+    }
+
+    internal void ReturnPopup(DamagePopupWorldText popup)
+    {
+        if (popup == null || !popup.gameObject.activeSelf)
+            return;
+
+        popup.gameObject.SetActive(false);
+        if (popup.PoolPrefab != popupPrefab)
+        {
+            Destroy(popup.gameObject);
+            return;
+        }
+        popup.transform.SetParent(transform, false);
+        inactivePopups.Push(popup);
     }
 
 #if UNITY_EDITOR
@@ -187,7 +258,7 @@ public sealed class DamagePopupService : MonoBehaviour
         Vector3 spawnPos = ResolveSpawnPosition(request.WorldPosition + worldOffset, reservationSeconds);
 
         Transform resolvedParent = ResolvePopupParent();
-        DamagePopupWorldText instance = Instantiate(popupPrefab, spawnPos, Quaternion.identity, resolvedParent);
+        DamagePopupWorldText instance = AcquirePopup(spawnPos, resolvedParent);
         if (profile != null)
         {
             LogPopupRequest(request, viewModel, profileSource: profile.name);
@@ -199,6 +270,7 @@ public sealed class DamagePopupService : MonoBehaviour
             LogPopupRequest(request, fallbackViewModel, profileSource: "code fallback");
             instance.Setup(fallbackViewModel);
         }
+        instance.gameObject.SetActive(true);
     }
 
     private void LogPopupRequest(DamagePopupRequest request, DamagePopupViewModel viewModel, string profileSource)
@@ -344,19 +416,17 @@ public sealed class DamagePopupService : MonoBehaviour
             moveVelocity,
             request.Kind == DamagePopupKind.Critical ? 0.85f : 0.78f,
             0.55f,
-            startScale,
-            endScale,
+            startScale * request.SizeScale,
+            endScale * request.SizeScale,
             fontSize: 0f,
             overrideFontSize: false);
     }
 
     private static Color ResolveFallbackColor(DamagePopupRequest request)
     {
-        if (request.Kind == DamagePopupKind.Critical || request.IsCritical)
-            return new Color(1f, 0.86f, 0.22f, 1f);
-
         if (request.Kind != DamagePopupKind.Element || request.ElementTag == null)
-            return Color.white;
+            return request.Kind == DamagePopupKind.Critical || request.IsCritical
+                ? new Color(1f, 0.86f, 0.22f, 1f) : Color.white;
 
         string elementName = request.ElementTag.Name;
         if (string.Equals(elementName, "Electric", System.StringComparison.OrdinalIgnoreCase))

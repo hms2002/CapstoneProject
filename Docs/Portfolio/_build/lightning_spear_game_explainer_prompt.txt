@@ -1,0 +1,27 @@
+Use case: infographic-diagram
+Asset type: Korean game-development portfolio illustration, one clean landscape page.
+Primary request: Create an attractive, very easy to understand VISUAL explanation of Lightning Spear optimization and modular composition, using actual game characters, the skill icon, lightning impact effects and monsters from the references. This must look like an illustrated game scene with concise annotations, NOT a text-heavy flowchart and NOT a page of rectangular text boxes.
+Input images:
+1. Player sprite sheet. Use ONLY the first character at the upper left (PNG rect x4,y3,w15,h22). Preserve the small white/light lavender-haired adventurer with red scarf and pale clothing, enlarged in crisp pixel art. Do not draw the sprite sheet.
+2. Actual "낙뢰 표식" skill icon, cyan/yellow lightning on a dark square. Display it as a recognizable skill button by the title and by the player.
+3. Actual landing lightning sprite sheet, seven frames across. Use the bright early-middle cyan, white and yellow bolt shape as a landing effect. Do not draw the whole sheet.
+4. Actual active ground spear: slender golden/yellow spear pointing downward with a small ground-impact tip. Ground marks should use this appearance, not purple rings or target symbols alone.
+5. Goblin monster sprite sheet. Use ONLY the first top-left green goblin with small ears and weapon (PNG rect x0,y0,w32,h32). Keep its silhouette and green palette. Do not draw the sheet.
+
+Style: professional editorial infographic combined with faithful enlarged 2D pixel game art. Crisp pixel characters and electric effects against softly shaded top-down dungeon floor. Cream/light neutral page background; dark navy high-readability Korean type; amber before annotations, cyan/teal after annotations; electric yellow/cyan effects. Generous spacing, beautiful restrained finish. Landscape around 2400x1600 or 3:2.
+Composition:
+Top 13%: Large title "번개창 위치 찾기 개선". Beside title the real skill icon, recognizable player and golden spear. Subtitle "같은 계산은 한 번만, 공격 방식은 같은 도구로".
+Middle 48%: Two large gameplay illustrations side by side, occupying most of the page. Both show EXACTLY THE SAME top-down small dungeon patch, one player on left/lower left, three goblins to right, a short wall and a clearly dark hole at the edge, and SIX final golden ground-spear marks in safe floor positions with reasonable separation. Final player, monster and six mark coordinates MUST be identical in both panels; final outcomes preserved. A bright cyan/yellow lightning impact is shown arriving at one selected safe ground mark in BOTH. This is a conceptual reconstruction, not a screenshot or benchmark map.
+Left heading "기존". Depict repeated amber dashed search traces over the SAME bounded neighborhood, multiple overlapping arcs, faint candidate dots. Small annotation "창마다 같은 범위를 다시 탐색". Two small readable process annotations "후보 다시 모으기" and "전체 다시 정렬". These are computation traces, not attack beams. Do not imply whole-dungeon search.
+Right heading "개선". Depict one clean cyan candidate grid/cluster around the target region, short near-to-far arrows from a goblin's preferred point to a nearby safe candidate. Mark wall/hole candidates with a small red X. Show previously selected spear positions each with a thin cyan spacing circle and arrows skipping those circles. Concise labels "후보 한 번 모으기", "가까운 자리부터", "확인 결과 재사용". Small annotation "벽·구멍·간격 조건 확인". Add label by the final landing spear "낙뢰 표식". All rejected candidates are gray dots or Xs, never glowing landing spears. Do NOT show spears inside wall/hole. Keep overlays understandable, not a tangled diagram.
+Directly below gameplay illustrations: bold simple metric band "표적 생성 계획 시간 43.6~52.3% 감소". Supporting compact line "열린 바닥 사례: 후보 수집 5→1회 · 경로·착지 확인 각각 87→6회".
+Lower 25%: Three SMALL GAMEPLAY vignette illustrations, not text boxes, connected visually by one shared toolkit ribbon above them. Ribbon heading "같은 도구, 다른 공격". Ribbon labels "후보 찾기 · 안전 확인 · 간격 확보 · 반복·보충".
+Vignette one labeled "3타": same player attacking toward a green goblin, one lightning and one ground spear near target, short caption "유효한 자리 한 개".
+Vignette two labeled "일반 번개비": player in center, several golden ground marks scattered around within radius with one cyan lightning, short caption "주변에 무작위 배치".
+Vignette three labeled "표적 번개비": player on left, goblins on right, marks near monsters, short caption "대상 주변 우선 · 부족분 보충".
+Bottom concise badge "동작 비교 1,048쌍 일치".
+Readable tiny footer lines:
+"대표 표적 사례 각 40회 평균 · 생성 위치 계획만 측정 · FPS 개선율 아님"
+"설명용 재구성 그림 · 전체 조건과 구조 비용은 상세 문서 참조"
+
+Constraints: Render all specified Korean text correctly and legibly. Pictures are the primary content. Omit additional technical paragraphs, file names, code, equations and unrequested numbers. Use project sprite identities as references, avoid generic faceless figures. No invented purple magic marks, no replacement character, no photorealism, no 3D perspective, no watermark, no full sprite sheets. Do not claim FPS boost. Reserve enough breathing room that no labels overlap characters or effects.

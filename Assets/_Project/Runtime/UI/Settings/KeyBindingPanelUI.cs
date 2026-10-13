@@ -19,6 +19,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
     [SerializeField] private Transform rowContainer;
     [SerializeField] private KeyBindingRowUI rowPrefab;
     [SerializeField] private List<InputActionId> actionOrder = new();
+    [SerializeField] private UiRenderLayerLayout renderLayout;
 
     [Header("Guide")]
     [FormerlySerializedAs("guidePanel")]
@@ -181,11 +182,13 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
     private void OnEnable()
     {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
         MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.SystemUi, priority: SystemCursorPriority);
     }
 
     private void OnDisable()
     {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
         isClosing = false;
         MouseCursorService.Instance?.ClearDomain(this);
     }
@@ -247,6 +250,8 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
     private void ResolveReferences()
     {
+        if (renderLayout == null)
+            renderLayout = GetComponent<UiRenderLayerLayout>();
         if (dropPresentation == null)
             dropPresentation = GetComponent<UIChainDropPresentation>();
 
@@ -392,8 +397,10 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         for (int i = 0; i < actions.Count; i++)
         {
             KeyBindingRowUI row = Instantiate(rowPrefab, rowContainer);
+            if (renderLayout != null) row.transform.SetSiblingIndex(i);
             row.gameObject.SetActive(true);
             row.Bind(this, actions[i]);
+            row.BindRenderLayout(renderLayout);
             spawnedRows.Add(row);
         }
     }
@@ -483,6 +490,14 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         }
 
         UpdateBottomButtons();
+    }
+
+    private void HandleLocaleChanged(UnityEngine.Localization.Locale locale)
+    {
+        RefreshRows();
+        // Re-project labels without cancelling the current binding edit.
+        if (listeningRow != null)
+            listeningRow.SetListeningState(primary: !listeningSecondary, secondary: listeningSecondary);
     }
 
     private void UpdateBottomButtons()

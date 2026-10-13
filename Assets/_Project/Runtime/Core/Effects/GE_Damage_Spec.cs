@@ -285,7 +285,8 @@ namespace UnityGAS
             float remainingDamage)
         {
             GameplayTag popupElementTag = spec != null ? spec.Context?.DamagePopupElementTag : null;
-            if (popupElementTag == null || target == null || healthAttribute == null)
+            bool handledByCombat = spec != null && spec.Context != null && spec.Context.DamagePopupHandledByCombat;
+            if ((!handledByCombat && popupElementTag == null) || target == null || healthAttribute == null)
                 return;
 
             float expectedDamage = Mathf.Max(0f, Mathf.Min(remainingDamage, preHp - healthAttribute.minValue));
@@ -314,6 +315,8 @@ namespace UnityGAS
             float preHp,
             float remainingDamage)
         {
+            if (spec != null && spec.Context != null && spec.Context.DamagePopupHandledByCombat)
+                return;
             GameplayTag popupElementTag = spec != null ? spec.Context?.DamagePopupElementTag : null;
             if (popupElementTag == null || target == null || attributeSet == null || healthAttribute == null)
             {

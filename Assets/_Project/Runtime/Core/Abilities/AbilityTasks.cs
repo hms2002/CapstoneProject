@@ -16,7 +16,7 @@ namespace UnityGAS
                 if (system == null || spec == null) yield break;
                 if (spec.Token != null && spec.Token.IsCancelled) yield break;
                 yield return null;
-                if (system != null && !CombatHitPause2D.IsPausedOn(system.gameObject)) remaining -= Time.deltaTime;
+                if (system != null && !CombatHitPause2D.IsPausedOn(system.gameObject)) remaining -= CombatHitPause2D.GetActionDeltaTime(system.gameObject);
             }
         }
 
@@ -45,9 +45,9 @@ namespace UnityGAS
         {
             if (system == null || spec == null || tag == null) yield break;
 
-            float end = timeout > 0f ? (Time.time + timeout) : float.PositiveInfinity;
+            float end = timeout > 0f ? (CombatHitPause2D.GetActionTime(system.gameObject) + timeout) : float.PositiveInfinity;
 
-            while (Time.time < end)
+            while (system != null && CombatHitPause2D.GetActionTime(system.gameObject) < end)
             {
                 if (spec.Token != null && spec.Token.IsCancelled) yield break;
 
@@ -55,17 +55,23 @@ namespace UnityGAS
                 // waiter는 "tag만" 필터링하므로, predicate는 여기서 체크하고 실패하면 다시 대기
                 while (!waiter.Done)
                 {
-                    if (spec.Token != null && spec.Token.IsCancelled)
+                    if (system == null || (spec.Token != null && spec.Token.IsCancelled))
                     {
                         waiter.Cancel();
                         yield break;
                     }
-                    if (Time.time >= end)
+                    if (CombatHitPause2D.GetActionTime(system.gameObject) >= end)
                     {
                         waiter.Cancel();
                         yield break;
                     }
                     yield return null;
+                }
+
+                if (system == null || (spec.Token != null && spec.Token.IsCancelled))
+                {
+                    waiter.Cancel();
+                    yield break;
                 }
 
                 var data = waiter.Data;

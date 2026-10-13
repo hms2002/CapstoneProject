@@ -28,6 +28,8 @@ namespace UnityGAS
         private ContactFilter2D contactFilter;
         private Coroutine tickRoutine;
         private bool isActive;
+        private GameObject actionOwner;
+        private bool isActionBound;
 
         private void Awake()
         {
@@ -69,6 +71,8 @@ namespace UnityGAS
             Stop();
 
             payload = hitPayload;
+            isActionBound = payload?.sourceSystem != null && transform.IsChildOf(payload.sourceSystem.transform);
+            actionOwner = isActionBound ? payload.sourceSystem.gameObject : null;
             sharedRegistry = registry;
             nextDamageTimes.Clear();
 
@@ -103,6 +107,13 @@ namespace UnityGAS
             nextDamageTimes.Clear();
             payload = null;
             sharedRegistry = null;
+            actionOwner = null;
+            isActionBound = false;
+        }
+
+        private void Update()
+        {
+            if (isActive && isActionBound && CombatHitPause2D.IsActionStoppedOn(actionOwner)) Stop();
         }
 
         private IEnumerator TickRoutine()
@@ -110,7 +121,14 @@ namespace UnityGAS
             WaitForSeconds wait = new(Mathf.Max(0.01f, damageIntervalSeconds));
             while (isActive)
             {
-                yield return wait;
+                if (!isActionBound) yield return wait;
+                else
+                {
+                    double nextScan = CombatHitPause2D.GetActionTimeAsDouble(actionOwner) + Mathf.Max(0.01f, damageIntervalSeconds);
+                    do { yield return null; }
+                    while (isActive && (CombatHitPause2D.IsParalyzedOn(actionOwner) ||
+                        CombatHitPause2D.GetActionTimeAsDouble(actionOwner) < nextScan));
+                }
                 ScanAndApply();
             }
         }
@@ -162,8 +180,9 @@ namespace UnityGAS
 
         private void ScanAndApply()
         {
-            if (!isActive || payload == null || !payload.IsValid() || hitColliders == null)
+            if (!isActive || payload == null || !payload.IsValid() || hitColliders == null || CombatHitPause2D.IsParalyzedOn(actionOwner))
                 return;
+            if (isActionBound && CombatHitPause2D.IsActionStoppedOn(actionOwner)) { Stop(); return; }
 
             for (int i = 0; i < hitColliders.Length; i++)
             {
@@ -182,7 +201,7 @@ namespace UnityGAS
 
         private void TryApplyHit(Collider2D other, Collider2D sourceCollider)
         {
-            if (other == null)
+            if (other == null || (isActionBound && CombatHitPause2D.IsActionStoppedOn(actionOwner)) || CombatHitPause2D.IsParalyzedOn(actionOwner))
                 return;
 
             if (targetLayers.value != 0 && (targetLayers.value & (1 << other.gameObject.layer)) == 0)
@@ -195,7 +214,8 @@ namespace UnityGAS
             if (sharedRegistry != null && sharedRegistry.Contains(targetRoot))
                 return;
 
-            if (nextDamageTimes.TryGetValue(targetRoot, out float nextDamageTime) && Time.time < nextDamageTime)
+            float actionTime = actionOwner != null ? CombatHitPause2D.GetActionTime(actionOwner) : Time.time;
+            if (nextDamageTimes.TryGetValue(targetRoot, out float nextDamageTime) && actionTime < nextDamageTime)
                 return;
 
             Vector3 hitPoint = other.ClosestPoint(sourceCollider != null ? sourceCollider.bounds.center : transform.position);
@@ -203,7 +223,7 @@ namespace UnityGAS
                 return;
 
             sharedRegistry?.Register(targetRoot);
-            nextDamageTimes[targetRoot] = Time.time + Mathf.Max(0.01f, damageIntervalSeconds);
+            nextDamageTimes[targetRoot] = actionTime + Mathf.Max(0.01f, damageIntervalSeconds);
             Log($"applied. target={targetRoot.name}, next={nextDamageTimes[targetRoot]:0.###}");
         }
 

@@ -22,6 +22,8 @@ public sealed class LevelRewardCardView : MonoBehaviour
     private string boundRewardId;
     private bool listenerRegistered;
 
+    public UnityEngine.UI.Button SelectButton => selectButton;
+
     private void Awake()
     {
         RegisterButtonListener();

@@ -44,6 +44,7 @@ Each feature document should include:
 
 ## Current Documents
 
+- [Alcohol Exposure and Spiri Reward](./AlcoholExposure.md)
 - [Audio Catalog Runtime Tuning](./AudioCatalogRuntimeTuning.md)
 - [Script System Map](./ScriptSystemMap.md)
 - [Script Systems](./ScriptSystems/README.md)

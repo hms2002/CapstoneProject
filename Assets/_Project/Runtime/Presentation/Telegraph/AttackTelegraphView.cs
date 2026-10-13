@@ -48,6 +48,8 @@ namespace UnityGAS
         private float activeInnerDiameter;
         private float activeSectorAngleDeg;
         private float startTime;
+        private GameObject actionTimeOwner;
+        public GameObject ActionTimeOwner => actionTimeOwner;
         private float duration;
         private bool isVisible;
         private bool isReleased;
@@ -86,13 +88,14 @@ namespace UnityGAS
         /// 책임 :
         /// - 공격 예고 도형의 위치, 크기, 회전과 진행도 시작 상태를 초기화한다.
         /// </summary>
-        public void Show(AttackTelegraphSpec spec, AttackTelegraphStyle fallbackStyle = null)
+        public void Show(AttackTelegraphSpec spec, AttackTelegraphStyle fallbackStyle = null, GameObject actionOwner = null)
         {
             CaptureBaseScaleIfNeeded();
 
             activeStyle = spec.style != null ? spec.style : fallbackStyle;
             duration = Mathf.Max(0f, spec.duration);
-            startTime = Time.time;
+            actionTimeOwner = actionOwner;
+            startTime = CombatHitPause2D.GetActionTime(actionTimeOwner);
             isVisible = true;
             activeInnerDiameter = Mathf.Max(0f, spec.innerDiameter);
             activeSectorAngleDeg = Mathf.Clamp(spec.sectorAngleDeg, 0.1f, 360f);
@@ -224,7 +227,7 @@ namespace UnityGAS
         {
             return duration <= 0f
                 ? 1f
-                : Mathf.Clamp01((Time.time - startTime) / duration);
+                : Mathf.Clamp01((CombatHitPause2D.GetActionTime(actionTimeOwner) - startTime) / duration);
         }
 
         private bool TryApplyWallClippedMesh(AttackTelegraphSpec spec, float normalizedProgress)
@@ -848,7 +851,7 @@ namespace UnityGAS
                 normalized >= activeStyle.blinkStartNormalized &&
                 activeStyle.blinkFrequency > 0f)
             {
-                float blinkWave = Mathf.Sin(Time.time * activeStyle.blinkFrequency * Mathf.PI * 2f);
+                float blinkWave = Mathf.Sin(CombatHitPause2D.GetActionTime(actionTimeOwner) * activeStyle.blinkFrequency * Mathf.PI * 2f);
                 blinkMultiplier = Mathf.Lerp(activeStyle.blinkAlphaMin, 1f, (blinkWave + 1f) * 0.5f);
             }
 

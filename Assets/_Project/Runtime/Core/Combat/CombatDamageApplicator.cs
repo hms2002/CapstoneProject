@@ -38,7 +38,8 @@ namespace UnityGAS
                     causer: causer,
                     isCriticalHit: snapshot.IsCriticalHit,
                     elementBuildUps: snapshot.FinalElementBuildUps,
-                    hasResolvedElementBuildUps: snapshot.HasResolvedElementBuildUps
+                    hasResolvedElementBuildUps: snapshot.HasResolvedElementBuildUps,
+                    elementHpDamages: snapshot.FinalElementHpDamages
                 );
             }
         }

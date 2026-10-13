@@ -37,6 +37,16 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
     private TMP_Text labelText;
     private readonly Vector3[] swordCorners = new Vector3[4];
     private const float SwordTextGap = 12f;
+    private Bounds cachedLabelBounds;
+    private bool labelBoundsDirty = true;
+    private TMP_Text boundsLabel;
+    private TMP_FontAsset boundsFont;
+    private Material boundsMaterial;
+    private string boundsText;
+    private Vector2 boundsRectSize;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    public int DiagnosticLabelMeshRefreshCount { get; private set; }
+#endif
 
     private void Reset()
     {
@@ -53,6 +63,9 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
 
     private void OnEnable()
     {
+        TMPro_EventManager.TEXT_CHANGED_EVENT.Add(HandleLabelTextChanged);
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
+        labelBoundsDirty = true;
         ResolveReferences();
         CaptureSwordVisiblePosition(force: false);
         Snap(false);
@@ -60,6 +73,9 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
 
     private void OnDisable()
     {
+        TMPro_EventManager.TEXT_CHANGED_EVENT.Remove(HandleLabelTextChanged);
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
+        labelBoundsDirty = true;
         StopMotion();
         pointerInside = false;
         selected = false;
@@ -67,9 +83,17 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
 
     private void OnValidate()
     {
+        labelBoundsDirty = true;
         ResolveReferences();
         CaptureSwordVisiblePosition(force: true);
     }
+
+    private void HandleLabelTextChanged(Object changed)
+    {
+        if (changed == labelText) labelBoundsDirty = true;
+    }
+
+    private void HandleLocaleChanged(UnityEngine.Localization.Locale locale) => labelBoundsDirty = true;
 
     [ContextMenu("Preview Highlight On")]
     private void PreviewHighlightOn()
@@ -293,9 +317,9 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
         if (labelText == null || swordRoot == null || !(swordRoot.parent is RectTransform parent)) return;
         // CanvasScaler can leave the authored canvas at zero scale until its first layout pass.
         if (Mathf.Abs(parent.lossyScale.x) < 0.0001f || Mathf.Abs(parent.lossyScale.y) < 0.0001f) return;
-        labelText.ForceMeshUpdate(ignoreActiveState: true);
+        RefreshLabelBoundsIfNeeded();
         if (labelText.textInfo.characterCount == 0) return;
-        Bounds bounds = labelText.textBounds;
+        Bounds bounds = cachedLabelBounds;
         Vector3 textLeft = parent.InverseTransformPoint(labelText.transform.TransformPoint(new Vector3(bounds.min.x, bounds.center.y, 0f)));
         swordRoot.GetWorldCorners(swordCorners);
         float right = float.NegativeInfinity, bottom = float.PositiveInfinity, top = float.NegativeInfinity;
@@ -309,6 +333,28 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
         // Convert the rendered text edge into the icon parent's space, retaining anchors/pivot.
         Vector2 shift = new Vector2(textLeft.x - SwordTextGap - right, textLeft.y - (bottom + top) * 0.5f);
         swordVisiblePosition = swordRoot.anchoredPosition + shift;
+    }
+
+    private void RefreshLabelBoundsIfNeeded()
+    {
+        if (!labelBoundsDirty && boundsLabel == labelText && boundsFont == labelText.font &&
+            boundsMaterial == labelText.fontSharedMaterial && boundsText == labelText.text &&
+            boundsRectSize.Equals(labelText.rectTransform.rect.size) && !labelText.havePropertiesChanged)
+            return;
+
+        labelText.ForceMeshUpdate(ignoreActiveState: true);
+        cachedLabelBounds = labelText.textBounds;
+        boundsLabel = labelText;
+        boundsFont = labelText.font;
+        boundsMaterial = labelText.fontSharedMaterial;
+        boundsText = labelText.text;
+        boundsRectSize = labelText.rectTransform.rect.size;
+        // The forced refresh raises TMP's text event; the new bounds already
+        // incorporate that generation, including font and layout changes.
+        labelBoundsDirty = false;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        DiagnosticLabelMeshRefreshCount++;
+#endif
     }
 
     private void CaptureSwordVisiblePosition(bool force)
@@ -344,5 +390,161 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
     private static float EaseInOutSine(float t)
     {
         return 0.5f - Mathf.Cos(Mathf.Clamp01(t) * Mathf.PI) * 0.5f;
+    }
+}
+
+// Responsibility: keeps existing menu/card Buttons in one navigation group and restores its focus after suspension.
+// Plain presentation state only; callers decide when their screen may receive input.
+internal sealed class ButtonNavigationGroup
+{
+    private readonly UnityEngine.UI.Button[] buttons;
+    private readonly bool horizontal;
+    private UnityEngine.UI.Button lastSelected;
+    private bool spaceNeedsRelease = true;
+
+    public ButtonNavigationGroup(bool horizontal, params UnityEngine.UI.Button[] buttons)
+    {
+        this.horizontal = horizontal;
+        this.buttons = buttons;
+    }
+
+    public void Refresh(bool inputAllowed)
+    {
+        ConfigureNavigation(inputAllowed);
+        if (!inputAllowed)
+        {
+            Suspend();
+            return;
+        }
+
+        EventSystem eventSystem = EventSystem.current;
+        if (eventSystem == null)
+            return;
+
+        UnityEngine.UI.Button selected = FindSelected(eventSystem);
+        if (IsAvailable(selected))
+        {
+            lastSelected = selected;
+            SubmitSpaceIfPressed(eventSystem, selected);
+            return;
+        }
+
+        UnityEngine.UI.Button target = IsAvailable(lastSelected) ? lastSelected : FindAvailable(0, 1);
+        if (target == null)
+        {
+            spaceNeedsRelease = true;
+            return;
+        }
+
+        eventSystem.SetSelectedGameObject(target.gameObject);
+        lastSelected = target;
+        SubmitSpaceIfPressed(eventSystem, target);
+    }
+
+    private void SubmitSpaceIfPressed(EventSystem eventSystem, UnityEngine.UI.Button selected)
+    {
+        if (spaceNeedsRelease)
+        {
+            if (!InputKeyCompatibility.IsPressed(KeyCode.Space))
+                spaceNeedsRelease = false;
+            return;
+        }
+
+        if (!InputKeyCompatibility.WasPressedThisFrame(KeyCode.Space))
+            return;
+
+        spaceNeedsRelease = true;
+#if ENABLE_INPUT_SYSTEM
+        // Native Submit (for example Enter) may already have run during EventSystem.Update.
+        if (eventSystem.currentInputModule is UnityEngine.InputSystem.UI.InputSystemUIInputModule inputModule &&
+            inputModule.submit?.action != null && inputModule.submit.action.WasPerformedThisDynamicUpdate())
+        {
+            return;
+        }
+#endif
+        ExecuteEvents.Execute(selected.gameObject, new BaseEventData(eventSystem), ExecuteEvents.submitHandler);
+    }
+
+    public void Suspend()
+    {
+        spaceNeedsRelease = true;
+        EventSystem eventSystem = EventSystem.current;
+        if (eventSystem == null)
+            return;
+
+        UnityEngine.UI.Button selected = FindSelected(eventSystem);
+        if (selected == null)
+            return;
+
+        lastSelected = selected;
+        eventSystem.SetSelectedGameObject(null);
+    }
+
+    public void Reset()
+    {
+        Suspend();
+        lastSelected = null;
+        ConfigureNavigation(false);
+    }
+
+    private void ConfigureNavigation(bool inputAllowed)
+    {
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            UnityEngine.UI.Button button = buttons[i];
+            if (button == null)
+                continue;
+
+            UnityEngine.UI.Navigation navigation = new UnityEngine.UI.Navigation
+            {
+                mode = inputAllowed && IsAvailable(button)
+                    ? UnityEngine.UI.Navigation.Mode.Explicit
+                    : UnityEngine.UI.Navigation.Mode.None
+            };
+            if (navigation.mode == UnityEngine.UI.Navigation.Mode.Explicit)
+            {
+                UnityEngine.UI.Button previous = FindAvailable(i - 1, -1);
+                UnityEngine.UI.Button next = FindAvailable(i + 1, 1);
+                if (horizontal)
+                {
+                    navigation.selectOnLeft = previous;
+                    navigation.selectOnRight = next;
+                }
+                else
+                {
+                    navigation.selectOnUp = previous;
+                    navigation.selectOnDown = next;
+                }
+            }
+
+            button.navigation = navigation;
+        }
+    }
+
+    private UnityEngine.UI.Button FindAvailable(int start, int direction)
+    {
+        for (int i = start; i >= 0 && i < buttons.Length; i += direction)
+        {
+            if (IsAvailable(buttons[i]))
+                return buttons[i];
+        }
+
+        return null;
+    }
+
+    private UnityEngine.UI.Button FindSelected(EventSystem eventSystem)
+    {
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (buttons[i] != null && eventSystem.currentSelectedGameObject == buttons[i].gameObject)
+                return buttons[i];
+        }
+
+        return null;
+    }
+
+    private static bool IsAvailable(UnityEngine.UI.Button button)
+    {
+        return button != null && button.IsActive() && button.IsInteractable();
     }
 }

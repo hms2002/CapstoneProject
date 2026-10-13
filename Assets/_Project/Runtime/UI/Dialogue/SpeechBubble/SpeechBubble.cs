@@ -45,6 +45,8 @@ public class SpeechBubble : MonoBehaviour
     private Action hiddenAction;
     private Material runtimeBackgroundMaterial;
     private Material runtimeTextMaterial;
+    private LocalizeTmpFontEvent localizedFontEvent;
+    private Color currentFontColor;
     private RectTransform backgroundRect;
     private RectTransform textRect;
     private HorizontalLayoutGroup backgroundLayoutGroup;
@@ -90,7 +92,15 @@ public class SpeechBubble : MonoBehaviour
         originalScale = transform.localScale;
         originalRotation = transform.rotation;
         ResolveVisualReferences();
+        currentFontColor = defaultFontColor;
         InitializeRuntimeMaterials();
+        if (bubbleText != null)
+        {
+            localizedFontEvent = bubbleText.GetComponent<LocalizeTmpFontEvent>();
+            // Keep this subscription while pooled so reactivation font callbacks retain the theme.
+            if (localizedFontEvent != null)
+                localizedFontEvent.LocalizedFontApplied += ReplaceRuntimeTextMaterial;
+        }
     }
 
     public void SetupAndShow(
@@ -847,6 +857,9 @@ public class SpeechBubble : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (localizedFontEvent != null)
+            localizedFontEvent.LocalizedFontApplied -= ReplaceRuntimeTextMaterial;
+
         if (runtimeBackgroundMaterial != null)
             Destroy(runtimeBackgroundMaterial);
 
@@ -1079,20 +1092,25 @@ public class SpeechBubble : MonoBehaviour
         }
 
         if (bubbleText != null)
+            ReplaceRuntimeTextMaterial(bubbleText.fontSharedMaterial);
+    }
+
+    private void ReplaceRuntimeTextMaterial(Material sourceTextMaterial)
+    {
+        if (bubbleText == null || sourceTextMaterial == null)
+            return;
+
+        Material previous = runtimeTextMaterial;
+        // Copy the newly localized atlas/style, then restore this bubble's current theme.
+        runtimeTextMaterial = new Material(sourceTextMaterial)
         {
-            Material sourceTextMaterial = bubbleText.fontSharedMaterial;
-            if (sourceTextMaterial != null)
-            {
-                runtimeTextMaterial = new Material(sourceTextMaterial)
-                {
-                    name = $"{sourceTextMaterial.name} (SpeechBubble Runtime)"
-                };
-                bubbleText.fontMaterial = runtimeTextMaterial;
-                supportsTextFaceColor = runtimeTextMaterial.HasProperty(FaceColorId);
-                if (supportsTextFaceColor)
-                    bubbleText.color = Color.white;
-            }
-        }
+            name = $"{sourceTextMaterial.name} (SpeechBubble Runtime)"
+        };
+        bubbleText.fontMaterial = runtimeTextMaterial;
+        supportsTextFaceColor = runtimeTextMaterial.HasProperty(FaceColorId);
+        ApplyTextColor();
+        if (previous != null)
+            Destroy(previous);
     }
 
     private Vector4 CalculateNormalizedBorder()
@@ -1140,14 +1158,20 @@ public class SpeechBubble : MonoBehaviour
             bubbleBackground.color = fillColor;
         }
 
+        currentFontColor = fontColor;
+        ApplyTextColor();
+    }
+
+    private void ApplyTextColor()
+    {
         if (supportsTextFaceColor && runtimeTextMaterial != null)
         {
-            runtimeTextMaterial.SetColor(FaceColorId, fontColor);
+            runtimeTextMaterial.SetColor(FaceColorId, currentFontColor);
             bubbleText.color = Color.white;
         }
         else if (bubbleText != null)
         {
-            bubbleText.color = fontColor;
+            bubbleText.color = currentFontColor;
         }
     }
 

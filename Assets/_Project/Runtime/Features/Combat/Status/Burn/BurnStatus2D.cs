@@ -187,7 +187,8 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStatusSource
                 isCriticalHit: result.isCrit,
                 elementBuildUps: NoElementBuildUp,
                 hasResolvedElementBuildUps: true,
-                emitHitConfirmed: false);
+                emitHitConfirmed: false,
+                damagePopupElementTag: CrimsonBoundaryUtility.FireDamageTag);
 
             if (canReportKill && enemy != null && enemy.IsDead)
                 BurnKillConfirmed?.Invoke(new BurnKillContext(sourceSystem, enemy, transform.position));

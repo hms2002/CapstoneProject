@@ -189,7 +189,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
             $"stopRange={stopRange}, shotBlocked={shotLaneBlocked}, lastIntent={lastIntent.Direction}, " +
             $"search={diagnosticSearchResult}, visited={diagnosticVisited}, searchAge={Time.time - diagnosticSearchTime:F2}, " +
             $"path={chasePathIndex}/{chasePath.Count}, blockedWaypoint={diagnosticHasBlockedWaypoint}, destination={destination}, " +
-            $"retryIn={nextPathRebuildTime - Time.time:F2}, {motor}, " +
+            $"retryIn={nextPathRebuildTime - CombatHitPause2D.GetActionTime(gameObject):F2}, {motor}, " +
             $"rbVelocity={(diagnosticBody != null ? diagnosticBody.linearVelocity : Vector2.zero)}, rbSimulated={(diagnosticBody != null && diagnosticBody.simulated)}, " +
             $"{navigation}; contacts:{details}");
     }
@@ -231,7 +231,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         triedResolveFallbackPathfinder = false;
         nextFallbackPathfinderSearchTime = 0f;
         shotLaneBlocked = false;
-        nextShotLaneCheckTime = Time.time + (uint)GetInstanceID() % 11 * 0.02f;
+        nextShotLaneCheckTime = CombatHitPause2D.GetActionTime(gameObject) + (uint)GetInstanceID() % 11 * 0.02f;
         ClearChasePath();
     }
 
@@ -277,21 +277,21 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
             return lastIntent;
         }
 
-        if (!enemy.CanPerceiveTarget(enemy.Target))
+        Vector2 toTarget = (Vector2)(enemy.Target.position - transform.position);
+        float sqrDistance = toTarget.sqrMagnitude;
+
+        if (sqrDistance > detectionRange * detectionRange && !CanIgnoreDetectionRange())
         {
-            TraceIntentReason("perception-blocked");
-            LogChaseThrottled("Movement intent blocked: closed door blocks target perception.");
+            TraceIntentReason("outside-detection-range");
+            LogChaseThrottled($"이동 의도 없음: 감지 범위 밖입니다. distance={Mathf.Sqrt(sqrDistance):0.00}, detectionRange={detectionRange:0.00}");
             lastIntent = IntentMovementData.None;
             return lastIntent;
         }
 
-        Vector2 toTarget = (Vector2)(enemy.Target.position - transform.position);
-        float sqrDistance = toTarget.sqrMagnitude;
-
-        if (!CanIgnoreDetectionRange() && sqrDistance > detectionRange * detectionRange)
+        if (!enemy.CanPerceiveTarget(enemy.Target))
         {
-            TraceIntentReason("outside-detection-range");
-            LogChaseThrottled($"이동 의도 없음: 감지 범위 밖입니다. distance={Mathf.Sqrt(sqrDistance):0.00}, detectionRange={detectionRange:0.00}");
+            TraceIntentReason("perception-blocked");
+            LogChaseThrottled("Movement intent blocked: closed door blocks target perception.");
             lastIntent = IntentMovementData.None;
             return lastIntent;
         }
@@ -368,17 +368,17 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
             return false;
         }
 
-        if (!enemy.CanPerceiveTarget(enemy.Target))
+        Vector2 toTarget = (Vector2)(enemy.Target.position - transform.position);
+        float sqrDistance = toTarget.sqrMagnitude;
+        if (sqrDistance > detectionRange * detectionRange && !CanIgnoreDetectionRange())
         {
-            LogChaseThrottled("Detection failed: closed door blocks target perception.");
+            LogChaseThrottled($"감지 실패: 범위 밖입니다. distance={Mathf.Sqrt(sqrDistance):0.00}, detectionRange={detectionRange:0.00}");
             return false;
         }
 
-        Vector2 toTarget = (Vector2)(enemy.Target.position - transform.position);
-        float sqrDistance = toTarget.sqrMagnitude;
-        if (!CanIgnoreDetectionRange() && sqrDistance > detectionRange * detectionRange)
+        if (!enemy.CanPerceiveTarget(enemy.Target))
         {
-            LogChaseThrottled($"감지 실패: 범위 밖입니다. distance={Mathf.Sqrt(sqrDistance):0.00}, detectionRange={detectionRange:0.00}");
+            LogChaseThrottled("Detection failed: closed door blocks target perception.");
             return false;
         }
 
@@ -413,10 +413,10 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         if (enemy == null || enemy.Target != null)
             return;
 
-        if (Time.time < nextTargetAcquireTime)
+        if (CombatHitPause2D.GetActionTime(gameObject) < nextTargetAcquireTime)
             return;
 
-        nextTargetAcquireTime = Time.time + Mathf.Max(0.05f, targetAcquireInterval);
+        nextTargetAcquireTime = CombatHitPause2D.GetActionTime(gameObject) + Mathf.Max(0.05f, targetAcquireInterval);
 
         float searchRange = detectionRange;
         if (spawnContext.RoomArea != null && spawnContext.RoomArea.Contains(transform.position))
@@ -439,9 +439,9 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     private bool NeedsFiringPosition()
     {
         if (enemy is not IMobProjectileLaneSource ranged) return false;
-        if (Time.time >= nextShotLaneCheckTime)
+        if (CombatHitPause2D.GetActionTime(gameObject) >= nextShotLaneCheckTime)
         {
-            nextShotLaneCheckTime = Time.time + 0.2f;
+            nextShotLaneCheckTime = CombatHitPause2D.GetActionTime(gameObject) + 0.2f;
             shotLaneBlocked = !MobProjectileLaneUtility.IsClearToTarget(ranged, transform.position, enemy.Target.gameObject);
         }
         return shotLaneBlocked;
@@ -458,7 +458,10 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         Vector2 targetPosition = enemy.Target.position;
         ObserveChaseProgress();
 
-        if (!chaseStalled && !needsFiringPosition && pathfinder.HasDirectWalkableSegment(currentPosition, targetPosition, GetNavigationFootprint()))
+        bool checkedDirectSegment = !chaseStalled && !needsFiringPosition;
+        bool directSegmentClear = checkedDirectSegment &&
+            pathfinder.HasDirectWalkableSegment(currentPosition, targetPosition, GetNavigationFootprint());
+        if (directSegmentClear)
         {
             TraceIntentReason("direct-clear");
             ClearChasePath();
@@ -470,7 +473,9 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
 
         LogChaseThrottled("Path unavailable: wait for the next retry instead of pushing into a wall.");
         TraceIntentReason("path-unavailable");
-        return pathfinder.HasDirectWalkableSegment(currentPosition, targetPosition, GetNavigationFootprint())
+        // Path queries do not mutate geometry. Reuse only this call's identical segment check.
+        return (checkedDirectSegment ? directSegmentClear :
+            pathfinder.HasDirectWalkableSegment(currentPosition, targetPosition, GetNavigationFootprint()))
             ? directToTarget.normalized : Vector2.zero;
     }
 
@@ -510,7 +515,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
 
     private void ObserveChaseProgress()
     {
-        float now = Time.time;
+        float now = CombatHitPause2D.GetActionTime(gameObject);
         Vector2 position = transform.position;
         // A gap means movement was paused/stopped; don't count that time as a wall stall.
         if (now - lastProgressSampleTime > Mathf.Max(0.25f, Time.fixedDeltaTime * 3f) ||
@@ -527,7 +532,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     /// <summary>경로 재계산이 필요한지 시간/타겟 이동량/캐시 유무 기준으로 판단합니다.</summary>
     private bool ShouldRebuildChasePath(Vector2 targetPosition)
     {
-        if (Time.time < nextPathRebuildTime)
+        if (CombatHitPause2D.GetActionTime(gameObject) < nextPathRebuildTime)
             return false;
 
         if (chaseStalled || chasePathIndex >= chasePath.Count)
@@ -540,7 +545,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     /// <summary>현재 위치에서 타겟 위치까지의 타일맵 경로를 다시 요청하고 waypoint 캐시를 갱신합니다.</summary>
     private void RebuildChasePath(TilemapPathfinder2D pathfinder, Vector2 targetPosition)
     {
-        nextPathRebuildTime = Time.time + Mathf.Max(0.05f, pathRebuildInterval);
+        nextPathRebuildTime = CombatHitPause2D.GetActionTime(gameObject) + Mathf.Max(0.05f, pathRebuildInterval);
         lastPathTargetPosition = targetPosition;
         chasePath.Clear();
         chasePathIndex = 0;
@@ -607,11 +612,11 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
             fallbackPathfinder.isActiveAndEnabled)
             return fallbackPathfinder;
 
-        if (triedResolveFallbackPathfinder && Time.time < nextFallbackPathfinderSearchTime)
+        if (triedResolveFallbackPathfinder && CombatHitPause2D.GetActionTime(gameObject) < nextFallbackPathfinderSearchTime)
             return null;
 
         triedResolveFallbackPathfinder = true;
-        nextFallbackPathfinderSearchTime = Time.time + 1f + (uint)GetInstanceID() % 11 * 0.02f;
+        nextFallbackPathfinderSearchTime = CombatHitPause2D.GetActionTime(gameObject) + 1f + (uint)GetInstanceID() % 11 * 0.02f;
         fallbackPathfinder = null;
         foreach (var candidate in FindObjectsByType<TilemapPathfinder2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
         {

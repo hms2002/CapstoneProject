@@ -25,6 +25,9 @@ namespace UnityGAS
         public bool isCriticalHit;
         public ElementDamageResult[] elementBuildUps;
         public bool hasResolvedElementBuildUps;
+        [System.NonSerialized] public ElementDamageResult[] elementHpDamages;
+        [System.NonSerialized] public GameplayTag damagePopupElementTag;
+        public float TotalHpDamage => ElementHitDamageCalculator.Sum(finalHpDamage, elementHpDamages);
         public CombatHitFeelTiming hitFeel;
         [System.NonSerialized] public CameraShakeRequest? impactCameraOverride;
         [System.NonSerialized] public float? hitCameraScale;
@@ -61,7 +64,8 @@ namespace UnityGAS
                 causer = causer,
                 isCriticalHit = snapshot.IsCriticalHit,
                 elementBuildUps = snapshot.FinalElementBuildUps,
-                hasResolvedElementBuildUps = snapshot.HasResolvedElementBuildUps
+                hasResolvedElementBuildUps = snapshot.HasResolvedElementBuildUps,
+                elementHpDamages = snapshot.FinalElementHpDamages
             };
         }
     }
@@ -105,7 +109,9 @@ namespace UnityGAS
                 hitStopGroup: payload.hitStopGroup,
                 impactCameraOverride: payload.impactCameraOverride,
                 hitCameraScale: payload.hitCameraScale,
-                evadeFeedbackTargets: evadeFeedbackTargets);
+                evadeFeedbackTargets: evadeFeedbackTargets,
+                elementHpDamages: payload.elementHpDamages,
+                damagePopupElementTag: payload.damagePopupElementTag);
 
             return true;
         }

@@ -1,0 +1,122 @@
+{
+  "sheetSize": {
+    "width": 7344,
+    "height": 3600
+  },
+  "editedBand": {
+    "left": 85,
+    "top": 181,
+    "right": 733,
+    "bottom": 230
+  },
+  "frames": [
+    {
+      "frame": 8,
+      "rect": {
+        "x": 2448,
+        "y": 720,
+        "width": 816,
+        "height": 720
+      },
+      "protectedMovingColumns": null,
+      "changedPixels": 5465
+    },
+    {
+      "frame": 9,
+      "rect": {
+        "x": 0,
+        "y": 1440,
+        "width": 816,
+        "height": 720
+      },
+      "protectedMovingColumns": null,
+      "changedPixels": 5465
+    },
+    {
+      "frame": 10,
+      "rect": {
+        "x": 816,
+        "y": 1440,
+        "width": 816,
+        "height": 720
+      },
+      "protectedMovingColumns": [
+        412,
+        688
+      ],
+      "changedPixels": 3560
+    },
+    {
+      "frame": 11,
+      "rect": {
+        "x": 1632,
+        "y": 1440,
+        "width": 816,
+        "height": 720
+      },
+      "protectedMovingColumns": [
+        410,
+        560
+      ],
+      "changedPixels": 4304
+    },
+    {
+      "frame": 12,
+      "rect": {
+        "x": 2448,
+        "y": 1440,
+        "width": 816,
+        "height": 720
+      },
+      "protectedMovingColumns": [
+        339,
+        398
+      ],
+      "changedPixels": 4995
+    },
+    {
+      "frame": 14,
+      "rect": {
+        "x": 4080,
+        "y": 1440,
+        "width": 816,
+        "height": 720
+      },
+      "protectedMovingColumns": null,
+      "changedPixels": 5465
+    },
+    {
+      "frame": 15,
+      "rect": {
+        "x": 4896,
+        "y": 1440,
+        "width": 816,
+        "height": 720
+      },
+      "protectedMovingColumns": null,
+      "changedPixels": 5465
+    },
+    {
+      "frame": 16,
+      "rect": {
+        "x": 5712,
+        "y": 1440,
+        "width": 816,
+        "height": 720
+      },
+      "protectedMovingColumns": null,
+      "changedPixels": 5465
+    },
+    {
+      "frame": 17,
+      "rect": {
+        "x": 6528,
+        "y": 1440,
+        "width": 816,
+        "height": 720
+      },
+      "protectedMovingColumns": null,
+      "changedPixels": 5465
+    }
+  ]
+}

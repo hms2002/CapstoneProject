@@ -1,0 +1,34 @@
+[
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\Inventory Book SpriteSheet.png",
+    "Hash": "48D3A80A00E5DE46D6CBBA1416872EBA1AC1DF16253FEB5B8B7F2908BDB9067E"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\Inventory Book SpriteSheet.png.meta",
+    "Hash": "7FCA62976A41197934149CBAE1F199A9851CD1297944F46D04783866FA1685E1"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\GlobalUIRoot.prefab",
+    "Hash": "02EFAB5C9922894E842CFA8A5C087EE8DC32D07BA3BB09603E8C0DC5D13C7598"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeHub.unity",
+    "Hash": "555D3DE0E8B22575387740822BD4D17DD8170C0D357D292B13C02DA598327D27"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Encyclopedia\\EncyclopediaCatalog.asset",
+    "Hash": "36FEAD9A57822C5BC32D921E9E318F6BDDD80AECBE03DA35E44D5A08A422E167"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaBookPresentation.cs",
+    "Hash": "A24197B42A31A399AE4B89252404D3A56987DB5CD9E1065877FA79C3AB844CAF"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaCreatureDetailView.cs",
+    "Hash": "EB5E3358345935DD8567F7F40FC2CAD736152F5CCCF57DC972E9B2436CFD51ED"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaCreatureTab.cs",
+    "Hash": "F456D8CDAC8856FE777AAC92850AF06BECEF0791607AE5D7F0468A2CF051AA9A"
+  }
+]

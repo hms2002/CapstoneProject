@@ -1,0 +1,24 @@
+Encyclopedia creatures: 14 monsters, 4 bosses, 5 NPCs.
+monster.beer: 1 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/BeerMonster.prefab
+monster.treasure: 1 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/TreasureMonster.prefab
+monster.frog: 8 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/Frog.prefab
+monster.frog_elite: 8 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/Frog_BOSS.prefab
+monster.slime_pawn: 1 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/SlimeCorridor/Pawn.prefab
+monster.slime_rook: 1 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/SlimeCorridor/Rook.prefab
+monster.slime_knight: 1 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/SlimeCorridor/Knight.prefab
+monster.slime_bishop: 4 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/SlimeCorridor/Bishop.prefab
+monster.slime_wizard: 1 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/SlimeCorridor/Wizard.prefab
+monster.candlestick_corridor: 1 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/ShadowCorridor/CorridorCandlestickMonster.prefab
+monster.deads_skeleton: 4 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/ShadowCorridor/Dead'sSkeleton.prefab
+monster.shadow: 12 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowMonster.prefab
+monster.shadow_servant: 4 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/ShadowServant.prefab
+monster.strange_candlestick: 8 frames @ 12 FPS, Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab
+Boss 멜타 (3001): 7 portraits.
+Boss 클로에 (1003): 3 portraits.
+Boss 스피리 (2001): 6 portraits.
+Boss 마왕 (1005): 6 portraits.
+NPC 사샤 (1001): 1 portraits; story unregistered.
+NPC 벨카 (1002): 1 portraits; story unregistered.
+NPC 서기관 (1010): 1 portraits; story unregistered.
+NPC 파셀 (4101): 1 portraits; story unregistered.
+NPC 버피 (4102): 1 portraits; story unregistered.

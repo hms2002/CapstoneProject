@@ -191,6 +191,12 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
         {
             if (cancelRequested || owner.IsDead || IsCancelled(spec)) yield break;
 
+            if (CombatHitPause2D.IsParalyzedOn(owner.gameObject))
+            {
+                yield return null;
+                continue;
+            }
+
             if (!hasStartedSlam && elapsed >= slamTriggerTime)
             {
                 hasStartedSlam = true;
@@ -202,7 +208,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
             height *= owner.GetDropScale(elapsed, duration);
             heightState?.SetAirborne(context.AirborneVisualHeight * height, context.AirborneBodyHeight);
 
-            elapsed += Time.deltaTime;
+            elapsed += CombatHitPause2D.GetActionDeltaTime(owner.gameObject);
             yield return null;
         }
 

@@ -1,0 +1,28 @@
+{
+  "fixedNullDeviceChecks": 627,
+  "baselineExpectedFailure": "Initial automatic font callback: lost current theme color.",
+  "baselineChange": "Only isolated SpeechBubble.cs reverted to git HEAD",
+  "finalGraphicsChecks": 645,
+  "finalExitCode": 0,
+  "visual": "native-colors.png",
+  "visualInspected": true,
+  "sourceExact": [
+    {
+      "path": "Assets\\_Project\\Runtime\\UI\\Dialogue\\SpeechBubble\\SpeechBubble.cs",
+      "equal": true
+    },
+    {
+      "path": "Assets\\_Project\\Runtime\\UI\\Localization\\LocalizeTmpFontEvent.cs",
+      "equal": true
+    }
+  ],
+  "originalPreserved": true,
+  "originalFilesChecked": 918,
+  "limitations": [
+    "Disposable UI.asmdef alone adapted to reference fresh production dependencies as precompiled DLLs; exact UI source and script GUIDs preserved.",
+    "Native Dragon asset script pointer remapped to imported Core.dll MonoScript only in disposable copy.",
+    "Existing cached packages used as local file dependencies. Original packages and ProjectSettings unchanged.",
+    "Isolated UnityEditor.Search.SearchDatabase startup indexing ArgumentOutOfRangeException observed; regression harness and compilation passed.",
+    "Shared prefab fixture is actual Unity rendering; individual NPC scene flow and full Player build not executed."
+  ]
+}

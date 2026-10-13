@@ -1,0 +1,4145 @@
+{
+    "baselineCommit": "80b48541fe46ad19eb06d2c74d7cc13a22916777",
+    "unityVersion": "6000.4.2f1",
+    "scene": "TestScene",
+    "playMode": true,
+    "targeted": true,
+    "origin": {
+        "x": 1000.0,
+        "y": 1000.0
+    },
+    "activeMarks": 0,
+    "iterations": 40,
+    "allEquivalent": true,
+    "allOptimizedValid": true,
+    "managedAllocationCounterAvailable": false,
+    "allocationCanaryBytes": 0,
+    "allocationMeasurement": "Unavailable: 4096-byte allocation canary was not observed; byte samples are -1",
+    "gcCollections": [
+        0,
+        0,
+        0
+    ],
+    "samples": [
+        {
+            "seed": 20261007,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.2904,
+            "optimizedMilliseconds": 1.4488,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261008,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.5026,
+            "optimizedMilliseconds": 1.2782,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261009,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.0946,
+            "optimizedMilliseconds": 1.7577,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261010,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.5056,
+            "optimizedMilliseconds": 1.4724,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261011,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.8562,
+            "optimizedMilliseconds": 2.0793,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261012,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.1746,
+            "optimizedMilliseconds": 1.8933,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261013,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.0341,
+            "optimizedMilliseconds": 2.4384,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261014,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.1156,
+            "optimizedMilliseconds": 2.3367,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261015,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.4891,
+            "optimizedMilliseconds": 1.8103,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261016,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.9594,
+            "optimizedMilliseconds": 1.5496,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261017,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.4768,
+            "optimizedMilliseconds": 1.6647,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261018,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.1998,
+            "optimizedMilliseconds": 1.8734,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261019,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.8126,
+            "optimizedMilliseconds": 2.6229,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261020,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.164,
+            "optimizedMilliseconds": 1.8959,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261021,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.4999,
+            "optimizedMilliseconds": 2.1478,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261022,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 8.1151,
+            "optimizedMilliseconds": 1.7918,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261023,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.2727,
+            "optimizedMilliseconds": 2.0894,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261024,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.6826,
+            "optimizedMilliseconds": 1.6773,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261025,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.5908,
+            "optimizedMilliseconds": 2.2803,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261026,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.9627,
+            "optimizedMilliseconds": 1.8956,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261027,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.9877,
+            "optimizedMilliseconds": 2.0179,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261028,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.1902,
+            "optimizedMilliseconds": 2.1864,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261029,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.0822,
+            "optimizedMilliseconds": 1.8423,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261030,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.8422,
+            "optimizedMilliseconds": 1.8039,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261031,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.1473,
+            "optimizedMilliseconds": 2.4489,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261032,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.2606,
+            "optimizedMilliseconds": 2.6707,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261033,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.6893,
+            "optimizedMilliseconds": 2.7235,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261034,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.086,
+            "optimizedMilliseconds": 1.381,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261035,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.5679,
+            "optimizedMilliseconds": 1.4337,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261036,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.0643,
+            "optimizedMilliseconds": 2.3741,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261037,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 2.8651,
+            "optimizedMilliseconds": 1.6825,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261038,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.7032,
+            "optimizedMilliseconds": 1.4656,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261039,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.6893,
+            "optimizedMilliseconds": 1.8225,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261040,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.8539,
+            "optimizedMilliseconds": 2.0977,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261041,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.645,
+            "optimizedMilliseconds": 2.1533,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261042,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.5885,
+            "optimizedMilliseconds": 1.9924,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261043,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.1765,
+            "optimizedMilliseconds": 1.7962,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261044,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.8798,
+            "optimizedMilliseconds": 1.8067,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261045,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 4.3418,
+            "optimizedMilliseconds": 1.8926,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        },
+        {
+            "seed": 20261046,
+            "equivalent": true,
+            "optimizedValid": true,
+            "baselineCount": 6,
+            "optimizedCount": 6,
+            "baselineMilliseconds": 3.8498,
+            "optimizedMilliseconds": 1.7954,
+            "baselineAllocatedBytes": -1,
+            "optimizedAllocatedBytes": -1,
+            "baseline": {
+                "candidateChecks": 118,
+                "candidateCollections": 4,
+                "visitedCells": 1800,
+                "fullSorts": 4,
+                "heapBuilds": 0,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 118,
+                "landingOverlapQueries": 118
+            },
+            "optimized": {
+                "candidateChecks": 38,
+                "candidateCollections": 1,
+                "visitedCells": 450,
+                "fullSorts": 0,
+                "heapBuilds": 2,
+                "geometryCacheHits": 0,
+                "targetOverlapQueries": 1,
+                "targetsFound": 2,
+                "pathQueries": 6,
+                "landingOverlapQueries": 6
+            },
+            "baselinePositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "optimizedPositions": [
+                {
+                    "x": 1003.0999755859375,
+                    "y": 1000.2000122070313
+                },
+                {
+                    "x": 996.9000244140625,
+                    "y": 999.7999877929688
+                },
+                {
+                    "x": 1001.5,
+                    "y": 1001.5
+                },
+                {
+                    "x": 998.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 1004.5,
+                    "y": 998.5
+                },
+                {
+                    "x": 995.5,
+                    "y": 1001.5
+                }
+            ],
+            "baselineRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ],
+            "optimizedRoomIds": [
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596,
+                -50596
+            ]
+        }
+    ]
+}

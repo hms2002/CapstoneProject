@@ -1,0 +1,47 @@
+{
+  "restoredFiles": 10,
+  "allHashesMatched": true,
+  "newTestFilesRemoved": 0,
+  "files": [
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot1.json",
+      "restored": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot2.json",
+      "restored": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot3.json",
+      "restored": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\Player-prev.log",
+      "restored": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\Player.log",
+      "restored": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\PrewarmTrace.json",
+      "restored": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\TestResults.xml",
+      "restored": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\GameData_Slot1.json",
+      "restored": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\GameData_Slot2.json",
+      "restored": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\GameData_Slot3.json",
+      "restored": true
+    }
+  ]
+}

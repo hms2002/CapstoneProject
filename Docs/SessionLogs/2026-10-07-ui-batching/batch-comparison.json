@@ -1,0 +1,182 @@
+[
+  {
+    "file": "hud-en.json",
+    "locale": "en",
+    "beforeBatch": 39,
+    "afterBatch": 39,
+    "activeBefore": 73,
+    "activeAfter": 73,
+    "beforeGlobalBuildBatchMs": 0.27699999999999997,
+    "afterGlobalBuildBatchMs": 0.2875
+  },
+  {
+    "file": "hud-ja.json",
+    "locale": "ja",
+    "beforeBatch": 37,
+    "afterBatch": 37,
+    "activeBefore": 73,
+    "activeAfter": 73,
+    "beforeGlobalBuildBatchMs": 0.26849999999999996,
+    "afterGlobalBuildBatchMs": 0.2582
+  },
+  {
+    "file": "hud-ko.json",
+    "locale": "ko",
+    "beforeBatch": 38,
+    "afterBatch": 38,
+    "activeBefore": 69,
+    "activeAfter": 69,
+    "beforeGlobalBuildBatchMs": 0.2847,
+    "afterGlobalBuildBatchMs": 0.259
+  },
+  {
+    "file": "hud-zh-Hans.json",
+    "locale": "zh-Hans",
+    "beforeBatch": 37,
+    "afterBatch": 37,
+    "activeBefore": 73,
+    "activeAfter": 73,
+    "beforeGlobalBuildBatchMs": 0.2944,
+    "afterGlobalBuildBatchMs": 0.3028
+  },
+  {
+    "file": "hud-zh-Hant.json",
+    "locale": "zh-Hant",
+    "beforeBatch": 37,
+    "afterBatch": 37,
+    "activeBefore": 73,
+    "activeAfter": 73,
+    "beforeGlobalBuildBatchMs": 0.313,
+    "afterGlobalBuildBatchMs": 0.3257
+  },
+  {
+    "file": "inventory-en.json",
+    "locale": "en",
+    "beforeBatch": 17,
+    "afterBatch": 17,
+    "activeBefore": 135,
+    "activeAfter": 135,
+    "beforeGlobalBuildBatchMs": 0.27949999999999997,
+    "afterGlobalBuildBatchMs": 0.27599999999999997
+  },
+  {
+    "file": "inventory-ja.json",
+    "locale": "ja",
+    "beforeBatch": 16,
+    "afterBatch": 16,
+    "activeBefore": 135,
+    "activeAfter": 135,
+    "beforeGlobalBuildBatchMs": 0.2625,
+    "afterGlobalBuildBatchMs": 0.2643
+  },
+  {
+    "file": "inventory-ko.json",
+    "locale": "ko",
+    "beforeBatch": 17,
+    "afterBatch": 17,
+    "activeBefore": 134,
+    "activeAfter": 134,
+    "beforeGlobalBuildBatchMs": 0.2577,
+    "afterGlobalBuildBatchMs": 0.28209999999999996
+  },
+  {
+    "file": "inventory-zh-Hans.json",
+    "locale": "zh-Hans",
+    "beforeBatch": 16,
+    "afterBatch": 16,
+    "activeBefore": 135,
+    "activeAfter": 135,
+    "beforeGlobalBuildBatchMs": 0.2476,
+    "afterGlobalBuildBatchMs": 0.32
+  },
+  {
+    "file": "inventory-zh-Hant.json",
+    "locale": "zh-Hant",
+    "beforeBatch": 16,
+    "afterBatch": 16,
+    "activeBefore": 135,
+    "activeAfter": 135,
+    "beforeGlobalBuildBatchMs": 0.319,
+    "afterGlobalBuildBatchMs": 0.3136
+  },
+  {
+    "file": "keybind.json",
+    "locale": "zh-Hant",
+    "beforeBatch": 166,
+    "afterBatch": 165,
+    "activeBefore": 205,
+    "activeAfter": 205,
+    "beforeGlobalBuildBatchMs": 0.4728,
+    "afterGlobalBuildBatchMs": 0.46509999999999996
+  },
+  {
+    "file": "pause.json",
+    "locale": "zh-Hant",
+    "beforeBatch": 7,
+    "afterBatch": 6,
+    "activeBefore": 34,
+    "activeAfter": 34,
+    "beforeGlobalBuildBatchMs": 0.4487,
+    "afterGlobalBuildBatchMs": 0.3741
+  },
+  {
+    "file": "reward3-en.json",
+    "locale": "en",
+    "beforeBatch": 12,
+    "afterBatch": 9,
+    "activeBefore": 37,
+    "activeAfter": 37,
+    "beforeGlobalBuildBatchMs": 0.264,
+    "afterGlobalBuildBatchMs": 0.2642
+  },
+  {
+    "file": "reward3-ja.json",
+    "locale": "ja",
+    "beforeBatch": 9,
+    "afterBatch": 6,
+    "activeBefore": 37,
+    "activeAfter": 37,
+    "beforeGlobalBuildBatchMs": 0.26039999999999996,
+    "afterGlobalBuildBatchMs": 0.2443
+  },
+  {
+    "file": "reward3-ko.json",
+    "locale": "ko",
+    "beforeBatch": 12,
+    "afterBatch": 9,
+    "activeBefore": 36,
+    "activeAfter": 36,
+    "beforeGlobalBuildBatchMs": 0.2638,
+    "afterGlobalBuildBatchMs": 0.26799999999999996
+  },
+  {
+    "file": "reward3-zh-Hans.json",
+    "locale": "zh-Hans",
+    "beforeBatch": 9,
+    "afterBatch": 6,
+    "activeBefore": 37,
+    "activeAfter": 37,
+    "beforeGlobalBuildBatchMs": 0.3225,
+    "afterGlobalBuildBatchMs": 0.3337
+  },
+  {
+    "file": "reward3-zh-Hant.json",
+    "locale": "zh-Hant",
+    "beforeBatch": 9,
+    "afterBatch": 6,
+    "activeBefore": 37,
+    "activeAfter": 37,
+    "beforeGlobalBuildBatchMs": 0.32389999999999997,
+    "afterGlobalBuildBatchMs": 0.3145
+  },
+  {
+    "file": "settings.json",
+    "locale": "zh-Hant",
+    "beforeBatch": 39,
+    "afterBatch": 39,
+    "activeBefore": 85,
+    "activeAfter": 85,
+    "beforeGlobalBuildBatchMs": 0.44279999999999997,
+    "afterGlobalBuildBatchMs": 0.4865
+  }
+]

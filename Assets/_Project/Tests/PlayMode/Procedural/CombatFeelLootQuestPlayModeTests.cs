@@ -1787,3 +1787,139 @@ public sealed class HitFeelTestInput : IInputActionQueryBackend
     public Vector2 GetMoveVectorNormalized() => Vector2.right;
     public Vector3 GetPointerWorldPosition(Camera camera, float z = 0f) => Vector3.right;
 }
+
+#if UNITY_EDITOR
+public sealed class FramePerformancePopupPlayModeTests
+{
+    private readonly List<GameObject> created = new();
+    private Component service;
+    private Type popupType;
+    private Type modelType;
+    private UnityEditor.EditorApplication.CallbackFunction diagnosticFlush;
+    private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
+
+    [SetUp]
+    public void SetUp()
+    {
+        // Keep the unrelated Editor trace writer out of this fixture's yielded frames.
+        // Its mapped JSON asset can reject writes with Win32 IO 1224; do not hide game logs.
+        var traceType = Type.GetType("PrewarmTraceRuntime, Editor", true);
+        System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(traceType.TypeHandle);
+        var isolationType = Type.GetType("TestScenePresentationTraceIsolation, Editor");
+        bool alreadyIsolated = isolationType != null &&
+            (bool)isolationType.GetField("installed", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+        if (!alreadyIsolated)
+        {
+            diagnosticFlush = (UnityEditor.EditorApplication.CallbackFunction)Delegate.CreateDelegate(
+                typeof(UnityEditor.EditorApplication.CallbackFunction),
+                traceType.GetMethod("FlushIfNeeded", BindingFlags.Static | BindingFlags.NonPublic));
+            UnityEditor.EditorApplication.update -= diagnosticFlush;
+        }
+        var root = new GameObject("IsolatedPopupPool");
+        created.Add(root);
+        root.SetActive(false); // Exercise the existing service without replacing the live singleton.
+        service = root.AddComponent(Type.GetType("DamagePopupService, UI", true));
+        popupType = Type.GetType("DamagePopupWorldText, UI", true);
+        modelType = Type.GetType("DamagePopupViewModel, UI", true);
+        var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/UI/Combat/DamagePopupUI_World.prefab");
+        Assert.IsNotNull(prefab);
+        service.GetType().GetField("popupPrefab", PrivateInstance).SetValue(service, prefab.GetComponent(popupType));
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        try
+        {
+            for (int i = created.Count - 1; i >= 0; i--)
+                if (created[i] != null) Object.DestroyImmediate(created[i]);
+            created.Clear();
+        }
+        finally
+        {
+            if (diagnosticFlush != null)
+                UnityEditor.EditorApplication.update += diagnosticFlush;
+            diagnosticFlush = null;
+        }
+    }
+
+    private Component Acquire(Vector3 position, Transform parent = null)
+    {
+        var popup = (Component)service.GetType().GetMethod("AcquirePopup", PrivateInstance)
+            .Invoke(service, new object[] { position, parent });
+        if (!created.Contains(popup.gameObject)) created.Add(popup.gameObject);
+        return popup;
+    }
+
+    private void Setup(Component popup, string content, float fontSize, bool overrideFont)
+    {
+        object model = Activator.CreateInstance(modelType, content, Color.green, Vector3.up,
+            0.5f, 0.5f, 0.7f, 0.9f, fontSize, overrideFont);
+        popupType.GetMethod("Setup", new[] { modelType }).Invoke(popup, new[] { model });
+        popup.gameObject.SetActive(true);
+    }
+
+    private Component Text(Component popup) => (Component)popupType.GetField("text", PrivateInstance).GetValue(popup);
+
+    [Test]
+    public void ReusedPopup_RestoresDefaultFontColorTransformAndLifetime()
+    {
+        Component popup = Acquire(Vector3.zero);
+        Component text = Text(popup);
+        float defaultSize = (float)text.GetType().GetProperty("fontSize").GetValue(text);
+        Setup(popup, "critical", defaultSize * 2f, true);
+        popup.transform.localScale = Vector3.one * 3f;
+        text.GetType().GetProperty("color").SetValue(text, Color.clear);
+        popupType.GetField("_t", PrivateInstance).SetValue(popup, 0.5f);
+        popupType.GetMethod("Update", PrivateInstance).Invoke(popup, null);
+        Assert.IsFalse(popup.gameObject.activeSelf);
+        var position = new Vector3(3, -2, 0);
+        Component reused = Acquire(position);
+        Assert.AreSame(popup, reused);
+        Setup(reused, "normal", 0f, false);
+        Assert.AreEqual(defaultSize, (float)text.GetType().GetProperty("fontSize").GetValue(text));
+        Assert.AreEqual(Color.green, (Color)text.GetType().GetProperty("color").GetValue(text));
+        Assert.AreEqual("normal", (string)text.GetType().GetProperty("text").GetValue(text));
+        Assert.AreEqual(position, popup.transform.position);
+        Assert.AreEqual(Vector3.one * 0.7f, popup.transform.localScale);
+        Assert.AreEqual(0f, popupType.GetField("_t", PrivateInstance).GetValue(popup));
+        Assert.AreEqual(0.5f, popupType.GetField("_runtimeLifetime", PrivateInstance).GetValue(popup));
+    }
+
+    [UnityTest]
+    public IEnumerator ReusedActivePopup_BelongsToItsOriginalParentSceneAndDiesOnUnload()
+    {
+        Component popup = Acquire(Vector3.zero);
+        service.GetType().GetMethod("ReturnPopup", PrivateInstance).Invoke(service, new object[] { popup });
+        var scene = UnityEngine.SceneManagement.SceneManager.CreateScene("PopupPoolScene_" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            var parent = new GameObject("PopupOriginalParent");
+            created.Add(parent);
+            UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(parent, scene);
+            Component reused = Acquire(Vector3.one, parent.transform);
+            Setup(reused, "scene", 0f, false);
+            Assert.AreSame(popup, reused);
+            Assert.AreEqual(scene, reused.gameObject.scene);
+            Assert.AreSame(parent.transform, reused.transform.parent);
+            yield return UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(scene);
+            Assert.IsTrue(reused == null, "Active popups must retain scene-unload destruction instead of becoming persistent.");
+        }
+        finally
+        {
+            if (scene.IsValid() && scene.isLoaded)
+                UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(scene);
+        }
+    }
+
+    [UnityTest]
+    public IEnumerator OwnerCleanup_DestroysInactiveLocalizedPopups()
+    {
+        Component popup = Acquire(Vector3.zero);
+        service.GetType().GetMethod("ReturnPopup", PrivateInstance).Invoke(service, new object[] { popup });
+        service.GetType().GetMethod("OnDestroy", PrivateInstance).Invoke(service, null);
+        yield return null;
+        Assert.IsTrue(popup == null);
+    }
+}
+#endif

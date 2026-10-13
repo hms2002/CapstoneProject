@@ -34,7 +34,7 @@ namespace UnityGAS
                 return;
 
             spec = ApplyDefaultWallClipping(spec);
-            view.Show(spec, defaultStyle);
+            view.Show(spec, defaultStyle, GetComponentInParent<AbilitySystem>()?.gameObject);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace UnityGAS
             spec = ApplyDefaultWallClipping(spec);
             AttackTelegraphView view = Instantiate(telegraphPrefab, parent);
             view.HideImmediate();
-            view.Show(spec, defaultStyle);
+            view.Show(spec, defaultStyle, GetComponentInParent<AbilitySystem>()?.gameObject);
             detachedViews.Add(view);
             StartCoroutine(DestroyDetachedViewAfter(view, spec.duration));
             return view;
@@ -139,7 +139,16 @@ namespace UnityGAS
                 yield break;
 
             if (duration > 0f)
-                yield return new WaitForSeconds(duration);
+            {
+                if (view.ActionTimeOwner == null)
+                    yield return new WaitForSeconds(duration);
+                else
+                {
+                    float end = CombatHitPause2D.GetActionTime(view.ActionTimeOwner) + duration;
+                    while (view != null && CombatHitPause2D.GetActionTime(view.ActionTimeOwner) < end)
+                        yield return null;
+                }
+            }
 
             detachedViews.Remove(view);
 

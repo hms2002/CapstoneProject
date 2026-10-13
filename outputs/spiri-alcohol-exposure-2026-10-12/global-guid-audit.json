@@ -1,0 +1,23 @@
+{
+  "search_root": "Assets",
+  "new_guids": 14,
+  "matched_metadata": 14,
+  "matched_paths": [
+    "Assets\\_Project\\Tests\\PlayMode\\Procedural\\AlcoholPuddleContactPlayModeTests.cs.meta",
+    "Assets\\_Project\\Tests\\PlayMode\\Procedural\\AlcoholExposurePlayModeTests.cs.meta",
+    "Assets\\_Project\\Tests\\PlayMode\\Procedural\\AlcoholExposurePlayerVisualPlayModeTests.cs.meta",
+    "Assets\\_Project\\Art\\Shaders\\AlcoholMugFill.shader.meta",
+    "Assets\\_Project\\Art\\Materials\\M_AlcoholMugOverflowDrop.mat.meta",
+    "Assets\\_Project\\Art\\Materials\\M_AlcoholMugFill.mat.meta",
+    "Assets\\_Project\\Resources\\Tags\\State.Confusion.asset.meta",
+    "Assets\\_Project\\Runtime\\Features\\Player\\Status\\PlayerAlcoholExposure.cs.meta",
+    "Assets\\_Project\\Runtime\\Presentation\\Map\\Puddles\\AlcoholExposurePlayerVisual.cs.meta",
+    "Assets\\_Project\\Editor\\Tools\\Data\\SpiriAlcoholRewardAuthoring.cs.meta",
+    "Assets\\_Project\\Data\\Dialogue\\Affection\\SpiriAlcoholPuddleReward.asset.meta",
+    "Assets\\_Project\\Data\\Abilities\\Effects\\SHD_Puddle_Confusion.asset.meta",
+    "Assets\\_Project\\Data\\Abilities\\Effects\\GE_Puddle_Confusion.asset.meta",
+    "Assets\\_Project\\Data\\Abilities\\Effects\\CBD_Puddle_Confusion.asset.meta"
+  ],
+  "collisions": [],
+  "passed": true
+}

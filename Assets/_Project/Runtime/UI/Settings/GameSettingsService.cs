@@ -5,6 +5,10 @@ using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Localization.Settings;
+using UnityEngine.Localization.Components;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.AddressableAssets;
+using TMPro;
 
 /// <summary>
 /// 책임: 게임 창 표시 방식의 사용자 설정 값을 나타낸다.
@@ -90,6 +94,7 @@ public sealed class GameSettingsService : MonoBehaviour
     public int CurrentResolutionWidth => resolutionWidth;
     public int CurrentResolutionHeight => resolutionHeight;
     public GameLanguageOption CurrentLanguage => language;
+    public GameLanguageOption DisplayedLanguage { get; private set; } = GameLanguageOption.Korean;
 
     /// <summary>
     /// 책임: Core의 GameSettingsQuery 요청을 현재 GameSettingsService 인스턴스 상태로 연결한다.
@@ -465,30 +470,125 @@ public sealed class GameSettingsService : MonoBehaviour
 
     private IEnumerator SelectLanguageLocale()
     {
-        yield return LocalizationSettings.InitializationOperation;
-        // Read the latest preference after initialization, including changes made while it was loading.
-        GameLanguageOption requestedLanguage = language;
-        string code = language switch
+        try
         {
-            GameLanguageOption.Korean => "ko",
-            GameLanguageOption.Japanese => "ja",
-            GameLanguageOption.SimplifiedChinese => "zh-Hans",
-            GameLanguageOption.TraditionalChinese => "zh-Hant",
-            _ => "en",
-        };
-        var locale = LocalizationSettings.AvailableLocales.GetLocale(code);
-        if (locale != null)
-        {
-            yield return LocalizationSettings.StringDatabase.GetTableAsync(GameText.TableName, locale);
-            if (language != requestedLanguage)
-            {
-                localeInitialization = null;
-                ApplyLanguageLocale();
+            yield return LocalizationSettings.InitializationOperation;
+            if (LocalizationSettings.InitializationOperation.Status != AsyncOperationStatus.Succeeded)
                 yield break;
+            while (true)
+            {
+                // Read the latest preference after initialization, including changes made while it was loading.
+                GameLanguageOption requestedLanguage = language;
+                string code = language switch
+                {
+                    GameLanguageOption.Korean => "ko",
+                    GameLanguageOption.Japanese => "ja",
+                    GameLanguageOption.SimplifiedChinese => "zh-Hans",
+                    GameLanguageOption.TraditionalChinese => "zh-Hant",
+                    _ => "en",
+                };
+                var locale = LocalizationSettings.AvailableLocales.GetLocale(code);
+                if (locale != null)
+                {
+                    // Start both loads before waiting. The currently displayed locale stays unchanged.
+                    var strings = LocalizationSettings.StringDatabase.GetTableAsync(GameText.TableName, locale);
+                    var fontTable = LocalizationSettings.AssetDatabase.GetTableAsync("GameFonts", locale);
+                    yield return strings;
+                    yield return fontTable;
+                    if (strings.Status != AsyncOperationStatus.Succeeded || fontTable.Status != AsyncOperationStatus.Succeeded)
+                    {
+                        Debug.LogError("Language resources could not be loaded: " + code);
+                        yield break;
+                    }
+                    var fonts = new Dictionary<long, TMP_FontAsset>();
+                    var fontIds = new Dictionary<string, long>();
+                    var loads = new List<AsyncOperationHandle<TMP_FontAsset>>();
+                    Addressables.ResourceManager.Acquire(strings);
+                    Addressables.ResourceManager.Acquire(fontTable);
+                    try
+                    {
+                        foreach (var entry in fontTable.Result.Values)
+                            if (!entry.IsEmpty)
+                            {
+                                var load = fontTable.Result.GetAssetAsync<TMP_FontAsset>(entry.KeyId);
+                                Addressables.ResourceManager.Acquire(load);
+                                loads.Add(load);
+                            }
+                        foreach (var load in loads)
+                            yield return load;
+                        int index = 0;
+                        foreach (var entry in fontTable.Result.Values)
+                        {
+                            if (entry.IsEmpty) continue;
+                            var load = loads[index++];
+                            if (load.Status != AsyncOperationStatus.Succeeded || load.Result == null)
+                            {
+                                Debug.LogError("Language font could not be loaded: " + code + "/" + entry.Key);
+                                yield break;
+                            }
+                            fonts.Add(entry.KeyId, load.Result);
+                            fontIds.Add(entry.Key, entry.KeyId);
+                        }
+                        if (language != requestedLanguage)
+                        {
+                            continue;
+                        }
+                        bool applied = false;
+                        void Commit(UnityEngine.Localization.Locale selected)
+                        {
+                            if (selected != locale || applied) return;
+                            applied = true;
+                            DisplayedLanguage = requestedLanguage;
+                            // Nothing yields between ready text/font projection and the layout flush.
+                            var fontBindings = FindObjectsByType<LocalizeTmpFontEvent>(FindObjectsSortMode.None);
+                            foreach (var binding in fontBindings)
+                            {
+                                if (binding.AssetReference.TableReference.TableCollectionName != "GameFonts") continue;
+                                var reference = binding.AssetReference.TableEntryReference;
+                                long id = reference.KeyId;
+                                if (id == 0) fontIds.TryGetValue(reference.Key, out id);
+                                if (fonts.TryGetValue(id, out var font)) binding.ApplyLocalizedFont(font);
+                            }
+                            foreach (var text in FindObjectsByType<LocalizeStringEvent>(FindObjectsSortMode.None))
+                                text.RefreshString();
+                            foreach (var panel in FindObjectsByType<SettingsPanelUI>(FindObjectsSortMode.None))
+                                panel.RefreshAppliedLanguage();
+                            foreach (var binding in fontBindings) binding.FlushPendingLayout();
+                            Canvas.ForceUpdateCanvases();
+                        }
+                        LocalizationSettings.SelectedLocaleChanged += Commit;
+                        try
+                        {
+                            if (LocalizationSettings.SelectedLocale == locale) Commit(locale);
+                            else LocalizationSettings.SelectedLocale = locale;
+                            while (!applied)
+                            {
+                                if (LocalizationSettings.InitializationOperation.IsDone &&
+                                    LocalizationSettings.InitializationOperation.Status != AsyncOperationStatus.Succeeded)
+                                {
+                                    Debug.LogError("Language initialization failed: " + code);
+                                    yield break;
+                                }
+                                yield return null;
+                            }
+                        }
+                        finally { LocalizationSettings.SelectedLocaleChanged -= Commit; }
+                    }
+                    finally
+                    {
+                        // Locale changes clear database caches. Keep prepared resources alive through commit.
+                        foreach (var load in loads) if (load.IsValid()) Addressables.Release(load);
+                        if (fontTable.IsValid()) Addressables.Release(fontTable);
+                        if (strings.IsValid()) Addressables.Release(strings);
+                    }
+                }
+                if (language == requestedLanguage) break;
             }
-            LocalizationSettings.SelectedLocale = locale;
         }
-        localeInitialization = null;
+        finally
+        {
+            localeInitialization = null;
+        }
     }
 
     private void BuildResolutionOptions()

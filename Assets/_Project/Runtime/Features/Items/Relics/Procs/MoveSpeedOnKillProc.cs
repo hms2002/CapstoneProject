@@ -5,7 +5,7 @@ using Object = UnityEngine.Object;
 
 /// <summary>
 /// 책임 :
-/// - KillConfirmed 태그를 수신하면 일정 시간 이동속도(%) 버프를 부여한다.
+/// - KillConfirmed 태그를 수신하면 지정된 타입의 능력치 버프를 일정 시간 부여한다.
 /// - 버프 남은 시간과 활성 중첩 수를 추적해 플레이어 상태 HUD에 같은 정보를 projection 한다.
 /// - 유물 proc 자체가 버프 owner 역할을 맡아, 시작/갱신/만료/해제 시점에 상태 handle을 함께 관리한다.
 /// </summary>
@@ -17,6 +17,7 @@ public sealed class MoveSpeedOnKillProc : IRelicProc
     private readonly GameplayTag _triggerTag;
     private readonly AttributeDefinition _moveSpeedAttr;
     private readonly float _percent;
+    private readonly ModifierType _modifierType;
     private readonly float _duration;
     private readonly bool _refresh;
     private readonly StatusHudDefinition _statusDefinition;
@@ -35,13 +36,15 @@ public sealed class MoveSpeedOnKillProc : IRelicProc
         float percent,
         float duration,
         bool refresh,
-        StatusHudDefinition statusDefinition)
+        StatusHudDefinition statusDefinition,
+        ModifierType modifierType = ModifierType.Percent)
     {
         _ctx = ctx;
         Token = ctx.token;
         _triggerTag = triggerTag;
         _moveSpeedAttr = moveSpeedAttr;
         _percent = percent;
+        _modifierType = modifierType;
         _duration = duration;
         _refresh = refresh;
         _statusDefinition = statusDefinition;
@@ -74,7 +77,7 @@ public sealed class MoveSpeedOnKillProc : IRelicProc
         }
 
         var mod = new AttributeModifier(
-            ModifierType.Percent,
+            _modifierType,
             _percent,
             _buffSource,
             duration: Mathf.Max(0.01f, _duration)

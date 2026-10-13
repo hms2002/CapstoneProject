@@ -75,6 +75,8 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
     private void OnDisable()
     {
         tooltipPresenter.Hide();
+        WeaponSkillHudSlotPresenter.CancelReadyFlash(skill1UI);
+        WeaponSkillHudSlotPresenter.CancelReadyFlash(skill2UI);
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
         UnbindInventoryEvents();
@@ -111,6 +113,8 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
     {
         if (cachedInputBindingService != null)
             cachedInputBindingService.BindingChanged -= HandleBindingChanged;
+        WeaponSkillHudSlotPresenter.ReleaseReadyFlashMaterial(skill1UI);
+        WeaponSkillHudSlotPresenter.ReleaseReadyFlashMaterial(skill2UI);
     }
 
     private void HandlePlayerRegistered(PlayerInteractor2D player)

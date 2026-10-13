@@ -19,6 +19,7 @@ public sealed class PauseMenuUI : MonoBehaviour, IStackableUI, ITitleScenePersis
 
     private bool listenersBound;
     private bool isClosing;
+    private ButtonNavigationGroup keyboardNavigation;
 
     public bool IsActive => gameObject.activeSelf && !isClosing;
     public bool CanCloseOnEscape => true;
@@ -57,6 +58,7 @@ public sealed class PauseMenuUI : MonoBehaviour, IStackableUI, ITitleScenePersis
         Instance = this;
         ResolveReferences();
         BindListeners();
+        keyboardNavigation = new ButtonNavigationGroup(false, continueButton, optionsButton, titleSceneButton, quitGameButton);
         RefreshCanvasParent();
         gameObject.SetActive(false);
     }
@@ -76,12 +78,24 @@ public sealed class PauseMenuUI : MonoBehaviour, IStackableUI, ITitleScenePersis
 
     private void OnDisable()
     {
+        keyboardNavigation?.Reset();
         isClosing = false;
         MouseCursorService.Instance?.ClearDomain(this);
     }
 
+    private void LateUpdate()
+    {
+        keyboardNavigation?.Refresh(CanProcessMenuInput());
+    }
+
+    private bool CanProcessMenuInput()
+    {
+        return IsActive && (UIManager.Instance == null || UIManager.Instance.CanProcessNavigationInput(this));
+    }
+
     public void OpenUI()
     {
+        keyboardNavigation?.Reset();
         isClosing = false;
         ResolveReferences();
         RefreshCanvasParent();
@@ -110,6 +124,7 @@ public sealed class PauseMenuUI : MonoBehaviour, IStackableUI, ITitleScenePersis
         }
 
         isClosing = true;
+        keyboardNavigation?.Suspend();
         dropPresentation.PlayClose(FinalizeClose);
     }
 
@@ -155,6 +170,9 @@ public sealed class PauseMenuUI : MonoBehaviour, IStackableUI, ITitleScenePersis
 
     private void HandleContinue()
     {
+        if (!CanProcessMenuInput())
+            return;
+
         if (UIManager.Instance != null)
             UIManager.Instance.PopUI(this);
         else
@@ -163,16 +181,23 @@ public sealed class PauseMenuUI : MonoBehaviour, IStackableUI, ITitleScenePersis
 
     private void HandleOpenSettings()
     {
-        UIManager.Instance?.OpenSettingsPanel();
+        if (CanProcessMenuInput() && UIManager.Instance != null && UIManager.Instance.OpenSettingsPanel())
+            keyboardNavigation?.Suspend();
     }
 
     private void HandleReturnToTitle()
     {
+        if (!CanProcessMenuInput())
+            return;
+
         UIManager.Instance?.ReturnToTitleScreen();
     }
 
     private void HandleQuitGame()
     {
+        if (!CanProcessMenuInput())
+            return;
+
         UIManager.Instance?.QuitGame();
     }
 }

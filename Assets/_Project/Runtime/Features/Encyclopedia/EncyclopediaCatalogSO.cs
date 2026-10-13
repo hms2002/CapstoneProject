@@ -15,7 +15,8 @@ public enum EncyclopediaMainTab
 {
     Item,
     Monster,
-    Boss
+    Boss,
+    NPC
 }
 
 public enum EncyclopediaItemSubTab
@@ -64,6 +65,15 @@ public sealed class EncyclopediaMonsterEntry
     public string stageText;
     [TextArea] public string storyText;
     public GameObject sourcePrefab;
+    public Sprite[] previewFrames = Array.Empty<Sprite>();
+    public float previewFrameRate = 8f;
+}
+
+[Serializable]
+public sealed class EncyclopediaPortrait
+{
+    public string label;
+    public Sprite sprite;
 }
 
 [Serializable]
@@ -86,6 +96,20 @@ public sealed class EncyclopediaBossEntry
     [TextArea] public string storyText;
     public GameObject sourcePrefab;
     public NPCData npcData;
+    public List<EncyclopediaPortrait> portraits = new();
+}
+
+[Serializable]
+public sealed class EncyclopediaNpcEntry
+{
+    [NonSerialized] internal EncyclopediaCatalogSO localizationOwner;
+    [NonSerialized] internal int localizationIndex;
+    public NPCData npcData;
+    [TextArea] public string storyText;
+    public List<EncyclopediaPortrait> portraits = new();
+    public string DisplayName => npcData != null ? npcData.DisplayName : string.Empty;
+    public string StoryText => GameText.Asset(localizationOwner,
+        $"npcEntries.Array.data[{localizationIndex}].storyText", storyText);
 }
 
 [CreateAssetMenu(fileName = "EncyclopediaCatalog", menuName = "Game/Encyclopedia/Catalog")]
@@ -100,9 +124,13 @@ public sealed class EncyclopediaCatalogSO : ScriptableObject
     [Header("Bosses")]
     [SerializeField] private List<EncyclopediaBossEntry> bossEntries = new();
 
+    [Header("NPCs")]
+    [SerializeField] private List<EncyclopediaNpcEntry> npcEntries = new();
+
     public IReadOnlyList<EncyclopediaWeaponEntry> WeaponEntries => weaponEntries;
     public IReadOnlyList<EncyclopediaMonsterEntry> MonsterEntries => monsterEntries;
     public IReadOnlyList<EncyclopediaBossEntry> BossEntries => bossEntries;
+    public IReadOnlyList<EncyclopediaNpcEntry> NpcEntries => npcEntries;
 
     public int GetCount(EncyclopediaCategory category)
     {
@@ -156,6 +184,14 @@ public sealed class EncyclopediaCatalogSO : ScriptableObject
     public bool TryGetBoss(int index, out EncyclopediaBossEntry entry)
     {
         if (!TryGetEntry(bossEntries, index, out entry)) return false;
+        entry.localizationOwner = this;
+        entry.localizationIndex = index;
+        return true;
+    }
+
+    public bool TryGetNpc(int index, out EncyclopediaNpcEntry entry)
+    {
+        if (!TryGetEntry(npcEntries, index, out entry)) return false;
         entry.localizationOwner = this;
         entry.localizationIndex = index;
         return true;

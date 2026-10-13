@@ -1,0 +1,151 @@
+{
+  "passed": true,
+  "before": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-controls-polish-2026-10-11\\before\\EncyclopediaUI.prefab",
+  "current": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\PopupUI\\Encyclopedia\\EncyclopediaUI.prefab",
+  "checks": [
+    {
+      "name": "record_ids_preserved",
+      "passed": true,
+      "before_count": 2583,
+      "current_count": 2583,
+      "added": [],
+      "removed": []
+    },
+    {
+      "name": "record_order_and_yaml_prefix_preserved",
+      "passed": true
+    },
+    {
+      "name": "record_classes_preserved",
+      "passed": true
+    },
+    {
+      "name": "control_component_references_preserved",
+      "passed": true
+    },
+    {
+      "name": "authoring_allowlist_contains_only_two_requested_records",
+      "passed": true,
+      "allowed_record_ids": [
+        "5796504864688131865",
+        "6080992102414648940"
+      ],
+      "expected_record_ids": [
+        "5796504864688131865",
+        "6080992102414648940"
+      ]
+    },
+    {
+      "name": "only_the_two_authorized_records_changed",
+      "passed": true,
+      "changed_record_ids": [
+        "5796504864688131865",
+        "6080992102414648940"
+      ],
+      "unauthorized": []
+    },
+    {
+      "name": "count_gameobject_inactive",
+      "passed": true
+    },
+    {
+      "name": "count_record_changes_only_active_flag",
+      "passed": true
+    },
+    {
+      "name": "full_view_is_anchored_at_bottom_right_with_one_unit_inset",
+      "passed": true,
+      "m_AnchorMin": [
+        1.0,
+        0.0
+      ],
+      "m_AnchorMax": [
+        1.0,
+        0.0
+      ],
+      "m_Pivot": [
+        1.0,
+        0.0
+      ],
+      "m_AnchoredPosition": [
+        -1.0,
+        1.0
+      ],
+      "m_SizeDelta": [
+        160.0,
+        42.0
+      ]
+    },
+    {
+      "name": "full_view_rect_preserves_size_children_parent_and_other_fields",
+      "passed": true
+    },
+    {
+      "name": "hierarchy_and_component_order_preserved",
+      "passed": true
+    },
+    {
+      "name": "all_serialized_fileid_and_guid_references_preserved",
+      "passed": true
+    },
+    {
+      "name": "fonts_sprites_materials_and_aspect_fit_settings_preserved",
+      "passed": true,
+      "inspected_record_count": 554,
+      "inspected_field_count": 2964
+    },
+    {
+      "name": "protected_sources_catalog_and_global_ui_unchanged",
+      "passed": true,
+      "files": [
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemTab.cs",
+          "expected_sha256": "4573461141C7941DE02EF9A5E1C863008244E6D32CF72AA626399D04F17760DB",
+          "actual_sha256": "4573461141C7941DE02EF9A5E1C863008244E6D32CF72AA626399D04F17760DB",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemLeftPage.cs",
+          "expected_sha256": "7637FAD5E52AD5AF56AAF70FAA1BABB885C9F01218D9CA67CD502FB6166849E0",
+          "actual_sha256": "7637FAD5E52AD5AF56AAF70FAA1BABB885C9F01218D9CA67CD502FB6166849E0",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemRightPage.cs",
+          "expected_sha256": "E925C25719BEF7E978DBA12B97DD308371DA05F96A96A6D44C108DE433EEFAD2",
+          "actual_sha256": "E925C25719BEF7E978DBA12B97DD308371DA05F96A96A6D44C108DE433EEFAD2",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\GlobalUIRoot.prefab",
+          "expected_sha256": "02EFAB5C9922894E842CFA8A5C087EE8DC32D07BA3BB09603E8C0DC5D13C7598",
+          "actual_sha256": "02EFAB5C9922894E842CFA8A5C087EE8DC32D07BA3BB09603E8C0DC5D13C7598",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Encyclopedia\\EncyclopediaCatalog.asset",
+          "expected_sha256": "36FEAD9A57822C5BC32D921E9E318F6BDDD80AECBE03DA35E44D5A08A422E167",
+          "actual_sha256": "36FEAD9A57822C5BC32D921E9E318F6BDDD80AECBE03DA35E44D5A08A422E167",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaCreatureTab.cs",
+          "expected_sha256": "F456D8CDAC8856FE777AAC92850AF06BECEF0791607AE5D7F0468A2CF051AA9A",
+          "actual_sha256": "F456D8CDAC8856FE777AAC92850AF06BECEF0791607AE5D7F0468A2CF051AA9A",
+          "unchanged": true
+        }
+      ]
+    }
+  ],
+  "before_sha256": "62A834839465ABEBFBD2E92FE8EB2BD7619F36A6D338F06172016C48828025CD",
+  "current_sha256": "D0237F1894A20E47BEDFF3810EE18712D3997C68C3C652B814693E257D116DED",
+  "control_record_ids": {
+    "tab": "7421593401470162652",
+    "detail": "7108732978824953789",
+    "count_component": "5018680397577649879",
+    "count_object": "5796504864688131865",
+    "full_view_button": "5318447090892698723",
+    "full_view_object": "8705713643517460071",
+    "full_view_rect": "6080992102414648940"
+  }
+}

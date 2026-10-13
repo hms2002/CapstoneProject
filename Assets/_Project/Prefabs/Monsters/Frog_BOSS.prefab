@@ -30,6 +30,7 @@ GameObject:
   - component: {fileID: 1202927576409601092}
   - component: {fileID: -6319230407346493041}
   - component: {fileID: 880070000000000009}
+  - component: {fileID: 2402159622049362575}
   m_Layer: 31
   m_Name: Frog_BOSS
   m_TagString: Enemy
@@ -525,3 +526,16 @@ MonoBehaviour:
   heightToScaleRatio: 0.45
   minScale: 0.55
   maxScale: 1.8
+--- !u!114 &2402159622049362575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18a1857e5118414599ff746dbb13e4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::MonsterEncyclopediaIdentity
+  monsterId: monster.frog_elite

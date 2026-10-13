@@ -160,6 +160,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
     {
         interactionEnabled = enabled;
         leftPage?.SetInteractionEnabled(enabled);
+        rightPage?.SetInteractionEnabled(enabled);
 
         if (enabled)
             RefreshPaginationState(GetPageCount(GetEntryCount(CurrentCategory), GetCurrentPageCapacity()));

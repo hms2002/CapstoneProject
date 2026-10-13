@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace UnityGAS
@@ -40,40 +39,55 @@ namespace UnityGAS
         {
             if (effect == null || target == null) return null;
 
-            return activeEffects.FirstOrDefault(e =>
-                e.Effect == effect &&
-                e.Target == target);
+            for (int i = 0; i < activeEffects.Count; i++)
+            {
+                var candidate = activeEffects[i];
+                if (candidate.Effect == effect && candidate.Target == target)
+                    return candidate;
+            }
+            return null;
         }
 
         public ActiveGameplayEffect FindFirst(GameplayEffect effect, GameObject target, UnityEngine.Object sourceObject)
         {
             if (effect == null || target == null) return null;
 
-            return activeEffects.FirstOrDefault(e =>
-                e.Effect == effect &&
-                e.Target == target &&
-                e.SourceObject == sourceObject);
+            for (int i = 0; i < activeEffects.Count; i++)
+            {
+                var candidate = activeEffects[i];
+                if (candidate.Effect == effect && candidate.Target == target &&
+                    candidate.SourceObject == sourceObject)
+                    return candidate;
+            }
+            return null;
         }
 
         public bool HasActive(GameplayEffect effect, GameObject target)
         {
             if (effect == null || target == null) return false;
 
-            return activeEffects.Any(e =>
-                e.Effect == effect &&
-                e.Target == target &&
-                e.TimeRemaining > 0f);
+            for (int i = 0; i < activeEffects.Count; i++)
+            {
+                var candidate = activeEffects[i];
+                if (candidate.Effect == effect && candidate.Target == target &&
+                    candidate.TimeRemaining > 0f)
+                    return true;
+            }
+            return false;
         }
 
         public bool HasActive(GameplayEffect effect, GameObject target, UnityEngine.Object sourceObject)
         {
             if (effect == null || target == null) return false;
 
-            return activeEffects.Any(e =>
-                e.Effect == effect &&
-                e.Target == target &&
-                e.SourceObject == sourceObject &&
-                e.TimeRemaining > 0f);
+            for (int i = 0; i < activeEffects.Count; i++)
+            {
+                var candidate = activeEffects[i];
+                if (candidate.Effect == effect && candidate.Target == target &&
+                    candidate.SourceObject == sourceObject && candidate.TimeRemaining > 0f)
+                    return true;
+            }
+            return false;
         }
 
         public float GetRemainingTime(GameplayEffect effect, GameObject target)

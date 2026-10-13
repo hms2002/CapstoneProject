@@ -5,6 +5,7 @@
         "Core",
         "Unity.Localization",
         "Unity.ResourceManager",
+        "Unity.Addressables",
         "Gameplay",
         "Infrastructure",
         "Presentation",

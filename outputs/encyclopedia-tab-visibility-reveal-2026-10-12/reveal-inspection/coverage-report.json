@@ -1,0 +1,1218 @@
+{
+  "notes": [
+    "Static serialized geometry and PNG nearest-point alpha inspection; no Unity render or import was executed.",
+    "Target rectangles include transparent TMP container space; font glyph-level coverage is not implied.",
+    "Subsequent reveal frames intentionally expose more pixels, so exposed percentages after frame1 are not blanket defects.",
+    "Book outside alpha is visual overdraw on the book silhouette, not UI raycast coverage (PageCover raycastTarget=false)."
+  ],
+  "book_target_dimensions": [
+    2320,
+    1480
+  ],
+  "source_cover_dimensions": [
+    896,
+    720
+  ],
+  "source_book_tile_dimensions": [
+    816,
+    720
+  ],
+  "target_rects_ui": {
+    "CreatureRightPage/MonsterDetail/IdleFrame": [
+      65.0,
+      -5.0,
+      550.0,
+      250.0
+    ],
+    "CreatureLeftPage/Title": [
+      -615.0,
+      263.0,
+      550.0,
+      52.0
+    ],
+    "CreatureRightPage/MonsterDetail/MonsterName": [
+      65.0,
+      263.0,
+      550.0,
+      52.0
+    ],
+    "CreatureLeftPage/NextPage": [
+      -240.0,
+      -400.0,
+      60.0,
+      50.0
+    ],
+    "CreatureLeftPage/Page": [
+      -430.0,
+      -400.0,
+      180.0,
+      50.0
+    ],
+    "CreatureRightPage/CharacterDetail/Illustration": [
+      43.0,
+      -56.0,
+      594.0,
+      389.0
+    ],
+    "CreatureLeftPage": [
+      -640.0,
+      -405.0,
+      600.0,
+      745.0
+    ],
+    "CreatureLeftPage/PreviousPage": [
+      -500.0,
+      -400.0,
+      60.0,
+      50.0
+    ],
+    "CreatureRightPage": [
+      40.0,
+      -405.0,
+      600.0,
+      745.0
+    ],
+    "LeftPage/TitleGroup (layout-derived)": [
+      -472.04499999999996,
+      265.0,
+      264.09,
+      50.0
+    ],
+    "LeftPage/TitleIcon (layout-derived)": [
+      -472.04499999999996,
+      255.0,
+      70,
+      70
+    ]
+  },
+  "candidates": [
+    {
+      "label": "baseline",
+      "height": 1480,
+      "x": 0,
+      "y": 0,
+      "targets": {
+        "CreatureRightPage/MonsterDetail/IdleFrame": {
+          "samples": 550000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/Title": {
+          "samples": 114400,
+          "exposed_samples": 3926,
+          "exposed_ui_area": 981.5,
+          "exposed_percent": 3.43182,
+          "exposed_top_edge_percent": 6.1818,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureRightPage/MonsterDetail/MonsterName": {
+          "samples": 114400,
+          "exposed_samples": 3842,
+          "exposed_ui_area": 960.5,
+          "exposed_percent": 3.35839,
+          "exposed_top_edge_percent": 6.1818,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/NextPage": {
+          "samples": 12000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/Page": {
+          "samples": 36000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureRightPage/CharacterDetail/Illustration": {
+          "samples": 924264,
+          "exposed_samples": 15742,
+          "exposed_ui_area": 3935.5,
+          "exposed_percent": 1.70319,
+          "exposed_top_edge_percent": 25.5892,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage": {
+          "samples": 1788000,
+          "exposed_samples": 46064,
+          "exposed_ui_area": 11516.0,
+          "exposed_percent": 2.57629,
+          "exposed_top_edge_percent": 66.4167,
+          "exposed_bottom_edge_percent": 14.0
+        },
+        "CreatureLeftPage/PreviousPage": {
+          "samples": 12000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureRightPage": {
+          "samples": 1788000,
+          "exposed_samples": 42145,
+          "exposed_ui_area": 10536.25,
+          "exposed_percent": 2.3571,
+          "exposed_top_edge_percent": 66.4167,
+          "exposed_bottom_edge_percent": 14.0
+        },
+        "LeftPage/TitleGroup (layout-derived)": {
+          "samples": 52800,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "LeftPage/TitleIcon (layout-derived)": {
+          "samples": 19600,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        }
+      },
+      "opaque_ui_area_outside_book_alpha": 0.0
+    },
+    {
+      "label": "raise_55",
+      "height": 1480,
+      "x": 0,
+      "y": 55,
+      "targets": {
+        "CreatureRightPage/MonsterDetail/IdleFrame": {
+          "samples": 550000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/Title": {
+          "samples": 114400,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureRightPage/MonsterDetail/MonsterName": {
+          "samples": 114400,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/NextPage": {
+          "samples": 12000,
+          "exposed_samples": 12000,
+          "exposed_ui_area": 3000.0,
+          "exposed_percent": 100.0,
+          "exposed_top_edge_percent": 100.0,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "CreatureLeftPage/Page": {
+          "samples": 36000,
+          "exposed_samples": 36000,
+          "exposed_ui_area": 9000.0,
+          "exposed_percent": 100.0,
+          "exposed_top_edge_percent": 100.0,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "CreatureRightPage/CharacterDetail/Illustration": {
+          "samples": 924264,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage": {
+          "samples": 1788000,
+          "exposed_samples": 154138,
+          "exposed_ui_area": 38534.5,
+          "exposed_percent": 8.62069,
+          "exposed_top_edge_percent": 7.3333,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "CreatureLeftPage/PreviousPage": {
+          "samples": 12000,
+          "exposed_samples": 12000,
+          "exposed_ui_area": 3000.0,
+          "exposed_percent": 100.0,
+          "exposed_top_edge_percent": 100.0,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "CreatureRightPage": {
+          "samples": 1788000,
+          "exposed_samples": 150251,
+          "exposed_ui_area": 37562.75,
+          "exposed_percent": 8.4033,
+          "exposed_top_edge_percent": 7.1667,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "LeftPage/TitleGroup (layout-derived)": {
+          "samples": 52800,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "LeftPage/TitleIcon (layout-derived)": {
+          "samples": 19600,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        }
+      },
+      "opaque_ui_area_outside_book_alpha": 24985.0
+    },
+    {
+      "label": "raise_52",
+      "height": 1480,
+      "x": 0,
+      "y": 52,
+      "targets": {
+        "CreatureRightPage/MonsterDetail/IdleFrame": {
+          "samples": 550000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/Title": {
+          "samples": 114400,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureRightPage/MonsterDetail/MonsterName": {
+          "samples": 114400,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/NextPage": {
+          "samples": 12000,
+          "exposed_samples": 11280,
+          "exposed_ui_area": 2820.0,
+          "exposed_percent": 94.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "CreatureLeftPage/Page": {
+          "samples": 36000,
+          "exposed_samples": 33840,
+          "exposed_ui_area": 8460.0,
+          "exposed_percent": 94.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "CreatureRightPage/CharacterDetail/Illustration": {
+          "samples": 924264,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage": {
+          "samples": 1788000,
+          "exposed_samples": 147466,
+          "exposed_ui_area": 36866.5,
+          "exposed_percent": 8.24754,
+          "exposed_top_edge_percent": 7.3333,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "CreatureLeftPage/PreviousPage": {
+          "samples": 12000,
+          "exposed_samples": 11280,
+          "exposed_ui_area": 2820.0,
+          "exposed_percent": 94.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "CreatureRightPage": {
+          "samples": 1788000,
+          "exposed_samples": 143567,
+          "exposed_ui_area": 35891.75,
+          "exposed_percent": 8.02947,
+          "exposed_top_edge_percent": 7.1667,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "LeftPage/TitleGroup (layout-derived)": {
+          "samples": 52800,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "LeftPage/TitleIcon (layout-derived)": {
+          "samples": 19600,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        }
+      },
+      "opaque_ui_area_outside_book_alpha": 21889.0
+    },
+    {
+      "label": "height_1600_raise_29",
+      "height": 1600,
+      "x": 0,
+      "y": 29,
+      "targets": {
+        "CreatureRightPage/MonsterDetail/IdleFrame": {
+          "samples": 550000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/Title": {
+          "samples": 114400,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureRightPage/MonsterDetail/MonsterName": {
+          "samples": 114400,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/NextPage": {
+          "samples": 12000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/Page": {
+          "samples": 36000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureRightPage/CharacterDetail/Illustration": {
+          "samples": 924264,
+          "exposed_samples": 2334,
+          "exposed_ui_area": 583.5,
+          "exposed_percent": 0.25253,
+          "exposed_top_edge_percent": 0.2525,
+          "exposed_bottom_edge_percent": 0.2525
+        },
+        "CreatureLeftPage": {
+          "samples": 1788000,
+          "exposed_samples": 13169,
+          "exposed_ui_area": 3292.25,
+          "exposed_percent": 0.73652,
+          "exposed_top_edge_percent": 0.3333,
+          "exposed_bottom_edge_percent": 7.75
+        },
+        "CreatureLeftPage/PreviousPage": {
+          "samples": 12000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureRightPage": {
+          "samples": 1788000,
+          "exposed_samples": 20619,
+          "exposed_ui_area": 5154.75,
+          "exposed_percent": 1.15319,
+          "exposed_top_edge_percent": 0.75,
+          "exposed_bottom_edge_percent": 8.1667
+        },
+        "LeftPage/TitleGroup (layout-derived)": {
+          "samples": 52800,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "LeftPage/TitleIcon (layout-derived)": {
+          "samples": 19600,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        }
+      },
+      "opaque_ui_area_outside_book_alpha": 43330.75
+    },
+    {
+      "label": "height_1540_raise_40",
+      "height": 1540,
+      "x": 0,
+      "y": 40,
+      "targets": {
+        "CreatureRightPage/MonsterDetail/IdleFrame": {
+          "samples": 550000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/Title": {
+          "samples": 114400,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureRightPage/MonsterDetail/MonsterName": {
+          "samples": 114400,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/NextPage": {
+          "samples": 12000,
+          "exposed_samples": 4440,
+          "exposed_ui_area": 1110.0,
+          "exposed_percent": 37.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "CreatureLeftPage/Page": {
+          "samples": 36000,
+          "exposed_samples": 13320,
+          "exposed_ui_area": 3330.0,
+          "exposed_percent": 37.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "CreatureRightPage/CharacterDetail/Illustration": {
+          "samples": 924264,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage": {
+          "samples": 1788000,
+          "exposed_samples": 69139,
+          "exposed_ui_area": 17284.75,
+          "exposed_percent": 3.86683,
+          "exposed_top_edge_percent": 3.3333,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "CreatureLeftPage/PreviousPage": {
+          "samples": 12000,
+          "exposed_samples": 4440,
+          "exposed_ui_area": 1110.0,
+          "exposed_percent": 37.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "CreatureRightPage": {
+          "samples": 1788000,
+          "exposed_samples": 75868,
+          "exposed_ui_area": 18967.0,
+          "exposed_percent": 4.24318,
+          "exposed_top_edge_percent": 3.4167,
+          "exposed_bottom_edge_percent": 100.0
+        },
+        "LeftPage/TitleGroup (layout-derived)": {
+          "samples": 52800,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "LeftPage/TitleIcon (layout-derived)": {
+          "samples": 19600,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        }
+      },
+      "opaque_ui_area_outside_book_alpha": 24708.0
+    },
+    {
+      "label": "height_1750",
+      "height": 1750,
+      "x": 0,
+      "y": 0,
+      "targets": {
+        "CreatureRightPage/MonsterDetail/IdleFrame": {
+          "samples": 550000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/Title": {
+          "samples": 114400,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureRightPage/MonsterDetail/MonsterName": {
+          "samples": 114400,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/NextPage": {
+          "samples": 12000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureLeftPage/Page": {
+          "samples": 36000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureRightPage/CharacterDetail/Illustration": {
+          "samples": 924264,
+          "exposed_samples": 8558,
+          "exposed_ui_area": 2139.5,
+          "exposed_percent": 0.92593,
+          "exposed_top_edge_percent": 0.9259,
+          "exposed_bottom_edge_percent": 0.9259
+        },
+        "CreatureLeftPage": {
+          "samples": 1788000,
+          "exposed_samples": 17880,
+          "exposed_ui_area": 4470.0,
+          "exposed_percent": 1.0,
+          "exposed_top_edge_percent": 1.0,
+          "exposed_bottom_edge_percent": 1.0
+        },
+        "CreatureLeftPage/PreviousPage": {
+          "samples": 12000,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "CreatureRightPage": {
+          "samples": 1788000,
+          "exposed_samples": 25330,
+          "exposed_ui_area": 6332.5,
+          "exposed_percent": 1.41667,
+          "exposed_top_edge_percent": 1.4167,
+          "exposed_bottom_edge_percent": 1.4167
+        },
+        "LeftPage/TitleGroup (layout-derived)": {
+          "samples": 52800,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        },
+        "LeftPage/TitleIcon (layout-derived)": {
+          "samples": 19600,
+          "exposed_samples": 0,
+          "exposed_ui_area": 0.0,
+          "exposed_percent": 0.0,
+          "exposed_top_edge_percent": 0.0,
+          "exposed_bottom_edge_percent": 0.0
+        }
+      },
+      "opaque_ui_area_outside_book_alpha": 160017.5
+    }
+  ],
+  "full_portrait_and_footer_candidate_search": [],
+  "source_frames": [
+    {
+      "source_frame": 1,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 2,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 3,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 18048,
+        "exposed_ui_area": 4512.0,
+        "exposed_percent": 12.65993,
+        "exposed_top_edge_percent": 31.1448,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 4,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 5,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 6,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 7,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 8,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 9,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 10,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 11,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 12,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 13,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 14,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 15,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15898,
+        "exposed_ui_area": 3974.5,
+        "exposed_percent": 11.1518,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 13.1313
+      }
+    },
+    {
+      "source_frame": 16,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 39723,
+        "exposed_ui_area": 9930.75,
+        "exposed_percent": 27.86406,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 54.7138
+      }
+    },
+    {
+      "source_frame": 17,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 98332,
+        "exposed_ui_area": 24583.0,
+        "exposed_percent": 68.97587,
+        "exposed_top_edge_percent": 61.532,
+        "exposed_bottom_edge_percent": 79.5455
+      }
+    },
+    {
+      "source_frame": 18,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 134740,
+        "exposed_ui_area": 33685.0,
+        "exposed_percent": 94.51459,
+        "exposed_top_edge_percent": 84.0067,
+        "exposed_bottom_edge_percent": 96.2121
+      }
+    },
+    {
+      "source_frame": 19,
+      "used_by_content_clip": true,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 142560,
+        "exposed_ui_area": 35640.0,
+        "exposed_percent": 100.0,
+        "exposed_top_edge_percent": 100.0,
+        "exposed_bottom_edge_percent": 100.0
+      }
+    },
+    {
+      "source_frame": 20,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 21,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 22,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 23,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 24,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 25,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 26,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 27,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 15742,
+        "exposed_ui_area": 3935.5,
+        "exposed_percent": 11.04237,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 0.0
+      }
+    },
+    {
+      "source_frame": 28,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 21897,
+        "exposed_ui_area": 5474.25,
+        "exposed_percent": 15.35985,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 33.165
+      }
+    },
+    {
+      "source_frame": 29,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 32827,
+        "exposed_ui_area": 8206.75,
+        "exposed_percent": 23.0268,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 48.8215
+      }
+    },
+    {
+      "source_frame": 30,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 51142,
+        "exposed_ui_area": 12785.5,
+        "exposed_percent": 35.87402,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 55.3872
+      }
+    },
+    {
+      "source_frame": 31,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 69697,
+        "exposed_ui_area": 17424.25,
+        "exposed_percent": 48.88959,
+        "exposed_top_edge_percent": 25.5892,
+        "exposed_bottom_edge_percent": 66.7508
+      }
+    },
+    {
+      "source_frame": 32,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 90210,
+        "exposed_ui_area": 22552.5,
+        "exposed_percent": 63.27862,
+        "exposed_top_edge_percent": 40.9091,
+        "exposed_bottom_edge_percent": 76.431
+      }
+    },
+    {
+      "source_frame": 33,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 111442,
+        "exposed_ui_area": 27860.5,
+        "exposed_percent": 78.172,
+        "exposed_top_edge_percent": 65.6566,
+        "exposed_bottom_edge_percent": 86.532
+      }
+    },
+    {
+      "source_frame": 34,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 138477,
+        "exposed_ui_area": 34619.25,
+        "exposed_percent": 97.13594,
+        "exposed_top_edge_percent": 95.1178,
+        "exposed_bottom_edge_percent": 100.0
+      }
+    },
+    {
+      "source_frame": 35,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 142416,
+        "exposed_ui_area": 35604.0,
+        "exposed_percent": 99.89899,
+        "exposed_top_edge_percent": 99.3266,
+        "exposed_bottom_edge_percent": 100.0
+      }
+    },
+    {
+      "source_frame": 36,
+      "used_by_content_clip": false,
+      "portrait_top_60": {
+        "samples": 142560,
+        "exposed_samples": 142560,
+        "exposed_ui_area": 35640.0,
+        "exposed_percent": 100.0,
+        "exposed_top_edge_percent": 100.0,
+        "exposed_bottom_edge_percent": 100.0
+      }
+    }
+  ],
+  "additive_flat_top_candidate": {
+    "flat_source_y": 197,
+    "page_x_ranges_exclusive_end": [
+      [
+        138,
+        436
+      ],
+      [
+        468,
+        759
+      ]
+    ],
+    "algorithm": "Only fill the first-frame rounded-gap pixels above y=197 in each column, using current frame alpha/color at the original top boundary or within 2 PNG rows below it (frame3 has a pre-existing one-pixel edge shift). Never scan farther down into intentionally revealed holes. This is a proposal, no source pixels changed.",
+    "frames": [
+      {
+        "source_frame": 1,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 2,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 3,
+        "suggested_additive_opaque_pixels": 2218,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 4,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 5,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 6,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 7,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 8,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 9,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 10,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 11,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 12,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 13,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 14,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 15,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 16,
+        "suggested_additive_opaque_pixels": 2140,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 17,
+        "suggested_additive_opaque_pixels": 2092,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 18,
+        "suggested_additive_opaque_pixels": 665,
+        "retain_current_top_boundary_transparency": true
+      },
+      {
+        "source_frame": 19,
+        "suggested_additive_opaque_pixels": 0,
+        "retain_current_top_boundary_transparency": true
+      }
+    ]
+  }
+}

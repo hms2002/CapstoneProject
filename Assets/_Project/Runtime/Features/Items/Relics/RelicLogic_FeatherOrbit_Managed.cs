@@ -9,7 +9,7 @@ using System.Collections.Generic;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Feather Orbit (Managed)")]
 public class RelicLogic_FeatherOrbit_Managed : RelicLogic
 {
-    protected override string DefaultEffectTemplate => GameText.Get("code.reliclogic_featherorbit_managed.cef8ff8aec", "● 깃털 {feather_count}개가 주위를 회전하며 적을 공격\n● 깃털 피해는 [[공격력]]의 {damage_coef}\n● 회전 반경 {radius}\n● 같은 적을 다시 공격하는 기본 간격 {hit_cooldown}");
+    protected override string DefaultEffectTemplate => GameText.Get("code.reliclogic_featherorbit_managed.cef8ff8aec", "● 깃털 {feather_count}개가 주위를 회전하며 적을 공격\n● 깃털 피해 {damage_coef}\n● 회전 반경 {radius}\n● 같은 적을 다시 공격하는 기본 간격 {hit_cooldown}");
 
     [Header("Prefabs")]
     public FeatherOrbitFeather featherPrefab;
@@ -17,9 +17,11 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
     [Header("Damage")]
     public GameplayEffect damageEffect;
     public GE_Knockback_Spec knockbackEffect;
+    [Tooltip("기존 데이터 호환용 필드입니다. 깃털 피해는 공격력에 비례하지 않습니다.")]
     public StatId attackStatId = StatId.AttackFinal;
-    public float damageCoef = 1.0f;
-    [Tooltip("레벨별 피해 계수(레벨1=0번째). 비어있으면 damageCoef를 사용합니다.")]
+    [Tooltip("기존 필드명을 유지한 고정 피해량입니다.")]
+    public float damageCoef = 3f;
+    [Tooltip("레벨별 고정 피해량(레벨1=0번째). 비어있으면 damageCoef를 사용합니다.")]
     public List<float> damageCoefByLevel = new();
     public float knockbackImpulse = 0f;
     public GameplayTag hitConfirmedTag;
@@ -101,7 +103,7 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
             new Dictionary<string, string>
             {
                 ["feather_count"] = RelicTooltipFormatter.FormatUnsignedValueToken(featherCount, false),
-                ["damage_coef"] = RelicTooltipFormatter.FormatUnsignedValueToken(EvaluateDamageCoef(previewLevel), true),
+                ["damage_coef"] = RelicTooltipFormatter.FormatUnsignedValueToken(EvaluateDamageCoef(previewLevel), false),
                 ["radius"] = RelicTooltipFormatter.FormatUnsignedValueToken(radius, false),
                 ["hit_cooldown"] = RelicTooltipFormatter.FormatSeconds(basePerTargetHitCooldown),
             });

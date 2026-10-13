@@ -9,6 +9,7 @@ namespace UnityGAS
         public float hpDamage;
         public float staggerDamage;
         public bool isCrit;
+        public float hpDamageMultiplier;
     }
 
     /// <summary>
@@ -34,6 +35,7 @@ namespace UnityGAS
                 result.hpDamage = hp;
                 result.staggerDamage = stagger;
                 result.isCrit = false;
+                result.hpDamageMultiplier = 1f;
                 return result;
             }
 
@@ -45,6 +47,7 @@ namespace UnityGAS
             float critFactor = isCrit ? critMul : 1f;
 
             result.isCrit = isCrit;
+            result.hpDamageMultiplier = critFactor * finalMul;
             result.hpDamage = hp * critFactor * finalMul;
             result.staggerDamage = stagger * finalMul;
             return result;

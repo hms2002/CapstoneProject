@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
+  m_Name: RD_StormStep
+  m_EditorClassIdentifier: Gameplay::RelicDefinition
+  relicId: Relic.Electric.StormStep
+  displayName: "\uC0DD\uBA85\uC758 \uC804\uB958"
+  icon: {fileID: 336388868, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  rarity: 1
+  description: "\uCD5C\uB300 \uCCB4\uB825\uC5D0 \uBE44\uB840\uD574 \uC804\uAE30 \uC18D\uC131\uC774
+    \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  maxLevel: 5
+  dropLevel: 1
+  logic: {fileID: 11400000, guid: 1b45315a57665e94db35f56b6a7febd0, type: 2}
+  param: {fileID: 0}

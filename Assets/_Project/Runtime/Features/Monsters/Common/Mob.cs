@@ -187,7 +187,7 @@ public class Mob : Enemy
     /// </summary>
     public void BeginPostAttackRecoveryRetreat(float recoverEndTime)
     {
-        recoveryRetreatEndTime = Mathf.Max(Time.time, recoverEndTime);
+        recoveryRetreatEndTime = Mathf.Max(CombatHitPause2D.GetActionTime(gameObject), recoverEndTime);
         nextRecoveryRetreatThinkTime = 0f;
         cachedRecoveryRetreatVelocity = Vector2.zero;
         externalMovement?.RemoveTimedVelocitiesFromSource(this);
@@ -200,16 +200,16 @@ public class Mob : Enemy
     /// </summary>
     public void TickPostAttackRecoveryRetreat()
     {
-        if (Time.time >= recoveryRetreatEndTime || !CanUsePostAttackRecoveryRetreat())
+        if (CombatHitPause2D.GetActionTime(gameObject) >= recoveryRetreatEndTime || !CanUsePostAttackRecoveryRetreat())
         {
             StopPostAttackRecoveryRetreat();
             return;
         }
 
-        if (Time.time < nextRecoveryRetreatThinkTime)
+        if (CombatHitPause2D.GetActionTime(gameObject) < nextRecoveryRetreatThinkTime)
             return;
 
-        nextRecoveryRetreatThinkTime = Time.time + Mathf.Max(0.02f, recoveryRetreatThinkInterval);
+        nextRecoveryRetreatThinkTime = CombatHitPause2D.GetActionTime(gameObject) + Mathf.Max(0.02f, recoveryRetreatThinkInterval);
         cachedRecoveryRetreatVelocity = ResolveRecoveryRetreatVelocity();
         externalMovement.RemoveTimedVelocitiesFromSource(this);
 
@@ -368,13 +368,13 @@ public class Mob : Enemy
         if (seconds <= 0f || isDead)
             return;
 
-        spawnIdlePauseUntilTime = Mathf.Max(spawnIdlePauseUntilTime, Time.time + seconds);
+        spawnIdlePauseUntilTime = Mathf.Max(spawnIdlePauseUntilTime, CombatHitPause2D.GetActionTime(gameObject) + seconds);
         PerformSpawnIdlePauseCleanup();
     }
 
     private bool IsSpawnIdlePaused()
     {
-        return spawnIdlePauseUntilTime > Time.time;
+        return spawnIdlePauseUntilTime > CombatHitPause2D.GetActionTime(gameObject);
     }
 
     /// <summary>
@@ -769,7 +769,20 @@ public class Mob : Enemy
 
 internal sealed class MonsterLockTrackingUnit
 {
-    private readonly List<GameObject> members = new();
+    private readonly struct TrackedMember
+    {
+        public readonly GameObject Object;
+        public readonly Mob RootMob;
+
+        public TrackedMember(GameObject member)
+        {
+            Object = member;
+            // Cache only the concrete root selected by the existing Enemy lookup.
+            RootMob = member.GetComponent<Enemy>() as Mob;
+        }
+    }
+
+    private readonly List<TrackedMember> members = new();
 
     public void AddMember(GameObject member)
     {
@@ -779,11 +792,11 @@ internal sealed class MonsterLockTrackingUnit
         CompactDestroyedMembers();
         for (int i = 0; i < members.Count; i++)
         {
-            if (members[i] == member)
+            if (members[i].Object == member)
                 return;
         }
 
-        members.Add(member);
+        members.Add(new TrackedMember(member));
     }
 
     public bool TryGetAliveRepresentative(out GameObject representative)
@@ -791,10 +804,10 @@ internal sealed class MonsterLockTrackingUnit
         CompactDestroyedMembers();
         for (int i = 0; i < members.Count; i++)
         {
-            GameObject member = members[i];
+            TrackedMember member = members[i];
             if (IsAliveMember(member))
             {
-                representative = member;
+                representative = member.Object;
                 return true;
             }
         }
@@ -812,16 +825,21 @@ internal sealed class MonsterLockTrackingUnit
     {
         for (int i = members.Count - 1; i >= 0; i--)
         {
-            if (members[i] == null)
+            if (members[i].Object == null)
                 members.RemoveAt(i);
         }
     }
 
-    private static bool IsAliveMember(GameObject member)
+    private static bool IsAliveMember(TrackedMember tracked)
     {
+        GameObject member = tracked.Object;
         if (member == null)
             return false;
 
+        if (tracked.RootMob != null)
+            return !tracked.RootMob.IsDead;
+
+        // Generic roots, child Enemy components and replaced/destroyed components stay dynamic.
         Enemy enemy = member.GetComponent<Enemy>();
         if (enemy == null)
             enemy = member.GetComponentInChildren<Enemy>(includeInactive: true);

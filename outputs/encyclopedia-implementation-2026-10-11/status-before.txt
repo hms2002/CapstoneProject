@@ -1,0 +1,269 @@
+ M Assets/_Project/Art/Shaders/PuddleShaderVisual.shader
+ M "Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hans SDF.asset"
+ M "Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant SDF.asset"
+ M "Assets/_Project/Data/Localization/Fonts/Galmuri/Galmuri9 Japanese SDF.asset"
+ M "Assets/_Project/Data/Localization/Fonts/NotoSansCJKtc-Regular SDF.asset"
+ M "Assets/_Project/Data/Localization/GameText Shared Data.asset"
+ M Assets/_Project/Data/Localization/GameText_en.asset
+ M Assets/_Project/Data/Localization/GameText_ja.asset
+ M Assets/_Project/Data/Localization/GameText_ko.asset
+ M Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+ M Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+ M Assets/_Project/Data/SceneFlow/LoadingManifests/PrewarmTrace_nadom_DESKTOP-I2QAD8O.json
+ M Assets/_Project/Editor/Tools/Data/FullLocalizationAuthoring.cs
+ M Assets/_Project/Editor/Tools/Data/FullLocalizationValidation.cs
+ M Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab
+ M Assets/_Project/Prefabs/UI/KeyMapRow.prefab
+ M Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/Panel_AbilityBlock_Encyclopedia.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/Panel_AbilityBlock.prefab
+ M Assets/_Project/Prefabs/UI/status_HUD_EntryView.prefab
+ M Assets/_Project/Runtime/Core/Combat/CombatDamageAction.cs
+ M Assets/_Project/Runtime/Core/Combat/CombatDamageApplicator.cs
+ M Assets/_Project/Runtime/Core/Combat/CombatDamageSnapshot.cs
+ M Assets/_Project/Runtime/Core/Combat/CombatHitPayload.cs
+ M Assets/_Project/Runtime/Core/Combat/CombatHurtbox2D.cs
+ M Assets/_Project/Runtime/Core/Combat/DamageFormulaUtil.cs
+ M Assets/_Project/Runtime/Core/Combat/DamageSnapshotBuilder.cs
+ M Assets/_Project/Runtime/Core/Effects/ActiveGameplayEffectRepository.cs
+ M Assets/_Project/Runtime/Core/Effects/GE_Damage_Spec.cs
+ M Assets/_Project/Runtime/Core/Effects/GameplayEffectSpec.cs
+ M Assets/_Project/Runtime/Core/Presentation/DamagePopupRequest.cs
+ M Assets/_Project/Runtime/Core/Save/RunSessionStore.cs
+ M Assets/_Project/Runtime/Features/Bosses/DragonBoss/Abilities/AbilityLogic_DragonFireBreath.cs
+ M Assets/_Project/Runtime/Features/Combat/Status/Burn/BurnStatus2D.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/Abilities/FragmentShardActor.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearRuntimeState.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/ApprenticeHeroSword/ApprenticeHeroSwordHitConfig.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/AbilityLogic_CrimsonBoundaryAttack.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/AbilityLogic_CrimsonBoundaryBigExplosion.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/AbilityLogic_CrimsonBoundaryIgnite.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/CrimsonBoundaryLavaProjectile2D.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/CrimsonBoundaryProjectile2D.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/CrimsonBoundaryUtility.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/Flowering/AbilityLogic_FloweringAttack.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/Flowering/AbilityLogic_FloweringBaseAttack.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/Flowering/FloweringDashSlashHitboxActor.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/Flowering/FloweringRuntimeState.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/WeaponLogic/AbilityLogic_LightningSpearAttack.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/WeaponLogic/AbilityLogic_SwordCombo2D.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/WeaponLogic/FragmentBladeDamageUtility.cs
+ M Assets/_Project/Runtime/Features/Monsters/Common/EnemyChaseIntent2D.cs
+ M Assets/_Project/Runtime/Features/Monsters/Common/FSM/MobChaseState.cs
+ M Assets/_Project/Runtime/Features/Monsters/Common/FSM/MobStateTransitionUtility.cs
+ M Assets/_Project/Runtime/Features/Monsters/Common/Mob.cs
+ M Assets/_Project/Runtime/Features/Monsters/Spawning/TilemapPathfinder2D.cs
+ M Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/SoulHeartGrantLevelRewardEffectSO.cs
+ M Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/RunLevelRewards.cs
+ M Assets/_Project/Runtime/Infrastructure/Save/GamePlayDataManager.cs
+ M Assets/_Project/Runtime/Presentation/Map/Puddles/PuddleParticleVisual.cs
+ M Assets/_Project/Runtime/UI/Chest/ChestFirstOpenRevealPresentation.cs
+ M Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupFormatProfileSO.cs
+ M Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupService.cs
+ M Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupWorldText.cs
+ M Assets/_Project/Runtime/UI/Combat/StackStatus/MonsterStackStatusWorldView.cs
+ M Assets/_Project/Runtime/UI/Common/HoverUIController.cs
+ M Assets/_Project/Runtime/UI/Common/Interfaces/ITooltipView.cs
+ M Assets/_Project/Runtime/UI/Common/MenuButtonHighlightPresentation.cs
+ M Assets/_Project/Runtime/UI/Common/PopupStackState.cs
+ M Assets/_Project/Runtime/UI/Common/UIManager.cs
+ M Assets/_Project/Runtime/UI/Dialogue/DialogueController.cs
+ M Assets/_Project/Runtime/UI/Dialogue/SimpleTextAnimator.cs
+ M Assets/_Project/Runtime/UI/HUD/RunTimer/RunTimerHUD.cs
+ M Assets/_Project/Runtime/UI/HUD/Status/StatusHudEntryView.cs
+ M Assets/_Project/Runtime/UI/HUD/Status/StatusHudTooltipView.cs
+ M Assets/_Project/Runtime/UI/HUD/SwapWeaponSkillHUD2D.cs
+ M Assets/_Project/Runtime/UI/HUD/WeaponSkillHUD2D.cs
+ M Assets/_Project/Runtime/UI/HUD/WeaponSkillHudSlotPresenter.cs
+ M Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/ItemDetailPanel.cs
+ M Assets/_Project/Runtime/UI/Inventory/Common/ItemSlotUI.cs
+ M Assets/_Project/Runtime/UI/Inventory/Common/PlayerInventoryPanelView.cs
+ M Assets/_Project/Runtime/UI/Localization/LocalizeTmpFontEvent.cs
+ M Assets/_Project/Runtime/UI/Progression/Leveling/LevelRewardCardView.cs
+ M Assets/_Project/Runtime/UI/Progression/Leveling/LevelRewardSelectionPresenter.cs
+ M Assets/_Project/Runtime/UI/Settings/GameSettingsService.cs
+ M Assets/_Project/Runtime/UI/Settings/KeyBindingPanelUI.cs
+ M Assets/_Project/Runtime/UI/Settings/KeyBindingRowUI.cs
+ M Assets/_Project/Runtime/UI/Settings/PauseMenuUI.cs
+ M Assets/_Project/Runtime/UI/Settings/SettingsPanelUI.cs
+ M Assets/_Project/Runtime/UI/Title/TitleMenuController.cs
+ M Assets/_Project/Runtime/UI/UI.asmdef
+ M Assets/_Project/Runtime/UI/Upgrade/UpgradeLakePresentation.cs
+ M Assets/_Project/Scenes/TitleScene.unity
+ M Assets/_Project/Tests/EditMode/CorePerformanceRegressionEditModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/CombatFeelLootQuestPlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/CombatPresentationRegressionPlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/MonsterHealthAndWeaponSkillBalancePlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/MonsterProjectileBurstCadencePlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/PlayerControlAndChestRegressionPlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/PuddleProjectileVisualPlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/RoomMonsterWavePlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/StatusHudPerformancePlayModeTests.cs
+ D CapstoneProject.slnx
+ M DataSheets/Localization/GameText.csv
+ M DataSheets/Localization/StaticUiBindings.json
+ M Docs/ActiveTasks/full-game-localization.md
+ M Docs/DecisionLog.md
+ M Docs/ErrorLog.md
+ M Docs/RefactorBacklog/CombatElementBuildUpSourceUnification.md
+ M Docs/RefactorBacklog/LightningSpearTilemapClassification.md
+ M Docs/RefactorBacklog/RunSpecialNpcSceneAuthoringCompletion.md
+ M Docs/StructureMemory/CombatStatusHudLifetime.md
+ M Docs/StructureMemory/InputBindings.md
+ M Docs/StructureMemory/LocalizationFlow.md
+ M Docs/StructureMemory/MonsterSceneNavigation.md
+ M Docs/StructureMemory/MonsterWorldHudAndStatus.md
+ M Docs/StructureMemory/ScriptSystems/BossAndMobEncounterStructure.md
+ M Docs/StructureMemory/ScriptSystems/BurnStatusAndCrimsonBoundaryWeapon.md
+ M Docs/StructureMemory/ScriptSystems/InventoryAndChestUIStructure.md
+ M Docs/StructureMemory/ScriptSystems/RunSpecialNpcStructure.md
+ M Docs/StructureMemory/ScriptSystems/WeaponAndGASStructure.md
+ M Docs/StructureMemory/UIFlowInputBlocking.md
+ M Docs/TaskIndex.md
+ M Tools/Validation/LightningRelicPlacementRegression.cs
+?? Assets/_Project/Art/Font/UI_StatusProgress_BlackOutline.mat
+?? Assets/_Project/Art/Font/UI_StatusProgress_BlackOutline.mat.meta
+?? Assets/_Project/Art/Materials/MonsterHealthBarInstanced.mat
+?? Assets/_Project/Art/Materials/MonsterHealthBarInstanced.mat.meta
+?? Assets/_Project/Art/Meshes.meta
+?? Assets/_Project/Art/Meshes/
+?? Assets/_Project/Art/Shaders/MonsterHealthBarInstanced.shader
+?? Assets/_Project/Art/Shaders/MonsterHealthBarInstanced.shader.meta
+?? Assets/_Project/Art/SpriteAtlases.meta
+?? Assets/_Project/Art/SpriteAtlases/
+?? Assets/_Project/Editor/Build/UiBatchingAssetAuthoring.cs
+?? Assets/_Project/Editor/Build/UiBatchingAssetAuthoring.cs.meta
+?? Assets/_Project/Editor/Build/UiRectMaskAssetAuthoring.cs
+?? Assets/_Project/Editor/Build/UiRectMaskAssetAuthoring.cs.meta
+?? Assets/_Project/Editor/Tools/Monsters/MonsterHealthBarMeshAuthoring.cs
+?? Assets/_Project/Editor/Tools/Monsters/MonsterHealthBarMeshAuthoring.cs.meta
+?? Assets/_Project/Editor/Tools/Testing.meta
+?? Assets/_Project/Editor/Tools/Testing/
+?? Assets/_Project/Editor/Tools/UI.meta
+?? Assets/_Project/Editor/Tools/UI/
+?? Assets/_Project/Editor/Tools/Validation/FramePerformanceCpuBenchmarks.cs
+?? Assets/_Project/Editor/Tools/Validation/FramePerformanceCpuBenchmarks.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/FramePerformanceGpuBenchmarks.cs
+?? Assets/_Project/Editor/Tools/Validation/FramePerformanceGpuBenchmarks.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/FramePerformancePlayerBuild.cs
+?? Assets/_Project/Editor/Tools/Validation/FramePerformancePlayerBuild.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/FramePerformanceSceneBenchmarks.cs
+?? Assets/_Project/Editor/Tools/Validation/FramePerformanceSceneBenchmarks.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/FramePerformanceUiBenchmarks.cs
+?? Assets/_Project/Editor/Tools/Validation/FramePerformanceUiBenchmarks.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/LightningSpearPlacementBenchmark.cs
+?? Assets/_Project/Editor/Tools/Validation/LightningSpearPlacementBenchmark.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/LightningSpearStructureValidation.cs
+?? Assets/_Project/Editor/Tools/Validation/LightningSpearStructureValidation.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/MonsterHealthBarGpuValidation.cs
+?? Assets/_Project/Editor/Tools/Validation/MonsterHealthBarGpuValidation.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/UiBatchingLiveScenarios.cs
+?? Assets/_Project/Editor/Tools/Validation/UiBatchingLiveScenarios.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/UiBatchingStructuralScenarios.cs
+?? Assets/_Project/Editor/Tools/Validation/UiBatchingStructuralScenarios.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/UiBatchingValidationRunner.cs
+?? Assets/_Project/Editor/Tools/Validation/UiBatchingValidationRunner.cs.meta
+?? Assets/_Project/Prefabs/Testing.meta
+?? Assets/_Project/Prefabs/Testing/
+?? Assets/_Project/Runtime/Features/Common.meta
+?? Assets/_Project/Runtime/Features/Common/
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearMarkPlacementPlanner.cs
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearMarkPlacementPlanner.cs.meta
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementBeforeRefactor.cs
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementBeforeRefactor.cs.meta
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementBeforeTools.cs
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementBeforeTools.cs.meta
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementSearch.cs
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementSearch.cs.meta
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementWorldQuery.cs
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearPlacementWorldQuery.cs.meta
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearRuntimeState.PlacementBenchmark.cs
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearRuntimeState.PlacementBenchmark.cs.meta
+?? Assets/_Project/Runtime/UI/Combat/StackStatus/MonsterHealthBarMeshView.cs
+?? Assets/_Project/Runtime/UI/Combat/StackStatus/MonsterHealthBarMeshView.cs.meta
+?? Assets/_Project/Runtime/UI/Common/HybridRectClipView.cs
+?? Assets/_Project/Runtime/UI/Common/HybridRectClipView.cs.meta
+?? Assets/_Project/Runtime/UI/Common/UiRenderLayerLayout.cs
+?? Assets/_Project/Runtime/UI/Common/UiRenderLayerLayout.cs.meta
+?? Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/ItemKeywordTooltipView.cs
+?? Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/ItemKeywordTooltipView.cs.meta
+?? Assets/_Project/Runtime/UI/Testing.meta
+?? Assets/_Project/Runtime/UI/Testing/
+?? Assets/_Project/Scenes/Tests/
+?? Assets/_Project/Tests/Fixtures.meta
+?? Assets/_Project/Tests/Fixtures/
+?? Assets/_Project/Tests/PlayMode/Procedural/ChestRevealWidthRegressionPlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/ChestRevealWidthRegressionPlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/ItemKeywordTooltipPlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/ItemKeywordTooltipPlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/LightningSpearPlacementStructurePlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/LightningSpearPlacementStructurePlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/MonsterHealthBarMeshPlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/MonsterHealthBarMeshPlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/PlacementToolCompositionPlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/PlacementToolCompositionPlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/PlayerInventorySlotReusePlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/PlayerInventorySlotReusePlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/ReadyFlashMaterialLifecyclePlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/ReadyFlashMaterialLifecyclePlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/StatusSharedMaterialPlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/StatusSharedMaterialPlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/UiAtlasPixelEquivalencePlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/UiAtlasPixelEquivalencePlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/UiRectMaskRegressionPlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/UiRectMaskRegressionPlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/UiRenderLayerAuthoredPlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/UiRenderLayerAuthoredPlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/UiRenderLayerLayoutPlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/UiRenderLayerLayoutPlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/UiTextMeshRefreshRegressionPlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/UiTextMeshRefreshRegressionPlayModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/UpgradeLakeMaterialSynchronizationPlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/UpgradeLakeMaterialSynchronizationPlayModeTests.cs.meta
+?? Docs/ActiveTasks/chest-offer-width-consistency.md
+?? Docs/ActiveTasks/frame-performance-measurement.md
+?? Docs/ActiveTasks/frame-performance-optimization.md
+?? Docs/ActiveTasks/lightning-spear-placement-structure.md
+?? Docs/ActiveTasks/lightning-spear-tool-composition.md
+?? Docs/ActiveTasks/test-scene-and-lightning-placement.md
+?? Docs/ActiveTasks/test-scene-boss-combat-and-breath-lock.md
+?? Docs/ActiveTasks/ui-batching-optimization.md
+?? Docs/ActiveTasks/ui-batching-structural-optimization.md
+?? Docs/Portfolio/
+?? Docs/RefactorBacklog/ItemTooltipLegacyPrefabParity.md
+?? Docs/RefactorBacklog/PuddlePropertyBlockOwnership.md
+?? Docs/RefactorBacklog/UIBatchingStructuralCandidates.md
+?? Docs/SessionLogs/2026-10-05.md
+?? Docs/SessionLogs/2026-10-07-boss-combat-and-breath/
+?? Docs/SessionLogs/2026-10-07-frame-performance-measurement/
+?? Docs/SessionLogs/2026-10-07-frame-performance/
+?? Docs/SessionLogs/2026-10-07-test-scene-icon-grid/
+?? Docs/SessionLogs/2026-10-07-test-scene/
+?? Docs/SessionLogs/2026-10-07-ui-batching/
+?? Docs/SessionLogs/2026-10-07.md
+?? Docs/SessionLogs/2026-10-08-chest-width/
+?? Docs/SessionLogs/2026-10-08-ui-batching-structural/
+?? Docs/SessionLogs/2026-10-08.md
+?? Docs/SessionLogs/2026-10-10-element-hits/
+?? Docs/SessionLogs/2026-10-10-lightning-structure/
+?? Docs/SessionLogs/2026-10-10-lightning-tools/
+?? Docs/SessionLogs/2026-10-10.md
+?? Docs/SessionLogs/2026-10-11.md
+?? Docs/StructureMemory/DamagePopupPooling.md
+?? Docs/StructureMemory/ElementDirectHitDamage.md
+?? Docs/StructureMemory/FramePerformanceMeasurement.md
+?? Docs/StructureMemory/LightningSpearPlacement.md
+?? Docs/StructureMemory/PlacementTools.md
+?? Docs/StructureMemory/TestScene.md
+?? Docs/StructureMemory/UIBatchingOptimization.md
+?? ProfilerCaptures/
+?? Tools/Validation/UiKeyboardNavigationRegression.cs
+?? output/
+?? outputs/encyclopedia-implementation-2026-10-11/
+?? outputs/language-caption-title-fix-2026-10-10/
+?? outputs/language-commit-review-2026-10-10/
+?? outputs/settings-localization-review-2026-10-08/
+?? tmp/pdfs/lightning-game-explainer/
+?? tmp/pdfs/lightning-portfolio/
+?? tmp/pdfs/lightning-spear-integrated-bookends.pdf

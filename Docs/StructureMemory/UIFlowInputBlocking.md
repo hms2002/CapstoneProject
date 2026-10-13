@@ -15,6 +15,8 @@ This is a fast context map, not the final UI architecture source of truth.
 
 ## Current Structure
 
+- Popup backdrop and canvas-open queries use `PopupStackState.ReadEntries` for synchronous non-mutating reads. Close-all and other callback-driven mutation paths retain their independent snapshots; stack order, ESC policy and input ownership are unchanged.
+
 - `UIManager` owns central UI open policy, ESC handling, popup stack state, hover/prompt hiding, and player control lock application.
 - `GlobalUIRoot` owns the persistent global UI hierarchy and canvas adoption boundary.
 - Lower global UI panels such as `SettingsPanelUI` and `KeyBindingPanelUI` keep static instance handles as lookup caches under the `GlobalUIRoot` / `UIManager` ownership policy; they do not decide to replace an existing persistent representative.

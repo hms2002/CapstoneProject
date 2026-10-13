@@ -775,13 +775,16 @@ public class RelicInventory : MonoBehaviour
 
         void RefreshConditions()
         {
-            // Current-health effects precede move-speed-derived critical chance.
+            // Conditional stat effects precede electric bonuses derived from their results.
             foreach (var context in contexts)
                 if (context.relicDef.logic is RelicLogic_MoveSpeedByCurrentHealth_Managed ||
                     context.relicDef.logic is RelicLogic_StatWhileHealthRatio_Managed ||
                     context.relicDef.logic is RelicLogic_LastStandCritical) Apply(context);
             foreach (var context in contexts)
-                if (context.relicDef.logic is RelicLogic_CritFromBonusMoveSpeed_Managed) Apply(context);
+                if (context.relicDef.logic is RelicLogic_CritFromBonusMoveSpeed_Managed ||
+                    context.relicDef.logic is RelicLogic_ElectricAttributeBonus_Managed
+                    { mode: RelicLogic_ElectricAttributeBonus_Managed.BonusMode.BonusMoveSpeed or
+                        RelicLogic_ElectricAttributeBonus_Managed.BonusMode.MaxHealth }) Apply(context);
         }
 
         foreach (var acquisition in acquisitions)
@@ -791,9 +794,23 @@ public class RelicInventory : MonoBehaviour
             var context = existing >= 0 ? contexts[existing] : baseCtx;
             // Merging keeps the equipped definition, just as TryAcquireOrUpgrade does.
             context.relicDef = existing >= 0 ? context.relicDef : acquisition.relic;
+            int previousLevel = context.level;
             context.level = Mathf.Clamp((existing >= 0 ? context.level : 0) + Mathf.Max(1, acquisition.gainedLevel),
                 1, Mathf.Max(1, context.relicDef.maxLevel));
             context.token = existing >= 0 ? context.token : context.relicDef;
+
+            // A real level reapply disposes a dash buff; detached upgrade previews do the same.
+            if (existing >= 0 && context.level != previousLevel &&
+                context.relicDef.logic is RelicLogic_ElectricAttributeBonus_Managed electric)
+            {
+                var temporarySource = electric.GetTemporaryBonusSource(context);
+                if (temporarySource != null)
+                    foreach (var value in snapshot.Values)
+                    {
+                        value.RemoveModifiersFromSource(temporarySource);
+                        value.ForceRecalculate();
+                    }
+            }
 
             var linked = new List<(AttributeSet.MaxLink link, float current, float max)>();
             foreach (var link in baseCtx.attributeSet.EnumerateMaxLinks())

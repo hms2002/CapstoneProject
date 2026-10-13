@@ -154,7 +154,7 @@ public class Wizard : Slime, IMobProjectileLaneSource
     {
         request = default;
 
-        if (burstCadence.IsResting(Time.time)) return false;
+        if (burstCadence.IsResting(CombatHitPause2D.GetActionTime(gameObject))) return false;
         if (!CanAct()) return false;
         if (!HasShotData()) return false;
 
@@ -168,7 +168,7 @@ public class Wizard : Slime, IMobProjectileLaneSource
     public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
     {
         return Mathf.Max(base.ResolvePostAttackRecoverSeconds(scaledRecoverSeconds),
-            burstCadence.GetRemainingRestSeconds(Time.time));
+            burstCadence.GetRemainingRestSeconds(CombatHitPause2D.GetActionTime(gameObject)));
     }
 
     /// <summary>산탄 발사에 필요한 실행 정보를 만듭니다.</summary>
@@ -176,7 +176,7 @@ public class Wizard : Slime, IMobProjectileLaneSource
     {
         context = default;
 
-        if (burstCadence.IsResting(Time.time)) return false;
+        if (burstCadence.IsResting(CombatHitPause2D.GetActionTime(gameObject))) return false;
         if (!CanAct()) return false;
         if (!HasShotData()) return false;
 
@@ -198,7 +198,7 @@ public class Wizard : Slime, IMobProjectileLaneSource
     /// <summary>LightBead를 산탄 형태로 발사합니다.</summary>
     public void FireScatterShot(ScatterShotContext context)
     {
-        if (burstCadence.IsResting(Time.time)) return;
+        if (burstCadence.IsResting(CombatHitPause2D.GetActionTime(gameObject))) return;
         if (context.HitPayload == null || !context.HitPayload.IsValid()) return;
         if (!MobProjectileLaneUtility.IsClear(this, context.Origin, context.Direction, 0.2f)) return;
 
@@ -238,7 +238,7 @@ public class Wizard : Slime, IMobProjectileLaneSource
         }
 
         if (hasFired)
-            burstCadence.RecordShot(Time.time);
+            burstCadence.RecordShot(CombatHitPause2D.GetActionTime(gameObject));
     }
 
     /// <summary>Wizard 산탄 탄막 묶음 발사 타이밍에 사운드를 한 번 재생합니다.</summary>

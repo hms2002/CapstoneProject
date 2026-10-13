@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: monster-world-hud
-last_reviewed: 2026-09-16
+last_reviewed: 2026-10-14
 ---
 
 # Monster World HUD And Status
@@ -58,8 +58,26 @@ Unity authoring and reference validation passed for 19 monsters and 6 bosses. Th
 
 The view resolves AttributeSet and MonsterStatusRuntime from the parent MonsterSizeProfile, allowing TrainingDummy2D targets without Enemy inheritance. Enemy death subscriptions/checks remain conditional. The dummy retains its existing damage readout and never-die behavior; no runtime HUD objects are created.
 
+## Conditional shared HP mesh projection (2026-10-08)
+
+The shared prefab now also authors a MeshFilter/MeshRenderer and MonsterHealthBarMeshView under the existing HP rectangle. `Art/Meshes/MonsterHealthBarQuad.asset`, `Art/Materials/MonsterHealthBarInstanced.mat` and `Art/Shaders/MonsterHealthBarInstanced.shader` supply shared immutable geometry/material. Each actor supplies width/height/health/trail through its own MaterialPropertyBlock, preserving border/frame/track/fill/highlight geometry and the existing actor sorting layer/order. No combat value, status source or trail timer moved into the mesh view.
+
+The original six Images and status Canvas remain authored. The existing MonsterStackStatusWorldView privately registers enabled configured views and resolves their final projection after LateUpdate through Canvas.preWillRenderCanvases. Disjoint HUDs use mesh HP; the Canvas submits active statuses and the visible authored groggy bar. If any HP/groggy/status bounds intersect, every registered visible HUD uses the original Images/Canvas in that frame, preserving the authored cross-actor HP/groggy/count/timer transparent order. Bounds include the active groggy rectangle, live status pulse and conservative preferred-text/SDF overflow; ignoring Z and loose text bounds favors the old sorting path. Dense overlap can therefore retain the original cost. This registry observes presentation only and creates no manager, singleton, DDOL object or hierarchy.
+
+Disable unsubscribes attributes/death/status pulse, unregisters the render callback membership, hides mesh, disables the configured Canvas and resets presentation health state. Destroy releases the property block and detached local membership; shared asset lifetimes remain project-owned. Status-only Pawn/boss/dummy HUDs retain their existing status behavior.
+
+`Editor/Tools/Monsters/MonsterHealthBarMeshAuthoring.cs` explicitly wires the shared renderer and six original Graphics using Unity APIs. When restoring an external original-HUD snapshot during this task, the original TMP font/null sharedMaterial is supplied through an optional command argument rather than a hardcoded developer temp path. Authoring must preserve the current persistent prefab's original text style and all existing GUIDs.
+
+The older MonsterWorldHudAuthoring builder reconstructs the shared HUD. Preserve the authored groggy bar as well as the mesh configuration when using this path; that builder alone recreates the original Image/Canvas presentation and predates the groggy addition. The runtime still accepts the unconfigured legacy shape, so rebuilding does not silently move gameplay state or create a new owner.
+
+`MonsterHealthBarMeshPlayModeTests` exercises three sizes/HP/trail states, flips/nonuniform transforms/camera clipping, damage hold/interpolation/repeated damage/heal/max rescale, status compact/pulse, death/disable/re-enable/destroy and cross-actor HP-only/HP-plus-count/timer overlap. Native raster comparisons reject pixels beyond their stated one/two-channel-unit tolerance; actual test counts and matched native measurements belong in the [structural report](../SessionLogs/2026-10-08-ui-batching-structural/README.md). Whole-game manual combat and target Player FPS remain separate evidence.
+
 ## Selected monster groggy gauge (2026-10-02)
 
 GoblinTank, ArcaneTankGolem and Rook opt into a yellow groggy bar through their authored `StaggerGaugeSystem` components. `maxGaugePerMaxHealth = 0.33333334` currently keeps maximum stagger at one-third of effective maximum HP when stage difficulty changes HP. Their base init profiles currently set 60 each; Rook retains `CurStagger` as the current gauge attribute. Other monsters, including Pawn, do not opt into the world bar.
 
 The shared HUD prefab owns the black/yellow bar under HP. `MonsterStackStatusWorldView` projects boss-style remaining gauge, then groggy recovery progress while the shared three-second status effect is active; it moves the status row down only for opted-in targets. `GroggyOverheadEffectPresenter2D` on the three prefabs uses the authored `groggy_effect` 8-frame, 32-pixel looping animation. No groggy audio was added. The common HUD authoring tool predates this addition and may replace the bar if rerun; inspect and preserve the groggy bar before rebuilding that prefab.
+
+## Mesh and groggy integration (2026-10-14)
+
+The shared HUD keeps both `meshHealthBar/statusCanvas` and `staggerBar/staggerFill` references. Mesh registration and groggy initialization run together on enable. A visible groggy bar keeps the Canvas enabled even without Burn/Electrocuted slots, and its rectangle participates in the overlap fallback. Status-row Y is -24 with a groggy bar, -15 with HP alone, and 0 when both are hidden. Groggy recovery continues to refresh in LateUpdate because the remaining effect time changes between gauge events. Verification and remaining limits belong in the [merge session log](../SessionLogs/2026-10-14.md).

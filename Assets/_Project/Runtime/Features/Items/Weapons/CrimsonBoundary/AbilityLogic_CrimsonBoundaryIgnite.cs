@@ -11,7 +11,13 @@ public sealed class AbilityLogic_CrimsonBoundaryIgnite : AbilityLogic
     {
         public readonly Vector2 Position;
         public readonly float Damage;
-        public Explosion(Vector2 position, float damage) { Position = position; Damage = damage; }
+        public readonly ElementDamageResult[] ElementHpDamages;
+        public Explosion(Vector2 position, float damage, ElementDamageResult[] elementHpDamages)
+        {
+            Position = position;
+            Damage = damage;
+            ElementHpDamages = elementHpDamages;
+        }
     }
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -50,7 +56,8 @@ public sealed class AbilityLogic_CrimsonBoundaryIgnite : AbilityLogic
                 int consumed = status.ConsumeUpTo(data.skill1MaxConsume);
                 if (consumed > 0)
                     explosions.Add(new Explosion(status.transform.position,
-                        CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, consumed, data.burnConsumptionMultiplier, data.skillFireFormula)));
+                        CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, consumed, data.burnConsumptionMultiplier, data.skillFireFormula),
+                        CrimsonBoundaryUtility.CaptureElementHpDamages(system, false)));
             }
             if (explosions.Count > 0)
             {
@@ -67,7 +74,8 @@ public sealed class AbilityLogic_CrimsonBoundaryIgnite : AbilityLogic
                     Enemy enemy = target != null ? target.GetComponent<Enemy>() : null;
                     bool wasAlive = enemy != null && !enemy.IsDead;
                     Vector3 deathPosition = target != null ? target.transform.position : explosion.Position;
-                    CrimsonBoundaryUtility.ApplyDamage(system, spec, data.damageEffect, target, explosion.Damage, false, system.gameObject);
+                    CrimsonBoundaryUtility.ApplyDamage(system, spec, data.damageEffect, target, explosion.Damage, false, system.gameObject,
+                        explosion.ElementHpDamages);
                     if (wasAlive && enemy != null && enemy.IsDead &&
                         WeaponExclusiveRelics.Has(system.gameObject, WeaponExclusiveRelics.CrimsonKillShot))
                         CrimsonBoundaryUtility.SpawnRelicKillShot(system, spec, data, runtime, deathPosition, target);

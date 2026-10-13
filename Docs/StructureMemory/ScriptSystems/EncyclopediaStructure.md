@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-31
+last_reviewed: 2026-10-11
 ---
 
 # Encyclopedia Structure
@@ -15,8 +15,8 @@ This is a fast structure map, not a final Architecture or Contract document.
 
 ## Current Structure
 
-- `ItemDatabase` is the direct source for the current Item tab. Weapon, Relic, and Consumable sub-tabs read their existing item definition lists directly. `EncyclopediaCatalogSO` is not used by the current Item-tab path; `EncyclopediaScreen.SetCatalog(...)` remains only as compatibility for older interactable wiring until Monster/Boss get their dedicated provider/source shape.
-- `EncyclopediaScreen` is the popup-stack screen and implements `IStackableUI`. It owns open/close policy, main-tab entry, main-tab icon authoring references, and Tome/book presentation sequencing. Its active boundary is `screenActiveRoot`, which should resolve to the authored `EncyclopediaUI` popup root rather than the child `Book` object. It no longer owns Item sub-tab/page/selection/grid/detail state or direct Item data references. The current authoring slice enables the Item tab first and keeps Monster/Boss behind serialized disabled main-tab toggles.
+- `ItemDatabase` is the direct source for the current Item tab. Weapon, Relic, and Consumable sub-tabs read their existing item definition lists directly. `EncyclopediaCatalogSO` is not used by the Item-tab path; `EncyclopediaScreen.SetCatalog(...)` forwards the non-item catalog to `EncyclopediaCreatureTab`.
+- `EncyclopediaScreen` is the popup-stack screen and implements `IStackableUI`. It owns open/close policy, main-tab entry, main-tab icon authoring references, and Tome/book presentation sequencing. Its active boundary is `screenActiveRoot`, which should resolve to the authored `EncyclopediaUI` popup root rather than the child `Book` object. It does not own per-tab page/selection/grid/detail state. Item remains on `EncyclopediaItemTab`; the approved Monster/Boss/NPC extension uses `EncyclopediaCreatureTab` and separate authored page roots.
 - `EncyclopediaItemTab` owns Item-tab runtime state: `Weapon`/`Relic`/`Consumable` sub-tab, zero-based page index, selected entry index, and item data binding from `ItemDatabase`.
 - `EncyclopediaItemLeftPage` is the authored Item LeftPage presenter for title text/icon, item sub-tab buttons, item sub-tab icon authoring references, pagination buttons/text, entry count, and list notices. It relays sub-tab/page requests to `EncyclopediaItemTab` instead of owning selection state.
 - `EncyclopediaEntryGridView` is the authored grid presenter for the slot pool. It owns `entryGridRoot`, `entrySlotPrefab`, `slotsPerPage`, and per-page slot binding, while `EncyclopediaItemTab` decides which page and entry are selected.
@@ -65,12 +65,12 @@ This is a fast structure map, not a final Architecture or Contract document.
 - The screen opens as `ExclusiveModal`, blocks other exclusive modal UIs, freezes time, blocks player control through the UI stack lock profile, and allows ESC close.
 - First open resets the main tab to `Item`, then plays `DimPanel` fade-in, book motion-root drop, and the UI book `BookOpen` Animator state. The DimPanel may be authored as a `CanvasGroup` root or as a single `Graphic/Image`; both paths are driven by `EncyclopediaBookPresentation`. After the open presentation finishes, `EncyclopediaScreen` calls `EncyclopediaItemTab.ShowDefault()`, which selects `Weapon`, page index `0` displayed as page `1`, and the first visible weapon entry when one exists.
 - LeftPage item sub-tab buttons switch `Weapon`, `Relic`, and `Consumable` through `EncyclopediaItemTab`. `EncyclopediaBookPresentation` plays content disappear by reverse-sampling `ContentAppear`, hides content, requests the `BookLeftPage` Animator state, swaps the list/title/detail for the new sub-tab, then plays content appear. The Item tab does not pre-hide content before asking presentation to transition.
-- RightPage main-tab buttons route through the `BookRightPage` Animator state for future expansion. In the current slice, only the Item tab binds data; Monster/Boss buttons should remain disabled/no-op until their pages are authored.
+- RightPage main-tab buttons route through the `BookRightPage` Animator state. Item binds through the existing Item presenters; Monster/Boss/NPC bind through the separate creature presenters. The serialized category toggles remain authoring gates.
 - When an `EncyclopediaEntryGridView` is assigned through `EncyclopediaItemLeftPage`, it deactivates serialized migration slots as needed, instantiates the authored slot prefab pool under the authored grid root, and reuses that pool for page rebuilds. It does not search the runtime hierarchy for missing fallback slots during population.
 - Item selection does not animate; it only refreshes the right-side detail through `EncyclopediaItemRightPage`. The presenter clears type-specific sections before rebinding so previous Weapon/Relic/Consumable sections do not remain visible after selection changes. Weapon ability rows are created from the encyclopedia ability-block prefab pool and display Skill1/Skill2 only. Relic Q/E preview changes the encyclopedia preview level from `1..maxLevel` and refreshes the formatted `RelicLogic.BuildTooltip(...)` effect text in the dedicated relic effect section without using inventory-owned relic levels or `StoryText`; `1 / 1` relics still show disabled Prev/Next guide objects.
 - While the Item tab content is visible and interactable, the grid can be browsed with movement input. `D` / MoveRight advances in row-major order and moves to the next page after the last visible item on a page, `A` / MoveLeft reverses that flow, and `W` / `S` move within the same column on the current page with top/bottom wrap. Empty slots on the last page are not selectable.
 - Book open and Item sub-tab/page swaps should bind while page content is active for layout but hidden by the book content `CanvasGroup`, then force LeftPage/RightPage layout and scroll position before reveal. `EncyclopediaItemTab` tracks the selected item object and skips right-page rebinding when the same entry is clicked again, so repeated selection does not restart detail layout or scroll reset.
-- Monster/Boss category buttons should remain hidden/disabled for the current item-first slice unless their serialized category toggles are intentionally enabled for follow-up work.
+- The approved creature authoring enables Monster/Boss/NPC buttons with the dedicated creature pages; it does not repurpose Item page presenters.
 - The left-page `TitleGroup` is authored in Unity. Wire title text/icon through `EncyclopediaItemLeftPage`; direct screen title references are no longer part of the primary structure.
 - Close requests are handled through `ICloseRequestHandler` so the optional UI book close/root close presentation can finish before the screen is popped from `UIManager`.
 - If `EncyclopediaScreen.closeOnRuntimeAwake` is enabled and the authored UI root starts active, the screen snaps book/root presentation closed and deactivates `screenActiveRoot` during runtime `Awake()` without playing open/close animation. This keeps Play mode from opening the encyclopedia just because the layout was left active for authoring, and prevents sibling objects such as `DimPanel` from remaining visible.
@@ -83,7 +83,7 @@ This is a fast structure map, not a final Architecture or Contract document.
 - Monster entries own encyclopedia-facing `id`, `displayName`, `image`, `type`, `attackStyle`, `stageText`, `storyText`, and connected source prefab.
 - Boss entries own the same encyclopedia-facing fields plus optional `NPCData`.
 - Boss affection display reads current state from `AffectionManager.GetAffection(npcId)` and reward rows from `NPCData.affectionRewards`.
-- v1 treats all entries as visible. Discovery and save ownership are intentionally deferred.
+- All registered entries remain visible; discovery gating is deferred. Species kill totals now belong to the selected profile with run deltas committed at run end. See the creature extension below.
 
 ## Authoring And Editor Support
 
@@ -115,7 +115,7 @@ This is a fast structure map, not a final Architecture or Contract document.
 ## Extension Entry Points
 
 - Add final monster/boss planning text through their eventual dedicated data source/provider, not by expanding item-side duplicated catalog data.
-- Add Monster/Boss pages by enabling the existing category toggles and then adding the planned sub-tab/theme filtering and dedicated detail presenters.
+- Extend Monster/Boss/NPC entries through the non-item catalog and dedicated creature presenters. Theme filtering remains a separately scoped layout feature.
 - Extend Item sub-tab layouts by wiring additional item-specific detail roots under `EncyclopediaItemRightPage`; do not reintroduce inventory hover behavior.
 - When adding non-item sub-tabs, extend the page-title preset selection so each sub-tab can change both title text and title icon without changing the `TitleGroup` hierarchy.
 - Add final book visuals by replacing the generated screen prefab art/sprite arrays/materials while keeping serialized screen references.
@@ -160,3 +160,11 @@ This is a fast structure map, not a final Architecture or Contract document.
 ## Promotion Candidate
 
 Not yet. Promote after the release discovery/save path is implemented and the authored prefab has been validated in play mode.
+
+## Creature Extension Ownership (2026-10-11)
+
+- [EncyclopediaCreatureTabs](../EncyclopediaCreatureTabs.md) is the current narrow map for non-item pages, actual portraits, Idle previews, affection projection and profile kill progress. Its runtime paths use `Assets/_Project/`; the older Item-oriented key-file list above is retained as historical context rather than a migration task.
+- [EncyclopediaCreatureTab.cs](../../../Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCreatureTab.cs) owns non-item selection/page state and reads [EncyclopediaCatalogSO.cs](../../../Assets/_Project/Runtime/Features/Encyclopedia/EncyclopediaCatalogSO.cs). [EncyclopediaCreatureDetailView.cs](../../../Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCreatureDetailView.cs) owns only view-local preview/portrait/full-view state; gameplay affection and profile progress remain outside UI.
+- [EncyclopediaCharacterEntryView.cs](../../../Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCharacterEntryView.cs), [EncyclopediaAffectionRewardView.cs](../../../Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaAffectionRewardView.cs) and [EncyclopediaPortraitUtility.cs](../../../Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaPortraitUtility.cs) bind authored controls. New creature slots, reward rows and full-view roots are authored in the encyclopedia prefab, not constructed by runtime fallback code.
+- [MonsterEncyclopediaIdentity.cs](../../../Assets/_Project/Runtime/Features/Encyclopedia/MonsterEncyclopediaIdentity.cs) links real monster prefabs to stable catalog IDs. [MonsterEncyclopediaProgress.cs](../../../Assets/_Project/Runtime/Features/Encyclopedia/MonsterEncyclopediaProgress.cs) projects selected-profile totals plus current-run pending kills without owning persistence.
+- [EncyclopediaCreatureDataAuthoring.cs](../../../Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaCreatureDataAuthoring.cs) reads existing SpriteLibrary/animation references and wires monster identities; [EncyclopediaCreatureUIAuthoring.cs](../../../Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaCreatureUIAuthoring.cs) authors the non-item prefab subtree. Original art and Item source/layout are outside this extension's scope.

@@ -1,0 +1,828 @@
+{
+  "generated_utc": "2026-10-11T12:56:16.836484+00:00",
+  "asset": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\Inventory Book SpriteSheet.png",
+  "bbox_convention": "left/top included; right/bottom excluded",
+  "all_checks_passed": true,
+  "total_changed_pixels": 45649,
+  "sheet_diff_bbox": [
+    85,
+    901,
+    7261,
+    1670
+  ],
+  "checks": [
+    {
+      "name": "sheet_size",
+      "passed": true,
+      "before": [
+        7344,
+        3600
+      ],
+      "after": [
+        7344,
+        3600
+      ],
+      "staged": [
+        7344,
+        3600
+      ]
+    },
+    {
+      "name": "manifest_frame_set",
+      "passed": true
+    },
+    {
+      "name": "manifest_band",
+      "passed": true
+    },
+    {
+      "name": "manifest_size",
+      "passed": true
+    },
+    {
+      "name": "frame_8_manifest_rect",
+      "passed": true
+    },
+    {
+      "name": "frame_8_manifest_moving_columns",
+      "passed": true
+    },
+    {
+      "name": "frame_8_changed_count",
+      "passed": true,
+      "measured": 5465,
+      "manifest": 5465
+    },
+    {
+      "name": "frame_8_lower_pixels_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_8_moving_columns_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_9_manifest_rect",
+      "passed": true
+    },
+    {
+      "name": "frame_9_manifest_moving_columns",
+      "passed": true
+    },
+    {
+      "name": "frame_9_changed_count",
+      "passed": true,
+      "measured": 5465,
+      "manifest": 5465
+    },
+    {
+      "name": "frame_9_lower_pixels_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_9_moving_columns_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_10_manifest_rect",
+      "passed": true
+    },
+    {
+      "name": "frame_10_manifest_moving_columns",
+      "passed": true
+    },
+    {
+      "name": "frame_10_changed_count",
+      "passed": true,
+      "measured": 3560,
+      "manifest": 3560
+    },
+    {
+      "name": "frame_10_lower_pixels_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_10_moving_columns_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_11_manifest_rect",
+      "passed": true
+    },
+    {
+      "name": "frame_11_manifest_moving_columns",
+      "passed": true
+    },
+    {
+      "name": "frame_11_changed_count",
+      "passed": true,
+      "measured": 4304,
+      "manifest": 4304
+    },
+    {
+      "name": "frame_11_lower_pixels_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_11_moving_columns_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_12_manifest_rect",
+      "passed": true
+    },
+    {
+      "name": "frame_12_manifest_moving_columns",
+      "passed": true
+    },
+    {
+      "name": "frame_12_changed_count",
+      "passed": true,
+      "measured": 4995,
+      "manifest": 4995
+    },
+    {
+      "name": "frame_12_lower_pixels_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_12_moving_columns_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_14_manifest_rect",
+      "passed": true
+    },
+    {
+      "name": "frame_14_manifest_moving_columns",
+      "passed": true
+    },
+    {
+      "name": "frame_14_changed_count",
+      "passed": true,
+      "measured": 5465,
+      "manifest": 5465
+    },
+    {
+      "name": "frame_14_lower_pixels_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_14_moving_columns_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_15_manifest_rect",
+      "passed": true
+    },
+    {
+      "name": "frame_15_manifest_moving_columns",
+      "passed": true
+    },
+    {
+      "name": "frame_15_changed_count",
+      "passed": true,
+      "measured": 5465,
+      "manifest": 5465
+    },
+    {
+      "name": "frame_15_lower_pixels_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_15_moving_columns_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_16_manifest_rect",
+      "passed": true
+    },
+    {
+      "name": "frame_16_manifest_moving_columns",
+      "passed": true
+    },
+    {
+      "name": "frame_16_changed_count",
+      "passed": true,
+      "measured": 5465,
+      "manifest": 5465
+    },
+    {
+      "name": "frame_16_lower_pixels_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_16_moving_columns_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_17_manifest_rect",
+      "passed": true
+    },
+    {
+      "name": "frame_17_manifest_moving_columns",
+      "passed": true
+    },
+    {
+      "name": "frame_17_changed_count",
+      "passed": true,
+      "measured": 5465,
+      "manifest": 5465
+    },
+    {
+      "name": "frame_17_lower_pixels_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "frame_17_moving_columns_preserved",
+      "passed": true,
+      "changed_pixels": 0
+    },
+    {
+      "name": "all_changes_inside_approved_mask",
+      "passed": true,
+      "changed_pixels_outside_mask": 0,
+      "outside_diff_bbox": null
+    },
+    {
+      "name": "other_sliced_frames_preserved",
+      "passed": true,
+      "changed_frames": []
+    },
+    {
+      "name": "production_matches_staged_png",
+      "passed": true
+    },
+    {
+      "name": "no_new_rgba_colors_in_sheet",
+      "passed": true,
+      "before_color_count": 29,
+      "after_color_count": 29,
+      "new_colors": []
+    },
+    {
+      "name": "tile_dimensions",
+      "passed": true
+    },
+    {
+      "name": "candidate_lower_pixels_preserved",
+      "passed": true
+    },
+    {
+      "name": "no_new_rgba_colors_in_tile",
+      "passed": true,
+      "new_colors": []
+    },
+    {
+      "name": "production_idle_matches_candidate",
+      "passed": true
+    },
+    {
+      "name": "all_nine_protected_files_unchanged",
+      "passed": true,
+      "protected_file_count": 9
+    },
+    {
+      "name": "candidate_main_upper_edge_horizontal",
+      "passed": true
+    },
+    {
+      "name": "both_inner_lines_horizontal",
+      "passed": true
+    }
+  ],
+  "frames": [
+    {
+      "frame": 8,
+      "changed_pixels": 5465,
+      "local_diff_bbox": [
+        85,
+        181,
+        733,
+        230
+      ],
+      "lower_changed_pixels": 0,
+      "protected_column_changed_pixels": 0
+    },
+    {
+      "frame": 9,
+      "changed_pixels": 5465,
+      "local_diff_bbox": [
+        85,
+        181,
+        733,
+        230
+      ],
+      "lower_changed_pixels": 0,
+      "protected_column_changed_pixels": 0
+    },
+    {
+      "frame": 10,
+      "changed_pixels": 3560,
+      "local_diff_bbox": [
+        85,
+        181,
+        733,
+        230
+      ],
+      "lower_changed_pixels": 0,
+      "protected_column_changed_pixels": 0
+    },
+    {
+      "frame": 11,
+      "changed_pixels": 4304,
+      "local_diff_bbox": [
+        85,
+        181,
+        733,
+        230
+      ],
+      "lower_changed_pixels": 0,
+      "protected_column_changed_pixels": 0
+    },
+    {
+      "frame": 12,
+      "changed_pixels": 4995,
+      "local_diff_bbox": [
+        85,
+        181,
+        733,
+        230
+      ],
+      "lower_changed_pixels": 0,
+      "protected_column_changed_pixels": 0
+    },
+    {
+      "frame": 14,
+      "changed_pixels": 5465,
+      "local_diff_bbox": [
+        85,
+        181,
+        733,
+        230
+      ],
+      "lower_changed_pixels": 0,
+      "protected_column_changed_pixels": 0
+    },
+    {
+      "frame": 15,
+      "changed_pixels": 5465,
+      "local_diff_bbox": [
+        85,
+        181,
+        733,
+        230
+      ],
+      "lower_changed_pixels": 0,
+      "protected_column_changed_pixels": 0
+    },
+    {
+      "frame": 16,
+      "changed_pixels": 5465,
+      "local_diff_bbox": [
+        85,
+        181,
+        733,
+        230
+      ],
+      "lower_changed_pixels": 0,
+      "protected_column_changed_pixels": 0
+    },
+    {
+      "frame": 17,
+      "changed_pixels": 5465,
+      "local_diff_bbox": [
+        85,
+        181,
+        733,
+        230
+      ],
+      "lower_changed_pixels": 0,
+      "protected_column_changed_pixels": 0
+    }
+  ],
+  "protected_files": [
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\PopupUI\\Encyclopedia\\EncyclopediaUI.prefab",
+      "expected_sha256": "D0237F1894A20E47BEDFF3810EE18712D3997C68C3C652B814693E257D116DED",
+      "actual_sha256": "D0237F1894A20E47BEDFF3810EE18712D3997C68C3C652B814693E257D116DED",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Editor\\Tools\\Encyclopedia\\EncyclopediaCreatureUIAuthoring.cs",
+      "expected_sha256": "BDD8FB1FC15207FD6F43753819D8966CDD655556222DF1AA6B3E84C35696949A",
+      "actual_sha256": "BDD8FB1FC15207FD6F43753819D8966CDD655556222DF1AA6B3E84C35696949A",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\Inventory Book SpriteSheet.png.meta",
+      "expected_sha256": "7FCA62976A41197934149CBAE1F199A9851CD1297944F46D04783866FA1685E1",
+      "actual_sha256": "7FCA62976A41197934149CBAE1F199A9851CD1297944F46D04783866FA1685E1",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\Book.controller",
+      "expected_sha256": "9BBA0797D1BF424D6B8D0E07FF31CF40FA99899670E6D74131D746619460AC95",
+      "actual_sha256": "9BBA0797D1BF424D6B8D0E07FF31CF40FA99899670E6D74131D746619460AC95",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\BookIdle.anim",
+      "expected_sha256": "515C41E15A14F6546DF2013356D6C4413D0FBCD12AF7210A8F0AD50B45A09E9C",
+      "actual_sha256": "515C41E15A14F6546DF2013356D6C4413D0FBCD12AF7210A8F0AD50B45A09E9C",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\BookOpen.anim",
+      "expected_sha256": "282EA46112818505C77DCCF63496E8FB2C1F0A903F898AC39C50F3B3A101E3F5",
+      "actual_sha256": "282EA46112818505C77DCCF63496E8FB2C1F0A903F898AC39C50F3B3A101E3F5",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\BookClose.anim",
+      "expected_sha256": "216B1C417B3B8566B7F6AFE8A3699682B051A42B578D86BBC6931CA4B7B85FFF",
+      "actual_sha256": "216B1C417B3B8566B7F6AFE8A3699682B051A42B578D86BBC6931CA4B7B85FFF",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\BookLeftPage.anim",
+      "expected_sha256": "F6D985DE8722949F86B55EECCECE300D7016E0D17AADFFE9D402E678CE097E79",
+      "actual_sha256": "F6D985DE8722949F86B55EECCECE300D7016E0D17AADFFE9D402E678CE097E79",
+      "unchanged": true
+    },
+    {
+      "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\BookRightPage.anim",
+      "expected_sha256": "58D69E66580226238A4FDCDE785AB8C86A4BCB98EF2AFFE825BDFDD0CBD9FD1D",
+      "actual_sha256": "58D69E66580226238A4FDCDE785AB8C86A4BCB98EF2AFFE825BDFDD0CBD9FD1D",
+      "unchanged": true
+    }
+  ],
+  "visual_analysis": {
+    "before_main_top": {
+      "columns": [
+        90,
+        728
+      ],
+      "top_y_histogram": {
+        "181": 132,
+        "182": 138,
+        "183": 74,
+        "184": 78,
+        "185": 80,
+        "186": 82,
+        "187": 40,
+        "188": 7,
+        "189": 2,
+        "190": 2,
+        "191": 2,
+        "192": 1
+      },
+      "top_y_span": 11,
+      "runs": [
+        {
+          "left": 90,
+          "right": 92,
+          "y": 188
+        },
+        {
+          "left": 92,
+          "right": 110,
+          "y": 187
+        },
+        {
+          "left": 110,
+          "right": 149,
+          "y": 186
+        },
+        {
+          "left": 149,
+          "right": 186,
+          "y": 185
+        },
+        {
+          "left": 186,
+          "right": 220,
+          "y": 184
+        },
+        {
+          "left": 220,
+          "right": 250,
+          "y": 183
+        },
+        {
+          "left": 250,
+          "right": 300,
+          "y": 182
+        },
+        {
+          "left": 300,
+          "right": 366,
+          "y": 181
+        },
+        {
+          "left": 366,
+          "right": 385,
+          "y": 182
+        },
+        {
+          "left": 385,
+          "right": 392,
+          "y": 183
+        },
+        {
+          "left": 392,
+          "right": 397,
+          "y": 184
+        },
+        {
+          "left": 397,
+          "right": 400,
+          "y": 185
+        },
+        {
+          "left": 400,
+          "right": 402,
+          "y": 186
+        },
+        {
+          "left": 402,
+          "right": 404,
+          "y": 187
+        },
+        {
+          "left": 404,
+          "right": 405,
+          "y": 188
+        },
+        {
+          "left": 405,
+          "right": 406,
+          "y": 189
+        },
+        {
+          "left": 406,
+          "right": 407,
+          "y": 190
+        },
+        {
+          "left": 407,
+          "right": 408,
+          "y": 191
+        },
+        {
+          "left": 408,
+          "right": 409,
+          "y": 192
+        },
+        {
+          "left": 409,
+          "right": 410,
+          "y": 191
+        },
+        {
+          "left": 410,
+          "right": 411,
+          "y": 190
+        },
+        {
+          "left": 411,
+          "right": 412,
+          "y": 189
+        },
+        {
+          "left": 412,
+          "right": 413,
+          "y": 188
+        },
+        {
+          "left": 413,
+          "right": 415,
+          "y": 187
+        },
+        {
+          "left": 415,
+          "right": 417,
+          "y": 186
+        },
+        {
+          "left": 417,
+          "right": 420,
+          "y": 185
+        },
+        {
+          "left": 420,
+          "right": 425,
+          "y": 184
+        },
+        {
+          "left": 425,
+          "right": 432,
+          "y": 183
+        },
+        {
+          "left": 432,
+          "right": 451,
+          "y": 182
+        },
+        {
+          "left": 451,
+          "right": 517,
+          "y": 181
+        },
+        {
+          "left": 517,
+          "right": 567,
+          "y": 182
+        },
+        {
+          "left": 567,
+          "right": 597,
+          "y": 183
+        },
+        {
+          "left": 597,
+          "right": 631,
+          "y": 184
+        },
+        {
+          "left": 631,
+          "right": 668,
+          "y": 185
+        },
+        {
+          "left": 668,
+          "right": 707,
+          "y": 186
+        },
+        {
+          "left": 707,
+          "right": 725,
+          "y": 187
+        },
+        {
+          "left": 725,
+          "right": 728,
+          "y": 188
+        }
+      ]
+    },
+    "candidate_main_top": {
+      "columns": [
+        90,
+        728
+      ],
+      "top_y_histogram": {
+        "181": 638
+      },
+      "top_y_span": 0,
+      "runs": [
+        {
+          "left": 90,
+          "right": 728,
+          "y": 181
+        }
+      ]
+    },
+    "candidate_full_modified_columns_top": {
+      "columns": [
+        85,
+        733
+      ],
+      "top_y_histogram": {
+        "181": 639,
+        "182": 4,
+        "183": 2,
+        "184": 2,
+        "185": 1
+      },
+      "top_y_span": 4,
+      "runs": [
+        {
+          "left": 85,
+          "right": 86,
+          "y": 184
+        },
+        {
+          "left": 86,
+          "right": 87,
+          "y": 183
+        },
+        {
+          "left": 87,
+          "right": 89,
+          "y": 182
+        },
+        {
+          "left": 89,
+          "right": 728,
+          "y": 181
+        },
+        {
+          "left": 728,
+          "right": 730,
+          "y": 182
+        },
+        {
+          "left": 730,
+          "right": 731,
+          "y": 183
+        },
+        {
+          "left": 731,
+          "right": 732,
+          "y": 184
+        },
+        {
+          "left": 732,
+          "right": 733,
+          "y": 185
+        }
+      ]
+    },
+    "left_inner_line": {
+      "columns": [
+        120,
+        365
+      ],
+      "best_line_y": 196,
+      "dark_border_pixels": 245,
+      "non_paper_pixels": 245,
+      "width": 245,
+      "row_colors": [
+        {
+          "rgba": [
+            195,
+            137,
+            93,
+            255
+          ],
+          "count": 215
+        },
+        {
+          "rgba": [
+            202,
+            142,
+            97,
+            255
+          ],
+          "count": 30
+        }
+      ]
+    },
+    "right_inner_line": {
+      "columns": [
+        455,
+        700
+      ],
+      "best_line_y": 196,
+      "dark_border_pixels": 245,
+      "non_paper_pixels": 245,
+      "width": 245,
+      "row_colors": [
+        {
+          "rgba": [
+            195,
+            137,
+            93,
+            255
+          ],
+          "count": 206
+        },
+        {
+          "rgba": [
+            202,
+            142,
+            97,
+            255
+          ],
+          "count": 39
+        }
+      ]
+    },
+    "visual_inspection": [
+      "Main upper silhouette is horizontal. Original lower binding, corners and decoration remain intact.",
+      "Upper inner border is horizontal across both pages; the edit retains the central spine.",
+      "Boundary at local y230 returns to original pixels. Small detail joins should also be checked at in-game scale.",
+      "Moving-page exclusions intentionally retain original curved geometry while the page turns."
+    ],
+    "scope": "Read-only Pillow inspection of before/candidate PNGs and production sheet; no Unity rendering was run by this audit."
+  },
+  "unity_validation": "not executed by this audit"
+}

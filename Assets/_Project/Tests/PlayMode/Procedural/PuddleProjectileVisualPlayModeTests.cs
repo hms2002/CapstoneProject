@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEditor;
@@ -102,6 +103,247 @@ public sealed class PuddleProjectileVisualPlayModeTests
         update.Invoke(view, null);
         view.enabled = false;
         foreach (var arrow in arrows) Assert.That(arrow.enabled, Is.False);
+    }
+
+    [Test]
+    public void BuffStreaks_RepairPresentationPropertiesWithoutResettingTheirClock()
+    {
+        Type type = Type.GetType("UnityGAS.PuddleParticleVisual, Presentation", true);
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PuddleFolder + "AlcoholPuddle.prefab");
+        var instance = Own(Object.Instantiate(prefab));
+        var view = instance.GetComponentInChildren(type, true);
+        var update = type.GetMethod("Update", PrivateInstance);
+        update.Invoke(view, null);
+        var arrows = (SpriteRenderer[])type.GetField("buffArrows", PrivateInstance).GetValue(view);
+        var ages = (float[])type.GetField("arrowAges", PrivateInstance).GetValue(view);
+        float age = ages[0];
+        float lifetime = (float)type.GetField("buffArrowLifetime", PrivateInstance).GetValue(view);
+        var line = arrows[0].GetComponent<LineRenderer>();
+        arrows[0].enabled = true;
+        arrows[0].transform.localScale = Vector3.one * 3f;
+        line.enabled = false;
+        line.startWidth = line.endWidth = 0.3f;
+        type.GetField("streakWidth", PrivateInstance).SetValue(view, 0.07f);
+
+        update.Invoke(view, null);
+
+        Assert.That(arrows[0].enabled, Is.False);
+        Assert.That(arrows[0].transform.localScale, Is.EqualTo(Vector3.one));
+        Assert.That(line.enabled, Is.True);
+        Assert.That(line.startWidth, Is.EqualTo(0.07f * 0.35f).Within(0.0001f));
+        Assert.That(line.endWidth, Is.EqualTo(0.07f).Within(0.0001f));
+        Assert.That(ages[0], Is.EqualTo((age + Time.deltaTime) % lifetime).Within(0.0001f));
+    }
+
+    [Test]
+    public void GroundProperties_RepairExternalBlockWritesAndApplySettersImmediately()
+    {
+        var root = Own(new GameObject("PuddlePropertyOwner"));
+        root.transform.position = Vector3.right * 1000f;
+        var view = root.AddComponent(ViewType);
+        var contract = (IPuddleShaderVisual)view;
+        var anchor = Own(new GameObject("PuddlePropertyAnchor"));
+        anchor.transform.position = root.transform.position + Vector3.right * 5f;
+        contract.SetElementType(PuddleElementType.Fire);
+        contract.SetRadii(2f, 0.3f);
+        contract.SetAbsorbAnchor(anchor.transform);
+        var renderer = root.GetComponent<MeshRenderer>();
+        var expected = new MaterialPropertyBlock();
+        renderer.GetPropertyBlock(expected);
+        float timeOffset = expected.GetFloat("_TimeOffset");
+        int sentinel = Shader.PropertyToID("_PuddleExternalColor");
+        var external = new MaterialPropertyBlock();
+        external.SetColor(sentinel, Color.magenta);
+        renderer.SetPropertyBlock(external);
+
+        ViewType.GetMethod("Update", PrivateInstance).Invoke(view, null);
+
+        renderer.GetPropertyBlock(external);
+        Assert.That(external.GetColor(sentinel), Is.EqualTo(Color.magenta));
+        Assert.That(external.GetFloat("_ElementType"), Is.EqualTo(1f));
+        Assert.That(external.GetFloat("_Radius"), Is.EqualTo(2f));
+        Assert.That(external.GetFloat("_IgnitionProgress"), Is.EqualTo(1f));
+        Assert.That(external.GetFloat("_TimeOffset"), Is.EqualTo(timeOffset));
+        Assert.That(external.HasFloat("_Mode") && external.HasFloat("_AbsorbProgress"), Is.True);
+        Assert.That(external.GetFloat("_Mode"), Is.EqualTo((float)PuddleAreaMode.Ground));
+        Assert.That(external.GetVector("_AbsorbDirection"), Is.EqualTo(new Vector4(1f, 0f, 0f, 0f)));
+
+        anchor.transform.position = root.transform.position + Vector3.up * 5f;
+        ViewType.GetMethod("Update", PrivateInstance).Invoke(view, null);
+        renderer.GetPropertyBlock(external);
+        Assert.That(external.GetVector("_AbsorbDirection"), Is.EqualTo(new Vector4(0f, 1f, 0f, 0f)));
+        contract.SetElementType(PuddleElementType.Alcohol);
+        contract.SetMode(PuddleAreaMode.Igniting);
+        contract.SetIgnitionProgress(0.35f);
+        contract.SetRadii(2.5f, 0.3f);
+        renderer.GetPropertyBlock(external);
+        Assert.That(external.GetFloat("_ElementType"), Is.Zero);
+        Assert.That(external.GetFloat("_Mode"), Is.EqualTo((float)PuddleAreaMode.Igniting));
+        Assert.That(external.GetFloat("_IgnitionProgress"), Is.EqualTo(0.35f));
+        Assert.That(external.GetFloat("_Radius"), Is.EqualTo(2.5f));
+        Assert.That(external.GetColor(sentinel), Is.EqualTo(Color.magenta));
+    }
+
+    [Test]
+    public void GroundUpdate_ObservesParentMovementAndRepairsLocalScale()
+    {
+        var parent = Own(new GameObject("PuddleMovingParent"));
+        parent.transform.position = Vector3.right * 2000f;
+        var root = new GameObject("PuddleMovingSurface");
+        root.transform.SetParent(parent.transform, false);
+        var view = root.AddComponent(ViewType);
+        var wall = Own(new GameObject("PuddleClipWall"));
+        wall.layer = 30;
+        wall.transform.position = parent.transform.position + Vector3.right * 0.75f;
+        wall.AddComponent<BoxCollider2D>().size = new Vector2(0.1f, 10f);
+        Physics2D.SyncTransforms();
+        ViewType.GetField("useWallClipping", PrivateInstance).SetValue(view, true);
+        ViewType.GetField("wallClipLayers", PrivateInstance).SetValue(view, (LayerMask)(1 << 30));
+        ((IPuddleShaderVisual)view).SetRadii(2f, 0.3f);
+        Mesh mesh = root.GetComponent<MeshFilter>().sharedMesh;
+        float nearWall = mesh.vertices[1].x;
+        Vector3 scale = root.transform.localScale;
+        parent.transform.position += Vector3.left;
+        parent.transform.localScale = Vector3.one * 2f;
+        root.transform.localScale = Vector3.one * 7f;
+        Physics2D.SyncTransforms();
+
+        ViewType.GetMethod("Update", PrivateInstance).Invoke(view, null);
+
+        Assert.That(mesh.vertices[1].x, Is.GreaterThan(nearWall));
+        Assert.That(root.transform.localScale, Is.EqualTo(scale));
+        Assert.That(root.transform.lossyScale, Is.EqualTo(scale * 2f));
+    }
+
+    [Test]
+    public void ShaderPixels_MatchOriginalForGroundIgnitionAndBothProjectilePaths()
+    {
+        if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
+            Assert.Ignore("Pixel comparison requires a graphics device.");
+
+        string fixture = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Docs", "SessionLogs",
+            "2026-10-07-frame-performance", "puddle-shader-before.txt"));
+        Assert.That(File.Exists(fixture), Is.True, "The archived original shader is the visual baseline.");
+        string original = File.ReadAllText(fixture).Replace("Shader \"Custom/PuddleShaderVisual\"",
+            "Shader \"Hidden/Tests/PuddleShaderBefore\"");
+        var template = AssetDatabase.LoadAssetAtPath<Material>("Assets/_Project/Art/Materials/M_PuddleShaderVisual.mat");
+        Assert.That(template, Is.Not.Null);
+        bool previousAsyncCompilation = ShaderUtil.allowAsyncCompilation;
+        Vector4 previousTime = Shader.GetGlobalVector("_Time");
+        Shader baseline = null;
+        Material before = null;
+        Material after = null;
+        Mesh quad = null;
+        RenderTexture target = null;
+        Texture2D readback = null;
+        try
+        {
+            ShaderUtil.allowAsyncCompilation = false;
+            baseline = ShaderUtil.CreateShaderAsset(original, true);
+            Assert.That(baseline, Is.Not.Null);
+            before = new Material(template) { shader = baseline };
+            after = new Material(template);
+            ShaderUtil.CompilePass(before, 0, true);
+            ShaderUtil.CompilePass(after, 0, true);
+            Assert.That(ShaderUtil.ShaderHasError(baseline) || ShaderUtil.ShaderHasError(after.shader), Is.False);
+            quad = new Mesh
+            {
+                vertices = new[] { Vector3.zero, Vector3.right, new Vector3(1f, 1f, 0f), Vector3.up },
+                uv = new[] { Vector2.zero, Vector2.right, Vector2.one, Vector2.up },
+                triangles = new[] { 0, 1, 2, 0, 2, 3 }
+            };
+            target = new RenderTexture(128, 128, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            Assert.That(target.Create(), Is.True);
+            readback = new Texture2D(128, 128, TextureFormat.RGBA32, false, true);
+            var states = new[]
+            {
+                (PuddleAreaMode.Ground, 0f, 0f, 0f, false),
+                (PuddleAreaMode.Ground, 1f, 1f, 0f, false),
+                (PuddleAreaMode.Igniting, 0f, 0.25f, 0f, false),
+                (PuddleAreaMode.Igniting, 0f, 0.75f, 0f, false),
+                (PuddleAreaMode.AbsorbPreparing, 0f, 0f, 0f, false),
+                (PuddleAreaMode.AbsorbPreparing, 0f, 0f, 0.5f, false),
+                (PuddleAreaMode.AbsorbPreparing, 0f, 0f, 0.79f, false),
+                (PuddleAreaMode.AbsorbPreparing, 0f, 0f, 0.95f, false),
+                (PuddleAreaMode.AbsorbPreparing, 1f, 1f, 1f, false),
+                (PuddleAreaMode.AbsorbProjectile, 0f, 0f, 0.25f, false),
+                (PuddleAreaMode.AbsorbProjectile, 0f, 0f, 1f, false),
+                (PuddleAreaMode.AbsorbProjectile, 1f, 1f, 0.5f, false),
+                (PuddleAreaMode.AbsorbPreparing, 0f, 0f, 0.5f, true),
+                (PuddleAreaMode.AbsorbPreparing, 1f, 1f, 0.95f, true)
+            };
+            const int channelTolerance = 1; // One RGBA8 quantization step; no mismatched pixels above it.
+            foreach (var state in states)
+            {
+                var (mode, element, ignition, progress, authoredProjectile) = state;
+                foreach (Material material in new[] { before, after })
+                {
+                    material.SetFloat("_Mode", (float)(authoredProjectile ? PuddleAreaMode.Ground : mode));
+                    material.SetFloat("_ElementType", element);
+                    material.SetFloat("_IgnitionProgress", ignition);
+                    material.SetFloat("_AbsorbProgress", authoredProjectile ? 0f : progress);
+                    material.SetFloat("_TimeOffset", 2.75f);
+                    material.SetVector("_AbsorbDirection", new Vector4(0.6f, 0.8f, 0f, 0f));
+                }
+                Color32[] expected = RenderShaderPixels(before, quad, target, readback);
+                Color32[] actual = RenderShaderPixels(after, quad, target, readback);
+                int visiblePixels = 0;
+                int maximumDelta = 0;
+                for (int i = 0; i < expected.Length; i++)
+                {
+                    if (expected[i].a > 16) visiblePixels++;
+                    maximumDelta = Mathf.Max(maximumDelta, Mathf.Abs(expected[i].r - actual[i].r));
+                    maximumDelta = Mathf.Max(maximumDelta, Mathf.Abs(expected[i].g - actual[i].g));
+                    maximumDelta = Mathf.Max(maximumDelta, Mathf.Abs(expected[i].b - actual[i].b));
+                    maximumDelta = Mathf.Max(maximumDelta, Mathf.Abs(expected[i].a - actual[i].a));
+                }
+                string label = $"mode={mode},element={element},ignition={ignition},progress={progress},authored={authoredProjectile}";
+                Assert.That(visiblePixels, Is.GreaterThan(32), $"A blank baseline cannot verify equivalence: {label}");
+                Assert.That(maximumDelta, Is.LessThanOrEqualTo(channelTolerance), label);
+                TestContext.WriteLine($"PUDDLEPIXELS,{label},visiblePixels={visiblePixels},maximumChannelDelta={maximumDelta},tolerance={channelTolerance}");
+            }
+        }
+        finally
+        {
+            Shader.SetGlobalVector("_Time", previousTime);
+            ShaderUtil.allowAsyncCompilation = previousAsyncCompilation;
+            if (readback != null) Object.DestroyImmediate(readback);
+            if (target != null)
+            {
+                target.Release();
+                Object.DestroyImmediate(target);
+            }
+            if (quad != null) Object.DestroyImmediate(quad);
+            if (before != null) Object.DestroyImmediate(before);
+            if (after != null) Object.DestroyImmediate(after);
+            if (baseline != null) Object.DestroyImmediate(baseline);
+        }
+    }
+
+    private static Color32[] RenderShaderPixels(Material material, Mesh quad, RenderTexture target, Texture2D readback)
+    {
+        RenderTexture previousTarget = RenderTexture.active;
+        bool previousSrgbWrite = GL.sRGBWrite;
+        GL.PushMatrix();
+        try
+        {
+            RenderTexture.active = target;
+            GL.sRGBWrite = false;
+            GL.Clear(true, true, Color.clear);
+            GL.LoadOrtho();
+            Shader.SetGlobalVector("_Time", new Vector4(0.3125f, 6.25f, 12.5f, 18.75f));
+            Assert.That(material.SetPass(0), Is.True);
+            Graphics.DrawMeshNow(quad, Matrix4x4.identity);
+            readback.ReadPixels(new Rect(0f, 0f, target.width, target.height), 0, 0);
+            readback.Apply();
+            return readback.GetPixels32();
+        }
+        finally
+        {
+            GL.PopMatrix();
+            GL.sRGBWrite = previousSrgbWrite;
+            RenderTexture.active = previousTarget;
+        }
     }
 
     [SetUp]

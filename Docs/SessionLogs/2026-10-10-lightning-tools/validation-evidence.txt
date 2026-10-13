@@ -1,0 +1,10 @@
+SOURCE: paired-1.log
+LIGHTNING_PLACEMENT_SUITE_PASS: 480 seeded A/B requests, exact output order/count/room, legacy-rule validity, nearest tie order, zero spacing and growing physics buffers. Reports: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Library\LightningSpearPlacementBenchmark
+LIGHTNING_STRUCTURE_VALIDATION_PASS: C:\Users\nadom\AppData\Local\Temp\LightningSpearTools_20261010\paired-1
+SOURCE: paired-final.log
+LIGHTNING_PLACEMENT_SUITE_PASS: 480 seeded A/B requests, exact output order/count/room, legacy-rule validity, nearest tie order, zero spacing and growing physics buffers. Reports: C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Library\LightningSpearPlacementBenchmark
+LIGHTNING_STRUCTURE_VALIDATION_PASS: C:\Users\nadom\AppData\Local\Temp\LightningSpearTools_20261010\paired-final
+SOURCE: tests.xml
+Unity native PlayMode total17 passed17 failed0; Unity CLI exit0.
+SOURCE: msbuild-editor.log / msbuild-tests.log
+MSBuild Editor.csproj exit0; ProceduralPlayModeTests.csproj exit0; generated projects include all new common and test files.

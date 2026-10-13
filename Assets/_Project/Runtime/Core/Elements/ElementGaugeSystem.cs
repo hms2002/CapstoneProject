@@ -46,6 +46,13 @@ namespace UnityGAS
         public event Action<GameplayTag> OnGaugeTriggered;
 
         private readonly Dictionary<GameplayTag, ElementGaugeState> stateByTag = new();
+        private readonly Dictionary<GameplayTag, DirectElectrocutionThreshold> directElectrocutionThresholds = new();
+
+        private sealed class DirectElectrocutionThreshold
+        {
+            public ActiveGameplayEffect activeStatus;
+            public float multiplier;
+        }
 
         private GameplayEffectRunner _runner;
         private AttributeSet _attr;
@@ -82,8 +89,37 @@ namespace UnityGAS
             return state != null ? Mathf.Max(0f, GetMaxGauge(state.definition)) : 0f;
         }
 
+        public void RecordDirectElectrocution(GameplayEffect triggerEffect, GameplayEffect statusEffect, bool wasActive)
+        {
+            if (triggerEffect == null || statusEffect == null || _runner == null ||
+                CombatHitPause2D.IsActionStoppedOn(gameObject))
+                return;
+
+            ActiveGameplayEffect active = _runner.FindActiveEffect(statusEffect, gameObject);
+            if (active == null || active.TimeRemaining <= 0f)
+                return;
+
+            for (int i = 0; i < runtimeStates.Count; i++)
+            {
+                var definition = runtimeStates[i]?.definition;
+                if (definition == null || definition.triggerEffect != triggerEffect || definition.elementTag == null)
+                    continue;
+
+                GameplayTag elementType = definition.elementTag;
+                float previousMultiplier = 1f;
+                if (directElectrocutionThresholds.TryGetValue(elementType, out var previous) && previous.activeStatus == active)
+                    previousMultiplier = previous.multiplier;
+                directElectrocutionThresholds[elementType] = new DirectElectrocutionThreshold
+                {
+                    activeStatus = active,
+                    multiplier = wasActive ? Mathf.Min(float.MaxValue, previousMultiplier * 2f) : 1f
+                };
+            }
+        }
+
         public void ClearAll()
         {
+            directElectrocutionThresholds.Clear();
             if (runtimeStates == null) return;
 
             for (int i = 0; i < runtimeStates.Count; i++)
@@ -150,32 +186,52 @@ namespace UnityGAS
             float next = old + finalAmount;
             int triggerCount = 0;
 
-            while (next >= maxGauge)
+            if (state.definition.triggerEffect is GE_ElectricShockTrigger)
             {
-                triggerCount++;
-
-                if (allowOverflowCarry)
-                    next -= maxGauge;
-                else
+                state.currentBuildUp = Mathf.Max(0f, next);
+                while (maxGauge > 0f && state.currentBuildUp >= maxGauge)
                 {
-                    next = 0f;
-                    break;
+                    state.currentBuildUp = allowOverflowCarry
+                        ? Mathf.Max(0f, state.currentBuildUp - maxGauge) : 0f;
+                    triggerCount++;
+                    TriggerGaugeFull(state, instigator, causer);
+                    OnGaugeTriggered?.Invoke(elementType);
+
+                    // Direct renewals can double the threshold during this very overflow burst.
+                    if (FindState(elementType) != state)
+                        return;
+                    if (!allowOverflowCarry || CombatHitPause2D.IsActionStoppedOn(gameObject))
+                        break;
+                    maxGauge = Mathf.Max(0f, GetMaxGauge(state.definition));
+                }
+                OnGaugeChanged?.Invoke(elementType, old, state.currentBuildUp);
+            }
+            else
+            {
+                while (next >= maxGauge)
+                {
+                    triggerCount++;
+
+                    if (allowOverflowCarry)
+                        next -= maxGauge;
+                    else
+                    {
+                        next = 0f;
+                        break;
+                    }
+                }
+
+                state.currentBuildUp = Mathf.Max(0f, next);
+                OnGaugeChanged?.Invoke(elementType, old, state.currentBuildUp);
+
+                for (int i = 0; i < triggerCount; i++)
+                {
+                    TriggerGaugeFull(state, instigator, causer);
+                    OnGaugeTriggered?.Invoke(elementType);
                 }
             }
 
-            state.currentBuildUp = Mathf.Max(0f, next);
-            OnGaugeChanged?.Invoke(elementType, old, state.currentBuildUp);
-
-            if (triggerCount <= 0)
-                return;
-
-            for (int i = 0; i < triggerCount; i++)
-            {
-                TriggerGaugeFull(state, instigator, causer);
-                OnGaugeTriggered?.Invoke(elementType);
-            }
-
-            if (logWhenTriggered)
+            if (triggerCount > 0 && logWhenTriggered)
             {
                 string srcName = instigator != null ? instigator.name : (causer != null ? causer.name : "null");
                 CapstoneDiagnostics.EditorOnlyLog.Log(
@@ -186,6 +242,7 @@ namespace UnityGAS
 
         public void RebuildRuntimeStates()
         {
+            directElectrocutionThresholds.Clear();
             runtimeStates.Clear();
             stateByTag.Clear();
 
@@ -322,7 +379,20 @@ namespace UnityGAS
             if (_attr == null || def == null || def.maxGaugeAttribute == null)
                 return 0f;
 
-            return Mathf.Max(0f, _attr.GetAttributeValue(def.maxGaugeAttribute));
+            float baseThreshold = Mathf.Max(0f, _attr.GetAttributeValue(def.maxGaugeAttribute));
+            if (def.elementTag == null || !directElectrocutionThresholds.TryGetValue(def.elementTag, out var direct))
+                return baseThreshold;
+
+            ActiveGameplayEffect active = direct.activeStatus;
+            if (_runner == null || active == null || active.TimeRemaining <= 0f ||
+                CombatHitPause2D.IsActionStoppedOn(gameObject) ||
+                _runner.FindActiveEffect(active.Effect, gameObject) != active)
+            {
+                directElectrocutionThresholds.Remove(def.elementTag);
+                return baseThreshold;
+            }
+
+            return (float)Math.Min(float.MaxValue, (double)baseThreshold * direct.multiplier);
         }
 
         private float GetResistance(ElementGaugeDefinition def)

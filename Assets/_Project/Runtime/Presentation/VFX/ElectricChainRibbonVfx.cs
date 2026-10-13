@@ -8,7 +8,7 @@ namespace UnityGAS
     /// 책임: 전기 연쇄 발현 지점들을 sprite segment/snap 조합으로 시각화하고 수명이 끝나면 자기 자신을 정리한다.
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class ElectricChainRibbonVfx : MonoBehaviour, IChainPointPresentation
+    public sealed class ElectricChainRibbonVfx : MonoBehaviour, IChainPointPresentation, IChainReplayPresentation
     {
         [SerializeField] private SpriteRenderer segmentTemplate;
         [SerializeField] private SpriteRenderer snapTemplate;
@@ -37,9 +37,13 @@ namespace UnityGAS
             ResolveTemplate();
         }
 
-        public void Play(IReadOnlyList<Vector3> worldPoints)
+        public void Play(IReadOnlyList<Vector3> worldPoints) => Play(worldPoints, firstSnapIndex: 0);
+
+        public void PlayReplay(IReadOnlyList<Vector3> worldPoints) => Play(worldPoints, firstSnapIndex: 1);
+
+        private void Play(IReadOnlyList<Vector3> worldPoints, int firstSnapIndex)
         {
-            if (worldPoints == null || worldPoints.Count == 0)
+            if (worldPoints == null || worldPoints.Count <= firstSnapIndex)
             {
                 Destroy(gameObject);
                 return;
@@ -73,7 +77,7 @@ namespace UnityGAS
                 return;
             }
 
-            for (int i = 0; i < worldPoints.Count; i++)
+            for (int i = firstSnapIndex; i < worldPoints.Count; i++)
                 TryCreateSnap(worldPoints[i], i);
 
             if (activeSnaps.Count == 0 && activeSegments.Count == 0)

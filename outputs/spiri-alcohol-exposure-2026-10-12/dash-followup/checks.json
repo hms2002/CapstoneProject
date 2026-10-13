@@ -1,0 +1,13 @@
+{
+  "protectedAssets": 5,
+  "testsPrepared": 15,
+  "playModeExecuted": false,
+  "msbuildExitCode": 0,
+  "protectedUnchanged": 5,
+  "changed": [
+    "PlayerIntentInput2D.cs: shared confusion direction",
+    "AbilityLogic_Dash2D.cs: cached/direct directional dash",
+    "AlcoholExposurePlayModeTests.cs:15 direction cases"
+  ],
+  "unityExecuted": false
+}

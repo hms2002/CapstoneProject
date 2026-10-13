@@ -28,7 +28,7 @@ public sealed class MobRecoverState : IMobState
         scaledRecoverSeconds = context != null && context.Owner != null
             ? context.Owner.ResolvePostAttackRecoverSeconds(scaledRecoverSeconds)
             : scaledRecoverSeconds;
-        recoverEndTime = Time.time + scaledRecoverSeconds;
+        recoverEndTime = UnityGAS.CombatHitPause2D.GetActionTime(context?.Owner?.gameObject) + scaledRecoverSeconds;
         context?.Owner?.BeginPostAttackRecoveryRetreat(recoverEndTime);
         hasStartedRetreat = true;
     }
@@ -43,7 +43,7 @@ public sealed class MobRecoverState : IMobState
 
         context.Owner.TickPostAttackRecoveryRetreat();
 
-        if (Time.time < recoverEndTime)
+        if (UnityGAS.CombatHitPause2D.GetActionTime(context.Owner.gameObject) < recoverEndTime)
             return;
 
         stateMachine.ChangeState(MobStateTransitionUtility.CreatePostAttackState(context), context);

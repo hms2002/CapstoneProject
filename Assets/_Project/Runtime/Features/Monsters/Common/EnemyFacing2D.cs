@@ -38,6 +38,7 @@ public sealed class EnemyFacing2D : MonoBehaviour, IFacingDirectionSource2D
 
     private void LateUpdate()
     {
+        if (CombatHitPause2D.IsParalyzedOn(enemy != null ? enemy.gameObject : gameObject)) return;
         Vector2 dir = ResolveFacingDirection();
         if (dir.sqrMagnitude > 0.0001f)
             lastFacing = dir.normalized;

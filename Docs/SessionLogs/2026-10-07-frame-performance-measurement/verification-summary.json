@@ -1,0 +1,26 @@
+{
+  "status": "measured-with-stated-limits",
+  "unity": "6000.4.2f1",
+  "playerValidRuns": 4,
+  "cpuOperationCases": 16,
+  "cpuCorrect": true,
+  "uiOperationCases": 12,
+  "uiCorrect": true,
+  "damageCompleted": true,
+  "deferredDestroyConfirmed": true,
+  "gpuValidAbbaRuns": 2,
+  "gpuCalibrated": true,
+  "operationAllocationBytesAvailable": false,
+  "operationAllocationEventsAvailable": false,
+  "productionOptimizedHashMatches": 20,
+  "persistentSaveSlotsUnchanged": 3,
+  "unityBuildsSucceeded": true,
+  "msbuildSucceeded": true,
+  "editorTeardownAssertionCount": 1,
+  "remaining": [
+    "General FPS/tail improvement not established",
+    "Legacy preparing/projectile shader GPU cost increase",
+    "ExitPlayMode end-presentation/service-root assertion, not fixed"
+  ],
+  "scope": "Windows Development TestScene invulnerable-target stress, not all scenes or release build"
+}

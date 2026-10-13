@@ -1,0 +1,1074 @@
+[
+  {
+    "path": "Assets/_Project/Runtime/UI/Upgrade/UpgradeUiOpenFlow.cs",
+    "sha256": "854b61106acc9e8533a671cead2fdfe2935cc0c5e4fb459b9f8153bdc25c59f4"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Upgrade/UpgradeTreeUI.cs",
+    "sha256": "8822a46db948054f07559447b0cd9590aeb6a7a0cf03ff456007635ad995d275"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Upgrade/UpgradeTooltip.cs",
+    "sha256": "20fadea8ab620d15d1baca3c74713f35102cc954260fae37759e16f54660b675"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Upgrade/UpgradeSlotUI.cs",
+    "sha256": "8b2dea03d224481b2c78b548b15384bd6b28e5e930eab8feb1879738b43a09a3"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Upgrade/UpgradeLakePresentation.cs",
+    "sha256": "32c231e0e85e56c5c03c73671562281a3eb5591d4295af89d4beb944f4a3f175"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Upgrade/UILakeSurfaceImage.cs",
+    "sha256": "71e5a5455377fa6c9c4cd256fce46ac52c9b62f7a1ad9e4743082ca91edb6f0c"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Upgrade/UILakeRippleGraphic.cs",
+    "sha256": "00aeb0872f3fac89658619724d5c8d5abd30f1895b7705498486da9ae77d83dd"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Tutorial/TutorialPresentationHpView.cs",
+    "sha256": "c2c5f6ec8dad77b4a10ea0cc41033cc22021f1e3724217134d0700cfdd057bac"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Tutorial/TutorialInfoPanel.cs",
+    "sha256": "c4428d6bf91a7e148d4b521383b9a1453794fbf843c7b9e8221cdf3fc9d451ae"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Tutorial/PrototypeTutorialPromptView.cs",
+    "sha256": "6f6783278d0f3582138dfd92f559b2934b8ea8ebf6075fc32a80074157d50766"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Tutorial/PrototypeTutorialEntranceGuide.cs",
+    "sha256": "b6b5e659e081976d4509c01e443a94ddb5af512940ccadbe78280555a9550c3b"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Tutorial/PrototypeChestNavigation.cs",
+    "sha256": "5b91bbc28285b92b9c4a35d4ee1adb6edf78ff4d1de1b91abae98aa647be5938"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Chest/RewardEffectSlotUI.cs",
+    "sha256": "8accc2749c9da7f7b78f663b1211514331e6e70eb7a67cb7f250df896cc4193c"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Chest/RewardDisplayUI.cs",
+    "sha256": "c73c0be6aa9b40721ebd077e979ab574e49bf647f39d184a68b6e7d2457d359a"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Chest/RewardDisplayService.cs",
+    "sha256": "992486a57ff9a2a79382ea4f256fa46cd54f0706260663e4d9a75f40d7a7cc4d"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Chest/RewardCanvasRaycastGate.cs",
+    "sha256": "0265083bbad0bd4ffddc570a9c32a1efa43e958d7851f3fc0cef90f3e22877ee"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Chest/ChestUIManager.cs",
+    "sha256": "5f0786880d8fdbc3cc8826b5ce689608dade900285e094413e8cdc901799df35"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Chest/ChestScreen.cs",
+    "sha256": "3fb05a9fb3d7c4bfb17c1d40879a284a949e1db6ddbae10321e93c1e655b6373"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Chest/ChestRevealPanelMotion.cs",
+    "sha256": "21ee25f32cf3b7347fbeef46b34f9d837ba034cfe18b8733f4c071413b65b139"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Chest/ChestRevealLayoutDriverScope.cs",
+    "sha256": "78af921493858268a20f47311ae27e3d4f53faa9304cdeb69b3f21e06e760a70"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Chest/ChestFirstOpenRevealPresentation.cs",
+    "sha256": "881a96208acbf0248c38cc4c782c258f5cefea687bfd627abb7374ac49944a73"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Debug/UiRaycastDebugProbe.cs",
+    "sha256": "439bad9f38558af6318ba7ecd385f509bbb7912eba1feecfd16776530602f987"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaStandShadowMorph.cs",
+    "sha256": "b063e35993e4dfe4598e2503a4eea79ae99a92148d4cfea46fcaaaf2d556a708"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaScreen.cs",
+    "sha256": "67f618e43a3b98c2560948f7b43ea2876e64565c724fa88af95c894cec3c75a2"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaLeftPageView.cs",
+    "sha256": "04753d58e1e84d448526c3b62e32b0a3dcabd4287f43bb3b2b728406a0f1ce69"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemTab.cs",
+    "sha256": "4573461141c7941de02ef9a5e1c863008244e6d32cf72aa626399d04f17760db"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemRightPage.cs",
+    "sha256": "e925c25719bef7e978dba12b97dd308371da05f96a96a6d44c108de433eefad2"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemLeftPage.cs",
+    "sha256": "7637fad5e52ad5af56aaf70faa1babb885c9f01218d9ca67cd502fb6166849e0"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaInteractable.cs",
+    "sha256": "72952e44db3cf1336e7135648e496b97af8fc2f68267890530ead28882ea5d96"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaEntryGridView.cs",
+    "sha256": "19e9a5a454bc638e36fb39787e9206ba6a57b67f9b6dea6e284272225e4e9d19"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaEntryButton.cs",
+    "sha256": "c7c4b721dc329cd4c4c252f8b900d0346086c7532f266f3e77f530e6b9187032"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaDetailPanel.cs",
+    "sha256": "ef3fbf9a1d513dbc21dd4805b02e3f3d49dfc30eea511a678bbf80cb90653da7"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaBookPresentation.cs",
+    "sha256": "fe5ae62be398ceef59735553862e5b428cd9be45a1d15b0b9432ebbbce71c2b5"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/BookWorldSpriteSequencePresentation.cs",
+    "sha256": "f6e9ceff8bc1d99f5dd9a20c0c21fa386d89ecb9bf812056d6ecd3ff1a501690"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Encyclopedia/BookPixelRevealPresentation.cs",
+    "sha256": "f7a66f0886ffdb7a2cd74222daf6accd56499ec0251043625da7ef3c1ff2ced7"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Popup/WarningPopupUI.cs",
+    "sha256": "1503537cd7c2aa209ec2c2dd27f910700374a329cdd15ccfd0d8e2ffff37055a"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Popup/WarningPopupService.cs",
+    "sha256": "45af3c6d1cb162b438456978afe1102890aa3f44e71921e48f74284a0e311d26"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Popup/PopupCanvasRaycastGate.cs",
+    "sha256": "3b4b7cab18dbb1d6f8bf5ad596d34acaf1eaeece23d6f2c08185317c08a3d9f2"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/DialogueCanvasRaycastGate.cs",
+    "sha256": "6972275b5981eb7f7e5167d9a200d55da8a8c248f340ad2477eba73051422abf"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/CinematicDirector.cs",
+    "sha256": "4ed0ebc9c3a5afa6aa8d6e0a6d3888c4018358758c7dd04a175af8d51d8c6062"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/ChoiceFailureScreenEffect.cs",
+    "sha256": "8b3ddf440863395f561b714320bb6818afde87b297a76373072ed748a0da45c7"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/ChoiceFailureBrokenHeartItem.cs",
+    "sha256": "88961236dc8210aeb3b25445c2a648a98f36666e8a5fd1030ea90fa24d335565"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/WorldPromptCoordinator.cs",
+    "sha256": "dd69d0573e6181a41dbef70c8ef6f155de14ad1bddb5c813d7cf65086377e3d2"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/UISlideFadePresentation.cs",
+    "sha256": "c43f98df161c01531aa8a8cd08a354847199fe0565a98e6f0adc222777966054"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/UIParticleEmitter.cs",
+    "sha256": "b38cb98007716440e18d11a82c39bb9a816b70cbb3389c1bb949bba796fbef21"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/UIManager.cs",
+    "sha256": "23f7ef9cd5b6a3d5358f212e0f61dec85fd56ad68345b8db08746b857247057d"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/PopupStackState.cs",
+    "sha256": "33f8d51bbc4c25763b89ee6848b9d96ad109415261d394d502f30116cc63d420"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/MenuButtonHighlightPresentation.cs",
+    "sha256": "406391aa32177a5098c74fa9658c52caefcf0210fc87abf24a41c173383026da"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/StackStatus/MonsterStackStatusWorldView.cs",
+    "sha256": "75a5378fc5bac4b52c154cc4ed200f4c0f7dc491ac6334d1e50498054cfc49bf"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/StackStatus/MonsterStackStatusIconCatalog.cs",
+    "sha256": "db8b4fbf6e6d3cb5768161be5e2d5877de896efe2b5bb78ea3a7375978306897"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Weapons/WeaponDetailView.cs",
+    "sha256": "b143706bda6547f7e02015efc8ee37e7039ed6530e6ed67a1cd6556439ad070e"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/Affection/AffectionUI.cs",
+    "sha256": "bbfb97698e7c9cc612672a51711e823df9f25a774a5ccc74929dceea0d54e65a"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/UnlockSlotUI.cs",
+    "sha256": "ea270c21f9cc77a6fb93b73d12c34275eb6268c043919c5cd6b7cef5c2cf601f"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/Affection/AffectionGainScreenEffect.cs",
+    "sha256": "987017ef7a4bf261befe7671a844753717e89568152bc0f9930841ed455e67c6"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/ItemDisplay/ItemDisplayIconUtility.cs",
+    "sha256": "2289457985f41f848264263dedbc05c5fc22371fb2582060c2417ba632342ff4"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/DialogueSlideFadePresentation.cs",
+    "sha256": "c2c222ea11a7f27638c8e5437e13de54abe5c1cb7cafd35929b9f640dc889ee2"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/DialogueService.cs",
+    "sha256": "0e8214583eeceb1f699cf90be14e0c280b4dec258dac4b7be26847e2b178825b"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/DialogueRuntimeReferenceResolver.cs",
+    "sha256": "386038af3aeccf931a3d0b736fc93f544b231f26bb83755209a96dd24d376393"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/DialoguePresentationSequencer.cs",
+    "sha256": "fa08530d66631a4f6c049229e80bef4ba1332fb8fb3fadc311307cd6ee85b575"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/DialogueController.cs",
+    "sha256": "1cb5cf0906c8804f2c994bfa1d38c91918dabb9b173e7400a8a59ab47bd4d606"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/DialogueChoiceKeyGlyph.cs",
+    "sha256": "fb2ad96c815a6bab26e093602c46ddbad103701bfbddf29d3f38329469a55d6e"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/DialogueChoiceInputRelay.cs",
+    "sha256": "fa7ecb6ddd012ad0e6c6b6bc68d2ba4f6b63497e1f05ac40a22004316dac4766"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/DialogueChoiceHighlightPresentation.cs",
+    "sha256": "6f481defe6c14504a4223038acd6935b77febeeb7b15a489d4c84f54ea7d2d43"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/PortraitActor.cs",
+    "sha256": "819c231abe74de92a788f7f26bed9045f0c0a49da4be1a5d1b13dbeab6022708"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/EmoteController.cs",
+    "sha256": "319fd36627b6871d0bc2e39ae9cb4d747fca7ee00b36b95d057b1dee69daf534"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/DialogueView.cs",
+    "sha256": "52f27797d886a3c51725df85aec3e4f13221ba6e9bf200a51310e913a4147313"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/DialogueTextAnimationUtility.cs",
+    "sha256": "15b522c979304ea32696575fffd6eb9bc6c188c0f0c34a565ba0e915fb65bc59"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/DialogueTextAnimationProfileSO.cs",
+    "sha256": "b7529702a9318c4716aaa03a25a59327001674d24f4e1c50119a6eb9e0a52e83"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/SimpleTextAnimator.cs",
+    "sha256": "61d0f11f330b450fad08a96b281afd3abd96a5f55ef9c00e7fbb8e0cb46c29af"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/SpeechBubble/SpeechBubbleComponent.cs",
+    "sha256": "9dc5dc6578b653829a8b66741325b14e4fb096c8ca9d4f91bd21c81b75662f73"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/SpeechBubble/SpeechBubble.cs",
+    "sha256": "f4125161f6fbbd00deb6d9852d734068353add99ab2ebab89ae57b5b418a8232"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/SpeechBubble/BossSpeechController.cs",
+    "sha256": "f11bad01e47026c3f86e001e2331048d6bc01966e3bba331c236d7ffca290bbc"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Progression/Leveling/LevelRewardSelectionPresenter.cs",
+    "sha256": "3d9e1cde8792571ee75fc2f76f57ff0ed8d4d077f7a41630ed9b4fa8b6efce26"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Progression/Leveling/LevelRewardCardView.cs",
+    "sha256": "182e300e5989547943f734ed97045219ea588bb7c2a41c5796394c7dd9404696"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Title/TitleSceneStartInput.cs",
+    "sha256": "7c10ef1064039b96d456e0c76b3c4ff4f2cff9576123281e5a9b7345396110c4"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Title/TitleReturnService.cs",
+    "sha256": "106bc30822adeb4c44e21afe8a8e8e4034f6478614b9271ad7a8bac88d4b2069"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Title/TitleProfileSlotService.cs",
+    "sha256": "fcd3d71ba981c4acd24c2e0c72d70b059c27f5a4afbd8dd07fb11b59b27638c8"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Title/TitleProfileSlotPanelUI.cs",
+    "sha256": "880c19a57042fa12fcd29879fc4b2b9420aa44a343387437ffeff8b1a58c7626"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Title/TitleProfileSlotModels.cs",
+    "sha256": "4c050598dc46941a83d07c68cda34cd3677cd2ffadac05f58798371e75182c68"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Title/TitleProfileSlotCardUI.cs",
+    "sha256": "c82806aa7b389ac0cbc6542b19278011e1523cdd00cf6b43030267114f2fae84"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Title/TitleProfileLaunchService.cs",
+    "sha256": "2c039d62b053ce603394979f99b0cc24f4ac7f80066a32b8bcf82c421c4b44c0"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Title/TitleMenuController.cs",
+    "sha256": "19fa70d104f6376010bea413ebcb3af90e62de26fc5e6780643a71b79b926c3b"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Title/TitleIntroView.cs",
+    "sha256": "56c5997530f9a176850aa04559f5f74723830f54d54217f62aad530ef7737b02"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Title/TitleIntroSequenceSO.cs",
+    "sha256": "8ba72c3212d16d17d929e0ea3b7a57f56ed6013eb8112b6a161ad8cff54c8633"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Title/TitleIntroPlayer.cs",
+    "sha256": "9c617924f17e0081cfbb23a568cfc3e321006ae99b941748ac49aa4da0fab1a6"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/RunSpecial/RunSpecialNpcChoicePresenter.cs",
+    "sha256": "1ca6e8e4e330ed89d9f437578069b9f5980da7493891b069a808edb026cf23c0"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/RunSpecial/RunSpecialNpcChoiceAnchorFollower.cs",
+    "sha256": "0551a1f31fbd4936bf1d2825369462ceb2c9d5c382e63ddb1b117b155309c6a6"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Dialogue/PortraitController.cs",
+    "sha256": "4481629e510133820e19f9afce709f4ff3f8be27207d3bad29782ecbd85ccbcc"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/Interfaces/ITooltipView.cs",
+    "sha256": "77d025f1160b4f69ffa13dba33ba297a6ff5b25594ba22eec411d31e994b6056"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/Interfaces/IMouseCursorDomainSource.cs",
+    "sha256": "a32613458d43ded00d3896e0c0c61e21fc23d9689db791ada74b8b5c998566c8"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/HoldActionButton.cs",
+    "sha256": "90129570822944346f07c2d112df6e84476ccd0aa7c7d2e2c8fbcf9602364250"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/GlobalUIRoot.cs",
+    "sha256": "211be344f3d049916aea47fb4ac1d7205a47901ea647c513281b8d8b10413bc9"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/CinematicLetterboxOverlay.cs",
+    "sha256": "bddc76131bd7fe5a099fb7c743e613d167b5b42229f8391cefe5f46ee688685a"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/CanvasRaycastGateBase.cs",
+    "sha256": "d710a95be1c2d4e736a036078ff379a49140205858a71d46276f635d2080c495"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/HoldFillButtonView.cs",
+    "sha256": "c8947085df7cd6810cc18d376cc8dddf8ad4f99ee844c3385021061b339ec035"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Common/HoverUIController.cs",
+    "sha256": "8474b1594833f3505f066052da3aada77c292783202fa5c646f2562c3c48c1c5"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Progression/Ending/EndingOutroView.cs",
+    "sha256": "ce5af17180a80d69fc99a9a020b10ec029a0a17b357d4be10473dc9e1b0efd6b"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Relics/RelicDetailView.cs",
+    "sha256": "cc52be94afdb93397b5bb5475c769c0efad7d67853348eb08b24b8acda6edcfa"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/ElementGauge/MonsterElementGaugeAnchor2D.cs",
+    "sha256": "5b023306dba1d4f4a74b2fee1905e49b965d0532791db246104d84af48735d34"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/ElementGauge/ElementGaugeSlotView.cs",
+    "sha256": "fb9ee694012458e6a83f9021d7e124d7f87c0f3b93b05041a9e9ea4d6ae99748"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/ElementGauge/MonsterElementGaugeView.cs",
+    "sha256": "431800e24490e6ef4176a91d30704e2c979e80ddd1114df750ada1228cb5a9a5"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/ElementGauge/MonsterElementGaugeViewInstaller.cs",
+    "sha256": "09314ed922d0147d1041e36dc5ac3d37d3a4bca9134bb88adaa5363698c5abb7"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupWorldText.cs",
+    "sha256": "d13e3f51bd21ba389d58c1d268f3f6f09f4b1391b4f465c791929273bba392df"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupUI.cs",
+    "sha256": "ae4e09768025e4dc734aeb98a125743f7c6af12e596b2d92f39652f2ce9331a1"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupTypes.cs",
+    "sha256": "89adbf29110c5e9fd7e2c54660daf80f042274c10d0642a535b3bf013d1e698f"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupSpawner2D.cs",
+    "sha256": "05c4d00ee1b5c45e106175748e5e3879a1e8f5467824e80e3b3adcf42f42b80e"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupService.cs",
+    "sha256": "34d020565e4c4924cfe1ba6bf26b7a133c78745a260076164bb3355f749e3bfd"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupSceneAnchor.cs",
+    "sha256": "91148d79e7edcc45fe63d3861f58270bff2112e36a1e9a106e43856768ea31f3"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupListener2D.cs",
+    "sha256": "c2866d838b998f1fa84319c93180da7bb3d8de538040cdc3dd55d8fc8814513b"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Combat/DamagePopup/DamagePopupFormatProfileSO.cs",
+    "sha256": "745c48ea3058dd1c1e411fd0231d38e0c956450cd001d7703e925a25ac0a6a39"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/GameOver/GameOverPresentationController.cs",
+    "sha256": "9d9abc964ecf6e6524fd892965ce6d7b65794de346123f7e188bfb8eff09f870"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Testing/TestSceneRunStore.cs",
+    "sha256": "7a312061038cfcef113d8dc69bf31d987d7332c4cc719155ee7ac9cd0049b248"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Testing/TestSceneRewardReceipt.cs",
+    "sha256": "79d8ec1bdb751155964fb21d6c381c97daf7969256564e322a1e0c19e630f0b2"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Testing/TestSceneProfileStore.cs",
+    "sha256": "3c25f18cc9fab314e167af375cb11d8cdb88f063030046a129e5b91a0532d4f7"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Testing/TestSceneControlPanel.cs",
+    "sha256": "7314fe537f240f000431f4d9b5e4fd426bf38fe870a5b906892a3d6f7e2bbc2f"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Testing/TestSceneCatalogGrid.cs",
+    "sha256": "c910c84fe9f7cb0b1daf1b60949b88f84e7c9ecb936334011a88cd2edc96f05b"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Testing/TestSceneCatalogCell.cs",
+    "sha256": "69ddd9d1874a5392b1dcdc6e08301fd8bc45114a58c67c3707c6ca8a90011616"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Testing/FramePerformancePlayerProbe.cs",
+    "sha256": "8f8dd0ec0f0e54b5984ff2cc45a6084356e014bde498a9509eea84c73a227ecb"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Map/DungeonMinimapSizeController.cs",
+    "sha256": "57484d27e296b9820c9472dfb55ad9fefd9332ffdccab0940ead0213ae316e26"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Map/DungeonMinimapRoomShapeGraphic.cs",
+    "sha256": "d8844fd044ed760c9dc43a3cc434f6f83a01697cf9eb9ed3edd6fa5c9e1fc053"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Map/DungeonMinimapPresenter.cs",
+    "sha256": "2cdc08bd7fd684093c16a944ba75632c5e5bd2930f7f82a3a50d9ba05e184819"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Map/DungeonMinimapNodeView.cs",
+    "sha256": "e96a4d589ec69567cd1223e8d8ef484ab2395b516b6143dc82f9011c9cf29ec7"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Map/DungeonMinimapIconSetSO.cs",
+    "sha256": "cb5234861b6c48cebb0df3c51fe5b9ca169991d9bf1028f156f2975f5f8baf75"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Map/DungeonMinimapContentBadgeView.cs",
+    "sha256": "030058dd149974a5cd6f5a1c8036de2e58d4bf2f68a3e52a7a3e803e091e3be9"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Settings/WindowModeBootstrap.cs",
+    "sha256": "99761fadb441bf2eb7716e1da9960d7534363f8be2d0c9db8b52e0e29e2837ca"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Settings/UIChainDropPresentation.cs",
+    "sha256": "fdefaaebf37d160b2c4ec1898bd4882f52fd80ed9310b61f4139d7a5fd2af9e5"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Settings/SettingsPanelUI.cs",
+    "sha256": "52795cc8593d17730194643ef03be7657999b92b4d8024ab5c47d99073f7c54f"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Settings/SettingsPanelFakeChainPresentation.cs",
+    "sha256": "1d36c6c76b0643be545650bac1bfba6e2f7d7aa48d8d7062b10d922544a9fe50"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Settings/PauseMenuUI.cs",
+    "sha256": "8504e29832221b13e09cf82a4aff8a3b0f4eeab222b143a0cd32319bb4a9e16f"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Settings/PresentationViewportUtility.cs",
+    "sha256": "145039779e21820da250fc23d4b11a0f2c822349c56ca61937d87788fc51dd32"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Settings/KeyBindingRowUI.cs",
+    "sha256": "e10b651d002e779ed30b4c449e49a572054b1227f10f9536db187feaec7eddfc"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Settings/PresentationCanvasAdapter.cs",
+    "sha256": "e4ac82230e0c4b08c01fe930276cdfbc8c768a1acb5b94bba078bdab8347cd98"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Settings/KeyBindingPanelUI.cs",
+    "sha256": "82250627e99ecd6da2e9ced8f628e3b8d7d050af266878d267984249bfd852a2"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Settings/GameSettingsService.cs",
+    "sha256": "1bcee30b5873f2fb21a94131484d5efdc16d5f911de8c06d86e58814e8808920"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Settings/GamePresentationController.cs",
+    "sha256": "c883597c9866bdaf91ab7837b25fd2a7c03cc9cd13f9d3274efb2c6bc731cbff"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/IBossSplitHealthPresentation.cs",
+    "sha256": "1e1ca52c1eea98409cdeb02d731defbf79928412d0dd16186494d8fb1f3118f5"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/HeartTokenUI.cs",
+    "sha256": "eb578499a664cd57edfdbbe009d4099bac702902325a074ab1dd8b116a1d762e"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/DebugPlayerHpText.cs",
+    "sha256": "3e2ffd65436a50f71a5c5c67a4bce0d0d4dfc744f86a25d2b1a646f7a8bfb8f4"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/BossHudSlotView.cs",
+    "sha256": "6d408f4c2c97dc941ad4897fe3ccbf84e7eb213e2707b66c68f27e66f9671fbd"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/CurrencyUI.cs",
+    "sha256": "9c36267c6a2a70746346a79d1ab3b58d47ff07e902ecd52796b9483b4f02fcd9"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/BossHudSnapshot.cs",
+    "sha256": "9f4a03f995dcfb1689328880d95d1e9149be047866b58d1cb80e90051ccfb91e"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/BossHudController.cs",
+    "sha256": "87f066e39a3bd1bbe87626da5cfe6ca74ee6b8f26b02c19d1e04afa349acf346"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/BossHealthBarUI.cs",
+    "sha256": "1ef93f62c5ca91863f0bb36b7234eb50f45e0ac18cb1d443a6c3a508f1fbaf25"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/BossGroggyBarUI.cs",
+    "sha256": "7c634b6f08c57c6d225adc2fb71747a709886049485dbcdd823069323d53c986"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/LevelHudPresenter.cs",
+    "sha256": "0465a542d4c18bbb2995ca515c9714efb1a3c28eeeee0e0e456b46203247f67d"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/InventoryUIOpenRequestHandler.cs",
+    "sha256": "2dcbc38e7b8a73103de615894907d738280c096180cd550aa7b32903ba15f364"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/InventoryOpenHudButton.cs",
+    "sha256": "efc9ed53e53a9de2891c37ca2b06ece124793265acc1d91881306cb2968b37f5"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/InventoryOpenRequestHandler.cs",
+    "sha256": "740d4f1f2cdcf7a9ee4992600454c888ea21d0956b9f6bca4f39eff4cdd8def7"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/InputActionGlyphPresenter.cs",
+    "sha256": "67dfae2f95c21a8e0f1ab64be7edc6d0cd5b63843aca9d2b86270222d492100f"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/PlayerConsumableHUD2D.cs",
+    "sha256": "3cdf7717951782b57ae6d7d30bd3121194ab08ccf9d9ecb119710cc1804ba029"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/OddIronAmmoWorldHUD.cs",
+    "sha256": "5eb5ae63365ffcf719ac4815de99eb09fad37fc49e9f780509fed0f67ce11adb"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/PlayerHealthHeartHUD.cs",
+    "sha256": "6bc072403793c38897a88aeb1f5148ee433aa43352e6d1664b84c1ed564de37c"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/PlayerDashCooldownWorldHUD.cs",
+    "sha256": "c412de65f5589d677299af85cb601d67318cf4ce36199152556d933a8d24c2e3"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/QuestHudRowView.cs",
+    "sha256": "eada96904605451cfcf8a72b14a5f7b509c53bf6e5895da2fdfe51f8060d0587"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Consumables/ConsumableDetailView.cs",
+    "sha256": "36c8b5ab97abdbf559d8f37d943d5f1bf7e5823d0369df3662bc890b00855bf6"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/QuestHudView.cs",
+    "sha256": "fe6560ace4c0bda0edfe9d7508f91bdb2acf4b4b9b1b609d176416c090c67470"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Localization/LocalizeTmpFontEvent.cs",
+    "sha256": "498ea431355e3300b6d6b3f172dc4007518bc6d5196c13579e837992a585aa5b"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/PlayerInventoryPanelView.cs",
+    "sha256": "0d9021614b83f2a3d15f23f2add3d9e779331a02ec22e79fe847d2e12c779652"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/ItemTypeBorderGraphic.cs",
+    "sha256": "e5c027f0c99fec38e4a6edd4b995cd4d53ac2cb43ee24cea4cf20f5c684fcc58"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/ItemSlotUI.cs",
+    "sha256": "ef6c8ebd82a263ca07459064522f136c883090638b133f554547f8b0cbc0f7e6"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/InventoryUIManager.cs",
+    "sha256": "8a2a8939dbdbbf1839ade968f7a2438adae1d51a6bc82ce2b8a6287008f17b4c"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/InventoryTransferService.cs",
+    "sha256": "05dcc8a445b80ec271f792ea959122766683dd3da17edc2c377bbef01315039f"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/InventorySlideFadePresentation.cs",
+    "sha256": "40392df559e624e798b8ee1929084f8d06fb3a908e5597de0634fe3cbd8e1592"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/InventoryScreen.cs",
+    "sha256": "62d5e91183c2975cd7c37747720972042e2a43a2cc3e453a2e3c999c5940c062"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/InventoryQuickMoveService.cs",
+    "sha256": "c65fa2f668d784535940c1dc2bff2cb63da7504a9536dc6747dfe43419ddc45f"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DropZoneUI.cs",
+    "sha256": "e0dd34bf34a2f5bf2cdb9d867f05036ef3638cd35593f29798cade2ae157b775"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DragIcon.cs",
+    "sha256": "9672c121c6cbd32b1b0dccb2a8c936249054a3da902046bdbf694881120e2174"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/PlayerStats/StatSectionDefinition.cs",
+    "sha256": "ed1c3e25150c9569c15726bfc05613b78c30689468231c7fe58e17d2c5afe7e9"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/PlayerStats/StatInfoUIDefinition.cs",
+    "sha256": "8ddb536c1eb57b313484dc88bde1d61d6ad41925fdd1f4828db8c62f873bf4fa"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/PlayerStats/PlayerStatValueMode.cs",
+    "sha256": "23fb4c51efab2d7119fa907194fb4949f27e1749c84254e6eed8500ce3f623d7"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/PlayerStats/PlayerStatSectionView.cs",
+    "sha256": "06b512733d015109e13c850b733e09b7ff113b07f8877f120b76ef3529185478"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/PlayerStats/PlayerStatRowView.cs",
+    "sha256": "ce588802c79c9d7867fbaeeec10747d4078ad0c453f8d544656a58b9ac7f0505"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/PlayerStats/PlayerStatPanelView.cs",
+    "sha256": "84052826f761df1bd94603483bc9850516dec43baf148849e134cd755d509596"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/PlayerStats/PlayerStatPanelDefinition.cs",
+    "sha256": "b999520c8661e16c9cb70695e80b212a6d3a8dd2be5280a690993fd05ddab264"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/PlayerStats/PlayerStatDisplayFormat.cs",
+    "sha256": "2ca32cc4f3c0478b0e1cfbf005400ed3dd2159a6eb4f35d6a38084fa822041b8"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/SwapWeaponSkillHUD2D.cs",
+    "sha256": "05af0da3fce04e42ea94a419a5c3d4d540f9490e31297212128da42694690796"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/WorldPrompt/WorldInteractionPromptController.cs",
+    "sha256": "5cf4cae2485bd25138b6ff6e392f28a042cd2558cc5a0ff254c947ae9d41ec46"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/WorldPrompt/NpcNameplatePresenter.cs",
+    "sha256": "3f22f3e62eee513e1f06fa52fdcd9fd510dff50bded38df0fe401012b681af90"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/WeaponSwapHintPresenter.cs",
+    "sha256": "e15850dea4b6aab63512d3dea3708ff390095c3703b69fda31f29876bf93bd56"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/WeaponSkillHudSlotPresenter.cs",
+    "sha256": "641127cc8b1fe8e11f70dc6610bd423ace7513798a314228dac340c8ed62e9b0"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/WeaponSkillHUD2D.cs",
+    "sha256": "1a88da8914506e8c618dec4013a28eb28f7fd62d7bf685ba7a71cf19807590bf"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/WorldItemDetailPresenter.cs",
+    "sha256": "ec84835048b71674c98f098e24e0038f99152cbad78b820525cdcecda49e1da4"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/WeaponStatLineView.cs",
+    "sha256": "963f529eb5e33d028a38f50e080d09d5efe78776e603b6c1f2843e4a3230242c"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/WeaponDetailViewV2.cs",
+    "sha256": "63a7d6366d9dce1ebeda5f38b4b8f0e9ca3c6b21d1eb6873d70926b6c7ed25d2"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/WeaponAbilityBlockView.cs",
+    "sha256": "43470005986c3a23bb9057ef5e37b64851f2fbabcb13e81914ef33f0880addcc"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/UIHoverKeepAliveArea.cs",
+    "sha256": "3912909c0206b702b2a74ea6d402d8f61fea4f79862b0ebef6de3c52eab4216a"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/TooltipColorPalette.cs",
+    "sha256": "2c9547e41c07c7c7a78f05722c5208ec7dae10b1cca970d1173672ffc7c5192c"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/TmpLinkClickHandler.cs",
+    "sha256": "55a59a72abca98f3a53050aa0e5dc3768611cc19d4371affd67c354e5e249c63"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/SectionListView.cs",
+    "sha256": "52ce3ac33b10e3d014cd275336f3047d1c1a4623a56e5805d20a9cff7132657a"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/PlayerDetailContextProvider.cs",
+    "sha256": "4e1cc907f4b6d3654d2a4bb56a16c55c1a6a87b1e94bc42a0bf8dfd565cd3a5e"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/ItemHoverController.cs",
+    "sha256": "f36639970145dad393e1d77e257cd323d03097ee5b746d3fd46bca94eecd2b7e"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/ItemDetailSectionView.cs",
+    "sha256": "e53760ce3481b7c7e7c8ddce6a0cbd856537313c79bee3329fc0a71db1dc7248"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/ItemDetailPanelServices.cs",
+    "sha256": "67c26c0433914be5037d7ac2cc6d868d5096f672caf77927cb6b6a71547953b5"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/ItemDetailPanel.cs",
+    "sha256": "f83444d9cb6ea46ea641a82ba403365163d0fc83aaa4a11db3fd682afc2ff183"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/IItemDetailView.cs",
+    "sha256": "14f720558c9062531785b72f7436039997089932ec0c68361cffa6c475dd1910"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/GlossaryPopup.cs",
+    "sha256": "c39bf8d5ea10147be5cf3f8d112a0fd807f81cfce7b59120795d33cbcac56acf"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/GlossaryDatabase.cs",
+    "sha256": "b22b137119d07ee190ec9210689a1718606d7d462c378720c68952c1de8eae73"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Inventory/Common/DetailUI/DetailTextFormatter.cs",
+    "sha256": "7b8263c2aefd03804f9f035616974733470c80c3f5363544972b26962774445c"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/Status/StatusHudEntryView.cs",
+    "sha256": "140870ed2cd94f6518427a7d77f87ac19a324b8ca2e71da3924ece442f2195f1"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/Status/PlayerStatusHudBootstrap.cs",
+    "sha256": "c478f6c8da2940d82505522f5bd15e352780895ee2feb0ce9e29164cb03a01ea"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/Status/StatusHudRuntimeBootstrap.cs",
+    "sha256": "3a5bd6563600671a81c68faf12b75a53cbd1b9779ff0548b5795a2e97e338403"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/Status/StatusHudPresenter.cs",
+    "sha256": "d3069d45c203b124011c6cbb495da75f7ac5b4245c76ec5a4dad3aac6e47d251"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/Status/SunMoonStatusHudBootstrap.cs",
+    "sha256": "8401a529b1f7fabc04e797b32aff27b1923b442f635880a41b67e1deaf50bc0e"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/Status/StatusHudTooltipView.cs",
+    "sha256": "a3bcc8289a34b95574f688fd64df7784ea56efe2ebf8eb82931f63e6d784285d"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/Status/StatusHudService.cs",
+    "sha256": "1068b58dfb33fba846c9a4d2687ab3759bf603e302cb7dc67cc7c686243cc274"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/HUD/RunTimer/RunTimerHUD.cs",
+    "sha256": "a9bbdf4f3220f263023a794205dcb44286c9b44a7142769e6f4d73a0019dd81e"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/ChestUI.prefab",
+    "sha256": "882b2e353d354febb877c81348ad3152325447a1ebef0fdf18b771d789c79515"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/BossHUD_Slot.prefab",
+    "sha256": "9da9b6aa53842d5ec4f8eb7e60f7c009932ecac59f05ab6d6f5df6ede8e753d4"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Choice0.prefab",
+    "sha256": "bbd391f48d6acfeb207e5c446d924a5b8d5fd785d70ef298c8c25b7f6c79239c"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/EmoteUIPrefab.prefab",
+    "sha256": "f393e7d659deb234bf619608d3c05f048851c73cfa63e05f13a9f4c0a00b0185"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/NpcNameplate.prefab",
+    "sha256": "50816e05440fdb64d05005939ee03cce15d6b4cb6c06224a81cd61dee8b9b78d"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot_Water.prefab",
+    "sha256": "ab23ef689deee436c1d8223fe0fb111b4a80760e7bfb65b97604c084ea0fa675"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot_Sub.prefab",
+    "sha256": "f274dc691058100cb0d73bc71068fb109bd44354751fbe8621060ce9e5f63007"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab",
+    "sha256": "f710ab6689e7e813dbdda0395e7644cabb977d08472800b2015a759bceda795c"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot_Salryojo.prefab",
+    "sha256": "d035d7ef95379a51cea8ff5c2b7a3b99d3957065414c88ffe00464b86cf8eb84"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot_DialogueUpdate.prefab",
+    "sha256": "f3a38c3d8e1e609f6f4dea1e63ccd39019f15a149b6371fa6c1780432906c201"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot_Deafiso.prefab",
+    "sha256": "8ebdf5dd46ed3ff4bc91563a44798d20b08a93662bbb603dc4037d684cdf0d4c"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+    "sha256": "f856190bf919c8c016e15fdb7e4e5ea5c68c5e42f314ae884aa0ec989bf7a609"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/WeaponHUDUI/Skill1UI.prefab",
+    "sha256": "5ce74cd87e567a95c7de61cc06c3afa1472b30965b1f897988d69792d07e1ce6"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/ElementGaugeUI/Panel_ElementGaugeSlotView.prefab",
+    "sha256": "cfd748926a568c449aa300a47cb2cb0dd7722ad026156ab9401cbbd597cd9488"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/ElementGaugeUI/Canvas_MonstarElementGaugeView.prefab",
+    "sha256": "d082740b1f45af3e3967eb5622c4181e7537ae754a0e1cf0696c1e55f8f76d8c"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/EffectSlotUI.prefab",
+    "sha256": "5cd87ba116afc2689c12fbd6753fc897942ba7123ae498ce20a6f4c34c52e998"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Map/DungeonMinimapView.prefab",
+    "sha256": "d80b7715c18b824d532417619e483753494353c563f7c6a43d16c23103069b0f"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/KeyMapRow.prefab",
+    "sha256": "9cad93dd95f78659e6fa245581ad01c24724da987ae2cc59e149f3894e7ef008"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/TextCanvas.prefab",
+    "sha256": "c2833bb5d75a735214c97fca04c28a37738416b2ae4d03d9c3ac818948d19da4"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/status_HUD_EntryView.prefab",
+    "sha256": "019f4ab238bd7e789e299bddb404edbd6632b44996a27de5361cf4f58bd7ff8f"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/UnlockSlotUI.prefab",
+    "sha256": "df4f1444e2ac8c6445d88bb0099459522a8ddd0973e2c42f005212ca3ab26d5e"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/DesignChain.prefab",
+    "sha256": "12dc53b9f65164d456a1bbabda7daf743632dac5ed996b06f96e7e4cc4072f0c"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/HangPanelChain.prefab",
+    "sha256": "e0e1574dd96a537f38d05745c68280b6008d943ba7d554f9e4fe4ed67979240a"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/HangPanelShortChain.prefab",
+    "sha256": "1b7272ac5e247cc438b14e2b507093494b6a02cad412f52073b79f0653bf702f"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Portraitlmage.prefab",
+    "sha256": "896fa035a103c6c1ba50e08d340605f382d61a1f318e7776630bc42576afb53a"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/HUD/HeartTokenUI.prefab",
+    "sha256": "fdada6aaf78f7942e1b54f5242a15c9a6d72b9d6f7060e5861a23ffdf8023b9a"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Upgrade/UpgradeTreePanel.prefab",
+    "sha256": "c6e1bcd0a013bb5ec34062cdca7052bd2404294eb28932b61e341399317ad695"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Upgrade/UpgradeSlot.prefab",
+    "sha256": "4777cdff90823bc027ec5627c83e4d96bfd8cda9ef09805996baef95dc919604"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Upgrade/line.prefab",
+    "sha256": "c35a86deca2ebd7f5d442c14b15df4d19d6cec5cf978833bca3c9c81ded74b2a"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Dialogue/ShopSlot_RunGold.prefab",
+    "sha256": "8889c7d7e6920df87b8b4d8aa7ad68a31b2247281817553779291c2d8186c68c"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Dialogue/ShopSlot.prefab",
+    "sha256": "458d413148a72f2c1e496e5de800cdbebe7857293ae19e9234a7add309c49242"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/SpeechBubble/SpeechBubblePrefab.prefab",
+    "sha256": "115fcb36e54feb6564bd9cb68858c1259b894a8dbf6d0b2c5c4106f61a4187bc"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Combat/DamagePopupUI_World.prefab",
+    "sha256": "dfcd3825b244fc32618602ad5e7a9021de19dd97a92f3caa38b8d444f91ad4a2"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Combat/DamagePopupUIService.prefab",
+    "sha256": "3a5b4a9891cd63a43634b65252ffb146ad4692fcad19c59da39c74e5161ff4c0"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/PopupUI/WarningPopupUI.prefab",
+    "sha256": "a3844e5f33890af785f6726697fb53ee512e8bf6ef97d1a7254aed0688b6c387"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Weapon.prefab",
+    "sha256": "8113e98c8e2f1799c8a363679b1270c4e561c4252c7014b002915c1eaa0d6222"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Consumable.prefab",
+    "sha256": "33d0ec128dccd2d9a407348764babfa6274728b7c976d2c64831e20383739ffd"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI.prefab",
+    "sha256": "c1ca13c9182b40b0518faab6dec0cd30be0086efba00101865975afc5184459d"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/Inventory/Common/ItemDetailSectionView.prefab",
+    "sha256": "4239117e7ced59d1b9de2a211741d1a362b5db36b6af23945552095ebeb6e840"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/weaponstatLineview.prefab",
+    "sha256": "f6c9a37633a38dd348e7bb3cf39c829cc99b2ba940c894fb525dad25fe3159bc"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/Panel_AbilityBlock.prefab",
+    "sha256": "b0c64c5776a5f4c52eb26c4b9bca9b272cfd63433f460f83b7a4b2a156bde0fc"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/PopupUI/PlayerInventoryUI/InventoryElementPannel.prefab",
+    "sha256": "69b681fd0c5940b89f29c4f2dd0f88845ad0a5ef53ad9d0190334b8c750b8cf8"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/Panel_AbilityBlock_Encyclopedia.prefab",
+    "sha256": "5f86bea2f8ec0c5f977079fb7b1a78c3cc146044ba0d51c85e6d47be8126471e"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab",
+    "sha256": "b9c6073474f1f4ffb69eda849a0d8f1c2ef49fb62531d9b27da0e6f9fb0e66a9"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaEntrySlot.prefab",
+    "sha256": "7eb7aa107fb0e094f56adc9d49b7de966bca1b3e1558d1ba54d8442f7f563934"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatUI.prefab",
+    "sha256": "4b2a18397df883d51c5a511884b04c19a2551ffa34bb136f29ce43cc128967f5"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatSectionView.prefab",
+    "sha256": "e036b3c9ca3d2951fd4886cec4bbb2b9ed25194fbd5198458eb5c092cf39cf4b"
+  },
+  {
+    "path": "Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatRowView.prefab",
+    "sha256": "c91a65b93e418e4ee45163f95a9cc0e60b3509403f8988d8523887cc6a6ad46f"
+  },
+  {
+    "path": "Assets/_Project/Art/Shaders/UITextboxFrame.shader",
+    "sha256": "f30e50730973c70e762f21e46cb58d7ab9654c0d8b0a07d218ed1c5070b01233"
+  },
+  {
+    "path": "Assets/_Project/Art/Shaders/UIIconReadyFlash.shader",
+    "sha256": "3e985bb6c537e7703c2acba5a2f814f522806e84fcab5e4cab7ca76dcfc6c662"
+  },
+  {
+    "path": "Assets/_Project/Art/Shaders/UIAlphaOutline.shader",
+    "sha256": "3f19e72ea16cb51fe828f5c4e77fbdd3d0481e77ce28f5a9e0ff1786ca099051"
+  },
+  {
+    "path": "Assets/_Project/Art/Shaders/UILakeWakeBuffer.shader",
+    "sha256": "36cc8b93938b60c98975b917746c35fc0d9c93ad2166ef7d458b6d0c65260195"
+  },
+  {
+    "path": "Assets/_Project/Art/Shaders/UILakeSurface.shader",
+    "sha256": "42c7d404b5ab4ec51fba8943d7ff399eb6e1c287bc7cd688bd37651f89bbeb11"
+  },
+  {
+    "path": "Assets/_Project/Art/Shaders/UIPulseGlow.shader",
+    "sha256": "041b30f04cb3b364ac9383ed8ad94bfe1965f49d434cc4053f28ab750e2093ed"
+  },
+  {
+    "path": "Assets/_Project/Art/Shaders/UIBrokenHeartCutout.shader",
+    "sha256": "95d53f8d45f6188d9d2a85046b899ce5f4a0778a96223c48c8fce03fe9825ac3"
+  },
+  {
+    "path": "Assets/_Project/Art/Shaders/UIBookPixelRevealOverlay.shader",
+    "sha256": "bdb31545fd41298aab159abf50839ce81d7f2ea1cc3bc21ebaf83d98740e88ae"
+  },
+  {
+    "path": "Assets/_Project/Art/Shaders/UIAffectionGradientBorder.shader",
+    "sha256": "9f140744ea6f4657586a9d1d4517d32185a1f3eb09acc176d4e6d4154b964c2d"
+  },
+  {
+    "path": "ProjectSettings/EditorSettings.asset",
+    "sha256": "7827f85ac2d8ce213a15baea0157d2df582eb6be435654139c974c6e3ee5c969"
+  },
+  {
+    "path": "ProjectSettings/ProjectSettings.asset",
+    "sha256": "33d4eb966e845bcb14c154b3de34e8f80977aaa112623ee4ffb8bbc827d7ef1d"
+  },
+  {
+    "path": "ProjectSettings/GraphicsSettings.asset",
+    "sha256": "842a1ac75bbf9fc824e40022658d487b2318b08ec896cd5679f9acfc6317cacb"
+  },
+  {
+    "path": "Assets/_Project/Scenes/TitleScene.unity",
+    "sha256": "fbb6df69e30d5fc47cda5e726e493011792b7009d2b8c3d05fcc531610376c1b"
+  },
+  {
+    "path": "Assets/_Project/Scenes/Tests/TestScene.unity",
+    "sha256": "90b6c4db142246075d37ce8839c929b350c008ef606c620324248d67fdeea850"
+  }
+]

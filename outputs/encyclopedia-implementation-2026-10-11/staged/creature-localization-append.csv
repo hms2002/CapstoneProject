@@ -1,0 +1,13 @@
+encyclopedia.tab_npc,NPC,NPC,NPC,NPC,NPC
+encyclopedia.page_indicator,{0} / {1},{0} / {1},{0} / {1},{0} / {1},{0} / {1}
+encyclopedia.entry_count,{0}종,{0} entries,{0}種,{0}种,{0}種
+encyclopedia.entries_pending,등록된 항목 없음,No registered entries,登録された項目なし,暂无登记条目,尚無登記項目
+encyclopedia.monster_kill_count,누적 처치 수 {0}회,Total kills: {0},累計討伐数 {0}体,累计击败 {0}次,累計擊敗 {0}次
+encyclopedia.description,설명,Description,説明,说明,說明
+encyclopedia.current_affection,현재 호감도,Current affection,現在の好感度,当前好感度,目前好感度
+encyclopedia.affection_rewards,호감도 보상,Affection rewards,好感度報酬,好感度奖励,好感度獎勵
+encyclopedia.character_story,설명 · 스토리,Description · Story,説明・ストーリー,说明 · 故事,說明 · 故事
+encyclopedia.portrait_pending,일러스트 준비 중,Illustration pending,イラスト準備中,插画准备中,插畫準備中
+encyclopedia.affection_reward_level,호감도 {0},Affection {0},好感度 {0},好感度 {0},好感度 {0}
+encyclopedia.full_view,전체 보기,Full view,全体表示,查看全图,查看全圖
+encyclopedia.close_full_view,닫기,Close,閉じる,关闭,關閉

@@ -1,0 +1,36 @@
+{
+  "environment": "Original CapstoneProject Unity6000.4.2f1 Editor PlayMode, D3D11",
+  "initialPassed": 22,
+  "initialFailed": 0,
+  "initialSkipped": 0,
+  "initialExitCode": 0,
+  "finalTypedCasePassed": 1,
+  "finalTypedCaseFailed": 0,
+  "finalTypedCaseSkipped": 0,
+  "finalTypedCaseExitCode": 0,
+  "typedReadback": "Actual shared prefab four typed references, mesh configured, root Canvas, exact StaggerBar and its Fill Image, six legacy HP graphics excluding stagger fill",
+  "runtimeCoverage": [
+    "Default HP mesh and legacy raster equivalence for all sizes/ratios",
+    "Overlap including stagger-only intersection and return to mesh",
+    "Canvas opt-in/status/stagger visibility and row spacing",
+    "Continuous Groggy recovery without gauge events",
+    "Disable/re-enable, destruction unsubscription and source-owner lifecycle",
+    "Actual GoblinTank, ArcaneTankGolem and Rook profiles: health-third gauge and MaxHealth rescaling",
+    "Existing authored HUD size/visibility and Burn/Electrocuted projection"
+  ],
+  "preservation": "129 protected non-document production/source/settings files unchanged; 6 existing saves unchanged; no new saves; 2 preference keys exactly restored after five Unity session diagnostic values changed per run; parent documentation finalized during final case",
+  "originalProjectTestsUsed": true,
+  "isolatedStagingUsed": false,
+  "playerBuildExecuted": false,
+  "fullCombatManualExecuted": false,
+  "unusedFallback": "Prepared ignored staging script never executed; optional Tools adapter removed by test author",
+  "evidence": [
+    "playmode-results.xml",
+    "unity-playmode.log",
+    "native-exit.json",
+    "typed-readback-results.xml",
+    "unity-typed-readback.log",
+    "typed-case-exit.json",
+    "final-preservation.json"
+  ]
+}

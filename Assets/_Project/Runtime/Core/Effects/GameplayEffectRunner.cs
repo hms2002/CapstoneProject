@@ -34,6 +34,10 @@ namespace UnityGAS
     public class GameplayEffectRunner : MonoBehaviour
     {
         private readonly ActiveGameplayEffectRepository repository = new();
+        private readonly List<ActiveGameplayEffect> naturallyExpiredEffects = new();
+
+        // Natural expiry is distinct from cleanse, explicit removal and restore cleanup.
+        public static event System.Action<ActiveGameplayEffect> NaturallyExpired;
 
         [SerializeField] private GameplayCueManager cueManager;
 
@@ -53,8 +57,31 @@ namespace UnityGAS
 
         private void Update()
         {
-            repository.Tick(Time.deltaTime, EndEffect);
+            TickEffects(Time.deltaTime);
         }
+
+        private void TickEffects(float deltaTime)
+        {
+            repository.Tick(deltaTime, EndNaturallyExpiredEffect);
+            if (naturallyExpiredEffects.Count == 0)
+                return;
+
+            // Damage listeners may kill a target and clear its effects. Notify only after
+            // repository iteration and tag/payload cleanup have both finished.
+            var expired = naturallyExpiredEffects.ToArray();
+            naturallyExpiredEffects.Clear();
+            foreach (var effect in expired)
+                NaturallyExpired?.Invoke(effect);
+        }
+
+        private void EndNaturallyExpiredEffect(ActiveGameplayEffect effect)
+        {
+            EndEffect(effect);
+            naturallyExpiredEffects.Add(effect);
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetExpiryListeners() => NaturallyExpired = null;
 
         #region Queries
 
@@ -430,6 +457,12 @@ namespace UnityGAS
 
             // 3) 남은 시간 복원
             active.TimeRemaining = desiredRemainingTime;
+            if (desiredRemainingTime <= 0f)
+            {
+                // An already-expired snapshot is restore cleanup, not a new timed expiry.
+                EndEffect(active);
+                repository.Remove(active);
+            }
         }
         #endregion
         #region Time Adjustment

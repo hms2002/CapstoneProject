@@ -1,0 +1,58 @@
+[
+  {
+    "state": "ground-alcohol",
+    "repeat": 1,
+    "baselineMeanMedianGpuMs": 1.06752,
+    "optimizedMeanMedianGpuMs": 0.86848,
+    "reductionPercent": 18.645083932853712
+  },
+  {
+    "state": "ground-alcohol",
+    "repeat": 2,
+    "baselineMeanMedianGpuMs": 1.3149440000000001,
+    "optimizedMeanMedianGpuMs": 1.100288,
+    "reductionPercent": 16.324345371361836
+  },
+  {
+    "state": "ground-fire",
+    "repeat": 1,
+    "baselineMeanMedianGpuMs": 0.975104,
+    "optimizedMeanMedianGpuMs": 0.8189439999999999,
+    "reductionPercent": 16.01470202152797
+  },
+  {
+    "state": "ground-fire",
+    "repeat": 2,
+    "baselineMeanMedianGpuMs": 1.31392,
+    "optimizedMeanMedianGpuMs": 1.099776,
+    "reductionPercent": 16.29810034096444
+  },
+  {
+    "state": "legacy-preparing-control",
+    "repeat": 1,
+    "baselineMeanMedianGpuMs": 1.0086400000000002,
+    "optimizedMeanMedianGpuMs": 1.109632,
+    "reductionPercent": -10.012690355329923
+  },
+  {
+    "state": "legacy-preparing-control",
+    "repeat": 2,
+    "baselineMeanMedianGpuMs": 1.228416,
+    "optimizedMeanMedianGpuMs": 1.27936,
+    "reductionPercent": -4.147129311243103
+  },
+  {
+    "state": "legacy-projectile-control",
+    "repeat": 1,
+    "baselineMeanMedianGpuMs": 0.94016,
+    "optimizedMeanMedianGpuMs": 0.9612799999999999,
+    "reductionPercent": -2.24642614023145
+  },
+  {
+    "state": "legacy-projectile-control",
+    "repeat": 2,
+    "baselineMeanMedianGpuMs": 0.9633280000000001,
+    "optimizedMeanMedianGpuMs": 0.997504,
+    "reductionPercent": -3.5477013021525172
+  }
+]

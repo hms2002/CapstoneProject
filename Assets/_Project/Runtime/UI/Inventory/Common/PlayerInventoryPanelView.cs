@@ -26,6 +26,16 @@ public sealed class PlayerInventoryPanelView : MonoBehaviour
     [SerializeField] private ItemSlotUI relicSlotPrefab;
 
     private readonly List<ItemSlotUI> spawnedSlots = new();
+    private readonly SlotGroup consumableSlots = new();
+    private readonly SlotGroup weaponSlots = new();
+    private readonly SlotGroup relicSlots = new();
+
+    private sealed class SlotGroup
+    {
+        public Transform Root;
+        public ItemSlotUI Prefab;
+        public readonly List<ItemSlotUI> Slots = new();
+    }
 
     private IDisposable consumableDisposer;
     private IDisposable weaponDisposer;
@@ -45,6 +55,15 @@ public sealed class PlayerInventoryPanelView : MonoBehaviour
     private void OnDisable()
     {
         ClearBinding();
+    }
+
+    private void OnDestroy()
+    {
+        ClearBinding();
+        DiscardSlots(consumableSlots);
+        DiscardSlots(weaponSlots);
+        DiscardSlots(relicSlots);
+        spawnedSlots.Clear();
     }
 
     public void Configure(
@@ -108,9 +127,13 @@ public sealed class PlayerInventoryPanelView : MonoBehaviour
             dropZone.Hide();
         }
 
-        BuildSlots(ConsumableContainer, consumableGridRoot, consumableSlotPrefab);
-        BuildSlots(WeaponContainer, weaponGridRoot, weaponSlotPrefab);
-        BuildSlots(RelicContainer, relicGridRoot, relicSlotPrefab, RelicVisibleSlotCount);
+        BuildSlots(ConsumableContainer, consumableGridRoot, consumableSlotPrefab, consumableSlots);
+        BuildSlots(WeaponContainer, weaponGridRoot, weaponSlotPrefab, weaponSlots);
+        BuildSlots(RelicContainer, relicGridRoot, relicSlotPrefab, relicSlots, RelicVisibleSlotCount);
+        spawnedSlots.Clear();
+        spawnedSlots.AddRange(consumableSlots.Slots);
+        spawnedSlots.AddRange(weaponSlots.Slots);
+        spawnedSlots.AddRange(relicSlots.Slots);
     }
 
     public void ClearBinding()
@@ -131,20 +154,36 @@ public sealed class PlayerInventoryPanelView : MonoBehaviour
         RelicContainer = null;
     }
 
-    private void BuildSlots(IItemContainer container, Transform gridRoot, ItemSlotUI slotPrefab, int visibleSlotCount = 0)
+    private void BuildSlots(IItemContainer container, Transform gridRoot, ItemSlotUI slotPrefab, SlotGroup group, int visibleSlotCount = 0)
     {
         if (container == null || gridRoot == null || slotPrefab == null)
+        {
+            DiscardSlots(group);
             return;
+        }
 
         int slotCount = visibleSlotCount > 0
             ? Mathf.Max(container.SlotCount, visibleSlotCount)
             : container.SlotCount;
 
-        for (int i = 0; i < slotCount; i++)
+        bool reusable = group.Root == gridRoot && group.Prefab == slotPrefab && group.Slots.Count == slotCount;
+        for (int i = 0; reusable && i < group.Slots.Count; i++)
+            reusable = group.Slots[i] != null && group.Slots[i].transform.parent == gridRoot;
+        if (!reusable)
         {
-            ItemSlotUI slot = Instantiate(slotPrefab, gridRoot);
+            DiscardSlots(group);
+            group.Root = gridRoot;
+            group.Prefab = slotPrefab;
+            for (int i = 0; i < slotCount; i++)
+                group.Slots.Add(Instantiate(slotPrefab, gridRoot));
+        }
+
+        for (int i = 0; i < group.Slots.Count; i++)
+        {
+            ItemSlotUI slot = group.Slots[i];
+            slot.transform.SetAsLastSibling();
+            slot.gameObject.SetActive(true);
             slot.Bind(container, i);
-            spawnedSlots.Add(slot);
         }
     }
 
@@ -155,13 +194,30 @@ public sealed class PlayerInventoryPanelView : MonoBehaviour
             if (spawnedSlots[i] == null)
                 continue;
 
-            if (Application.isPlaying)
-                Destroy(spawnedSlots[i].gameObject);
-            else
-                DestroyImmediate(spawnedSlots[i].gameObject);
+            spawnedSlots[i].ClearBinding();
+            spawnedSlots[i].gameObject.SetActive(false);
         }
+    }
 
-        spawnedSlots.Clear();
+    private void DiscardSlots(SlotGroup group)
+    {
+        for (int i = 0; i < group.Slots.Count; i++)
+        {
+            ItemSlotUI slot = group.Slots[i];
+            if (slot == null)
+                continue;
+            slot.ClearBinding();
+            slot.gameObject.SetActive(false);
+            // IncludeInactive queries must not observe deferred-destruction views after a rebind.
+            slot.transform.SetParent(null, false);
+            if (Application.isPlaying)
+                Destroy(slot.gameObject);
+            else
+                DestroyImmediate(slot.gameObject);
+        }
+        group.Slots.Clear();
+        group.Root = null;
+        group.Prefab = null;
     }
 
 }

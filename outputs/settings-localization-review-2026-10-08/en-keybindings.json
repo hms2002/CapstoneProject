@@ -1,0 +1,589 @@
+{
+    "scene": "TitleScene",
+    "locale": "en",
+    "screen": "keybindings",
+    "image": "outputs/settings-localization-review-2026-10-08/en-keybindings.png",
+    "labels": [
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Zoom Out Minimap",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Zoom In Minimap",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Open Level Rewards",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Discard Item",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Inventory",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Consumable 4",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Consumable 3",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Consumable 2",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Consumable 1",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Switch Weapon",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Skill 2",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Skill 1",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Dash",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Interact",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "-",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Attack",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Move Right",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Move Left",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Move Down",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Reset",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 24.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Move Up",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Display Mode",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Previous_Render/Previous",
+            "text": "<",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "English",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Language",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Screen Shake",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Next_Render/Next",
+            "text": ">",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Next_Render/Next",
+            "text": ">",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+            "text": "Apply",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "Start Game",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Next_Render/Next",
+            "text": ">",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Next_Render/Next",
+            "text": ">",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Master Volume",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Previous_Render/Previous",
+            "text": "<",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Fullscreen",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+            "text": "Key Settings",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 60.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Controls/KeyMapping_Render/KeyMapping/OptionText",
+            "text": "Key Bindings",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Resolution",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "62%",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+            "text": "Apply",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "Music Volume",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "On",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+            "text": "Back",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Previous_Render/Previous",
+            "text": "<",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+            "text": "Settings",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 60.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/OptionText_Render/OptionText",
+            "text": "1920 x 1080",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "Settings",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+            "text": "Back",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Previous_Render/Previous",
+            "text": "<",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "24%",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "Quit Game",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "34%",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Render_Text/Text (TMP)_Render/Text (TMP)",
+            "text": "Sound Effects",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+            "text": "Reset Settings",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 40.0
+        }
+    ]
+}

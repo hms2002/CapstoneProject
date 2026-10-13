@@ -1,0 +1,25 @@
+{
+  "markdown_links": {
+    "checked": 36,
+    "broken": []
+  },
+  "source_trailing_whitespace": [],
+  "scoped_diff_check": {
+    "exit_code": 0,
+    "output": ""
+  },
+  "runtime_preserved": {
+    "checked": 5,
+    "passed": true
+  },
+  "preservation_audit_passed": true,
+  "global_guid_audit_passed": true,
+  "native_unique_cases": 38,
+  "native_passed_cases": 38,
+  "msbuild": {
+    "Editor.csproj": 0,
+    "ProceduralPlayModeTests.csproj": 0,
+    "evidence": "Final command exits observed after native execution; editor-msbuild-final.log/tests-msbuild-final.log."
+  },
+  "passed": true
+}

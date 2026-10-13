@@ -1,0 +1,281 @@
+{
+  "passed": true,
+  "purpose": "one-off serialized asset preservation evidence",
+  "before": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-book-illustration-frame-2026-10-11\\before\\EncyclopediaUI.prefab",
+  "current": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\PopupUI\\Encyclopedia\\EncyclopediaUI.prefab",
+  "checks": [
+    {
+      "name": "2583_record_ids_preserved",
+      "passed": true,
+      "before_count": 2583,
+      "current_count": 2583,
+      "added": [],
+      "removed": []
+    },
+    {
+      "name": "record_order_and_yaml_prefix_preserved",
+      "passed": true
+    },
+    {
+      "name": "record_classes_preserved",
+      "passed": true
+    },
+    {
+      "name": "layout_component_references_preserved",
+      "passed": true
+    },
+    {
+      "name": "exactly_the_requested_illustration_rect_changed",
+      "passed": true,
+      "changed_record_ids": [
+        "3202883555615465603"
+      ],
+      "unchanged_record_count": 2582
+    },
+    {
+      "name": "native_authoring_touch_list_matches_five_existing_alignment_targets",
+      "passed": true,
+      "touched_record_ids": [
+        "1972443054909705614",
+        "2816095993118841633",
+        "3202883555615465603",
+        "8365083889743291225",
+        "8753304343005770400"
+      ],
+      "mutable_record_ids": [
+        "3202883555615465603"
+      ],
+      "explanation": "The existing alignment authoring touches five targets; only Illustration may differ from baseline."
+    },
+    {
+      "name": "only_position_y_and_size_xy_are_mutable",
+      "passed": true
+    },
+    {
+      "name": "illustration_is_594_by_389_at_top_minus_7",
+      "passed": true
+    },
+    {
+      "name": "bottom_396_and_affection_top_400_preserve_four_unit_clearance",
+      "passed": true,
+      "before_bottom": 396.0,
+      "current_bottom": 396.0,
+      "affection_top": 400.0,
+      "clearance": 4.0
+    },
+    {
+      "name": "left_title_retains_25_unit_top_inset",
+      "passed": true,
+      "top_inset": 25.0
+    },
+    {
+      "name": "monster_title_retains_25_unit_top_inset",
+      "passed": true,
+      "top_inset": 25.0
+    },
+    {
+      "name": "name_portrait_lower_sections_grids_titles_full_view_count_and_pages_unchanged",
+      "passed": true,
+      "preserved_records": {
+        "character_portrait": "1336869761062935091",
+        "character_name": "7614652720469846901",
+        "left_title": "1972443054909705614",
+        "monster_title": "8753304343005770400",
+        "monster_preview": "2816095993118841633",
+        "item_title_group": "8365083889743291225",
+        "affection": "4035211391058819175",
+        "character_scroll": "1857793906246884869",
+        "monster_grid": "4830727163525686223",
+        "character_grid": "5673048824819209018",
+        "left_page": "7902588248173237715",
+        "right_page": "2969352487574867985",
+        "count_object": "5796504864688131865",
+        "full_view_rect": "6080992102414648940",
+        "book": "5501019934593851225"
+      }
+    },
+    {
+      "name": "detail_fit_in_parent_and_bottom_pivot_preserved",
+      "passed": true,
+      "aspect_mode": "3",
+      "pivot": [
+        0.5,
+        0.0
+      ]
+    },
+    {
+      "name": "full_view_one_unit_bottom_right_inset_preserved",
+      "passed": true
+    },
+    {
+      "name": "hidden_count_preserved",
+      "passed": true
+    },
+    {
+      "name": "hierarchy_and_component_order_preserved",
+      "passed": true
+    },
+    {
+      "name": "all_serialized_fileid_and_guid_references_preserved",
+      "passed": true
+    },
+    {
+      "name": "all_font_sprite_material_and_aspect_fit_fields_preserved",
+      "passed": true,
+      "inspected_record_count": 554,
+      "inspected_field_count": 2964
+    },
+    {
+      "name": "native_brown_rule_clearance_is_one_to_two_pixels",
+      "passed": true,
+      "measured_from": "serialized geometry and original sprite8 rule pixel edges; not a new render measurement",
+      "ui_gaps": {
+        "left": 1.8888888888889142,
+        "right": 2.2777777777777146,
+        "top": 2.055555555555486
+      },
+      "expected_native_pixel_gaps": {
+        "left": 1.5111111111111315,
+        "right": 1.8222222222221718,
+        "top": 1.6444444444443889
+      },
+      "native_fixture_resolution": [
+        1920,
+        1080
+      ],
+      "canvas_reference_resolution": [
+        2400,
+        1350
+      ],
+      "source_sprite_dimensions": [
+        816.0,
+        720.0
+      ],
+      "source_rule_pixels": {
+        "left": 427,
+        "right": 719,
+        "top": 196
+      },
+      "page_top": 340.0,
+      "page_left": 40.0,
+      "page_right": 640.0
+    },
+    {
+      "name": "eleven_protected_runtime_item_art_catalog_global_ui_and_test_files_unchanged",
+      "passed": true,
+      "files": [
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaCreatureDetailView.cs",
+          "expected_sha256": "EB5E3358345935DD8567F7F40FC2CAD736152F5CCCF57DC972E9B2436CFD51ED",
+          "actual_sha256": "EB5E3358345935DD8567F7F40FC2CAD736152F5CCCF57DC972E9B2436CFD51ED",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaCreatureTab.cs",
+          "expected_sha256": "F456D8CDAC8856FE777AAC92850AF06BECEF0791607AE5D7F0468A2CF051AA9A",
+          "actual_sha256": "F456D8CDAC8856FE777AAC92850AF06BECEF0791607AE5D7F0468A2CF051AA9A",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaPortraitUtility.cs",
+          "expected_sha256": "4100704DAA51D96DA0DD9EDFBC5EDCEEAF7FB23AF429E61FBC19D80EB4D236E4",
+          "actual_sha256": "4100704DAA51D96DA0DD9EDFBC5EDCEEAF7FB23AF429E61FBC19D80EB4D236E4",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemTab.cs",
+          "expected_sha256": "4573461141C7941DE02EF9A5E1C863008244E6D32CF72AA626399D04F17760DB",
+          "actual_sha256": "4573461141C7941DE02EF9A5E1C863008244E6D32CF72AA626399D04F17760DB",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemLeftPage.cs",
+          "expected_sha256": "7637FAD5E52AD5AF56AAF70FAA1BABB885C9F01218D9CA67CD502FB6166849E0",
+          "actual_sha256": "7637FAD5E52AD5AF56AAF70FAA1BABB885C9F01218D9CA67CD502FB6166849E0",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Encyclopedia\\EncyclopediaItemRightPage.cs",
+          "expected_sha256": "E925C25719BEF7E978DBA12B97DD308371DA05F96A96A6D44C108DE433EEFAD2",
+          "actual_sha256": "E925C25719BEF7E978DBA12B97DD308371DA05F96A96A6D44C108DE433EEFAD2",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\GlobalUIRoot.prefab",
+          "expected_sha256": "02EFAB5C9922894E842CFA8A5C087EE8DC32D07BA3BB09603E8C0DC5D13C7598",
+          "actual_sha256": "02EFAB5C9922894E842CFA8A5C087EE8DC32D07BA3BB09603E8C0DC5D13C7598",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Encyclopedia\\EncyclopediaCatalog.asset",
+          "expected_sha256": "36FEAD9A57822C5BC32D921E9E318F6BDDD80AECBE03DA35E44D5A08A422E167",
+          "actual_sha256": "36FEAD9A57822C5BC32D921E9E318F6BDDD80AECBE03DA35E44D5A08A422E167",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\Inventory Book SpriteSheet.png",
+          "expected_sha256": "48D3A80A00E5DE46D6CBBA1416872EBA1AC1DF16253FEB5B8B7F2908BDB9067E",
+          "actual_sha256": "48D3A80A00E5DE46D6CBBA1416872EBA1AC1DF16253FEB5B8B7F2908BDB9067E",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Encyclopedia\\Updated_Paper_Book\\Sprites\\Inventory Book SpriteSheet.png.meta",
+          "expected_sha256": "7FCA62976A41197934149CBAE1F199A9851CD1297944F46D04783866FA1685E1",
+          "actual_sha256": "7FCA62976A41197934149CBAE1F199A9851CD1297944F46D04783866FA1685E1",
+          "unchanged": true
+        },
+        {
+          "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Tests\\PlayMode\\Procedural\\EncyclopediaCreaturePlayModeTests.cs",
+          "expected_sha256": "E74D2D0A3542596D1A4AA98749AFB13E742A8CACF2A5924F09C501B131A4EE43",
+          "actual_sha256": "E74D2D0A3542596D1A4AA98749AFB13E742A8CACF2A5924F09C501B131A4EE43",
+          "unchanged": true
+        }
+      ]
+    }
+  ],
+  "before_sha256": "019B463CCCDC4472C4BBA0645828DE2291E9129513B41C0D4B9CFD950A15379A",
+  "current_sha256": "0BEBDC3E37378F014A1D3D6ED02E1527B9C714B36852456C334B36D58BEC799A",
+  "layout_record_ids": {
+    "illustration": "3202883555615465603",
+    "character_portrait": "1336869761062935091",
+    "character_name": "7614652720469846901",
+    "left_title": "1972443054909705614",
+    "monster_title": "8753304343005770400",
+    "monster_preview": "2816095993118841633",
+    "item_title_group": "8365083889743291225",
+    "affection": "4035211391058819175",
+    "character_scroll": "1857793906246884869",
+    "monster_grid": "4830727163525686223",
+    "character_grid": "5673048824819209018",
+    "left_page": "7902588248173237715",
+    "right_page": "2969352487574867985",
+    "count_object": "5796504864688131865",
+    "full_view_rect": "6080992102414648940",
+    "book": "5501019934593851225"
+  },
+  "changed_record_ids": [
+    "3202883555615465603"
+  ],
+  "authored_illustration_geometry": {
+    "m_AnchorMin": [
+      0.5,
+      1.0
+    ],
+    "m_AnchorMax": [
+      0.5,
+      1.0
+    ],
+    "m_Pivot": [
+      0.5,
+      1.0
+    ],
+    "m_AnchoredPosition": [
+      0.0,
+      -7.0
+    ],
+    "m_SizeDelta": [
+      594.0,
+      389.0
+    ]
+  }
+}

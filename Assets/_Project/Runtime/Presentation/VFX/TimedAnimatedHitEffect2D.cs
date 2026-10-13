@@ -48,6 +48,9 @@ namespace UnityGAS
         private bool hasOriginalAnimatorSpeed;
         private bool isCollected;
         private bool hitWindowOpenedCallbackInvoked;
+        private GameObject actionOwner;
+        private bool isActionBound;
+        private bool resumeOverlapScanPending;
 
         public void Play(float lifetimeSeconds, CombatHitPayload hitPayload, SharedHitRegistry2D registry = null)
         {
@@ -61,11 +64,14 @@ namespace UnityGAS
             Action onHitWindowOpened)
         {
             payload = hitPayload;
+            isActionBound = payload?.sourceSystem != null && transform.IsChildOf(payload.sourceSystem.transform);
+            actionOwner = isActionBound ? payload.sourceSystem.gameObject : null;
             sharedRegistry = registry;
             hitWindowOpenedCallback = onHitWindowOpened;
             localHitTargets.Clear();
             isCollected = false;
             hitWindowOpenedCallbackInvoked = false;
+            resumeOverlapScanPending = false;
 
             CacheReferences();
             ConfigureContactFilter();
@@ -85,6 +91,8 @@ namespace UnityGAS
         /// <summary>애니메이션 이벤트에서 호출해 피해 콜라이더를 켜고 현재 겹친 대상을 즉시 검사한다.</summary>
         public void EnableHitCollision()
         {
+            if (isCollected) return;
+            if (isActionBound && CombatHitPause2D.IsActionStoppedOn(actionOwner)) { CollectEffect(); return; }
             InvokeHitWindowOpenedCallbackIfNeeded();
             if (damageMode == HitDamageMode.PeriodicWhileHitWindowOpen)
             {
@@ -140,6 +148,7 @@ namespace UnityGAS
 
         private void OnDisable()
         {
+            if (isActionBound) { isCollected = true; resumeOverlapScanPending = false; payload = null; }
             DisableHitCollision();
             RestoreAnimatorSpeed();
             hitWindowOpenedCallback = null;
@@ -159,9 +168,23 @@ namespace UnityGAS
             TryApplyHit(other);
         }
 
+        private void Update()
+        {
+            if (isActionBound && CombatHitPause2D.IsActionStoppedOn(actionOwner)) { CollectEffect(); return; }
+            if (!resumeOverlapScanPending || CombatHitPause2D.IsParalyzedOn(actionOwner)) return;
+            resumeOverlapScanPending = false;
+            CheckCurrentOverlaps();
+        }
+
         private IEnumerator CollectAfterDelay(float seconds)
         {
-            yield return new WaitForSeconds(seconds);
+            if (!isActionBound) yield return new WaitForSeconds(seconds);
+            else
+            {
+                double collectAt = CombatHitPause2D.GetActionTimeAsDouble(actionOwner) + seconds;
+                do { yield return null; }
+                while (CombatHitPause2D.IsParalyzedOn(actionOwner) || CombatHitPause2D.GetActionTimeAsDouble(actionOwner) < collectAt);
+            }
             lifetimeCoroutine = null;
             CollectEffect();
         }
@@ -313,8 +336,15 @@ namespace UnityGAS
 
         private void TryApplyHit(Collider2D other)
         {
-            if (other == null || payload == null || !payload.IsValid())
+            if (isCollected || other == null || payload == null || !payload.IsValid() ||
+                (isActionBound && CombatHitPause2D.IsActionStoppedOn(actionOwner)))
                 return;
+
+            if (CombatHitPause2D.IsParalyzedOn(actionOwner))
+            {
+                resumeOverlapScanPending = true;
+                return;
+            }
 
             if (targetLayers.value != 0 && (targetLayers.value & (1 << other.gameObject.layer)) == 0)
                 return;

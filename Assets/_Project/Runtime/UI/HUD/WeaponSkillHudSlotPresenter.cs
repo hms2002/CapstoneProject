@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityGAS;
+using System;
+using System.Globalization;
+using System.Collections.Generic;
 
 /// <summary>
 /// 책임 :
@@ -14,6 +17,17 @@ public static class WeaponSkillHudSlotPresenter
     private static readonly int FlashAmountId = Shader.PropertyToID("_FlashAmount");
     private static readonly int FlashMultiplyId = Shader.PropertyToID("_FlashMultiply");
     private static Shader readyFlashShader;
+    private static readonly Dictionary<(Shader Shader, Texture Texture), SharedIdleFlashMaterial> idleFlashMaterials = new();
+
+    private sealed class SharedIdleFlashMaterial
+    {
+        public Material Material;
+        public int ReferenceCount;
+    }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    public static int DiagnosticSharedIdleMaterialCount => idleFlashMaterials.Count;
+#endif
 
     public static void ApplySlot(
         WeaponSkillHUD2D.SkillSlotUI ui,
@@ -22,6 +36,9 @@ public static class WeaponSkillHudSlotPresenter
         InputBindingService inputBindingService)
     {
         if (ui == null) return;
+
+        ui.cooldownDisplayText ??= new HudDisplayTextCache();
+        ui.chargeDisplayText ??= new HudDisplayTextCache();
 
         bool has = def != null;
         SetSlotVisible(ui, has);
@@ -51,6 +68,9 @@ public static class WeaponSkillHudSlotPresenter
 
         if (ui.chargeText != null)
             ui.chargeText.text = string.Empty;
+
+        ui.cooldownDisplayText.Clear();
+        ui.chargeDisplayText.Clear();
 
         ResetReadyFlashState(ui, has);
     }
@@ -155,6 +175,9 @@ public static class WeaponSkillHudSlotPresenter
     {
         if (ui == null) return;
 
+        ui.cooldownDisplayText ??= new HudDisplayTextCache();
+        ui.chargeDisplayText ??= new HudDisplayTextCache();
+
         if (def == null || abilitySystem == null)
         {
             RestoreCooldownFillConfig(ui);
@@ -188,10 +211,10 @@ public static class WeaponSkillHudSlotPresenter
                 ui.cooldownFill.fillAmount = charges >= max ? 0f : Mathf.Clamp01(recharge / total);
 
             if (ui.cooldownText != null)
-                ui.cooldownText.text = charges < max && recharge > 0.01f ? recharge.ToString("0.0") : string.Empty;
+                ui.cooldownText.text = charges < max && recharge > 0.01f ? ui.cooldownDisplayText.Decimal(recharge) : string.Empty;
 
             if (ui.chargeText != null)
-                ui.chargeText.text = $"{charges}/{max}";
+                ui.chargeText.text = ui.chargeDisplayText.Charges(charges, max);
 
             UpdateReadyFlash(ui, ready, charges);
             return;
@@ -204,7 +227,7 @@ public static class WeaponSkillHudSlotPresenter
             ui.cooldownFill.fillAmount = Mathf.Clamp01(remaining / total);
 
         if (ui.cooldownText != null)
-            ui.cooldownText.text = remaining > 0.01f ? remaining.ToString("0.0") : string.Empty;
+            ui.cooldownText.text = remaining > 0.01f ? ui.cooldownDisplayText.Decimal(remaining) : string.Empty;
 
         if (ui.chargeText != null)
             ui.chargeText.text = string.Empty;
@@ -336,6 +359,41 @@ public static class WeaponSkillHudSlotPresenter
         ApplyReadyFlashVisual(ui, 0f);
     }
 
+    public static void CancelReadyFlash(WeaponSkillHUD2D.SkillSlotUI ui)
+    {
+        if (ui == null)
+            return;
+
+        ui.readyStateInitialized = false;
+        ui.wasReady = false;
+        ui.lastChargeCount = -1;
+        ui.readyFlashRemaining = 0f;
+        ApplyReadyFlashVisualCore(ui, 0f, useSharedIdleMaterial: false);
+    }
+
+    public static void ReleaseReadyFlashMaterial(WeaponSkillHUD2D.SkillSlotUI ui)
+    {
+        if (ui == null)
+            return;
+
+        CancelReadyFlash(ui);
+        Material ownedMaterial = ui.readyFlashMaterialInstance;
+        ui.readyFlashMaterialInstance = null;
+        ui.readyFlashOriginalMaterial = null;
+        ReleaseSharedIdleMaterial(ui);
+        DestroyOwnedFlashMaterial(ownedMaterial);
+    }
+
+    private static void DestroyOwnedFlashMaterial(Material ownedMaterial)
+    {
+        if (ownedMaterial == null)
+            return;
+        if (Application.isPlaying)
+            UnityEngine.Object.Destroy(ownedMaterial);
+        else
+            UnityEngine.Object.DestroyImmediate(ownedMaterial);
+    }
+
     private static void UpdateReadyFlash(WeaponSkillHUD2D.SkillSlotUI ui, bool ready, int chargeCount)
     {
         if (ui == null)
@@ -397,6 +455,11 @@ public static class WeaponSkillHudSlotPresenter
 
     private static void ApplyReadyFlashVisual(WeaponSkillHUD2D.SkillSlotUI ui, float amount)
     {
+        ApplyReadyFlashVisualCore(ui, amount, useSharedIdleMaterial: true);
+    }
+
+    private static void ApplyReadyFlashVisualCore(WeaponSkillHUD2D.SkillSlotUI ui, float amount, bool useSharedIdleMaterial)
+    {
         if (ui == null)
             return;
 
@@ -418,7 +481,7 @@ public static class WeaponSkillHudSlotPresenter
         if (!ui.readyFlashScaleCaptured)
             CaptureReadyFlashScale(ui);
 
-        if (TryApplyReadyFlashMaterial(ui, amount))
+        if (TryApplyReadyFlashMaterialCore(ui, amount, useSharedIdleMaterial))
         {
             if (ui.readyFlashColorCaptured && amount <= 0.001f)
                 ui.icon.color = ui.readyFlashBaseIconColor;
@@ -438,8 +501,37 @@ public static class WeaponSkillHudSlotPresenter
 
     private static bool TryApplyReadyFlashMaterial(WeaponSkillHUD2D.SkillSlotUI ui, float amount)
     {
+        return TryApplyReadyFlashMaterialCore(ui, amount, useSharedIdleMaterial: true);
+    }
+
+    private static bool TryApplyReadyFlashMaterialCore(WeaponSkillHUD2D.SkillSlotUI ui, float amount, bool useSharedIdleMaterial)
+    {
         if (ui == null || ui.icon == null)
             return false;
+
+        if (amount <= 0f)
+        {
+            if (!useSharedIdleMaterial)
+            {
+                RestoreReadyFlashOriginalMaterial(ui);
+                return ui.readyFlashMaterialInstance != null || ui.readyFlashIdleMaterial != null || ResolveReadyFlashShader() != null;
+            }
+
+            if (ui.readyFlashIdleMaterialLeased && ui.readyFlashIdleMaterial != null && ui.icon.material == ui.readyFlashIdleMaterial)
+                return true;
+
+            Shader idleShader = ResolveReadyFlashShader();
+            if (idleShader == null)
+                return false;
+
+            CaptureReadyFlashOriginalMaterial(ui);
+            Material idleMaterial = RetainSharedIdleMaterial(ui, idleShader);
+            if (ui.readyFlashMaterialInstance != null && ui.icon.material == ui.readyFlashMaterialInstance)
+                ui.readyFlashMaterialInstance.SetFloat(FlashAmountId, 0f);
+            if (ui.icon.material != idleMaterial)
+                ui.icon.material = idleMaterial;
+            return true;
+        }
 
         if (ui.readyFlashMaterialInstance == null)
         {
@@ -447,20 +539,20 @@ public static class WeaponSkillHudSlotPresenter
             if (shader == null)
                 return false;
 
-            ui.readyFlashOriginalMaterial = ui.icon.material;
             ui.readyFlashMaterialInstance = new Material(shader)
             {
                 name = $"{ui.icon.name}_ReadyFlash_MaterialInstance",
                 hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild
             };
-
-            if (ui.readyFlashOriginalMaterial != null && ui.readyFlashOriginalMaterial.HasProperty("_MainTex"))
-                ui.readyFlashMaterialInstance.mainTexture = ui.readyFlashOriginalMaterial.mainTexture;
-
-            ui.icon.material = ui.readyFlashMaterialInstance;
         }
-        else if (ui.icon.material != ui.readyFlashMaterialInstance)
+
+        if (ui.icon.material != ui.readyFlashMaterialInstance)
         {
+            CaptureReadyFlashOriginalMaterial(ui);
+            ui.readyFlashMaterialInstance.mainTexture =
+                ui.readyFlashOriginalMaterial != null && ui.readyFlashOriginalMaterial.HasProperty("_MainTex")
+                    ? ui.readyFlashOriginalMaterial.mainTexture
+                    : Texture2D.whiteTexture;
             ui.icon.material = ui.readyFlashMaterialInstance;
         }
 
@@ -469,6 +561,78 @@ public static class WeaponSkillHudSlotPresenter
         ui.readyFlashMaterialInstance.SetFloat(FlashAmountId, amount);
         ui.readyFlashMaterialInstance.SetFloat(FlashMultiplyId, 1f);
         return true;
+    }
+
+    private static void CaptureReadyFlashOriginalMaterial(WeaponSkillHUD2D.SkillSlotUI ui)
+    {
+        Material current = ui.icon.material;
+        if (current != ui.readyFlashMaterialInstance && current != ui.readyFlashIdleMaterial)
+            ui.readyFlashOriginalMaterial = current;
+    }
+
+    private static void RestoreReadyFlashOriginalMaterial(WeaponSkillHUD2D.SkillSlotUI ui)
+    {
+        Material current = ui.icon.material;
+        if (ui.readyFlashMaterialInstance != null && current == ui.readyFlashMaterialInstance)
+            ui.readyFlashMaterialInstance.SetFloat(FlashAmountId, 0f);
+        // Borrowed material changes remain owned by their external presentation writer.
+        if ((ui.readyFlashMaterialInstance != null && current == ui.readyFlashMaterialInstance) ||
+            (ui.readyFlashIdleMaterial != null && current == ui.readyFlashIdleMaterial))
+            ui.icon.material = ui.readyFlashOriginalMaterial;
+    }
+
+    private static Material RetainSharedIdleMaterial(WeaponSkillHUD2D.SkillSlotUI ui, Shader shader)
+    {
+        Texture texture = ui.readyFlashOriginalMaterial != null && ui.readyFlashOriginalMaterial.HasProperty("_MainTex")
+            ? ui.readyFlashOriginalMaterial.mainTexture
+            : Texture2D.whiteTexture;
+        if (ui.readyFlashIdleMaterialLeased && ui.readyFlashIdleMaterial != null &&
+            ui.readyFlashIdleShader == shader && ui.readyFlashIdleTexture == texture)
+            return ui.readyFlashIdleMaterial;
+
+        ReleaseSharedIdleMaterial(ui);
+        var key = (shader, texture);
+        if (!idleFlashMaterials.TryGetValue(key, out SharedIdleFlashMaterial entry) || entry.Material == null)
+        {
+            var idleMaterial = new Material(shader)
+            {
+                name = "UI_ReadyFlash_SharedIdle",
+                hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild,
+                mainTexture = texture,
+            };
+            // Keep the original ready shader's alpha blend even with no visible flash.
+            idleMaterial.SetColor(FlashColorId, Color.white);
+            idleMaterial.SetFloat(FlashAmountId, 0f);
+            idleMaterial.SetFloat(FlashMultiplyId, 1f);
+            entry = new SharedIdleFlashMaterial { Material = idleMaterial };
+            idleFlashMaterials[key] = entry;
+        }
+
+        entry.ReferenceCount++;
+        ui.readyFlashIdleMaterial = entry.Material;
+        ui.readyFlashIdleShader = shader;
+        ui.readyFlashIdleTexture = texture;
+        ui.readyFlashIdleMaterialLeased = true;
+        return entry.Material;
+    }
+
+    private static void ReleaseSharedIdleMaterial(WeaponSkillHUD2D.SkillSlotUI ui)
+    {
+        if (!ui.readyFlashIdleMaterialLeased)
+            return;
+
+        var key = (ui.readyFlashIdleShader, ui.readyFlashIdleTexture);
+        Material material = ui.readyFlashIdleMaterial;
+        ui.readyFlashIdleMaterial = null;
+        ui.readyFlashIdleShader = null;
+        ui.readyFlashIdleTexture = null;
+        ui.readyFlashIdleMaterialLeased = false;
+        if (idleFlashMaterials.TryGetValue(key, out SharedIdleFlashMaterial entry) &&
+            ReferenceEquals(entry.Material, material) && --entry.ReferenceCount == 0)
+        {
+            idleFlashMaterials.Remove(key);
+            DestroyOwnedFlashMaterial(entry.Material);
+        }
     }
 
     private static Shader ResolveReadyFlashShader()
@@ -576,7 +740,7 @@ public static class WeaponSkillHudSlotPresenter
 
         if (ui.cooldownText != null)
             ui.cooldownText.text = duration.ShowText && duration.RemainingSeconds > 0.01f
-                ? duration.RemainingSeconds.ToString("0.0")
+                ? ui.cooldownDisplayText.Decimal(duration.RemainingSeconds)
                 : string.Empty;
 
         if (ui.chargeText != null)
@@ -653,6 +817,67 @@ public static class WeaponSkillHudSlotPresenter
         ui.cooldownFill.type = ui.cooldownFillType;
         ui.cooldownFill.fillMethod = ui.cooldownFillMethod;
         ui.cooldownFill.fillOrigin = ui.cooldownFillOrigin;
+    }
+}
+
+// Use the runtime's numeric formatter, including its midpoint/culture rules, without
+// allocating another string while the displayed characters are unchanged.
+internal sealed class HudDisplayTextCache
+{
+    private readonly char[] buffer = new char[64];
+    private string cachedValue;
+
+    public void Clear() => cachedValue = null;
+
+    public string Decimal(float value, string suffix = null, IFormatProvider provider = null)
+    {
+        provider ??= CultureInfo.CurrentCulture;
+        return value.TryFormat(buffer, out int written, "0.0", provider)
+            ? Store(written, suffix)
+            : Store(value.ToString("0.0", provider) + suffix);
+    }
+
+    public string Integer(int value, IFormatProvider provider = null)
+    {
+        provider ??= CultureInfo.CurrentCulture;
+        return value.TryFormat(buffer, out int written, default, provider)
+            ? Store(written, null)
+            : Store(value.ToString(provider));
+    }
+
+    public string Charges(int value, int maximum)
+    {
+        IFormatProvider provider = CultureInfo.CurrentCulture;
+        if (!value.TryFormat(buffer, out int written, default, provider) || written >= buffer.Length)
+            return Store($"{value}/{maximum}");
+        buffer[written++] = '/';
+        if (!maximum.TryFormat(buffer.AsSpan(written), out int maximumWritten, default, provider))
+            return Store($"{value}/{maximum}");
+        return Store(written + maximumWritten, null);
+    }
+
+    private string Store(int written, string suffix)
+    {
+        int suffixLength = suffix?.Length ?? 0;
+        if (written + suffixLength > buffer.Length)
+            return Store(new string(buffer, 0, written) + suffix);
+        for (int i = 0; i < suffixLength; i++)
+            buffer[written + i] = suffix[i];
+        written += suffixLength;
+        if (cachedValue != null && cachedValue.Length == written)
+        {
+            int i = 0;
+            for (; i < written && cachedValue[i] == buffer[i]; i++) { }
+            if (i == written) return cachedValue;
+        }
+        cachedValue = new string(buffer, 0, written);
+        return cachedValue;
+    }
+
+    private string Store(string value)
+    {
+        if (cachedValue != value) cachedValue = value;
+        return cachedValue;
     }
 }
 

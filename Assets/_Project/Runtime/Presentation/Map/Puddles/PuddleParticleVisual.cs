@@ -95,30 +95,32 @@ namespace UnityGAS
                     (1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.45f, 1f, t)));
                 if (useRisingStreaks)
                 {
-                    arrow.enabled = false;
-                    arrow.transform.localScale = Vector3.one;
+                    if (arrow.enabled) arrow.enabled = false;
+                    if (!arrow.transform.localScale.Equals(Vector3.one))
+                        arrow.transform.localScale = Vector3.one;
                     LineRenderer streak = streaks[i];
                     float length = streakLengths[i] * Mathf.Lerp(1f, 0.7f, t);
                     streak.SetPosition(0, Vector3.down * length * 0.5f);
                     streak.SetPosition(1, Vector3.up * length * 0.5f);
-                    streak.startWidth = streakWidth * 0.35f;
-                    streak.endWidth = streakWidth;
+                    float startWidth = streakWidth * 0.35f;
+                    if (!streak.startWidth.Equals(startWidth)) streak.startWidth = startWidth;
+                    if (!streak.endWidth.Equals(streakWidth)) streak.endWidth = streakWidth;
                     Color tail = streakTailColor;
                     Color tip = streakTipColor;
                     tail.a *= fade;
                     tip.a *= fade;
                     streak.startColor = tail;
                     streak.endColor = tip;
-                    streak.enabled = true;
+                    if (!streak.enabled) streak.enabled = true;
                     continue;
                 }
-                streaks[i].enabled = false;
+                if (streaks[i].enabled) streaks[i].enabled = false;
                 float scale = buffArrowWidth / Mathf.Max(0.001f, buffArrowSprite.bounds.size.x);
                 arrow.transform.localScale = Vector3.one * scale * Mathf.Lerp(1f, 0.65f, t);
                 Color color = buffArrowColor;
                 color.a *= fade;
                 arrow.color = color;
-                arrow.enabled = true;
+                if (!arrow.enabled) arrow.enabled = true;
             }
         }
 

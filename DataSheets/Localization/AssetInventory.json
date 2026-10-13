@@ -2110,7 +2110,7 @@
       "type": "RelicDefinition",
       "owner": "RD_FeatherOrbit",
       "field": "description",
-      "text": "플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 공격력의 35/45/55/65/75% 피해를 주며, 이동속도가 높을수록 더 빠르게 회전합니다."
+      "text": "플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 고정 피해 3/4/5/6/7을 주며, 이동속도가 높을수록 더 빠르게 회전합니다."
     },
     {
       "key": "asset.cac88c9620b50844baf46e203a9d222c.displayName",
@@ -2254,7 +2254,7 @@
       "type": "RelicDefinition",
       "owner": "RD_HeavyBracelet",
       "field": "description",
-      "text": "이동속도가 감소하지만 공격력이 크게 증가합니다."
+      "text": "이동속도가 비율로 감소하고, 공격력이 고정 수치로 증가합니다."
     },
     {
       "key": "asset.81eca7800b7446598237331ab25b00c8.displayName",
@@ -2286,7 +2286,7 @@
       "type": "RelicDefinition",
       "owner": "RD_LastBreath",
       "field": "description",
-      "text": "체력이 낮을 때 공격력이 증가합니다."
+      "text": "체력이 50% 이하일 때 공격력이 3 증가합니다."
     },
     {
       "key": "asset.d866e0f16ecf48d0948bda26ce39842a.displayName",
@@ -2366,7 +2366,7 @@
       "type": "RelicDefinition",
       "owner": "RD_MasterWhetstone",
       "field": "description",
-      "text": "공격력과 기본공격 피해가 증가합니다."
+      "text": "공격력이 고정 수치로 증가하고, 기본공격 피해가 비율로 증가합니다."
     },
     {
       "key": "asset.067dff54d17a4beaac628b7f0b1d05ab.displayName",
@@ -2494,7 +2494,7 @@
       "type": "RelicDefinition",
       "owner": "RD_RedContract",
       "field": "description",
-      "text": "적을 처치하면 잠시 공격력이 증가합니다."
+      "text": "적 처치 시 4초 동안 공격력이 2 증가합니다."
     },
     {
       "key": "asset.1a3c46c0c9914eea8cdcba66be7916eb.displayName",
@@ -2526,7 +2526,7 @@
       "type": "RelicDefinition",
       "owner": "RD_RotatingIornBall",
       "field": "description",
-      "text": "적 처치 시 4초 동안 공격력과 이동속도가 10% 증가합니다."
+      "text": "적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다."
     },
     {
       "key": "asset.3f678aae4cb94331bd3caeb317c659ce.displayName",
@@ -2814,7 +2814,7 @@
       "type": "RelicDefinition",
       "owner": "RD_WornWhetstone",
       "field": "description",
-      "text": "공격력이 증가합니다."
+      "text": "공격력이 고정 수치로 증가합니다."
     },
     {
       "key": "asset.e7c57860bd90b7b428e2c99a0ce96b27.entries.Array.data[0].displayNameOverride",
@@ -5407,6 +5407,198 @@
       "owner": "SlimeRouteSet",
       "field": "bossLocationName",
       "text": "멜타의 방"
+    },
+    {
+      "key": "asset.f38b7d86e797dd94987df9469a009fc6.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderHeart.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ThunderHeart",
+      "field": "displayName",
+      "text": "천둥의 심장"
+    },
+    {
+      "key": "asset.f38b7d86e797dd94987df9469a009fc6.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderHeart.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ThunderHeart",
+      "field": "description",
+      "text": "감전된 적의 수에 비례해 전기 속성이 증가합니다."
+    },
+    {
+      "key": "asset.97084fb613250744aa79efe393f5d8e8.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_StormStep.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_StormStep",
+      "field": "displayName",
+      "text": "생명의 전류"
+    },
+    {
+      "key": "asset.97084fb613250744aa79efe393f5d8e8.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_StormStep.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_StormStep",
+      "field": "description",
+      "text": "최대 체력에 비례해 전기 속성이 증가합니다."
+    },
+    {
+      "key": "asset.9a870ebedac30b24085e330264e88eb0.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_DashCoil.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_DashCoil",
+      "field": "displayName",
+      "text": "대시 코일"
+    },
+    {
+      "key": "asset.9a870ebedac30b24085e330264e88eb0.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_DashCoil.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_DashCoil",
+      "field": "description",
+      "text": "이동 스킬을 사용하면 3초 동안 전기 속성이 증가합니다. 최대 4중첩이며 다시 사용하면 모든 중첩의 지속시간이 갱신됩니다."
+    },
+    {
+      "key": "asset.c89e3a71c9cffd24e8c1a0e0a868e907.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderKnot.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ThunderKnot",
+      "field": "displayName",
+      "text": "뇌명의 매듭"
+    },
+    {
+      "key": "asset.c89e3a71c9cffd24e8c1a0e0a868e907.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderKnot.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ThunderKnot",
+      "field": "description",
+      "text": "연쇄에 맞은 적의 감전 지속시간이 늘어납니다. 최대 4초까지 늘어납니다."
+    },
+    {
+      "key": "asset.4fc8d9217c22c384f89b21f375268227.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ResonanceBell.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ResonanceBell",
+      "field": "displayName",
+      "text": "공명의 종"
+    },
+    {
+      "key": "asset.4fc8d9217c22c384f89b21f375268227.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ResonanceBell.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ResonanceBell",
+      "field": "description",
+      "text": "전기 연쇄가 맞힐 수 있는 최대 대상 수가 증가합니다."
+    },
+    {
+      "key": "asset.fe1d21ace548ebb42bc9885269f0cc58.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_TinglingShackles.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_TinglingShackles",
+      "field": "displayName",
+      "text": "저릿한 족쇄"
+    },
+    {
+      "key": "asset.fe1d21ace548ebb42bc9885269f0cc58.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_TinglingShackles.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_TinglingShackles",
+      "field": "description",
+      "text": "적에게 감전을 부여하면 0.1초 동안 마비시킵니다. 보스에게는 적용되지 않습니다."
+    },
+    {
+      "key": "asset.24602c35b51a9f64f8622e1094c8f5b2.effectTemplate",
+      "path": "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Move Speed On Kill_Managed.asset",
+      "type": "RelicLogic_MoveSpeedOnKill_Managed",
+      "owner": "Relic Logic_Move Speed On Kill_Managed",
+      "field": "effectTemplate",
+      "text": "● 적 처치 시 {duration} 동안 [[공격력]] {attack_bonus}\n● [[이동속도]] {move_speed_bonus}"
+    },
+    {
+      "key": "asset.74bcbc64a07fc854ca2dade608e8c24c.effectTemplate",
+      "path": "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Feather Orbit_Managed.asset",
+      "type": "RelicLogic_FeatherOrbit_Managed",
+      "owner": "Relic Logic_Feather Orbit_Managed",
+      "field": "effectTemplate",
+      "text": "● 깃털 {feather_count}개가 주위를 회전하며 적을 공격\n● 깃털 피해 {damage_coef}\n● 회전 반경 {radius}\n● 같은 적을 다시 공격하는 기본 간격 {hit_cooldown}"
+    },
+    {
+      "key": "asset.793dd35173233de479547ef030201574.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentJar.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_CurrentJar",
+      "field": "displayName",
+      "text": "전류 항아리"
+    },
+    {
+      "key": "asset.793dd35173233de479547ef030201574.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentJar.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_CurrentJar",
+      "field": "description",
+      "text": "내가 부여한 감전의 지속시간이 끝나면 전기 속성의 40%만큼 피해를 줍니다."
+    },
+    {
+      "key": "asset.e7fc658e74db2a840b6fc0f9fb067d3a.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_EchoCoil.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_EchoCoil",
+      "field": "displayName",
+      "text": "메아리 코일"
+    },
+    {
+      "key": "asset.e7fc658e74db2a840b6fc0f9fb067d3a.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_EchoCoil.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_EchoCoil",
+      "field": "description",
+      "text": "연쇄 번개를 50% 피해로 한 번 더 반복합니다. 최초 대상은 제외하며 감전 지속시간은 늘어나지 않습니다."
+    },
+    {
+      "key": "asset.875bf515b62c5bf44a0f67ab48330b66.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ConductorRing.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ConductorRing",
+      "field": "displayName",
+      "text": "도체 고리"
+    },
+    {
+      "key": "asset.875bf515b62c5bf44a0f67ab48330b66.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ConductorRing.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ConductorRing",
+      "field": "description",
+      "text": "연쇄될 때마다 연쇄 피해가 20%씩 증가합니다. 최대 60%까지 증가합니다."
+    },
+    {
+        "key": "asset.3a669323573b7c144be1d6c8d11798e1.nameText",
+        "path": "Assets/_Project/Data/Abilities/Effects/SHD_Puddle_Confusion.asset",
+        "type": "StatusHudDefinition",
+        "owner": "SHD_Puddle_Confusion",
+        "field": "nameText",
+        "text": "혼란"
+    },
+    {
+        "key": "asset.3a669323573b7c144be1d6c8d11798e1.storyText",
+        "path": "Assets/_Project/Data/Abilities/Effects/SHD_Puddle_Confusion.asset",
+        "type": "StatusHudDefinition",
+        "owner": "SHD_Puddle_Confusion",
+        "field": "storyText",
+        "text": "술기운에 방향 감각이 흐려진다."
+    },
+    {
+        "key": "asset.3a669323573b7c144be1d6c8d11798e1.effectText",
+        "path": "Assets/_Project/Data/Abilities/Effects/SHD_Puddle_Confusion.asset",
+        "type": "StatusHudDefinition",
+        "owner": "SHD_Puddle_Confusion",
+        "field": "effectText",
+        "text": "일반 걷기의 상하좌우 입력이 반전됩니다. 장판을 벗어나 맥주잔이 비워지면 해제됩니다."
+    },
+    {
+        "key": "asset.8d10d760988b81f4c826f2a3b4582465.rewardText",
+        "path": "Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset",
+        "type": "InfoOnlyAffectionEffect",
+        "owner": "SpiriAlcoholPuddleReward",
+        "field": "rewardText",
+        "text": "술 장판에서 3초 동안 술을 채우면 혼란 대신 이동 속도 +25%, 공격 속도 +40% 버프를 얻습니다. 장판 안에서는 지속시간을 갱신하며, 장판을 벗어나 1.5초 동안 잔이 비워진 뒤 5초 동안 유지됩니다."
     }
   ]
 }

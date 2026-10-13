@@ -88,6 +88,16 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
         new(1, 1), new(1, -1), new(-1, 1), new(-1, -1)
     };
     private readonly HashSet<Tilemap> runtimeGroundTilemaps = new();
+
+    public Grid GroundGrid => grid;
+    public Tilemap GroundTilemap => groundTilemap;
+
+    /// <summary>Rebinds the scene navigation grid when an authored test room replaces the arena.</summary>
+    public void ConfigureGround(Grid sourceGrid, Tilemap sourceGround)
+    {
+        grid = sourceGrid;
+        groundTilemap = sourceGround;
+    }
     private readonly List<Vector2> lastDebugPath = new();
     private Vector2 lastDebugStart;
     private Vector2 lastDebugEnd;

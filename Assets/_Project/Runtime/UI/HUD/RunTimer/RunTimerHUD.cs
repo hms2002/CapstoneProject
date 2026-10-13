@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using System.Globalization;
 
 /// <summary>
 /// 책임 :
@@ -28,6 +29,11 @@ public sealed class RunTimerHUD : MonoBehaviour
     [SerializeField] private float pausedPulseSpeed = 2.5f;
     [SerializeField, Range(0f, 1f)] private float pausedPulseMinAlpha = 0.55f;
 
+    private int displayedTotalSeconds = -1;
+    private string displayedFormat;
+    private CultureInfo displayedCulture;
+    private string displayedTimeText;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -47,6 +53,8 @@ public sealed class RunTimerHUD : MonoBehaviour
     private void OnEnable()
     {
         RunTimeLimitSystem.InstanceChanged += HandleTimeLimitSystemChanged;
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
+        displayedTimeText = null;
         ApplyTextOutline();
         ResolveTimeLimitBinding();
     }
@@ -59,7 +67,10 @@ public sealed class RunTimerHUD : MonoBehaviour
     private void OnDisable()
     {
         RunTimeLimitSystem.InstanceChanged -= HandleTimeLimitSystemChanged;
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
     }
+
+    private void HandleLocaleChanged(UnityEngine.Localization.Locale locale) => displayedTimeText = null;
 
     private void OnDestroy()
     {
@@ -119,7 +130,17 @@ public sealed class RunTimerHUD : MonoBehaviour
         int minutes = totalSeconds / 60;
         int seconds = totalSeconds % 60;
 
-        timeText.text = string.Format(timeFormat, minutes, seconds);
+        CultureInfo culture = CultureInfo.CurrentCulture;
+        // A writable NumberFormatInfo can change without replacing CurrentCulture.
+        if (!culture.NumberFormat.IsReadOnly || displayedTimeText == null || displayedTotalSeconds != totalSeconds ||
+            displayedFormat != timeFormat || displayedCulture != culture)
+        {
+            displayedTimeText = string.Format(timeFormat, minutes, seconds);
+            displayedTotalSeconds = totalSeconds;
+            displayedFormat = timeFormat;
+            displayedCulture = culture;
+        }
+        timeText.text = displayedTimeText;
         Color targetColor = isPaused
             ? pausedColor
             : (isLowTime ? lowTimeColor : normalColor);

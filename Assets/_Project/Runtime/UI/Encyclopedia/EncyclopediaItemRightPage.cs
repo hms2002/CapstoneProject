@@ -13,6 +13,7 @@ using UnityGAS;
 public sealed class EncyclopediaItemRightPage : MonoBehaviour
 {
     [Header("Root")]
+    [SerializeField] private GameObject pageContentRoot;
     [SerializeField] private GameObject contentRoot;
     [SerializeField] private GameObject emptyRoot;
 
@@ -78,6 +79,9 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     private Action<string> glossaryClickHandler;
     private int abilityBlockCursor;
     private Coroutine pendingScrollReset;
+    private bool tabContentVisible = true;
+    private bool interactionEnabled = true;
+    private bool localeRefreshPending;
     private RelicDefinition currentRelic;
     private ConsumableDefinition currentConsumable;
     private int relicPreviewLevel = 1;
@@ -98,7 +102,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private void Update()
     {
-        if (!isActiveAndEnabled)
+        if (!isActiveAndEnabled || !tabContentVisible || !interactionEnabled)
             return;
 
         // A foreground hover owns this shortcut while it is visible.
@@ -120,13 +124,15 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     {
         UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
         CancelPendingScrollReset();
+        glossaryPopup?.Hide();
+        localeRefreshPending = true;
         showDetailedDescription = false;
     }
 
     private void OnEnable()
     {
         UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
-        if (currentWeapon != null)
+        if (tabContentVisible && currentWeapon != null)
         {
             BuildWeaponAbilityBlocks(currentWeapon);
             weaponDescriptionHint.Refresh(true, false);
@@ -135,6 +141,12 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private void HandleLocaleChanged(UnityEngine.Localization.Locale locale)
     {
+        if (!tabContentVisible)
+        {
+            localeRefreshPending = true;
+            return;
+        }
+        localeRefreshPending = false;
         // Refresh the current projection without rebinding selection, preview level or scroll position.
         if (currentWeapon != null)
         {
@@ -328,6 +340,9 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         if (detailScrollRect == null)
             detailScrollRect = GetComponent<ScrollRect>() ?? GetComponentInChildren<ScrollRect>(true);
 
+        if (pageContentRoot == null && detailScrollRect != null)
+            pageContentRoot = detailScrollRect.gameObject;
+
         if (detailScrollRect != null && detailScrollRect.content == null && contentRoot != null)
         {
             RectTransform contentRect = contentRoot.transform as RectTransform;
@@ -380,10 +395,26 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         }
     }
 
+    public void SetInteractionEnabled(bool enabled)
+    {
+        interactionEnabled = enabled;
+    }
+
     public void SetContentVisible(bool visible)
     {
+        tabContentVisible = visible;
+        if (pageContentRoot != null)
+            pageContentRoot.SetActive(visible);
         if (contentRoot != null)
             contentRoot.SetActive(visible);
+        if (visible && localeRefreshPending)
+            HandleLocaleChanged(UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale);
+        if (!visible)
+        {
+            CancelPendingScrollReset();
+            detailScrollRect?.StopMovement();
+            glossaryPopup?.Hide();
+        }
     }
 
     public void SettleLayout()
@@ -867,6 +898,9 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     private void QueueScrollReset()
     {
         CancelPendingScrollReset();
+
+        if (!tabContentVisible)
+            return;
 
         if (!resetScrollOnBind)
         {

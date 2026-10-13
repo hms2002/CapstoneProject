@@ -2,7 +2,7 @@
 status: resolved
 authority: refactor-backlog
 category: refactor-item
-last_reviewed: 2026-05-15
+last_reviewed: 2026-10-10
 ---
 
 # Combat Element Build-Up Source Unification
@@ -18,7 +18,9 @@ Elemental build-up used to expose two visible authoring/calculation paths.
 - `DamagePayloadConfig.elementFormulas` and several weapon helpers could produce per-hit `CombatDamageSnapshot.ElementBuildUps`.
 - `CombatDamageAction.ApplyElements(...)` applied gauge build-up from the attacker's `ElementOffenseSource` through `ElementBuildUpResolver`, not from that per-hit payload.
 
-The application source is now explicit: `ElementBuildUpResolver.ResolveForApplication(...)` evaluates attacker-wide `ElementOffenseSource`. `DamageSnapshotBuilder` no longer produces applied element build-up snapshots from `DamagePayloadConfig.elementFormulas`, and the runtime hit path no longer carries per-hit element payloads through `CombatDamageSnapshot`, `CombatHitPayload`, `CombatDamageAction`, `GameplayEffectContext`, or `DamageFormulaUtil`.
+The gauge source remains explicit: attacker-wide `ElementOffenseSource` is evaluated through `ElementBuildUpResolver`. The current builder captures those values at attack creation into `CombatDamageSnapshot.FinalElementBuildUps`; `CombatHitPayload.elementBuildUps` and `CombatDamageAction` carry the resolved gauge snapshot. Legacy callers without a resolved snapshot retain `ResolveForApplication(...)` at application time. These runtime snapshots are not a return to legacy authored `DamagePayloadConfig.elementFormulas`, which remain ignored.
+
+The 2026-10-10 direct-hit task adds separate `FinalElementHpDamages` / `elementHpDamages` for four final-stat HP constituents. They use the hit's shared HP postprocess multiplier and critical result, not gauge profiles or legacy per-hit element formulas. See [ElementDirectHitDamage](../StructureMemory/ElementDirectHitDamage.md) for that independent path.
 
 The remaining serialized fields are intentionally kept as compatibility data. Removing them is not a behavior-preserving code refactor because it changes ScriptableObject schemas and requires asset migration or an explicit decision to abandon the old serialized values.
 
@@ -32,8 +34,9 @@ Remaining debt is serialized compatibility cleanup: legacy authored fields still
 
 ## Target Shape
 
-- Applied elemental build-up has one source of truth: attacker `ElementOffenseSource` plus `ElementBuildUpResolver`.
+- Applied elemental build-up has one calculation source: attacker `ElementOffenseSource` plus `ElementBuildUpResolver`. Current direct weapon snapshots retain creation-time values; unresolved legacy callers keep application-time evaluation.
 - Legacy `DamagePayloadConfig.elementFormulas`, `critAffectsElement`, and old weapon data `ElementDamageInput` fields remain compatibility-only until serialized weapon data is migrated or intentionally abandoned.
+- Direct-hit elemental HP constituents remain separate from gauge snapshots, profiles/modifiers and serialized compatibility fields; introducing them does not reopen the legacy gauge-authoring path.
 - If future per-hit elemental tuning is required, add a named merge/override policy instead of reusing the old silently ignored payload path.
 
 ## Risks
@@ -62,7 +65,9 @@ Remaining debt is serialized compatibility cleanup: legacy authored fields still
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Combat/Runtime/ElementOffenseSource.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Weapons/Runtime/Data/DamagePayloadConfig.cs`
 
-## Implementation Notes
+## Implementation Notes (Historical)
+
+The following completion notes describe the earlier source-unification slices. Runtime gauge snapshot transport was subsequently restored from the same central source; use Current Problem and the linked structure map for the present flow.
 
 Completed slice:
 

@@ -1,0 +1,9 @@
+{
+  "execution": "not_executed",
+  "reason": "Interactive Unity Editor opened the project before test dispatch; CLI rejected launching a second Editor.",
+  "editorPid": 38076,
+  "compilation": "Unity authoring exit0 and Editor MSBuild exit0",
+  "nativeCaptures": "not_generated_for_this_followup",
+  "saveRestoration": "not_needed_test_runner_never_started",
+  "savedUserState": "left_untouched"
+}

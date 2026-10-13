@@ -75,6 +75,7 @@ public static class PlayerRuntimeCaptureCoordinator
         if (output == null || tagSystem == null)
             return;
 
+        PlayerAlcoholExposure alcoholExposure = tagSystem.GetComponent<PlayerAlcoholExposure>();
         foreach (var entry in tagSystem.EnumerateExplicitTagsWithCount())
         {
             if (entry == null)
@@ -84,6 +85,11 @@ public static class PlayerRuntimeCaptureCoordinator
                 continue;
 
             if (entry.count <= 0)
+                continue;
+
+            // Charge/drain state belongs to the departing player's scene-local
+            // exposure owner. Carrying its GE-granted tag would strand confusion.
+            if (alcoholExposure != null && alcoholExposure.OwnsSceneLocalTag(entry.tagName))
                 continue;
 
             output.Add(new ExplicitTagSnapshot
@@ -105,6 +111,7 @@ public static class PlayerRuntimeCaptureCoordinator
         if (output == null || effectRunner == null)
             return;
 
+        PlayerAlcoholExposure alcoholExposure = effectRunner.GetComponent<PlayerAlcoholExposure>();
         var snapshots = effectRunner.CaptureActiveEffectSnapshots();
         if (snapshots == null)
             return;
@@ -113,6 +120,9 @@ public static class PlayerRuntimeCaptureCoordinator
         {
             var entry = snapshots[i];
             if (entry == null)
+                continue;
+
+            if (alcoholExposure != null && alcoholExposure.OwnsSceneLocalEffect(entry.effectId))
                 continue;
 
             output.Add(new ActiveGameplayEffectSnapshot

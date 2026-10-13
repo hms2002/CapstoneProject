@@ -213,9 +213,13 @@ Shader "Custom/PuddleShaderVisual"
                 float shapeRadius = 0.78 + radiusNoise - projectileProgress * 0.12 - condenseShrink;
                 float mask = tex2D(_MainTex, i.uv).a;
                 float puddleInside = step(dist, shapeRadius) * mask;
-                fixed4 projectileSample = SampleProjectileTexture(centered, absorbDir);
-                float projectileInside = projectileSample.a;
-                float inside = max(puddleInside * (1.0 - projectileBlend), projectileInside * projectileBlend);
+                fixed4 projectileSample = 0;
+                float inside = puddleInside;
+                if (projectileBlend > 0.0)
+                {
+                    projectileSample = SampleProjectileTexture(centered, absorbDir);
+                    inside = max(puddleInside * (1.0 - projectileBlend), projectileSample.a * projectileBlend);
+                }
 
                 if (inside <= 0.001)
                     discard;
@@ -232,13 +236,16 @@ Shader "Custom/PuddleShaderVisual"
                 fixed4 fireColor = ResolveFireColor(saturate(heat + _IgnitionProgress * 0.2), edgeBand);
                 fixed4 color = lerp(alcoholColor, fireColor, fireBlend);
 
-                float projectileEdge = 1.0 - smoothstep(0.18, 0.55, projectileSample.a);
-                float projectileHeat = saturate(projectileSample.r * 0.85 + projectileSample.g * 0.25 + detail * 0.18);
-                fixed4 projectileColor = fireBlend > 0.5
-                    ? ResolveFireColor(projectileHeat, projectileEdge * 0.65)
-                    : ResolveAlcoholColor(projectileHeat, projectileEdge * 0.35, projectileSample.g);
+                if (projectileBlend > 0.0)
+                {
+                    float projectileEdge = 1.0 - smoothstep(0.18, 0.55, projectileSample.a);
+                    float projectileHeat = saturate(projectileSample.r * 0.85 + projectileSample.g * 0.25 + detail * 0.18);
+                    fixed4 projectileColor = fireBlend > 0.5
+                        ? ResolveFireColor(projectileHeat, projectileEdge * 0.65)
+                        : ResolveAlcoholColor(projectileHeat, projectileEdge * 0.35, projectileSample.g);
 
-                color = lerp(color, projectileColor, projectileBlend);
+                    color = lerp(color, projectileColor, projectileBlend);
+                }
                 color.a *= inside;
                 return color;
             }

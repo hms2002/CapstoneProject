@@ -34,6 +34,9 @@ public class DamagePopupWorldText : MonoBehaviour
     private float _runtimeStartScale;
     private float _runtimeEndScale;
     private float _defaultFontSize;
+    private Color _defaultTextColor;
+    private DamagePopupService poolOwner;
+    internal DamagePopupWorldText PoolPrefab { get; private set; }
 
     private void Reset()
     {
@@ -54,6 +57,7 @@ public class DamagePopupWorldText : MonoBehaviour
         if (text != null)
         {
             _textColor = text.color;
+            _defaultTextColor = _textColor;
             _defaultFontSize = text.fontSize;
         }
 
@@ -100,6 +104,18 @@ public class DamagePopupWorldText : MonoBehaviour
             text.fontSize = viewModel.FontSize;
 
         ApplyContent(viewModel.Text);
+    }
+
+    internal void SetPoolOwner(DamagePopupService owner, DamagePopupWorldText prefab)
+    {
+        poolOwner = owner;
+        PoolPrefab = prefab;
+    }
+
+    internal void PrepareForReuse()
+    {
+        _textColor = _defaultTextColor;
+        ResetRuntimeStyle();
     }
 
     private void ApplyContent(string content)
@@ -150,7 +166,12 @@ public class DamagePopupWorldText : MonoBehaviour
         }
 
         if (_t >= _runtimeLifetime)
-            Destroy(gameObject);
+        {
+            if (poolOwner != null)
+                poolOwner.ReturnPopup(this);
+            else
+                Destroy(gameObject);
+        }
     }
 
     private void ResetRuntimeStyle()

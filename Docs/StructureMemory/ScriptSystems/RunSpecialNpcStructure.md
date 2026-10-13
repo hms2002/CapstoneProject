@@ -1,11 +1,13 @@
 ---
-status: active
+status: legacy
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-07-04
+last_reviewed: 2026-10-07
 ---
 
 # Run Special NPC Structure
+
+The user confirmed on 2026-10-07 that this NPC plan was abandoned when the game moved to the procedural-map structure. The code map below is retained as legacy reference, not current feature scope. TestScene excludes these NPC-based event templates; legacy runtime code and production assets were not removed by that task.
 
 ## Purpose
 

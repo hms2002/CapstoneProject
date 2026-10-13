@@ -335,7 +335,9 @@ public sealed class FragmentShardActor : MonoBehaviour
             causer = gameObject,
             isCriticalHit = payload.isCriticalHit,
             elementBuildUps = payload.elementBuildUps,
-            hasResolvedElementBuildUps = payload.hasResolvedElementBuildUps
+            hasResolvedElementBuildUps = payload.hasResolvedElementBuildUps,
+            elementHpDamages = payload.elementHpDamages,
+            damagePopupElementTag = payload.damagePopupElementTag
         };
     }
 }

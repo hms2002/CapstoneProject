@@ -90,13 +90,20 @@ public sealed class SlimeSplitLandingMotion2D : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < durationSeconds)
         {
+            if (UnityGAS.CombatHitPause2D.IsParalyzedOn(gameObject))
+            {
+                yield return null;
+                continue;
+            }
+
             float normalized = Mathf.Clamp01(elapsed / durationSeconds);
             ApplyPose(startPosition, landingPosition, normalized, arcHeight);
 
-            elapsed += Time.deltaTime;
+            elapsed += UnityGAS.CombatHitPause2D.GetActionDeltaTime(gameObject);
             yield return null;
         }
 
+        while (UnityGAS.CombatHitPause2D.IsParalyzedOn(gameObject)) yield return null;
         transform.position = landingPosition;
         RestoreBodySimulation();
         heightState?.SetGrounded();

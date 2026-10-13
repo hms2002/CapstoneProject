@@ -21,6 +21,14 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
 
     private CanvasGroup canvasGroup;
     private RectTransform rectTransform;
+    private bool visualTreeReady;
+    private bool hasStatusEntry;
+    private bool entryTextDirty = true;
+    private bool localizationReady;
+    private StatusHudEntry currentStatusEntry;
+    private readonly HudDisplayTextCache durationDisplayText = new();
+    private readonly HudDisplayTextCache stackDisplayText = new();
+    private string currentDurationText, currentStackText;
 
     public static StatusHudTooltipView Instance => EnsureInstance();
     public RectTransform Rect => rectTransform;
@@ -68,6 +76,24 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
             instance = null;
     }
 
+    private void OnEnable()
+    {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
+        entryTextDirty = true;
+    }
+
+    private void OnDisable()
+    {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
+        hasStatusEntry = false;
+    }
+
+    private void HandleLocaleChanged(UnityEngine.Localization.Locale locale) => entryTextDirty = true;
+
+#if UNITY_EDITOR
+    private void OnValidate() { visualTreeReady = false; entryTextDirty = true; }
+#endif
+
     public void OpenUI()
     {
         gameObject.SetActive(true);
@@ -91,7 +117,27 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
             return;
         }
 
+        RefreshEntry(entry);
+    }
+
+    public bool RefreshEntry(in StatusHudEntry entry)
+    {
         EnsureVisualTree();
+        string duration = entry.ShowDuration ? durationDisplayText.Decimal(Mathf.Max(0f, entry.RemainingTime)) : null;
+        string stacks = entry.ShowStacks ? stackDisplayText.Integer(entry.StackCount) : null;
+        bool isLocalizationReady = UnityEngine.Localization.Settings.LocalizationSettings.InitializationOperation.IsDone;
+        if (hasStatusEntry && !entryTextDirty && localizationReady == isLocalizationReady &&
+            currentStatusEntry.Icon == entry.Icon && currentStatusEntry.StatusId == entry.StatusId &&
+            currentStatusEntry.NameText == entry.NameText && currentStatusEntry.StoryText == entry.StoryText &&
+            currentStatusEntry.EffectText == entry.EffectText && currentDurationText == duration && currentStackText == stacks)
+            return false;
+
+        currentStatusEntry = entry;
+        currentDurationText = duration;
+        currentStackText = stacks;
+        hasStatusEntry = true;
+        entryTextDirty = false;
+        localizationReady = isLocalizationReady;
 
         if (iconImage != null)
         {
@@ -118,14 +164,16 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
                 ? entry.EffectText
                 : $"{entry.EffectText}\n\n{runtimeStats}";
 
-        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+        LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
         canvasGroup.alpha = 1f;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
+        return true;
     }
 
     public void HideHover()
     {
+        hasStatusEntry = false;
         if (canvasGroup == null)
             return;
 
@@ -136,6 +184,7 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
 
     private void ShowAbility(UnityGAS.AbilityDefinition ability, ItemDetailContext context)
     {
+        hasStatusEntry = false;
         EnsureVisualTree();
         context ??= new ItemDetailContext();
         iconImage.sprite = ability.icon;
@@ -162,7 +211,7 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
                 body.AppendLine(provider.BuildDetailBlock(context).body);
         }
         effectText.text = DetailTextFormatter.Format(body.ToString().TrimEnd(), null);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+        LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
         canvasGroup.alpha = 1f;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
@@ -175,6 +224,9 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
     /// </summary>
     private void EnsureVisualTree()
     {
+        if (visualTreeReady && rectTransform != null && canvasGroup != null && backgroundImage != null &&
+            iconImage != null && nameText != null && storyText != null && effectText != null)
+            return;
         if (gameObject.GetComponent<RectTransform>() == null ||
             backgroundImage == null ||
             transform.Find("Icon") == null ||
@@ -245,6 +297,7 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
         nameText ??= CreateText("Name", 18, FontStyles.Bold, TextAlignmentOptions.TopLeft, new Color(0.98f, 0.95f, 0.82f, 1f));
         storyText ??= CreateText("Story", 14, FontStyles.Normal, TextAlignmentOptions.TopLeft, Color.white);
         effectText ??= CreateText("Effect", 13, FontStyles.Normal, TextAlignmentOptions.TopLeft, new Color(0.79f, 0.87f, 0.98f, 1f));
+        visualTreeReady = true;
     }
 
     /// <summary>

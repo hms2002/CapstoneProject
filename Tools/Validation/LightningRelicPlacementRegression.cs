@@ -27,8 +27,9 @@ public static class LightningRelicPlacementRegression
             var data = ScriptableObject.CreateInstance<LightningSpearSkill2Data>();
             var loadout = ScriptableObject.CreateInstance<LightningSpearLoadout>();
             var method = typeof(LightningSpearRuntimeState).GetMethod("TryFindNearestMarkPosition", Private);
-            var pending = (IList)typeof(LightningSpearRuntimeState).GetField("pendingMarkSpawns", Private).GetValue(state);
-            var request = typeof(LightningSpearRuntimeState).GetNestedType("MarkSpawnRequest", BindingFlags.NonPublic);
+            object planner = typeof(LightningSpearRuntimeState).GetProperty("PlacementPlanner", Private).GetValue(state);
+            var pending = (IList)planner.GetType().GetProperty("Pending", Private).GetValue(planner);
+            var request = typeof(LightningSpearRuntimeState).Assembly.GetType("PlacementPoint");
             Vector2 preferred = new Vector2(3.1f, .2f);
             Vector2 Find()
             {
@@ -44,13 +45,13 @@ public static class LightningRelicPlacementRegression
             {
                 Vector2 next = Find();
                 foreach (object saved in pending)
-                    Check(Vector2.Distance(next, (Vector2)request.GetField("position").GetValue(saved)) >= 1.999f, "Reserved marks retain two-unit spacing");
+                    Check(Vector2.Distance(next, (Vector2)request.GetField("position", Private).GetValue(saved)) >= 1.999f, "Reserved marks retain two-unit spacing");
                 float nearest = float.PositiveInfinity;
-                var validate = typeof(LightningSpearRuntimeState).GetMethod("ValidateMarkCandidate", Private);
+                var validate = planner.GetType().GetMethod("ValidateCandidate", Private);
                 foreach (Vector3Int cell in floor.cellBounds.allPositionsWithin)
                 {
                     Vector2 point = floor.GetCellCenterWorld(cell);
-                    if ((bool)validate.Invoke(state, new object[] { loadout, data, Vector2.zero, null, point }))
+                    if ((bool)validate.Invoke(planner, new object[] { loadout, data, Vector2.zero, null, point }))
                         nearest = Mathf.Min(nearest, (point - preferred).sqrMagnitude);
                 }
                 Check(Mathf.Abs((next - preferred).sqrMagnitude - nearest) < .0001f, "Each reserved fallback must be the nearest valid tile");

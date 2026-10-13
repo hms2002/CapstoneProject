@@ -162,6 +162,8 @@ public sealed class GamePlayData
     public int grandHallScribeReturnStage;
     public bool grandHallAudienceGranted;
     public int pendingRunMagicStoneDelta;
+    // Volatile until the existing run-end commit. An active-run quit never copies this into the profile.
+    public MonsterEncyclopediaSaveData pendingMonsterEncyclopediaData = new MonsterEncyclopediaSaveData();
     // Hub preparation and the following run share one gain per NPC; cleared at run end.
     public System.Collections.Generic.List<int> affectionGainNpcIds = new System.Collections.Generic.List<int>();
     public System.Collections.Generic.List<PendingRunAffectionChange> pendingRunAffectionChanges = new System.Collections.Generic.List<PendingRunAffectionChange>();

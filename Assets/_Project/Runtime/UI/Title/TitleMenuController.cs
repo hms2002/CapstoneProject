@@ -43,6 +43,7 @@ public sealed class TitleMenuController : MonoBehaviour
     private bool isLoading;
     private bool mainMenuLockedBySettingsPanel;
     private Coroutine mainMenuUnlockCoroutine;
+    private ButtonNavigationGroup keyboardNavigation;
 
     private void Awake()
     {
@@ -51,6 +52,7 @@ public sealed class TitleMenuController : MonoBehaviour
         EnsurePresentationCanvasAdapter();
         EnsureUiInputReady();
         BindListeners();
+        keyboardNavigation = new ButtonNavigationGroup(false, newGameButton, settingsButton, quitButton);
         TitleProfileSlotService.EnsureInstance();
     }
 
@@ -81,6 +83,19 @@ public sealed class TitleMenuController : MonoBehaviour
     {
         MouseCursorService.Instance?.ClearDomain(this);
         StopMainMenuUnlockLead();
+        keyboardNavigation?.Reset();
+    }
+
+    private void LateUpdate()
+    {
+        bool inputAllowed = !isLoading && !IsIntroActive && mainMenuUnlockCoroutine == null &&
+                            !mainMenuLockedBySettingsPanel &&
+                            (profileSlotPanel == null || !profileSlotPanel.gameObject.activeSelf) &&
+                            (settingsPanel == null || !settingsPanel.gameObject.activeSelf) &&
+                            (keyBindingPanel == null || !keyBindingPanel.gameObject.activeSelf) &&
+                            (SceneTransitionCoordinator.Instance == null || !SceneTransitionCoordinator.Instance.IsTransitionActive) &&
+                            (LoadingOverlayController.Instance == null || !LoadingOverlayController.Instance.IsActiveLoadingPresentation);
+        keyboardNavigation?.Refresh(inputAllowed);
     }
 
     private void Update()
@@ -145,6 +160,7 @@ public sealed class TitleMenuController : MonoBehaviour
     private void HandleNewGamePressed()
     {
         ResolveReferences();
+        keyboardNavigation?.Suspend();
         OpenSlotPanel();
     }
 
@@ -154,6 +170,7 @@ public sealed class TitleMenuController : MonoBehaviour
         if (settingsPanel == null)
             return;
 
+        keyboardNavigation?.Suspend();
         StopMainMenuUnlockLead();
         mainMenuLockedBySettingsPanel = true;
         SetMainMenuInteractable(false);

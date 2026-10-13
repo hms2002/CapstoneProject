@@ -11,14 +11,15 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe2f2aa3b7d897b4882187f548f45df1, type: 3}
   m_Name: Relic Logic_Common_WornWhetstone
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
+  effectTemplate: 
   entries:
-  - attribute: {fileID: 11400000, guid: 2c8e2b555f632824fbc8a39cd7bcfc86, type: 2}
-    displayNameOverride: "공격력"
-    type: 1
-    value: 0.03
+  - attribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
+    displayNameOverride: "\uACF5\uACA9\uB825"
+    type: 0
+    value: 1
     valueByLevel:
-    - 0.03
-    - 0.06
-    - 0.1
+    - 1
+    - 2
+    - 3
     duration: 0

@@ -19,7 +19,11 @@ internal static class FullLocalizationValidation
 
     private const string ScreenReviewFlag = "Codex.LocalizationScreens.Running";
     private const string ScreenReviewCleanupFlag = "Codex.LocalizationScreens.Cleanup";
-    private const string ScreenReviewFolder = "outputs/localization-screen-review-2026-10-04";
+    private static string ScreenReviewFolder => SessionState.GetInt("Codex.LocalizationScreens.Group", 1) == 6
+        ? "outputs/language-caption-title-fix-2026-10-10" : SessionState.GetInt("Codex.LocalizationScreens.Group", 1) == 5
+        ? "outputs/language-commit-review-2026-10-10" : SessionState.GetInt("Codex.LocalizationScreens.Group", 1) == 4
+        ? "outputs/settings-localization-review-2026-10-08" : "outputs/localization-screen-review-2026-10-04";
+    private static int languageRenderChecks;
     private const string ScreenReviewBackup = "Library/CodexFonts/screen-review-save-backup.json";
     [Serializable] private sealed class SavedReviewFile { public string path, data; public bool existed; }
     [Serializable] private sealed class SavedReviewFiles { public List<SavedReviewFile> rows = new(); }
@@ -34,12 +38,70 @@ internal static class FullLocalizationValidation
     private static string[] ReviewScreens => SessionState.GetInt("Codex.LocalizationScreens.Group", 1) switch {
         2 => new[] { "hub", "inventory", "encyclopedia", "weapon-simple", "weapon-detail", "relic" },
         3 => new[] { "tutorial", "tutorial-info" },
+        4 => new[] { "settings", "keybindings" },
+        5 => new[] { "settings", "keybindings" },
+        6 => new[] { "settings", "keybindings" },
         _ => new[] { "title", "profiles", "settings" }
     };
     private static string ReviewStartScene => SessionState.GetInt("Codex.LocalizationScreens.Group", 1) switch { 2 => "ProtoTypeHub", 3 => "TutorialCorridor", _ => "TitleScene" };
     public static void ReviewTitleScreensBatch() { SessionState.SetInt("Codex.LocalizationScreens.Group", 1); ReviewGameScreensBatch(); }
     public static void ReviewHubScreensBatch() { SessionState.SetInt("Codex.LocalizationScreens.Group", 2); ReviewGameScreensBatch(); }
     public static void ReviewTutorialScreensBatch() { SessionState.SetInt("Codex.LocalizationScreens.Group", 3); ReviewGameScreensBatch(); }
+    public static void ReviewSettingsScreensBatch() { SessionState.SetInt("Codex.LocalizationScreens.Group", 4); ReviewGameScreensBatch(); }
+    public static void ReviewLanguageCommitBatch() { SessionState.SetInt("Codex.LocalizationScreens.Group", 5); ReviewGameScreensBatch(); }
+    public static void ReviewLanguageButtonBatch() { SessionState.SetInt("Codex.LocalizationScreens.Group", 6); ReviewGameScreensBatch(); }
+
+    private static void CheckLanguageRender()
+    {
+        if (!Application.isPlaying || !UnityEngine.Localization.Settings.LocalizationSettings.InitializationOperation.IsDone) return;
+        try
+        {
+            var displayed = GameSettingsService.EnsureInstance().DisplayedLanguage;
+            var code = displayed switch { GameLanguageOption.Japanese => "ja", GameLanguageOption.SimplifiedChinese => "zh-Hans", GameLanguageOption.TraditionalChinese => "zh-Hant", GameLanguageOption.English => "en", _ => "ko" };
+            var locale = UnityEngine.Localization.Settings.LocalizationSettings.AvailableLocales.GetLocale(code);
+            var strings = UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetTableAsync(GameText.TableName, locale);
+            var fonts = UnityEngine.Localization.Settings.LocalizationSettings.AssetDatabase.GetTableAsync("GameFonts", locale);
+            if (!strings.IsDone || !fonts.IsDone) return; // Startup is outside the change-under-review.
+            foreach (var binding in UnityEngine.Object.FindObjectsByType<LocalizeTmpFontEvent>(FindObjectsSortMode.None))
+            {
+                if (!binding.isActiveAndEnabled) continue;
+                if (binding.AssetReference.TableReference.TableCollectionName != "GameFonts") continue;
+                var reference = binding.AssetReference.TableEntryReference;
+                var expected = fonts.Result.GetAssetAsync<TMP_FontAsset>(reference);
+                if (!expected.IsDone || binding.GetComponent<TMP_Text>().font != expected.Result)
+                    throw new InvalidOperationException("Mixed font at render: " + locale.Identifier.Code + "/" + Hierarchy(binding.transform));
+            }
+            foreach (var binding in UnityEngine.Object.FindObjectsByType<LocalizeStringEvent>(FindObjectsSortMode.None))
+            {
+                if (!binding.isActiveAndEnabled) continue;
+                if (binding.StringReference.TableReference.TableCollectionName != GameText.TableName) continue;
+                var reference = binding.StringReference.TableEntryReference;
+                var entry = reference.KeyId != 0 ? strings.Result.GetEntry(reference.KeyId) : strings.Result.GetEntry(reference.Key);
+                if (entry != null && binding.GetComponent<TMP_Text>() is TMP_Text text && text.text != entry.Value)
+                    throw new InvalidOperationException("Mixed caption at render: " + locale.Identifier.Code + "/" + Hierarchy(binding.transform));
+            }
+            foreach (var panel in UnityEngine.Object.FindObjectsByType<SettingsPanelUI>(FindObjectsSortMode.None))
+            {
+                var stepper = (SettingStepperControl)GetProbeField(panel, "languageStepper");
+                string expectedCaption = locale.Identifier.Code switch { "ja" => "日本語", "zh-Hans" => "简体中文", "zh-Hant" => "繁體中文", "en" => "English", _ => "한국어" };
+                if (stepper.ValueText.text != expectedCaption)
+                    throw new InvalidOperationException("Language caption ran ahead of font locale: " + locale.Identifier.Code + "/" + stepper.ValueText.text);
+                var info = stepper.ValueText.textInfo;
+                for (int i = 0; i < info.characterCount; i++)
+                    if (info.characterInfo[i].textElement?.unicode == 0x25A1)
+                        throw new InvalidOperationException("Replacement box in dynamic language caption.");
+            }
+            languageRenderChecks++;
+        }
+        catch (Exception e)
+        {
+            Canvas.willRenderCanvases -= CheckLanguageRender;
+            File.WriteAllText(ScreenReviewFolder + "/failure.txt", e.ToString());
+            Debug.LogException(e);
+            SessionState.SetBool("Codex.LocalizationScreens.Failed", true);
+            FinishGameScreenReview();
+        }
+    }
 
     public static void ReviewGameScreensBatch()
     {
@@ -101,7 +163,7 @@ internal static class FullLocalizationValidation
             }
             string code = ReviewLocales[screenReviewJob / ReviewScreens.Length];
             string screen = ReviewScreens[screenReviewJob % ReviewScreens.Length];
-            string scene = screen.StartsWith("tutorial") ? "TutorialCorridor" : screen is "title" or "profiles" or "settings" ? "TitleScene" : "ProtoTypeHub";
+            string scene = screen.StartsWith("tutorial") ? "TutorialCorridor" : screen is "title" or "profiles" or "settings" or "keybindings" ? "TitleScene" : "ProtoTypeHub";
             if (screenReviewLoadedScene != scene)
             {
                 if (screenReviewLoad == null) { screenReviewLoad = EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/_Project/Scenes/" + scene + ".unity", new UnityEngine.SceneManagement.LoadSceneParameters(UnityEngine.SceneManagement.LoadSceneMode.Single));
@@ -116,11 +178,41 @@ internal static class FullLocalizationValidation
             string imagePath = ScreenReviewFolder + "/" + code + "-" + screen + ".png";
             if (screenReviewPhase == 0)
             {
-                var locale = UnityEngine.Localization.Settings.LocalizationSettings.AvailableLocales.GetLocale(code);
-                UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetTableAsync(GameText.TableName, locale).WaitForCompletion();
-                GameSettingsService.EnsureInstance().SetLanguage(code switch { "ja" => GameLanguageOption.Japanese, "ko" => GameLanguageOption.Korean, "zh-Hans" => GameLanguageOption.SimplifiedChinese, "zh-Hant" => GameLanguageOption.TraditionalChinese, _ => GameLanguageOption.English });
+                if (SessionState.GetInt("Codex.LocalizationScreens.Group", 1) >= 5 && screenReviewJob == 0 &&
+                    GetProbeField(GameSettingsService.EnsureInstance(), "localeInitialization") != null) return;
+                if (SessionState.GetInt("Codex.LocalizationScreens.Group", 1) >= 5)
+                {
+                    Canvas.willRenderCanvases -= CheckLanguageRender;
+                    Canvas.willRenderCanvases += CheckLanguageRender;
+                    if (screenReviewJob == 0 && SessionState.GetInt("Codex.LocalizationScreens.Group", 1) == 5)
+                    {
+                        GameSettingsService.EnsureInstance().SetLanguage(GameLanguageOption.English);
+                        GameSettingsService.EnsureInstance().SetLanguage(GameLanguageOption.SimplifiedChinese);
+                    }
+                }
+                var requested = code switch { "ja" => GameLanguageOption.Japanese, "ko" => GameLanguageOption.Korean, "zh-Hans" => GameLanguageOption.SimplifiedChinese, "zh-Hant" => GameLanguageOption.TraditionalChinese, _ => GameLanguageOption.English };
+                if (SessionState.GetInt("Codex.LocalizationScreens.Group", 1) == 6)
+                {
+                    ReviewObject<KeyBindingPanelUI>()?.CloseUI();
+                    var panel = ReviewObject<SettingsPanelUI>();
+                    panel.OpenUI();
+                    var stepper = (SettingStepperControl)GetProbeField(panel, "languageStepper");
+                    var settings = GameSettingsService.EnsureInstance();
+                    if (screenReviewJob == 0) // Exercise rapid requests through the actual button listeners.
+                        while (settings.CurrentLanguage != GameLanguageOption.Korean) stepper.PreviousButton.onClick.Invoke();
+                    for (int i = 0; i < 5 && settings.CurrentLanguage != requested; i++)
+                        ((int)settings.CurrentLanguage < (int)requested ? stepper.NextButton : stepper.PreviousButton).onClick.Invoke();
+                    if (settings.CurrentLanguage != requested) throw new InvalidOperationException("Language button request failed.");
+                }
+                else
+                {
+                    var locale = UnityEngine.Localization.Settings.LocalizationSettings.AvailableLocales.GetLocale(code);
+                    UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetTableAsync(GameText.TableName, locale).WaitForCompletion();
+                    GameSettingsService.EnsureInstance().SetLanguage(requested);
+                }
                 ReviewObject<TitleProfileSlotPanelUI>()?.CloseUI();
-                ReviewObject<SettingsPanelUI>()?.CloseUI();
+                ReviewObject<KeyBindingPanelUI>()?.CloseUI();
+                if (SessionState.GetInt("Codex.LocalizationScreens.Group", 1) != 6) ReviewObject<SettingsPanelUI>()?.CloseUI();
                 var inventoryManager = ReviewObject<InventoryUIManager>();
                 if (inventoryManager != null && inventoryManager.IsOpen) inventoryManager.Close();
                 else ReviewObject<InventoryScreen>()?.CloseUI();
@@ -141,6 +233,11 @@ internal static class FullLocalizationValidation
                 }
                 else if (screen == "profiles") ReviewObject<TitleProfileSlotPanelUI>().OpenUI();
                 else if (screen == "settings") ReviewObject<SettingsPanelUI>().OpenUI();
+                else if (screen == "keybindings")
+                {
+                    ReviewObject<SettingsPanelUI>().OpenUI();
+                    ReviewObject<KeyBindingPanelUI>().OpenFromSettings(ReviewObject<SettingsPanelUI>());
+                }
                 else if (screen == "inventory")
                 {
                     if (!ReviewObject<InventoryUIManager>().TryOpen()) throw new InvalidOperationException("Actual inventory open was blocked.");
@@ -231,6 +328,8 @@ internal static class FullLocalizationValidation
 
     private static void FinishGameScreenReview()
     {
+        Canvas.willRenderCanvases -= CheckLanguageRender;
+        if (SessionState.GetInt("Codex.LocalizationScreens.Group", 1) >= 5) Debug.Log("[LanguageCommit] Render checks=" + languageRenderChecks);
         EditorApplication.update -= StepGameScreenReview;
         SessionState.SetBool(ScreenReviewFlag, false);
         SessionState.SetBool(ScreenReviewCleanupFlag, true);

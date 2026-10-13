@@ -1,0 +1,87 @@
+[
+  {
+    "path": "Assets\\_Project\\Prefabs\\UI\\PopupUI\\Encyclopedia\\EncyclopediaUI.prefab",
+    "old_records_restored": 239,
+    "approved_structural_records": [
+      "1118778051862094437",
+      "1600577953579324491",
+      "2509583530058382484",
+      "3783640947135483920",
+      "5501019934593851225",
+      "6906855235117759964",
+      "7784228223524498331",
+      "8317086359111449962",
+      "8462708796356329205"
+    ]
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/BeerMonster.prefab",
+    "identity_fileID": "6702984956552565359",
+    "original_records_preserved": 45
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/Frog.prefab",
+    "identity_fileID": "1454847556737212374",
+    "original_records_preserved": 30
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/Frog_BOSS.prefab",
+    "identity_fileID": "2402159622049362575",
+    "original_records_preserved": 23
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/ShadowCorridor/CorridorCandlestickMonster.prefab",
+    "identity_fileID": "9211984213585984207",
+    "original_records_preserved": 44
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/ShadowCorridor/Dead'sSkeleton.prefab",
+    "identity_fileID": "6405059628299340609",
+    "original_records_preserved": 50
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowMonster.prefab",
+    "identity_fileID": "18399875073632616",
+    "original_records_preserved": 44
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/ShadowServant.prefab",
+    "identity_fileID": "2762034652613735524",
+    "original_records_preserved": 45
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab",
+    "identity_fileID": "3449616217499580548",
+    "original_records_preserved": 57
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/SlimeCorridor/Bishop.prefab",
+    "identity_fileID": "3298909735267885809",
+    "original_records_preserved": 49
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/SlimeCorridor/Knight.prefab",
+    "identity_fileID": "7888355008726888788",
+    "original_records_preserved": 49
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/SlimeCorridor/Pawn.prefab",
+    "identity_fileID": "1551848904823096104",
+    "original_records_preserved": 51
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/SlimeCorridor/Rook.prefab",
+    "identity_fileID": "4656116799782102029",
+    "original_records_preserved": 52
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/SlimeCorridor/Wizard.prefab",
+    "identity_fileID": "1638493336718267653",
+    "original_records_preserved": 45
+  },
+  {
+    "path": "Assets/_Project/Prefabs/Monsters/TreasureMonster.prefab",
+    "identity_fileID": "3841249959277052977",
+    "original_records_preserved": 44
+  }
+]

@@ -15,3 +15,9 @@ public interface IHoverPositionOffsetProvider
 {
     Vector2 HoverPositionOffset { get; }
 }
+
+/// <summary>Includes authored content outside a hover panel when keeping it on screen.</summary>
+public interface IHoverBoundsProvider
+{
+    Rect GetHoverLocalBounds();
+}

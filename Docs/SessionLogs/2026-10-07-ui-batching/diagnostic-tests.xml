@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-07 13:47:13Z" end-time="2026-10-07 13:47:16Z" duration="3.3127228">
+  <test-suite type="TestSuite" id="2044" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="878" result="Passed" start-time="2026-10-07 13:47:13Z" end-time="2026-10-07 13:47:16Z" duration="3.312723" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2040" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="871" result="Passed" start-time="2026-10-07 13:47:13Z" end-time="2026-10-07 13:47:16Z" duration="3.265838" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="9828" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1842" name="ReadyFlashMaterialLifecyclePlayModeTests" fullname="ReadyFlashMaterialLifecyclePlayModeTests" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-10-07 13:47:13Z" end-time="2026-10-07 13:47:15Z" duration="1.694990" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1851" name="AuthoredSkillIcon_FrozenReadyZeroVersusDefault_ReportsActualCanvasRgba" fullname="ReadyFlashMaterialLifecyclePlayModeTests.AuthoredSkillIcon_FrozenReadyZeroVersusDefault_ReportsActualCanvasRgba" methodname="AuthoredSkillIcon_FrozenReadyZeroVersusDefault_ReportsActualCanvasRgba" classname="ReadyFlashMaterialLifecyclePlayModeTests" runstate="Runnable" seed="1050676402" result="Passed" start-time="2026-10-07 13:47:14Z" end-time="2026-10-07 13:47:15Z" duration="1.189717" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CursorDiagnostic] phase=display-stable-2s frame=8 screen=640x480 mode=Windowed focused=False visible=True lock=None domain=Combat/Default hiddenOwners=0 backend=UnityCursorAPI cursorMode=Auto texture=light_cursor_spritesheet_31_Cursor_22x22 hotspot=(11.00, 11.00)
+AuthoredReadyIdleCanvasDiagnostic={"masked":false,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"nontransparentPixels":3072,"differingPixels":1024,"maximumRgbDifference":1,"maximumAlphaDifference":64,"frozenOpaquePixel":{"r":8,"g":34,"b":81,"a":255},"originalOpaquePixel":{"r":8,"g":34,"b":81,"a":255},"frozenTranslucentPixel":{"r":2,"g":58,"b":4,"a":64},"originalTranslucentPixel":{"r":1,"g":58,"b":4,"a":128}}
+AuthoredReadyIdleCanvasDiagnostic={"masked":false,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"nontransparentPixels":3072,"differingPixels":3072,"maximumRgbDifference":0,"maximumAlphaDifference":60,"frozenOpaquePixel":{"r":4,"g":11,"b":19,"a":143},"originalOpaquePixel":{"r":4,"g":11,"b":19,"a":191},"frozenTranslucentPixel":{"r":1,"g":19,"b":1,"a":36},"originalTranslucentPixel":{"r":1,"g":19,"b":1,"a":96}}
+AuthoredReadyIdleCanvasDiagnostic={"masked":true,"tint":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"nontransparentPixels":1152,"differingPixels":384,"maximumRgbDifference":1,"maximumAlphaDifference":64,"frozenOpaquePixel":{"r":8,"g":34,"b":81,"a":255},"originalOpaquePixel":{"r":8,"g":34,"b":81,"a":255},"frozenTranslucentPixel":{"r":2,"g":58,"b":4,"a":64},"originalTranslucentPixel":{"r":1,"g":58,"b":4,"a":128}}
+AuthoredReadyIdleCanvasDiagnostic={"masked":true,"tint":{"r":0.800000011920929,"g":0.699999988079071,"b":0.6000000238418579,"a":0.75},"nontransparentPixels":1152,"differingPixels":1152,"maximumRgbDifference":0,"maximumAlphaDifference":60,"frozenOpaquePixel":{"r":4,"g":11,"b":19,"a":143},"originalOpaquePixel":{"r":4,"g":11,"b":19,"a":191},"frozenTranslucentPixel":{"r":1,"g":19,"b":1,"a":36},"originalTranslucentPixel":{"r":1,"g":19,"b":1,"a":96}}
+]]></output>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1961" name="UiTextMeshRefreshRegressionPlayModeTests" fullname="UiTextMeshRefreshRegressionPlayModeTests" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.187959" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1986" name="AuthoredMenuHighlight_ReusesBoundsAndKeepsPlacementDuringTransformLayoutChanges" fullname="UiTextMeshRefreshRegressionPlayModeTests.AuthoredMenuHighlight_ReusesBoundsAndKeepsPlacementDuringTransformLayoutChanges" methodname="AuthoredMenuHighlight_ReusesBoundsAndKeepsPlacementDuringTransformLayoutChanges" classname="UiTextMeshRefreshRegressionPlayModeTests" runstate="Runnable" seed="1002116232" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.178151" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1987" name="UpgradeLakeMaterialSynchronizationPlayModeTests" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:16Z" duration="1.340152" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="2000" name="LakeProjection_RuntimePresetChangesAndDynamicTime_AreObservedOnNextUpdate" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.LakeProjection_RuntimePresetChangesAndDynamicTime_AreObservedOnNextUpdate" methodname="LakeProjection_RuntimePresetChangesAndDynamicTime_AreObservedOnNextUpdate" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="731288551" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.060783" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2001" name="LakeProjection_UnchangedUpdatesSkipPresetCopies_ButSourceChangesSynchronizeImmediately" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.LakeProjection_UnchangedUpdatesSkipPresetCopies_ButSourceChangesSynchronizeImmediately" methodname="LakeProjection_UnchangedUpdatesSkipPresetCopies_ButSourceChangesSynchronizeImmediately" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="2096825928" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.006446" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1999" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.025620" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1988" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;float&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;float&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1849020354" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.003784" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1989" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;color&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;color&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="563147012" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.000975" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1990" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;vector&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;vector&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1475867833" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.000617" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1991" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;texture&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;texture&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1230835347" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.000570" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1992" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;textureOffset&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;textureOffset&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="338592026" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.001010" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1993" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;textureScale&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;textureScale&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1881660053" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.001050" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1994" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;keyword&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;keyword&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="591700533" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.001356" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1995" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;renderQueue&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;renderQueue&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1887202205" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.001284" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1996" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;giFlags&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;giFlags&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="483360533" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.002198" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1997" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;instancing&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;instancing&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="140520568" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.001866" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1998" name="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;doubleSidedGI&quot;)" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativeMaterialCrc_RequiredPresetMutation_ChangesSignature(&quot;doubleSidedGI&quot;)" methodname="NativeMaterialCrc_RequiredPresetMutation_ChangesSignature" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="1902370251" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:15Z" duration="0.002588" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="2002" name="NativePresetCopyVersusUnchangedIdentityCrc_ReportsMatchedWarmedOperationCosts" fullname="UpgradeLakeMaterialSynchronizationPlayModeTests.NativePresetCopyVersusUnchangedIdentityCrc_ReportsMatchedWarmedOperationCosts" methodname="NativePresetCopyVersusUnchangedIdentityCrc_ReportsMatchedWarmedOperationCosts" classname="UpgradeLakeMaterialSynchronizationPlayModeTests" runstate="Runnable" seed="485284808" result="Passed" start-time="2026-10-07 13:47:15Z" end-time="2026-10-07 13:47:16Z" duration="1.239162" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[LakeMaterialOperationBenchmark={"unityVersion":"6000.4.2f1","samples":31,"operationsPerSample":2048,"baselineMedianNs":16662.5,"baselineP95Ns":18920.361328125,"unchangedIdentityCrcMedianNs":2157.32421875,"unchangedIdentityCrcP95Ns":7145.556640625,"emptyMedianNs":3.076171875,"baselineRawNs":[17675.048828125,14637.890625,16929.1015625,14158.349609375,15959.9609375,17159.326171875,17285.64453125,17292.96875,16241.11328125,13341.796875,16662.5,14325.390625,17131.494140625,15290.234375,18920.361328125,23297.4609375,15912.5,18675.390625,18163.57421875,17473.33984375,18370.60546875,18766.015625,17678.61328125,14107.03125,14458.59375,17272.8515625,16009.521484375,15558.740234375,14206.689453125,14961.42578125,15182.763671875],"unchangedIdentityCrcRawNs":[2334.130859375,1904.052734375,2345.361328125,2236.376953125,2167.1875,2121.923828125,2117.919921875,2226.025390625,2245.5078125,2267.578125,1986.5234375,2157.32421875,2069.82421875,2166.064453125,7145.556640625,18487.744140625,2201.025390625,2214.0625,2183.349609375,2127.880859375,2271.97265625,2092.3828125,2085.986328125,2137.98828125,2118.75,2122.216796875,2075.48828125,2072.705078125,2088.37890625,2094.384765625,2216.6015625],"note":"Editor native operation cost; ns per operation from warmed batch means, not frame-time percentiles or Player measurements. No profiler recorder or allocation-byte inference."}
+Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -4,6 +4,9 @@ using UnityGAS;
 public sealed class CrimsonBoundaryProjectile2D : AttackBase
 {
     public const float ImpactBurstDiameter = 2.5f;
+    private const float HomingTurnSpeed = 720f;
+    private const float HomingSearchRadius = 40f;
+    private const float HomingSearchInterval = 0.1f;
 
     [SerializeField] private BoxCollider2D wallCollider;
     [SerializeField] private BoxCollider2D damageCollider;
@@ -19,8 +22,15 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
     private CrimsonBoundaryRuntimeState visualOwner;
     private bool impactPlayed;
     private Transform homingTarget;
+    private bool homingEnabled;
+    private float homingSearchRemaining;
 
-    public void SetHomingTarget(Transform target) => homingTarget = target;
+    public void SetHomingTarget(Transform target)
+    {
+        homingTarget = target;
+        homingEnabled = target != null;
+        homingSearchRemaining = 0f;
+    }
 
     public void Setup(ProjectileAttackSpawnContext context, int stacks, GameplayEffect effect,
         CrimsonBoundaryVisual2D hitVisual = null, CrimsonBoundaryVisual2D burnVisual = null,
@@ -35,6 +45,9 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
         burnSustainPrefab = burnSustainVisual;
         visualOwner = owner;
         impactPlayed = false;
+        homingTarget = null;
+        homingEnabled = false;
+        homingSearchRemaining = 0f;
         transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
         SetupBase(context);
     }
@@ -57,15 +70,7 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
     protected override void TickAttack(float deltaTime)
     {
         if (impactPlayed) return;
-        if (homingTarget != null && (!homingTarget.TryGetComponent(out Enemy enemy) || !enemy.IsDead))
-        {
-            Vector2 aim = (Vector2)homingTarget.position - (Vector2)transform.position;
-            if (aim.sqrMagnitude > 0.0001f)
-            {
-                direction = aim.normalized;
-                transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-            }
-        }
+        UpdateHoming(deltaTime);
         Vector2 displacement = direction * speed * deltaTime;
         float distance = displacement.magnitude;
         Sweep(wallCollider, WallLayers, wallHits, distance);
@@ -90,7 +95,7 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
             if (IsOwnCollider(hit) || (WallLayers.value & (1 << hit.gameObject.layer)) != 0) continue;
             GameObject target = CombatTargetResolver2D.ResolveDamageTarget(hit);
             if (target == null || IsIgnoredTarget(target)) continue;
-            if (homingTarget != null && target.TryGetComponent(out Enemy deadEnemy) && deadEnemy.IsDead) continue;
+            if (homingEnabled && target.TryGetComponent(out Enemy deadEnemy) && deadEnemy.IsDead) continue;
             if ((DamageLayers.value & (1 << target.layer)) == 0) continue;
             if (!CanHitTarget(target)) continue;
             Vector3 startPosition = transform.position;
@@ -111,6 +116,35 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
             return;
         }
         transform.position += (Vector3)displacement;
+    }
+
+    private void UpdateHoming(float deltaTime)
+    {
+        if (!homingEnabled || deltaTime <= 0f) return;
+        bool targetIsLive = homingTarget != null && homingTarget.gameObject.activeInHierarchy &&
+            (!homingTarget.TryGetComponent(out Enemy enemy) || (enemy.isActiveAndEnabled && !enemy.IsDead));
+        if (!targetIsLive)
+        {
+            homingSearchRemaining -= deltaTime;
+            if (homingSearchRemaining > 0f) return;
+            var enemies = WeaponExclusiveRelics.FindEnemies(transform.position, HomingSearchRadius, IgnoreTarget);
+            homingTarget = enemies.Count > 0 ? enemies[0].transform : null;
+            if (homingTarget == null)
+            {
+                // Retry empty searches without querying physics on every flight frame.
+                homingSearchRemaining = HomingSearchInterval;
+                return;
+            }
+        }
+        homingSearchRemaining = 0f;
+        Vector2 aim = (Vector2)homingTarget.position - (Vector2)transform.position;
+        if (aim.sqrMagnitude <= 0.0001f) return;
+        // Turn toward the target's live position without snapping the flight path.
+        float angle = Mathf.MoveTowardsAngle(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg,
+            Mathf.Atan2(aim.y, aim.x) * Mathf.Rad2Deg, HomingTurnSpeed * deltaTime);
+        float radians = angle * Mathf.Deg2Rad;
+        direction = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 
     private void Sweep(BoxCollider2D collider, LayerMask layers,

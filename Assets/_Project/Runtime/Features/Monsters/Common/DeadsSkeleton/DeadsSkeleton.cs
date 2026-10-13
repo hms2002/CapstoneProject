@@ -329,7 +329,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         isSelfDestruct = true;
         hasEnteredArmedPhase = false;
         float introDuration = Mathf.Max(0f, introDurationOverride >= 0f ? introDurationOverride : GetSelfDestructIntroDuration());
-        selfDestructIntroEndTime = Time.time + introDuration;
+        selfDestructIntroEndTime = CombatHitPause2D.GetActionTime(gameObject) + introDuration;
 
         if (movementMotor != null)
             movementMotor.StopAllMotion();
@@ -660,7 +660,13 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         float elapsed = 0f;
         while (elapsed < duration && sightMaskTransform != null)
         {
-            elapsed += Time.deltaTime;
+            if (CombatHitPause2D.IsParalyzedOn(gameObject))
+            {
+                yield return null;
+                continue;
+            }
+
+            elapsed += CombatHitPause2D.GetActionDeltaTime(gameObject);
             float t = Mathf.Clamp01(elapsed / duration);
             sightMaskTransform.localScale = Vector3.LerpUnclamped(startScale, targetScale, t);
             yield return null;
@@ -741,7 +747,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
             $"reason={reason}, entry={entry}, scene={gameObject.scene.name}, frame={Time.frameCount}, " +
             $"age={Time.time - diagnosticSpawnTime:F3}s, unscaledAge={Time.unscaledTime - diagnosticSpawnUnscaledTime:F3}s, " +
             $"position={transform.position:F2}, selfDestruct={isSelfDestruct}, " +
-            $"introActive={IsPlayingSelfDestructIntro()}, introRemaining={Mathf.Max(0f, selfDestructIntroEndTime - Time.time):F3}s, " +
+            $"introActive={IsPlayingSelfDestructIntro()}, introRemaining={Mathf.Max(0f, selfDestructIntroEndTime - CombatHitPause2D.GetActionTime(gameObject)):F3}s, " +
             $"armed={hasEnteredArmedPhase}, ignoreCancelRange={!canCancelSelfDestruct}, " +
             $"source={source}, target={targetInfo}, " +
             $"explosionVisualAssigned={data.explosionVisualPrefab != null}, explosionParticleAssigned={data.explosionParticlePrefab != null}";
@@ -766,7 +772,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     /// <summary>플레이어와 접촉했을 때 즉시 폭발을 시도합니다.</summary>
     private bool TryExplodeOnPlayerContact(Collider2D other)
     {
-        if (!isSelfDestruct)
+        if (!isSelfDestruct || CombatHitPause2D.IsParalyzedOn(gameObject))
             return false;
 
         if (other == null)
@@ -1009,7 +1015,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     /// <summary>자폭 전환 애니메이션이 아직 재생 중인지 확인합니다.</summary>
     private bool IsPlayingSelfDestructIntro()
     {
-        return isSelfDestruct && Time.time < selfDestructIntroEndTime;
+        return isSelfDestruct && CombatHitPause2D.GetActionTime(gameObject) < selfDestructIntroEndTime;
     }
 
     /// <summary>Dead'sSkeleton 전용 상태 식별자를 실제 상태 인스턴스로 매핑합니다.</summary>

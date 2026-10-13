@@ -35,6 +35,7 @@ GameObject:
   - component: {fileID: 1660687586333017969}
   - component: {fileID: 3966151861485664551}
   - component: {fileID: 7780542765960398760}
+  - component: {fileID: 3298909735267885809}
   m_Layer: 31
   m_Name: Bishop
   m_TagString: Enemy
@@ -615,6 +616,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gameplay::MonsterStatusRuntime
   electrocutedEffect: {fileID: 11400000, guid: 098ed5d6eb1548c884517bade6c21d73, type: 2}
+--- !u!114 &3298909735267885809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18a1857e5118414599ff746dbb13e4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::MonsterEncyclopediaIdentity
+  monsterId: monster.slime_bishop
 --- !u!1 &433349808956151741
 GameObject:
   m_ObjectHideFlags: 0

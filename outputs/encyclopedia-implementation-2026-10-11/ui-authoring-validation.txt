@@ -1,0 +1,1 @@
+Authored Monster12 / Character4 slots, references and missing-script checks passed.
