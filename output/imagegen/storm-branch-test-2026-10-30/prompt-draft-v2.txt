@@ -1,0 +1,15 @@
+Use case: stylized-concept. Asset: one native 32x32 pixel-art roguelike relic icon called Storm Branch (폭풍의 가지). Review draft only.
+REFERENCE ROLES: Image1 favorite gray item PRIMARY STYLE: chunky charcoal contour, broad flat connected color clusters, simple stepped edges and readable volume. Image2 electric jar COLOR/SIMPLICITY reference only, do not copy jar shape. Image3 EXCLUSIVE supplied color palette.
+SUBJECT: a thick ancient TREE BRANCH charged with blue electricity. ONE stout natural wooden stem, splitting ONCE into EXACTLY TWO stout upper limbs, an unmistakable broad Y silhouette. Two tips, no third limb, no side twigs, no leaves, roots or ornaments. This is chunky wood with uneven slightly bent contours, not a smooth metal fork or tuning fork. Short, heavy and substantial enough to read at 32 pixels. Left arm slightly shorter than right; wide clear negative-space V between arms. Trunk at least 6 logical pixels thick in the colored portion, arms at least 4 logical pixels thick. Rounded/blunt broken wooden tips, not spikes.
+Warm orange wood with only a single broad deeper orange shadow face. Minimal bark suggestion: at most one dark notch, no detailed grain. A blue fissure runs up the central trunk and splits into the TWO arms, visually conveying chain lightning branching toward additional enemies. Pale blue energy contained in the fissure and small exposed tip surfaces. Keep orange wood dominant and visibly intact on both sides of the blue channel. Electricity is confined to the branch, no floating sparks, external lightning bolts or arc bridging the V gap. No flame, fire, halo, glow blur, gem or pedestal.
+Exactly SIX opaque colors, plus transparency:
+#363232 charcoal outline and deepest separation;
+#D66B48 darker orange wood shadow;
+#E09656 main orange wood;
+#436794 deep blue fissure edge;
+#77BCD6 electric blue main;
+#B1DECF pale electric highlights.
+No brown, yellow, white or other colors. No gradients, dithering, antialiasing, partial alpha, noisy speckles, little highlights or microtexture.
+STYLE: actual 32x32 pixel design from the beginning, not a detailed image downsampled. Thick approximately 2 native pixel outer contour. Large simple unbroken planes like the reference item. The chunky Y silhouette matters more than detail.
+LAYOUT: one centered icon, genuinely transparent RGBA canvas, 32x32 logical pixels. TOP TWO and BOTTOM TWO rows empty: visible y=2..29. At least two transparent columns left and right, including outline. Naturally taller than wide; preserve proportions, no stretching. Leave ample V-shaped transparent gap between the TWO upper branches. If raster must be larger, draw a strict 32x32 grid and render an exact integer nearest-neighbor enlargement: equal square logical pixels, no subpixel detail.
+No text, letters, labels, grid, checkerboard background, swatches, UI or multiple variants.

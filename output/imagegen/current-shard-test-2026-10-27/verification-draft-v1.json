@@ -1,0 +1,51 @@
+{
+  "name": "current-shard-draft-v1",
+  "mode": "test draft only",
+  "size": [
+    32,
+    32
+  ],
+  "opaqueColorCount": 6,
+  "palette": [
+    "#363232",
+    "#436794",
+    "#6F81B3",
+    "#77BCD6",
+    "#B1DECF",
+    "#F2F9F8"
+  ],
+  "alphaValues": [
+    0,
+    255
+  ],
+  "visibleBounds": [
+    5,
+    1,
+    26,
+    31
+  ],
+  "margins": {
+    "right": 6,
+    "top": 1,
+    "bottom": 1,
+    "left": 5
+  },
+  "shape": "original angled blue lightning-like shard silhouette with simplified broad facets",
+  "style": "user preferred six-color icon primary, six-icon style sheet secondary",
+  "outline": "2px darkest-palette contour",
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-4624a8f1-1a3a-4c63-84e0-df7c61b99da1.png",
+  "export": "Uniform proportional nearest-neighbor six-color export; 2px contour; no anisotropic resizing",
+  "projectAssetsChanged": false,
+  "protectedAssetHashes": {
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png.meta": "D43DB6BEEC990C182F0E792F603E1F50B144498718D82AA4A68E2FC12023901C",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentShard.asset": "0BE03B8D48028E8DCC8DCD29C7787A2ABAF57BCC5663A2926172200B1A7EE6D9",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png": "2157FA9BDB2E267DAA8D77F8D1D2BE1D2C8D12912C1304CBCB6DF0C4609AD733"
+  },
+  "unityVerification": "not executed; test image only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

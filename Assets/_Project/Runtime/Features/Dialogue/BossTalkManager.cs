@@ -39,6 +39,9 @@ public class BossTalkManager : MonoBehaviour
     private InteractState previousPlayerState = InteractState.Idle;
     private bool holdsTransitionPlayerLock;
     private bool holdsRunTimerPause;
+    private bool isBossOutcomeTracking;
+    private bool hasRecordedBossOutcome;
+    private int trackedEncounterSceneHandle;
 
     public bool IsSequenceRunning => runningSequence != null;
     private ICameraPresentationDirector CameraDirector => CameraPresentationPlayback.FromBehaviour(cameraDirector);
@@ -59,11 +62,16 @@ public class BossTalkManager : MonoBehaviour
     private void OnEnable()
     {
         PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
+        BossEncounterEndDirector.EncounterCompleted += HandleBossEncounterCompleted;
+        RunSessionStore.OnRunEnded += HandleRunEnded;
     }
 
     private void OnDisable()
     {
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
+        BossEncounterEndDirector.EncounterCompleted -= HandleBossEncounterCompleted;
+        RunSessionStore.OnRunEnded -= HandleRunEnded;
+        StopBossOutcomeTracking();
         ReleaseTransitionPlayerLock();
         ReleaseEncounterInputBlock();
         ReleaseRunTimerPause();
@@ -356,7 +364,60 @@ public class BossTalkManager : MonoBehaviour
         }
 
         bossController.BeginCombatEncounter(PlayerRuntimeRegistry.GetPlayerTransform());
+        BeginBossOutcomeTracking();
         SoundPlaybackUtility.TryPlayMusic(bossCombatBgm, gameObject.scene);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 대화가 끝나 실제 보스전이 시작된 이후에만 해당 NPC의 승패 기록을 감시한다.
+    /// - 플레이어의 일반 패배만 보스 패배로 기록한다. 시간 초과는 마왕의 인내심에 의한 종료이므로 제외한다.
+    /// </summary>
+    private void BeginBossOutcomeTracking()
+    {
+        if (npcData == null)
+            return;
+
+        isBossOutcomeTracking = true;
+        hasRecordedBossOutcome = false;
+        trackedEncounterSceneHandle = gameObject.scene.handle;
+    }
+
+    private void StopBossOutcomeTracking()
+    {
+        isBossOutcomeTracking = false;
+        hasRecordedBossOutcome = false;
+        trackedEncounterSceneHandle = 0;
+    }
+
+    private void HandleBossEncounterCompleted(BossEncounterEndDirector director, BossControllerBase rewardBoss)
+    {
+        if (!CanRecordBossOutcomeFor(director))
+            return;
+
+        BossDialogueProgressStore.RegisterVictory(npcData);
+        hasRecordedBossOutcome = true;
+        isBossOutcomeTracking = false;
+    }
+
+    private void HandleRunEnded(RunEndReason reason)
+    {
+        if (!isBossOutcomeTracking || hasRecordedBossOutcome || reason != RunEndReason.Defeat)
+            return;
+
+        BossDialogueProgressStore.RegisterDefeat(npcData);
+        hasRecordedBossOutcome = true;
+        isBossOutcomeTracking = false;
+    }
+
+    private bool CanRecordBossOutcomeFor(BossEncounterEndDirector director)
+    {
+        return isBossOutcomeTracking &&
+               !hasRecordedBossOutcome &&
+               npcData != null &&
+               director != null &&
+               director.ControlsBoss(bossController) &&
+               director.gameObject.scene.handle == trackedEncounterSceneHandle;
     }
 
     private void HandlePlayerRegistered(PlayerInteractor2D player)

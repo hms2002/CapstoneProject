@@ -1,0 +1,56 @@
+{
+  "name": "current-jar-draft-v2",
+  "date": "2026-10-30",
+  "mode": "preview draft only",
+  "concept": "Cracked terracotta jar with cyan electrical arcs at both mouth and jagged crevice",
+  "size": [
+    32,
+    32
+  ],
+  "colorCount": 7,
+  "palette": {
+    "#363232": 174,
+    "#436794": 2,
+    "#77BCD6": 21,
+    "#8A5E40": 74,
+    "#B1DECF": 50,
+    "#D66B48": 74,
+    "#E09656": 34
+  },
+  "onlyUserPaletteColors": true,
+  "alphaValues": [
+    0,
+    255
+  ],
+  "bounds": [
+    5,
+    2,
+    27,
+    30
+  ],
+  "margins": {
+    "left": 5,
+    "top": 2,
+    "right": 5,
+    "bottom": 2
+  },
+  "previewExact16xNearest": true,
+  "sha256": "a3498b06f8a8c6de4f46a9fd4d950175ddb93e76fd7ecf6a96e4f8a9ccd7ba35",
+  "protectedAssetHashes": {
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentJar.asset": "DEED2485BB1927E5DBA7F59B5FB98B7A98C8009F7152B12F1DC24B415112D6D8",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentJar.asset.meta": "A8210616D0F77D2F22C116014F0F4CDEA76582768A7A3E22A033CDBA7A15905C",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Flame Artifact.png": "44AA3E633A3FF88371A1B6477160DF129DFD8498605A8D044D434C43C6F7AA29",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Flame Artifact.png.meta": "7D4DBE59CC948C905272D5849AAF1B6EDC5B01F1F17F3D65476803955BDDA87B"
+  },
+  "protectedAssetsUnchanged": true,
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-d652d9d0-f245-492a-b52b-8fe79f6abcc7.png",
+  "export": "Uniform proportional nearest-neighbor seven-color export, coverage sampling to retain thin electric strokes, 2px charcoal outline on pottery; exact 16x nearest preview",
+  "gameAssetsChanged": false,
+  "unityVerification": "not executed; draft only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

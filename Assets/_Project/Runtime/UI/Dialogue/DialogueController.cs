@@ -322,6 +322,30 @@ public class DialogueController : MonoBehaviour
             ContinueStory();
     }
 
+    /// <summary>
+    /// Resumes a dialogue line whose tags started a blocking presentation effect.
+    /// The line is shown after the effect completes instead of advancing to the
+    /// following Ink line.
+    /// </summary>
+    private void ResumeDialogueAfterBlockingTag(
+        string currentText,
+        DialogueAnimType animType,
+        DialogueCameraShakePreset cameraShakePreset)
+    {
+        sessionState.EndWaiting();
+        if (!sessionState.IsPlaying || sessionState.IsTransitioning || currentStory == null)
+            return;
+
+        if (!string.IsNullOrWhiteSpace(currentText))
+        {
+            PlayCurrentLine(currentText, animType, cameraShakePreset);
+            return;
+        }
+
+        if (!sessionState.IsTyping && !sessionState.IsChoosing)
+            ContinueStory();
+    }
+
     private void ContinueStory()
     {
         if (!sessionState.IsPlaying || sessionState.IsTransitioning || currentStory == null)
@@ -346,7 +370,10 @@ public class DialogueController : MonoBehaviour
             ResolvePendingBossChoiceFailure(currentText, currentStory.currentTags);
 
             bool isBlocking = tagHandler != null &&
-                              tagHandler.ProcessTags(currentStory.currentTags, participantRegistry.CurrentNPCData, ResumeDialogue);
+                              tagHandler.ProcessTags(
+                                  currentStory.currentTags,
+                                  participantRegistry.CurrentNPCData,
+                                  () => ResumeDialogueAfterBlockingTag(currentText, animType, cameraShakePreset));
 
             if (!isBlocking)
                 PlayCurrentLine(currentText, animType, cameraShakePreset);
@@ -805,6 +832,12 @@ public class DialogueController : MonoBehaviour
             onComplete?.Invoke();
     }
 
+    private void HandleBossDialogueFlag(NPCData npcData, string flagId)
+    {
+        NPCData targetNpc = npcData != null ? npcData : participantRegistry.CurrentNPCData;
+        BossDialogueProgressStore.SetDialogueFlag(targetNpc, flagId);
+    }
+
     private bool ShouldCheckBossChoiceFailure(ChoiceSetAffectionState choiceSetState, int choiceIndex)
     {
         NPCData currentNpc = participantRegistry.CurrentNPCData;
@@ -1164,6 +1197,7 @@ public class DialogueController : MonoBehaviour
             previousTagHandler.OnFeatureRequested -= HandleFeature;
             previousTagHandler.OnAffectionRequested -= HandleAffection;
             previousTagHandler.OnChoiceFailureRequested -= HandleChoiceFailure;
+            previousTagHandler.OnBossDialogueFlagRequested -= HandleBossDialogueFlag;
         }
 
         tagHandler = newTagHandler;
@@ -1179,6 +1213,7 @@ public class DialogueController : MonoBehaviour
         tagHandler.OnFeatureRequested -= HandleFeature;
         tagHandler.OnAffectionRequested -= HandleAffection;
         tagHandler.OnChoiceFailureRequested -= HandleChoiceFailure;
+        tagHandler.OnBossDialogueFlagRequested -= HandleBossDialogueFlag;
 
         tagHandler.OnPortraitEnterRequested += HandlePortraitEnter;
         tagHandler.OnPortraitFaceRequested += HandlePortraitFace;
@@ -1189,5 +1224,6 @@ public class DialogueController : MonoBehaviour
         tagHandler.OnFeatureRequested += HandleFeature;
         tagHandler.OnAffectionRequested += HandleAffection;
         tagHandler.OnChoiceFailureRequested += HandleChoiceFailure;
+        tagHandler.OnBossDialogueFlagRequested += HandleBossDialogueFlag;
     }
 }

@@ -1,0 +1,47 @@
+{
+  "tool": "built-in image_gen",
+  "generated_source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-0d1e4c09-a081-4f0d-aff8-5e640dc647f6.png",
+  "export": "electric-coil-v1-32x32.png",
+  "size": [
+    32,
+    32
+  ],
+  "alpha_bbox": [
+    1,
+    1,
+    31,
+    31
+  ],
+  "colors_used": [
+    "#363232",
+    "#436794",
+    "#62494C",
+    "#6F81B3",
+    "#75656A",
+    "#77BCD6",
+    "#7F4A50",
+    "#8599B0",
+    "#8A5E40",
+    "#978C8E",
+    "#AB6E7C",
+    "#B1DECF",
+    "#C2C2C2",
+    "#D66B48",
+    "#DFE8D3",
+    "#E09656",
+    "#E4A691",
+    "#E7946D",
+    "#E9CEA1",
+    "#F1E9D4",
+    "#F2F9F8"
+  ],
+  "palette_match": true,
+  "alpha_values": [
+    0,
+    255
+  ],
+  "transparent_outer_margin_px": 1,
+  "outline": "2px Chebyshev-distance darkest-palette contour around the visible material silhouette",
+  "export_processing": "alpha cleanup; map RGB to supplied palette; isolate material from generated outline; nearest-neighbor to 26x26; surround with exactly 2px external contour on 32x32 canvas",
+  "project_assets_changed": false
+}

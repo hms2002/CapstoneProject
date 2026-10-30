@@ -1,0 +1,58 @@
+{
+  "name": "myriad-thunder-seal-draft-v2",
+  "workingTitle": "만뢰의 인장",
+  "mode": "preview draft only",
+  "concept": "Ancient bronze octagonal seal with purple inset and converging golden lightning sigil",
+  "size": [
+    32,
+    32
+  ],
+  "colorCount": 7,
+  "palette": {
+    "#363232": 208,
+    "#75656A": 40,
+    "#8A5E40": 54,
+    "#9D5789": 163,
+    "#BE8EC1": 12,
+    "#D49C73": 128,
+    "#EECF5A": 71
+  },
+  "onlyUserPaletteColors": true,
+  "alphaValues": [
+    0,
+    255
+  ],
+  "bounds": [
+    2,
+    2,
+    30,
+    30
+  ],
+  "margins": {
+    "left": 2,
+    "top": 2,
+    "right": 2,
+    "bottom": 2
+  },
+  "previewExact16xNearest": true,
+  "sha256": "6f8d580c193e59413267e164788d45f52c43328bc57f9a9540bd17282e254f78",
+  "protectedAssetHashes": {
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderHeart.asset": "360BADCCA565FEDABC63057EC136305B1023CD2ACC96F0975B15105207C9B19B",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderHeart.asset.meta": "A8709FBFDD38DE8CDC0EE3E93C2C836418F64BACBF1DB6728AF30020255BACA7",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png": "2157FA9BDB2E267DAA8D77F8D1D2BE1D2C8D12912C1304CBCB6DF0C4609AD733",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png.meta": "D43DB6BEEC990C182F0E792F603E1F50B144498718D82AA4A68E2FC12023901C",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LifeCurrent.png": "D0C30310A2E2B198900852DC94A1006ECF79AC3B2DD8A4A8615F317361A3DF1A"
+  },
+  "protectedAssetsUnchanged": true,
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-b9f52feb-661a-426f-b952-f0bcfdede23f.png",
+  "export": "Uniform proportional nearest-neighbor sampling, exclusive seven-color palette and 2px charcoal contour; exact 16x nearest preview",
+  "gameAssetsChanged": false,
+  "projectRelicNameChanged": false,
+  "unityVerification": "not executed; draft only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

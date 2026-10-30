@@ -8,11 +8,7 @@
 # speaker: 2001
 # face: 2001: Spiri_Dragon
 # anim: cold
-...네가 용사인가. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.9d356ac5a4
-
-# face: 2001: Spiri_Dragon
-# anim: cold
-나는 스피리다. 붉은 재앙의 용... [pause=0.25]스피리. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.3fc54fff56
+...네가 용사인가. 나는 스피리다. 붉은 재앙의 용... [pause=0.25]스피리. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.9d356ac5a4
 
 # face: 2001: Spiri_Dragon
 # anim: slow
@@ -32,11 +28,7 @@
 
 # face: 2001: Spiri_Dragon
 # anim: slow
-...미안하지만 잠시 기다려주겠나. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.07de708c80
-
-# face: 2001: Spiri_Dragon
-# anim: slow
-지금의 나는... [pause=0.35]그다지 바람직한 상태가 아니라서. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.ded925120e
+...미안하지만 잠시 기다려주겠나. 지금의 나는... [pause=0.35]그다지 바람직한 상태가 아니라서. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.07de708c80
 
 # face: 2001: Spiri_Drink
 # anim: slow
@@ -63,7 +55,7 @@
 
 # face: 2001: Spiri_Idle
 # anim: normal
-오오~ 용사! [slowshake][rand_size=95,110]안 갔네에에[/rand_size][/slowshake]~! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.d1284e8056
+오오~ 용사! [slowshake][rand_size=95,110]아직 안 갔네에에[/rand_size][/slowshake]~! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.d1284e8056
 
 # face: 2001: Spiri_DrunkRelax
 # anim: normal
@@ -79,11 +71,7 @@
 = DRAGON_01_CONFUSED
 # face: 2001: Spiri_DrunkRelax
 # anim: normal
-방금~? # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.efe9839691
-
-# face: 2001: Spiri_DrunkRelax
-# anim: whisper
-으히히... [pause=0.25][slowshake][rand_size=95,108]글쎄에[/rand_size][/slowshake]~? # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.6fc2a2c2c7
+방금~? 으히히... [pause=0.25][slowshake][rand_size=95,108]글쎄에[/rand_size][/slowshake]~? # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.efe9839691
 
 # face: 2001: Spiri_Smile
 # anim: normal
@@ -100,23 +88,86 @@
 # anim: normal
 좋다 좋아! 오늘은 특별히 [rand_size=95,108]용사 환영주[/rand_size]다~! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.76ba5bd81d
 
-# face: 2001: Spiri_DrunkRelax
-# anim: whisper
-어라. [pause=0.25]손이 왜 [slowshake][rand_size=95,108]세 개로[/rand_size][/slowshake] 보이지. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.4e56cae1a6
-
--> DRAGON_01_COMMON
+-> DRAGON_02_COMMON
 
 = DRAGON_01_COMMON
 # face: 2001: Spiri_Idle
 # anim: normal
 자, 몸도 [rand_size=95,108]달아올랐고[/rand_size] 슬슬 [slowshake]시작해볼까아[/slowshake]~ # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.9ee2fcbd71
 
-# face: 2001: Spiri_Idle
-# anim: normal
-[rand_size=95,106]술 깨기 전에[/rand_size] 끝내야 하거든. [pause=0.2]너무 오래 끌진 말자고. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.3acddd1614
+-> END
 
-# face: 2001: Spiri_Smile
-# anim: angry
-안 그러면, 주변이 좀 [slowshake][rand_size=95,110]위험해져서[/rand_size][/slowshake] 말이야! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.a3aae538f4
+= DRAGON_02_COMMON
+# face: 2001: Spiri_DrunkRelax
+# anim: whisper
+어라. [pause=0.25]손이 왜 [slowshake][rand_size=95,108]세 개로[/rand_size][/slowshake] 보이지. 아무튼 간드아아아~! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.4e56cae1a6
 
 -> END
+
+= SPIRI_SLIME_SNACK
+# speaker: 2001
+# face: 2001: Spiri_Idle
+# anim: normal
+그러고 보니, 멜타가 또 화났어~. 슬라임 몇 마리를 안주처럼 씹었다고! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_intro
+
+# speaker: 슬라임들
+“술 맛 나!”, “몸이 가벼워!” # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_slime_taste
+
+# speaker: 2001
+# face: 2001: Spiri_DrunkShout
+# anim: normal
+나는 살짝 쫀득한지 확인만 했어! 봐봐, 애들도 좋아하잖아~. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_defense
+
++ [슬라임은 안주가 아니야. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_choice_not_snack]
+    # face: 2001: Spiri_DrunkRelax
+    # anim: whisper
+    안다고오~! 내가 조절하고 있잖아. 봐, 얼마나 멀쩡해! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_negative_insists
+
+    # face: 2001: Spiri_DrunkShout
+    # anim: angry
+    내가 얼마나 제정신인지 보여줄게! 이리 와~! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_negative_end
+    -> END
+
++ [다음엔 내가 진짜 안주를 가져다줄게. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_choice_real_snack]
+    # add_aff: 1
+    # face: 2001: Spiri_DrunkShout
+    # anim: normal
+    진짜로? 와아, 그거 좋다아! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_positive_delight
+
+    # face: 2001: Spiri_Smile
+    # anim: angry
+    좋아! 그럼 얼른 널 쓰러뜨려야, 다음엔 안주 들고 다시 찾아오겠네~! 간다아아아! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_positive_end
+    -> END
+
+= SPIRI_EMPTY_KEG_ERRAND
+# speaker: 2001
+# face: 2001: Spiri_Idle
+# anim: normal
+아, 맞다. 마왕님 심부름 중이야~. 빈 술통은 전부 치우라고 하셨거든! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_intro
+
+# face: 2001: Spiri_DrunkRelax
+# anim: whisper
+원래는 널브러진 채로 뒀겠지만~. 마왕님 부탁이니까! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_usual
+
+# face: 2001: Spiri_DrunkShout
+# anim: normal
+근데 비어야 치우지! 그러니까 같이 비우자아~! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_empty_first
+
++ [빈 술통을 만들라는 뜻은 아니잖아? # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_choice_reason]
+    # face: 2001: Spiri_DrunkShout
+    # anim: angry
+    그럴 리가 없잖아! 내가 맞아! 벌컥벌컥— 으읏, 몸이 휘청휘청…! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_negative_right
+
+    # face: 2001: Spiri_DrunkShout
+    # anim: angry
+    봐아아아았지~ 아직 괜찮아아~! 그러니까 너도 한 잔 받아! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_negative_end
+    -> END
+
++ [함께 빈 술통을 만들자! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_choice_together]
+    # add_aff: 1
+    # face: 2001: Spiri_DrunkShout
+    # anim: normal
+    오오! 역시 용사! 자, 받아라아! 빈 술통 만들기 1호다아~! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_positive_hero
+
+    (스피리가 맥주통을 던졌다.) # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_throw
+    -> END

@@ -1,3 +1,242 @@
 {
-  "rows": []
+  "rows": [
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.a5ab48433c",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 11,
+      "text": "침입은 나중에 따지겠다. 지금 짐의 시민권 발급식이 붕괴 직전이니라!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.ab02a3e1c1",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 15,
+      "text": "백성에게는 이름과 권리가 있어야 한다. 그러니 시민권 증서에는 반드시 초상화를 붙여야지!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.a8e16000f0",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 18,
+      "text": "초상화 그리는 동안 모양 바뀌었어.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.d0184fab51",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 19,
+      "text": "화가 아저씨가 울었어.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.180fdf3a81",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 24,
+      "text": "한 명의 초상화를 그렸는데 셋이 되어 있었다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.93a8ded0e6",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 28,
+      "text": "게다가 완성본은… 누가 먹어 버렸고!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.c03e8b3883",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 30,
+      "text": "초상화 대신, 각자 고른 문장을 적자.",
+      "choice": true
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.c609a59d42",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 35,
+      "text": "오오! 모습은 변해도 스스로 고른 말은 남는다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.af1cbba9e5",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 39,
+      "text": "그렇다. 백성의 모습은 자유로워도, 백성의 권리는 사라지지 않는 법!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.f44e4cafe1",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 42,
+      "text": "그냥 번호를 붙이면 되지 않나?",
+      "choice": true
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.da8d8c6323",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 46,
+      "text": "번호?! 짐의 백성들을 창고 물품처럼 부르란 말이냐!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.5ace96aeee",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 50,
+      "text": "아무리 말랑해도 백성은 백성이다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.8c0ea97a4e",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 55,
+      "text": "내 문장은 배고파.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.aad80339c1",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 56,
+      "text": "나는 더 배고파.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.382a1a568a",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 57,
+      "text": "나는 도장 맛있어.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.357417752d",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 62,
+      "text": "…문장 내용은 다음 국정 회의에서 다루겠다.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.3c6b82fa39",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 66,
+      "text": "우선 너부터 처리하고, 백성들의 문해력을 바로잡아야겠구나!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.b953019325",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 71,
+      "text": "나는 1번 할래.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.b26790033e",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 72,
+      "text": "나는 1번 먹을래.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.228a04dbf3",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 77,
+      "text": "보았느냐! 번호제는 시작도 전에 멸망했다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.fdf764fb84",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 81,
+      "text": "이 행정 참사를 수습하기 전에, 우선 네놈부터 처리하겠다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.8750439a52",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 154,
+      "text": "하지만 그보다 이리 와서 들어보도록! 지금 짐에게 아주 중대한 국정 현안이 있다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.ec64e12488",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 158,
+      "text": "취룡 스피리가 또 짐의 백성을 술안주처럼 우물거려, 기껏 어엿하게 자란 아이를 손바닥만 한 꼬맹이로 되돌려 놓았다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.b425152719",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 161,
+      "text": "술도 얻어 마셨어요!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.ead5d0beb0",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 162,
+      "text": "몸도 가벼워졌어요!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.1db66961d3",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 167,
+      "text": "그걸 좋아하면 짐은 누구에게 화를 내란 말이냐!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.382acf40a6",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 169,
+      "text": "술안주 허가제를 만들자.",
+      "choice": true
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.e54547855a",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 173,
+      "text": "스피리에게서 술을 전부 빼앗자!",
+      "choice": true
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.0234737204",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 180,
+      "text": "호오… 술안주 허가제라.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.0b27058d3d",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 184,
+      "text": "백성의 선택도, 여왕의 관리 책임도 지키는 훌륭한 슬권 행정이구나!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.b233f9ae6b",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 191,
+      "text": "무, 무슨 소리냐! 그럼 스피리가 깨어나면 어쩌려고! 그거야말로 마왕성의 종말이다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.a6ed2b7bb8",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 195,
+      "text": "…짐은 방금 아무 말도 하지 않았다.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.2b0dceac49",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 202,
+      "text": "좋다. 할 일이 많군.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.d2cd8de590",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 206,
+      "text": "우선 네놈부터 처리하고, 그다음 스피리 문제도 정리하겠노라!",
+      "choice": false
+    }
+  ]
 }

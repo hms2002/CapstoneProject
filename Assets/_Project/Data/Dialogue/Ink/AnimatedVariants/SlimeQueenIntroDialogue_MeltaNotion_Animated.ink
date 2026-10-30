@@ -2,7 +2,107 @@
 // Source: Notion "슬라임 대사 스크립트"
 // Notion ID 1004 is adapted to project NPC id 3001.
 
--> SLIME_QUEEN_SPIRI_ACCESS_BAN
+-> SLIME_QUEEN_CITIZENSHIP_CEREMONY
+
+= SLIME_QUEEN_CITIZENSHIP_CEREMONY
+# speaker: 3001
+# face: 3001: Angry
+# anim: angry
+침입은 나중에 따지겠다. 지금 짐의 시민권 발급식이 붕괴 직전이니라! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.a5ab48433c
+
+# face: 3001: Normal
+# anim: normal
+백성에게는 이름과 권리가 있어야 한다. 그러니 시민권 증서에는 반드시 초상화를 붙여야지! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.ab02a3e1c1
+
+# speaker: 슬라임들
+"초상화 그리는 동안 모양 바뀌었어.", "화가 아저씨가 울었어." # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.a8e16000f0
+
+# speaker: 3001
+# face: 3001: Angry
+# anim: angry
+한 명의 초상화를 그렸는데 셋이 되어 있었다! 게다가 완성본은… 누가 먹어 버렸고! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.180fdf3a81
+
++ [초상화 대신, 각자 고른 문장을 적자. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.c03e8b3883]
+    # add_aff: 1
+    # set_boss_flag: melta.citizenship.motto_selected
+    # face: 3001: Veryjoy
+    # anim: normal
+    오오! 모습은 변해도 스스로 고른 말은 남는다! 그것으로 서로를 구분하면 되겠구나! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.c609a59d42
+    -> MELTA_CITIZENSHIP_MOTTO_END
+
++ [그냥 번호를 붙이면 되지 않나? # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.f44e4cafe1]
+    # choice_fail
+    # face: 3001: Angry
+    # anim: angry
+    번호?! 짐의 백성들을 창고 물품처럼 부르란 말이냐! 아무리 말랑해도 백성은 백성이다! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.da8d8c6323
+    -> MELTA_CITIZENSHIP_NUMBER_END
+
+= MELTA_CITIZENSHIP_MOTTO_END
+# speaker: 슬라임들
+"내 문장은 배고파.", "나는 더 배고파.", "나는 도장 맛있어." # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.8c0ea97a4e
+
+# speaker: 3001
+# face: 3001: Funny
+# anim: normal
+…우선 너부터 처리하고, 백성들의 문해력을 바로잡아야겠구나! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.357417752d
+-> END
+
+= MELTA_CITIZENSHIP_NUMBER_END
+# speaker: 슬라임들
+"나는 1번 할래.", "나는 1번 먹을래." # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.b953019325
+
+# speaker: 3001
+# face: 3001: Angry
+# anim: normal
+보았느냐! 번호제는 시작도 전에 멸망했다! 이 행정 참사를 수습하기 전에, 우선 네놈부터 처리하겠다! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.228a04dbf3
+-> END
+
+= MELTA_CITIZENSHIP_IDENTITY_FOLLOWUP
+# speaker: 3001
+# face: 3001: Veryjoy
+# anim: normal
+# set_boss_flag: melta.citizenship.identity_followup_seen
+그러고 보니 지난번 네가 말한 문장제를 시행해 보았다. 기대 이상으로 훌륭했다! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_intro
+
+# speaker: 슬라임들
+"나는 최고의 슬라임이야." "우리도 최고의 슬라임이야." "어제는 한 명이었는데." # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_slime_best_one
+
+# speaker: 3001
+# face: 3001: Angry
+# anim: angry
+…문제는 그 백성이 오늘 넷으로 갈라졌고 문장은 하나다. 그럼 시민은 넷인가?! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_problem
+
+# face: 3001: Normal
+# anim: normal
+하지만 기억도, 배고픔도 모두 같다고 하니 문제다! 왕국의 행정이 멈춰버렸다! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_shared_memory
+
++ [몸이 갈라졌다면, 각자 시민 아닐까? # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_choice_individual]
+    # add_aff: 1
+    # face: 3001: Smile
+    # anim: normal
+    오오, 그렇지? 그렇다면 시민이 늘었고, 고로 왕국은 더욱 확장되었다! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_individual_agreement
+    -> MELTA_CITIZENSHIP_IDENTITY_INDIVIDUAL_END
+
++ [슬라임을 다시 합쳐버리자! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_choice_merge]
+    # choice_fail
+    # face: 3001: Angry
+    # anim: angry
+    슬라임이 그렇게 쉽게 합쳐지는 줄 아느냐?! 억지로 붙이면 기분 나쁜 커다란 슬라임이 될 뿐이다! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_merge_rebuke
+    -> MELTA_CITIZENSHIP_IDENTITY_MERGE_END
+
+= MELTA_CITIZENSHIP_IDENTITY_INDIVIDUAL_END
+# speaker: 3001
+# face: 3001: Funny
+# anim: normal
+좋다. 우선 네놈부터 처리하고, 새로운 제도를 만들겠다! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_individual_end
+-> END
+
+= MELTA_CITIZENSHIP_IDENTITY_MERGE_END
+# speaker: 3001
+# face: 3001: Angry
+# anim: angry
+짐의 백성을 반죽 취급하다니, 용서할 수 없다! 우선 네놈부터 처리한 뒤, 시민권 제도를 다시 고치겠다! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_merge_end
+-> END
 
 = SLIME_QUEEN_SPIRI_ACCESS_BAN
 # speaker: 3001
@@ -67,17 +167,12 @@
 # speaker: 3001
 # face: 3001: Idle
 # anim: normal
-호오? # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.b4e2b1e17c
-네가 그 소문의 용사로구나. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.c8dd3ca62e
+호오? 네가 그 소문의 용사로구나. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.b4e2b1e17c
 
 # face: 3001: Angry
 # anim: angry
 # CameraShake: Low
-<size=120%>[punch]잠깐.[/punch]</size> 거기서 멈추거라! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.a36b8bef01
-
-# face: 3001: Angry
-# anim: angry
-이 몸의 수로에 발을 들이기 전에 먼저 신발부터 닦는 것이 예의 아니더냐? # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.e977fa0fd2
+<size=120%>[punch]잠깐.[/punch]</size> 거기서 멈추거라! 이 몸의 수로에 발을 들이기 전에 먼저 신발부터 닦는 것이 예의 아니더냐? # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.a36b8bef01
 
 # face: 3001: Angry
 # anim: angry
@@ -85,8 +180,7 @@
 
 # face: 3001: joy
 # anim: slow
-[float]보아라.[/float] # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.9f003cf99c
-이 투명한 물길을. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.0b624fa992
+[float]보아라.[/float] 이 투명한 물길을. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.9f003cf99c
 
 # face: 3001: Veryjoy
 # anim: normal
@@ -100,40 +194,24 @@
 # anim: normal
 <size=120%>[wave]마왕성 지하 수로의 진정한 아름다움이니라![/wave]</size> # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.e7c7f7b515
 
-# face: 3001: Idle
-# anim: normal
-그리고 짐은 그 모든 [slowshake][rand_size=98,106]말캉한[/rand_size][/slowshake] 백성들의 군주. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.0bea8b5587
-
 # face: 3001: Smile
 # anim: normal
-<size=120%>위대한 슬라임들의 여왕, 멜타다!</size> # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.1ebfa9cf34
+그리고 짐은 그 모든 [slowshake][rand_size=98,106]말캉한[/rand_size][/slowshake] 백성들의 군주. <size=120%>위대한 슬라임들의 여왕, 멜타다!</size> # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.0bea8b5587
 
 + [정말 훌륭한 수로군. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.d2e351a22b]
     # add_aff: 1
 
     # face: 3001: Veryjoy
     # anim: normal
-    <size=120%>[wave]오호호호호![/wave]</size> # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.460aaf1b08
+    <size=120%>[wave]오호호호호![/wave]</size> 훌륭한 수로라. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.460aaf1b08
 
     # face: 3001: VeryVeryjoy
     # anim: normal
-    훌륭한 수로라. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.fdcc3af23e
-
-    # face: 3001: VeryVeryjoy
-    # anim: normal
-    그래, 아주 정확한 평가로구나! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.41fc99728b
-
-    # face: 3001: Smile
-    # anim: normal
-    짐의 백성들이 들으면 기뻐하겠군. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.0371118953
-
-    # face: 3001: Smile
-    # anim: whisper
-    아니, 이미 듣고 있겠지. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.159eceed1a
+    그래, 아주 정확한 평가로구나! 짐의 백성들이 들으면 기뻐하겠군. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.41fc99728b
 
     # face: 3001: Funny
-    # anim: normal
-    다들 숨어서 보고 있으니 말이다. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.afbc4e56cf
+    # anim: whisper
+    아니, 이미 듣고 있겠지. 다들 숨어서 보고 있으니 말이다. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.159eceed1a
 
     # face: 3001: Idle
     # anim: normal
@@ -144,11 +222,7 @@
 + [슬라임 치고는 꽤 깨끗하네. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.cf350a1bdf]
     # face: 3001: Angry
     # anim: angry
-    [tremble]...슬라임 치고는?[/tremble] # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.5d7a349489
-
-    # face: 3001: Angry
-    # anim: angry
-    지금 네놈, [pause=0.2] 짐의 백성들을 [tremble]얕본 것이냐?[/tremble] # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.480081097b
+    [tremble]...슬라임 치고는?[/tremble] 네놈, [pause=0.2] 짐의 백성들을 [tremble]얕본 것이냐?[/tremble] # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.5d7a349489
 
     # face: 3001: Angry
     # anim: angry
@@ -156,19 +230,11 @@
 
     # face: 3001: Angry
     # anim: angry
-    움직이고, 생각하고, # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.1a2dbbe798
-
-    # face: 3001: Angry
-    # anim: angry
-    근무 교대표까지 작성하는 당당한 백성이니라! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.4da8631afa
+    움직이고, 생각하고, 근무 교대표까지 작성하는 당당한 백성이니라! # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.1a2dbbe798
 
     # face: 3001: Smile
     # anim: normal
-    좋아. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.8f8d6ed284
-
-    # face: 3001: Smile
-    # anim: cold
-    네놈은 특별히 예절 교육부터 받아야겠구나. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.3a62cfc8bb
+    좋다. 네놈은 특별히 예절 교육부터 받아야겠구나. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.8f8d6ed284
 
     -> SLIME_QUEEN_01_END
 
@@ -179,11 +245,7 @@
 
 # face: 3001: Smile
 # anim: cold
-허나 이곳은 짐의 왕국. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.565efc5a1c
-
-# face: 3001: Smile
-# anim: cold
-여왕의 앞을 지나가려면, 그만한 자격을 보이거라. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.da2fc1f539
+허나 이곳은 짐의 왕국. 여왕의 앞을 지나가려면, 그만한 자격을 보이거라. # loc:dialogue.slimequeenintrodialogue_meltanotion_animated.565efc5a1c
 
 # face: 3001: Idle
 # anim: normal

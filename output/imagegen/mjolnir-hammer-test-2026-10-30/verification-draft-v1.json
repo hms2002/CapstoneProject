@@ -1,0 +1,44 @@
+{
+  "name": "묠니르풍 전기 망치 초안",
+  "mode": "edit draft only",
+  "editSource": "C:/Users/user/AppData/Local/Temp/codex-clipboard-b12e7554-ee8a-4350-99b1-325905c16a4a.png",
+  "referenceEnlargement": "C:/Users/user/AppData/Local/Temp/codex-clipboard-c1664d84-d266-43e2-bd95-7c855e2964a2.png",
+  "referencePairExact20xNearest": true,
+  "concept": "Retain diagonal hammer pose and short handle; heavy blue metal head, orange reinforcements and pale lightning engraving",
+  "size": [
+    32,
+    32
+  ],
+  "colorCount": 6,
+  "palette": [
+    "#363232",
+    "#436794",
+    "#77BCD6",
+    "#B1DECF",
+    "#D66B48",
+    "#E09656"
+  ],
+  "exactSixPaletteColors": true,
+  "alphaValues": [
+    0,
+    255
+  ],
+  "margins": {
+    "left": 2,
+    "top": 2,
+    "right": 2,
+    "bottom": 2
+  },
+  "previewExact16xNearest": true,
+  "sha256": "5fafd72d29ab7f9e2568e39abf2791bba354b186e9b35a0eb10690114168e15f",
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-d8f761bd-d06f-4fde-8305-8399ad2cb913.png",
+  "export": "Uniform proportional nearest raster sampling, exact six palette colors, 2px charcoal contour; exact nearest preview",
+  "projectAssetsChanged": false,
+  "unityVerification": "not executed; draft only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

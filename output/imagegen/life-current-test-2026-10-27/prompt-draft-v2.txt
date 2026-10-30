@@ -1,0 +1,25 @@
+Use case: stylized-concept / native pixel-art relic icon draft.
+Asset: LIFE CURRENT, "ancient heartstone", a 32x32 logical-pixel roguelike item on transparent RGBA.
+Input 1: user's MOST PREFERRED gray item icon. PRIMARY STYLE reference for chunky dark contour, simple broad connected color planes, deliberate pixel curves, restrained tiny accents, readable volume at 32x32. Do not copy its object shape or gray palette.
+Input 2: user's six-item sheet. SECONDARY style reference for coherent inventory-item simplicity.
+Input 3: user's EXCLUSIVE color palette.
+
+SUBJECT: one turquoise HEART-SHAPED GEM set in an old warm brass relic frame. Two clear upper lobes, a central top notch and a tapered pointed lower end. The gem is a gently elongated, angular-cut heart crystal, with a simple front face and darker side facet. It should read as a heart immediately, but as an ancient artifact/gem rather than a candy, emoji or anatomical organ. No flesh, veins, arteries, blood or gore.
+A thin but chunky antique brass bezel hugs the heart silhouette; two small integrated prongs hold the gem. A simple brass point at the bottom finishes the bezel. No chain, crown, wing, pedestal, extra jewels, ornate filigree or decorative symbols.
+INSIDE the gem: ONE short angular pale turquoise electric-current line, connected to a small brighter central node, leading toward the lower heart point. It is enclosed in the gem. Keep it thick and simple enough for native 32x32, using the same highlight color, no glowing blur or external spark. This light conveys stored life/current, while the old brass mount conveys a relic.
+
+CLEAN native pixel art: large joined planes, few stepped edges. Not a detailed image that will be shrunk later. Use one coherent gem highlight face and one dark facet; brass uses simple flat main/shadow areas and only a restrained broad highlight. Keep the heart silhouette and center notch distinct. No microfacets, glossy white flecks, tiny scratches, dithering, mottled shading or clutter.
+
+ONLY these SEVEN opaque RGB colors from supplied palette, plus full transparency:
+#363232 dark outline and deepest separation;
+#8A5E40 brass shadow;
+#D49C73 brass main;
+#EECF5A brass highlight;
+#436794 gem shadow;
+#77BCD6 turquoise gem main;
+#B1DECF pale gem highlight, central node and internal current.
+No white, true black, red, other colors, gradients, AA or partial alpha.
+
+Hard layout: actual 32x32 logical grid. TWO empty transparent pixel rows at the TOP and TWO at the BOTTOM, visible y=2..29. At least 3 transparent columns on each side, visible width max 26. Approximately 26w x 28h including dark 2px contour; gently taller-than-wide heart mounted in its bezel, centered. Protect the point and heart notch. The frame and bottom point are part of this silhouette. No stretching to fit a square. For any enlarged output use exactly 32 large, regular logical pixel cells per canvas side: each native pixel must be an identical square; no details smaller than a logical pixel. In the inset face the current must be visibly ONE short, broad Z-shaped lightning rune; keep a continuous pale central stroke distinct from the cyan face, instead of a mottled or marbled surface.
+If larger output is required, draw on a strict 32x32 grid and render a perfect integer nearest-neighbor enlargement, aligned to the full canvas. One sprite only; no text, labels, UI, grid or checkerboard background.
+

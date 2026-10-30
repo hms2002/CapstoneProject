@@ -21,6 +21,41 @@ public static class BossDialogueProgressStore
         return record != null ? Mathf.Max(0, record.defeatCount) : 0;
     }
 
+    public static BossDialogueOutcome GetLastEncounterOutcome(int npcId)
+    {
+        BossDialogueRecord record = GetRecord(npcId);
+        return record != null ? record.lastEncounterOutcome : BossDialogueOutcome.None;
+    }
+
+    public static bool HasDialogueFlag(int npcId, string flagId)
+    {
+        if (string.IsNullOrWhiteSpace(flagId))
+            return false;
+
+        BossDialogueRecord record = GetRecord(npcId);
+        return record != null
+            && record.dialogueFlags != null
+            && record.dialogueFlags.Contains(flagId.Trim());
+    }
+
+    public static void SetDialogueFlag(NPCData npcData, string flagId)
+    {
+        if (npcData == null || string.IsNullOrWhiteSpace(flagId))
+            return;
+
+        BossDialogueRecord record = GetOrCreateRecord(npcData.id);
+        if (record == null)
+            return;
+
+        record.dialogueFlags ??= new System.Collections.Generic.List<string>();
+        string normalizedFlagId = flagId.Trim();
+        if (record.dialogueFlags.Contains(normalizedFlagId))
+            return;
+
+        record.dialogueFlags.Add(normalizedFlagId);
+        RequestSaveIfSafe();
+    }
+
     public static void RegisterEncounter(NPCData npcData)
     {
         if (npcData == null)
@@ -45,6 +80,7 @@ public static class BossDialogueProgressStore
             return;
 
         record.victoryCount = Mathf.Max(0, record.victoryCount) + 1;
+        record.lastEncounterOutcome = BossDialogueOutcome.PlayerVictory;
         RequestSaveIfSafe();
     }
 
@@ -58,6 +94,7 @@ public static class BossDialogueProgressStore
             return;
 
         record.defeatCount = Mathf.Max(0, record.defeatCount) + 1;
+        record.lastEncounterOutcome = BossDialogueOutcome.PlayerDefeat;
         RequestSaveIfSafe();
     }
 

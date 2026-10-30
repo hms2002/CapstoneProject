@@ -1,16 +1,65 @@
-// Slime Queen boss encounter dialogue
-// Placeholder text for first integration. Replace lines/portraits after final writing.
+// Slime Queen Melta conditional encounter dialogue.
+// Each knot is selected by the matching BossEncounterDialogueEntry on SlimeQueenBossNpc.
 
--> SLIME_QUEEN_01
-
-= SLIME_QUEEN_01
+=== MELTA_TIME_LOW ===
 # speaker: 3001
-# face: 3001: default
-...또 다른 침입자.
+# face: 3001: Angry
+# anim: angry
+용사여, 왔구나! 마왕님의 인내심이 바닥을 긁고 있다. 서두르지 않으면 짐에게 덤벼 볼 기회도 없이 끝나겠구나! # loc:dialogue.slimequeenbossintro.c1ca046453
+-> END
 
-# face: 3001: default
-이곳은 내 둥지야. 네 발자국도, 네 숨소리도, 모두 먹이가 될 뿐이지.
+=== MELTA_LOW_HEALTH ===
+# speaker: 3001
+# face: 3001: Veryjoy
+# anim: normal
+용사여, 왔구나! 오호호! 짐의 백성들이 너를 아주 정성껏 말랑하게 만들어 뒀구나. 거의 완성품이다! # loc:dialogue.slimequeenbossintro.dbab11dbbf
+-> END
 
-# face: 3001: default
-자, 어디까지 버티는지 보여줘.
+=== MELTA_LIGHTNING_SPEAR ===
+# speaker: 3001
+# face: 3001: Angry
+# anim: angry
+드디어 왔— 크윽! 그 번쩍이는 창은 물기 많은 짐의 백성들에게 몹시 불친절하다! 그건 무기가 아니라 젤리 퇴치기다! # loc:dialogue.slimequeenbossintro.c42ae1de75
+-> END
+
+=== MELTA_PREVIOUS_VICTORY ===
+# speaker: 3001
+# face: 3001: Angry
+# anim: angry
+다시 왔구나, 용사! 지난번 패배 기록은 열두 장짜리 보고서로 정리해 뒀다. 반성문만 일곱 장이다! # loc:dialogue.slimequeenbossintro.004fa72148
+-> END
+
+=== MELTA_PREVIOUS_DEFEAT ===
+# speaker: 3001
+# face: 3001: Veryjoy
+# anim: normal
+다시 왔구나! 지난번에는 네가 먼저 누웠지. 짐은 승전 축하 젤리를 세 번이나 흔들었다! # loc:dialogue.slimequeenbossintro.0d821f392b
+-> END
+
+=== MELTA_BACKPACK_FULL ===
+# speaker: 3001
+# face: 3001: Funny
+# anim: normal
+용사여, 왔구나! 그 가방은 뭐냐? 터지면 우리 수로가 아니라 네 짐부터 범람하겠다! # loc:dialogue.slimequeenbossintro.4a94e06820
+-> END
+
+=== MELTA_HIGH_AFFECTION ===
+# speaker: 3001
+# face: 3001: Smile
+# anim: normal
+용사여, 잘 왔구나! 오늘은 특별히 국빈 대우다. 침입자 명찰은 국빈 명찰 위에 붙여라! # loc:dialogue.slimequeenbossintro.61042ba473
+-> END
+
+=== MELTA_REENCOUNTER ===
+# speaker: 3001
+# face: 3001: Funny
+# anim: normal
+또 왔구나. 이쯤 되면 너는 침입자가 아니라 정기 수로 점검원이다! # loc:dialogue.slimequeenbossintro.48dc3e3822
+-> END
+
+=== MELTA_FALLBACK ===
+# speaker: 3001
+# face: 3001: Normal
+# anim: normal
+용사여, 왔구나. 발은 씻고 들어왔나? 오늘도 고귀한 수로에 흙을 묻힐 셈이냐? # loc:dialogue.slimequeenbossintro.eb4488caa2
 -> END

@@ -2547,3 +2547,26 @@ Suggested Later: expanded validation found `CombatFeelLootQuestPlayModeTests.Imp
 - 함정: 기존 Canvas 활성 조건은 상태 슬롯 또는 HP 겹침만 고려했다. 새 그로기 바는 같은 Canvas의 일반 Graphic이므로 status 없는 독립 몬스터에서 숨겨진다. 겹침 bounds에 그로기 영역을 넣지 않으면 이웃 HP와 겹치는 경우에도 분리된 Mesh/Canvas 순서를 계속 사용한다.
 - 수정 경계: 보이는 그로기 바를 Canvas 활성 조건과 projection bounds에 포함한다. 기존 Mesh 등록·fallback·정리와 원격 게이지/회복 계산을 보존하며, 시간에 따른 회복은 LateUpdate에서 갱신한다. prefab marker 해소에서는 새 GUID/fileID를 만들지 않고 양쪽 레코드 합집합을 유지한다.
 - 검증: 실제 합쳐진 prefab의 네 typed 참조와 legacy HP Image6개, status 없는 Canvas, 그로기 영역만 교차하는 raster/sorting, 게이지·HP 숨김·회복·재사용·구독 해제를 함께 확인한다. 프리팹 비교 fixture가 참조를 재저작하는 경우 원본 prefab typed readback을 별도로 추가해야 한다. [결과](SessionLogs/2026-10-14.md), [구조](StructureMemory/MonsterWorldHudAndStatus.md).
+
+## 2026-10-26 — Ink 문장 줄바꿈이 불필요한 대사창을 늘림
+
+- 증상: 짧은 문답으로 합의한 대사도 실제 Ink에서는 문장마다 줄을 나눠, 같은 화자의 짧은 말과 슬라임 만담을 여러 번 넘겨야 했다. 멜타 시민권 후속담은 한 분기에서 13개 대사창이 나왔다.
+- 원인: 읽기 좋은 초안의 줄바꿈을 그대로 Ink에 옮겼다. 현재 재생기는 `Story.Continue()` 결과를 한 대사창으로 표시하므로, 한 줄에 합쳐야 할 문장들이 각각 별도의 카드가 됐다.
+- 예방: 같은 창에서 읽을 짧은 문장·만담은 하나의 물리 줄과 하나의 `loc:` 키로 저작한다. 화자가 바뀌거나 의도적인 반응 컷인 경우에만 분리한다. 합칠 때는 표시할 표정·연출과 번역 값을 함께 정리하고, 실제 Ink 런타임에서 비어 있지 않은 출력 수를 세어 검증한다. 이번 수정은 후속담을 선택 전 4개 + 선택 후 2개, 총 6개 대사창으로 확인했다.
+
+
+## 2026-10-30 - Stat Projection Alone Did Not Verify Normal And Skill Damage
+
+- Symptom: NormalMul/SkillMul could change through relics and stat presentation, but the shared HP postprocess/payload construction did not consume those category multipliers.
+- Cause: earlier stat assertions checked modifier values rather than an actual target's HP. Shared postprocess consumed critical/final multipliers without a normal/skill category owner.
+- Correction: the existing player weapon-input owner supplies ICombatAttackKindSource; Core captures NormalMul/SkillMul at payload construction, including separate direct elemental HP constituents. Frozen projectiles keep their captured amount after later rewards. Unclassified damage/DOT do not borrow the bonus, and OddIron explicitly retains its fixed physical channel.
+- Verification: new PlayMode tests apply the resulting payload to a real AttributeSet and verify HP loss, immutable preexisting element arrays, frozen payload values and fixed OddIron damage. See the [session](SessionLogs/2026-10-30.md).
+- Recurring test trap: the first expanded run had 57/58 passes because the pre-existing prewarm recorder threw Windows 1224 while writing imported JSON. The existing -uiBatchValidationTests switch isolates disposable validation spawns; the unchanged 58-case run then passed. The final expanded run passed 59/59. The rotated diagnostic file was restored byte-for-byte using the pre-task SHA-256 and an existing Git blob, preserving the user's uncommitted history rather than resetting to HEAD. Use diagnostic isolation before the first run and preserve writable trace data up front. No recorder/Ink production code was changed or unexpected-log assertions suppressed.
+- Suggested Later: existing NormalMul/SkillMul minValue=1 still clamps negative relic tradeoffs. Keep this separate from the approved new positive rewards.
+
+## 2026-10-30 - Ink loc 태그만으로 보스 번역 등록을 확인하면 누락을 놓침
+
+- 증상: 멜타 본대사·조우 및 마왕 조우의 33개 줄에 `loc:` 태그는 있었으나 같은 키가 CSV와 실제 Shared Data/언어별 String Table에 없어 외국어 번역이 등록되지 않았다.
+- 원인: 수정한 스크립트의 키만 가져오고 확인했으며 현재 NPC가 참조하는 Primary/Encounter Ink 전체와 실제 테이블의 집합 대조를 하지 않았다. Ink 컴파일 성공이나 태그 존재는 번역 등록의 증거가 아니다.
+- 보완: 33개 키를 원문 및 외국어 4종과 함께 CSV에 등록한 뒤 공식 importer로 반영했다. 현재 보스 4명의 연결 Ink 8개, 대사·선택지 키 198개와 테이블 값 990개를 대조했다. 자세한 결과는 [작업 기록](SessionLogs/2026-10-30.md)의 보스 대사 번역 누락 보완 항목에 있다.
+- 재확인: 대사 번역 완료를 보고하기 전에 활성 NPC의 Primary/Encounter Ink 모두에서 키를 수집하고, 원문·컴파일 loc 태그·CSV·Shared Data·5개 언어 테이블을 대조한다. 번역 등록 완료와 원어민/실제 화면 검수 완료는 구분한다.

@@ -1,0 +1,17 @@
+Use case: precise-object-edit / pixel-art shape revision.
+Image 1 is the EDIT TARGET: the current 32x32 vertical Echo Coil draft shown at 16x nearest-neighbor scale. Image 2 is the user's exclusive palette.
+Primary edit: increase the DIAMETER of the CENTRAL CYLINDRICAL COIL BODY so it fills nearly the full 32x32 canvas width. REDRAW the central barrel and its wound copper turns around the larger cylinder; DO NOT horizontally stretch the whole existing sprite or scale all its pixels.
+Preserve the upright vertical orientation, single centered up-down axis, top and bottom blue terminal/cap shapes, clean simple broad shading and NO electrical effects. Keep the TOP and BOTTOM connector tips approximately their original width and height. They must remain small centered hardware, not become wide flattened plates. Increase only the central barrel's diameter and the width of the three copper winding bands that wrap around it. Keep 3 broad turns, no added winding threads.
+Proportions: total sprite about 30 logical pixels high and 30 logical pixels wide at its widest central barrel, on a 32x32 canvas with 1 fully transparent logical pixel on all four outer edges. The center barrel's color face is about 24-26 logical pixels wide, enclosed by its chunky 2-pixel outline, versus the narrow previous barrel. It must be a stout, rounded cylindrical drum wrapped with copper, with curved side returns and broad front faces. Top and bottom blue hardware about 8-12 logical pixels wide and centered. The widened copper bands should have naturally redrawn rounded sides and curvature, NOT long flat rectangular stripes. Preserve the top-to-bottom layout; do not rotate to a horizontal coil.
+Style: consciously hand-drawn AT 32x32, restrained chunky pixel clusters, clean readable silhouette, large connected flat color regions. Prioritize calm simple design matching the existing draft and original game's item icons. One broad highlight cluster per winding, with consistent top-right light; no speckles, patchy fragmented shading, ornamental grooves, bolts, fine textures, extra highlights or extra components.
+Exactly SEVEN opaque RGB colors TOTAL, copied from the supplied palette:
+#363232 dark outline and deepest gaps;
+#D66B48 copper shade;
+#E09656 main copper;
+#EECF5A simple golden highlight;
+#436794 dark blue;
+#6F81B3 mid blue;
+#8599B0 lighter blue.
+No other opaque colors, neutral gray/white, cyan effect colors, gradients, anti-aliasing, blur, glow, dithering or partial alpha.
+HARD GRID: strict 32x32 logical grid; use only square grid-aligned pixels. 2 logical pixels thick #363232 outline in chunky steps. All four edge rows/columns fully transparent. If larger output is necessary, output a PERFECT nearest-neighbor enlargement of a 32x32 drawing, full-canvas aligned so direct nearest-neighbor sampling back preserves each color cluster. Actual transparent RGBA, no fake checkerboard/background.
+NO sparks, lightning, electric arcs, halos, particles, ripples, energy trails or speed lines. No labels, text, grid, alternate views or UI. ONE revised thicker-barrel draft sprite.

@@ -1,0 +1,21 @@
+Use case: stylized-concept. Create ONE native 32x32 pixel-art fantasy roguelike relic icon, "잔뢰의 수정구" / Crystal Orb of Lingering Thunder. Preview only.
+Reference 1 is PRIMARY STYLE reference: user's favorite chunky gray icon. Use broad connected flat color areas, thick charcoal contour, deliberate stair-step curves, restrained details. Do not copy its object or gray palette.
+Reference 2 is the EXCLUSIVE supplied palette.
+Reference 3 is the user's approved orange/blue Life Current icon: use the same simple rendering and color roles, NOT the heart shape or metal bezel.
+
+SUBJECT: a round BLUE CRYSTAL ORB carefully resting on a plump ORANGE FABRIC CUSHION. The orb is a true circular sphere, about 20 logical pixels across, occupying the upper two thirds. A low wide cushion, about 26 pixels wide and 7-8 pixels thick, supports the orb at the bottom. The sphere sinks slightly into the cushion center: visibly supported, no gap or floating.
+Cushion shape: a soft thick square pillow viewed slightly from above, with rounded corners and a gently puffed top, front edge visible. Broad warm orange upper surface and darker orange front/bottom fold. A simple shallow depression under the orb. No rigid metal pedestal, prongs, crown, stand, frame, tassels, embroidery or stitching dots.
+Orb shape: rounded blue glass/crystal with one broad medium-blue face, a crescent-shaped darker lower/right side and one small pale-blue highlight patch upper-left. Inside the orb ONE short thick angular pale-blue lightning stroke remains suspended. It should convey trapped lingering electricity and magic, while remaining readable at actual 32x32. Use the same pale-blue color for internal lightning and restrained highlight. No multiple thin scribbles, complex swirls, storm-cloud clutter or spark explosion. The blue interior remains mostly a calm broad color field.
+NO outside sparks, lightning rays, mist, floating runes, halos or background shadow. No visual attachments that require thin lines.
+
+EXACT SIX OPAQUE COLORS, plus full transparency:
+#363232 charcoal exterior outline/deep separation;
+#D66B48 orange cushion shadow/front;
+#E09656 lighter orange cushion top;
+#436794 deep blue orb shadow;
+#77BCD6 blue orb main;
+#B1DECF pale blue trapped lightning and restrained highlight.
+No white, gray, yellow, brown or extra colors. No partial alpha, gradients, texture, dithering, glossy flecks or antialiasing. Render volume through large flat connected planes, not a detailed painting shrunk later.
+
+Canvas actual 32x32 logical pixels, genuine transparent RGBA. TWO empty rows at the TOP and BOTTOM: entire object including cushion within y=2..29. At least two empty columns left and right: x=2..29. Thick about 2-native-pixel charcoal outer contour. Centered composition, preserve the orb as a round sphere, not squashed into an ellipse. Pillow wider than orb. Shape and contact clearly read as a blue orb seated on a soft orange pillow.
+If larger output raster necessary, draw on a strict 32x32 grid and use a perfect integer nearest-neighbor enlargement, each logical pixel one identical square. No subpixel detail. One icon only, no caption, grid, checkerboard artwork, swatches, UI or backdrop.

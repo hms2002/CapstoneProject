@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attributeName: EvasionAddAttribute
   description: Attribute description.
+  mutationPolicy: 1
   defaultBaseValue: 0
   minValue: 0
-  maxValue: 1
+  maxValue: 3.4028235e+38
   hasRegeneration: 0
   regenerationRate: 5
   regenerationDelay: 2

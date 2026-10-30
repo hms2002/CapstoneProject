@@ -27,7 +27,9 @@ public enum BossEncounterDialogueConditionType
     PlayerWeaponCount,
     PlayerRelicCount,
     BackpackItemCount,
-    BackpackIsFull
+    BackpackIsFull,
+    BossDialogueFlag,
+    LastBossEncounterOutcome
 }
 
 public enum BossDialogueComparison
@@ -114,7 +116,7 @@ public sealed class BossEncounterDialogueCondition
     [Tooltip("BetweenInclusive 실수 비교에 사용할 포함 최대값입니다.")]
     [SerializeField] private float maxFloatValue;
 
-    [Tooltip("아이템 조건에서 사용할 문자열 ID입니다. 예: weaponId 또는 relicId.")]
+    [Tooltip("아이템 또는 보스 대화 플래그 조건에서 사용할 문자열 ID입니다. 예: weaponId, relicId 또는 dialogue flag.")]
     [SerializeField] private string stringValue;
 
     [Tooltip("보스/호감도 조건에서 참조할 NPC 대상입니다. 비워두면 현재 NPCData를 기준으로 검사합니다.")]
@@ -128,6 +130,9 @@ public sealed class BossEncounterDialogueCondition
 
     [Tooltip("LastRunEndReason 조건에서 비교할 런 종료 사유입니다.")]
     [SerializeField] private RunEndReason runEndReason;
+
+    [Tooltip("대상 보스와의 가장 최근 전투 결과를 비교할 값입니다.")]
+    [SerializeField] private BossDialogueOutcome lastBossEncounterOutcome;
 
     [Tooltip("활성화하면 이 조건의 최종 결과를 반전합니다.")]
     [SerializeField] private bool invert;
@@ -191,6 +196,10 @@ public sealed class BossEncounterDialogueCondition
                 return CompareInt(context.BackpackItemCount);
             case BossEncounterDialogueConditionType.BackpackIsFull:
                 return CompareBool(context.IsBackpackFull);
+            case BossEncounterDialogueConditionType.BossDialogueFlag:
+                return CompareBool(context.HasDialogueFlag(targetNpcId, stringValue));
+            case BossEncounterDialogueConditionType.LastBossEncounterOutcome:
+                return context.GetLastEncounterOutcome(targetNpcId) == lastBossEncounterOutcome;
             default:
                 return false;
         }
@@ -390,6 +399,16 @@ public sealed class BossEncounterDialogueContext
     public int GetDefeatCount(int npcId)
     {
         return BossDialogueProgressStore.GetDefeatCount(npcId);
+    }
+
+    public bool HasDialogueFlag(int npcId, string flagId)
+    {
+        return BossDialogueProgressStore.HasDialogueFlag(npcId, flagId);
+    }
+
+    public BossDialogueOutcome GetLastEncounterOutcome(int npcId)
+    {
+        return BossDialogueProgressStore.GetLastEncounterOutcome(npcId);
     }
 
     public int GetAffection(int npcId)

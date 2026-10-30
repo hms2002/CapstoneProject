@@ -8,11 +8,32 @@ using UnityEngine;
 public sealed class DragonDialogueStartKnotSelector : MonoBehaviour, IDialogueStartKnotSelector
 {
     [SerializeField] private string defaultStartKnot = "DRAGON_01";
+    [SerializeField] private string[] repeatStartKnots =
+    {
+        "SPIRI_SLIME_SNACK",
+        "SPIRI_EMPTY_KEG_ERRAND"
+    };
 
     public string SelectStartKnot(NPCData npcData, TextAsset inkJSON)
     {
-        return string.IsNullOrWhiteSpace(defaultStartKnot)
+        int encounterCount = npcData != null
+            ? BossDialogueProgressStore.GetEncounterCount(npcData.id)
+            : 0;
+        string selectedStartKnot = encounterCount > 0
+            ? SelectRepeatStartKnot()
+            : defaultStartKnot;
+
+        return string.IsNullOrWhiteSpace(selectedStartKnot)
             ? null
-            : defaultStartKnot.Trim();
+            : selectedStartKnot.Trim();
+    }
+
+    private string SelectRepeatStartKnot()
+    {
+        if (repeatStartKnots == null || repeatStartKnots.Length == 0)
+            return defaultStartKnot;
+
+        int repeatIndex = Random.Range(0, repeatStartKnots.Length);
+        return repeatStartKnots[repeatIndex];
     }
 }

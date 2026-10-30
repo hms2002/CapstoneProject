@@ -1,0 +1,40 @@
+{
+  "size": [
+    32,
+    32
+  ],
+  "colorCount": 6,
+  "palette": [
+    "#363232",
+    "#436794",
+    "#77BCD6",
+    "#B1DECF",
+    "#D66B48",
+    "#E09656"
+  ],
+  "alphaValues": [
+    0,
+    255
+  ],
+  "bounds": [
+    2,
+    2,
+    30,
+    30
+  ],
+  "margins": {
+    "left": 2,
+    "top": 2,
+    "right": 2,
+    "bottom": 2
+  },
+  "previewExact16xNearest": true,
+  "tool": "built-in image_gen",
+  "projectAssetsChanged": false,
+  "unityVerification": "not executed; draft only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

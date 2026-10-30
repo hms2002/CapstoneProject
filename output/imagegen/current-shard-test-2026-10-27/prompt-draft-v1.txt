@@ -1,0 +1,18 @@
+Use case: precise-object-edit / native pixel-art style transfer.
+Asset: Current Shard relic draft, actual 32x32 logical pixels, transparent RGBA.
+IMAGE ROLES:
+1 is the original Current Shard sprite, 41x39 canvas: SHAPE/IDENTITY reference. It is a small group of sharp blue lightning-like crystal splinters leaning up-right: one dominant elongated jagged shard and one smaller adjacent prong. Preserve this recognizable angular silhouette and orientation. Do not turn it into a round stone, generic pile of gems, symmetrical diamond or plain lightning bolt symbol.
+2 is the user's FAVORITE 32x32 icon, enlarged: PRIMARY STYLE reference only. Match its broad connected light/base/shadow faces, thick dark contour, calm low-detail hand-clustered pixel drawing, readable volume, minimal accents. Do not copy that icon's round object shape or gray material.
+3 is a sheet of six 32x32 relic icons: SECONDARY style/cohesion reference. New icon should belong to this icon family.
+4 is the exclusive approved palette: choose only the six specified colors from it.
+REDRAW the original blue shard as a clean native-32x32 item icon in the preferred style. Keep the jagged long crystal/blade facets and upward diagonal silhouette, but use only a FEW large connected polygonal color faces. Clear large blue main face, one broad darker side, a pale cyan front/top face and one small restrained pale highlight. No many thin white cracks, striped edge highlights, internal lightning veins, intricate facet mesh, noisy shade speckles or tiny shiny ornaments. Preserve the shard's pointed tips while simplifying its internal geometry. The original detailed sprite is an identity guide, not a texture to copy.
+Exactly SIX opaque palette colors, no additional RGB:
+#363232 dark external contour and deepest separation;
+#436794 dark blue side face;
+#6F81B3 muted blue middle face;
+#77BCD6 pale blue/cyan main face;
+#B1DECF very light cool face;
+#F2F9F8 small near-white highlight.
+Maintain blue/cyan electric-material identity with the gentle flat palette/face treatment of the preferred icon. Avoid neon saturation and glossy high-detail rendering.
+Pixel constraints: strict 32x32 logical grid, about 2 logical pixels chunky dark outline. Center and fit the NATURAL shard proportions within the canvas, at least one fully transparent logical pixel on every outer edge; do not stretch either axis to fill a square. Large legible 1:1 pixels and stepped diagonals, no antialiasing or partial alpha. If output larger, render a PERFECT nearest-neighbor integer enlargement of a 32x32 drawing aligned to full canvas.
+No separate sparks, floating particles, electric arcs, halo, glow, text, border, grid, palette swatches, fake checkerboard/background, extra objects or multi-view sheet. One clean final draft sprite.

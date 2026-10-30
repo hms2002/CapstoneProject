@@ -1,0 +1,24 @@
+Use case: precise-object-edit / style-transfer.
+EDIT the supplied hammer into a Mjolnir-inspired magical THUNDER HAMMER relic, still a clean native 32x32 pixel icon.
+
+Image 1: EDIT TARGET at 640x640, an exact 20x nearest-neighbor enlargement.
+Image 2: the SAME EDIT TARGET at native 32x32. These are ONE hammer, not two objects.
+Image 3: user's EXCLUSIVE COLOR PALETTE.
+Preserve the source's diagonal pose and composition: massive hammer head in the UPPER LEFT, a SHORT sturdy handle extending toward the LOWER RIGHT. Keep the same handedness, approximate head size, compact proportions and original simple chunky rendering. Do not turn the hammer upright, mirror it or make a long-handled warhammer.
+
+DESIGN CHANGES: give the head a heavy forged, Mjolnir-like character: a thick rectangular block with subtly squared beveled corners and a visible broad side plane. Keep the broad main head face large and calm. The central metal face is BLUE, with a darker blue side plane and restrained pale-blue light at one upper edge. Add ONE large simple pale-blue angular LIGHTNING SIGIL engraved on the broad face, aligned with the head perspective. It must read clearly at native 32 pixels, about 2 native pixels thick and 6-7 pixels long. No tiny runic writing, knotwork or ornate border.
+ORANGE reforcements at a few thick beveled head corners/edge bands and around the short leather-wrapped grip. Do not cover most of the blue head in orange. The grip uses two broad orange tones with at most one dark separation, and a compact blue end cap. All fittings are chunky and part of the main silhouette. No dangling strap, chain, wing, fine wires or thin projections.
+The object must still look like a heavy thunder HAMMER: a much larger head than its short handle. Use clear top/front/side color planes rather than reflections or busy bevel highlights. The source's readable outline and visual density are the priority.
+
+EXACT SIX OPAQUE COLORS plus full transparency, from the provided palette:
+#363232 darkest charcoal outline/deep separators;
+#D66B48 orange shadow/binding;
+#E09656 orange main;
+#436794 blue side/shadow;
+#77BCD6 blue head main;
+#B1DECF pale-blue lightning engraving and restrained highlight.
+Use all six colors. No original silver, gray, brown, pink, white, yellow or extra colors. No gradient, partial alpha, blur, glow halo, antialiasing, speckles, scratches, small glossy flecks or dithering.
+Native low-resolution pixel art with roughly 2-pixel charcoal outer contour and broad connected flat color clusters. This is NOT a detailed painting shrunk down. No external sparks or large lightning bolts, smoke or floating magical symbols.
+
+Output true logical 32x32 RGBA with transparent background. Whole object including outline centered within x=2..29 and y=2..29: two transparent rows/columns around it. Preserve natural proportions and diagonal pose; never stretch to fill a square. If a larger output raster is necessary, use an exact integer nearest-neighbor enlargement of an actual 32x32 grid, each logical pixel an equally sized square. No details smaller than a logical pixel.
+One hammer only, no text, labels, grid, checkerboard artwork, swatches, UI or backdrop. Preview draft only.

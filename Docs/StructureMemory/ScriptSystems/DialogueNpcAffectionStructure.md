@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-09-16
+last_reviewed: 2026-10-22
 ---
 
 # Dialogue NPC Affection Structure
@@ -71,6 +71,10 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 - `Assets/_Project/Runtime/UI/Dialogue/Affection/AffectionGainScreenEffect.cs`
 - `Assets/_Project/Runtime/Presentation/Common/AffectionGradientBorderGraphic.cs`
 - `Assets/_Project/Runtime/Features/Dialogue/Affection/AffectionRewardProcessor.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/BossEncounterDialogue.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/BossDialogueProgressStore.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/BossTalkManager.cs`
+- `Assets/_Project/Runtime/Core/Save/GameData.cs`
 - `Assets/_Project/Runtime/UI/Chest/RewardDisplayService.cs`
 - `Assets/LeeJunMo/Script/Editor/NpcCustomizationHub/NpcCustomizationHubWindow.cs`
 - `Assets/LeeJunMo/Script/Editor/DialogueTextAnimationTunerWindow.cs`
@@ -90,6 +94,10 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 - Affection gain presentation gates dialogue continuation, so interrupted DOTween sequences must still invoke their pending completion callback exactly once. Gameplay `AffectionManager` should call only `IAffectionPresentationView`; concrete `AffectionUI` and `AffectionGainScreenEffect` live under UI, while shared gradient drawing lives under Presentation/Common.
 - Affection reward popups are part of the dialogue flow: after affection gain presentation, show the reward UI through `RewardDisplayService.ShowFlowOwnedReward(...)`, keep the dialogue continuation as the reward close callback, and resume dialogue only after the reward UI closes.
 - Boss reward affection effects author their own additive fields and convert them into `BossRewardModifierAggregate` at runtime; they should not depend on a separate modifier ScriptableObject asset.
+- `BossDialogueProgressStore` owns durable per-boss dialogue progress. Its cumulative victory/defeat totals are distinct from `BossDialogueRecord.lastEncounterOutcome`, which records only the most recently completed encounter for `LastBossEncounterOutcome` dialogue rules. `BossTalkManager` updates that outcome only after an active boss encounter ends in player victory or `RunEndReason.Defeat`; a run time-out remains a separate `LastRunEndReason` condition.
+- `BossDialogueRunner` runs a selected conditional encounter segment before the NPC primary Ink. An empty candidate set is intentional for a first encounter: it preserves the authored primary first-intro dialogue. Conditional authoring must therefore gate all re-encounter entries with `HasMetBoss` and leave no unconditional fallback rule.
+- A boss's primary Ink may also use an `IDialogueStartKnotSelector` for re-encounter-only body dialogue. The selector must return `null` before the first completed encounter so the primary Ink root remains the authored first-intro; on later encounters it may choose from explicit body-knot candidates. `DemonKingDialogueStartKnotSelector` is the current example and keeps its candidate list serialized on the boss-scene component for additive authoring.
+- Chloe uses `ShadowBossDialogueStartKnotSelector` on the dialogue runner in `Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity`. It preserves the primary Ink root until the first completed encounter, then chooses uniformly from `repeatStartKnots`; its current candidates are `CHLOE_SILENT_WARDEN_PRACTICE` and `CHLOE_MONTHLY_PRISONER_REPORT`. The root and repeat body knots live together in `ShadowBossIntroDialogue_Animated.ink`, separately from the conditional greeting Ink. Add future repeat bodies to that primary Ink and the scene selector's candidate list. `ShadowBossDialogueAuthoring` compiles the primary Ink, links this scene component and imports the CSV through the existing localization importer.
 - Dialogue line rhythm is owned by `DialogueView` plus `DialogueTextAnimationUtility`: `DialogueController` resolves line-level `anim` Ink tags, while inline `[pause=seconds]` and scoped motion/TextAnimating tags are stripped before TMP display and applied through unscaled reveal delays plus TMP vertex offsets/scales.
 - TextAnimating values are tuned through `DialogueTextAnimationProfileSO`. `DialogueView.textAnimationProfileOverride` is optional; the default profile is loaded from `Assets/LeeJunMo/Datas/Resources/Dialogue/DefaultDialogueTextAnimationProfile.asset`, with code defaults as fallback.
 - The Text Animation Tuner preview should mirror the default DialoguePanel rendering context. It resolves `GlobalUIRoot.prefab` `DialogueView.dialogueText`, renders through a hidden world-space `Canvas + TextMeshProUGUI` into a `RenderTexture` with a dedicated preview camera, and copies the source font, rect, wrapping, spacing, alignment, and color before applying `DialogueTextAnimationUtility`. If the source text rect has a zero or invalid size, preview-only sizing resolves width/height from the parent `DialogueTextCon` container before falling back to `1720 x 250`.

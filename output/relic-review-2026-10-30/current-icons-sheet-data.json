@@ -1,0 +1,189 @@
+[
+  {
+    "id": "FlyingBoots",
+    "name": "날개 부츠",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FlyingBoots.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/flying_boots.png",
+    "sprite": "flying_boots",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "5e75f76ed6404d0e95d4b05a8a46ae0d",
+    "fileID": 21300000,
+    "updated": false,
+    "effect": "대쉬 재사용 대기시간 감소"
+  },
+  {
+    "id": "DashCoil",
+    "name": "대시 코일",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_DashCoil.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DashCoil.png",
+    "sprite": "Icon_DashCoil",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "f010418b11d045cfae759c9daecfb610",
+    "fileID": 21300000,
+    "updated": true,
+    "effect": "이동 스킬 사용 시 3초간 전기 증가 · 최대 4중첩"
+  },
+  {
+    "id": "CurrentShard",
+    "name": "전류 조각",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentShard.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CurrentShard.png",
+    "sprite": "Icon_CurrentShard",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "02761a86fab34a7fa8bb97619af634d3",
+    "fileID": 21300000,
+    "updated": true,
+    "effect": "전기 속성 보너스 증가"
+  },
+  {
+    "id": "ThunderHeart",
+    "name": "만뢰의 인장",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderHeart.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_MyriadThunderSeal.png",
+    "sprite": "Icon_MyriadThunderSeal",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "60a42a21e7f24f5085de1b74889ac81f",
+    "fileID": 21300000,
+    "updated": true,
+    "effect": "감전된 적의 수에 비례해 전기 증가"
+  },
+  {
+    "id": "StormStep",
+    "name": "생명의 전류",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_StormStep.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LifeCurrent.png",
+    "sprite": "Icon_LifeCurrent",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "42d4577eae4f4bca963aa4a42beb3823",
+    "fileID": 21300000,
+    "updated": true,
+    "effect": "최대 체력에 비례해 전기 증가"
+  },
+  {
+    "id": "ThunderKnot",
+    "name": "뇌명의 매듭",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderKnot.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_21",
+    "rect": [
+      0,
+      117,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": -302269854803315600,
+    "updated": false,
+    "effect": "연쇄 대상의 감전 지속시간 연장 · 최대 4초"
+  },
+  {
+    "id": "ResonanceBell",
+    "name": "공명의 종",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ResonanceBell.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Flame Artifact.png",
+    "sprite": "Flame Artifact_1",
+    "rect": [
+      32,
+      0,
+      32,
+      32
+    ],
+    "guid": "87eece6e269e518438f6bcfb7a730ad0",
+    "fileID": -3570171897898288600,
+    "updated": false,
+    "effect": "전기 연쇄의 최대 대상 수 증가"
+  },
+  {
+    "id": "TinglingShackles",
+    "name": "저릿한 족쇄",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_TinglingShackles.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_24",
+    "rect": [
+      123,
+      117,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": -9140534868678272000,
+    "updated": false,
+    "effect": "감전 부여 시 일반 적을 0.1초 마비"
+  },
+  {
+    "id": "CurrentJar",
+    "name": "전류 항아리",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentJar.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CurrentJar.png",
+    "sprite": "Icon_CurrentJar",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "e5c550d64463476b805996e62d53f9c4",
+    "fileID": 21300000,
+    "updated": true,
+    "effect": "감전 만료 시 전기 속성의 40% 피해"
+  },
+  {
+    "id": "EchoCoil",
+    "name": "메아리 코일",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_EchoCoil.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EchoCoil.png",
+    "sprite": "Icon_EchoCoil",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "e7efc408d6d146be90b9d8289e7395c2",
+    "fileID": 21300000,
+    "updated": true,
+    "effect": "연쇄 번개를 50% 피해로 한 번 더 반복"
+  },
+  {
+    "id": "ConductorRing",
+    "name": "도체 고리",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ConductorRing.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_24",
+    "rect": [
+      123,
+      117,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": -9140534868678272000,
+    "updated": false,
+    "effect": "연쇄마다 피해 20% 증가 · 최대 60%"
+  }
+]

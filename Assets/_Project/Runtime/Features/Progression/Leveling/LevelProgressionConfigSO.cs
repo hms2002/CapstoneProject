@@ -10,15 +10,8 @@ public sealed class LevelProgressionConfigSO : ScriptableObject
 {
     [SerializeField] private int[] nextLevelRequirements =
     {
-        100,
-        130,
-        160,
-        200,
-        250,
-        310,
-        380,
-        460,
-        550,
+        40, 50, 60, 70, 85, 100, 115, 130, 145, 165,
+        185, 205, 230, 255, 280, 310, 345, 380, 420,
     };
 
     public IReadOnlyList<int> NextLevelRequirements => nextLevelRequirements;

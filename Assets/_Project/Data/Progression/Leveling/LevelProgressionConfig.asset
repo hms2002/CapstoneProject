@@ -12,13 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dafa58406700ad54aa32267d7dc975b5, type: 3}
   m_Name: LevelProgressionConfig
   m_EditorClassIdentifier: Gameplay::LevelProgressionConfigSO
-  nextLevelRequirements:
-  - 100
-  - 130
-  - 160
-  - 200
-  - 250
-  - 310
-  - 380
-  - 460
-  - 550
+  nextLevelRequirements: 28000000320000003c000000460000005500000064000000730000008200000091000000a5000000b9000000cd000000e6000000ff0000001801000036010000590100007c010000a4010000

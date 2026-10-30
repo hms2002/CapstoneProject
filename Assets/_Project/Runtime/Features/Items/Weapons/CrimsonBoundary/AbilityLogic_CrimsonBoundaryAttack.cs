@@ -52,6 +52,7 @@ public sealed class AbilityLogic_CrimsonBoundaryAttack : AbilityLogic
             elementHpDamages = elementHpDamages,
             damagePopupElementTag = CrimsonBoundaryUtility.FireDamageTag
         };
+        payload.CaptureAttackCategoryDamage();
 
         var visual = CrimsonBoundaryVisual2D.Spawn(data.projectilePrefab, position, Quaternion.identity, runtime);
         if (visual == null) yield break;

@@ -1,0 +1,16 @@
+Use case: stylized-concept. Create ONE new Echo Coil relic inventory sprite: actual design for a 32x32 logical pixel canvas, transparent RGBA, no electrical effects.
+Input 1 is SUBJECT/FORM reference ONLY: a hollow copper cylindrical coil/spool with a large open circular front facing front-left, short body receding toward upper-right, several thick copper rings/ribs around the body, and a low supporting foot/base. Reinterpret only the essential object shape; its printing, diagonal marks and tiny ornamental wires/screws are not part of the requested object.
+Input 2 is STYLE reference ONLY: the game's original 32x32 flying-boots sprite. Match that level of restraint and visual clarity: bold dark contour, broad connected flat color clusters, a few simple shades, calm surfaces. Not a detailed illustration compressed down.
+Input 3 is the EXCLUSIVE palette. Use no colors outside the supplied swatches. Use at most SEVEN opaque RGB swatches:
+#363232 darkest 2px contour and deepest opening;
+#7F4A50 simple warm inner-wall shade;
+#8A5E40 copper shadow;
+#D66B48 main orange copper;
+#E09656 warm copper highlight;
+#62494C base shadow;
+#978C8E small muted base face.
+Composition: one compact recognisable copper spool. A broad thick front ring surrounds a clearly visible LARGE dark opening (roughly 7x10 native logical pixels), with just 3 broad receding copper ribs behind it, and a simple small stable foot. Copper ring faces must be broad and readable, not lots of skinny threads. Keep enough orange interior area so the 2px outline does not swallow the coil. Use only one connected highlight band on each major surface. Base is visually subordinate, a short calm shape; avoid a large distracting pedestal.
+Make the front mouth/rim, hollow center and curved receding ribs the distinctive silhouette. Preserve a slight three-quarter view similar to input 1, not a flat torus front view, not an electrical solenoid with a solid metal core.
+NO electric effect at all: no sparks, lightning, cyan arc, blue glow, aura, magic particle, motion/echo wave, floating symbols. Just the physical copper coil and small base.
+Technical: strict 32 by 32 logical grid. Dark external outline is TWO logical pixels thick with simple chunky steps. Leave exactly ONE fully transparent logical pixel on top, bottom, left and right: visible silhouette stays within x=1..30,y=1..30. Every detail must be a purposeful native square-pixel cluster, predominantly 2x2 and larger. No isolated bright speckles, broken checkerboard shading, texture, thin little wires, small screws, scratches, gradients, gloss, white reflections, shadows cast outside object, blur or AA. Flat solid colors, every visible pixel fully opaque.
+If image delivery must be larger, output a PERFECT nearest-neighbor integer enlargement of a thoughtfully drawn 32x32 sprite with all logical squares aligned. No extra framing, background/checkerboard, grid, text, labels, watermarks or multiple views. One complete centered sprite.

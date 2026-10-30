@@ -1,0 +1,47 @@
+{
+  "name": "storm-branch-draft-v2",
+  "workingTitle": "폭풍의 가지",
+  "concept": "Thick orange wooden stem splitting once into exactly two limbs, with blue current branching inside",
+  "size": [
+    32,
+    32
+  ],
+  "colorCount": 6,
+  "palette": [
+    "#363232",
+    "#436794",
+    "#77BCD6",
+    "#B1DECF",
+    "#D66B48",
+    "#E09656"
+  ],
+  "onlyUserPaletteColors": true,
+  "alphaValues": [
+    0,
+    255
+  ],
+  "bounds": [
+    4,
+    2,
+    28,
+    30
+  ],
+  "margins": {
+    "left": 4,
+    "top": 2,
+    "right": 4,
+    "bottom": 2
+  },
+  "previewExact16xNearest": true,
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-978e8293-9b29-482e-9b5b-e99a77e65d8c.png",
+  "export": "Uniform proportional nearest-neighbor palette export and 2px charcoal contour",
+  "projectAssetsChanged": false,
+  "projectRelicNameChanged": false,
+  "unityVerification": "not executed; draft only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

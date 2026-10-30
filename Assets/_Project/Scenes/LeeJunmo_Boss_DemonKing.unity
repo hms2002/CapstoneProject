@@ -9987,7 +9987,7 @@ MonoBehaviour:
   m_text: Interact
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ab56e3ce9940d9648a8a4896df560905, type: 2}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: 7785331808423663526, guid: ab56e3ce9940d9648a8a4896df560905, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -10084,7 +10084,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 7785331808423663526, guid: ab56e3ce9940d9648a8a4896df560905, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12044,7 +12044,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   npcData: {fileID: 11400000, guid: 47d475aabd71d0245a47a8fa56c6546a, type: 2}
-  startKnotSelectorBehaviour: {fileID: 0}
+  startKnotSelectorBehaviour: {fileID: 9045646977701484070}
   playEncounterDialogue: 1
   playPrimaryDialogueAfterEncounter: 1
   recordEncounterProgress: 1
@@ -17650,6 +17650,8 @@ MonoBehaviour:
   resistancePercentAttribute: {fileID: 0}
   staggeredEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
   allowOverflow: 0
+  maxHealthAttribute: {fileID: 0}
+  maxGaugePerMaxHealth: 0
   allowPresentationOffset: 0
   presentationWorldOffset: {x: 0, y: 1.6, z: 0}
   presentationAnchor: {fileID: 0}
@@ -17808,6 +17810,7 @@ GameObject:
   - component: {fileID: 9045646977701484069}
   - component: {fileID: 7811180001}
   - component: {fileID: 7811180002}
+  - component: {fileID: 9045646977701484070}
   m_Layer: 31
   m_Name: DemonKing
   m_TagString: Enemy
@@ -18355,6 +18358,21 @@ MonoBehaviour:
     mirrorXByFacing: 1
     gizmoColor: {r: 1, g: 0.69096684, b: 0, a: 1}
     gizmoRadius: 0.14
+--- !u!114 &9045646977701484070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717066173154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a74c95d32dfaf2540ae7a4cfd98295d9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Gameplay::DemonKingDialogueStartKnotSelector
+  repeatStartKnots:
+  - DEMONKING_LESSON
+  - DEMONKING_REPAIR_COST
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

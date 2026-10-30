@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "size": [
+    32,
+    32
+  ],
+  "sidePartPixels": 129,
+  "changedPixels": 129,
+  "sparkPixelsUnchanged": 35,
+  "otherPixelsUnchanged": 895,
+  "paletteVerified": true,
+  "outlineUnchanged": true,
+  "alphaUnchanged": true,
+  "transparentMarginPx": 1,
+  "tool": "built-in image_gen",
+  "export": "32x32 palette export; v1 side-part positions only; preserve all other v2 pixels",
+  "projectAssetsChanged": false,
+  "unityVerification": "not executed",
+  "docImpact": "no doc update needed",
+  "logsUpdated": false,
+  "presentationHTMLAffected": false
+}

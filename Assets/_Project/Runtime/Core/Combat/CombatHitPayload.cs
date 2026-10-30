@@ -45,8 +45,10 @@ namespace UnityGAS
             CombatDamageSnapshot snapshot,
             GameplayTag hitConfirmedTag,
             GameObject causer,
-            HitImpactCueKind hitImpactCueKind = HitImpactCueKind.Default)
+            HitImpactCueKind hitImpactCueKind = HitImpactCueKind.Default,
+            bool scalePhysicalDamage = true)
         {
+            snapshot = CombatAttackDamageScaling.Capture(snapshot, sourceSystem, sourceSpec, scalePhysicalDamage);
             return new CombatHitPayload
             {
                 hitFeel = sourceSpec?.Definition != null
@@ -67,6 +69,16 @@ namespace UnityGAS
                 hasResolvedElementBuildUps = snapshot.HasResolvedElementBuildUps,
                 elementHpDamages = snapshot.FinalElementHpDamages
             };
+        }
+
+        // Directly authored weapon payloads use the same construction-time boundary as FromSnapshot.
+        public void CaptureAttackCategoryDamage()
+        {
+            var snapshot = CombatAttackDamageScaling.Capture(new CombatDamageSnapshot(finalHpDamage,
+                finalStaggerBuildUp, finalKnockbackImpulse, isCriticalHit, elementBuildUps,
+                hasResolvedElementBuildUps, elementHpDamages), sourceSystem, sourceSpec);
+            finalHpDamage = snapshot.FinalHpDamage;
+            elementHpDamages = snapshot.FinalElementHpDamages;
         }
     }
 

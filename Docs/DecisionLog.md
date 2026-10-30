@@ -3519,3 +3519,22 @@ PlayerAlcoholExposure가 겹친 장판의 충전/효과 수명을 소유하고, 
 ## 2026-10-12 — Confusion also reverses directional dash
 
 술 노출 구현 후 사용자가 대시도 방향키 입력과 함께 반전하도록 기존 walking-only 선택을 변경했다. 일반 걷기와 기본 대시의 방향 입력은 PlayerIntentInput2D.ApplyConfusionToDirection을 공유한다. 대시의 cached raw 경로와 Update 전 직접 입력 조회 경로에 모두 적용하며 raw 입력, 다른 스킬 입력, 강제 이동, 방향 입력 없는 aim fallback은 유지한다. prefab/GE/save schema 변경은 없다. [구조](StructureMemory/AlcoholExposure.md), [범위](ActiveTasks/spiri-alcohol-exposure.md).
+
+
+## 2026-10-30 - Repeatable Stat Rewards Use Stored Tier IDs And Family-Based Offers
+
+User-approved design adds twelve repeatable stat families with three 70/25/5 tiers alongside the seventeen existing non-repeatable rewards. Normal offers contain one stat card with 40% probability or two with 60%; exhausted specials backfill with more distinct stats. Each kind appears once, and reroll novelty compares stat families rather than tier IDs. Available ordinary groups and the element group have equal initial weight, with four uniform element families inside the group.
+
+Thirty-six stable definition IDs reuse the existing persisted offer/selection lists, retaining exact amounts across close/reopen and scene/JSON restoration without changing the progression DTO. Each selection owns an exact modifier. No max-health card, extra growth cap, threshold-based eligibility limit, or repeatability tutorial caption is added. Raw critical/evasion excess is retained; actual probability rolls preserve Clamp01 for future overflow-consuming relics.
+
+The latest level cap is 20, superseding the earlier discussed 25. The initial 3,570-EXP curve maps the former 2,540-EXP budget to Lv.17 and a 50% increased budget to Lv.20; ordinary clear-level balance still needs playtesting. The supplied blue/white PNG is the dedicated stat card. Normal/skill bonuses follow the source weapon ability's category at payload construction, preserving DOT/gauge rules and OddIron's fixed noncritical physical channel. See the [level progression map](StructureMemory/ScriptSystems/LevelProgressionStructure.md) and [session](SessionLogs/2026-10-30.md).
+
+## 2026-10-30 - Playtest Revision Of Stat Training Cards And Early EXP
+
+The user reported roughly three level gains in the first room and excessive critical growth. This supersedes the initial balance above: ordinary clears now target approximately Lv.13. Requirements are 150/180/200, then 205 for each remaining level through the unchanged Lv.20 cap (3,810 total). The 2,540-EXP reference maps to Lv.13, while a 50% higher reference reaches Lv.20; these are budget calculations, not measured full-run outcomes.
+
+All repeatable cards use localized training names and named effect descriptions (`공격력 훈련` / `공격력 +2`). Critical damage tiers become 4/8/12 percentage points. Basic attack damage, skill damage and attack speed become 2/4/6%. Critical chance stays at 2/4/6 percentage points. Preserve tier IDs, offer probabilities, overflow policy and unrelated stats. Five-language text data must match the adjusted assets. See the [session](SessionLogs/2026-10-30.md).
+
+## 2026-10-30 - Restore The Original Twenty-Level EXP Curve Only
+
+The user withdrew the Lv.13 clear target and explicitly restored the original 20-level EXP requirements, including the first 40-EXP level-up. The ordinary-clear target returns to Lv.16–18. The restored 3,570-EXP curve maps the 2,540-EXP reference to Lv.17. This supersedes only the EXP portion of the previous revision: training titles/descriptions, five-language text, reduced combat-stat tiers and reward rules remain as revised. Actual full-run balance still needs play verification. See the [session](SessionLogs/2026-10-30.md).

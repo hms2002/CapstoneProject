@@ -1,0 +1,27 @@
+Use case: stylized-concept.
+Asset: ONE native 32x32 pixel-art roguelike relic icon named Current Jar / 전류 항아리. Draft for visual review.
+
+REFERENCES:
+Image 1 is the user's most preferred individual gray item icon, PRIMARY STYLE reference only: chunky 2-pixel charcoal contour, broad simple joined planes, restrained details, deliberate stepped curves. Do not copy its shape or gray colors.
+Image 2 is the user's six-item sprite sheet, SECONDARY STYLE reference for the same clean low-resolution item art.
+Image 3 is the user's EXCLUSIVE palette. Use exactly the FIVE opaque colors below, and transparency.
+
+SUBJECT:
+A squat ancient BLUE-GRAY ceramic jar, rounded generous belly, short neck, broad open elliptical mouth and a small flattened foot. Clearly a sturdy old earthenware jar, not a bottle, cauldron, barrel, gem or mechanical can. No lid, handles, extra bands, ornament, pedestal or separate props. Show only one broad light blue-gray front/left plane and one dark blue lower/right shadow plane.
+The jar is visibly CRACKED. One clean crooked branching fissure descends from the mouth down the front toward the lower-right belly, with one short side fork. The fissure leaks pale electric light; use a broad enough connected yellow crack and a restrained cream core so the crack reads at 32x32, rather than hairline scribbles.
+The ENTIRE OPENING is filled with a bright, solid pale-cream electrical light, not a dark hole or a small bright dot. A narrow yellow edge encloses the cream oval. The cool blue-gray front lip partly overlaps the lower edge of this light-filled opening, so the mouth is recognizable.
+Electricity actively CRACKLES from BOTH the mouth and the crack: two short, sharp angular yellow/cream zigzag arcs rising from opposite sides of the lip, and one tiny connected discharge at the side fissure. The arcs should read as jagged electrical sparks, NOT flames, steam, smoke, a fountain, liquid splash, a big lightning cloud, a crown or scattered star particles. No glow blur or translucent halo.
+Reserve the small amount of space above the jar for these compact crackling arcs. The mouth's broad cream fill should be the brightest focal point. The body retains large calm blue-gray color regions; do not cover it in dozens of cracks.
+
+EXACT FIVE OPAQUE RGB COLORS TOTAL, including the outline:
+#363232 charcoal outline and deep separators;
+#436794 deep blue ceramic shadow;
+#8599B0 blue-gray ceramic main face / lit lip;
+#EECF5A warm yellow electric crack edges and spark paths;
+#F1E9D4 pale cream electrical core and FULL mouth fill.
+Use no sixth color, no white, no cyan or orange, no gradients, antialiasing, dithering, noise or partial alpha. Ceramic shading uses only the two blue shades; electricity uses only the two light shades.
+
+STYLE AND LAYOUT:
+Actually design for a 32x32 logical pixel grid from the start, no detail below one logical pixel. Thick approximately 2px charcoal outline on the vessel, restrained dark separation around arcs. Clean connected shapes, broad highlights, low detail, readable in an inventory at original size.
+A 32x32 transparent RGBA canvas. Exactly TWO empty pixel rows at the TOP and BOTTOM, including every spark: visible extent y=2..29. At least 2 empty columns at left/right. The complete jar plus arcs fits at most 28x28. Center it without stretching its proportions. Do not enlarge a thin bottle to fill this frame; draw a full squat jar shape.
+If the output raster must be larger, render a perfect integer nearest-neighbor enlargement of the same 32x32 logical grid with identical square cells and no extra detail. One icon only; no words, lettering, UI, border, grid lines, checkerboard artwork or background.

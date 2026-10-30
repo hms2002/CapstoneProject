@@ -60,7 +60,8 @@ namespace UnityGAS.Sample
                 knockbackEffect: knockbackEffect,
                 snapshot: snapshot,
                 hitConfirmedTag: null,
-                causer: system.gameObject);
+                causer: system.gameObject,
+                scalePhysicalDamage: false);
         }
 
         public static Vector2 ApplySpread(Vector2 direction, float spreadAngle)

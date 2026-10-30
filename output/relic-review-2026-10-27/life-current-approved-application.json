@@ -1,0 +1,838 @@
+{
+  "name": "Life Current approved user-image application",
+  "date": "2026-10-27",
+  "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-ae7d8566-891f-4241-9e8f-271bf18f5e54.png",
+  "asset": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LifeCurrent.png",
+  "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_StormStep.asset",
+  "guid": "42d4577eae4f4bca963aa4a42beb3823",
+  "spriteID": "254afb7dc2cd424d9e9d3a63e9886f78",
+  "fileID": 21300000,
+  "pngVerification": {
+    "size": [
+      32,
+      32
+    ],
+    "rgbColorCount": 7,
+    "palette": {
+      "#363232": 190,
+      "#D49C73": 38,
+      "#EECF5A": 35,
+      "#8A5E40": 73,
+      "#436794": 74,
+      "#B1DECF": 40,
+      "#77BCD6": 108
+    },
+    "alphaValues": [
+      0,
+      255
+    ],
+    "bounds": [
+      2,
+      3,
+      30,
+      30
+    ],
+    "margins": {
+      "left": 2,
+      "right": 2,
+      "top": 3,
+      "bottom": 2
+    },
+    "alphaMaskHorizontallySymmetric": true,
+    "sourceAndDestinationBytesIdentical": true,
+    "sha256": "d0c30310a2e2b198900852dc94a1006ecf79ac3b2dd8a4a8615f317361a3df1a"
+  },
+  "definitionOnlyIconLineChanged": true,
+  "importer": {
+    "template": "Icon_CurrentShard.png.meta",
+    "matchesExceptNewGuidAndSpriteID": true,
+    "spriteMode": "Single",
+    "filterMode": "Point",
+    "pixelsPerUnit": 32,
+    "mipmaps": false,
+    "textureCompression": "None",
+    "alphaIsTransparency": true
+  },
+  "protectedExistingFileCount": 193,
+  "protectedFilesUnchanged": true,
+  "protectedFiles": [
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/arrow.png",
+      "Hash": "CC36408EB623E12642D5BD71C2CDA5330996CBD5C9F93A61E4891E103937A359"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/arrow.png.meta",
+      "Hash": "A580F60901A7E132F84B62C0B6B165257EC051DDC04057EA193AC73C18983183"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Artifact (9).png",
+      "Hash": "4A7A099DF74AF904A78D26608CAF6F0498BDA0212B790ED82D48F2A11AA86C39"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Artifact (9).png.meta",
+      "Hash": "93506D9B870F555524892EDE50696C0577EFBDFFC60CA10A37F64D555A924BE1"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Flame Artifact.png",
+      "Hash": "44AA3E633A3FF88371A1B6477160DF129DFD8498605A8D044D434C43C6F7AA29"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Flame Artifact.png.meta",
+      "Hash": "7D4DBE59CC948C905272D5849AAF1B6EDC5B01F1F17F3D65476803955BDDA87B"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/flying_boots.png",
+      "Hash": "743A6ED74C47788D5355F2426277D84E898F577750F178C4428532371004FF3B"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/flying_boots.png.meta",
+      "Hash": "3FBC70FCFD7382E6104F7EACDD841090A6EA4076FBB361537BC8CBBBDDB03E72"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/gold_vein.png",
+      "Hash": "1A7EC27CC7FF02E8C26CBAB2B8268FB4C0767355365406303C2432440876CDA3"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/gold_vein.png.meta",
+      "Hash": "AD1C8EA3D9B282A62EEFA3E557624A107C52E92B0A3A4BD4FEECABD668D4A44E"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CounterKick.png",
+      "Hash": "415F6DE4573FAA54D92F84070F45C1F4793145E72F70D339C38EE3D1120B3B89"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CounterKick.png.meta",
+      "Hash": "91846D94DC2A4AE31DCF698C5988F3EBBE4F999E4E76DC2A65277DA1AD99DA51"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CurrentShard.png",
+      "Hash": "9A5911340799785AF9F245E2066B66438F22A39EA58B5E9DA496252BE917B62F"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CurrentShard.png.meta",
+      "Hash": "1F3CEFC514F995764E8B8E618F54A7FD0E4C6546CFCD1BAD4FCB1AD3982C29CB"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DashCoil.png",
+      "Hash": "3C7C5D3CFF25787ED55F8F3B8563DC10827ED3E8D463E602DF74C8986CAC5E6D"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DashCoil.png.meta",
+      "Hash": "72D28832BECED340788E2A3F4116FE64A2BC643206F77DE753C30CA261847276"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DrunkenRush.png",
+      "Hash": "E164CC3B0555506026A05E5CE45A88DBB99744469BFC365A97A6CF15C1521B10"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DrunkenRush.png.meta",
+      "Hash": "AECD6CBBDC0A79888B686EB7F1A6E9139794669290084659E29602DAAE998884"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EchoCoil.png",
+      "Hash": "617A25AC05986B2AB6F22F2DEC52335E998A84F3606D649BF4391ADF3F2F0FD5"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EchoCoil.png.meta",
+      "Hash": "7B3A072A23AB879455070CBF4B51AA2CF6E5B050D1026898F1C3BFCDA6B700C7"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FeatherOrbit.png",
+      "Hash": "A04AF82F524CB81B1F0F9598408E8A41A4AD94023F73389D4DB5EFC4FF2B2A89"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FeatherOrbit.png.meta",
+      "Hash": "EA113B6CDD3A50B4E06B44544B8F35E478F8194D8738A59F87245AF3E14012CF"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_HawkEmblem.png",
+      "Hash": "205EEFB4BFC1FF02B0E994735C7E0EAB00E30F2376440A58916111AB165116AC"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_HawkEmblem.png.meta",
+      "Hash": "D0A12B1837E087FBE13940DA3A109E6436B0A65EED48EC6635205CC009FB2867"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_OneDropOfSwiftness.png",
+      "Hash": "F590BD31A069534B2EF5DB23025868F0C2AE4EC6ED298D76D2BF295107A7A73F"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_OneDropOfSwiftness.png.meta",
+      "Hash": "A6B9483713B9C7E85558405FBB9C9BB39908E8C5CAB031B2340F9A731FE35583"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RotatingIornBall.png",
+      "Hash": "62416B863DE768A5721335E84D877EE715F35010A3F60CD38645EF8E480B7396"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RotatingIornBall.png.meta",
+      "Hash": "492912224A4E7DEA11B215A752909F36DE4571A5EA6E7AC07393C4727B72AE1D"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RunningLedger.png",
+      "Hash": "19AEA3B69871BE07883073F312086AF5FFD253CD71433D28780CC01C4D39C224"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RunningLedger.png.meta",
+      "Hash": "618DBD91C8982CC60EFFD1C97B44AEE2260158AC0C9542749891D841806F8150"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedBoots.png",
+      "Hash": "9C7899F6691A57440930DB2FD9E5BEDB10DCC6BCD3178E3BB87EFD5B97E54CE9"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedBoots.png.meta",
+      "Hash": "AEE88B6C52C9FC20674574CE90A2508F805F8ACD7CA06F08E349D335CB7526BC"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedMedal.png",
+      "Hash": "7E9BC913EE740241F8FDC54A2380C900D0F8653D175219513DFC5C07ED5284E1"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedMedal.png.meta",
+      "Hash": "7280A4FA245E2BDE27F4041A3D43FAECAA4E9A0FD9164DAE47D83981E3034DBE"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_Stenographer.png",
+      "Hash": "31C2242C2AC136A468B3575CC209E8DD049FC4E59D1222AA81D5C68C622591A7"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_Stenographer.png.meta",
+      "Hash": "1D6C07FBC9D4A51B6DD8C0B5CEDA37E1BFD816B2C98192970B4D398851ADF3B7"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_TonicGombangdae.png",
+      "Hash": "AEB2A157164FA946AD3027D1DE875F2CC5B02EE2206A6C2215478973366160A5"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_TonicGombangdae.png.meta",
+      "Hash": "7FF3B2CC588DF74DE610CFCDFBC98ED45D297F317D864DAA91C8DB7710763F6D"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindTablet.png",
+      "Hash": "44B4BFD783D035F9FB04666A55F1E5CDE2C932EE447269148D3ACF020BF99105"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindTablet.png.meta",
+      "Hash": "5C72519401D180279040A985D5831455DBCA7D809895AC77CF301CE45D7585AA"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/plant.png",
+      "Hash": "743D58518395B68D87D3B3B7C479A4A8EECB5EDB77B56939EE37C30F5AE88947"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/plant.png.meta",
+      "Hash": "ED379F1C74985016EFE1409093F8FC15F0D8FC50F8040C2DA89EEB11962B72AA"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/potion1.png",
+      "Hash": "4D8DFA1928F56F96E437B25373D874FC4C95EF4ADF3619C2F08028774A386430"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/potion1.png.meta",
+      "Hash": "7BA0B46CED9D2010B49C58FC6C57D43D2D6D949D1346F6A221C46DEC817C52DF"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "Hash": "2157FA9BDB2E267DAA8D77F8D1D2BE1D2C8D12912C1304CBCB6DF0C4609AD733"
+    },
+    {
+      "Path": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png.meta",
+      "Hash": "D43DB6BEEC990C182F0E792F603E1F50B144498718D82AA4A68E2FC12023901C"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ApprenticeChargeLink.asset",
+      "Hash": "370A9799584BCD8D92C9C3F2F7C596F29523F7FCB5500110F23061F4825B8F7A"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ApprenticeChargeLink.asset.meta",
+      "Hash": "2C29E357DC719FB589F0B79ECDECB4C5E366E1A5FCEA4EE9D2B6478EAEDBE114"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset",
+      "Hash": "F0D9B918241C6378D0112C649F3BA88861E69FD0D96EE04D49A8CF788EB065DD"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset.meta",
+      "Hash": "F46F945D8EAF7EDE0DAD4FBD4DCEA56B9A7056B7998C8546145C359CEDDE4E69"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BalanceWeight.asset",
+      "Hash": "48CD2F8825781DF4D14F9DBC0E89754C8A547209AF1F9CE65D60FDD2FA64C012"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BalanceWeight.asset.meta",
+      "Hash": "AB5D3F5B66651CD8408421BF578B3DF0AAD10F6591FD6B4EFFBBC6039D4DA368"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BerserkerCord.asset",
+      "Hash": "54538B360D938DE6BCF8F8322491EF948C93B630862BC55FD52FBDD952935F11"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BerserkerCord.asset.meta",
+      "Hash": "15FFC06A5643281C3E780E466C632A5982DCEA708EC36E5C8D1DE4A7B25E8516"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BlackIncense.asset",
+      "Hash": "5A849F8B334D71D259A6488471F822B487EC5DA972C680574FC3CDB0F79A26A0"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BlackIncense.asset.meta",
+      "Hash": "B01517A8F764ECD0B06D0B172BADCB03A71547D3BC2B8C4F52634A6CCA8F2E09"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BluntShield.asset",
+      "Hash": "428505643727277BAEE5AB709638D7D15728F4FA502B3B62EF927E8D7C8FE423"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BluntShield.asset.meta",
+      "Hash": "63A195EB2562BF0E91F54D7AE0E2E7A49DA1D5D0225F1D4A17535EDCA3FB7E1E"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenClock.asset",
+      "Hash": "E39658BEBCC769C1028B389D90451C09E86246CCF0EC5A60B973A614BA9B5B6E"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenClock.asset.meta",
+      "Hash": "5331C2C8E45908F169753F4AE7B93841EB03FE289422858AA823F6C9E6C7A597"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenCrown.asset",
+      "Hash": "00F1CF9A69841D4613EAE9B3B8EC1EC0E59B3C1EE9F7566ABE1687D9022F219A"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenCrown.asset.meta",
+      "Hash": "5247870D8A1A7DDE9AED3F50024F521DCA4756F0525C9265DA6B299B218FEC0E"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BronzeDice.asset",
+      "Hash": "F969CA0BB6C54DC181AD9071B65ED1D58F4BE9E5091C650BBF9BE0ECAA08A47E"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BronzeDice.asset.meta",
+      "Hash": "DB4745358CDC4BB1741F117A96732D57235995867DBA5BDE3A9538EFFA84785C"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BurningFeather.asset",
+      "Hash": "614EB0E56760B0962A1988295FD5D8577AAD3FDE6A973AE62D9191C182F1E061"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_BurningFeather.asset.meta",
+      "Hash": "96A13921B21F98F89E5441ABCE9099EF0C6CF9F82FF90CCDE218F6F827D2DA1E"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CalmHeart.asset",
+      "Hash": "36639A65F505098287F8656FC57F917B7A2FFBEB4379EA7B001B615D1684A656"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CalmHeart.asset.meta",
+      "Hash": "0610FCFEE323083F7900513E3935727D6C86F978577DD887D99B324659A7D41C"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ChainCharm.asset",
+      "Hash": "8CFE837D3811B6E0241692745971D2DB0E9173B65C0D9727688865A2A849E32C"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ChainCharm.asset.meta",
+      "Hash": "B5C774427E4FFCBAE9A686619F1A151AEDE9A46AA3F64079F5095E8547A66605"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CombatGloves.asset",
+      "Hash": "42CFC8654EA330EBF19B770E41DB1011768F513D92F3E5C3A6F85382200DB1AB"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CombatGloves.asset.meta",
+      "Hash": "EF96685B450BBB38EF51BD3CC94D5B2E49485FF4E4169660D68D919B8C59E994"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ConductorRing.asset",
+      "Hash": "50144FEAF4EA303A44CFA5760EC8317D3DBDE5F68EC26675DC9ED075408352A0"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ConductorRing.asset.meta",
+      "Hash": "1B5507660940D8CF83E0715390C7F1B1B82B43C78ED5AE2EF83F591DDC9438FF"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CounterKick.asset",
+      "Hash": "98A0E724A69B68C6ADF187B8B693A2DB6E50E2A8FEE11115902E1F6EFD70B083"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CounterKick.asset.meta",
+      "Hash": "EF2AF37DF96262BDBFAD378DD091D2044EBA49677027245F8404B163F11249F0"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKillShot.asset",
+      "Hash": "915D9558CB6FD784A5214AE98573311384F227521913B6D468EFAC8F819B9CE2"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKillShot.asset.meta",
+      "Hash": "A5768670CA8A9D3FB8758131CC9A14B969E344F6E008283969A09BF76BDECCC6"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKing.asset",
+      "Hash": "B055C114845F15FBC0436A2CEBE361E8426AE23F60CF945C3CC2DE3136473980"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKing.asset.meta",
+      "Hash": "FD1D005F5C6EBA1B7CC0DDEB539C49C360659A2C568C4246FD30E014B0759FD8"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonLavaBall.asset",
+      "Hash": "3BFDD5783E593DC02276E56E6D46571C7AE8EF7773508D094AC8AE31BDB8B8DC"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonLavaBall.asset.meta",
+      "Hash": "68ED257138B86C069232DA689A1B1B8CA625E0EB5500E1C395336857155A62CE"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentJar.asset",
+      "Hash": "DEED2485BB1927E5DBA7F59B5FB98B7A98C8009F7152B12F1DC24B415112D6D8"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentJar.asset.meta",
+      "Hash": "A8210616D0F77D2F22C116014F0F4CDEA76582768A7A3E22A033CDBA7A15905C"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentShard.asset",
+      "Hash": "040595346B5CA1DE6E4CC4A7CD33BA78A7F7E43971365004F0F26A21C3C2F265"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentShard.asset.meta",
+      "Hash": "75E1B1DC48D2A4CCBE9A9B217DF1DAD5A4F005F76765E6466B0833981FC2AD68"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_DashCoil.asset",
+      "Hash": "12CE85E4C3484389BCC5BE4B13F642DB32B2B50901D10CB72BD26B651AC6482D"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_DashCoil.asset.meta",
+      "Hash": "53F400361870CFB3710EBF9407754EA2CD73178E869DB871D76558CE60F823DF"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_DrunkenRush.asset",
+      "Hash": "FE89A13D4DFB122BE6D54CD0D60FB83382DCBEE247BCE097AB6F6054FB541711"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_DrunkenRush.asset.meta",
+      "Hash": "22252DC6DE03B740BCB0A4F8F54C8A7869061A2BB8BD9B8BE57B71DB9179D680"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_EchoCoil.asset",
+      "Hash": "F041B237BE2948A41F5E5BB17CC76B31DDDC2E6E0CD683A261C781B72C8B95EE"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_EchoCoil.asset.meta",
+      "Hash": "7DC640AF05B2B80FC572FB854296816BAA75A9AACC289EA0969122601A345513"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_EvasionFeather.asset",
+      "Hash": "45251335A87DE8663D7D832D97BBC06F2CF989966CEB90184DC8E81B358CC75F"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_EvasionFeather.asset.meta",
+      "Hash": "AFF618022B1DA29039CFF02AEAB981461D1CF6A5CD213D8B48488C325ECEE423"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset",
+      "Hash": "2731FA2280A9574D74D2A1EC1C269DD1E46C4E12C0158C2EB251160A4B8FF43C"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset.meta",
+      "Hash": "48906FA89533C9B7EA915ED53BD2BA404C6BC77A5AD8DD028DB8640AF2FCFF0D"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_FireBonusRelic.asset",
+      "Hash": "B16CC9597E5216419B5A9C1AE96FFB054439F631A86D71AD49CDF11AB6B5F57B"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_FireBonusRelic.asset.meta",
+      "Hash": "0631BBC90CDFE8C1F7EB4EB6FFAFC27C775518B56EA4FA9C644614DA5EB224E3"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_FirmStep.asset",
+      "Hash": "1389EBC3AF308DE6A2AF503BE2881784631A1C40663E74FACB57E7AF22065D71"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_FirmStep.asset.meta",
+      "Hash": "9BCC78299AC355656207A475C50FF4A33A69BB8E89F5BFD95C9F2E873B2C176B"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_FloweringBloomExtension.asset",
+      "Hash": "2E1307275E353A8CFEF691DED1C47999F386F9BE73BCBEAA0FFAE2D39C161DDF"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_FloweringBloomExtension.asset.meta",
+      "Hash": "646CCE33C75888BE75B449BF78A3B7D6B43F2701295C72F7FBC0D298910D1F54"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_FlyingBoots.asset",
+      "Hash": "B1C9BFD40AF8843378B7AA38F20705FBD3DE07963D77C7E1B9CC20159CFFF861"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_FlyingBoots.asset.meta",
+      "Hash": "304921C0F021EED8795A7A3EDEC7BF81088C8A9EB20D4DACE4DB7964A4647895"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_FocusLens.asset",
+      "Hash": "6B2693A9A8F9240ABAC4B8B44FB74C771966EE773931A8EADE75E4232775518D"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_FocusLens.asset.meta",
+      "Hash": "CBC311E015200308A97D6D5CC6F6AD3837F771C03104377E26CD2FA1E6482D59"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_GoldVein.asset",
+      "Hash": "8DE99E0F2F9F5F9B31B84160B1992C3703BDE133F1B02021613514A438A2D7B1"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_GoldVein.asset.meta",
+      "Hash": "2FC3BBA57AB798D38C8C5C3255BCACD394BAFF28D577431900AE645082CD14E1"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_GrowthSprout.asset",
+      "Hash": "8770C5E6270F0FF17CBFD1A2A462933E63C8520AC0BE56962F5D1ADE575E85C1"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_GrowthSprout.asset.meta",
+      "Hash": "F4AF0FCF5FD193C46C3168038A62C8A60C306566A1D045873DBB605B85D4D6A6"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_HawkEmblem.asset",
+      "Hash": "F0F1C60163815FA56CF5FF16C2DC3EA4104A236279844D35367DAD52EF0A4AD6"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_HawkEmblem.asset.meta",
+      "Hash": "7412B6AEC9FB20FAEC56578EAD47D00678A91DBC9199A369F29F798F34AC1887"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_HeavyBracelet.asset",
+      "Hash": "E97BE67AE31656931882D38892588E5DB1CDC9907B0A9926E764A25697FA3071"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_HeavyBracelet.asset.meta",
+      "Hash": "C90535D9B2BA57E771F410065972B1F05A4BA5837420E4E99122A89995FA0B71"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_HunterMark.asset",
+      "Hash": "660C422FF9C9AFFBF4DCC80978FDD9EBC8059B2D61E8D45E4AC97F9972874965"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_HunterMark.asset.meta",
+      "Hash": "835A157B22BA1A6C16D7AA6EBDE87A6612BE0BEE587F8FE146D5F2E2C8926F11"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_LastBreath.asset",
+      "Hash": "73B3270FD01FB7B46EA774E66C7A13AC8A8CEB93D3BFE76C5707D91039729359"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_LastBreath.asset.meta",
+      "Hash": "ECBD331684E14FDC6F5338C4BEC3A608AE4BB42E047B0E3EC3C5F561B6BBFE58"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_LastStand.asset",
+      "Hash": "189EE179955DC7A99B4E4C93C0ECDDBC8968C8EEE6876185FFB131AAB1BBF2C8"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_LastStand.asset.meta",
+      "Hash": "5725503C0B1EB029DE0A9D9C0C2FF2D9D3188A54F29B334B1CF5D6F18A8411BA"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightCord.asset",
+      "Hash": "6A880F4FCECDB72525FCE426C1798596A698FA095B6621B6FD665D86F05A95E7"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightCord.asset.meta",
+      "Hash": "A5129B4A6197B8DF2F55876005DE57D31F524076A5BDC2C3E5F6671EAC48AA70"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearTargetedRain.asset",
+      "Hash": "47B11FFF6349976DFBB278025E874D46685E36C5FA983F6E0720B783F8A73B79"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearTargetedRain.asset.meta",
+      "Hash": "6D5CA1509270DE6E7C83019314844DE992A1158324ECECCC4F56B37C8E7D761C"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearThirdStrike.asset",
+      "Hash": "247E629B3FB10B0654FC560879B84974B1583942BEBB287732254D41DA41563D"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearThirdStrike.asset.meta",
+      "Hash": "73C81BF534D0EE238849ABCCDA61B19B50C9F3DDBF3D40581864CCFB25DA2EB3"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_MasterWhetstone.asset",
+      "Hash": "551BBB6D33C22CD957582AD9D0959647227EE0ECC6C1FF7AA56BB7C4DDB75AF3"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_MasterWhetstone.asset.meta",
+      "Hash": "31A1254E961EA59DD3D7E8C37C7267128991DC705D26A91892186D9CB2236B36"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_MeltedBell.asset",
+      "Hash": "CD352212CCF929DEB15DB62881FF2AF48B5A3316A953B93F6F25138AFD0FAB0E"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_MeltedBell.asset.meta",
+      "Hash": "ACD1C0BCB2527400728EECE223B5070BC87787F143624F508893731F41FBC25F"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_NimbleCloak.asset",
+      "Hash": "9E49E6998F56C6370B9E6D5A91D6291AA243202397497F8654F1C05C258754F0"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_NimbleCloak.asset.meta",
+      "Hash": "E82BF2D6508EE2D91FADE0D8FB4AB43008141A2B49DA8C68F8EB5C1BB319ECB3"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_OddIronMagazine.asset",
+      "Hash": "3E4061B6CD880DA703E4BD2C474C985A20307BDCB600C2EF4829BDAC6FBB5D9E"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_OddIronMagazine.asset.meta",
+      "Hash": "7BD7A4318B035158CF346C464187A3D6CBE6C12CAC6071695A5F0335A5F6910D"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_OneDropOfSwiftness.asset",
+      "Hash": "8AF929510C3459303523AF65A33062AEE2248D7331E9D877BFB101E93F952E36"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_OneDropOfSwiftness.asset.meta",
+      "Hash": "FA4A9C0547DBF5FD7E3023D4258C734CD216C9EA07A04A24E27112A12AB259BF"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_PortableBrazier.asset",
+      "Hash": "08DAA60C70FDF23D3ECDB7FB44619404EE88FBCA0A6F194EF2DE67F07A20D6AA"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_PortableBrazier.asset.meta",
+      "Hash": "947173066E86F33E6D592014685E533EC83BDCB103621FEA7F914981D541659E"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_PursuerClaw.asset",
+      "Hash": "BBA1242D2346F3986FE97F45BC2548D1EF7803F635F271623EEA7664A3BC983E"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_PursuerClaw.asset.meta",
+      "Hash": "D548D7EEA065062EF17F213B59AB4DC83B0797271306D968D7AD70EADD342820"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_RecoveryPendant.asset",
+      "Hash": "94776E112523426E15EB3767C22FC875CD3A3BB701D9D207DB0CA29F5FC2D08C"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_RecoveryPendant.asset.meta",
+      "Hash": "45ABE77B75B342FBA427EBD80537F59F9330DF8445ACC737D117A284DEE3BD7B"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_RedContract.asset",
+      "Hash": "9F231CD0E2A7BC49F2EA91D79DD4A2BE1259801DAEF65D5E4E2DE7BC1D4E5835"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_RedContract.asset.meta",
+      "Hash": "6B44EFA9A0D421CC83A18CBC20E459FF1605A9E902FDE964DB4EE92AFFF3F23B"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ResonanceBell.asset",
+      "Hash": "F317530A9523E91AD17EDEFF3D76D758DA8CFE9D4E039FC180E57E8A9B157A40"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ResonanceBell.asset.meta",
+      "Hash": "F0365CCCE93B6A1BF2242525BE2F547E3C269877A930751954B14EA6EFA44F9B"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_RiftStone.asset",
+      "Hash": "FFBE27EF650A4B35450E46CE726735506A5CBF45CAC0DB731BACD77B9758D6EE"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_RiftStone.asset.meta",
+      "Hash": "8597F6E08FC9C2E38FDA80330AA77A3914494E47664235A7661055D0DD293203"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_RotatingIornBall.asset",
+      "Hash": "6F465FA6F184D57DC02CD46E5A6168CC8A82BEFA383819CEFF3821AE1272A120"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_RotatingIornBall.asset.meta",
+      "Hash": "50826DFAB689FF758FA34B6E0B75E3AC8AC16FA9B8354C18FCB6A9B9AA6EAF98"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_RunawayShoes.asset",
+      "Hash": "404FE06D68C64A016871C36EFED2E97BB9E23C0C1B9F624E41C4BE0BD2036079"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_RunawayShoes.asset.meta",
+      "Hash": "AC110C7FC8DF4B6E9EE4449D6F09F6F3C5EC272E2FE98EA57163137DDC50E7E3"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_RunningLedger.asset",
+      "Hash": "FAC1E3AF0330BCB49D511386EE6DF396473CFC63034A42C43F2731A0DDB710AB"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_RunningLedger.asset.meta",
+      "Hash": "515DC64671FA623428A9B41293C42F1C9760EC807633F94490864D6DCD423638"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ScorchingSong.asset",
+      "Hash": "AC120FAC6149386A7EE3A95FC467581E2F44AF2B2DA7BBFD78F5A4F31CE00D4E"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ScorchingSong.asset.meta",
+      "Hash": "067DD512C22DB904B2F1A0CA54A9EA367F791AB0A80E9B3C514CEDD723BA94D2"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SharpAwl.asset",
+      "Hash": "BA8F8850A63EE3B450814832B6D1549821FB4C95A33F79F1DCDC23D09017E25A"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SharpAwl.asset.meta",
+      "Hash": "2B41F409C649E1FC26A8F5162472371B1F63EC35F91D7D6C573ABD433E2E3941"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SmallHeart.asset",
+      "Hash": "06DDE7FC97D7233E679A5297B21C0D1A73F2ACDB2DBA6E211615267A0209AEFF"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SmallHeart.asset.meta",
+      "Hash": "EBA02E397DC1D9E92D93B21277D06DDF5BD1345C33E08E72C8CFFCEB7FA73B15"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SmokyIncense.asset",
+      "Hash": "1C3AA413ACECD8D5114CBC04B06EDFAD5C114A3018F0E7AA94215EDBD7275D22"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SmokyIncense.asset.meta",
+      "Hash": "283D9D80E1447F1DA41BCD6F6D251AE6A6F439A0F3277F488F2C77020A146721"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedBoots.asset",
+      "Hash": "298EECBE0DECF81CD425420CDB60A0FF7F67000048438D5ED80813E728E54A13"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedBoots.asset.meta",
+      "Hash": "943EC11D793034DF27679645FBC196705C214EFB7DD250FC84202DB827895975"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedMedal.asset",
+      "Hash": "750811F1623D5CEF00711D32D212BB146A474B97FC23531D3364555F04B7ADE2"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedMedal.asset.meta",
+      "Hash": "DCDC716027E3573A665A43E7D8391F77A564D6E7C02FB4E6BB1D1C62149D524C"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_Stenographer.asset",
+      "Hash": "CF198AEBA6482A9C7A70E27E5378C36AFB940407F3B414E7D9E17B0363138833"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_Stenographer.asset.meta",
+      "Hash": "10AE1376B4D16CB1409C7605B841B1FA94A0D6BD64C9BADED9C50D5CF41B8084"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_StormStep.asset.meta",
+      "Hash": "D641837CFF40B6B6B8072DE040680E3254C01DF03C3CF96D53DA208B732C6FAD"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SunFragment.asset",
+      "Hash": "FF62C318DFBAF565365B3BC457F86ADCFC719AB4BEEA9F6EDDD5086FAD936412"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SunFragment.asset.meta",
+      "Hash": "50AC52B0A916965659AE4653D9FA2F131782EA31932C1746A699E933CF0146AC"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SurvivorNecklace.asset",
+      "Hash": "1E3191BCD3C753B6A2A6DF561D7A6B5C85C57826B328F79B4C334539C132CD0C"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SurvivorNecklace.asset.meta",
+      "Hash": "0DF45F33A30BE96D760F0AF416B1105E209AF8F9E4429CB150BD934BC43D5133"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThinArmorShard.asset",
+      "Hash": "BC27529198D691E9C9B03ED511827E35E2F25517BA8CDC2F3BAC48964F6B5AAE"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThinArmorShard.asset.meta",
+      "Hash": "9B3F349EB504B1913CC5D91572F20A51D1B80EC47D756EDC00A56A80DE236EE3"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderHeart.asset",
+      "Hash": "360BADCCA565FEDABC63057EC136305B1023CD2ACC96F0975B15105207C9B19B"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderHeart.asset.meta",
+      "Hash": "A8709FBFDD38DE8CDC0EE3E93C2C836418F64BACBF1DB6728AF30020255BACA7"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderKnot.asset",
+      "Hash": "F0D102F93213069D0A33CAC17111C846334792CEB5711950457D9185E0FE57B3"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderKnot.asset.meta",
+      "Hash": "7165B38EB6A08B268B390A68D4C477AD78EEBA48603173B90D82E4EF2F44CB7E"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_TinglingShackles.asset",
+      "Hash": "0FBC9F98672F77BDECF5853DEFD3D77E0BD518E0685B72C8D0EC1925B95691A0"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_TinglingShackles.asset.meta",
+      "Hash": "D1279D5BA01E68FF5E7A8135DDEE4EF3FCA080136CA6189FF869AE3D5D0F36F3"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_TonicGombangdae.asset",
+      "Hash": "6DABB02F0CD195EACF2506EFAC727451BA26203DD2A6E984C3226EF0F65CEB87"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_TonicGombangdae.asset.meta",
+      "Hash": "2C995C441202A15CE4779CF132CBE4DD5EDDA68400D243D812421322BF538AD8"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ToughBandage.asset",
+      "Hash": "81C35844953EFA2375FEC0DF2BF2D0DE13473C0D70C39681BE6688358D1E7AB6"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ToughBandage.asset.meta",
+      "Hash": "4FA40674833AA40BFEBDEFA5F563BF662C5B36BF798A6710FCE050896B2ECE82"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_VictoryFlag.asset",
+      "Hash": "5B90DE7592A26964EA03E1D4D2F75B018758981E61EE2BC28A8B9605BAC8E0D0"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_VictoryFlag.asset.meta",
+      "Hash": "D7DA0229887057320CD2B64A9F1C7A1F8575172466D293C88EB814EF715E1813"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_WarriorOath.asset",
+      "Hash": "74A302963529AFA214AEBB8C7B60DB4D8D03C7F7754DA826D2B865E97BA52D2B"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_WarriorOath.asset.meta",
+      "Hash": "7196391E96CB7EB3D740FDAECEEEDB4D11F79406C4411DAE00DA7926932480BD"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_WindTablet.asset",
+      "Hash": "0E2EE241B82D48AF111C9639D2FA5DE2F2D5BE1329DED39335D475B0E677C0CC"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_WindTablet.asset.meta",
+      "Hash": "C2F990A9B6BDDB98E3594D5414E9269B6C32BD4928DE0B219A6BA264C6D74169"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_WornWhetstone.asset",
+      "Hash": "01C07DAB31D1D8833268816A12834F44521648D3E9ECD858ACBD6BA53CE6C8A3"
+    },
+    {
+      "Path": "Assets/_Project/Data/Items/Relics/Definitions/RD_WornWhetstone.asset.meta",
+      "Hash": "C6DE2ED69EBBAB615974BEC9D7340BCABC0D59530F9C1BF6C9FC626AFEAE1AC4"
+    }
+  ],
+  "unityLockPresent": true,
+  "unityImportCompilePlayModeAndUI": "not executed",
+  "docImpact": "SessionLog",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

@@ -8,7 +8,7 @@ using UnityGAS;
 /// - UI/대화/연출 흐름과 block tag 상태를 확인해 전투 조작이 들어가지 않도록 차단한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventListener, ICombatEvadeState
+public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventListener, ICombatEvadeState, ICombatAttackKindSource
 {
     private readonly System.Collections.Generic.HashSet<object> weaponInputBlockOwners = new();
     public bool IsEvadeInvulnerable => abilitySystem != null && dash != null &&
@@ -671,6 +671,14 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
     public bool IsKnownWeaponSkillAbility(AbilityDefinition ability) =>
         ability != null && knownWeaponSkillAbilities.Contains(ability);
+
+    public bool TryGetAttackKind(AbilityDefinition ability, out DamageAttackKind kind)
+    {
+        kind = DamageAttackKind.Normal;
+        if (IsKnownBasicAttackAbility(ability)) return true;
+        kind = DamageAttackKind.Skill;
+        return IsKnownWeaponSkillAbility(ability);
+    }
 
     private void RememberBasicAttack(WeaponAbilitySlot slot, AbilityDefinition ability)
     {

@@ -173,6 +173,8 @@ internal sealed class SceneMonsterSpawnDirector
         if (monster == null || difficultyModifiers == null)
             return;
 
+        difficultyModifiers = BuildStageTwoDifficultyModifiers(monster, difficultyModifiers);
+
         IMonsterDifficultyReceiver[] receivers = monster.GetComponentsInChildren<IMonsterDifficultyReceiver>(true);
         if (receivers.Length == 0 && ShouldAttachDefaultDifficultyReceiver(monster))
         {
@@ -186,6 +188,42 @@ internal sealed class SceneMonsterSpawnDirector
 
         for (int i = 0; i < receivers.Length; i++)
             receivers[i].ApplyDifficulty(difficultyModifiers);
+    }
+
+    // Keep the temporary stage-two HP targets on both direct-prefab and stage-set spawn paths.
+    // Scale a copy so caller difficulty, spawn-specific bonuses, and attack timing remain intact.
+    private static DifficultyModifiers BuildStageTwoDifficultyModifiers(
+        GameObject monster, DifficultyModifiers difficultyModifiers)
+    {
+        if (MonsterRunProgression.CurrentStageIndex != 1)
+            return difficultyModifiers;
+
+        Mob mob = monster.GetComponent<Mob>();
+        float baseHp;
+        float targetHp;
+        if (mob is LizardWarrior or Knight or ShadowMonster)
+        {
+            baseHp = 45f;
+            targetHp = 100f;
+        }
+        else if (mob is LizardMage or Bishop or Wizard)
+        {
+            baseHp = 30f;
+            targetHp = 60f;
+        }
+        else
+        {
+            return difficultyModifiers;
+        }
+
+        MonsterStageHpScalingSettings settings =
+            Resources.Load<MonsterStageHpScalingSettings>("MonsterStageHpScalingSettings");
+        if (settings == null || !settings.Enabled)
+            return difficultyModifiers;
+
+        DifficultyModifiers adjusted = difficultyModifiers.Clone();
+        adjusted.hpMultiplier *= targetHp / (baseHp * settings.CalculateStageHpMultiplier(1));
+        return adjusted;
     }
 
     /// <summary>

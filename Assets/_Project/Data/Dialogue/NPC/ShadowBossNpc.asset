@@ -18,12 +18,266 @@ MonoBehaviour:
   primaryInk: {fileID: 4900000, guid: 240ee6ae999df1a498a645f368c3ae15, type: 3}
   bossEncounterInk: {fileID: 4900000, guid: 21e4327d533e754478950da96b4ce523, type: 3}
   bossEncounterDialogues:
-  - label: 
-    startPath: first_encounter
+  - label: "마왕의 인내심 임박"
+    startPath: CHLOE_TIME_LOW
     inkJSON: {fileID: 0}
-    priority: 100
+    priority: 1000
     conditions:
-    - type: 1
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 6
+      comparison: 3
+      expectedBool: 0
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 60
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "체력 부족"
+    startPath: CHLOE_LOW_HEALTH
+    inkJSON: {fileID: 0}
+    priority: 900
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 10
+      comparison: 3
+      expectedBool: 0
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0.3
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+      maxAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "직전 클로에전 패배"
+    startPath: CHLOE_PREVIOUS_PLAYER_DEFEAT
+    inkJSON: {fileID: 0}
+    priority: 850
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 23
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 2
+      invert: 0
+  - label: "직전 클로에전 승리"
+    startPath: CHLOE_PREVIOUS_PLAYER_VICTORY
+    inkJSON: {fileID: 0}
+    priority: 840
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 23
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 1
+      invert: 0
+  - label: "직전 런 시간 초과"
+    startPath: CHLOE_LAST_RUN_TIME_OVER
+    inkJSON: {fileID: 0}
+    priority: 820
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 13
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 3
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "일찍 도착"
+    startPath: CHLOE_TIME_EARLY
+    inkJSON: {fileID: 0}
+    priority: 800
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 6
+      comparison: 5
+      expectedBool: 0
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 480
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "멜타 조우 후속"
+    startPath: CHLOE_MELTA_FOLLOWUP
+    inkJSON: {fileID: 0}
+    priority: 760
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 11400000, guid: 8b199e36e6724de0af3a3e8504571e0a, type: 2}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 22
       comparison: 0
       expectedBool: 0
       intValue: 0
@@ -32,19 +286,89 @@ MonoBehaviour:
       floatValue: 0
       minFloatValue: 0
       maxFloatValue: 0
-      stringValue: 
-      targetNpcOverride: {fileID: 11400000}
+      stringValue: chloe.melta_followup_seen
+      targetNpcOverride: {fileID: 0}
       attribute: {fileID: 0}
       maxAttribute: {fileID: 0}
       runEndReason: 0
+      lastBossEncounterOutcome: 0
       invert: 0
-  - label: 
-    startPath: low_affection
+  - label: "스피리 조우 후속"
+    startPath: CHLOE_SPIRI_FOLLOWUP
     inkJSON: {fileID: 0}
-    priority: 30
+    priority: 750
     conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 11400000, guid: 5bcbe73d9f694da4b971d02f13b9d8e1, type: 2}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 22
+      comparison: 0
+      expectedBool: 0
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: chloe.spiri_followup_seen
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "클로에 호감도 높음"
+    startPath: CHLOE_HIGH_AFFECTION
+    inkJSON: {fileID: 0}
+    priority: 720
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
     - type: 5
-      comparison: 2
+      comparison: 5
       expectedBool: 0
       intValue: 5
       minIntValue: 0
@@ -53,10 +377,106 @@ MonoBehaviour:
       minFloatValue: 0
       maxFloatValue: 0
       stringValue: 
-      targetNpcOverride: {fileID: 11400000}
+      targetNpcOverride: {fileID: 0}
       attribute: {fileID: 0}
       maxAttribute: {fileID: 0}
       runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "가방 가득 참"
+    startPath: CHLOE_BACKPACK_FULL
+    inkJSON: {fileID: 0}
+    priority: 600
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 21
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "반복 조우"
+    startPath: CHLOE_FREQUENT_ENCOUNTER
+    inkJSON: {fileID: 0}
+    priority: 300
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 1
+      comparison: 5
+      expectedBool: 0
+      intValue: 4
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "클로에 재조우"
+    startPath: CHLOE_REENCOUNTER
+    inkJSON: {fileID: 0}
+    priority: 100
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
       invert: 0
   dialogueTheme: {fileID: 11400000, guid: 3ef1664fdf0dac148a47091038acdfd9, type: 2}
   affectionRewards: []

@@ -1,0 +1,17 @@
+Use case: stylized-concept / native low-resolution pixel-art game item.
+Create ONE new Echo Coil relic icon, no effects, 32x32 logical pixels.
+Reference 1 is SUBJECT/FORM ONLY: a squat hollow orange-copper cylindrical coil/spool viewed from its open front-left end, cylinder receding diagonally toward upper-right. A thick round copper rim frames a large dark hollow center. Three or four broad copper winding ribs run around the cylinder behind that front rim. A small simple low metal bracket/base sits underneath. Preserve that recognisable hollow tube + thick circular front rim + repeated outer winding shape. The supplied subject reference is a detailed illustration; reinterpret its essential large shapes in very simple pixel art. Do not copy its fine wires, many bolts, tiny scratches or elaborate mechanical fittings. Its lettering/marks are not part of the object.
+Reference 2 is STYLE ONLY: the project's small 32x32 flying-boots sprite. Match its clean chunky outline, broad contiguous flat color areas, simple restrained shading, readable compact inventory-item silhouette. It must look consciously drawn at 32x32, not detailed illustration compressed into pixels.
+Reference 3 is EXCLUSIVE allowed color palette.
+Use exactly SEVEN opaque RGB colors TOTAL, plus fully transparent background:
+#363232 — darkest 2-pixel outline and deepest hollow opening;
+#7F4A50 — dark warm inner wall / copper crevice;
+#8A5E40 — simple copper shadow;
+#D66B48 — main copper-orange;
+#E09656 — restrained copper highlight;
+#62494C — bracket/base shadow;
+#978C8E — bracket/base face.
+Every visible pixel must use one of those seven exact palette swatches. Use them economically; large flat clusters, not many tiny accents. Avoid white/silver gloss, strong specular shine and bright gray reflections on copper. The small base may use its two muted supplied gray-brown palette colors.
+ABSOLUTELY NO ELECTRIC EFFECTS: no spark, lightning bolt, cyan arc, blue electricity, magical glow, lightning symbol, aura, motion/echo waves or floating decorative marks. Just the physical hollow copper coil and its small supporting base.
+Geometry: strict 32x32 logical canvas. All four outer rows/columns are transparent, leaving exactly 1 logical pixel of transparent margin top/bottom/left/right; the silhouette fits x=1..30,y=1..30. Dark #363232 external outline is TWO logical pixels thick in chunky 2x2/stepped pixel groups. The large hollow opening stays obvious at native size. Do not fill its center with a core or bolt. Keep shading and windings broad and quiet, about 3–4 clear ribs, each with at most one simple highlight region. No checker patterns, dithering, extra texture or scattered single-pixel shine.
+Actual transparent RGBA background. If a larger output canvas is required, draw a perfect nearest-neighbor integer enlargement of ONE strict 32x32 pixel grid, aligned to the full canvas. No subpixel detail, antialiasing, gradients, soft shadows, transparency inside colored pixels, background checkerboard, grid lines, text, labels, watermark or UI. One complete centered sprite only.

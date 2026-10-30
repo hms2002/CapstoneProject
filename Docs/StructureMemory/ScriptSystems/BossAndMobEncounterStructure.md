@@ -25,6 +25,12 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 - `SlimeQueenP2Short.prefab` selects only repeated slam, toxic rush and body inflate. Castling is removed from selection; its implementation/assets and loading references are retained. There is no phase progression dependency on a completed castling.
 - Follow-up review: Play Mode tuning of dead-zone width, per-pattern end poses and bubble placement near screen edges. This map does not change the existing architecture/contract boundary.
 
+## Ordinary Mob Stage-Two HP
+
+- [SceneMonsterSpawnDirector](../../../Assets/_Project/Runtime/Features/Monsters/Spawning/SceneMonsterSpawnDirector.cs) applies the current stage-two HP targets on its shared difficulty path, covering both direct-prefab/stage-set spawns and live difficulty reapplication. The stage comes from `MonsterRunProgression` (one defeated boss), independently of room theme or room difficulty tier.
+- With the current authored profiles and default spawn difficulty, `LizardWarrior`, `Knight`, and `ShadowMonster` reach 100 HP; `LizardMage`, `Bishop`, and `Wizard` reach 60 HP. Other species and stages keep their existing HP policy. The baseline profiles remain 45/30 HP, and [central stage scaling](../../../Assets/_Project/Resources/MonsterStageHpScalingSettings.asset) remains enabled at 0.55 per cleared stage, including the existing third-stage doubling.
+- The director adjusts a copied modifier relative to central stage scaling; attack/tempo values, caller difficulty, and per-spawn HP bonuses remain separate. `MonsterDifficultyReceiver` still applies original-base HP scaling and preserves current-health ratio. These are provisional balance targets pending later-run DPS/loadout measurements, with regression coverage in `MonsterHealthAndWeaponSkillBalancePlayModeTests.StageTwoHpRepair_SpawnAndReapplyPreserveOtherStagesAndRoles`.
+
 ## Current Inventory Groups
 
 ### Boss Cinematic HUD Lifetime

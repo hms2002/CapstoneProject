@@ -1,0 +1,75 @@
+{
+  "name": "life-heartstone-draft-v1",
+  "mode": "test draft only",
+  "concept": "turquoise heart-shaped gem in aged brass bezel, two prongs and one internal current line/node",
+  "size": [
+    32,
+    32
+  ],
+  "opaqueColorCount": 7,
+  "palette": [
+    "#363232",
+    "#8A5E40",
+    "#D49C73",
+    "#EECF5A",
+    "#436794",
+    "#77BCD6",
+    "#B1DECF"
+  ],
+  "alphaValues": [
+    0,
+    255
+  ],
+  "visibleBounds": [
+    1,
+    2,
+    30,
+    30
+  ],
+  "margins": {
+    "right": 2,
+    "bottom": 2,
+    "top": 2,
+    "left": 1
+  },
+  "primaryStyleReference": "user preferred item",
+  "secondaryStyleReference": "user six-icon sheet",
+  "outline": "2px darkest-palette contour",
+  "tipAnchors": [
+    {
+      "source": [
+        489,
+        235
+      ],
+      "native": [
+        11,
+        4
+      ]
+    },
+    {
+      "source": [
+        623,
+        1023
+      ],
+      "native": [
+        15,
+        27
+      ]
+    }
+  ],
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-1eea8043-d580-4c12-a828-6a09e3421d93.png",
+  "export": "Uniform proportional nearest-neighbor seven-color export, retain endpoint pixels, 2px dark contour",
+  "projectAssetsChanged": false,
+  "protectedAssetHashes": {
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png.meta": "D43DB6BEEC990C182F0E792F603E1F50B144498718D82AA4A68E2FC12023901C",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png": "2157FA9BDB2E267DAA8D77F8D1D2BE1D2C8D12912C1304CBCB6DF0C4609AD733",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_StormStep.asset": "466FF9336723C516D2BFD73DA1EA9E756881A880426AA57A68D39E8755817240"
+  },
+  "unityVerification": "not executed; draft only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

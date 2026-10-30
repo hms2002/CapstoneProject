@@ -1,0 +1,22 @@
+Use case: stylized-concept.
+Create ONE native 32x32 pixel-art roguelike relic icon, "Storm Branch" / 폭풍의 가지, review draft only.
+Image1 primary STYLE reference (user's favorite gray relic): chunky contour, broad flat connected color clusters, deliberate stepped curves, simple readable volume. Do not copy its object or gray palette.
+Image2 secondary STYLE reference: six-item sheet, same simple 32px item rendering.
+Image3 EXCLUSIVE palette.
+
+SUBJECT: a thick piece of ancient lightning-charged WOOD with EXACTLY TWO terminal branches. One chunky common lower trunk divides once into an asymmetric Y: one LONG THICK upper-right branch continuing the trunk, and one SHORT STUBBY upper-left branch. Long arm is about twice as long as short arm. Broad open notch makes the split obvious. Thick, organic, slightly bent wooden silhouette with blunt broken ends, not a thin twig or a polished metal electrode. Common trunk approximately 7-8 native pixels thick; long arm 5-6 pixels thick, short arm 4-5 pixels thick. The lower end is a single blunt cut end. ONLY TWO upper tips: no third tine, extra twig, root, leaf or side branch. No separate props or pedestal.
+Muted orange wood forms the physical body, warm bright orange lit face and deeper burnt orange side face. Minimal wood detail: one broad notch or broad split only, no little bark lines, knots or rings.
+Blue stored electricity runs as ONE simple forked vein through the wood's front, dividing along the two arms. Cyan channel and a few pale-blue core segments imply energy conducting to two destinations. Small integrated blue patches at broken tips. The wood remains visually dominant and thick. No large free-floating lightning, glowing cloud, particle spray, halo or detached sparks.
+Shape recognition is most important: fat wooden branch, one strong long arm plus one short arm, charged blue vein. Not a trident, antlers, tree with many branches, thin lightning bolt, staff, claw or slingshot with a band.
+
+EXACT SIX opaque RGB colors plus full transparency:
+#363232 outer contour/deepest division;
+#D66B48 burnt orange body shadow;
+#E09656 warm orange main wood face;
+#436794 blue vein shadow;
+#77BCD6 blue electricity;
+#B1DECF pale-blue current core and tip accents.
+No other colors, white, yellow, brown or green. No gradients, dither, noisy texture, tiny highlights, antialiasing, partial alpha or realistic lighting. Roughly 2-pixel charcoal outer contour, broad flat planes like the primary reference.
+
+LAYOUT: transparent actual logical 32x32 canvas. Entire silhouette y=2..29 (two transparent rows top and bottom), at least two clear pixel columns each side. Center the overall asymmetrical shape; preserve natural proportions, no stretching. Broad bold silhouette readable at 32px.
+If a larger image is needed, render a perfect integer nearest-neighbor enlargement of a STRICT 32x32 grid with identical square logical pixels. No smaller details. One icon only, no text, swatches, labels, grid, checkerboard artwork or background.

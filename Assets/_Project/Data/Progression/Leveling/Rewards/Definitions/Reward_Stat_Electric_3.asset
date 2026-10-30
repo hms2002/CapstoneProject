@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92ec912023a8a3d4a89dd503cd4c8554, type: 3}
+  m_Name: Reward_Stat_Electric_3
+  m_EditorClassIdentifier: Gameplay::LevelRewardDefinitionSO
+  rewardId: level_reward.stat.electric.t3
+  allowMultipleSelections: 1
+  displayName: "\uc804\uae30 \ud53c\ud574 \ud6c8\ub828"
+  description: "\uc804\uae30 \ud53c\ud574 <color=#197A67>+3</color>"
+  icon: {fileID: 3341754456397367738, guid: 3e838e090b07d554f86efd22d27e6c54, type: 3}
+  effects:
+  - {fileID: 11400000, guid: ca7b958514221c14da0842d17d3cad6d, type: 2}

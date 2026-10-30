@@ -1,0 +1,16 @@
+{
+  "Date": "2026-10-30",
+  "Count": 11,
+  "Replaced": 6,
+  "Retained": 5,
+  "ProtectedSourceFiles": 40,
+  "SourceHashesPreserved": true,
+  "NearestIntegerScaling": true,
+  "ProjectAssetsChanged": false,
+  "UnityVerification": "not executed",
+  "DocImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTMLAffected": false
+}

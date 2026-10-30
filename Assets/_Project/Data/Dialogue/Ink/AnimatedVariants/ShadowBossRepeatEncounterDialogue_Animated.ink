@@ -1,102 +1,88 @@
-// MSBossNPC encounter dialogue sample.
-// Assign the compiled JSON to NPCData > Boss Encounter Ink.
-// Each Boss Encounter Dialogue rule should set Start Path to one of these knots.
+// Chloe's repeat-encounter greetings.
+// These knots run before the main dialogue after the first encounter.
 
-=== first_encounter ===
-# speaker: 1003
-# face: 1003: Normal
-# anim: slow
-나를 찾아온 건 네가 처음이 아니야. [pause=0.25]그리고 마지막도 아닐 거고. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.048fdb20c2
-
-# face: 1003: Normal
-# anim: normal
-그래도 여기까지 온 건 기억해둘게. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.5d1f3f21ed
--> END
-
-=== second_encounter ===
+=== CHLOE_TIME_LOW ===
 # speaker: 1003
 # face: 1003: Panic
-# anim: angry
-[shake]????[/shake] 너 어떻게 살아있냐?! # loc:dialogue.shadowbossrepeatencounterdialogue_animated.3d07c12402
-
-# face: 1003: Normal
 # anim: normal
-아니, 좋아. 이번엔 조금 더 똑바로 봐줄게. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.9ac8745e1c
+아, 오셨군요— 잠깐만요! 시간이 거의 없어요. 마왕의 인내심도... 이제 바닥일 텐데요. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.time_low
 -> END
 
-=== low_affection ===
+=== CHLOE_LOW_HEALTH ===
+# speaker: 1003
+# face: 1003: Surprise
+# anim: normal
+아, 그림자가 먼저 닿았는데... 용사님?! 많이 다치셨네요. 어두운 곳에서 굴러오신 건 아니죠? # loc:dialogue.shadowbossrepeatencounterdialogue_animated.low_health
+-> END
+
+=== CHLOE_PREVIOUS_PLAYER_DEFEAT ===
+# speaker: 1003
+# face: 1003: Thinking
+# anim: slow
+이 발자국 소리는... 역시 용사님이군요. 지난번에는 다른 분들과 용사님을 입구까지 옮겼는데요. 이번에는 혼자 걸어가실 수 있게 할게요. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.previous_player_defeat
+-> END
+
+=== CHLOE_PREVIOUS_PLAYER_VICTORY ===
+# speaker: 1003
+# face: 1003: Thinking
+# anim: slow
+아... 문 앞의 그림자가 먼저 알려 줬어요. 용사님이 다시 오셨다고요. 지난번에는... 용사님이 이기셨죠. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.previous_player_victory
+-> END
+
+=== CHLOE_LAST_RUN_TIME_OVER ===
+# speaker: 1003
+# face: 1003: Normal
+# anim: slow
+또 이 길을 지나오셨군요. 지난번에는 길이 먼저 닫혀 버렸죠. 이번에는 조금 더 일찍 만나서 다행이에요. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.last_run_time_over
+-> END
+
+=== CHLOE_TIME_EARLY ===
 # speaker: 1003
 # face: 1003: Panic
-# anim: angry
-이제는 [punch]그만 좀 찾아와[/punch]! # loc:dialogue.shadowbossrepeatencounterdialogue_animated.3052c800bf
-
-# face: 1003: Normal
-# anim: angry
-매번 이렇게 나타나면 나도 반응하기 힘들다고. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.effdc00fdf
+# anim: normal
+우와앗!? 이렇게 빠른 발소리는... 용사님? 아직 마음의 준비가 안 됐는데요. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.time_early
 -> END
 
-=== normal_affection ===
+=== CHLOE_MELTA_FOLLOWUP ===
 # speaker: 1003
-# face: 1003: Normal
-# anim: normal
-이제 슬슬 익숙해지네. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.e98e59d17f
-
-# face: 1003: Normal
+# face: 1003: Thinking
 # anim: slow
-네가 오는 게 이상하지 않게 느껴지는 것도 좀 이상하지만. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.9176b54eec
+# set_boss_flag: chloe.melta_followup_seen
+아, 바닥에 남은 끈적한 자국을 보니... 멜타 님을 만나고 오셨군요. 슬라임 분들은 이쪽에서 길을 잃지 않으실까요? # loc:dialogue.shadowbossrepeatencounterdialogue_animated.melta_followup
 -> END
 
-=== high_affection ===
+=== CHLOE_SPIRI_FOLLOWUP ===
 # speaker: 1003
-# face: 1003: Smile
-# anim: normal
-왔구나. 생각보다 빨랐네. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.a63821af14
-
-# face: 1003: Normal
+# face: 1003: Panic
 # anim: slow
-이번엔 네 이야기를 조금 더 들어줄 수 있을지도 몰라. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.44ee5beea2
+# set_boss_flag: chloe.spiri_followup_seen
+희미하게 술 냄새가... 아, 스피리 님을 만나고 오신 용사님이군요. 혹시 저를 찾고 계시진 않았죠? # loc:dialogue.shadowbossrepeatencounterdialogue_animated.spiri_followup
 -> END
 
-=== much_time_left ===
+=== CHLOE_HIGH_AFFECTION ===
 # speaker: 1003
-# face: 1003: Surprise
-# anim: angry
-[punch]오오오!?[/punch] 너 꽤 빨리 왔다!? # loc:dialogue.shadowbossrepeatencounterdialogue_animated.759b3cfc1d
-
-# face: 1003: Smile
-# anim: normal
-그 정도 여유가 있으면 허세 좀 부려도 되겠는데. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.82229470ea
+# face: 1003: ShySmile
+# anim: slow
+아... 이번엔 숨을 새도 없었네요. 용사님 발소리는... 이제 금방 알아듣거든요. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.high_affection
 -> END
 
-=== low_time_left ===
+=== CHLOE_BACKPACK_FULL ===
+# speaker: 1003
+# face: 1003: Thinking
+# anim: slow
+문 앞에서 덜컹거리는 소리가 나서... 아, 용사님이군요. 가방이 많이 무거워 보이는데요. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.backpack_full
+-> END
+
+=== CHLOE_FREQUENT_ENCOUNTER ===
 # speaker: 1003
 # face: 1003: Normal
 # anim: slow
-너 곧 쓰러질 것 같은 얼굴인데? # loc:dialogue.shadowbossrepeatencounterdialogue_animated.f46ecbc136
-
-# face: 1003: Normal
-# anim: normal
-그래도 여기까지 왔다는 건 인정해줄게. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.36d4197eac
+아, 책장이 흔들릴 만큼 익숙한 발소리네요. 또 오셨군요, 용사님. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.frequent_encounter
 -> END
 
-=== low_health ===
+=== CHLOE_REENCOUNTER ===
 # speaker: 1003
-# face: 1003: Surprise
-# anim: angry
-잠깐, 너 [tremble]그 몸으로[/tremble] 싸우려고? # loc:dialogue.shadowbossrepeatencounterdialogue_animated.dd5f9a318c
-
 # face: 1003: Normal
 # anim: slow
-무모한 건지 끈질긴 건지 아직은 모르겠네. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.2f3389cc25
--> END
-
-=== fallback ===
-# speaker: 1003
-# face: 1003: Normal
-# anim: normal
-또 왔네. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.7531aabb90
-
-# face: 1003: Normal
-# anim: normal
-좋아. 이번에도 네가 어디까지 버티는지 보자. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.dba45168b1
+아... 그림자가 길어지는 걸 보니, 용사님이 오셨군요. # loc:dialogue.shadowbossrepeatencounterdialogue_animated.reencounter
 -> END

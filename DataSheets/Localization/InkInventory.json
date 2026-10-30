@@ -288,185 +288,332 @@
       "choice": false
     },
     {
-      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.9d356ac5a4",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 11,
-      "text": "...네가 용사인가.",
+      "key": "dialogue.demonkingintrodialogue_animated.lesson.clear_throat",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 50,
+      "text": "크흠. …아무튼.",
       "choice": false
     },
     {
-      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.3fc54fff56",
+      "key": "dialogue.demonkingintrodialogue_animated.lesson.dignified_line",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 54,
+      "text": "용사여! 네 발밑의 그림자조차, 내 허락 없이는 움직이지 못한다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.lesson.sword_pose",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 58,
+      "text": "손을 조금 더 높이.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.lesson.check_pose",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 63,
+      "text": "…이 정도면 됐지?",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.lesson.choice_praise",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 65,
+      "text": "멋지다. 정말 마왕 같아.",
+      "choice": true
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.lesson.praise_reply",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 71,
+      "text": "그렇지? …아니, 당연하지. 나는 마왕이니까.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.lesson.sword_tease",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 75,
+      "text": "칭찬을 들으니 자세가 흐트러졌는데.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.lesson.praise_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 80,
+      "text": "시끄러워. 그래도 용사는 알아보는군. 좋아, 이제 제대로 상대해 주마!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.lesson.choice_weird",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 83,
+      "text": "그거 좀 이상한데…",
+      "choice": true
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.lesson.weird_reply",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 89,
+      "text": "봤지? 이상하잖아! 이 녀석이 시킨 거라니까.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.lesson.sword_defense",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 93,
+      "text": "용사가 뭘 모르는 거야.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.lesson.weird_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 98,
+      "text": "너는 좀 조용히 해! …됐어, 빨리 싸우자!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.intro",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 106,
+      "text": "그러고 보니… 여기까지 오면서 이것저것 망가뜨렸더라.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.estimate",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 110,
+      "text": "복도 벽, 석상, 문짝… 드워프 석공 길드의 수리 견적서가 전부 내 책상으로 왔어.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.sword_nostalgic",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 114,
+      "text": "아아, 감회가 새롭네!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.sword_reminder",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 117,
+      "text": "예전에는 성문을 부수고 기둥을 뽑아 놓고, “길이 막혔으니 어쩔 수 없었다”고 했지!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.protest",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 122,
+      "text": "그 얘기는 왜 하는데!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.request",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 126,
+      "text": "…아무튼, 너는 마왕성을 너무 엉망으로 만들지 말아줘. 서류는 내가 처리해야 하니까.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.choice_careful",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 128,
+      "text": "가능한 조심할게.",
+      "choice": true
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.careful_hope",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 134,
+      "text": "그래? 그럼 언젠가는 수리 장부 없이 잠드는 날도 오겠네.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.sword_hope_tease",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 138,
+      "text": "두 장만 와도 밤새던 네가 그런 꿈을 다 꾸고.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.careful_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 143,
+      "text": "이번에는 기대해도 돼. 그 약속을 지킬 실력부터 증명해 봐!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.choice_fancy",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 146,
+      "text": "부순 만큼 더 멋지게 고치면 되겠네.",
+      "choice": true
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.fancy_cost",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 152,
+      "text": "그 “더 멋지게”에 드는 돈이 문제라고!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.sword_fancy_tease",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 156,
+      "text": "금박도 두르고, 분수도 세우고, 기둥은 더 화려하게 뽑아 보자고!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.demonkingintrodialogue_animated.repair_cost.fancy_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink",
+      "line": 161,
+      "text": "너까지 왜 신나는데! 좋아, 이 성의 소중함을 직접 배우게 해주지!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.9d356ac5a4",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 15,
-      "text": "나는 스피리다. 붉은 재앙의 용... [pause=0.25]스피리.",
+      "line": 11,
+      "text": "...네가 용사인가. 나는 스피리다. 붉은 재앙의 용... [pause=0.25]스피리.",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.4adb1425bb",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 19,
+      "line": 15,
       "text": "이유를 모르겠군. 네놈에게선... [pause=0.35]아무 냄새도 나지 않아.",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.2a68c617ea",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 23,
+      "line": 19,
       "text": "공포도. 살의도. 생존 본능조차.",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.6e65686948",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 27,
+      "line": 23,
       "text": "...그 정도로 약한 건가? [pause=0.25]아니면 이미 각오를 끝낸 건가.",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.6eae3a5b06",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 31,
+      "line": 27,
       "text": "...",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.07de708c80",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 35,
-      "text": "...미안하지만 잠시 기다려주겠나.",
-      "choice": false
-    },
-    {
-      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.ded925120e",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 39,
-      "text": "지금의 나는... [pause=0.35]그다지 바람직한 상태가 아니라서.",
+      "line": 31,
+      "text": "...미안하지만 잠시 기다려주겠나. 지금의 나는... [pause=0.35]그다지 바람직한 상태가 아니라서.",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.77b65f9777",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 44,
+      "line": 36,
       "text": "(<size=110%>벌컥</size>)",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.3c6d679039",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 49,
+      "line": 41,
       "text": "(<size=115%>벌컥</size>)",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.77bb4c842f",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 54,
+      "line": 46,
       "text": "(<size=110%>벌컥</size><size=115%>벌컥</size><size=120%>벌컥벌컥--!!</size>)",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.749045a08e",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 58,
+      "line": 50,
       "text": "[slowshake][rand_size=95,112]푸하아아아아아----[/rand_size][/slowshake]!!!",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.8cbae641ef",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 62,
+      "line": 54,
       "text": "[slowshake][rand_size=95,110]크으으으으~[/rand_size][/slowshake]! 역시 인간들의 [rand_size=95,108]술이[/rand_size] 최고라니까아~! [rand_size=95,106]살 것[/rand_size] 같네에에에~!",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.d1284e8056",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 66,
-      "text": "오오~ 용사! [slowshake][rand_size=95,110]안 갔네에에[/rand_size][/slowshake]~!",
+      "line": 58,
+      "text": "오오~ 용사! [slowshake][rand_size=95,110]아직 안 갔네에에[/rand_size][/slowshake]~!",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.d1cd9d5f8e",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 70,
+      "line": 62,
       "text": "자자, 그렇게 굳어 있지 말고~ [pause=0.2][rand_size=95,108]한 잔[/rand_size] 받아라! 싸움은 [slowshake]취해서[/slowshake] 해야 제맛이라고?",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.b4231187ec",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 72,
+      "line": 64,
       "text": "방금 그건 대체 뭐였지...?",
       "choice": true
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.d0e30cc584",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 75,
+      "line": 67,
       "text": "좋아. 술자리라면 사양 안 하지!",
       "choice": true
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.efe9839691",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 82,
-      "text": "방금~?",
-      "choice": false
-    },
-    {
-      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.6fc2a2c2c7",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 86,
-      "text": "으히히... [pause=0.25][slowshake][rand_size=95,108]글쎄에[/rand_size][/slowshake]~?",
+      "line": 74,
+      "text": "방금~? 으히히... [pause=0.25][slowshake][rand_size=95,108]글쎄에[/rand_size][/slowshake]~?",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.9a75233460",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 90,
+      "line": 78,
       "text": "못 본 걸로 해주라~ [pause=0.2]나도 [rand_size=95,105]기억하기[/rand_size] 싫거든.",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.e9518c12c0",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 97,
+      "line": 85,
       "text": "오오오~!! 분위기 탈 줄 아는 [slowshake][rand_size=95,112]녀석이잖냐[/rand_size][/slowshake]~!!",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.76ba5bd81d",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 101,
+      "line": 89,
       "text": "좋다 좋아! 오늘은 특별히 [rand_size=95,108]용사 환영주[/rand_size]다~!",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.4e56cae1a6",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 105,
-      "text": "어라. [pause=0.25]손이 왜 [slowshake][rand_size=95,108]세 개로[/rand_size][/slowshake] 보이지.",
+      "line": 103,
+      "text": "어라. [pause=0.25]손이 왜 [slowshake][rand_size=95,108]세 개로[/rand_size][/slowshake] 보이지. 아무튼 간드아아아~!",
       "choice": false
     },
     {
       "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.9ee2fcbd71",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 112,
+      "line": 96,
       "text": "자, 몸도 [rand_size=95,108]달아올랐고[/rand_size] 슬슬 [slowshake]시작해볼까아[/slowshake]~",
-      "choice": false
-    },
-    {
-      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.3acddd1614",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 116,
-      "text": "[rand_size=95,106]술 깨기 전에[/rand_size] 끝내야 하거든. [pause=0.2]너무 오래 끌진 말자고.",
-      "choice": false
-    },
-    {
-      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.a3aae538f4",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
-      "line": 120,
-      "text": "안 그러면, 주변이 좀 [slowshake][rand_size=95,110]위험해져서[/rand_size][/slowshake] 말이야!",
       "choice": false
     },
     {
@@ -578,440 +725,671 @@
       "key": "dialogue.shadowbossintrodialogue_animated.e10650e11c",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
       "line": 8,
-      "text": "...마왕군 소속... [pause=0.25]침묵의 간수장, 그림자 정령 클로에. ...돌아가. 여긴... 너희가 올 곳이 아니야.",
+      "text": "...마왕군 소속... 침묵의 간수장... 아, 그림자 정령 클로에예요. ...여긴, 들어오시면 안 돼요.",
       "choice": false
     },
     {
       "key": "dialogue.shadowbossintrodialogue_animated.eb6633da17",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
       "line": 11,
-      "text": "...가까이 오지 마. 내 그림자에 닿아서 어떻게 돼도... [tremble]난 책임 못 져[/tremble].",
+      "text": "...지금은 아무도 갇혀 있지 않지만요. 그래도... 제가 지켜야 하는 곳이니까요.",
       "choice": false
     },
     {
       "key": "dialogue.shadowbossintrodialogue_animated.d409e4c3f2",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
       "line": 13,
-      "text": "떨고 있는 것 같은데. 사실은 싸우고 싶지 않은 거지?",
+      "text": "간수장님께 출입 허가를 받아야 하나?",
       "choice": true
     },
     {
       "key": "dialogue.shadowbossintrodialogue_animated.47d02ebb8f",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
       "line": 17,
-      "text": "수작 부리지 마라! 그깟 그림자 따위 베어버리겠다!",
+      "text": "아무도 없는 감옥을 지킬 이유가 있나?",
       "choice": true
     },
     {
       "key": "dialogue.shadowbossintrodialogue_animated.89503ca9fb",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
       "line": 23,
-      "text": "...어?! 으, 응...? 아, 아니야! 나 엄청 [punch]무서운 정령[/punch]이란 말이야! 다들 나만 보면 벌벌 떤다고...!",
+      "text": "...허가를요? 아... 그런 건, 생각해 본 적 없었어요.",
       "choice": false
     },
     {
       "key": "dialogue.shadowbossintrodialogue_animated.b9996f5b44",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
-      "line": 26,
-      "text": "...너, 진짜 이상한 인간이야. 내 진심을... [pause=0.3]보통은 무섭다고 다 도망치는데...",
-      "choice": false
-    },
-    {
-      "key": "dialogue.shadowbossintrodialogue_animated.3c8bf328cb",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
-      "line": 29,
-      "text": "...그, 그래도 안 싸울 수는 없으니까... [tremble]너무 아프게 공격하진 않을게[/tremble]...",
+      "line": 27,
+      "text": "하지만... 마왕님께서 용사님을 막으라고 하셔서요. 허가해 드릴 수는 없어요.",
       "choice": false
     },
     {
       "key": "dialogue.shadowbossintrodialogue_animated.190cbce2d5",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
-      "line": 35,
-      "text": "...거봐. 역시 인간들은 다 똑같아. 내 진짜 마음 같은 건... [pause=0.35]처음부터 보려고도 안 하잖아.",
+      "line": 33,
+      "text": "...아무도 없다고, 아무나 들어오셔도 되는 건 아니에요.",
       "choice": false
     },
     {
       "key": "dialogue.shadowbossintrodialogue_animated.ed53b8a839",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
-      "line": 38,
-      "text": "...맨날 자기들 멋대로 오해하고... 이젠 나도 몰라. [punch]다치든 말든[/punch] 마음대로 해.",
+      "line": 37,
+      "text": "저는... 간수장이니까요. 여기서 비켜 드릴 수는 없어요.",
       "choice": false
     },
     {
       "key": "dialogue.shadowbossintrodialogue_animated.1c8cf83064",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
-      "line": 44,
-      "text": "…많이 다쳐도 난 책임 못 져. 진짜로… [tremble]아플 텐데[/tremble]...",
+      "line": 43,
+      "text": "...그러니까, 발밑은 조심해 주세요. 제 그림자는... 어두울수록 깊어지니까요.",
       "choice": false
     },
     {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.048fdb20c2",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 9,
-      "text": "나를 찾아온 건 네가 처음이 아니야. [pause=0.25]그리고 마지막도 아닐 거고.",
+      "key": "dialogue.shadowbossintrodialogue_animated.silent_warden.intro",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 50,
+      "text": "…그러고 보니, 요즘은 간수장답게 위엄을 갖춰 보려고 해요. 그런데… 어떻게 하는 건지 모르겠어요.",
       "choice": false
     },
     {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.5d1f3f21ed",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 13,
-      "text": "그래도 여기까지 온 건 기억해둘게.",
+      "key": "dialogue.shadowbossintrodialogue_animated.silent_warden.explanation",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 54,
+      "text": "다른 분들은 가만히 있으면 된다고 하시는데… 저는 그냥, 말할 때를 놓친 거였거든요.",
       "choice": false
     },
     {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.3d07c12402",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 20,
-      "text": "[shake]????[/shake] 너 어떻게 살아있냐?!",
+      "key": "dialogue.shadowbossintrodialogue_animated.silent_warden.choice_wait",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 56,
+      "text": "하고 싶은 말이 있으면 기다릴게.",
+      "choice": true
+    },
+    {
+      "key": "dialogue.shadowbossintrodialogue_animated.silent_warden.choice_silence",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 60,
+      "text": "침묵하는 모습도 멋진데?",
+      "choice": true
+    },
+    {
+      "key": "dialogue.shadowbossintrodialogue_animated.silent_warden.wait_reply",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 66,
+      "text": "…기다려 주시는 건가요? 그러면… 조금은 말하기 쉬울 것 같아요.",
       "choice": false
     },
     {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.9ac8745e1c",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 24,
-      "text": "아니, 좋아. 이번엔 조금 더 똑바로 봐줄게.",
+      "key": "dialogue.shadowbossintrodialogue_animated.silent_warden.wait_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 70,
+      "text": "그럼… [punch]여기서부터는 못 지나가세요[/punch]. …이 말부터 해야 했는데요.",
       "choice": false
     },
     {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.3052c800bf",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 31,
-      "text": "이제는 [punch]그만 좀 찾아와[/punch]!",
+      "key": "dialogue.shadowbossintrodialogue_animated.silent_warden.silence_reply",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 76,
+      "text": "…그런가요? 그런데, 계속 그러면… 용사님과는 언제 이야기하죠?",
       "choice": false
     },
     {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.effdc00fdf",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 35,
-      "text": "매번 이렇게 나타나면 나도 반응하기 힘들다고.",
+      "key": "dialogue.shadowbossintrodialogue_animated.silent_warden.silence_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 80,
+      "text": "…아, 슬슬 시작해야 하는데…! 그, 그럼… 준비해 주세요.",
       "choice": false
     },
     {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.e98e59d17f",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 42,
-      "text": "이제 슬슬 익숙해지네.",
+      "key": "dialogue.shadowbossintrodialogue_animated.prisoner_report.intro",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 87,
+      "text": "…아, 맞다. 이것 좀 봐 주실래요? 이번 달 보고서인데요.",
       "choice": false
     },
     {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.9176b54eec",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 46,
-      "text": "네가 오는 게 이상하지 않게 느껴지는 것도 좀 이상하지만.",
+      "key": "dialogue.shadowbossintrodialogue_animated.prisoner_report.concern",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 91,
+      "text": "‘이번 달 수감자… 없음.’ 지난달도 똑같아요. …간수장인데, 이래도 괜찮을까요?",
       "choice": false
     },
     {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.a63821af14",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 53,
-      "text": "왔구나. 생각보다 빨랐네.",
-      "choice": false
+      "key": "dialogue.shadowbossintrodialogue_animated.prisoner_report.choice_peace",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 93,
+      "text": "아무도 가둘 일이 없었다는 거잖아.",
+      "choice": true
     },
     {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.44ee5beea2",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 57,
-      "text": "이번엔 네 이야기를 조금 더 들어줄 수 있을지도 몰라.",
-      "choice": false
-    },
-    {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.759b3cfc1d",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 64,
-      "text": "[punch]오오오!?[/punch] 너 꽤 빨리 왔다!?",
-      "choice": false
-    },
-    {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.82229470ea",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 68,
-      "text": "그 정도 여유가 있으면 허세 좀 부려도 되겠는데.",
-      "choice": false
-    },
-    {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.f46ecbc136",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 75,
-      "text": "너 곧 쓰러질 것 같은 얼굴인데?",
-      "choice": false
-    },
-    {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.36d4197eac",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 79,
-      "text": "그래도 여기까지 왔다는 건 인정해줄게.",
-      "choice": false
-    },
-    {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.dd5f9a318c",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 86,
-      "text": "잠깐, 너 [tremble]그 몸으로[/tremble] 싸우려고?",
-      "choice": false
-    },
-    {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.2f3389cc25",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 90,
-      "text": "무모한 건지 끈질긴 건지 아직은 모르겠네.",
-      "choice": false
-    },
-    {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.7531aabb90",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
+      "key": "dialogue.shadowbossintrodialogue_animated.prisoner_report.choice_imprison",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
       "line": 97,
-      "text": "또 왔네.",
+      "text": "그럼 나라도 가둬 볼래?",
+      "choice": true
+    },
+    {
+      "key": "dialogue.shadowbossintrodialogue_animated.prisoner_report.peace_reply",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 103,
+      "text": "…그렇게 생각해도 되는 거군요. 그러면… 이번 달도 잘한 거네요.",
       "choice": false
     },
     {
-      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.dba45168b1",
+      "key": "dialogue.shadowbossintrodialogue_animated.prisoner_report.peace_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 107,
+      "text": "…용사님도 가두진 않을게요. 그래도… 침입자는 막아야 하니까요. …시작할게요.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossintrodialogue_animated.prisoner_report.imprison_reply",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 113,
+      "text": "…네?! 그, 그러면… 이름부터 적나요? 감방 문을 잠그고… 아, 아직 밖에 계시는데…!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossintrodialogue_animated.prisoner_report.imprison_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink",
+      "line": 117,
+      "text": "…일단은, 붙잡는 것부터 해 볼게요. …그다음 순서는, 잡고 나서 생각할게요.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.time_low",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
-      "line": 101,
-      "text": "좋아. 이번에도 네가 어디까지 버티는지 보자.",
+      "line": 8,
+      "text": "아, 오셨군요— 잠깐만요! 시간이 거의 없어요. 마왕의 인내심도... 이제 바닥일 텐데요.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.low_health",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
+      "line": 15,
+      "text": "아, 그림자가 먼저 닿았는데... 용사님?! 많이 다치셨네요. 어두운 곳에서 굴러오신 건 아니죠?",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.previous_player_defeat",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
+      "line": 22,
+      "text": "이 발자국 소리는... 역시 용사님이군요. 지난번에는 다른 분들과 용사님을 입구까지 옮겼는데요. 이번에는 혼자 걸어가실 수 있게 할게요.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.previous_player_victory",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
+      "line": 29,
+      "text": "아... 문 앞의 그림자가 먼저 알려 줬어요. 용사님이 다시 오셨다고요. 지난번에는... 용사님이 이기셨죠.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.last_run_time_over",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
+      "line": 36,
+      "text": "또 이 길을 지나오셨군요. 지난번에는 길이 먼저 닫혀 버렸죠. 이번에는 조금 더 일찍 만나서 다행이에요.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.time_early",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
+      "line": 43,
+      "text": "우와앗!? 이렇게 빠른 발소리는... 용사님? 아직 마음의 준비가 안 됐는데요.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.melta_followup",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
+      "line": 51,
+      "text": "아, 바닥에 남은 끈적한 자국을 보니... 멜타 님을 만나고 오셨군요. 슬라임 분들은 이쪽에서 길을 잃지 않으실까요?",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.spiri_followup",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
+      "line": 59,
+      "text": "희미하게 술 냄새가... 아, 스피리 님을 만나고 오신 용사님이군요. 혹시 저를 찾고 계시진 않았죠?",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.high_affection",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
+      "line": 66,
+      "text": "아... 이번엔 숨을 새도 없었네요. 용사님 발소리는... 이제 금방 알아듣거든요.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.backpack_full",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
+      "line": 73,
+      "text": "문 앞에서 덜컹거리는 소리가 나서... 아, 용사님이군요. 가방이 많이 무거워 보이는데요.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.frequent_encounter",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
+      "line": 80,
+      "text": "아, 책장이 흔들릴 만큼 익숙한 발소리네요. 또 오셨군요, 용사님.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.shadowbossrepeatencounterdialogue_animated.reencounter",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink",
+      "line": 87,
+      "text": "아... 그림자가 길어지는 걸 보니, 용사님이 오셨군요.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.a5ab48433c",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 11,
+      "text": "침입은 나중에 따지겠다. 지금 짐의 시민권 발급식이 붕괴 직전이니라!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.ab02a3e1c1",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 15,
+      "text": "백성에게는 이름과 권리가 있어야 한다. 그러니 시민권 증서에는 반드시 초상화를 붙여야지!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.a8e16000f0",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 18,
+      "text": "\"초상화 그리는 동안 모양 바뀌었어.\", \"화가 아저씨가 울었어.\"",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.180fdf3a81",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 23,
+      "text": "한 명의 초상화를 그렸는데 셋이 되어 있었다! 게다가 완성본은… 누가 먹어 버렸고!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.c03e8b3883",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 25,
+      "text": "초상화 대신, 각자 고른 문장을 적자.",
+      "choice": true
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.c609a59d42",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 30,
+      "text": "오오! 모습은 변해도 스스로 고른 말은 남는다! 그것으로 서로를 구분하면 되겠구나!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.f44e4cafe1",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 33,
+      "text": "그냥 번호를 붙이면 되지 않나?",
+      "choice": true
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.da8d8c6323",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 37,
+      "text": "번호?! 짐의 백성들을 창고 물품처럼 부르란 말이냐! 아무리 말랑해도 백성은 백성이다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.8c0ea97a4e",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 42,
+      "text": "\"내 문장은 배고파.\", \"나는 더 배고파.\", \"나는 도장 맛있어.\"",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.357417752d",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 47,
+      "text": "…우선 너부터 처리하고, 백성들의 문해력을 바로잡아야겠구나!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.b953019325",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 52,
+      "text": "\"나는 1번 할래.\", \"나는 1번 먹을래.\"",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.228a04dbf3",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 57,
+      "text": "보았느냐! 번호제는 시작도 전에 멸망했다! 이 행정 참사를 수습하기 전에, 우선 네놈부터 처리하겠다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_intro",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 65,
+      "text": "그러고 보니 지난번 네가 말한 문장제를 시행해 보았다. 기대 이상으로 훌륭했다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_slime_best_one",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 68,
+      "text": "\"나는 최고의 슬라임이야.\" \"우리도 최고의 슬라임이야.\" \"어제는 한 명이었는데.\"",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_problem",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 73,
+      "text": "…문제는 그 백성이 오늘 넷으로 갈라졌고 문장은 하나다. 그럼 시민은 넷인가?!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_shared_memory",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 77,
+      "text": "하지만 기억도, 배고픔도 모두 같다고 하니 문제다! 왕국의 행정이 멈춰버렸다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_choice_individual",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 79,
+      "text": "몸이 갈라졌다면, 각자 시민 아닐까?",
+      "choice": true
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_individual_agreement",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 83,
+      "text": "오오, 그렇지? 그렇다면 시민이 늘었고, 고로 왕국은 더욱 확장되었다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_choice_merge",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 86,
+      "text": "슬라임을 다시 합쳐버리자!",
+      "choice": true
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_merge_rebuke",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 90,
+      "text": "슬라임이 그렇게 쉽게 합쳐지는 줄 아느냐?! 억지로 붙이면 기분 나쁜 커다란 슬라임이 될 뿐이다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_individual_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 97,
+      "text": "좋다. 우선 네놈부터 처리하고, 새로운 제도를 만들겠다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_merge_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 104,
+      "text": "짐의 백성을 반죽 취급하다니, 용서할 수 없다! 우선 네놈부터 처리한 뒤, 시민권 제도를 다시 고치겠다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.8750439a52",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 111,
+      "text": "하지만 그보다 이리 와서 들어보도록! 지금 짐에게 아주 중대한 국정 현안이 있다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.ec64e12488",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 115,
+      "text": "취룡 스피리가 또 짐의 백성을 술안주처럼 우물거려, 기껏 어엿하게 자란 아이를 손바닥만 한 꼬맹이로 되돌려 놓았다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.b425152719",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 118,
+      "text": "술도 얻어 마셨어요!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.ead5d0beb0",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 119,
+      "text": "몸도 가벼워졌어요!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.1db66961d3",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 124,
+      "text": "그걸 좋아하면 짐은 누구에게 화를 내란 말이냐!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.382acf40a6",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 126,
+      "text": "술안주 허가제를 만들자.",
+      "choice": true
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.e54547855a",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 130,
+      "text": "스피리에게서 술을 전부 빼앗자!",
+      "choice": true
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.0234737204",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 137,
+      "text": "호오… 술안주 허가제라.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.0b27058d3d",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 141,
+      "text": "백성의 선택도, 여왕의 관리 책임도 지키는 훌륭한 슬권 행정이구나!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.b233f9ae6b",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 148,
+      "text": "무, 무슨 소리냐! 그럼 스피리가 깨어나면 어쩌려고! 그거야말로 마왕성의 종말이다!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.a6ed2b7bb8",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 152,
+      "text": "…짐은 방금 아무 말도 하지 않았다.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.2b0dceac49",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 159,
+      "text": "좋다. 할 일이 많군.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.d2cd8de590",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
+      "line": 163,
+      "text": "우선 네놈부터 처리하고, 그다음 스피리 문제도 정리하겠노라!",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.b4e2b1e17c",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 11,
-      "text": "호오?",
-      "choice": false
-    },
-    {
-      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.c8dd3ca62e",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 12,
-      "text": "네가 그 소문의 용사로구나.",
+      "line": 170,
+      "text": "호오? 네가 그 소문의 용사로구나.",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.a36b8bef01",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 17,
-      "text": "<size=120%>[punch]잠깐.[/punch]</size> 거기서 멈추거라!",
-      "choice": false
-    },
-    {
-      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.e977fa0fd2",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 21,
-      "text": "이 몸의 수로에 발을 들이기 전에 먼저 신발부터 닦는 것이 예의 아니더냐?",
+      "line": 175,
+      "text": "<size=120%>[punch]잠깐.[/punch]</size> 거기서 멈추거라! 이 몸의 수로에 발을 들이기 전에 먼저 신발부터 닦는 것이 예의 아니더냐?",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.19d5f1996b",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 25,
+      "line": 179,
       "text": "그 흙 묻은 신발로 한 발짝만 더 들어오면, 짐의 백성들이 세 시간 동안 광낸 바닥이 망가지느니라.",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.9f003cf99c",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 29,
-      "text": "[float]보아라.[/float]",
-      "choice": false
-    },
-    {
-      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.0b624fa992",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 30,
-      "text": "이 투명한 물길을.",
+      "line": 183,
+      "text": "[float]보아라.[/float] 이 투명한 물길을.",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.40cead633a",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 34,
+      "line": 187,
       "text": "<size=110%>[float]보아라.[/float] 이 티끌 하나 없는 타일을.</size>",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.473f22cff4",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 38,
+      "line": 191,
       "text": "<size=120%>[wave]이것이 바로 슬라임 왕국의 긍지.[/wave]</size>",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.e7c7f7b515",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 42,
+      "line": 195,
       "text": "<size=120%>[wave]마왕성 지하 수로의 진정한 아름다움이니라![/wave]</size>",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.0bea8b5587",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 46,
-      "text": "그리고 짐은 그 모든 [slowshake][rand_size=98,106]말캉한[/rand_size][/slowshake] 백성들의 군주.",
-      "choice": false
-    },
-    {
-      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.1ebfa9cf34",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 50,
-      "text": "<size=120%>위대한 슬라임들의 여왕, 멜타다!</size>",
+      "line": 199,
+      "text": "그리고 짐은 그 모든 [slowshake][rand_size=98,106]말캉한[/rand_size][/slowshake] 백성들의 군주. <size=120%>위대한 슬라임들의 여왕, 멜타다!</size>",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.d2e351a22b",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 52,
+      "line": 201,
       "text": "정말 훌륭한 수로군.",
       "choice": true
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.460aaf1b08",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 57,
-      "text": "<size=120%>[wave]오호호호호![/wave]</size>",
-      "choice": false
-    },
-    {
-      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.fdcc3af23e",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 61,
-      "text": "훌륭한 수로라.",
+      "line": 206,
+      "text": "<size=120%>[wave]오호호호호![/wave]</size> 훌륭한 수로라.",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.41fc99728b",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 65,
-      "text": "그래, 아주 정확한 평가로구나!",
-      "choice": false
-    },
-    {
-      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.0371118953",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 69,
-      "text": "짐의 백성들이 들으면 기뻐하겠군.",
+      "line": 210,
+      "text": "그래, 아주 정확한 평가로구나! 짐의 백성들이 들으면 기뻐하겠군.",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.159eceed1a",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 73,
-      "text": "아니, 이미 듣고 있겠지.",
-      "choice": false
-    },
-    {
-      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.afbc4e56cf",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 77,
-      "text": "다들 숨어서 보고 있으니 말이다.",
+      "line": 214,
+      "text": "아니, 이미 듣고 있겠지. 다들 숨어서 보고 있으니 말이다.",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.af38258c94",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 81,
+      "line": 218,
       "text": "좋아. 그대에게는 특별히 품격 있는 패배를 허락하마!",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.cf350a1bdf",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 85,
+      "line": 222,
       "text": "슬라임 치고는 꽤 깨끗하네.",
       "choice": true
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.5d7a349489",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 88,
-      "text": "[tremble]...슬라임 치고는?[/tremble]",
-      "choice": false
-    },
-    {
-      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.480081097b",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 92,
-      "text": "지금 네놈, [pause=0.2] 짐의 백성들을 [tremble]얕본 것이냐?[/tremble]",
+      "line": 225,
+      "text": "[tremble]...슬라임 치고는?[/tremble] 네놈, [pause=0.2] 짐의 백성들을 [tremble]얕본 것이냐?[/tremble]",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.835f9e4f04",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 96,
+      "line": 229,
       "text": "<size=120%>슬라임은 샴푸도, 젤리도, 연금술 재료도 아니다!</size>",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.1a2dbbe798",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 100,
-      "text": "움직이고, 생각하고,",
-      "choice": false
-    },
-    {
-      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.4da8631afa",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 104,
-      "text": "근무 교대표까지 작성하는 당당한 백성이니라!",
+      "line": 233,
+      "text": "움직이고, 생각하고, 근무 교대표까지 작성하는 당당한 백성이니라!",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.8f8d6ed284",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 108,
-      "text": "좋아.",
-      "choice": false
-    },
-    {
-      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.3a62cfc8bb",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 112,
-      "text": "네놈은 특별히 예절 교육부터 받아야겠구나.",
+      "line": 237,
+      "text": "좋다. 네놈은 특별히 예절 교육부터 받아야겠구나.",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.8d8839faf3",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 119,
+      "line": 244,
       "text": "마왕님께서 네놈을 적당히 봐주라 명하셨으니, 짐도 그 뜻은 따르겠다.",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.565efc5a1c",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 123,
-      "text": "허나 이곳은 짐의 왕국.",
-      "choice": false
-    },
-    {
-      "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.da2fc1f539",
-      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 127,
-      "text": "여왕의 앞을 지나가려면, 그만한 자격을 보이거라.",
+      "line": 248,
+      "text": "허나 이곳은 짐의 왕국. 여왕의 앞을 지나가려면, 그만한 자격을 보이거라.",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.2c7189b080",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 131,
+      "line": 252,
       "text": "자, 나의 귀여운 [slowshake][rand_size=98,106]백성들이여[/rand_size][/slowshake]!",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.cd2fd4ed1d",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 135,
+      "line": 256,
       "text": "<size=110%>[punch]줄을 맞춰라![/punch]</size>",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.41b47483b7",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 139,
+      "line": 260,
       "text": "<size=120%>[wave]대형은 넓게![/wave]</size>",
       "choice": false
     },
     {
       "key": "dialogue.slimequeenintrodialogue_meltanotion_animated.e087a0eea0",
       "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink",
-      "line": 144,
+      "line": 265,
       "text": "<size=130%>[punch]무례한 용사를 말캉하게 짓눌러라!![/punch]</size>",
       "choice": false
     },
@@ -1132,6 +1510,195 @@
       "path": "Assets/_Project/Data/Dialogue/Ink/HubIntroAfterDarkLord/HubIntro_TrainingDummy.ink",
       "line": 4,
       "text": "엄한 데서 헛스윙하다 또 바닥으로 굴러떨어지지 말고.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.spiribossencounter.time_low",
+      "path": "Assets/_Project/Data/Dialogue/Ink/SpiriBossEncounter.ink",
+      "line": 8,
+      "text": "오오~! 용사 왔어? 마침 잘 됐다아! 저 위에 모래가 막 바닥을 긁고 있거든~. 다 떨어지기 전에 후딱 해치우자!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.spiribossencounter.low_health",
+      "path": "Assets/_Project/Data/Dialogue/Ink/SpiriBossEncounter.ink",
+      "line": 16,
+      "text": "우와아~! 용사가 비틀비틀 들어오네! 그 꼴로 여기까지 왔어? 대단하다아! 한 잔 줄까? 더 재밌게 흔들릴 텐데~!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.spiribossencounter.crimson_boundary",
+      "path": "Assets/_Project/Data/Dialogue/Ink/SpiriBossEncounter.ink",
+      "line": 24,
+      "text": "용사! 그 지팡이를 들고 왔네! 전에 마법사 하나가 내 술통에 마법을 잘못 쐈다가, 자기가 먼저 날아갔거든~. 너는 잘 겨누라고~!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.spiribossencounter.previous_victory",
+      "path": "Assets/_Project/Data/Dialogue/Ink/SpiriBossEncounter.ink",
+      "line": 32,
+      "text": "오~! 이건 지난번에 먼저 뻗었던 용사잖아! 벌써 또 일어났어? 나보다 숙취가 빨리 가시네에~!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.spiribossencounter.previous_defeat",
+      "path": "Assets/_Project/Data/Dialogue/Ink/SpiriBossEncounter.ink",
+      "line": 40,
+      "text": "어어~?! 지난번에 나를 이긴 용사 아니야? 와아, 진짜구나! 빈 술병이 기억을 좀 먹었나 봐~!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.spiribossencounter.backpack_full",
+      "path": "Assets/_Project/Data/Dialogue/Ink/SpiriBossEncounter.ink",
+      "line": 48,
+      "text": "오? 용사, 가방이 번쩍번쩍하네! 그 안에 든 거 보물이지? 안주면 더 좋고!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.spiribossencounter.high_affection",
+      "path": "Assets/_Project/Data/Dialogue/Ink/SpiriBossEncounter.ink",
+      "line": 56,
+      "text": "와~! 내 술친구가 진짜로 또 왔어! 잔 두 개 꺼내— 아, 맞다. 먼저 치고받고 나서 마시는 거였지!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.spiribossencounter.reencounter",
+      "path": "Assets/_Project/Data/Dialogue/Ink/SpiriBossEncounter.ink",
+      "line": 64,
+      "text": "어라라? 이 복도 발소리는… 또 너야? 좋아좋아, 이번엔 내가 먼저 잔부터 들이밀어 줄게~!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.spiribossencounter.fallback",
+      "path": "Assets/_Project/Data/Dialogue/Ink/SpiriBossEncounter.ink",
+      "line": 72,
+      "text": "낯선 발소리다! 누구지 하고 봤더니 용사 손님이네! 앉아앉아, 한 잔… 어? 싸움부터였나?",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_intro",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 111,
+      "text": "그러고 보니, 멜타가 또 화났어~. 슬라임 몇 마리를 안주처럼 씹었다고!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_slime_taste",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 114,
+      "text": "“술 맛 나!”, “몸이 가벼워!”",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_defense",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 119,
+      "text": "나는 살짝 쫀득한지 확인만 했어! 봐봐, 애들도 좋아하잖아~.",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_choice_not_snack",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 121,
+      "text": "슬라임은 안주가 아니야.",
+      "choice": true
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_negative_insists",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 124,
+      "text": "안다고오~! 내가 조절하고 있잖아. 봐, 얼마나 멀쩡해!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_negative_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 128,
+      "text": "내가 얼마나 제정신인지 보여줄게! 이리 와~!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_choice_real_snack",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 131,
+      "text": "다음엔 내가 진짜 안주를 가져다줄게.",
+      "choice": true
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_positive_delight",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 135,
+      "text": "진짜로? 와아, 그거 좋다아!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_positive_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 139,
+      "text": "좋아! 그럼 얼른 널 쓰러뜨려야, 다음엔 안주 들고 다시 찾아오겠네~! 간다아아아!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_intro",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 146,
+      "text": "아, 맞다. 마왕님 심부름 중이야~. 빈 술통은 전부 치우라고 하셨거든!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_usual",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 150,
+      "text": "원래는 널브러진 채로 뒀겠지만~. 마왕님 부탁이니까!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_empty_first",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 154,
+      "text": "근데 비어야 치우지! 그러니까 같이 비우자아~!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_choice_reason",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 156,
+      "text": "빈 술통을 만들라는 뜻은 아니잖아?",
+      "choice": true
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_negative_right",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 159,
+      "text": "그럴 리가 없잖아! 내가 맞아! 벌컥벌컥— 으읏, 몸이 휘청휘청…!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_negative_end",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 163,
+      "text": "봐아아아았지~ 아직 괜찮아아~! 그러니까 너도 한 잔 받아!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_choice_together",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 166,
+      "text": "함께 빈 술통을 만들자!",
+      "choice": true
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_positive_hero",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 170,
+      "text": "오오! 역시 용사! 자, 받아라아! 빈 술통 만들기 1호다아~!",
+      "choice": false
+    },
+    {
+      "key": "dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_throw",
+      "path": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink",
+      "line": 172,
+      "text": "(스피리가 맥주통을 던졌다.)",
       "choice": false
     }
   ]

@@ -1,0 +1,25 @@
+Use case: stylized-concept.
+Asset: one native 32x32 pixel-art roguelike relic icon, working title "Seal of Myriad Thunder" / "만뢰의 인장". Preview draft only.
+
+Input image 1 is the user's MOST PREFERRED single gray relic icon, PRIMARY STYLE reference only: bold charcoal contour, broad connected flat color planes, a few stair-step curves, simple readable volume, tiny restrained accent. Do not copy the object or gray color scheme.
+Input image 2 is the user's six-item sprite sheet, SECONDARY STYLE reference only for the same simple coherent inventory art.
+Input image 3 is the user's EXCLUSIVE COLOR PALETTE. All seven final colors below come from it.
+
+SUBJECT: an ancient chunky octagonal METAL SEAL, a solid hand-sized artifact viewed almost straight on. Its square-with-beveled-corners silhouette is unmistakable. A warm aged bronze rim surrounds a single recessed slate-blue/blue-gray face. The lower and right edge have one simple thicker bronze side plane so this is a physical old metal object. Not a heart, gem, coil or crystal cluster. No handle, necklace, stand or extra prop.
+The engraved emblem on the face conveys many sources of electricity combining: ONE CONNECTED chunky lightning sigil with a central zigzag bolt and two short angular branches converging into its middle from upper left and upper right. Treat the branches as broad simple prongs of one emblem, not tiny scattered symbols. A small joined center junction suggests accumulated power. The pale emblem is confined to the inset face, so it feels like a sacred ancient seal. No external sparks, halo or glow blur.
+Readable hierarchy: octagonal bronze rim, calm blue-gray face, ONE clear pale lightning emblem. Keep the inside face large enough for the glyph, approximately 14-16 logical pixels across. Age through the muted bronze shading and one restrained corner irregularity, not scratches or texture.
+
+STYLE: truly low-resolution pixel art designed on a 32 by 32 logical grid from the start, not a detailed painting downsampled. Thick roughly 2-logical-pixel charcoal outer contour. Broad contiguous main/light/shadow planes with very little internal line work. No microfacets, clusters of dots, shiny white flecks, grain, gradients, bevel rendering, dithering or antialiasing. No detail smaller than a logical pixel. Aim for the same simplicity and chunky rendering as the primary reference.
+
+EXACT SEVEN OPAQUE RGB COLORS, plus full transparency:
+#363232 outline and deepest separators;
+#8A5E40 bronze shadow;
+#D49C73 bronze main;
+#EECF5A restrained bronze light;
+#436794 inset face shadow;
+#8599B0 blue-gray inset face main;
+#F1E9D4 pale warm lightning engraving.
+Use no other colors, no partial alpha.
+
+LAYOUT: one centered icon on genuinely transparent RGBA. Actual canvas 32x32. Keep TOP TWO ROWS and BOTTOM TWO ROWS completely empty: silhouette y=2..29. Keep at least two empty columns on left and right. Octagonal body is nearly square, at most 28x28 pixels INCLUDING the thick outline. Preserve proportions, never elongate or squash.
+If the renderer requires a larger raster, use an exact integer nearest-neighbor enlargement of the native 32x32 grid: each logical pixel is an equally sized sharp square. One icon only. No text, letters, labels, grid, checkerboard artwork, UI or background.

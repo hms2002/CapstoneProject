@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_ThunderKnot
   m_EditorClassIdentifier: Gameplay::RelicDefinition
   relicId: Relic.Electric.ThunderKnot
-  displayName: "\uB1CC\uBA85\uC758 \uB9E4\uB4ED"
-  icon: {fileID: -302269854803315565, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  displayName: "\uC794\uB8B0\uC758 \uC218\uC815\uAD6C"
+  icon: {fileID: 21300000, guid: 957067294e724dba9d1a8c63cf346116, type: 3}
   rarity: 1
   description: "\uC5F0\uC1C4\uC5D0 \uB9DE\uC740 \uC801\uC758 \uAC10\uC804 \uC9C0\uC18D\uC2DC\uAC04\uC774
     \uB298\uC5B4\uB0A9\uB2C8\uB2E4. \uCD5C\uB300 4\uCD08\uAE4C\uC9C0 \uB298\uC5B4\uB0A9\uB2C8\uB2E4."

@@ -87,6 +87,10 @@ public static class CrimsonBoundaryUtility
         ElementDamageResult[] elementHpDamages)
     {
         if (system == null || effect == null || target == null) return;
+        var snapshot = CombatAttackDamageScaling.Capture(new CombatDamageSnapshot(damage, 0f, 0f, critical,
+            NoElementBuildUp, true, elementHpDamages), system, spec);
+        damage = snapshot.FinalHpDamage;
+        elementHpDamages = snapshot.FinalElementHpDamages;
         float totalDamage = ElementHitDamageCalculator.Sum(damage, elementHpDamages);
         if (totalDamage <= 0f) return;
         CombatDamageAction.ApplyDamageAndEmitHit(
