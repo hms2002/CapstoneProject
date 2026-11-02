@@ -1465,7 +1465,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531910
-    m_Localized: Scorching Awl
+    m_Localized: "Fire Dragon's Fang"
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531911
@@ -4840,8 +4840,7 @@ MonoBehaviour:
       <color=#197A67>attack
       speed +20%</color> for 5 seconds
 
-      Kills during the effect reset its
-      duration'
+      Kills during the effect reset its duration'
     m_Metadata:
       m_Items: []
   - m_Id: 50606289883146
@@ -4935,8 +4934,8 @@ MonoBehaviour:
   - m_Id: 50606289883157
     m_Localized: '<color=#A8324A>Max HP -2</color>
 
-      Taking damage 4 times
-      lifts the curse
+      Taking damage 4 times lifts
+      the curse
 
       and grants, over the original maximum,
 
@@ -6748,7 +6747,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 64258392887296
-    m_Localized: 20% discount on shop prices
+    m_Localized: 5% discount on shop prices
     m_Metadata:
       m_Items: []
   - m_Id: 64258392887297
@@ -7555,11 +7554,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 192956156776453
-    m_Localized: Not enough magic stones.
+    m_Localized: You're short on money!
     m_Metadata:
       m_Items: []
   - m_Id: 192956156776454
-    m_Localized: Your bag is full.
+    m_Localized: Your bag is packed full!
     m_Metadata:
       m_Items: []
   - m_Id: 192956156776455
@@ -7650,11 +7649,11 @@ MonoBehaviour:
     m_Localized: 'By default, Burn consumes 1 stack every second to deal damage equal
       to 50% of the Fire Damage stat.
 
-      
+
 
       Burn can stack up to 99 times.
 
-      
+
 
       Its
       damage cannot critically hit by default.'
@@ -8426,291 +8425,291 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 9940162944679936
-    m_Localized: "Attack Training"
+    m_Localized: Attack Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940163146006528
-    m_Localized: "Attack <color=#197A67>+2</color>"
+    m_Localized: Attack <color=#197A67>+2</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940163183755264
-    m_Localized: "Attack Training"
+    m_Localized: Attack Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940163221504000
-    m_Localized: "Attack <color=#197A67>+4</color>"
+    m_Localized: Attack <color=#197A67>+4</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940163263447040
-    m_Localized: "Attack Training"
+    m_Localized: Attack Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940163301195776
-    m_Localized: "Attack <color=#197A67>+6</color>"
+    m_Localized: Attack <color=#197A67>+6</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940163338944512
-    m_Localized: "Critical Chance Training"
+    m_Localized: Critical Chance Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940163385081856
-    m_Localized: "Critical Chance <color=#197A67>+2%</color>"
+    m_Localized: Critical Chance <color=#197A67>+2%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940163422830592
-    m_Localized: "Critical Chance Training"
+    m_Localized: Critical Chance Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940163460579328
-    m_Localized: "Critical Chance <color=#197A67>+4%</color>"
+    m_Localized: Critical Chance <color=#197A67>+4%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940163489939456
-    m_Localized: "Critical Chance Training"
+    m_Localized: Critical Chance Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940163527688192
-    m_Localized: "Critical Chance <color=#197A67>+6%</color>"
+    m_Localized: Critical Chance <color=#197A67>+6%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940163561242624
-    m_Localized: "Critical Damage Training"
+    m_Localized: Critical Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940163611574272
-    m_Localized: "Critical Damage <color=#197A67>+4%</color>"
+    m_Localized: Critical Damage <color=#197A67>+4%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940163657711616
-    m_Localized: "Critical Damage Training"
+    m_Localized: Critical Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940163703848960
-    m_Localized: "Critical Damage <color=#197A67>+8%</color>"
+    m_Localized: Critical Damage <color=#197A67>+8%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940163745792000
-    m_Localized: "Critical Damage Training"
+    m_Localized: Critical Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940163787735040
-    m_Localized: "Critical Damage <color=#197A67>+12%</color>"
+    m_Localized: Critical Damage <color=#197A67>+12%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940163829678080
-    m_Localized: "Evasion Training"
+    m_Localized: Evasion Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940163871621120
-    m_Localized: "Evasion <color=#197A67>+1%</color>"
+    m_Localized: Evasion <color=#197A67>+1%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940163900981248
-    m_Localized: "Evasion Training"
+    m_Localized: Evasion Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940163938729984
-    m_Localized: "Evasion <color=#197A67>+2%</color>"
+    m_Localized: Evasion <color=#197A67>+2%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940163984867328
-    m_Localized: "Evasion Training"
+    m_Localized: Evasion Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940164014227456
-    m_Localized: "Evasion <color=#197A67>+3%</color>"
+    m_Localized: Evasion <color=#197A67>+3%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940164060364800
-    m_Localized: "Attack Speed Training"
+    m_Localized: Attack Speed Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940164089724928
-    m_Localized: "Attack Speed <color=#197A67>+2%</color>"
+    m_Localized: Attack Speed <color=#197A67>+2%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940164135862272
-    m_Localized: "Attack Speed Training"
+    m_Localized: Attack Speed Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940164169416704
-    m_Localized: "Attack Speed <color=#197A67>+4%</color>"
+    m_Localized: Attack Speed <color=#197A67>+4%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940164207165440
-    m_Localized: "Attack Speed Training"
+    m_Localized: Attack Speed Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940164244914176
-    m_Localized: "Attack Speed <color=#197A67>+6%</color>"
+    m_Localized: Attack Speed <color=#197A67>+6%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940164286857216
-    m_Localized: "Movement Speed Training"
+    m_Localized: Movement Speed Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940164324605952
-    m_Localized: "Movement Speed <color=#197A67>+3%</color>"
+    m_Localized: Movement Speed <color=#197A67>+3%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940164366548992
-    m_Localized: "Movement Speed Training"
+    m_Localized: Movement Speed Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940164408492032
-    m_Localized: "Movement Speed <color=#197A67>+5%</color>"
+    m_Localized: Movement Speed <color=#197A67>+5%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940164450435072
-    m_Localized: "Movement Speed Training"
+    m_Localized: Movement Speed Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940164509155328
-    m_Localized: "Movement Speed <color=#197A67>+8%</color>"
+    m_Localized: Movement Speed <color=#197A67>+8%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940164664344576
-    m_Localized: "Basic Attack Damage Training"
+    m_Localized: Basic Attack Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940164718870528
-    m_Localized: "Basic Attack Damage <color=#197A67>+2%</color>"
+    m_Localized: Basic Attack Damage <color=#197A67>+2%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940164781785088
-    m_Localized: "Basic Attack Damage Training"
+    m_Localized: Basic Attack Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940164832116736
-    m_Localized: "Basic Attack Damage <color=#197A67>+4%</color>"
+    m_Localized: Basic Attack Damage <color=#197A67>+4%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940164890836992
-    m_Localized: "Basic Attack Damage Training"
+    m_Localized: Basic Attack Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940164932780032
-    m_Localized: "Basic Attack Damage <color=#197A67>+6%</color>"
+    m_Localized: Basic Attack Damage <color=#197A67>+6%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940164974723072
-    m_Localized: "Skill Damage Training"
+    m_Localized: Skill Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940165025054720
-    m_Localized: "Skill Damage <color=#197A67>+2%</color>"
+    m_Localized: Skill Damage <color=#197A67>+2%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940165071192064
-    m_Localized: "Skill Damage Training"
+    m_Localized: Skill Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940165117329408
-    m_Localized: "Skill Damage <color=#197A67>+4%</color>"
+    m_Localized: Skill Damage <color=#197A67>+4%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940165159272448
-    m_Localized: "Skill Damage Training"
+    m_Localized: Skill Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940165192826880
-    m_Localized: "Skill Damage <color=#197A67>+6%</color>"
+    m_Localized: Skill Damage <color=#197A67>+6%</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940165243158528
-    m_Localized: "Fire Damage Training"
+    m_Localized: Fire Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940165289295872
-    m_Localized: "Fire Damage <color=#197A67>+1</color>"
+    m_Localized: Fire Damage <color=#197A67>+1</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940165331238912
-    m_Localized: "Fire Damage Training"
+    m_Localized: Fire Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940165373181952
-    m_Localized: "Fire Damage <color=#197A67>+2</color>"
+    m_Localized: Fire Damage <color=#197A67>+2</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940165415124992
-    m_Localized: "Fire Damage Training"
+    m_Localized: Fire Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940165457068032
-    m_Localized: "Fire Damage <color=#197A67>+3</color>"
+    m_Localized: Fire Damage <color=#197A67>+3</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940165503205376
-    m_Localized: "Electric Damage Training"
+    m_Localized: Electric Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940165549342720
-    m_Localized: "Electric Damage <color=#197A67>+1</color>"
+    m_Localized: Electric Damage <color=#197A67>+1</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940165591285760
-    m_Localized: "Electric Damage Training"
+    m_Localized: Electric Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940165629034496
-    m_Localized: "Electric Damage <color=#197A67>+2</color>"
+    m_Localized: Electric Damage <color=#197A67>+2</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940165670977536
-    m_Localized: "Electric Damage Training"
+    m_Localized: Electric Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940165708726272
-    m_Localized: "Electric Damage <color=#197A67>+3</color>"
+    m_Localized: Electric Damage <color=#197A67>+3</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940165742280704
-    m_Localized: "Poison Damage Training"
+    m_Localized: Poison Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940165792612352
-    m_Localized: "Poison Damage <color=#197A67>+1</color>"
+    m_Localized: Poison Damage <color=#197A67>+1</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940165826166784
-    m_Localized: "Poison Damage Training"
+    m_Localized: Poison Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940165863915520
-    m_Localized: "Poison Damage <color=#197A67>+2</color>"
+    m_Localized: Poison Damage <color=#197A67>+2</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940165910052864
-    m_Localized: "Poison Damage Training"
+    m_Localized: Poison Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940165947801600
-    m_Localized: "Poison Damage <color=#197A67>+3</color>"
+    m_Localized: Poison Damage <color=#197A67>+3</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940165989744640
-    m_Localized: "Bleed Damage Training"
+    m_Localized: Bleed Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940166031687680
-    m_Localized: "Bleed Damage <color=#197A67>+1</color>"
+    m_Localized: Bleed Damage <color=#197A67>+1</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940166073630720
-    m_Localized: "Bleed Damage Training"
+    m_Localized: Bleed Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940166123962368
-    m_Localized: "Bleed Damage <color=#197A67>+2</color>"
+    m_Localized: Bleed Damage <color=#197A67>+2</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9940166165905408
-    m_Localized: "Bleed Damage Training"
+    m_Localized: Bleed Damage Training
     m_Metadata:
       m_Items: []
   - m_Id: 9940166203654144
-    m_Localized: "Bleed Damage <color=#197A67>+3</color>"
+    m_Localized: Bleed Damage <color=#197A67>+3</color>
     m_Metadata:
       m_Items: []
   - m_Id: 9954071806197760
@@ -8872,6 +8871,203 @@ MonoBehaviour:
   - m_Id: 9954071923638303
     m_Localized: "I knew you'd make it here. The question is why I was waiting for
       you. \u2026Anyway, let's talk."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451195375616
+    m_Localized: Welcome, Hero! I picked these out beside that drunken dragon today.
+      Plenty of shiny things there!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507904
+    m_Localized: What if you get caught?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507905
+    m_Localized: Hehe, worried about me? Relax, I've already checked all the escape
+      routes! You have to do that much to stay in business.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507906
+    m_Localized: Are you sure that dragon hasn't noticed?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507907
+    m_Localized: ...Knew all along and let me take them? Why? ...Anyway, once you
+      buy it, it's yours!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507908
+    m_Localized: You again! Was my shop your first stop?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507909
+    m_Localized: I wanted to hear your recommendations.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507910
+    m_Localized: Hehe! Then I'll choose extra carefully today!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507911
+    m_Localized: You just happened to be on the way.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507912
+    m_Localized: Even a shop on the way has someone waiting for customers!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507913
+    m_Localized: What do I do after work? Find the next thing to sell!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507914
+    m_Localized: It's okay to rest sometimes.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507915
+    m_Localized: Huh? Looking out for me? Maybe I will finish early today.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507916
+    m_Localized: Then you could sell things cheaper.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507917
+    m_Localized: Was that just another attempt to haggle?!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507918
+    m_Localized: I saved something for you. Special treatment!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507919
+    m_Localized: Thanks for remembering me.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507920
+    m_Localized: Don't mention it! Come back safe. I'll handle the goods.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507921
+    m_Localized: You probably say that to every customer.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507922
+    m_Localized: I don't put this much thought into just anyone!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507923
+    m_Localized: Funny, huh? I can recognize your footsteps from far away.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507924
+    m_Localized: Hearing your voice puts me at ease too.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507925
+    m_Localized: R-really? Then I'll welcome you extra loudly next time!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507926
+    m_Localized: I thought you only listened for coins.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507927
+    m_Localized: I can tell coins and footsteps apart, you know!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507928
+    m_Localized: Welcome! Take your time looking, then make your choice!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507929
+    m_Localized: Come back in one piece. We have more business to do!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507930
+    m_Localized: Good wares today, as always. Still got that eye for quality?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507931
+    m_Localized: Your bag is full! Make some room for my wares first!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507932
+    m_Localized: Ready to buy, but nowhere to put it? Sort out your bag!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217630437376
+    m_Localized: One random item in each shop receives an extra 10-20% discount.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217911455744
+    m_Localized: After defeat or timeout, carry up to 500 gold into your next run.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217919844352
+    m_Localized: Rare and Epic relics appear slightly more often in shops.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217932427264
+    m_Localized: SALE -{0}%
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809219178496
+    m_Localized: "Welcome, partner! You fight at the front door, I collect things at the back! Our teamwork is flawless again today!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258880
+    m_Localized: "Then show me my share."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258881
+    m_Localized: "Sure! As my partner, you get the first chance to buy. Pay over here!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258882
+    m_Localized: "Shouldn't a partner's share be free?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258883
+    m_Localized: "Why?! It's the share I'm selling to you! I even brought the goods. Isn't that a bit much to ask of your partner?!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961339964178432
+    m_Localized: Welcome, Hero! Why so cheap? Hehe, there is a calculation behind
+      every deal!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561984
+    m_Localized: No buying costs, you kept everyone distracted, and a bargain brings
+      you back! So I still make a profit on this item at a discount. Hehe, flawless,
+      right?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561985
+    m_Localized: Should you be telling me that?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561986
+    m_Localized: Why not? You will buy it anyway. I picked it out and even lowered
+      the price!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561987
+    m_Localized: I am still not buying it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561988
+    m_Localized: Why?! I lowered the price, and the explanation was free too! ...Do
+      I need to explain more?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10999655765884928
+    m_Localized: Why is everyone so scared? Just slip a few things away while that
+      dragon sleeps off the booze. As long as I don't wake the dragon, right?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11005436400660480
+    m_Localized: "Of course I set aside your share. Hehe, I'm a merchant who looks after her partners, right?"
     m_Metadata:
       m_Items: []
   references:

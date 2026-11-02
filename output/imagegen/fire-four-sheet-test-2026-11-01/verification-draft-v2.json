@@ -1,0 +1,202 @@
+{
+  "title": "화염 유물 4종 정리 시안 v2",
+  "date": "2026-11-01",
+  "mode": "test art draft only",
+  "tool": "built-in image_gen",
+  "generationCalls": 1,
+  "generationLayout": "2x2",
+  "finalSheetSize": [
+    32,
+    128
+  ],
+  "sourceGeneration": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-1a56b6f5-a03e-4a83-b0fb-f10b5a641812.png",
+  "items": [
+    {
+      "index": 1,
+      "name": "불타는 깃털",
+      "file": "01-burning-feather-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "colors": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A"
+      ],
+      "colorCount": 5,
+      "bounds": [
+        3,
+        2,
+        28,
+        30
+      ],
+      "margins": {
+        "left": 3,
+        "top": 2,
+        "right": 4,
+        "bottom": 2
+      },
+      "checks": {
+        "native32x32": true,
+        "atMostSixColors": true,
+        "onlyAssignedPalette": true,
+        "onlyUserPalette": true,
+        "binaryAlpha": true,
+        "minimumTwoPixelTransparentMargins": true,
+        "twoPixelContour": true,
+        "verticalFrameExact": true,
+        "gridFrameExact": true
+      }
+    },
+    {
+      "index": 2,
+      "name": "녹아내린 종",
+      "file": "02-melted-bell-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "colors": [
+        "#363232",
+        "#8599B0",
+        "#C2C2C2",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A"
+      ],
+      "colorCount": 6,
+      "bounds": [
+        3,
+        2,
+        29,
+        30
+      ],
+      "margins": {
+        "left": 3,
+        "top": 2,
+        "right": 3,
+        "bottom": 2
+      },
+      "checks": {
+        "native32x32": true,
+        "atMostSixColors": true,
+        "onlyAssignedPalette": true,
+        "onlyUserPalette": true,
+        "binaryAlpha": true,
+        "minimumTwoPixelTransparentMargins": true,
+        "twoPixelContour": true,
+        "verticalFrameExact": true,
+        "gridFrameExact": true
+      }
+    },
+    {
+      "index": 3,
+      "name": "매캐한 향로",
+      "file": "03-smoky-incense-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "colors": [
+        "#363232",
+        "#8599B0",
+        "#C2C2C2",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A"
+      ],
+      "colorCount": 6,
+      "bounds": [
+        6,
+        2,
+        26,
+        30
+      ],
+      "margins": {
+        "left": 6,
+        "top": 2,
+        "right": 6,
+        "bottom": 2
+      },
+      "checks": {
+        "native32x32": true,
+        "atMostSixColors": true,
+        "onlyAssignedPalette": true,
+        "onlyUserPalette": true,
+        "binaryAlpha": true,
+        "minimumTwoPixelTransparentMargins": true,
+        "twoPixelContour": true,
+        "verticalFrameExact": true,
+        "gridFrameExact": true
+      }
+    },
+    {
+      "index": 4,
+      "name": "홍련의 왕관",
+      "file": "04-crimson-crown-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "colors": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A"
+      ],
+      "colorCount": 5,
+      "bounds": [
+        2,
+        6,
+        30,
+        25
+      ],
+      "margins": {
+        "left": 2,
+        "top": 6,
+        "right": 2,
+        "bottom": 7
+      },
+      "checks": {
+        "native32x32": true,
+        "atMostSixColors": true,
+        "onlyAssignedPalette": true,
+        "onlyUserPalette": true,
+        "binaryAlpha": true,
+        "minimumTwoPixelTransparentMargins": true,
+        "twoPixelContour": true,
+        "verticalFrameExact": true,
+        "gridFrameExact": true
+      }
+    }
+  ],
+  "globalColorCount": 7,
+  "verticalPreviewExact8xNearest": true,
+  "overviewPreviewExact8xNearest": true,
+  "protectedHashes": {
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_BurningFeather.asset": "614eb0e56760b0962a1988295fd5d8577aad3fde6a973ae62d9191c182f1e061",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_MeltedBell.asset": "cd352212ccf929deb15db62881ff2af48b5a3316a953b93f6f25138afd0fab0e",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_SmokyIncense.asset": "1c3aa413acecd8d5114cbc04b06edfad5c114a3018f0e7aa94215edbd7275d22",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKing.asset": "b055c114845f15fbc0436a2cebe361e8426ae23f60cf945c3cc2de3136473980",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_BurningFeather.asset.meta": "96a13921b21f98f89e5441abce9099ef0c6cf9f82ff90ccde218f6f827d2da1e",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_MeltedBell.asset.meta": "acd1c0bcb2527400728eece223b5070bc87787f143624f508893731f41fbc25f",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_SmokyIncense.asset.meta": "283d9d80e1447f1da41bcd6f6d251ae6a6f439a0f3277f488f2c77020a146721",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKing.asset.meta": "fd1d005f5c6eba1b7cc0ddeb539c49c360659a2c568c4246fd30e014b0759fd8",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Flame Artifact.png": "44aa3e633a3ff88371a1b6477160df129dfd8498605a8d044d434c43c6f7aa29",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Flame Artifact.png.meta": "7d4dbe59cc948c905272d5849aaf1b6edc5b01f1f17f3d65476803955bdda87b"
+  },
+  "protectedProjectSourcesUnchanged": true,
+  "export": "Uniform proportional nearest sampling from generated sheet; per-icon palette quantization; exact 2px native charcoal contour; pixel-exact frame concatenation. No hand-painted content.",
+  "changes": "Simplified flame clusters; gray-blue and pale gray metal body for bell and incense; feather/crown five colors each and bell/incense six colors each.",
+  "projectAssetsChanged": false,
+  "unityVerification": "not executed; draft only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

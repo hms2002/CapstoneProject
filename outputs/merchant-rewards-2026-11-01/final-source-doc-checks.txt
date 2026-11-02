@@ -1,0 +1,181 @@
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Prefabs/UI/Dialogue/ShopSlot_RunGold.prefab
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Prefabs/UI/Dialogue/ShopSlot.prefab
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Localization/GameText_en.asset
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Runtime/Core/Presentation/GameTextAssetKeys.g.cs
+PASS Copied asset/metadata retains verified hash: DataSheets/Localization/GameText.csv
+PASS Copied asset/metadata retains verified hash: DataSheets/Localization/AssetInventory.json
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset.meta
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset.meta
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset.meta
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Runtime/Features/Dialogue/Affection/Effect/MerchantAffectionRewardEffect.cs.meta
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantOfferPricing.cs.meta
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs.meta
+PASS Copied asset/metadata retains verified hash: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs.meta
+PASS Manual merchant/bubble placement remains byte-preserved
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Core/Save/GameData.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Core/Save/GameData.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Core/Save/MerchantRuntimeState.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Core/Save/MerchantRuntimeState.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Infrastructure/Save/GamePlayDataManager.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Infrastructure/Save/GamePlayDataManager.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Infrastructure/Save/RunSessionProgressCommitPolicy.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Infrastructure/Save/RunSessionProgressCommitPolicy.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Features/Progression/RunModifiers/RunModifierDeltas.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Features/Progression/RunModifiers/RunModifierDeltas.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Features/Progression/RunModifiers/RunModifierAggregationService.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Features/Progression/RunModifiers/RunModifierAggregationService.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRunStateService.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRunStateService.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantShopPolicy.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantShopPolicy.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopInventoryRoll.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopInventoryRoll.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopSlot.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopSlot.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS No source trailing whitespace: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS No source trailing whitespace: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Core/Presentation/GameTextAssetKeys.g.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Core/Presentation/GameTextAssetKeys.g.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Features/Dialogue/Affection/Effect/MerchantAffectionRewardEffect.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Features/Dialogue/Affection/Effect/MerchantAffectionRewardEffect.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantOfferPricing.cs
+PASS No source trailing whitespace: Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantOfferPricing.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS No source trailing whitespace: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Final source equals Unity-verified source: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs
+PASS No source trailing whitespace: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs
+PASS Document local link exists: Docs/ActiveTasks/merchant-affection-rewards.md -> npc-run-affection-dialogue.md
+PASS Document local link exists: Docs/ActiveTasks/merchant-affection-rewards.md -> ../Architecture/ProfileSaveOwnershipArchitecture.md
+PASS Document local link exists: Docs/ActiveTasks/merchant-affection-rewards.md -> ../StructureMemory/RunGoldAndShop.md
+PASS Document local link exists: Docs/ActiveTasks/merchant-affection-rewards.md -> ../../outputs/merchant-rewards-2026-11-01/
+PASS Document local link exists: Docs/ActiveTasks/merchant-affection-rewards.md -> ../SessionLogs/2026-11-01.md
+PASS Document local link exists: Docs/ActiveTasks/npc-run-affection-dialogue.md -> merchant-affection-rewards.md
+PASS Document local link exists: Docs/ActiveTasks/npc-run-affection-dialogue.md -> ../SessionLogs/2026-11-01.md
+PASS Document local link exists: Docs/ActiveTasks/npc-run-affection-dialogue.md -> ../StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md
+PASS Document local link exists: Docs/ActiveTasks/npc-run-affection-dialogue.md -> ../StructureMemory/ScriptSystems/SceneRuntimeSaveStructure.md
+PASS Document local link exists: Docs/ActiveTasks/npc-run-affection-dialogue.md -> ../SessionLogs/2026-11-01.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/full-game-localization.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/merchant-affection-rewards.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/npc-run-affection-dialogue.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/spiri-alcohol-exposure.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/encyclopedia-tab-visibility-reveal.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/encyclopedia-book-inner-padding.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/encyclopedia-book-flat-top.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/encyclopedia-creature-tabs.md
+PASS Document local link exists: Docs/TaskIndex.md -> StructureMemory/EncyclopediaCreatureTabs.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/lightning-spear-tool-composition.md
+PASS Document local link exists: Docs/TaskIndex.md -> SessionLogs/2026-10-10-lightning-tools/README.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/lightning-spear-placement-structure.md
+PASS Document local link exists: Docs/TaskIndex.md -> SessionLogs/2026-10-10-lightning-structure/README.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/chest-offer-width-consistency.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/ui-batching-structural-optimization.md
+PASS Document local link exists: Docs/TaskIndex.md -> SessionLogs/2026-10-08-ui-batching-structural/README.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/ui-batching-optimization.md
+PASS Document local link exists: Docs/TaskIndex.md -> RefactorBacklog/UIBatchingStructuralCandidates.md
+PASS Document local link exists: Docs/TaskIndex.md -> SessionLogs/2026-10-07-ui-batching/README.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/frame-performance-measurement.md
+PASS Document local link exists: Docs/TaskIndex.md -> SessionLogs/2026-10-07-frame-performance-measurement/README.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/test-scene-boss-combat-and-breath-lock.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/frame-performance-optimization.md
+PASS Document local link exists: Docs/TaskIndex.md -> ActiveTasks/test-scene-and-lightning-placement.md
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../ActiveTasks/npc-run-affection-dialogue.md
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Runtime/Features/Dialogue/NPC/NPCData.cs
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Runtime/Features/Dialogue/DialogueTrigger.cs
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Runtime/Features/Dialogue/Affection/AffectionManager.cs
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Runtime/UI/HUD/WorldPrompt/NpcAffectionBubble.cs
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Editor/Tools/Dialogue/NpcAffectionBubbleEditor.cs
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Editor/Tools/Data/LocalizationSheetSetup.cs
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Art/Sprites/UI/Dialogue/NpcAffectionAvailable.png
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../DataSheets/Localization/GameText.csv
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../DataSheets/Localization/InkInventory.json
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/validation.txt
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/unity-final-validation.log
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/merchant-bubble-0.png
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/merchant-bubble-1.png
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/merchant-bubble-2.png
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/msbuild-final.log
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/static-checks.txt
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../ActiveTasks/merchant-affection-rewards.md
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/merchant-rewards-2026-11-01/validation.txt
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/merchant-rewards-2026-11-01/unity-final.log
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/merchant-rewards-2026-11-01/static-checks.txt
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/merchant-rewards-2026-11-01/authored-copy-manifest.json
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/merchant-rewards-2026-11-01/msbuild-current.log
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/merchant-rewards-2026-11-01/msbuild-final.log
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/merchant-rewards-2026-11-01/final-source-doc-checks.txt
+PASS Document local link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/merchant-rewards-2026-11-01/merchant-price-tags-native.png
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/DungeonTemplateSelection.md
+PASS Document local link exists: Docs/DecisionLog.md -> SessionLogs/2026-09-12.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/RunGoldAndShop.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/MonsterWorldHudAndStatus.md
+PASS Document local link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-08-ui-batching-structural/README.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/PlacementTools.md
+PASS Document local link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-10-lightning-tools/README.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ElementDirectHitDamage.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/EncyclopediaCreatureTabs.md
+PASS Document local link exists: Docs/DecisionLog.md -> ActiveTasks/encyclopedia-creature-tabs.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/WeaponAndGASStructure.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ElementDirectHitDamage.md
+PASS Document local link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-11-element-popup-ratio/README.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/WeaponAndGASStructure.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document local link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document local link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/BossAndMobEncounterStructure.md
+PASS Document local link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document local link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document local link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document local link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-12.md
+PASS Document local link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document local link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-12.md
+PASS Document local link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/WeaponAndGASStructure.md
+PASS Document local link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-12.md
+PASS Document local link exists: Docs/DecisionLog.md -> ActiveTasks/spiri-alcohol-exposure.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/AlcoholExposure.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/AlcoholExposure.md
+PASS Document local link exists: Docs/DecisionLog.md -> ActiveTasks/spiri-alcohol-exposure.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/LevelProgressionStructure.md
+PASS Document local link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-30.md
+PASS Document local link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-30.md
+PASS Document local link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-30.md
+PASS Document local link exists: Docs/DecisionLog.md -> ActiveTasks/npc-run-affection-dialogue.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md
+PASS Document local link exists: Docs/DecisionLog.md -> ActiveTasks/merchant-affection-rewards.md
+PASS Document local link exists: Docs/DecisionLog.md -> StructureMemory/RunGoldAndShop.md
+PASS Document local link exists: Docs/StructureMemory/RunGoldAndShop.md -> ../SessionLogs/2026-11-01.md
+PASS Document local link exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ../../ActiveTasks/npc-run-affection-dialogue.md
+PASS Document local link exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ../../SessionLogs/2026-11-01.md
+PASS Document local link exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ../../ActiveTasks/merchant-affection-rewards.md
+PASS Document local link exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ../RunGoldAndShop.md
+PASS Document local link exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ./RunSpecialNpcStructure.md
+PASS Document local link exists: Docs/StructureMemory/ScriptSystems/SceneRuntimeSaveStructure.md -> ../RunGoldAndShop.md
+PASS Document local link exists: Docs/StructureMemory/ScriptSystems/SceneRuntimeSaveStructure.md -> ./RunSpecialNpcStructure.md
+PASS Final native evidence is 301/301
+PASS Final Unity log has pass marker and no C#/shader compile errors
+PASS: 180 checks.

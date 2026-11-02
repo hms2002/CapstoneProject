@@ -1,0 +1,25 @@
+PASS Applied prefab reads texture RGB at influence=1
+PASS Existing sprite GUID reference preserved
+PASS Existing material reference preserved
+PASS Applied PNG imports as 19x16 Sprite
+PASS Original Single import mode preserved
+PASS Original 9-slice border preserved
+PASS Original 32 PPU and Point filter preserved
+PASS Original pivot preserved
+PASS Exact production import settings retained without rewriting metadata
+PASS Exact existing image GUID imported
+PASS Unchanged production material/shader supported
+PASS Automatic outline remains enabled at 0.52
+PASS Native render contains visible bubble: color_dark_Default_2
+PASS Native render contains visible bubble: color_dark_Slime_2
+PASS Native render contains visible bubble: color_dark_Dragon_2
+PASS Native render contains visible bubble: color_dark_Witch_2
+PASS Native render contains visible bubble: color_dark_DemonKing_2
+PASS Native render contains visible bubble: color_light_Default_2
+PASS Native render contains visible bubble: color_light_Slime_2
+PASS Native render contains visible bubble: color_light_Dragon_2
+PASS Native render contains visible bubble: color_light_Witch_2
+PASS Native render contains visible bubble: color_light_DemonKing_2
+PASS 10 applied-art native renders completed
+Scope: exact applied PNG/meta and prefab references; unchanged production shader; native UGUI background only.
+Whole game compile, SpeechBubble/TMP/layout runtime, manual Play Mode and Player build not executed.

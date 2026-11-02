@@ -11,6 +11,11 @@ using UnityEngine;
 public sealed class MerchantNPC : MonoBehaviour
 {
     private static readonly SoundRef PurchaseSound = SoundRef.FromKey("ui.shop.purchase");
+    private static readonly string[] PurchaseSuccessSpeeches =
+    {
+        "헤헤, 잘 골랐어!",
+        "보는 눈 있네!"
+    };
 
     [Serializable]
     private struct ShopSlotAnchorDefinition
@@ -56,8 +61,8 @@ public sealed class MerchantNPC : MonoBehaviour
 
     [Header("Speech Bubble")]
     [SerializeField] private MonoBehaviour speechBubble;
-    [SerializeField] private string notEnoughCurrencySpeech = "마정석이 부족하군.";
-    [SerializeField] private string inventoryFullSpeech = "가방이 가득 찼군.";
+    [SerializeField] private string notEnoughCurrencySpeech = "돈이 부족하잖아!";
+    [SerializeField] private string inventoryFullSpeech = "가방이 꽉 찼잖아!";
 
     private readonly MerchantRunStateService runStateService = new MerchantRunStateService();
     private readonly ShopInventoryRoll inventoryRoll = new ShopInventoryRoll();
@@ -73,6 +78,7 @@ public sealed class MerchantNPC : MonoBehaviour
     private MerchantRefreshInteractable[] refreshInteractables;
     private RunModifierService subscribedRunModifierService;
     private bool hasLoggedMissingDefinition;
+    private int nextPurchaseSuccessSpeechIndex;
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -159,6 +165,7 @@ public sealed class MerchantNPC : MonoBehaviour
             SoundPlaybackUtility.Play(PurchaseSound, sourceObject: this);
             runStateService.MarkSlotSold(runtimeState, slotIndex);
             RefreshSlot(slotIndex);
+            SpeakPurchaseSuccess();
             return;
         }
 
@@ -189,7 +196,7 @@ public sealed class MerchantNPC : MonoBehaviour
         runtimeState = runStateService.GetOrCreateState(
             StockStateId,
             policy.VisibleSlotCount,
-            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries, excludedEntries?.Count ?? 0));
+            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries, excludedEntries?.Count ?? 0, policy.Modifiers));
         ApplyEffectivePrices(runtimeState, policy);
 
         BindSlots();
@@ -253,7 +260,7 @@ public sealed class MerchantNPC : MonoBehaviour
             runtimeState,
             policy.RefreshLimit,
             policy.VisibleSlotCount,
-            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries, 0));
+            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries, 0, policy.Modifiers));
 
         if (!refreshed)
             return false;
@@ -324,6 +331,8 @@ public sealed class MerchantNPC : MonoBehaviour
         if (state?.slots == null)
             return;
 
+        MerchantOfferPricing.AssignSpecialOffer(state, policy.VisibleSlotCount,
+            policy.Modifiers.specialDiscountMinPercent, policy.Modifiers.specialDiscountMaxPercent);
         for (int i = 0; i < state.slots.Count; i++)
         {
             MerchantStockEntryState entry = state.slots[i];
@@ -336,12 +345,13 @@ public sealed class MerchantNPC : MonoBehaviour
                 // Existing stock predating discounts already contains its original rolled price.
                 if (entry.undiscountedPrice <= 0)
                     entry.undiscountedPrice = entry.price;
-                entry.price = Mathf.Max(0, Mathf.RoundToInt(entry.undiscountedPrice * (1f - policy.DiscountRate)));
             }
             else
             {
-                entry.price = policy.EffectivePriceSettings.ResolvePrice(definition);
+                // Hub prices have authored bases; never adopt a previously discounted display price.
+                entry.undiscountedPrice = shopDefinition.PriceSettings.ResolvePrice(definition);
             }
+            entry.price = MerchantOfferPricing.Calculate(entry.undiscountedPrice, policy.DiscountRate, entry.specialDiscountPercent);
         }
     }
 
@@ -350,7 +360,14 @@ public sealed class MerchantNPC : MonoBehaviour
         ShopRunModifierDelta modifiers = RunModifierService.CurrentRewardSnapshot.ShopModifiers;
         // Gold shops keep their authored slots/availability and exclude legacy shop upgrades.
         return UsesRunGold
-            ? new ShopRunModifierDelta { affectionDiscountRate = modifiers.affectionDiscountRate }
+            ? new ShopRunModifierDelta
+            {
+                affectionDiscountRate = modifiers.affectionDiscountRate,
+                specialDiscountMinPercent = modifiers.specialDiscountMinPercent,
+                specialDiscountMaxPercent = modifiers.specialDiscountMaxPercent,
+                rareRelicWeightBonus = modifiers.rareRelicWeightBonus,
+                epicRelicWeightBonus = modifiers.epicRelicWeightBonus
+            }
             : modifiers;
     }
 
@@ -365,7 +382,8 @@ public sealed class MerchantNPC : MonoBehaviour
         int slotCount,
         MerchantPriceSettings effectivePriceSettings,
         IReadOnlyCollection<MerchantStockEntryState> excludedEntries,
-        int startSlotIndex)
+        int startSlotIndex,
+        ShopRunModifierDelta modifiers)
     {
         var entries = shopDefinition != null
             ? inventoryRoll.RollStock(
@@ -377,11 +395,17 @@ public sealed class MerchantNPC : MonoBehaviour
                 lootPoolService.BuildWeaponExclusionSet(LootPoolContext.ShopStock),
                 excludedEntries,
                 BuildSlotFilters(slotCount, startSlotIndex),
-                consumablesOnlyInDedicatedSlots: UsesRunGold)
+                consumablesOnlyInDedicatedSlots: UsesRunGold,
+                rareRelicWeightBonus: modifiers.rareRelicWeightBonus,
+                epicRelicWeightBonus: modifiers.epicRelicWeightBonus)
             : new List<MerchantStockEntryState>();
         if (UsesRunGold)
             foreach (var entry in entries)
-                if (entry != null) entry.price = shopDefinition.RollGoldPrice(entry.ResolveDefinition());
+                if (entry != null)
+                {
+                    entry.price = shopDefinition.RollGoldPrice(entry.ResolveDefinition());
+                    entry.undiscountedPrice = entry.price;
+                }
         return entries;
     }
 
@@ -489,6 +513,19 @@ public sealed class MerchantNPC : MonoBehaviour
             MerchantPurchaseResultType.ConsumableInventoryFull => GameText.Get("merchant.failure.inventory", inventoryFullSpeech),
             _ => string.Empty
         };
+
+        ISpeechBubblePlayback bubblePlayback = ResolveSpeechBubble();
+        if (!string.IsNullOrWhiteSpace(line) && bubblePlayback != null)
+            bubblePlayback.Speak(line);
+    }
+
+    private void SpeakPurchaseSuccess()
+    {
+        if (PurchaseSuccessSpeeches.Length == 0)
+            return;
+
+        string line = PurchaseSuccessSpeeches[nextPurchaseSuccessSpeechIndex % PurchaseSuccessSpeeches.Length];
+        nextPurchaseSuccessSpeechIndex++;
 
         ISpeechBubblePlayback bubblePlayback = ResolveSpeechBubble();
         if (!string.IsNullOrWhiteSpace(line) && bubblePlayback != null)

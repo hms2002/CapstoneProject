@@ -1,0 +1,62 @@
+[
+  {
+    "key": "01-crossed-rings",
+    "name": "교차 고리형",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-21164de6-ba5a-4bb9-8a6f-588676cf2bb8.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      159,
+      136,
+      1122,
+      1118
+    ]
+  },
+  {
+    "key": "02-clamped-core",
+    "name": "집게 봉인형",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-4dcee59b-978e-417f-94b6-6c22dd49a66d.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      208,
+      171,
+      1046,
+      1047
+    ]
+  },
+  {
+    "key": "03-cradle-core",
+    "name": "받침 안치형",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-89f3c47d-d076-4b6d-ba20-065bd5f47b39.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      156,
+      220,
+      1098,
+      1043
+    ]
+  },
+  {
+    "key": "04-armored-core",
+    "name": "외장 봉인형",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-ec64f9ea-fe17-4cf1-aac9-5b8198f4c719.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      238,
+      148,
+      1049,
+      1073
+    ]
+  }
+]

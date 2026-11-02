@@ -8,6 +8,8 @@ public class CurrencyUI : MonoBehaviour
 
     private void Start()
     {
+        if (showRunGold) GameDataStore.OnDataLoaded += HandleProfileLoaded;
+
         // 시작 시 초기값 표시
         if (CurrencyManager.Instance != null)
         {
@@ -21,6 +23,8 @@ public class CurrencyUI : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (showRunGold) GameDataStore.OnDataLoaded -= HandleProfileLoaded;
+
         // 이벤트 구독 해제 (메모리 누수 방지)
         if (CurrencyManager.Instance != null)
         {
@@ -29,8 +33,17 @@ public class CurrencyUI : MonoBehaviour
         }
     }
 
+    private void HandleProfileLoaded(GameData data, int slotIndex)
+    {
+        UpdateUI(CurrencyManager.Instance != null ? CurrencyManager.Instance.GetGold() : 0);
+    }
+
     private void UpdateUI(int amount)
     {
+        // Outside a run, show the saved next-run credit without consuming or spending it.
+        if (showRunGold && !RunSessionStore.IsRunActive)
+            amount = Mathf.Max(0, GameDataStore.Data?.retainedRunGold ?? 0);
+
         if (amountText != null)
         {
             // 예: "1,500" 처럼 콤마 표시

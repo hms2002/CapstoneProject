@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 856556ba520e41e1bd1fb136ea730efc, type: 3}
   m_Name: SashaShopDiscount
   m_EditorClassIdentifier: 
-  rewardText: "\uC0C1\uC810 \uD310\uB9E4 \uAC00\uACA9 20% \uD560\uC778"
+  rewardText: "\uC0C1\uC810 \uD310\uB9E4 \uAC00\uACA9 5% \uD560\uC778"
   rewardIcon: {fileID: 21300000, guid: b9484393cf3f8fe4896c2edebd077e77, type: 3}
-  discountRate: 0.2
+  discountRate: 0.05

@@ -1,4 +1,4 @@
-﻿key,ko,en,ja,zh-Hans,zh-Hant
+key,ko,en,ja,zh-Hans,zh-Hant
 weapon.odd_iron.description,"<color=#96DCFA>재장전은 없다. 여섯 발이 끝나면, 이제 던질 일만 남은 기묘한 쇳덩이.</color>","<color=#96DCFA>No reloading. Once the six shots are spent, all that remains is to throw this odd lump of iron.</color>",<color=#96DCFA>リロードはできない。六発撃ち終えたら、あとは投げるしかない奇妙な鉄の塊。</color>,<color=#96DCFA>无法装填。六发打完，这块奇怪的铁疙瘩就只剩扔出去的份了。</color>,<color=#96DCFA>無法裝填。六發打完，這塊奇怪的鐵疙瘩就只剩扔出去的份了。</color>
 relic.last_stand.description,현재 체력이 {threshold} 이하일 경우 모든 공격이 반드시 치명타로 적중.,All attacks are guaranteed critical hits while current HP is {threshold} or lower.,現在のHPが{threshold}以下の場合、すべての攻撃が必ずクリティカルになる。,当前生命值不高于{threshold}时，所有攻击必定暴击。,目前生命值不高於{threshold}時，所有攻擊必定暴擊。
 dialogue.merchant.001,"어서 와, 용사님! 오늘도 반짝반짝한 마정석은 두둑하게 챙겨 왔지?","Welcome, hero! Got plenty of shiny magic stones with you today?",いらっしゃい、勇者さん！今日もキラキラの魔晶石をたっぷり持ってきたよね？,欢迎，勇者！今天也带了不少闪闪发亮的魔晶石吧？,歡迎，勇者！今天也帶了不少閃閃發亮的魔晶石吧？
@@ -469,7 +469,7 @@ asset.d492a6f1c1a7fc84bb3b44a619dcfd4f.description,적 처치 시 4초 동안 �
 asset.3f678aae4cb94331bd3caeb317c659ce.displayName,도망자의 신발,Fugitive's Shoes,逃亡者の靴,逃亡者之靴,逃亡者之靴
 asset.3f678aae4cb94331bd3caeb317c659ce.description,피해를 받으면 잠시 회피율이 증가합니다.,Taking damage briefly increases evasion.,ダメージを受けると、一時的に回避率が増加する。,受到伤害后短暂提高闪避率。,受到傷害後短暫提高閃避率。
 asset.c0e9e82eb0ce4caa9efb337cb57764ff.displayName,달리는 장부,Running Ledger,走る帳簿,奔跑账簿,奔跑帳簿
-asset.102507ab60734546ba64e6abfe926c11.displayName,작열하는 송곳,Scorching Awl,灼熱の錐,灼热尖锥,灼熱尖錐
+asset.102507ab60734546ba64e6abfe926c11.displayName,화룡의 송곳니,Fire Dragon's Fang,火竜の牙,火龙之牙,火龍之牙
 asset.102507ab60734546ba64e6abfe926c11.description,대상에게 화상이 없으면 화상을 부여합니다.,Inflicts burn if the target is not already burning.,対象が火傷状態でなければ、火傷を付与する。,目标未处于灼烧状态时施加灼烧。,目標未處於灼燒狀態時施加灼燒。
 asset.350592c90a7f493b999f7b9f349dfe91.displayName,예리한 송곳,Sharp Awl,鋭い錐,锋利尖锥,鋒利尖錐
 asset.350592c90a7f493b999f7b9f349dfe91.description,치명타 피해가 증가합니다.,Increases critical damage.,クリティカルダメージが増加する。,提高暴击伤害。,提高暴擊傷害。
@@ -2328,7 +2328,7 @@ This cannot be undone.","スロット{0}のプロフィールデータを削除�
 此操作无法撤销。","刪除欄位{0}的存檔資料嗎？
 此操作無法復原。"
 asset.9de8ce10bc35dcc4b8303cf7c074028a.rewardText,무기와 유물 해금,Unlock weapons and relics,武器と遺物を解放,解锁武器与遗物,解鎖武器與遺物
-asset.844437f5d3184cf69ce3cabd2160232e.rewardText,상점 판매 가격 20% 할인,20% discount on shop prices,店の販売価格が20%割引,商店售价优惠20%,商店售價優惠20%
+asset.844437f5d3184cf69ce3cabd2160232e.rewardText,상점 판매 가격 5% 할인,5% discount on shop prices,店の販売価格が5%割引,商店售价优惠5%,商店售價優惠5%
 asset.e8c2a5f0d8d14a548a6f2c6d90377b7a.rewardText,TeleportNpc 이용 가능,Teleport NPC available,転送NPCを利用可能,可使用传送NPC,可使用傳送NPC
 asset.795c6aa610974d3c8b01b6ebdbdf328e.rewardText,상자의 내용물을 리롤할 수 있다.,Allows chest contents to be rerolled.,宝箱の中身を再抽選できる。,可重新抽取宝箱内容。,可重新抽取寶箱內容。
 asset.fa97d86ecb298764f8bc14687c5189bd.rewardText,10% 확률로 유물의 레벨이 +1된 상태로 등장,Relics have a 10% chance to appear with +1 level.,10%の確率で遺物のレベルが+1された状態で出現,遗物有10%的概率以等级+1的状态出现,遺物有10%的機率以等級+1的狀態出現
@@ -2574,8 +2574,8 @@ asset.d35e3630a31b6ef42a9a2b03d2afa4e3.corridorLocationName,그림자 감옥,Sha
 asset.d35e3630a31b6ef42a9a2b03d2afa4e3.bossLocationName,클로에의 방,Chloe's Room,クロエの部屋,克洛伊的房间,克洛伊的房間
 asset.ac129d8bcfb6e3c4da2f9c2e3e4ead07.corridorLocationName,슬라임 왕국,Slime Kingdom,スライム王国,史莱姆王国,史萊姆王國
 asset.ac129d8bcfb6e3c4da2f9c2e3e4ead07.bossLocationName,멜타의 방,Melta's Room,メルタの部屋,梅尔塔的房间,梅爾塔的房間
-merchant.failure.currency,마정석이 부족하군.,Not enough magic stones.,魔晶石が足りないな。,魔晶石不够啊。,魔晶石不夠啊。
-merchant.failure.inventory,가방이 가득 찼군.,Your bag is full.,かばんがいっぱいだな。,背包满了啊。,背包滿了啊。
+merchant.failure.currency,돈이 부족하잖아!,You're short on money!,お金が足りないじゃない！,钱不够啊！,錢不夠啊！
+merchant.failure.inventory,가방이 꽉 찼잖아!,Your bag is packed full!,かばんがパンパンじゃない！,背包都塞满了啊！,背包都塞滿了啊！
 merchant.first_opening,짜잔! 오늘부터 정상 영업이야!,Ta-da! Open for business starting today!,じゃーん！今日から本格的に営業開始だ！,锵锵！从今天起正式营业！,鏘鏘！從今天起正式營業！
 chest.remaining_monsters,남은 몬스터 : {0},Monsters remaining: {0},残りのモンスター：{0},剩余怪物：{0},剩餘怪物：{0}
 ui.level_reward.combat_blocked,전투가 끝난 뒤 할 수 있어,You can do that after combat.,戦闘が終わってからできるよ。,战斗结束后才能进行。,戰鬥結束後才能進行。
@@ -2930,3 +2930,50 @@ dialogue.demonkingbossencounter.spiri_companion,왔어? 안그래도 스피리�
 dialogue.demonkingbossencounter.high_affection,"어, 네가 먼저 도착했네. …다행이다. 오늘은 네가 오는 게 제일 덜 피곤하거든. 방금 건 잊어.","Oh, you got here first. …That's a relief. Your visit is the least exhausting part of my day. Forget I said that.",あ、先に着いてたんだ。……よかった。今日はあなたが来てくれるのが一番疲れないんだよね。今のは忘れて。,哦，你先到了啊。……太好了。今天还是见到你最不累。刚才那句忘了吧。,哦，你先到了啊。……太好了。今天還是見到你最不累。剛才那句忘了吧。
 dialogue.demonkingbossencounter.frequent_encounter,"어이, 이번이 몇 번째지? 이제 왕좌실 바닥보다 네 발자국이 더 익숙하겠네.","Hey, how many visits is this now? Your footprints are starting to look more familiar than the throne room floor.",ねえ、これで何回目だっけ？ もう玉座の間の床より、あなたの足跡のほうが見慣れてきたよ。,喂，这都第几次了？现在比起王座厅的地板，你的脚印都更眼熟了。,喂，這都第幾次了？現在比起王座廳的地板，你的腳印都更眼熟了。
 dialogue.demonkingbossencounter.reencounter,"여기까지 올 줄은 알았어. 문제는 내가 왜 그걸 기다리고 있었느냐는 거지만. …아무튼, 얘기부터 하자.","I knew you'd make it here. The question is why I was waiting for you. …Anyway, let's talk.",ここまで来るだろうとは思ってたよ。問題は、私がどうしてそれを待ってたのかってことだけど。……とにかく、まずは話そう。,我就知道你会走到这里。问题是，我干吗还一直等着你呢。……总之，先聊聊吧。,我就知道你會走到這裡。問題是，我幹嘛還一直等著你呢。……總之，先聊聊吧。
+dialogue.merchant.run.affection_0_b.0,"어서 와, 용사님! 오늘은 그 술주정뱅이 용 옆에서 골라 왔어. 반짝이는 건 많더라!","Welcome, Hero! I picked these out beside that drunken dragon today. Plenty of shiny things there!",いらっしゃい、勇者様！ 今日はあの酔いどれ竜のそばで選んできたんだ。キラキラした物がいっぱいあったよ！,欢迎，勇者大人！今天这些是从那条醉鬼龙旁边挑来的。亮晶晶的东西可真多呀！,歡迎，勇者大人！今天這些是從那條醉鬼龍旁邊挑來的。亮晶晶的東西可真多呀！
+dialogue.merchant.run.affection_0_b.1,"너, 들키면 어쩌려고?",What if you get caught?,見つかったらどうするの？,你被发现了怎么办？,你被發現了怎麼辦？
+dialogue.merchant.run.affection_0_b.2,"헤헤, 내 걱정이야? 괜찮아, 도망갈 길도 다 봐 뒀어! 오래 장사하려면 그 정도는 해야지.","Hehe, worried about me? Relax, I've already checked all the escape routes! You have to do that much to stay in business.",へへ、私の心配？ 大丈夫、逃げ道も全部見てあるよ！ 長く商売を続けるなら、それくらいしないとね。,嘿嘿，担心我呀？放心，逃跑的路我都看好了！想长久做生意，这点准备还是要有的。,嘿嘿，擔心我呀？放心，逃跑的路我都看好了！想長久做生意，這點準備還是要有的。
+dialogue.merchant.run.affection_0_b.3,정말 눈치 못 챈 걸까?,Are you sure that dragon hasn't noticed?,本当に気づいてないのかな？,真的没察觉到吗？,真的沒察覺到嗎？
+dialogue.merchant.run.affection_0_b.4,"……알면서 그냥 뒀다고? 왜? ……아무튼, 용사님이 사면 이제 용사님 물건이야!","...Knew all along and let me take them? Why? ...Anyway, once you buy it, it's yours!",……気づいてて放っておいたって？ なんで？ ……とにかく、勇者様が買えば、もう勇者様の物だからね！,……明知道还放着不管？为什么？……总之，勇者大人买下之后就是你的东西啦！,……明知道還放著不管？為什麼？……總之，勇者大人買下之後就是你的東西啦！
+dialogue.merchant.run.affection_1_a.0,또 만났네! 이번에도 내 가게부터 찾아온 거야?,You again! Was my shop your first stop?,また会ったね！ 今回も真っ先に来てくれたの？,又见面啦！这次也是先来找我的店吗？,又見面啦！這次也是先來找我的店嗎？
+dialogue.merchant.run.affection_1_a.1,네 추천을 들어 보고 싶어서.,I wanted to hear your recommendations.,おすすめを聞きたくてね。,想听听你的推荐。,想聽聽妳的推薦。
+dialogue.merchant.run.affection_1_a.2,"헤헤, 그럼 오늘은 더 꼼꼼하게 골라 줘야겠네!",Hehe! Then I'll choose extra carefully today!,へへ、じゃあ今日はもっと丁寧に選んであげる！,嘿嘿，那今天可得更用心地帮你挑啦！,嘿嘿，那今天可得更用心地幫你挑啦！
+dialogue.merchant.run.affection_1_a.3,그냥 길에 있길래.,You just happened to be on the way.,たまたま通り道だっただけ。,只是刚好路过。,只是剛好路過。
+dialogue.merchant.run.affection_1_a.4,길에 있는 가게도 손님을 기다리는 마음은 있다고!,Even a shop on the way has someone waiting for customers!,通り道の店だって、お客さんを待ってるんだからね！,就算是路边的店，也在盼着客人来呀！,就算是路邊的店，也在盼著客人來呀！
+dialogue.merchant.run.affection_1_b.0,장사 끝나면 뭘 하냐고? 다음에 팔 물건을 찾지!,What do I do after work? Find the next thing to sell!,店じまいの後？ 次に売る物を探すんだよ！,收摊后做什么？当然是找下次要卖的货！,收攤後做什麼？當然是找下次要賣的貨！
+dialogue.merchant.run.affection_1_b.1,가끔은 쉬어도 괜찮아.,It's okay to rest sometimes.,たまには休んでもいいんだよ。,偶尔休息一下也没关系。,偶爾休息一下也沒關係。
+dialogue.merchant.run.affection_1_b.2,어? 내 걱정을 다 해 주네. 오늘은 조금 일찍 쉴까?,Huh? Looking out for me? Maybe I will finish early today.,え？ 心配してくれるの？ 今日は少し早く休もうかな。,咦？还会关心我呀。今天要不早点休息？,咦？還會關心我呀。今天要不早點休息？
+dialogue.merchant.run.affection_1_b.3,그럼 더 싸게 팔 수도 있겠네.,Then you could sell things cheaper.,じゃあ、もっと安く売れるね。,那应该能卖得更便宜吧。,那應該能賣得更便宜吧。
+dialogue.merchant.run.affection_1_b.4,지금 쉬는 얘기가 아니라 흥정하는 거였어?!,Was that just another attempt to haggle?!,休みの話じゃなくて値切り交渉だったの？！,原来不是聊天，是想砍价吗？！,原來不是聊天，是想砍價嗎？！
+dialogue.merchant.run.affection_2_a.0,용사님 몫은 따로 챙겨 뒀어. 특별 대우라고!,I saved something for you. Special treatment!,勇者様の分は取っておいたよ。特別扱いだからね！,你的那份我留着呢。这可是特别待遇！,你的那份我留著呢。這可是特別待遇！
+dialogue.merchant.run.affection_2_a.1,기억해 줘서 고마워.,Thanks for remembering me.,覚えていてくれてありがとう。,谢谢你还记得我。,謝謝妳還記得我。
+dialogue.merchant.run.affection_2_a.2,뭘 그런 걸로! 다음에도 무사히 와. 물건은 내가 챙길게.,Don't mention it! Come back safe. I'll handle the goods.,そんなことで！ 次も無事に来てね。品物は任せて。,这算什么！下次也平安回来，货物就交给我吧。,這算什麼！下次也平安回來，貨物就交給我吧。
+dialogue.merchant.run.affection_2_a.3,다른 손님한테도 그러겠지.,You probably say that to every customer.,ほかのお客さんにも言ってるんでしょ。,你对别的客人也这么说吧。,妳對別的客人也這麼說吧。
+dialogue.merchant.run.affection_2_a.4,아무한테나 이렇게 신경 쓰는 건 아니거든!,I don't put this much thought into just anyone!,誰にでもこんなに気を配るわけじゃないんだから！,我可不是对谁都这么上心的！,我可不是對誰都這麼上心的！
+dialogue.merchant.run.affection_2_b.0,이상하지? 용사님 발소리는 멀리서도 알겠더라.,"Funny, huh? I can recognize your footsteps from far away.",不思議だね。勇者様の足音は遠くからでも分かるんだ。,真奇怪，隔着老远就能认出你的脚步声。,真奇怪，隔著老遠就能認出你的腳步聲。
+dialogue.merchant.run.affection_2_b.1,나도 네 목소리가 들리면 안심돼.,Hearing your voice puts me at ease too.,こちらも君の声が聞こえると安心するよ。,我听见你的声音也会安心。,我聽見妳的聲音也會安心。
+dialogue.merchant.run.affection_2_b.2,"그, 그래? 그럼 다음에도 크게 불러 줄게. 어서 오라고!",R-really? Then I'll welcome you extra loudly next time!,そ、そう？ じゃあ次も大きな声で迎えてあげる！,是、是吗？那下次我会更大声地欢迎你！,是、是嗎？那下次我會更大聲地歡迎你！
+dialogue.merchant.run.affection_2_b.3,동전 소리만 듣는 줄 알았는데.,I thought you only listened for coins.,小銭の音しか聞いてないと思ってた。,还以为你只听得见钱币声呢。,還以為妳只聽得見錢幣聲呢。
+dialogue.merchant.run.affection_2_b.4,동전 소리랑 손님 발소리는 구별하거든!,"I can tell coins and footsteps apart, you know!",小銭の音とお客さんの足音くらい聞き分けられるよ！,钱币声和客人的脚步声，我还是分得清的！,錢幣聲和客人的腳步聲，我還是分得清的！
+dialogue.merchant.run.greeting_a,"어서 와! 구경은 천천히, 결정은 확실하게!","Welcome! Take your time looking, then make your choice!",いらっしゃい！ ゆっくり見て、しっかり選んでね！,欢迎！慢慢看，选好了就下手！,歡迎！慢慢看，選好了就下手！
+dialogue.merchant.run.greeting_b,다치지 말고 돌아와. 다음 장사도 해야 하니까!,Come back in one piece. We have more business to do!,無事に帰ってきてよ。次も買い物してもらうんだから！,平安回来呀，下次还要做你的生意呢！,平安回來呀，下次還要做你的生意呢！
+dialogue.merchant.run.greeting_c,오늘도 좋은 물건들이야. 보는 눈은 여전하지?,"Good wares today, as always. Still got that eye for quality?",今日もいい品ばかりだよ。見る目は鈍ってないよね？,今天也都是好货。你的眼光没退步吧？,今天也都是好貨。你的眼光沒退步吧？
+dialogue.merchant.run.greeting_full_a,가방이 꽉 찼잖아! 내 물건 담을 자리부터 만들어 와!,Your bag is full! Make some room for my wares first!,鞄がいっぱいじゃない！ まず私の品を入れる場所を空けてよ！,背包都满了！先给我的货腾点地方吧！,背包都滿了！先給我的貨騰點地方吧！
+dialogue.merchant.run.greeting_full_b,살 마음은 있어도 넣을 자리는 없네. 가방부터 정리해!,"Ready to buy, but nowhere to put it? Sort out your bag!",買う気はあっても入れる場所がないね。まず鞄を整理して！,想买却没地方放？先整理背包吧！,想買卻沒地方放？先整理背包吧！
+asset.0d511974dcee39841b43b11efe690364.rewardText,상점마다 무작위 상품 하나가 10~20% 추가 할인됩니다.,One random item in each shop receives an extra 10-20% discount.,各ショップでランダムな商品1点が追加で10～20%割引されます。,每家商店随机一件商品额外优惠10～20%。,每家商店隨機一件商品額外優惠10～20%。
+asset.9610f69b0692a734ab7aa1eccc8264f3.rewardText,게임 오버 시 보유 금화를 최대 500까지 다음 런으로 가져갑니다.,"After defeat or timeout, carry up to 500 gold into your next run.",ゲームオーバー時、所持金を最大500ゴールドまで次の挑戦に持ち越します。,游戏结束时，最多保留500金币用于下一轮冒险。,遊戲結束時，最多保留500金幣用於下一輪冒險。
+asset.05a8fc8c3d1883a45bc96ff32322dbdb.rewardText,상점에서 희귀·영웅 등급 유물이 조금 더 자주 등장합니다.,Rare and Epic relics appear slightly more often in shops.,ショップでレア・エピック等級の遺物が少し出やすくなります。,商店中稀有与史诗遗物的出现几率小幅提高。,商店中稀有與史詩遺物的出現機率小幅提高。
+shop.special_offer,특가 -{0}%,SALE -{0}%,特価 -{0}%,特价 -{0}%,特價 -{0}%
+dialogue.merchant.run.affection_0_c.0,"어서 와, 동업자님! 용사님은 정문에서 싸우고, 나는 뒷문에서 챙기고! 오늘도 분업이 척척이네!","Welcome, partner! You fight at the front door, I collect things at the back! Our teamwork is flawless again today!",いらっしゃい、相棒！ 勇者様は正面で戦って、私は裏口で回収！ 今日も分業はばっちりだね！,欢迎，合伙人！勇者大人在正门战斗，我在后门收货！今天的分工也配合得真好！,歡迎，合夥人！勇者大人在正門戰鬥，我在後門收貨！今天的分工也配合得真好！
+dialogue.merchant.run.affection_0_c.1,그럼 내 몫 좀 보여 줘.,Then show me my share.,じゃあ、私の分を見せて。,那就让我看看我的那份吧。,那就讓我看看我的那份吧。
+dialogue.merchant.run.affection_0_c.2,좋아! 동업자니까 먼저 살 기회를 주는 거야. 계산은 이쪽!,"Sure! As my partner, you get the first chance to buy. Pay over here!",いいよ！ 相棒だから先に買うチャンスをあげるの。お会計はこっち！,好呀！因为是合伙人，才给你优先购买的机会。来这边结账！,好呀！因為是合夥人，才給你優先購買的機會。來這邊結帳！
+dialogue.merchant.run.affection_0_c.3,동업자 몫이면 공짜 아니야?,Shouldn't a partner's share be free?,相棒の取り分ならタダじゃないの？,合伙人的份额不应该免费吗？,合夥人的份額不應該免費嗎？
+dialogue.merchant.run.affection_0_c.4,"왜?! ‘용사님한테 팔 몫’이지! 내가 물건까지 챙겨 왔는데, 동업자끼리 너무한 거 아니야?!",Why?! It's the share I'm selling to you! I even brought the goods. Isn't that a bit much to ask of your partner?!,なんで？！ 「勇者様に売る分」だよ！ 私が品物まで持ってきたのに、相棒にそれはひどくない？！,为什么？！是“卖给勇者大人的那份”呀！我连货都带来了，合伙人之间这样也太过分了吧？！,為什麼？！是「賣給勇者大人的那份」呀！我連貨都帶來了，合夥人之間這樣也太過分了吧？！
+dialogue.merchant.run.affection_1_c.0,"어서 와, 용사님! 왜 이렇게 싸냐고? 헤헤, 내 장사엔 다 계산이 있지!","Welcome, Hero! Why so cheap? Hehe, there is a calculation behind every deal!",いらっしゃい、勇者様！ どうしてこんなに安いのかって？ へへ、私の商売には全部計算があるんだよ！,欢迎，勇者大人！问我为什么这么便宜？嘿嘿，我做生意可都是算好的！,歡迎，勇者大人！問我為什麼這麼便宜？嘿嘿，我做生意可都是算好的！
+dialogue.merchant.run.affection_1_c.1,"매입비는 안 들었지, 용사님이 시선도 끌어 줬지, 싸게 팔면 또 찾아올 테지! 그러니까 이 물건은 깎아 줘도 남는 장사야. 헤헤, 빈틈없지?","No buying costs, you kept everyone distracted, and a bargain brings you back! So I still make a profit on this item at a discount. Hehe, flawless, right?",仕入れはタダ、勇者様が気も引いてくれた、安く売ればまた来てくれる！ だからこの品は値引きしても儲かるの。へへ、隙がないでしょ？,进货没花钱，勇者大人又帮我引开了注意，卖便宜点你还会再来！所以这件东西打折也能赚。嘿嘿，滴水不漏吧？,進貨沒花錢，勇者大人又幫我引開了注意，賣便宜點你還會再來！所以這件東西打折也能賺。嘿嘿，滴水不漏吧？
+dialogue.merchant.run.affection_1_c.2,그걸 나한테 설명해도 돼?,Should you be telling me that?,それ、私に説明して大丈夫？,这也能直接告诉我？,這也能直接告訴我？
+dialogue.merchant.run.affection_1_c.3,"왜 안 돼? 알아도 살 거잖아. 내가 골랐고, 가격까지 깎아 줬는데!",Why not? You will buy it anyway. I picked it out and even lowered the price!,なんで？ 知ってても買うでしょ。私が選んで、値段まで下げたんだから！,有什么不行？知道了你也会买吧。我挑的货，还给你打了折呢！,有什麼不行？知道了你也會買吧。我挑的貨，還給你打了折呢！
+dialogue.merchant.run.affection_1_c.4,그래도 안 살 건데.,I am still not buying it.,それでも買わないけど。,可我还是不买。,可我還是不買。
+dialogue.merchant.run.affection_1_c.5,"왜?! 가격도 깎았고, 설명도 공짜였는데?! ……설명을 더 해야 하나?","Why?! I lowered the price, and the explanation was free too! ...Do I need to explain more?",なんで？！ 値引きもしたし、説明だってタダだったのに？！ ……もっと説明しなきゃダメ？,为什么？！价格都降了，说明也是免费的？！……还得再多解释一点吗？,為什麼？！價格都降了，說明也是免費的？！……還得再多解釋一點嗎？
+dialogue.merchant.run.affection_0_b.5,다들 왜 그렇게 무서워하지? 취해서 자는 동안 살짝 가져오면 되는데. 안 깨우면 되는 거잖아?,"Why is everyone so scared? Just slip a few things away while that dragon sleeps off the booze. As long as I don't wake the dragon, right?",みんな、どうしてそんなに怖がるの？ 酔って寝てる間に、こっそり持ってくればいいのに。起こさなきゃいいんでしょ？,大家为什么那么害怕？趁那条龙喝醉睡着时悄悄拿走不就好了。别吵醒不就行了吗？,大家為什麼那麼害怕？趁那條龍喝醉睡著時悄悄拿走不就好了。別吵醒不就行了嗎？
+dialogue.merchant.run.affection_0_c.5,"물론 용사님 몫도 따로 빼 놨지. 헤헤, 나 의리 있는 상인이잖아?","Of course I set aside your share. Hehe, I'm a merchant who looks after her partners, right?",もちろん勇者様の分も取り分けてあるよ。へへ、私って義理堅い商人でしょ？,当然也给勇者大人留了一份。嘿嘿，我可是个讲义气的商人呀？,當然也給勇者大人留了一份。嘿嘿，我可是個講義氣的商人呀？

@@ -324,19 +324,20 @@ public class DialogueController : MonoBehaviour
 
     /// <summary>
     /// Resumes a dialogue line whose tags started a blocking presentation effect.
-    /// The line is shown after the effect completes instead of advancing to the
-    /// following Ink line.
+    /// Spoken text is shown after the effect completes. Explicitly marked
+    /// presentation-only lines advance without displaying their cue text.
     /// </summary>
     private void ResumeDialogueAfterBlockingTag(
         string currentText,
         DialogueAnimType animType,
-        DialogueCameraShakePreset cameraShakePreset)
+        DialogueCameraShakePreset cameraShakePreset,
+        bool presentationOnly)
     {
         sessionState.EndWaiting();
         if (!sessionState.IsPlaying || sessionState.IsTransitioning || currentStory == null)
             return;
 
-        if (!string.IsNullOrWhiteSpace(currentText))
+        if (!presentationOnly && !string.IsNullOrWhiteSpace(currentText))
         {
             PlayCurrentLine(currentText, animType, cameraShakePreset);
             return;
@@ -357,6 +358,7 @@ public class DialogueController : MonoBehaviour
             authoredCurrentLine = currentText;
             authoredCurrentTags = new List<string>(currentStory.currentTags);
             currentText = GameText.FromInkTags(currentStory.currentTags, currentText);
+            bool presentationOnly = currentStory.currentTags.Contains("presentation_only");
             participantRegistry.HandleSpeakerTag(currentStory.currentTags);
             DialogueAnimType animType = ResolveDialogueAnimType(currentStory.currentTags);
             DialogueCameraShakePreset cameraShakePreset = ResolveDialogueCameraShakePreset(currentStory.currentTags);
@@ -373,10 +375,15 @@ public class DialogueController : MonoBehaviour
                               tagHandler.ProcessTags(
                                   currentStory.currentTags,
                                   participantRegistry.CurrentNPCData,
-                                  () => ResumeDialogueAfterBlockingTag(currentText, animType, cameraShakePreset));
+                                  () => ResumeDialogueAfterBlockingTag(currentText, animType, cameraShakePreset, presentationOnly));
 
             if (!isBlocking)
-                PlayCurrentLine(currentText, animType, cameraShakePreset);
+            {
+                if (presentationOnly)
+                    ResumeDialogueAfterBlockingTag(currentText, animType, cameraShakePreset, true);
+                else
+                    PlayCurrentLine(currentText, animType, cameraShakePreset);
+            }
 
             return;
         }

@@ -19,11 +19,21 @@ MonoBehaviour:
     m_OverrideEntries:
     - m_Name: Normal
       m_Hash: 640249298
-      m_Sprite: {fileID: 21300000, guid: b83e15b332c652242a1bee028b89af00, type: 3}
+      m_Sprite: {fileID: 0}
       m_FromMain: 0
       m_SpriteOverride: {fileID: 21300000, guid: b83e15b332c652242a1bee028b89af00, type: 3}
+    - m_Name: Surprised
+      m_Hash: 946724262
+      m_Sprite: {fileID: 0}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: e72b36af353eb6a4b849cad94fdb5f34, type: 3}
+    - m_Name: Happy
+      m_Hash: 1059892429
+      m_Sprite: {fileID: 0}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 6365c3b9ef06f4c41834c93f1d09dd2b, type: 3}
     m_FromMain: 0
-    m_EntryOverrideCount: 1
+    m_EntryOverrideCount: 0
   m_PrimaryLibraryGUID: 
-  m_ModificationHash: 639142108409684836
+  m_ModificationHash: 639292440731279213
   m_Version: 1

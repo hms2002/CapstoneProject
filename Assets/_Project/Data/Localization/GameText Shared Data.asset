@@ -8339,8 +8339,196 @@ MonoBehaviour:
     m_Key: dialogue.demonkingbossencounter.reencounter
     m_Metadata:
       m_Items: []
+  - m_Id: 10587451195375616
+    m_Key: dialogue.merchant.run.affection_0_b.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507904
+    m_Key: dialogue.merchant.run.affection_0_b.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507905
+    m_Key: dialogue.merchant.run.affection_0_b.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507906
+    m_Key: dialogue.merchant.run.affection_0_b.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507907
+    m_Key: dialogue.merchant.run.affection_0_b.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507908
+    m_Key: dialogue.merchant.run.affection_1_a.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507909
+    m_Key: dialogue.merchant.run.affection_1_a.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507910
+    m_Key: dialogue.merchant.run.affection_1_a.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507911
+    m_Key: dialogue.merchant.run.affection_1_a.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507912
+    m_Key: dialogue.merchant.run.affection_1_a.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507913
+    m_Key: dialogue.merchant.run.affection_1_b.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507914
+    m_Key: dialogue.merchant.run.affection_1_b.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507915
+    m_Key: dialogue.merchant.run.affection_1_b.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507916
+    m_Key: dialogue.merchant.run.affection_1_b.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507917
+    m_Key: dialogue.merchant.run.affection_1_b.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507918
+    m_Key: dialogue.merchant.run.affection_2_a.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507919
+    m_Key: dialogue.merchant.run.affection_2_a.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507920
+    m_Key: dialogue.merchant.run.affection_2_a.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507921
+    m_Key: dialogue.merchant.run.affection_2_a.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507922
+    m_Key: dialogue.merchant.run.affection_2_a.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507923
+    m_Key: dialogue.merchant.run.affection_2_b.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507924
+    m_Key: dialogue.merchant.run.affection_2_b.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507925
+    m_Key: dialogue.merchant.run.affection_2_b.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507926
+    m_Key: dialogue.merchant.run.affection_2_b.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507927
+    m_Key: dialogue.merchant.run.affection_2_b.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507928
+    m_Key: dialogue.merchant.run.greeting_a
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507929
+    m_Key: dialogue.merchant.run.greeting_b
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507930
+    m_Key: dialogue.merchant.run.greeting_c
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507931
+    m_Key: dialogue.merchant.run.greeting_full_a
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507932
+    m_Key: dialogue.merchant.run.greeting_full_b
+    m_Metadata:
+      m_Items: []
   - m_Id: 53708325818380
     m_Key: dialogue.shadowbossintrodialogue_animated.3c8bf328cb
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217630437376
+    m_Key: asset.0d511974dcee39841b43b11efe690364.rewardText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217911455744
+    m_Key: asset.9610f69b0692a734ab7aa1eccc8264f3.rewardText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217919844352
+    m_Key: asset.05a8fc8c3d1883a45bc96ff32322dbdb.rewardText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217932427264
+    m_Key: shop.special_offer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809219178496
+    m_Key: dialogue.merchant.run.affection_0_c.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258880
+    m_Key: dialogue.merchant.run.affection_0_c.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258881
+    m_Key: dialogue.merchant.run.affection_0_c.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258882
+    m_Key: dialogue.merchant.run.affection_0_c.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258883
+    m_Key: dialogue.merchant.run.affection_0_c.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961339964178432
+    m_Key: dialogue.merchant.run.affection_1_c.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561984
+    m_Key: dialogue.merchant.run.affection_1_c.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561985
+    m_Key: dialogue.merchant.run.affection_1_c.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561986
+    m_Key: dialogue.merchant.run.affection_1_c.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561987
+    m_Key: dialogue.merchant.run.affection_1_c.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561988
+    m_Key: dialogue.merchant.run.affection_1_c.5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10999655765884928
+    m_Key: dialogue.merchant.run.affection_0_b.5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11005436400660480
+    m_Key: dialogue.merchant.run.affection_0_c.5
     m_Metadata:
       m_Items: []
   m_Metadata:

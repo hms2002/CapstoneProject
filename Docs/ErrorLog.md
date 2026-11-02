@@ -2570,3 +2570,49 @@ Suggested Later: expanded validation found `CombatFeelLootQuestPlayModeTests.Imp
 - 원인: 수정한 스크립트의 키만 가져오고 확인했으며 현재 NPC가 참조하는 Primary/Encounter Ink 전체와 실제 테이블의 집합 대조를 하지 않았다. Ink 컴파일 성공이나 태그 존재는 번역 등록의 증거가 아니다.
 - 보완: 33개 키를 원문 및 외국어 4종과 함께 CSV에 등록한 뒤 공식 importer로 반영했다. 현재 보스 4명의 연결 Ink 8개, 대사·선택지 키 198개와 테이블 값 990개를 대조했다. 자세한 결과는 [작업 기록](SessionLogs/2026-10-30.md)의 보스 대사 번역 누락 보완 항목에 있다.
 - 재확인: 대사 번역 완료를 보고하기 전에 활성 NPC의 Primary/Encounter Ink 모두에서 키를 수집하고, 원문·컴파일 loc 태그·CSV·Shared Data·5개 언어 테이블을 대조한다. 번역 등록 완료와 원어민/실제 화면 검수 완료는 구분한다.
+
+## 2026-11-01 - Unity Startup Clears Temp And Races Generated-Project Builds
+
+- Symptom: task scratch scripts under `Temp/` disappeared on the next Unity batch launch. Running MSBuild concurrently with Unity startup also produced CS0006 for `Temp/bin/Debug/Ink-Libraries.dll` after dependencies had just built.
+- Cause: Unity owns and clears the project `Temp` directory; generated project builds also emit intermediate assemblies there. Those operations do not safely parallelize.
+- Prevention: keep task scripts/evidence outside Unity's `Temp`, wait for the Editor process to exit, then run generated-project MSBuild. Use `Process.WaitForExit()` when waiting only for the Editor; PowerShell `Start-Process -Wait` can wait for persistent child services too.
+- Resolution: final merchant native regression passed 226 checks; final MSBuild was rerun after Unity exited. See [session](SessionLogs/2026-11-01.md).
+
+## 2026-11-02 - Preserving Blocking Dialogue Exposed Camera Sentinel Text
+
+- Symptom: the scribe's three-clear audience showed `[camera cue]` twice. The October fix for skipped speech after affection effects preserved every nonempty blocking line, including older camera sentinel lines that had relied on automatic advancing.
+- Cause: `feature` identifies an operation, not whether its line contains player-facing text. Treating all blocking text identically either loses real speech or exposes internal cue placeholders.
+- Correction: explicitly mark the six camera-only Ink lines with `presentation_only`. DialogueController still runs the feature and waits for its callback, then advances only marked presentation lines. Unmarked affection/failure/feature dialogue keeps its existing display-after-effect behavior. The September sentinel note above describes the earlier advancing behavior; the explicit marker is now required.
+- Verification boundary: Ink source/JSON parity and 9/4, 2/2, 1/0 spoken/cue counts were checked. Native callback regression coverage is in `DialogueBlockingPresentationPlayModeTests` within the existing SceneSmoke test source; see [session](SessionLogs/2026-11-02.md) for execution status and Editor import limitations.
+
+## 2026-11-02 - StringTable Save Canonicalizes Unrelated Scalar Formatting
+
+- Symptom: saving five new merchant entries through Unity also uppercased Unicode escape digits in the existing Fire Dragon's Fang name and removed its optional English YAML quotes. The decoded values did not change, but a strict preservation audit correctly rejected the unrelated raw-record drift.
+- Cause: adding a narrow set of StringTable entries still serializes the complete table using Unity's canonical scalar formatting.
+- Prevention: capture current user preimages, compare every old entry/ID, and restore only semantically identical quoting/escape-case drift before scoped copyback. Preserve unrelated user edits rather than resetting tables to Git HEAD. Reject any actual value/metadata difference for investigation.
+- Verification: cumulative NPC native337/337 and preservation216/216 passed; all previous locale records and CSV values were preserved. See [session](SessionLogs/2026-11-02.md).
+
+## 2026-11-02 - Windows Open-Editor Asset Copy Requires Atomic Replacement
+
+- Symptom: after isolated Unity validation, an in-place copy of the reviewed merchant NPC asset failed with Windows OSError 22 while the main Editor remained open. The destination had not been truncated; its pre-task hash still matched.
+- Boundary: the user's Editor may retain imported file mappings. Releasing cached handles in another Unity process does not release those handles. Do not close or restart the user's Editor to complete a scoped copy.
+- Resolution: check destination hashes against captured user preimages, write reviewed bytes to a hidden sibling task-owned staging file, then use atomic replacement. Recheck every copied file and protected file; never reset to Git HEAD or overwrite a concurrent edit. This is task copyback tooling, not new runtime save behavior.
+- Verification: all 15 reviewed assets/data files matched the native validation outputs after atomic replacement, and 232 preservation checks passed. See the [session](SessionLogs/2026-11-02.md).
+
+
+## 2026-11-02 - Ink JSON Write Failure Leaves Asset Import Paused
+
+- Symptom: the interactive Editor remained on `Importing assets` for more than 15 minutes. The log completed its initial asset refresh in 94.130 seconds and project loading in 318.590 seconds, then reported Windows 1224 while writing `MerchantDialogue_Animated.json` in `InkCompiler.OnCompleteCompilationStack`.
+- Cause: the vendor compiler called `StartAssetEditing`, then `File.WriteAllText`, then `StopAssetEditing` without a finally block. A mapped-file write exception skipped the matching stop and the later progress/auto-refresh/build/Play Mode cleanup. The holder of the mapped file was not identified.
+- Correction: guarantee `StopAssetEditing` in finally; route JSON write IOExceptions through the existing per-file compiler error reporting so normal cleanup still runs. Clear the previous unhandled error after a later successful compilation. Preserve successful output and keep failures visible rather than treating a stale JSON as a successful write.
+- Verification: the isolated Unity 6000.4.2f1 regression reproduced the actual Windows 1224 using a live mapped JSON section and passed 39 checks, including preserved JSON, error reporting, resumed native asset import, cleanup, UTF-8 retry and the existing syntax-error path. Generated-project InkEditor MSBuild also passed. See [session evidence](SessionLogs/2026-11-02.md) and [native regression](../Tools/Validation/InkCompilerImportRecoveryRegression.cs).
+- Boundary: close the stalled interactive Editor before applying this recovery patch; editing C# alone cannot run the new cleanup in the already paused session. This patch does not forcibly release another file mapping or add write retries. Confirm the actual game Editor restart separately, and preserve the local vendor fix when upgrading Ink.
+
+
+## 2026-11-02 - Prewarm Trace Mapped JSON and Retry Flood Recovery
+
+- Symptom: the current Editor log contained 6,830 PrewarmTraceRuntime.Flush stack entries for Windows 1224 while saving the tester trace JSON. This is the recurring production recorder failure previously isolated out of UI tests, separate from the Ink compiler fix.
+- Cause: File.WriteAllText directly truncated a JSON imported under Assets; a live mapped section rejected that operation. lastFlushRealtime was updated only after successful writes, so a failed attempt could repeat on every Editor update after the interval elapsed.
+- Correction: stage the complete JSON under Library/PrewarmTrace and replace/move it into the unchanged tester path. Record attempt time before I/O; retry failed saves at five-second intervals and warn once per failure episode. Preserve dirty measurements on I/O/access failure, clear failure state on success, and contain the same errors during the final Play Mode exit flush. Preserve the JSON schema, twenty-session retention, recommendation paths and trace-isolation callback names.
+- Verification: isolated Unity 6000.4.2f1 reproduced the old direct-write Windows 1224 and passed 40 production-recorder checks, including replacement while a mapped view remained alive, a replacement-denying lock, denied staging writes, previous JSON/meta preservation, 1,000 throttled updates, recovery/latest measurements, final flush, reader/import and retention. Generated-project Editor MSBuild passed. See [session evidence](SessionLogs/2026-11-02.md) and [regression entry point](../Tools/Validation/PrewarmTraceRecoveryRegression.cs).
+- Boundary: no global file-handle release, trace-path migration or Player trace service was added. Failed staging files are reused rather than accumulated, and successful moves remove them. Persistent replacement denial can still leave the latest measurements unsaved when Play Mode/Editor ends; existing history must not be deleted to suppress that warning. Confirm normal interactive Editor use separately.

@@ -1,0 +1,10 @@
+{
+  "changedAssets": [
+    "Assets/_Project/Art/Sprites/UI/Dialogue/SpeechBubble.png",
+    "Assets/_Project/Prefabs/UI/SpeechBubble/SpeechBubblePrefab.prefab"
+  ],
+  "preservedFiles": 18,
+  "attachmentByteEquality": true,
+  "prefabExactSingleValueChange": true,
+  "noSourceCodeChanges": true
+}

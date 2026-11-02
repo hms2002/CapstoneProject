@@ -96,6 +96,7 @@ public static class PrewarmTraceRuntime
     private const string TraceFilePrefix = "PrewarmTrace_";
     private const string TraceFileExtension = ".json";
     private const float FlushIntervalSeconds = 1f;
+    private const float RetryIntervalSeconds = 5f;
     private const int MaxSessionCount = 20;
 
     private static readonly PrewarmTraceBackend Backend = new();
@@ -106,6 +107,7 @@ public static class PrewarmTraceRuntime
     private static float sessionStartRealtime;
     private static float lastFlushRealtime;
     private static bool isDirty;
+    private static bool flushFailed;
 
     static PrewarmTraceRuntime()
     {
@@ -214,7 +216,8 @@ public static class PrewarmTraceRuntime
             return;
 
         float now = Time.realtimeSinceStartup;
-        if (now - lastFlushRealtime < FlushIntervalSeconds)
+        float interval = flushFailed ? RetryIntervalSeconds : FlushIntervalSeconds;
+        if (now - lastFlushRealtime < interval)
             return;
 
         Flush();
@@ -253,6 +256,7 @@ public static class PrewarmTraceRuntime
         sessionStartRealtime = 0f;
         lastFlushRealtime = 0f;
         isDirty = false;
+        flushFailed = false;
     }
 
     private static void Flush()
@@ -260,19 +264,38 @@ public static class PrewarmTraceRuntime
         if (!isDirty || history == null || currentSession == null)
             return;
 
-        currentSession.endedUtc = DateTime.UtcNow.ToString("O");
-        currentSession.entries = BuildSortedEntries();
-
-        string path = GetTraceFilePath();
-        string directory = Path.GetDirectoryName(path);
-        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-            Directory.CreateDirectory(directory);
-
-        string json = JsonUtility.ToJson(history, true);
-        File.WriteAllText(path, json);
-
-        isDirty = false;
         lastFlushRealtime = Time.realtimeSinceStartup;
+        string path = GetTraceFilePath();
+        try
+        {
+            currentSession.endedUtc = DateTime.UtcNow.ToString("O");
+            currentSession.entries = BuildSortedEntries();
+            WriteTraceFile(path, JsonUtility.ToJson(history, true));
+
+            isDirty = false;
+            flushFailed = false;
+        }
+        catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+        {
+            bool reportFailure = !flushFailed;
+            flushFailed = true;
+            if (reportFailure)
+                Debug.LogWarning($"[PrewarmTraceRuntime] Failed to save trace '{path}'. Pending measurements remain in memory; retrying every {RetryIntervalSeconds:0} seconds. {ex.Message}");
+        }
+    }
+
+    private static void WriteTraceFile(string path, string json)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(path));
+        // Keep incomplete writes outside Assets, where Unity will not import them.
+        string temporaryDirectory = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Library", "PrewarmTrace");
+        Directory.CreateDirectory(temporaryDirectory);
+        string temporaryPath = Path.Combine(temporaryDirectory, Path.GetFileName(path) + ".tmp");
+        File.WriteAllText(temporaryPath, json);
+        if (File.Exists(path))
+            File.Replace(temporaryPath, path, null);
+        else
+            File.Move(temporaryPath, path);
     }
 
     private static List<PrewarmTraceEntryData> BuildSortedEntries()

@@ -1,0 +1,42 @@
+[
+  {
+    "Path": "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\Ink\\Editor\\Core\\Compiler\\InkCompiler.cs.meta",
+    "Hash": "0E2AB33DC10DCED78AD6239A93851CE975BB40F32C6FFABDC1A2D0C145834108"
+  },
+  {
+    "Path": "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\Ink\\Editor\\InkEditor.asmdef",
+    "Hash": "3CCFF24B998921F4EBEE8C77F03314C95DE545C55AEEF8E8E1C0ED43C4421973"
+  },
+  {
+    "Path": "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\Ink\\Editor\\InkEditor.asmdef.meta",
+    "Hash": "6B2338F131C7CC833C377B4FE807F69E35ADCC9B696667BE32D8A7C222D61F95"
+  },
+  {
+    "Path": "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Data\\Dialogue\\Ink\\AnimatedVariants\\MerchantDialogue_Animated.ink",
+    "Hash": "D4534D98923270427F2A6F5BB1A258E450F8B6F82A346270210124961C500CCA"
+  },
+  {
+    "Path": "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Data\\Dialogue\\Ink\\AnimatedVariants\\MerchantDialogue_Animated.json",
+    "Hash": "326168A8C5F0826FE8981A248415D41D36ABFA12587959E124E087EFE734134C"
+  },
+  {
+    "Path": "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeHub.unity",
+    "Hash": "525C80E819AC68415B8179D7CBBC87ACD7C5F2D2996F798B2A8E6585CDCDF042"
+  },
+  {
+    "Path": "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\SpeechBubble\\SpeechBubblePrefab.prefab",
+    "Hash": "B5C543ED08741915A1EA302AA3830EC67F8C1F92137F3E3D6D368B3750E9E274"
+  },
+  {
+    "Path": "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Data\\Dialogue\\NPC\\MSShopNpc.asset",
+    "Hash": "6FFA4876604C3B4744DCF62B6EE46630C1A1EAD071A770FA8F479E8561DF3557"
+  },
+  {
+    "Path": "C:\\Users\\user\\Desktop\\CapstoneProject\\ProjectSettings\\ProjectVersion.txt",
+    "Hash": "470B50FAF8F9101BB9E4E613F89C07E126499DD4BB5AD24236828E63B88FC36E"
+  },
+  {
+    "Path": "C:\\Users\\user\\Desktop\\CapstoneProject\\Packages\\manifest.json",
+    "Hash": "5E9B8930E0F4018C4AFDE7CC41F0A19248504EB30E83042EC0BB258996E62FFC"
+  }
+]

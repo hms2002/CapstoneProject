@@ -1,0 +1,44 @@
+{
+  "dialogue.merchant.run.affection_0_b.0": [
+    "어서 와, 용사님! 오늘은 그 술주정뱅이 용 옆에서 골라 왔어. 반짝이는 건 많더라!",
+    "Welcome, Hero! I picked these out beside that drunken dragon today. Plenty of shiny things there!",
+    "いらっしゃい、勇者様！ 今日はあの酔いどれ竜のそばで選んできたんだ。キラキラした物がいっぱいあったよ！",
+    "欢迎，勇者大人！今天这些是从那条醉鬼龙旁边挑来的。亮晶晶的东西可真多呀！",
+    "歡迎，勇者大人！今天這些是從那條醉鬼龍旁邊挑來的。亮晶晶的東西可真多呀！"
+  ],
+  "dialogue.merchant.run.affection_0_b.5": [
+    "다들 왜 그렇게 무서워하지? 취해서 자는 동안 살짝 가져오면 되는데. 안 깨우면 되는 거잖아?",
+    "Why is everyone so scared? Just slip a few things away while that dragon sleeps off the booze. As long as I don't wake the dragon, right?",
+    "みんな、どうしてそんなに怖がるの？ 酔って寝てる間に、こっそり持ってくればいいのに。起こさなきゃいいんでしょ？",
+    "大家为什么那么害怕？趁那条龙喝醉睡着时悄悄拿走不就好了。别吵醒不就行了吗？",
+    "大家為什麼那麼害怕？趁那條龍喝醉睡著時悄悄拿走不就好了。別吵醒不就行了嗎？"
+  ],
+  "dialogue.merchant.run.affection_0_b.1": [
+    "너, 들키면 어쩌려고?",
+    "What if you get caught?",
+    "見つかったらどうするの？",
+    "你被发现了怎么办？",
+    "你被發現了怎麼辦？"
+  ],
+  "dialogue.merchant.run.affection_0_b.2": [
+    "헤헤, 내 걱정이야? 괜찮아, 도망갈 길도 다 봐 뒀어! 오래 장사하려면 그 정도는 해야지.",
+    "Hehe, worried about me? Relax, I've already checked all the escape routes! You have to do that much to stay in business.",
+    "へへ、私の心配？ 大丈夫、逃げ道も全部見てあるよ！ 長く商売を続けるなら、それくらいしないとね。",
+    "嘿嘿，担心我呀？放心，逃跑的路我都看好了！想长久做生意，这点准备还是要有的。",
+    "嘿嘿，擔心我呀？放心，逃跑的路我都看好了！想長久做生意，這點準備還是要有的。"
+  ],
+  "dialogue.merchant.run.affection_0_b.3": [
+    "정말 눈치 못 챈 걸까?",
+    "Are you sure that dragon hasn't noticed?",
+    "本当に気づいてないのかな？",
+    "真的没察觉到吗？",
+    "真的沒察覺到嗎？"
+  ],
+  "dialogue.merchant.run.affection_0_b.4": [
+    "……알면서 그냥 뒀다고? 왜? ……아무튼, 용사님이 사면 이제 용사님 물건이야!",
+    "...Knew all along and let me take them? Why? ...Anyway, once you buy it, it's yours!",
+    "……気づいてて放っておいたって？ なんで？ ……とにかく、勇者様が買えば、もう勇者様の物だからね！",
+    "……明知道还放着不管？为什么？……总之，勇者大人买下之后就是你的东西啦！",
+    "……明知道還放著不管？為什麼？……總之，勇者大人買下之後就是你的東西啦！"
+  ]
+}

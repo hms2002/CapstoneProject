@@ -397,6 +397,8 @@ public class GameData
 {
     public bool hasInitializedProfile;
     public int magicStone;
+    // Unspent gold carried from a completed defeat/time-out; consumed once by the next run.
+    public int retainedRunGold;
     public float totalPlaySeconds;
     public int clearCount;
     public int knownTotalUpgradeCount;

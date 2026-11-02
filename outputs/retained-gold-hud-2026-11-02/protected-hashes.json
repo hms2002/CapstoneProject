@@ -1,0 +1,8 @@
+{
+  "Assets/_Project/Runtime/Features/Loot/CurrencyManager.cs": "c7a80d1e638c9c9eb5cf6e60dc7f332a880c2c6ee284a81c84ff945c25320e08",
+  "Assets/_Project/Runtime/Infrastructure/Save/GamePlayDataManager.cs": "ec445535fd2609a1518dbbf8942414fc7e8390feab79896cea83669c1c7bb330",
+  "Assets/_Project/Runtime/Infrastructure/Save/RunSessionLifecycleService.cs": "02e1f252e4f0f3deb3929ffba38cc2d83dd51f1ab4a4b90b7ed2af025f7df8bb",
+  "Assets/_Project/Runtime/Infrastructure/Save/RunSessionProgressCommitPolicy.cs": "2a39ef4b7d4149a35d50698c78296f662f8e57a76d0405091b071fa8b7a4803a",
+  "Assets/_Project/Runtime/Core/Save/GameData.cs": "0c50cfc3e63d3f522c10fe49b53bc62cd45ce6eba7e8219b3df128838da0e583",
+  "Assets/_Project/Runtime/UI/HUD/CurrencyUI.cs.meta": "3eeced78f07fe247ba3fe51a2d5777d3cac197c428b5f63ee56620b38c7242f7"
+}

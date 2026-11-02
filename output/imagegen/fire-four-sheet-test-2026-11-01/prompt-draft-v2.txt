@@ -1,0 +1,30 @@
+Use case: precise-object-edit / sprite-sheet simplification.
+Create ONE revised FOUR-ICON PIXEL ART SPRITE SHEET, a single composite asset, with four different relics in the SAME 2x2 arrangement as reference 1. This is iteration 2 of a requested four-icon sheet experiment. The final export will be four native 32x32 frames in a vertical 32x128 strip.
+
+INPUT ROLES:
+Image 1 = EDIT TARGET: previous warm four-icon draft. Change only the internal detail density and bell/incense metal colors. Keep subject identities, poses, broad silhouettes and relative proportions.
+Image 2 = supporting original designs, to retain recognizability, NOT a shading/detail target.
+Images 3 and 4 = successful ELECTRIC RELIC STYLE references. Match their very simple flat color grouping and chunky 32x32 readability, NOT their symbols or subject matter.
+Image 5 = EXCLUSIVE USER COLOR PALETTE.
+
+EXACT ARRANGEMENT: top left diagonal BURNING FEATHER, top right MELTED BELL, bottom left SMOKY INCENSE BURNER, bottom right CRIMSON CROWN.
+Each isolated sprite centered in its own logical 32x32 square on real transparency. Uniform logical pixel sizes across the sheet. At least 2 empty native pixels around each sprite, with generous gap between objects and clear empty horizontal and vertical gutters. Do not cross cells. Keep the crown wide and low rather than stretching it taller.
+Do not render labels, text, UI, checkerboards, palette swatches, ground shadows, border or background.
+
+PRIMARY EDIT — MUCH CLEANER FLAT CLUSTERS:
+The user found the previous flame details too busy compared with the electric relics. Noticeably remove the many little color steps, speckles, tiny highlights, inner contours and interleaving colored strips. Use a handful of LARGE CONTIGUOUS color shapes per icon. Each color should mainly occupy ONE connected broad area, not many flecks. Mostly two broad material planes, and just one connected simple hot accent. The flame can have TWO or THREE large stepped tongues only. No small serrations, filigree, scattering, glitter, glow, thin strokes, hair-like barbs, tiny isolated 1-pixel highlights or patterned shading. Do not fill every available pixel with detail. Readability at native 32x32 and matching the clean electric icons are the priorities.
+Use a deliberate thick TWO-native-pixel #363232 outer outline. Internal dark lines only where essential to separate distinct parts. Broad untextured matte color planes.
+
+COLOR BUDGET: at most SIX opaque colors PER ICON including outline; transparency is not a color. Fewer colors are good when they simplify the icon. Exact colors from the user's palette only:
+All outlines = #363232.
+FEATHER and CROWN may use #363232, #A75064 muted red shadow, #E55C5C red, #E09656 orange, #EECF5A yellow. No need for a pale sixth color. Large red-orange shapes with one simple yellow accent.
+BELL and INCENSE BURNER must use ONLY these SIX: #363232 outline, #8599B0 muted blue-gray steel main plane, #C2C2C2 pale gray steel second plane, #E55C5C red heat border, #E09656 orange heat, #EECF5A yellow fire. Their NON-FIRE BODY AND STRUCTURAL PARTS ARE NOW OBVIOUSLY SOLID COOL GRAY METAL. Make the metal body dominant and the hot accent localized, rather than recoloring the whole body orange/red. No saturated electric blue, mint, cyan or white.
+Across the whole four-sprite sheet there may be seven total palette colors because the red shadow and two metal colors serve different icons. No other colors. No gradients, AA, partial transparency or smooth rendered shine.
+
+SUBJECT INVARIANTS AND SIMPLIFICATION:
+1. FEATHER top left: one broad diagonal feather upper-right, short quill lower-left, retain the previous orientation. Two or three large vane lobes on either side, an uncomplicated red outer area, one broad orange vane, ONE short yellow central shape. Clearly a feather, not a loose flame, sword or leaf. Remove the jagged internal flame-strip pattern.
+2. BELL top right: keep closed chunky hanging loop, rounded domed bell body and flared lower rim with small central clapper. LOOP, DOME AND MOST OF RIM NOW COOL GRAY METAL with one broad main and one broad lighter plane. A SINGLE thick simple orange/yellow molten seam at one side / near lower edge, optionally narrowly edged red. No whole flame silhouette over the dome, no web of cracks, no glossy flecks, no tiny engraving. Clearly a heavy metal bell with localized heat.
+3. INCENSE BURNER bottom left: keep squat round bowl/base with small feet, a short upright curved neck and hook-like top from the existing design, and one small upper-opening flame. All vessel parts, including bowl and neck, are the SAME COOL GRAY METAL color pair. ONE broad warm orange/yellow flame near the opening and a small joined warm opening/rim if needed, no scattered accent points. Keep the bowl chunky and the flame very simple. Do not invent chains, handles, extra smoke curls or decorative body engravings. Preserve original curved-neck form.
+4. CROWN bottom right: keep wide low three-point crown with taller center and raised side points, chunky solid band. One solid red/orange main mass, a simple joined muted-red lower shadow, ONE broad yellow central inset or center tongue. Remove nested little fire tongues, pale pinpoints and jewelry detail. No extra spikes or huge flame plume.
+
+OUTPUT STYLE: actual low-resolution pixel art designed on a logical 64x64 canvas containing four logical 32x32 sprites. If larger output is needed, make a perfect integer nearest-neighbor enlargement with chunky consistent logical pixels, no texture, no smoothing. Real transparent RGBA background. Preserve the silhouettes and orientations while simplifying and recoloring as described.

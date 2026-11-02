@@ -1,0 +1,23 @@
+{
+  "changedAssets": [
+    "Assets/_Project/Data/Dialogue/SpeechData/WitchBossSpeechData.asset",
+    "Assets/_Project/Prefabs/UI/SpeechBubble/SpeechBubblePrefab.prefab"
+  ],
+  "newDocumentation": "Docs/SessionLogs/2026-11-03.md",
+  "protectedFilesUnchanged": 26,
+  "exactApprovedThreeAlphaValueEdits": true,
+  "noRuntimeCSharpOrSchemaChanges": true,
+  "nativeExitCode": 0,
+  "nativeChecksPassed": 21,
+  "nativeFrames": 10,
+  "defaultNoGeneratedBorderPixelEquivalence": true,
+  "allFourBossColoredBordersRetained": true,
+  "opaqueBodyIndependentOfBackground": true,
+  "comparisonBoardsVisuallyInspected": 2,
+  "temporaryProjectRemoved": true,
+  "limitations": [
+    "Whole game compile not executed",
+    "Full runtime/localization/pooling/camera/URP/atlas flow, manual Play Mode and Player build not executed"
+  ],
+  "docImpact": "SessionLog; ErrorLog/DecisionLog unchanged; no Presentation HTML stale candidate"
+}

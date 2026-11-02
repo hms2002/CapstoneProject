@@ -1,0 +1,16 @@
+{
+  "namespace_preserved": true,
+  "no_new_unity_asset_files": true,
+  "protected_hashes": {
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\Ink\\Editor\\Core\\Compiler\\InkCompiler.cs.meta": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\Ink\\Editor\\InkEditor.asmdef": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\Ink\\Editor\\InkEditor.asmdef.meta": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Data\\Dialogue\\Ink\\AnimatedVariants\\MerchantDialogue_Animated.ink": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Data\\Dialogue\\Ink\\AnimatedVariants\\MerchantDialogue_Animated.json": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeHub.unity": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\SpeechBubble\\SpeechBubblePrefab.prefab": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Data\\Dialogue\\NPC\\MSShopNpc.asset": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\ProjectSettings\\ProjectVersion.txt": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Packages\\manifest.json": true
+  }
+}

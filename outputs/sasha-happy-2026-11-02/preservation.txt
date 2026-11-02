@@ -1,0 +1,49 @@
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib.meta
+PASS Destination preimage/protected file unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png
+PASS Destination preimage/protected file unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png.meta
+PASS Destination preimage/protected file unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png
+PASS Destination preimage/protected file unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png.meta
+PASS Destination preimage/protected file unchanged: DataSheets/Localization/InkInventory.json
+PASS Destination preimage/protected file unchanged: DataSheets/Localization/GameText.csv
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Prefabs/UI/Portraitlmage.prefab
+PASS Destination preimage/protected file unchanged: Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameFonts Shared Data.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameFonts.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameFonts_en.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameFonts_ja.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameFonts_ko.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameFonts_zh-Hans.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameFonts_zh-Hant.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameText.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameText_en.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/Locale_en.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/Locale_ja.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/Locale_ko.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/Locale_zh-Hans.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/Locale_zh-Hant.asset
+PASS Destination preimage/protected file unchanged: Assets/_Project/Data/Localization/LocalizationSettings.asset
+PASS Exactly two Happy tags
+PASS Only approved two Ink face tags changed; text/choices/loc/affection untouched
+PASS Compiled JSON differs only in the same two face tags
+PASS PNG matches supplied bytes exactly
+PASS Happy library entry binds Unity-generated sprite GUID
+PASS Old library mapping preserved: Normal
+PASS Old library mapping preserved: Surprised
+PASS Focused native import/library/Ink branch checks passed
+PASS New asset path is free: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png
+PASS Copied verified file: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png
+PASS New asset path is free: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png.meta
+PASS Copied verified file: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png.meta
+PASS Copied verified file: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib
+PASS Copied verified file: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS Copied verified file: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+PASS: 48 preservation/copyback checks.

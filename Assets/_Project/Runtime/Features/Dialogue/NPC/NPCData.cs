@@ -33,6 +33,13 @@ public class NPCData : ScriptableObject
     [Header("Affection Rewards")]
     public List<AffectionReward> affectionRewards;
 
+    [Header("Run NPC Dialogue (ordinary NPCs only)")]
+    public List<NpcAffectionDialogueEntry> affectionDialogues = new List<NpcAffectionDialogueEntry>();
+    public string[] greetingPaths = System.Array.Empty<string>();
+    public string[] fullBackpackGreetingPaths = System.Array.Empty<string>();
+
+    public bool UsesRunAffectionDialogue => !isBoss && affectionDialogues != null && affectionDialogues.Count > 0;
+
     [Header("Portrait Data")]
     public SpriteLibraryAsset spriteLibraryAsset;
 

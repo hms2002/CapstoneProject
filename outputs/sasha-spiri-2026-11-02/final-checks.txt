@@ -1,0 +1,999 @@
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS Final asset/source/protected hash: DataSheets/Localization/GameText.csv
+PASS Final asset/source/protected hash: DataSheets/Localization/InkInventory.json
+PASS Final asset/source/protected hash: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Localization/GameText_en.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS Final asset/source/protected hash: Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+PASS Final asset/source/protected hash: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Final asset/source/protected hash: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Final asset/source/protected hash: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Final asset/source/protected hash: Assets/_Project/Art/Sprites/NPCs/merchant/Merchant 1.png
+PASS Final asset/source/protected hash: Assets/_Project/Art/Sprites/NPCs/merchant/Merchant 1.png.meta
+PASS Final asset/source/protected hash: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png
+PASS Final asset/source/protected hash: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png.meta
+PASS Final asset/source/protected hash: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png
+PASS Final asset/source/protected hash: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png.meta
+PASS Final asset/source/protected hash: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png
+PASS Final asset/source/protected hash: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/BossAffectionRunModifierEffect.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/BossAffectionRunModifierEffect.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/InfoOnlyAffectionEffect.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/InfoOnlyAffectionEffect.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/BuffyEventPortrait.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/BuffyEventPortrait.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/New Sprite Library Asset 3.spriteLib
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/New Sprite Library Asset 3.spriteLib.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/ParcelEventPortrait.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/ParcelEventPortrait.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/ScribePortrait.asset
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/ScribePortrait.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DarkLord.spriteLib
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DarkLord.spriteLib.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DragonBoss.spriteLib
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DragonBoss.spriteLib.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Upgrade.spriteLib
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Upgrade.spriteLib.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_SlimeQueenBoss.spriteLib
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_SlimeQueenBoss.spriteLib.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_WitchBoss.spriteLib
+PASS Final asset/source/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_WitchBoss.spriteLib.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Localization/GameText Shared Data.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Localization/GameText_en.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Localization/GameText_ja.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Localization/GameText_ko.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Localization/GameText_zh-Hans.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Data/Localization/GameText_zh-Hant.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs.meta
+PASS Final asset/source/protected hash: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs.meta
+PASS Final asset/source/protected hash: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/DemonKing.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/DemonKing/DemonKing.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/DemonKing/DemonKing.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/DragonBoss.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/DragonBoss/DragonBoss.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/DragonBoss/DragonBoss.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/DragonBoss/DragonSpinProjectile2D .prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/DragonBoss/DragonSpinProjectile2D .prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/DragonBoss/PF_DragonFireBreathVisual.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/DragonBoss/PF_DragonFireBreathVisual.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/DragonBoss/PF_DragonThrownKeg.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/DragonBoss/PF_DragonThrownKeg.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/ShadowBoss.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/ShadowBoss/Witch.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/ShadowBoss/Witch.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/ShadowBoss/WitchNormalAttack1Tile.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/ShadowBoss/WitchNormalAttack1Tile.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/SlimeQueen.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/SlimeQueen/PF_SlimeQueenToxicDropProjectile.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/SlimeQueen/PF_SlimeQueenToxicDropProjectile.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/SlimeQueen/PF_SlimeQueenWaterCannonBeam.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/SlimeQueen/PF_SlimeQueenWaterCannonBeam.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueen.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueen.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Long.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Long.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Short.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Short.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Camera.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Camera/Main Camera.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Camera/Main Camera.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Camera/PlayerCam.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Camera/PlayerCam.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/ChestPossible.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/ChestPossible.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/ChestPossible_KillLock.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/ChestPossible_KillLock.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/KillLockTreasuteChest 1.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/KillLockTreasuteChest 1.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/KillLockTreasuteChest.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/KillLockTreasuteChest.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/KillLockTresureChest.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/KillLockTresureChest.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/LowRewardKillLockTreasureChest.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/LowRewardKillLockTreasureChest.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/LowRewardTreasureChest.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/LowRewardTreasureChest.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/TreasureChest.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Chests/TreasureChest.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Pickups.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Pickups/PF_WorldItemPickup2D.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Pickups/PF_WorldItemPickup2D.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Relics.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Relics/Props.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Relics/Props/FeatherRelic_Prop.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Relics/Props/FeatherRelic_Prop.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Visuals.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Visuals/PF_LightningSpear_ItemDisplayVisual.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Visuals/PF_LightningSpear_ItemDisplayVisual.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack1.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack1.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack2.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack2.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack3.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack3.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_Skill1_DashStab.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_Skill1_DashStab.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_Skill2_SpinPulse.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_Skill2_SpinPulse.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Attack.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Attack/Hitbox_WindWeapon_NormalAtk_HardSlash.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Attack/Hitbox_WindWeapon_NormalAtk_HardSlash.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Attack/Hitbox_WindWeapon_NormalAtk_Slash.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Attack/Hitbox_WindWeapon_NormalAtk_Slash.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Attack/MeleeAttack.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Attack/MeleeAttack.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Drops.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Drops/DroppedWeapon.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Drops/DroppedWeapon.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/FragmentShardActorPrefab .prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/FragmentShardActorPrefab .prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefabVriantOrigin.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefabVriantOrigin.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ApprenticeHeroSword.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ApprenticeHeroSword.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ChainSpear.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ChainSpear.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_CrimsonBoundary.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_CrimsonBoundary.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_EclipseSword.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_EclipseSword.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ExecutionGun.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ExecutionGun.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ExecutionerGreatsword.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ExecutionerGreatsword.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_Flowering.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_Flowering.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_MarkSword.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_MarkSword.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_MoonBlade.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_MoonBlade.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_OddIron.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_OddIron.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_PieceSword.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_PieceSword.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_SunBlade.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_SunBlade.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_WindWeapon.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_WindWeapon.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Bloom_Slash1.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Bloom_Slash1.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Bloom_Slash2.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Bloom_Slash2.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Bloom_Slash3.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Bloom_Slash3.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Slash1.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Slash1.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Slash2.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Slash2.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack1.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack1.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack2.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack2.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack3.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack3.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash1.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash1.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash2.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash2.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash3.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash3.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/FX_LightningSpear_BasicAttack1.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/FX_LightningSpear_BasicAttack1.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/FX_LightningSpear_BasicAttack2.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/FX_LightningSpear_BasicAttack2.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/FX_LightningSpear_BasicAttack3.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/FX_LightningSpear_BasicAttack3.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack1.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack1.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack2.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack2.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack3.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack3.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill1_MarkRush.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill1_MarkRush.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill1_NoMark.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill1_NoMark.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill2_MarkDropImpact.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill2_MarkDropImpact.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearDashStabTrail.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearDashStabTrail.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMark.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMark.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMarkHoverRangeIndicator.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMarkHoverRangeIndicator.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoverShotTrail.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoverShotTrail.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredShotSpawnEffect.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredShotSpawnEffect.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredSpear.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredSpear.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredSpearProjectile.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredSpearProjectile.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRushRangeIndicator.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRushRangeIndicator.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearSelectedMarkIndicator.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearSelectedMarkIndicator.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/WeaponPrefab_LightningSpear.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/WeaponPrefab_LightningSpear.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/OddIron.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/OddIron/PF_OddIron_Bullet.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/OddIron/PF_OddIron_Bullet.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/OddIron/PF_OddIron_ThrownWeapon.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/OddIron/PF_OddIron_ThrownWeapon.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Sword.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Sword/Projectiles.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Sword/Projectiles/PF_SwordSkill1_Projectile.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Items/Weapons/Sword/Projectiles/PF_SwordSkill1_Projectile.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot/ExperiencePickup_Square.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot/ExperiencePickup_Square.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot/GoldPickup.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot/GoldPickup.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot/MagicStonePrefab.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot/MagicStonePrefab.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot/RelicGrave.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot/RelicGrave.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot/WeaponGrave.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Loot/WeaponGrave.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Gimick.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Gimmicks.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Gimmicks/SlimeCorridor.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Gimmicks/SlimeCorridor/DrainPipe.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Gimmicks/SlimeCorridor/DrainPipe.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Gimmicks/Witch.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Gimmicks/Witch/GlobalVisionMaskRoot.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Gimmicks/Witch/GlobalVisionMaskRoot.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Gimmicks/Witch/PlayerVisionMask.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Gimmicks/Witch/PlayerVisionMask.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Interactables.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Interactables/EncyclopediaStand.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Interactables/EncyclopediaStand.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Navigation.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Navigation/HubWeaponGuidanceArrow.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Navigation/HubWeaponGuidanceArrow.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Navigation/KillLockMonsterNavigationArrow.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Navigation/KillLockMonsterNavigationArrow.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Navigation/PlayerPortalGuidance.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Navigation/PlayerPortalGuidance.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Navigation/PlayerRoomChestGuidance.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Navigation/PlayerRoomChestGuidance.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Portal.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Portal/ScenePortal.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Portal/ScenePortal.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events/AlarmBellEventModule.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events/AlarmBellEventModule.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events/BuffyHealthTime.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events/BuffyHealthTime/BuffyHealthTimeEventModule.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events/BuffyHealthTime/BuffyHealthTimeEventModule.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events/ParcelDelivery.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events/ParcelDelivery/ParcelDeliveryPointModule.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events/ParcelDelivery/ParcelDeliveryPointModule.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events/ParcelDelivery/ParcelPickupEventModule.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events/ParcelDelivery/ParcelPickupEventModule.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events/ShadowAlarmBellEventModule.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Events/ShadowAlarmBellEventModule.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Npc.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Npc/SlimeConstructionNpcModule.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Npc/SlimeConstructionNpcModule.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Npc/SlimeTeleportDestination.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Npc/SlimeTeleportDestination.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Npc/SlimeTeleportNpc.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/Npc/SlimeTeleportNpc.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ProceduralCorridorTravelPipe.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ProceduralCorridorTravelPipe.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ProceduralSceneTravelPortal.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ProceduralSceneTravelPortal.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonBossShortcut.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonBossShortcut.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonBossShortcutTravelRig.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonBossShortcutTravelRig.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonReturnPortal.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonReturnPortal.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonReturnTravelRig.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonReturnTravelRig.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnLanding.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnLanding.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Down.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Down.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Left.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Left.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Right.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Right.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Up.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Up.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/SacrificeRewardAlcove.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Procedural/SacrificeRewardAlcove.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Puddles.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Puddles/AlcoholPuddle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Puddles/AlcoholPuddle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Puddles/FirePuddle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Puddles/FirePuddle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Puddles/PoisonCloud.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/Puddles/PoisonCloud.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/ShortCut.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/ShortCut/Door.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/ShortCut/Door.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/ShortCut/Lever.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/ShortCut/Lever.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/ShortCut/Statue.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Map/ShortCut/Statue.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/BeerMonster.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/BeerMonster.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/ArcaneMeleeGolem.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/ArcaneMeleeGolem.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/ArcaneTankGolem.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/ArcaneTankGolem.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinGunner.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinGunner.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinTank.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinTank.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinWarrior.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinWarrior.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/LizardMage.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/LizardMage.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/LizardWarrior.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/CommonCorridor/LizardWarrior.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/Frog.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/Frog.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/Frog_BOSS.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/Frog_BOSS.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/Projectiles.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/Projectiles/PF_BeerMonsterProjectile.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/Projectiles/PF_BeerMonsterProjectile.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/CorridorCandlestickMonster.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/CorridorCandlestickMonster.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/Dead'sSkeleton.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/Dead'sSkeleton.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowMonster.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowMonster.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.controller
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.controller.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/ShadowServant.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/ShadowServant.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/Candlestick.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/Candlestick.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/LightBead.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/LightBead.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/WitchShieldBreakerProjectile.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/WitchShieldBreakerProjectile.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/SlimeCorridor.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Bishop.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Bishop.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Knight.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Knight.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Pawn.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Pawn.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Rook.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Rook.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Wizard.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Wizard.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/TrainingDummy.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/TrainingDummy.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/TreasureMonster.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Monsters/TreasureMonster.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/NPCs.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Player.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Player/PF Player.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Player/PF Player.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/README.md
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/README.md.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/Bosses.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/Bosses/DemonKing_TestRig.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/Bosses/DemonKing_TestRig.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_AlarmBell.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_AlarmBell.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_BuffyHealthTime.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_BuffyHealthTime.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_ParcelDeliveryPoint.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_ParcelDeliveryPoint.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_ParcelPickup.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_ParcelPickup.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_TravelToSlime.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_TravelToSlime.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_AlarmBell.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_AlarmBell.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_BuffyHealthTime.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_BuffyHealthTime.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_ParcelDeliveryPoint.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_ParcelDeliveryPoint.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_ParcelPickup.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_ParcelPickup.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_TravelToSlime.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_TravelToSlime.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_AlarmBell.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_AlarmBell.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ArrivalFromDragon.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ArrivalFromDragon.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ArrivalFromShadow.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ArrivalFromShadow.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_BuffyHealthTime.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_BuffyHealthTime.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ParcelDeliveryPoint.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ParcelDeliveryPoint.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ParcelPickup.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ParcelPickup.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/BossHUD_Slot.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/BossHUD_Slot.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/ChestUI.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/ChestUI.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Choice0.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Choice0.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Combat.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Combat/DamagePopupUIService.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Combat/DamagePopupUIService.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Combat/DamagePopupUI_World.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Combat/DamagePopupUI_World.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/DesignChain.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/DesignChain.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Dialogue.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Dialogue/ShopSlot.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Dialogue/ShopSlot.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Dialogue/ShopSlot_RunGold.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Dialogue/ShopSlot_RunGold.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/EffectSlotUI.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/EffectSlotUI.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/ElementGaugeUI.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/ElementGaugeUI/Canvas_MonstarElementGaugeView.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/ElementGaugeUI/Canvas_MonstarElementGaugeView.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/ElementGaugeUI/Panel_ElementGaugeSlotView.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/ElementGaugeUI/Panel_ElementGaugeSlotView.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/EmoteUIPrefab.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/EmoteUIPrefab.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/GlobalUIRoot_Deafiso.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/GlobalUIRoot_Deafiso.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/GlobalUIRoot_DialogueUpdate.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/GlobalUIRoot_DialogueUpdate.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/GlobalUIRoot_Salryojo.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/GlobalUIRoot_Salryojo.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/GlobalUIRoot_Sub.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/GlobalUIRoot_Sub.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/GlobalUIRoot_Water.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/GlobalUIRoot_Water.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/HUD.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/HUD/HeartTokenUI.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/HUD/HeartTokenUI.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/HangPanelChain.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/HangPanelChain.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/HangPanelShortChain.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/HangPanelShortChain.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Inventory.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Inventory/Common.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Inventory/Common/ItemDetailSectionView.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Inventory/Common/ItemDetailSectionView.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Consumable.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Consumable.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Weapon.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Weapon.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Inventory/Relics.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/KeyMapRow.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/KeyMapRow.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Map.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Map/DungeonMinimapView.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Map/DungeonMinimapView.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/NpcNameplate.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/NpcNameplate.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaEntrySlot.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaEntrySlot.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/Panel_AbilityBlock_Encyclopedia.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/Panel_AbilityBlock_Encyclopedia.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerInventoryUI.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerInventoryUI/InventoryElementPannel.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerInventoryUI/InventoryElementPannel.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatRowView.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatRowView.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatSectionView.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatSectionView.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatUI.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatUI.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/Panel_AbilityBlock.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/Panel_AbilityBlock.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/weaponstatLineview.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/weaponstatLineview.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/WarningPopupUI.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/PopupUI/WarningPopupUI.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Portraitlmage.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Portraitlmage.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/SpeechBubble.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/SpeechBubble/SpeechBubblePrefab.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/SpeechBubble/SpeechBubblePrefab.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/TextCanvas.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/TextCanvas.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/UnlockSlotUI.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/UnlockSlotUI.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Upgrade.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Upgrade/UpgradeSlot.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Upgrade/UpgradeSlot.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Upgrade/UpgradeTreePanel.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Upgrade/UpgradeTreePanel.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Upgrade/line.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/Upgrade/line.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/WeaponHUDUI.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/WeaponHUDUI/Skill1UI.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/WeaponHUDUI/Skill1UI.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/status_HUD_EntryView.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/UI/status_HUD_EntryView.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/AnimEffect.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1NormalAttack2Boom.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1NormalAttack2Boom.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1PhaseAttackBoom.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1PhaseAttackBoom.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1PhaseAttackFireBall.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1PhaseAttackFireBall.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1Shield.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1Shield.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/AnimEffect/SlashHit.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/AnimEffect/SlashHit.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Bosses.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Bosses/SlimeQueen.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Bosses/SlimeQueen/Effect_SlimeQueenSplitGooBurst.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Bosses/SlimeQueen/Effect_SlimeQueenSplitGooBurst.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_AcaneTankGolemSlam.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_AcaneTankGolemSlam.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_AttackSmoke_GoblinTank.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_AttackSmoke_GoblinTank.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_BishopAttackExplosion.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_BishopAttackExplosion.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_GoblinGunnerShot.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_GoblinGunnerShot.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_MonsterSpawnSmokeEffect.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_MonsterSpawnSmokeEffect.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_SlimeQueenP2Long_WaterPillar.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_SlimeQueenP2Long_WaterPillar.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_Stun_Sprak.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effect_Stun_Sprak.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effeect_FallingRock.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Common/Effeect_FallingRock.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Charge_Fire.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Charge_Fire.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Fire_Explosion.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Fire_Explosion.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Fireball.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Fireball.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Fireball_Hit.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Fireball_Hit.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Flame_Explosion.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Flame_Explosion.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Flame_Sustain.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Flame_Sustain.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Lavaball.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Lavaball.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Lavaball_Hit.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Lavaball_Hit.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Lavaball_RelicPiercing.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Lavaball_RelicPiercing.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Cues.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_BossGroggyTimer.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_BossGroggyTimer.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_Falling.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_Falling.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_GroggyBreak.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_GroggyBreak.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Cues/PF_GroggyOverheadEffect.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Cues/PF_GroggyOverheadEffect.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Effect_DrainPipeParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Effect_DrainPipeParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Effect_SlimeCorridorTeleport.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Effect_SlimeCorridorTeleport.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Element.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Element/ElectricChainRibbonVfx.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Element/ElectricChainRibbonVfx.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/HitCameraShake.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/HitCameraShake.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_Dragon_CrossExplosion.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_Dragon_CrossExplosion.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_Dragon_InhaleWind.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_Dragon_InhaleWind.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_Dragon_LandEffect.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_Dragon_LandEffect.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/BasicWeaponChargeCompleteParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/BasicWeaponChargeCompleteParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/BasicWeaponChargeParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/BasicWeaponChargeParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ChestDust.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ChestDust.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ChestReavealDust.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ChestReavealDust.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/DoorDust.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/DoorDust.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ExpGainParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ExpGainParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ExplosionDebrisBounce.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_DiagonalScatter.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_DiagonalScatter.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_LowSkitter.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_LowSkitter.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ExplosionParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ExplosionParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/FallingDust.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/FallingDust.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/FlowerParticleMat.mat
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/FlowerParticleMat.mat.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/FloweringBloomImpactParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/FloweringBloomImpactParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/FloweringParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/FloweringParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/FloweringReavealParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/FloweringReavealParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/GateRevealBurstDust.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/GateRevealBurstDust.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/GateRevealLoopDust.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/GateRevealLoopDust.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/GoldGainParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/GoldGainParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/GraveDust.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/GraveDust.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/HealParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/HealParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/HeartConsumeParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/HeartConsumeParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/HitSpark.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/HitSpark.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ItemSlotParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ItemSlotParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/KillLockOffDust.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/KillLockOffDust.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/KillLockUnlockedIdle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/KillLockUnlockedIdle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/LevelUpEffect.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/LevelUpEffect.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/LeverSpark.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/LeverSpark.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/MagicStoneGainParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/MagicStoneGainParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/StatueDust.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/StatueDust.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/UIParticle.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/UIParticle/ChestImpactParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/UIParticle/ChestImpactParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/WalkDust.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/WalkDust.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/WitchNormal1AttackTileParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/WitchNormal1AttackTileParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/WitchNormal2AttackTileParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/WitchNormal2AttackTileParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/WitchPhasePatternAttackPaticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/WitchPhasePatternAttackPaticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/WitchShieldBreakParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/WitchShieldBreakParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ZZZParticle.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Particle/ZZZParticle.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Puddles.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Puddles/PF_PuddleAbsorb_Alcohol.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Puddles/PF_PuddleAbsorb_Alcohol.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Puddles/PF_PuddleAbsorb_Fire.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Puddles/PF_PuddleAbsorb_Fire.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Relics.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Relics/Fire.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Relics/Fire/PF_SunFragment.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Relics/Fire/PF_SunFragment.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Relics/Lightning.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Relics/Lightning/LightningEffect.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Relics/Lightning/LightningEffect.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Skill.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Skill/WindWeapon.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Skill/WindWeapon/RushEffect.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Skill/WindWeapon/RushEffect.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Telegraphs.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Telegraphs/AttackTelegraphView.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/Telegraphs/AttackTelegraphView.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/WeaponEffect.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/WeaponEffect/OddIron.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/WeaponEffect/OddIron/OddIronSegmentEffect.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/WeaponEffect/OddIron/OddIronSegmentEffect.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/WeaponEffect/OddIron/OddIron_ShotEffect.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Prefabs/VFX/WeaponEffect/OddIron/OddIron_ShotEffect.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/DarkLord_Tutorial.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/DarkLord_Tutorial.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/DemonkingCorridor.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/DemonkingCorridor.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/DragonCorridor 1.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/DragonCorridor 1.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/DragonCorridor.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/DragonCorridor.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/Grand Hall.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/Grand Hall.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/HeoMinSeokScene.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/HeoMinSeokScene.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/LEeJunmo 1.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/LEeJunmo 1.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/LEeJunmo.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/LEeJunmo.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/PixelLightTest.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/PixelLightTest.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProceduralDragonCorridor.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProceduralDragonCorridor.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProceduralDungeonV0Test.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProceduralDungeonV0Test.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProceduralShadowCorridor.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProceduralShadowCorridor.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProceduralSlimeCorridor.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProceduralSlimeCorridor.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 1.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 1.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 2.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 2.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 3.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 3.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 4.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 4.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeBossLagacy.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeBossLagacy.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor 1.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor 1.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor 2.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor 2.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor 3.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor 3.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeHub.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeHub.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeHubasf.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ProtoTypeHubasf.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/SampleScene.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/SampleScene/GameObject Profile.asset
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/SampleScene/GameObject Profile.asset.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/SangHyup_Hallway.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/SangHyup_Hallway.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ShadowCorridor.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ShadowCorridor.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ShopSlotPositionGroup.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/ShopSlotPositionGroup.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/SlimeCorridor 1.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/SlimeCorridor 1.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/SlimeCorridor.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/SlimeCorridor.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/Tests.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/Tests/TestScene.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/Tests/TestScene.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/TitleScene.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/TitleScene.unity.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/TrainingDummyGroup.prefab
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/TrainingDummyGroup.prefab.meta
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/TutorialCorridor.unity
+PASS Final asset/source/protected hash: Assets/_Project/Scenes/TutorialCorridor.unity.meta
+PASS Final asset/source/protected hash: ProjectSettings/AudioManager.asset
+PASS Final asset/source/protected hash: ProjectSettings/BehaviorSettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/ClusterInputManager.asset
+PASS Final asset/source/protected hash: ProjectSettings/DynamicsManager.asset
+PASS Final asset/source/protected hash: ProjectSettings/EditorBuildSettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/EditorSettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/GraphicsSettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/InkSettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/InputManager.asset
+PASS Final asset/source/protected hash: ProjectSettings/MemorySettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/MultiplayerManager.asset
+PASS Final asset/source/protected hash: ProjectSettings/NavMeshAreas.asset
+PASS Final asset/source/protected hash: ProjectSettings/NetworkManager.asset
+PASS Final asset/source/protected hash: ProjectSettings/PackageManagerSettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/Physics2DSettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/PresetManager.asset
+PASS Final asset/source/protected hash: ProjectSettings/ProjectSettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/ProjectVersion.txt
+PASS Final asset/source/protected hash: ProjectSettings/QualitySettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/SceneTemplateSettings.json
+PASS Final asset/source/protected hash: ProjectSettings/ScriptableBuildPipeline.json
+PASS Final asset/source/protected hash: ProjectSettings/ShaderGraphSettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/TagManager.asset
+PASS Final asset/source/protected hash: ProjectSettings/TimeManager.asset
+PASS Final asset/source/protected hash: ProjectSettings/URPProjectSettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/UnityConnectSettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/VFXManager.asset
+PASS Final asset/source/protected hash: ProjectSettings/VersionControlSettings.asset
+PASS Final asset/source/protected hash: ProjectSettings/XRSettings.asset
+PASS Generated project covers source: Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+PASS Source whitespace: Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+PASS Generated project covers source: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Generated project covers source: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Generated project covers source: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/preservation.txt
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/msbuild.log
+PASS Document target: ../SessionLogs/2026-11-02.md
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/final-checks.txt
+PASS Document target: ActiveTasks/full-game-localization.md
+PASS Document target: ActiveTasks/sasha-spiri-dialogue.md
+PASS Document target: ActiveTasks/sasha-discount-portraits.md
+PASS Document target: ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Document target: ActiveTasks/merchant-affection-rewards.md
+PASS Document target: ActiveTasks/npc-run-affection-dialogue.md
+PASS Document target: ActiveTasks/spiri-alcohol-exposure.md
+PASS Document target: ActiveTasks/encyclopedia-tab-visibility-reveal.md
+PASS Document target: ActiveTasks/electric-scaling-and-relics.md
+PASS Document target: ActiveTasks/encyclopedia-book-inner-padding.md
+PASS Document target: ActiveTasks/encyclopedia-book-flat-top.md
+PASS Document target: ActiveTasks/encyclopedia-creature-tabs.md
+PASS Document target: StructureMemory/EncyclopediaCreatureTabs.md
+PASS Document target: ActiveTasks/lightning-spear-tool-composition.md
+PASS Document target: SessionLogs/2026-10-10-lightning-tools/README.md
+PASS Document target: ActiveTasks/lightning-spear-placement-structure.md
+PASS Document target: SessionLogs/2026-10-10-lightning-structure/README.md
+PASS Document target: ActiveTasks/chest-offer-width-consistency.md
+PASS Document target: ActiveTasks/ui-batching-structural-optimization.md
+PASS Document target: SessionLogs/2026-10-08-ui-batching-structural/README.md
+PASS Document target: ActiveTasks/ui-batching-optimization.md
+PASS Document target: RefactorBacklog/UIBatchingStructuralCandidates.md
+PASS Document target: SessionLogs/2026-10-07-ui-batching/README.md
+PASS Document target: ActiveTasks/frame-performance-measurement.md
+PASS Document target: SessionLogs/2026-10-07-frame-performance-measurement/README.md
+PASS Document target: ActiveTasks/test-scene-boss-combat-and-breath-lock.md
+PASS Document target: ActiveTasks/frame-performance-optimization.md
+PASS Document target: ActiveTasks/test-scene-and-lightning-placement.md
+PASS Document target: ../../output/relic-review-2026-11-02/crimson-exclusive-approved-application/README.md
+PASS Document target: ../StructureMemory/WorldItemShadows.md
+PASS Document target: ../../output/world-item-shadows-2026-11-02/README.md
+PASS Document target: ../ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/validation.txt
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/unity-validation.log
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/static-checks.txt
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/msbuild-final.log
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/final-checks.txt
+PASS Document target: ../ActiveTasks/sasha-discount-portraits.md
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/unity-validation.log
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/portraits-native.png
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/static-checks.txt
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/final-checks.txt
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/unity-native.log
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/preservation.txt
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/msbuild.log
+PASS Document target: ../ActiveTasks/sasha-spiri-dialogue.md
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/unity-native.log
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/preservation.txt
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/final-checks.txt
+PASS Document target: StructureMemory/DungeonTemplateSelection.md
+PASS Document target: SessionLogs/2026-09-12.md
+PASS Document target: StructureMemory/RunGoldAndShop.md
+PASS Document target: StructureMemory/MonsterWorldHudAndStatus.md
+PASS Document target: SessionLogs/2026-10-08-ui-batching-structural/README.md
+PASS Document target: StructureMemory/PlacementTools.md
+PASS Document target: SessionLogs/2026-10-10-lightning-tools/README.md
+PASS Document target: StructureMemory/ElementDirectHitDamage.md
+PASS Document target: StructureMemory/EncyclopediaCreatureTabs.md
+PASS Document target: ActiveTasks/encyclopedia-creature-tabs.md
+PASS Document target: StructureMemory/ScriptSystems/WeaponAndGASStructure.md
+PASS Document target: StructureMemory/ElementDirectHitDamage.md
+PASS Document target: SessionLogs/2026-10-11-element-popup-ratio/README.md
+PASS Document target: StructureMemory/ScriptSystems/WeaponAndGASStructure.md
+PASS Document target: StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document target: ActiveTasks/electric-scaling-and-relics.md
+PASS Document target: ActiveTasks/electric-scaling-and-relics.md
+PASS Document target: StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document target: StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document target: StructureMemory/ScriptSystems/BossAndMobEncounterStructure.md
+PASS Document target: ActiveTasks/electric-scaling-and-relics.md
+PASS Document target: ActiveTasks/electric-scaling-and-relics.md
+PASS Document target: StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document target: ActiveTasks/electric-scaling-and-relics.md
+PASS Document target: SessionLogs/2026-10-12.md
+PASS Document target: ActiveTasks/electric-scaling-and-relics.md
+PASS Document target: StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document target: SessionLogs/2026-10-12.md
+PASS Document target: ActiveTasks/electric-scaling-and-relics.md
+PASS Document target: StructureMemory/ScriptSystems/WeaponAndGASStructure.md
+PASS Document target: SessionLogs/2026-10-12.md
+PASS Document target: ActiveTasks/spiri-alcohol-exposure.md
+PASS Document target: StructureMemory/AlcoholExposure.md
+PASS Document target: StructureMemory/AlcoholExposure.md
+PASS Document target: ActiveTasks/spiri-alcohol-exposure.md
+PASS Document target: StructureMemory/ScriptSystems/LevelProgressionStructure.md
+PASS Document target: SessionLogs/2026-10-30.md
+PASS Document target: SessionLogs/2026-10-30.md
+PASS Document target: SessionLogs/2026-10-30.md
+PASS Document target: ActiveTasks/npc-run-affection-dialogue.md
+PASS Document target: StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md
+PASS Document target: ActiveTasks/merchant-affection-rewards.md
+PASS Document target: StructureMemory/RunGoldAndShop.md
+PASS Document target: ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Document target: ActiveTasks/sasha-spiri-dialogue.md
+PASS Document target: StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md
+PASS Document target: ../../ActiveTasks/sasha-spiri-dialogue.md
+PASS Document target: ../../ActiveTasks/sasha-discount-portraits.md
+PASS Document target: ../../ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Document target: ../../SessionLogs/2026-11-02.md
+PASS Document target: ../../ActiveTasks/merchant-affection-rewards.md
+PASS Document target: ../RunGoldAndShop.md
+PASS Document target: ./RunSpecialNpcStructure.md
+PASS Focused native pass marker
+PASS Owned native scratch project removed
+PASS: 998 final checks.

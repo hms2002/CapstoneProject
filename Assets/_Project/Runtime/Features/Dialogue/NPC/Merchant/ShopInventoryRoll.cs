@@ -99,7 +99,9 @@ public sealed class ShopInventoryRoll
         IReadOnlyCollection<string> excludedWeaponIds = null,
         IReadOnlyCollection<MerchantStockEntryState> excludedEntries = null,
         IReadOnlyList<ShopSlotItemFilter> slotFilters = null,
-        bool consumablesOnlyInDedicatedSlots = false)
+        bool consumablesOnlyInDedicatedSlots = false,
+        float rareRelicWeightBonus = 0f,
+        float epicRelicWeightBonus = 0f)
     {
         var entries = new List<MerchantStockEntryState>(Mathf.Max(0, slotCount));
         if (slotCount <= 0 || ItemManager.Instance == null)
@@ -166,7 +168,9 @@ public sealed class ShopInventoryRoll
                 pickedKind,
                 weaponPool,
                 relicPool,
-                consumablePool);
+                consumablePool,
+                rareRelicWeightBonus,
+                epicRelicWeightBonus);
 
             if (pickedDefinition == null)
             {
@@ -384,15 +388,40 @@ public sealed class ShopInventoryRoll
         ShopPoolKind poolKind,
         List<WeaponDefinition> weaponPool,
         List<RelicDefinition> relicPool,
-        List<ConsumableDefinition> consumablePool)
+        List<ConsumableDefinition> consumablePool,
+        float rareRelicWeightBonus,
+        float epicRelicWeightBonus)
     {
         return poolKind switch
         {
             ShopPoolKind.Weapon => DrawFromPool(weaponPool),
-            ShopPoolKind.Relic => DrawFromPool(relicPool),
+            ShopPoolKind.Relic => DrawRelicFromPool(relicPool, rareRelicWeightBonus, epicRelicWeightBonus),
             ShopPoolKind.Consumable => DrawFromPool(consumablePool),
             _ => null
         };
+    }
+
+    private static RelicDefinition DrawRelicFromPool(List<RelicDefinition> pool, float rareBonus, float epicBonus)
+    {
+        if (rareBonus <= 0f && epicBonus <= 0f) return DrawFromPool(pool);
+        if (pool == null || pool.Count == 0) return null;
+        float total = 0f;
+        foreach (var relic in pool) total += RelicWeight(relic.rarity, rareBonus, epicBonus);
+        float roll = UnityEngine.Random.value * total;
+        for (int i = 0; i < pool.Count; i++)
+        {
+            roll -= RelicWeight(pool[i].rarity, rareBonus, epicBonus);
+            if (roll > 0f && i < pool.Count - 1) continue;
+            var selected = pool[i];
+            pool.RemoveAt(i);
+            return selected;
+        }
+        return null;
+    }
+
+    private static float RelicWeight(ItemRarity rarity, float rareBonus, float epicBonus)
+    {
+        return 1f + Mathf.Max(0f, rarity == ItemRarity.Rare ? rareBonus : rarity == ItemRarity.Epic ? epicBonus : 0f);
     }
 
     private static T DrawFromPool<T>(List<T> pool) where T : ScriptableObject

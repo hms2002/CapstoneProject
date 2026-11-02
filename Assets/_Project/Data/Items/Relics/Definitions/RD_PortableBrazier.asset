@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_PortableBrazier
   displayName: "\uD734\uB300\uC6A9 \uD654\uB85C"
-  icon: {fileID: 3865356431231990622, guid: 87eece6e269e518438f6bcfb7a730ad0, type: 3}
+  icon: {fileID: 21300000, guid: e89d5d3835f94cc1a87d7c5f90187782, type: 3}
   rarity: 0
   description: "화상 상태인 적에게 치명타 적중 시 화상을 1/2/3 부여합니다. (재사용 대기시간: 0.5초)"
   maxLevel: 3

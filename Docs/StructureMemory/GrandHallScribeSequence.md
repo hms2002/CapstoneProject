@@ -1,6 +1,6 @@
 # Grand Hall scribe sequence
 
-Current structure map, not an Architecture/Contracts document. Updated 2026-09-15.
+Current structure map, not an Architecture/Contracts document. Updated 2026-11-02.
 
 ## Purpose and ownership
 
@@ -9,7 +9,7 @@ Current structure map, not an Architecture/Contracts document. Updated 2026-09-1
 ## Files and entry points
 
 - `Assets/_Project/Runtime/Presentation/Dialogue/NPC/GrandHallScribeSequence.cs`: automatic entry flow and repeat interaction. Serialized references select NPC/story, speech, input blocker, camera and four portal targets. `moveSeconds`, `closeSize`, `portalPadding`, `greetingSeconds` tune presentation.
-- `Assets/_Project/Data/Dialogue/Ink/GrandHallScribe.ink` and `.json`: intro, audience and repeat knots. Source comes from the Notion scribe document, with the user's amended three-area line and return dialogue. Each `[camera cue] # feature: scribe_cue` line is consumed by the existing blocking-feature path and never displayed. Do not put a spoken line on the same blocking tag: DialogueController resumes by advancing the story.
+- `Assets/_Project/Data/Dialogue/Ink/GrandHallScribe.ink` and `.json`: intro, audience and repeat knots. Source comes from the Notion scribe document, with the user's amended three-area line and return dialogue. Each `[camera cue] # feature: scribe_cue # presentation_only` line runs the feature and advances after its callback without displaying sentinel text. `DialogueController` reads the explicit `presentation_only` tag; other blocking lines retain their actual dialogue after effects complete, including affection, choice failure and features with spoken text. Keep camera-only cues separate from spoken dialogue and retain the marker on all six cues (intro four, audience two). The marker does not replace the feature or move camera/progress ownership out of this sequence.
 - `ScribeNpc.asset`, `SpriteLibrary/ScribePortrait.asset`, and `Art/Sprites/NPC/Scribe/`: NPC ID 1010, Face/Normal portrait and original ZIP images. World sprite uses 32 PPU with bottom-center pivot; portrait uses 100 PPU. Both use point filtering and no texture compression.
 
 ## State flow

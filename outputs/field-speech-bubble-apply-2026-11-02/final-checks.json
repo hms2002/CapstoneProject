@@ -1,0 +1,21 @@
+{
+  "changedFiles": [
+    "Assets/_Project/Art/Sprites/UI/Dialogue/SpeechBubble.png",
+    "Assets/_Project/Prefabs/UI/SpeechBubble/SpeechBubblePrefab.prefab",
+    "Docs/SessionLogs/2026-11-02.md"
+  ],
+  "protectedFilesPreserved": 17,
+  "nativeChecksPassed": 23,
+  "nativeExitCode": 0,
+  "approvedRenderMatches": 10,
+  "differentPixels": 0,
+  "sessionLogAppendOnly": true,
+  "newSectionLocalLinksValid": true,
+  "isolatedPreviewProjectRemoved": true,
+  "docImpact": "SessionLog; ErrorLog/DecisionLog unchanged; no Presentation HTML stale candidate",
+  "limitations": [
+    "Full game compile not executed",
+    "Manual Play Mode and Player build not executed",
+    "Actual SpeechBubble/TMP/layout/camera/URP/atlas full-flow parity not executed"
+  ]
+}

@@ -86,7 +86,12 @@ public sealed class GamePlayDataManager : MonoBehaviour, IRunSessionStoreBackend
 
     public void StartRun()
     {
+        if (Data != null && Data.isRunActive) return;
+        int retainedGold = RunSessionProgressCommitPolicy.ConsumeRetainedGold(GameDataStore.Data);
+        // Persist consuming the credit before activating the run; quitting cannot grant it twice.
+        if (retainedGold > 0) GameDataStore.FlushSave(this);
         RunSessionLifecycleService.StartRun(Data, ClearPendingRunProgress);
+        Data.runGold = retainedGold;
         OnRunStarted?.Invoke();
     }
 
@@ -295,7 +300,8 @@ public sealed class GamePlayDataManager : MonoBehaviour, IRunSessionStoreBackend
         }
 
         GameData gameData = GameDataManager.Instance.EnsureData();
-        RunSessionProgressCommitPolicy.Commit(new RunSessionProgressCommitRequest(Data, gameData));
+        int retentionLimit = RunModifierService.CurrentRewardSnapshot.ShopModifiers.goldRetentionLimit;
+        RunSessionProgressCommitPolicy.Commit(new RunSessionProgressCommitRequest(Data, gameData, retentionLimit));
     }
 
     private void ClearPendingRunProgress()

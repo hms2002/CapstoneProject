@@ -1,0 +1,1 @@
+PREWARM_TRACE_RECOVERY_PASS: 40 checks; real Windows 1224, mapped replacement, locked/access-denied failure, 1000 throttled updates, bounded warnings, pending/latest measurements, retry, Play exit, previous JSON/meta, history limit, recommendation reader and import.

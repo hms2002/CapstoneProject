@@ -1,0 +1,22 @@
+{
+  "Assets/_Project/Art/Sprites/UI/Dialogue/SpeechBubble.png": "c6abc274dab3e1b357559b2dbb14d144dddb373439f32b71c2ae72c853f46095",
+  "Assets/_Project/Art/Sprites/UI/Dialogue/SpeechBubble.png.meta": "24fc8a630cfdd1ae2e1085f540fed78f5f91cb5e3143bf206b976d32b3d0d168",
+  "Assets/_Project/Art/Shaders/UIAlphaOutline.shader": "3f19e72ea16cb51fe828f5c4e77fbdd3d0481e77ce28f5a9e0ff1786ca099051",
+  "Assets/_Project/Art/Shaders/UIAlphaOutline.shader.meta": "20d7d31f0259ab1a08d39bd58661a5aa2e56d3642a5d1ea8a51f3df6816496a1",
+  "Assets/_Project/Art/Materials/SpeechBubbleOutLine.mat": "acd3ffa6d59243de2e3dd61b71a38b0470d2b9341cb39006ea515b6033dbc4aa",
+  "Assets/_Project/Art/Materials/SpeechBubbleOutLine.mat.meta": "6e0c87da994d31f1cd24ea26607d6492f732e570e3d8f39898d2a270244bd31c",
+  "Assets/_Project/Prefabs/UI/SpeechBubble/SpeechBubblePrefab.prefab": "eb4cabbd3d02c759b81d8d84b5eb396acf156e88c17132adfe4524d52fda1e37",
+  "Assets/_Project/Prefabs/UI/SpeechBubble/SpeechBubblePrefab.prefab.meta": "f612b03fda56470949a584e87ab06523e2ac21e1af9336582a8552ecb4ac5c6c",
+  "Assets/_Project/Runtime/UI/Dialogue/SpeechBubble/SpeechBubble.cs": "b1f6165b1b87850635139d0eeb6d056acde8d301a7ca9dbaa0909323c9349826",
+  "Assets/_Project/Runtime/Core/Presentation/Speech/SpeechBubbleThemeSettings.cs": "523a93d2ffceb25be775f5c584af4cc3c44b1b3a60b4f8c7cb8666c7be723d00",
+  "Packages/manifest.json": "5e9b8930e0f4018c4afde7cc41f0a19248504eb30e83042ec0bb258996e62ffc",
+  "ProjectSettings/ProjectVersion.txt": "470b50faf8f9101bb9e4e613f89c07e126499dd4bb5ad24236828e63b88fc36e",
+  "ProjectSettings/GraphicsSettings.asset": "842a1ac75bbf9fc824e40022658d487b2318b08ec896cd5679f9acfc6317cacb",
+  "ProjectSettings/ProjectSettings.asset": "33d4eb966e845bcb14c154b3de34e8f80977aaa112623ee4ffb8bbc827d7ef1d",
+  "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset": "db860ccec47c1a28e4a577fc7babb70bee2b2726e9a1851978a20c2b2099bd93",
+  "Assets/_Project/Data/Dialogue/SpeechData/DragonBossSpeechData.asset": "0b1fc84fa51d72a3f6e4793cdf1e45fb4318c6b965d065803c61f83b1aaa45ca",
+  "Assets/_Project/Data/Dialogue/SpeechData/NewPlayerSpeechData.asset": "83338fdf074476947d5d555dbe1390117d5c766684a6e046261b555877624fc7",
+  "Assets/_Project/Data/Dialogue/SpeechData/SlimeBossSpeechData.asset": "8ece623e8d069579c231e86ca30a33d5c848691b57862f5364292bd73e3653ca",
+  "Assets/_Project/Data/Dialogue/SpeechData/WitchBossSpeechData.asset": "62517a50d7f3411c95d4c35c2d9827e18af7ea86c8c78788b78b36e54fb7b6d1",
+  "Docs/SessionLogs/2026-11-02.md": "1d0577cd09fa21edc89aba75b684a4bae3c45aba6246825f0e389fc788b8a090"
+}

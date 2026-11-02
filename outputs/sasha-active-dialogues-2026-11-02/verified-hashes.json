@@ -1,0 +1,7 @@
+{
+  "Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset": "6ffa4876604c3b4744dcf62b6ee46630c1a1ead071a770fa8f479e8561df3557",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs": "7c29664586347e5976b87e4dfc782cdeed2de0de6400c2ab8e5e3c32d3a356b1",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs": "00fc897d908adb81612c8f1f225355f810ff5930768e5ffa909ce0057c33db35",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs": "c3d8119c2e17804e14cfe2c0998667124c2d8598ef0ddbbf153cfac73b514299",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs": "03aba927a5aaae85dfa7de25b84d20065e1b4983371f605965b7e29b1e7b0cbc"
+}

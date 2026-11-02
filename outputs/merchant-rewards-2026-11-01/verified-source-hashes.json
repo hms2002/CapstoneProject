@@ -1,0 +1,20 @@
+{
+  "Assets/_Project/Runtime/Core/Save/GameData.cs": "0c50cfc3e63d3f522c10fe49b53bc62cd45ce6eba7e8219b3df128838da0e583",
+  "Assets/_Project/Runtime/Core/Save/MerchantRuntimeState.cs": "c2bb0c76ad94e11da99316418c8b3928c310a6fabbed6dcfde11fcf10b951031",
+  "Assets/_Project/Runtime/Infrastructure/Save/GamePlayDataManager.cs": "ec445535fd2609a1518dbbf8942414fc7e8390feab79896cea83669c1c7bb330",
+  "Assets/_Project/Runtime/Infrastructure/Save/RunSessionProgressCommitPolicy.cs": "2a39ef4b7d4149a35d50698c78296f662f8e57a76d0405091b071fa8b7a4803a",
+  "Assets/_Project/Runtime/Features/Progression/RunModifiers/RunModifierDeltas.cs": "08e1f1a343cbfb8964b6ecb6c6a710a9cdfdf96c405d911e16e83e882bf413bc",
+  "Assets/_Project/Runtime/Features/Progression/RunModifiers/RunModifierAggregationService.cs": "67d7b9ea1a333a702f663e2d161b867c2132cae526e84b218202bac31be7f620",
+  "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs": "f28ab5fec27c276bbb8d7f612770706dcc498c1f2b2220cc40c24beab7d59072",
+  "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRunStateService.cs": "166c1a91ecb3d984fa88eb0ed127db53af8e2baa4f13431cf7a046ae67df1e0f",
+  "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantShopPolicy.cs": "fdd9d17673b006a61c34b9dee7c3853e4739f5f261c189211f876617c5c47fb9",
+  "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopInventoryRoll.cs": "16ccf0c59ac5e0fc5f64b7102799e4388169638aa10fdc7ad8c9b7be17ffc4d1",
+  "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopSlot.cs": "e3fa1ceca5cbd5ade5ed0b5a6c9c3ecd8e65dc655690cb52afc4d017a4f87b44",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs": "d8d9e00e7863d27333e3cddfeb31e776bfbea7ef05fd4bbeb37fdcd93a6eb4c3",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs": "e8527a7a332b5469037bf8afc59eafa8b5b825ada746c55653cb05546c10399c",
+  "Assets/_Project/Runtime/Core/Presentation/GameTextAssetKeys.g.cs": "7fbe36d9ba32da65a19e669992973f4897a5f616032a4559dbbda36350a8af4c",
+  "Assets/_Project/Runtime/Features/Dialogue/Affection/Effect/MerchantAffectionRewardEffect.cs": "4b424a1d621c7ec32c22055988a015551685eadd20efcd018c8ad8a4017b5c7e",
+  "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantOfferPricing.cs": "7cd16a5b4e46c337af7bfe7af1bb43613b25e20fa7ce008690f986cff010ac9b",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs": "652cecdeca463c1ac68ce6609d7407cf8c74e524617b636a976ed19ca1c9e4c7",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs": "a5f53eef2cd367b3261da4acec5bf224cdcc1f99c2f9a7feeb83663242e00212"
+}

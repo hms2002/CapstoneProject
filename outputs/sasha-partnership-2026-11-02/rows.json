@@ -1,0 +1,44 @@
+{
+  "dialogue.merchant.run.affection_0_c.0": [
+    "어서 와, 동업자님! 용사님은 정문에서 싸우고, 나는 뒷문에서 챙기고! 오늘도 분업이 척척이네!",
+    "Welcome, partner! You fight at the front door, I collect things at the back! Our teamwork is flawless again today!",
+    "いらっしゃい、相棒！ 勇者様は正面で戦って、私は裏口で回収！ 今日も分業はばっちりだね！",
+    "欢迎，合伙人！勇者大人在正门战斗，我在后门收货！今天的分工也配合得真好！",
+    "歡迎，合夥人！勇者大人在正門戰鬥，我在後門收貨！今天的分工也配合得真好！"
+  ],
+  "dialogue.merchant.run.affection_0_c.5": [
+    "물론 용사님 몫도 따로 빼 놨지. 헤헤, 나 의리 있는 상인이잖아?",
+    "Of course I set aside your share. Hehe, I'm a merchant who looks after her partners, right?",
+    "もちろん勇者様の分も取り分けてあるよ。へへ、私って義理堅い商人でしょ？",
+    "当然也给勇者大人留了一份。嘿嘿，我可是个讲义气的商人呀？",
+    "當然也給勇者大人留了一份。嘿嘿，我可是個講義氣的商人呀？"
+  ],
+  "dialogue.merchant.run.affection_0_c.1": [
+    "그럼 내 몫 좀 보여 줘.",
+    "Then show me my share.",
+    "じゃあ、私の分を見せて。",
+    "那就让我看看我的那份吧。",
+    "那就讓我看看我的那份吧。"
+  ],
+  "dialogue.merchant.run.affection_0_c.2": [
+    "좋아! 동업자니까 먼저 살 기회를 주는 거야. 계산은 이쪽!",
+    "Sure! As my partner, you get the first chance to buy. Pay over here!",
+    "いいよ！ 相棒だから先に買うチャンスをあげるの。お会計はこっち！",
+    "好呀！因为是合伙人，才给你优先购买的机会。来这边结账！",
+    "好呀！因為是合夥人，才給你優先購買的機會。來這邊結帳！"
+  ],
+  "dialogue.merchant.run.affection_0_c.3": [
+    "동업자 몫이면 공짜 아니야?",
+    "Shouldn't a partner's share be free?",
+    "相棒の取り分ならタダじゃないの？",
+    "合伙人的份额不应该免费吗？",
+    "合夥人的份額不應該免費嗎？"
+  ],
+  "dialogue.merchant.run.affection_0_c.4": [
+    "왜?! ‘용사님한테 팔 몫’이지! 내가 물건까지 챙겨 왔는데, 동업자끼리 너무한 거 아니야?!",
+    "Why?! It's the share I'm selling to you! I even brought the goods. Isn't that a bit much to ask of your partner?!",
+    "なんで？！ 「勇者様に売る分」だよ！ 私が品物まで持ってきたのに、相棒にそれはひどくない？！",
+    "为什么？！是“卖给勇者大人的那份”呀！我连货都带来了，合伙人之间这样也太过分了吧？！",
+    "為什麼？！是「賣給勇者大人的那份」呀！我連貨都帶來了，合夥人之間這樣也太過分了吧？！"
+  ]
+}

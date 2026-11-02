@@ -1,0 +1,23 @@
+{
+  "mode": "Investigation and requested native visual materials",
+  "productionFilesChecked": 19,
+  "changedProductionFiles": [],
+  "nativeExitCode": 0,
+  "nativePngCount": 76,
+  "nativePassChecks": 120,
+  "boards": [
+    "overview.png",
+    "all-colors-dark.png",
+    "all-colors-light.png",
+    "layout-check-dark.png",
+    "layout-check-light.png",
+    "alpha-shadow-warning.png"
+  ],
+  "visualInspection": "All six comparison boards reviewed",
+  "gameChangesApplied": false,
+  "limitations": [
+    "Background-only isolated native UGUI fixture",
+    "Full prefab TMP/layout/lifecycle, URP/atlas parity, manual gameplay and Player build not executed"
+  ],
+  "docImpact": "No doc update needed; SessionLogs/ErrorLog/DecisionLog unchanged; no Presentation HTML stale candidate"
+}

@@ -1,0 +1,8 @@
+{
+  "Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png": "c31ff4d30357974f99dc66d28e971ebbb192ec57dde2b94a867c454ec0dd8cf5",
+  "Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png.meta": "6bb9a3be44ebce1343162700ccf13c6f478562f894b1d272c5d371398fa2d219",
+  "Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib": "a98b1964902b0e3ff2088921e256f1e673ac0566875dff9de6aacfcfda663993",
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink": "7866682e798aa9bbc0e07842108361f17bd5c7825325b252233e31b77e5912d8",
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json": "4f6925874f94bd2dba04017009dc9badf073b3fec6e7f374803c92030a1e0f77",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs": "932bc49ff95b4e5d8c6985d85753885fc246decc0230b7afb8180cce7456d348"
+}

@@ -1,0 +1,88 @@
+{
+  "date": "2026-11-02",
+  "mode": "Micro-fix",
+  "scope": "Apply two user-approved exclusive relic PNGs only; attachment order maps to KillShot then LavaBall",
+  "items": [
+    {
+      "name": "한계선의 잔불 추격",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-ace37861-fdc7-4ad1-ad0d-7054ff83f302.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonKillShot.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonKillShot.png.meta",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKillShot.asset",
+      "guid": "d37464f1928f44fab39518a3553403c9",
+      "sprite_id": "706ca7ad58884ea6976ad96475fd9833",
+      "fileID": "21300000",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        2,
+        30,
+        30
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "sha256": "27e37bfb17f789191a81ee2971b9a25fb73b917769b438727abfa20b1867bf82",
+      "source_bytes_equal": true,
+      "definition_only_icon_changed": true,
+      "before_definition_sha256": "915d9558cb6fd784a5214ae98573311384f227521913b6d468efac8f819b9ce2",
+      "after_definition_sha256": "e9cfc87024ac622f2a66d551f00a2671b8dabf536a9400518fe3bfc09a40eeb1"
+    },
+    {
+      "name": "한계선의 관통 용암",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-3e19fcde-8ecb-408d-844f-5cabbf869e2c.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonLavaBall.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonLavaBall.png.meta",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonLavaBall.asset",
+      "guid": "bf5fcc2b9ddb48ee94684d1099aa3de9",
+      "sprite_id": "e24f1598daed4db3af5519cf97003072",
+      "fileID": "21300000",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        4,
+        30,
+        29
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "sha256": "c8721e990c74babb4e53e83bc30460768a81a37a87bda93c0f8f2fb05460582e",
+      "source_bytes_equal": true,
+      "definition_only_icon_changed": true,
+      "before_definition_sha256": "3bfdd5783e593dc02276e56e6d46571c7ae8ef7773508d094ac8ae31bdb8b8dc",
+      "after_definition_sha256": "0ce9d8176816da251f860d2ec0b47693556f1110478e36f550f8ace3263a031b"
+    }
+  ],
+  "source_bytes_equal": "2/2",
+  "definition_only_icon_changed": "2/2",
+  "new_guids_unique_against_existing_asset_guid_count": 13850,
+  "existing_guids_preserved": true,
+  "shared_weapon_sprite_unchanged": true,
+  "names_effects_ids_and_localization_unchanged": true,
+  "other_protected_files_unchanged": 427,
+  "definition_diff_whitespace_passed": true,
+  "unity_import_compile_playmode": "not executed",
+  "doc_impact": "SessionLog",
+  "ErrorLog": "unchanged by this task",
+  "DecisionLog": "unchanged by this task",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "markdown_links_verified": 9,
+  "session_log_appended_once": true
+}

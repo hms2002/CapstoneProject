@@ -1,0 +1,129 @@
+ M Assets/AddressableAssetsData/AddressableAssetSettings.asset
+ M Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset
+ M Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+ M Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+ M Assets/_Project/Data/Dialogue/Ink/GrandHallScribe.ink
+ M Assets/_Project/Data/Dialogue/Ink/GrandHallScribe.json
+ M Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+ M Assets/_Project/Data/Items/Relics/Definitions/RD_BurningFeather.asset
+ M Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKillShot.asset
+ M Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKing.asset
+ M Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonLavaBall.asset
+ M Assets/_Project/Data/Items/Relics/Definitions/RD_FireBonusRelic.asset
+ M Assets/_Project/Data/Items/Relics/Definitions/RD_MeltedBell.asset
+ M Assets/_Project/Data/Items/Relics/Definitions/RD_PortableBrazier.asset
+ M Assets/_Project/Data/Items/Relics/Definitions/RD_ScorchingSong.asset
+ M Assets/_Project/Data/Items/Relics/Definitions/RD_SmokyIncense.asset
+ M Assets/_Project/Data/Items/Relics/Definitions/RD_SunFragment.asset
+ M "Assets/_Project/Data/Localization/GameText Shared Data.asset"
+ M Assets/_Project/Data/Localization/GameText_en.asset
+ M Assets/_Project/Data/Localization/GameText_ja.asset
+ M Assets/_Project/Data/Localization/GameText_ko.asset
+ M Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+ M Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+ M Assets/_Project/Data/SceneFlow/LoadingManifests/PrewarmTrace_user_BOOK-SG92DF7HHL.json
+ M Assets/_Project/Editor/Tools/Data/LocalizationSheetSetup.cs
+ M Assets/_Project/Prefabs/Items/Pickups/PF_WorldItemPickup2D.prefab
+ M Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+ M Assets/_Project/Prefabs/UI/Dialogue/ShopSlot.prefab
+ M Assets/_Project/Prefabs/UI/Dialogue/ShopSlot_RunGold.prefab
+ M Assets/_Project/Runtime/Core/Presentation/GameTextAssetKeys.g.cs
+ M Assets/_Project/Runtime/Core/Save/GameData.cs
+ M Assets/_Project/Runtime/Core/Save/MerchantRuntimeState.cs
+ M Assets/_Project/Runtime/Features/Dialogue/Affection/AffectionManager.cs
+ M Assets/_Project/Runtime/Features/Dialogue/DialogueTrigger.cs
+ M Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs
+ M Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRunStateService.cs
+ M Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantShopPolicy.cs
+ M Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopInventoryRoll.cs
+ M Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopSlot.cs
+ M Assets/_Project/Runtime/Features/Dialogue/NPC/NPCData.cs
+ M Assets/_Project/Runtime/Features/Progression/RunModifiers/RunModifierAggregationService.cs
+ M Assets/_Project/Runtime/Features/Progression/RunModifiers/RunModifierDeltas.cs
+ M Assets/_Project/Runtime/Infrastructure/Save/GamePlayDataManager.cs
+ M Assets/_Project/Runtime/Infrastructure/Save/RunSessionProgressCommitPolicy.cs
+ M Assets/_Project/Runtime/UI/Dialogue/DialogueController.cs
+ M Assets/_Project/Scenes/ProtoTypeHub.unity
+ M Assets/_Project/Tests/PlayMode/SceneSmokePlayModeTests.cs
+ M DataSheets/Localization/AssetInventory.json
+ M DataSheets/Localization/GameText.csv
+ M DataSheets/Localization/InkInventory.json
+ M Docs/DecisionLog.md
+ M Docs/ErrorLog.md
+ M Docs/StructureMemory/GrandHallScribeSequence.md
+ M Docs/StructureMemory/RunGoldAndShop.md
+ M Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md
+ M Docs/StructureMemory/ScriptSystems/SceneRuntimeSaveStructure.md
+ M Docs/TaskIndex.md
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BlazingCore.png
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BlazingCore.png.meta
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BurningFeather.png
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BurningFeather.png.meta
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonCrown.png
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonCrown.png.meta
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonKillShot.png
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonKillShot.png.meta
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonLavaBall.png
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonLavaBall.png.meta
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FireDragonFang.png
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FireDragonFang.png.meta
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_MeltedBell.png
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_MeltedBell.png.meta
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_PortableBrazier.png
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_PortableBrazier.png.meta
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SmokyIncense.png
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SmokyIncense.png.meta
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SunFragment.png
+?? Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SunFragment.png.meta
+?? Assets/_Project/Art/Sprites/UI/Dialogue/NpcAffectionAvailable.png
+?? Assets/_Project/Art/Sprites/UI/Dialogue/NpcAffectionAvailable.png.meta
+?? Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset
+?? Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset.meta
+?? Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset
+?? Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset.meta
+?? Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset
+?? Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset.meta
+?? Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+?? Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs.meta
+?? Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs
+?? Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs.meta
+?? Assets/_Project/Editor/Tools/Dialogue/NpcAffectionBubbleEditor.cs
+?? Assets/_Project/Editor/Tools/Dialogue/NpcAffectionBubbleEditor.cs.meta
+?? Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+?? Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs.meta
+?? Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+?? Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/WorldItemShadowAuthoring.cs
+?? Assets/_Project/Editor/Tools/Validation/WorldItemShadowAuthoring.cs.meta
+?? Assets/_Project/Runtime/Features/Dialogue/Affection/Effect/MerchantAffectionRewardEffect.cs
+?? Assets/_Project/Runtime/Features/Dialogue/Affection/Effect/MerchantAffectionRewardEffect.cs.meta
+?? Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantOfferPricing.cs
+?? Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantOfferPricing.cs.meta
+?? Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+?? Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs.meta
+?? Assets/_Project/Runtime/Presentation/Loot/WorldDrops/WorldItemShadowPresenter2D.cs
+?? Assets/_Project/Runtime/Presentation/Loot/WorldDrops/WorldItemShadowPresenter2D.cs.meta
+?? Assets/_Project/Runtime/UI/HUD/WorldPrompt/NpcAffectionBubble.cs
+?? Assets/_Project/Runtime/UI/HUD/WorldPrompt/NpcAffectionBubble.cs.meta
+?? Docs/ActiveTasks/merchant-affection-rewards.md
+?? Docs/ActiveTasks/npc-run-affection-dialogue.md
+?? Docs/SessionLogs/2026-11-01.md
+?? Docs/SessionLogs/2026-11-02.md
+?? Docs/StructureMemory/WorldItemShadows.md
+?? output/imagegen/blazing-core-test-2026-11-01/
+?? output/imagegen/crimson-exclusive-four-designs-test-2026-11-01/
+?? output/imagegen/crimson-exclusive-four-designs-test-2026-11-02/
+?? output/imagegen/crimson-magic-core-four-designs-test-2026-11-02/
+?? output/imagegen/dragon-fang-four-designs-test-2026-11-01/
+?? output/imagegen/dragon-fang-test-2026-11-01/
+?? output/imagegen/fire-four-sheet-test-2026-11-01/
+?? output/imagegen/fire-three-remake-test-2026-11-01/
+?? output/imagegen/spiri-treasure-vault-2304x1296.png
+?? output/imagegen/spiri-treasure-vault-prompt.md
+?? output/imagegen/spiri-treasure-vault-sparse-2026-11-02/
+?? output/relic-review-2026-11-01/
+?? output/relic-review-2026-11-02/
+?? output/world-item-shadows-2026-11-02/
+?? outputs/merchant-rewards-2026-11-01/
+?? outputs/npc-affection-2026-11-01/
+?? outputs/npc-dialogue-pool-2026-11-02/

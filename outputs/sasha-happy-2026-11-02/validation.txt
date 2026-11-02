@@ -1,0 +1,40 @@
+PASS Existing library GUID/local reference preserved
+PASS Existing Normal/Surprised mappings preserved
+PASS Happy label resolves to supplied sprite
+PASS Happy full 1254 canvas, pivot and PPU match existing portrait
+PASS Point/alpha/no-mipmap settings
+PASS Supplied background retains transparency
+PASS Merchant Ink compiles
+PASS Opening resets Normal: affection_0_a choice 0
+PASS Branch resolves Happy: affection_0_a choice 0
+PASS Opening resets Normal: affection_0_a choice 1
+PASS Branch resolves Surprised: affection_0_a choice 1
+PASS Opening resets Normal: affection_0_b choice 0
+PASS Branch resolves Normal: affection_0_b choice 0
+PASS Opening resets Normal: affection_0_b choice 1
+PASS Branch resolves Surprised: affection_0_b choice 1
+PASS Opening resets Normal: affection_0_c choice 0
+PASS Branch resolves Normal: affection_0_c choice 0
+PASS Opening resets Normal: affection_0_c choice 1
+PASS Branch resolves Surprised: affection_0_c choice 1
+PASS Opening resets Normal: affection_1_a choice 0
+PASS Branch resolves Normal: affection_1_a choice 0
+PASS Opening resets Normal: affection_1_a choice 1
+PASS Branch resolves Surprised: affection_1_a choice 1
+PASS Opening resets Normal: affection_1_b choice 0
+PASS Branch resolves Normal: affection_1_b choice 0
+PASS Opening resets Normal: affection_1_b choice 1
+PASS Branch resolves Surprised: affection_1_b choice 1
+PASS Opening resets Normal: affection_1_c choice 0
+PASS Branch resolves Happy: affection_1_c choice 0
+PASS Opening resets Normal: affection_1_c choice 1
+PASS Branch resolves Surprised: affection_1_c choice 1
+PASS Opening resets Normal: affection_2_a choice 0
+PASS Branch resolves Normal: affection_2_a choice 0
+PASS Opening resets Normal: affection_2_a choice 1
+PASS Branch resolves Surprised: affection_2_a choice 1
+PASS Opening resets Normal: affection_2_b choice 0
+PASS Branch resolves Normal: affection_2_b choice 0
+PASS Opening resets Normal: affection_2_b choice 1
+PASS Branch resolves Surprised: affection_2_b choice 1
+PASS: 39 focused native checks.

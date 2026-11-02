@@ -1,0 +1,303 @@
+PASS Authored reward thresholds are 1/2/3/4
+PASS Maximum affection is now four
+PASS Existing affection-three slots can converse to unlock tier four
+PASS Authored candidate has choices: 0/affection_0_a
+PASS Authored candidate has choices: 0/affection_0_b
+PASS Authored candidate has choices: 1/affection_1_a
+PASS Authored candidate has choices: 1/affection_1_b
+PASS Authored candidate has choices: 2/affection_2_a
+PASS Authored candidate has choices: 2/affection_2_b
+PASS Authored candidate has choices: 3/affection_2_a
+PASS Authored candidate has choices: 3/affection_2_b
+PASS Reloaded tier 0 special-offer entitlement
+PASS Reloaded tier 0 gold-retention entitlement
+PASS Reloaded tier 0 rarity entitlement
+PASS Reloaded tier 0 global-discount entitlement
+PASS Repeated rebuild is non-compounding at tier 0
+PASS Reloaded tier 1 special-offer entitlement
+PASS Reloaded tier 1 gold-retention entitlement
+PASS Reloaded tier 1 rarity entitlement
+PASS Reloaded tier 1 global-discount entitlement
+PASS Repeated rebuild is non-compounding at tier 1
+PASS Reloaded tier 2 special-offer entitlement
+PASS Reloaded tier 2 gold-retention entitlement
+PASS Reloaded tier 2 rarity entitlement
+PASS Reloaded tier 2 global-discount entitlement
+PASS Repeated rebuild is non-compounding at tier 2
+PASS Reloaded tier 3 special-offer entitlement
+PASS Reloaded tier 3 gold-retention entitlement
+PASS Reloaded tier 3 rarity entitlement
+PASS Reloaded tier 3 global-discount entitlement
+PASS Repeated rebuild is non-compounding at tier 3
+PASS Reloaded tier 4 special-offer entitlement
+PASS Reloaded tier 4 gold-retention entitlement
+PASS Reloaded tier 4 rarity entitlement
+PASS Reloaded tier 4 global-discount entitlement
+PASS Repeated rebuild is non-compounding at tier 4
+PASS Pending current-run tier unlock participates in benefits
+PASS Defeat with 0 gold retains 0
+PASS Gold retention never changes magic stones: Defeat/0
+PASS Reloaded credit is consumed once: Defeat/0
+PASS Repeated transfer cannot duplicate gold: Defeat/0
+PASS Defeat with 60 gold retains 60
+PASS Gold retention never changes magic stones: Defeat/60
+PASS Reloaded credit is consumed once: Defeat/60
+PASS Repeated transfer cannot duplicate gold: Defeat/60
+PASS Defeat with 100 gold retains 100
+PASS Gold retention never changes magic stones: Defeat/100
+PASS Reloaded credit is consumed once: Defeat/100
+PASS Repeated transfer cannot duplicate gold: Defeat/100
+PASS Defeat with 180 gold retains 100
+PASS Gold retention never changes magic stones: Defeat/180
+PASS Reloaded credit is consumed once: Defeat/180
+PASS Repeated transfer cannot duplicate gold: Defeat/180
+PASS TimeOver with 0 gold retains 0
+PASS Gold retention never changes magic stones: TimeOver/0
+PASS Reloaded credit is consumed once: TimeOver/0
+PASS Repeated transfer cannot duplicate gold: TimeOver/0
+PASS TimeOver with 60 gold retains 60
+PASS Gold retention never changes magic stones: TimeOver/60
+PASS Reloaded credit is consumed once: TimeOver/60
+PASS Repeated transfer cannot duplicate gold: TimeOver/60
+PASS TimeOver with 100 gold retains 100
+PASS Gold retention never changes magic stones: TimeOver/100
+PASS Reloaded credit is consumed once: TimeOver/100
+PASS Repeated transfer cannot duplicate gold: TimeOver/100
+PASS TimeOver with 180 gold retains 100
+PASS Gold retention never changes magic stones: TimeOver/180
+PASS Reloaded credit is consumed once: TimeOver/180
+PASS Repeated transfer cannot duplicate gold: TimeOver/180
+PASS Victory with 0 gold retains 0
+PASS Gold retention never changes magic stones: Victory/0
+PASS Reloaded credit is consumed once: Victory/0
+PASS Repeated transfer cannot duplicate gold: Victory/0
+PASS Victory with 60 gold retains 0
+PASS Gold retention never changes magic stones: Victory/60
+PASS Reloaded credit is consumed once: Victory/60
+PASS Repeated transfer cannot duplicate gold: Victory/60
+PASS Victory with 100 gold retains 0
+PASS Gold retention never changes magic stones: Victory/100
+PASS Reloaded credit is consumed once: Victory/100
+PASS Repeated transfer cannot duplicate gold: Victory/100
+PASS Victory with 180 gold retains 0
+PASS Gold retention never changes magic stones: Victory/180
+PASS Reloaded credit is consumed once: Victory/180
+PASS Repeated transfer cannot duplicate gold: Victory/180
+PASS Abort with 0 gold retains 0
+PASS Gold retention never changes magic stones: Abort/0
+PASS Reloaded credit is consumed once: Abort/0
+PASS Repeated transfer cannot duplicate gold: Abort/0
+PASS Abort with 60 gold retains 0
+PASS Gold retention never changes magic stones: Abort/60
+PASS Reloaded credit is consumed once: Abort/60
+PASS Repeated transfer cannot duplicate gold: Abort/60
+PASS Abort with 100 gold retains 0
+PASS Gold retention never changes magic stones: Abort/100
+PASS Reloaded credit is consumed once: Abort/100
+PASS Repeated transfer cannot duplicate gold: Abort/100
+PASS Abort with 180 gold retains 0
+PASS Gold retention never changes magic stones: Abort/180
+PASS Reloaded credit is consumed once: Abort/180
+PASS Repeated transfer cannot duplicate gold: Abort/180
+PASS Old profile JSON defaults retained gold to zero
+PASS Locked retention tier grants no carried gold
+PASS Global and special discounts combine multiplicatively
+PASS Tier-four price uses five-percent global and twenty-percent special
+PASS Only the final price is rounded with Unity's integer policy
+PASS Removing global discount preserves the special discount
+PASS Locked offer does not consume future assignment
+PASS Exactly one unsold item is selected
+PASS Rolled special percentage is within 10-20 inclusive
+PASS Repeated initialization does not reroll the selected item or percentage
+PASS DTO restore/reentry retains the same special offer
+PASS Buying the special does not select another item
+PASS A real stock refresh resets special-offer assignment
+PASS Newly refreshed stock receives one offer
+PASS Existing per-item offer is preserved even with an older assignment flag
+PASS Empty stock cannot receive a discount
+PASS Common relic weight stays one
+PASS Rare relic relative weight is 1.10
+PASS Epic relic relative weight is 1.15
+PASS No-bonus roll preserves legacy RNG/removal: 0
+PASS No-bonus roll preserves legacy RNG/removal: 1
+PASS No-bonus roll preserves legacy RNG/removal: 2
+PASS No-bonus roll preserves legacy RNG/removal: 3
+PASS No-bonus roll preserves legacy RNG/removal: 4
+PASS No-bonus roll preserves legacy RNG/removal: 5
+PASS No-bonus roll preserves legacy RNG/removal: 6
+PASS No-bonus roll preserves legacy RNG/removal: 7
+PASS No-bonus roll preserves legacy RNG/removal: 8
+PASS No-bonus roll preserves legacy RNG/removal: 9
+PASS No-bonus roll preserves legacy RNG/removal: 10
+PASS No-bonus roll preserves legacy RNG/removal: 11
+PASS No-bonus roll preserves legacy RNG/removal: 12
+PASS No-bonus roll preserves legacy RNG/removal: 13
+PASS No-bonus roll preserves legacy RNG/removal: 14
+PASS No-bonus roll preserves legacy RNG/removal: 15
+PASS No-bonus roll preserves legacy RNG/removal: 16
+PASS No-bonus roll preserves legacy RNG/removal: 17
+PASS No-bonus roll preserves legacy RNG/removal: 18
+PASS No-bonus roll preserves legacy RNG/removal: 19
+PASS No-bonus roll preserves legacy RNG/removal: 20
+PASS No-bonus roll preserves legacy RNG/removal: 21
+PASS No-bonus roll preserves legacy RNG/removal: 22
+PASS No-bonus roll preserves legacy RNG/removal: 23
+PASS No-bonus roll preserves legacy RNG/removal: 24
+PASS No-bonus roll preserves legacy RNG/removal: 25
+PASS No-bonus roll preserves legacy RNG/removal: 26
+PASS No-bonus roll preserves legacy RNG/removal: 27
+PASS No-bonus roll preserves legacy RNG/removal: 28
+PASS No-bonus roll preserves legacy RNG/removal: 29
+PASS No-bonus roll preserves legacy RNG/removal: 30
+PASS No-bonus roll preserves legacy RNG/removal: 31
+PASS No-bonus roll preserves legacy RNG/removal: 32
+PASS No-bonus roll preserves legacy RNG/removal: 33
+PASS No-bonus roll preserves legacy RNG/removal: 34
+PASS No-bonus roll preserves legacy RNG/removal: 35
+PASS No-bonus roll preserves legacy RNG/removal: 36
+PASS No-bonus roll preserves legacy RNG/removal: 37
+PASS No-bonus roll preserves legacy RNG/removal: 38
+PASS No-bonus roll preserves legacy RNG/removal: 39
+PASS No-bonus roll preserves legacy RNG/removal: 40
+PASS No-bonus roll preserves legacy RNG/removal: 41
+PASS No-bonus roll preserves legacy RNG/removal: 42
+PASS No-bonus roll preserves legacy RNG/removal: 43
+PASS No-bonus roll preserves legacy RNG/removal: 44
+PASS No-bonus roll preserves legacy RNG/removal: 45
+PASS No-bonus roll preserves legacy RNG/removal: 46
+PASS No-bonus roll preserves legacy RNG/removal: 47
+PASS No-bonus roll preserves legacy RNG/removal: 48
+PASS No-bonus roll preserves legacy RNG/removal: 49
+PASS No-bonus roll preserves legacy RNG/removal: 50
+PASS No-bonus roll preserves legacy RNG/removal: 51
+PASS No-bonus roll preserves legacy RNG/removal: 52
+PASS No-bonus roll preserves legacy RNG/removal: 53
+PASS No-bonus roll preserves legacy RNG/removal: 54
+PASS No-bonus roll preserves legacy RNG/removal: 55
+PASS No-bonus roll preserves legacy RNG/removal: 56
+PASS No-bonus roll preserves legacy RNG/removal: 57
+PASS No-bonus roll preserves legacy RNG/removal: 58
+PASS No-bonus roll preserves legacy RNG/removal: 59
+PASS No-bonus roll preserves legacy RNG/removal: 60
+PASS No-bonus roll preserves legacy RNG/removal: 61
+PASS No-bonus roll preserves legacy RNG/removal: 62
+PASS No-bonus roll preserves legacy RNG/removal: 63
+PASS No-bonus roll preserves legacy RNG/removal: 64
+PASS No-bonus roll preserves legacy RNG/removal: 65
+PASS No-bonus roll preserves legacy RNG/removal: 66
+PASS No-bonus roll preserves legacy RNG/removal: 67
+PASS No-bonus roll preserves legacy RNG/removal: 68
+PASS No-bonus roll preserves legacy RNG/removal: 69
+PASS No-bonus roll preserves legacy RNG/removal: 70
+PASS No-bonus roll preserves legacy RNG/removal: 71
+PASS No-bonus roll preserves legacy RNG/removal: 72
+PASS No-bonus roll preserves legacy RNG/removal: 73
+PASS No-bonus roll preserves legacy RNG/removal: 74
+PASS No-bonus roll preserves legacy RNG/removal: 75
+PASS No-bonus roll preserves legacy RNG/removal: 76
+PASS No-bonus roll preserves legacy RNG/removal: 77
+PASS No-bonus roll preserves legacy RNG/removal: 78
+PASS No-bonus roll preserves legacy RNG/removal: 79
+PASS No-bonus roll preserves legacy RNG/removal: 80
+PASS No-bonus roll preserves legacy RNG/removal: 81
+PASS No-bonus roll preserves legacy RNG/removal: 82
+PASS No-bonus roll preserves legacy RNG/removal: 83
+PASS No-bonus roll preserves legacy RNG/removal: 84
+PASS No-bonus roll preserves legacy RNG/removal: 85
+PASS No-bonus roll preserves legacy RNG/removal: 86
+PASS No-bonus roll preserves legacy RNG/removal: 87
+PASS No-bonus roll preserves legacy RNG/removal: 88
+PASS No-bonus roll preserves legacy RNG/removal: 89
+PASS No-bonus roll preserves legacy RNG/removal: 90
+PASS No-bonus roll preserves legacy RNG/removal: 91
+PASS No-bonus roll preserves legacy RNG/removal: 92
+PASS No-bonus roll preserves legacy RNG/removal: 93
+PASS No-bonus roll preserves legacy RNG/removal: 94
+PASS No-bonus roll preserves legacy RNG/removal: 95
+PASS No-bonus roll preserves legacy RNG/removal: 96
+PASS No-bonus roll preserves legacy RNG/removal: 97
+PASS No-bonus roll preserves legacy RNG/removal: 98
+PASS No-bonus roll preserves legacy RNG/removal: 99
+PASS Weighted candidate sampling matches normalized weight: Common
+PASS Weighted candidate sampling matches normalized weight: Rare
+PASS Weighted candidate sampling matches normalized weight: Epic
+PASS Reward has a compiled runtime localization identity: 1
+PASS Localized reward 1/ko
+PASS Localized reward 1/en
+PASS Localized reward 1/ja
+PASS Localized reward 1/zh-Hans
+PASS Localized reward 1/zh-Hant
+PASS Reward has a compiled runtime localization identity: 2
+PASS Localized reward 2/ko
+PASS Localized reward 2/en
+PASS Localized reward 2/ja
+PASS Localized reward 2/zh-Hans
+PASS Localized reward 2/zh-Hant
+PASS Reward has a compiled runtime localization identity: 3
+PASS Localized reward 3/ko
+PASS Localized reward 3/en
+PASS Localized reward 3/ja
+PASS Localized reward 3/zh-Hans
+PASS Localized reward 3/zh-Hant
+PASS Reward has a compiled runtime localization identity: 4
+PASS Localized reward 4/ko
+PASS Localized reward 4/en
+PASS Localized reward 4/ja
+PASS Localized reward 4/zh-Hans
+PASS Localized reward 4/zh-Hant
+PASS Special tag preserves numeric token: ko
+PASS Special tag preserves numeric token: en
+PASS Special tag preserves numeric token: ja
+PASS Special tag preserves numeric token: zh-Hans
+PASS Special tag preserves numeric token: zh-Hant
+PASS Localized reward/tag matches CSV: asset.844437f5d3184cf69ce3cabd2160232e.rewardText/ko
+PASS Localized reward/tag matches CSV: asset.844437f5d3184cf69ce3cabd2160232e.rewardText/en
+PASS Localized reward/tag matches CSV: asset.844437f5d3184cf69ce3cabd2160232e.rewardText/ja
+PASS Localized reward/tag matches CSV: asset.844437f5d3184cf69ce3cabd2160232e.rewardText/zh-Hans
+PASS Localized reward/tag matches CSV: asset.844437f5d3184cf69ce3cabd2160232e.rewardText/zh-Hant
+PASS Localized reward/tag matches CSV: asset.0d511974dcee39841b43b11efe690364.rewardText/ko
+PASS Localized reward/tag matches CSV: asset.0d511974dcee39841b43b11efe690364.rewardText/en
+PASS Localized reward/tag matches CSV: asset.0d511974dcee39841b43b11efe690364.rewardText/ja
+PASS Localized reward/tag matches CSV: asset.0d511974dcee39841b43b11efe690364.rewardText/zh-Hans
+PASS Localized reward/tag matches CSV: asset.0d511974dcee39841b43b11efe690364.rewardText/zh-Hant
+PASS Localized reward/tag matches CSV: asset.9610f69b0692a734ab7aa1eccc8264f3.rewardText/ko
+PASS Localized reward/tag matches CSV: asset.9610f69b0692a734ab7aa1eccc8264f3.rewardText/en
+PASS Localized reward/tag matches CSV: asset.9610f69b0692a734ab7aa1eccc8264f3.rewardText/ja
+PASS Localized reward/tag matches CSV: asset.9610f69b0692a734ab7aa1eccc8264f3.rewardText/zh-Hans
+PASS Localized reward/tag matches CSV: asset.9610f69b0692a734ab7aa1eccc8264f3.rewardText/zh-Hant
+PASS Localized reward/tag matches CSV: asset.05a8fc8c3d1883a45bc96ff32322dbdb.rewardText/ko
+PASS Localized reward/tag matches CSV: asset.05a8fc8c3d1883a45bc96ff32322dbdb.rewardText/en
+PASS Localized reward/tag matches CSV: asset.05a8fc8c3d1883a45bc96ff32322dbdb.rewardText/ja
+PASS Localized reward/tag matches CSV: asset.05a8fc8c3d1883a45bc96ff32322dbdb.rewardText/zh-Hans
+PASS Localized reward/tag matches CSV: asset.05a8fc8c3d1883a45bc96ff32322dbdb.rewardText/zh-Hant
+PASS Localized reward/tag matches CSV: shop.special_offer/ko
+PASS Localized reward/tag matches CSV: shop.special_offer/en
+PASS Localized reward/tag matches CSV: shop.special_offer/ja
+PASS Localized reward/tag matches CSV: shop.special_offer/zh-Hans
+PASS Localized reward/tag matches CSV: shop.special_offer/zh-Hant
+PASS Authored price-tag bindings: ShopSlot_RunGold.prefab
+PASS Authored price-tag bindings: ShopSlot.prefab
+PASS Native localized label has visible glyphs: slot 0/PriceText
+PASS Native localized label has visible glyphs: slot 0/OriginalPriceText
+PASS Actual original price text: slot 0
+PASS Displayed payable price and special status agree with stock: slot 0
+PASS Sold state hides original/special and preserves existing SOLD label
+PASS Empty state hides prices and special tag
+PASS Native localized label has visible glyphs: slot 1/PriceText
+PASS Native localized label has visible glyphs: slot 1/OriginalPriceText
+PASS Actual original price text: slot 1
+PASS Displayed payable price and special status agree with stock: slot 1
+PASS Special badge has an authored background behind its glyph renderer
+PASS Native localized label has visible glyphs: slot 2/PriceText
+PASS Native localized label has visible glyphs: slot 2/OriginalPriceText
+PASS Native localized label has visible glyphs: slot 2/SpecialOfferTag
+PASS Actual original price text: slot 2
+PASS Displayed payable price and special status agree with stock: slot 2
+PASS Native localized label has visible glyphs: slot 3/PriceText
+PASS Native localized label has visible glyphs: slot 3/OriginalPriceText
+PASS Actual original price text: slot 3
+PASS Displayed payable price and special status agree with stock: slot 3
+PASS Rendered visible merchant/carpet/item price tags in an isolated native preview scene
+PASS Native render contains no magenta shader-error surface
+PASS: 301 native checks. Real user save slots and global service registrations were not touched.
+Full manual Play Mode walkthrough and Player build were not executed.

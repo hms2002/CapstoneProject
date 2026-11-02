@@ -1,0 +1,53 @@
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Runtime/UI/HUD/CurrencyUI.cs
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Runtime/Features/Loot/CurrencyManager.cs
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Runtime/Infrastructure/Save/GamePlayDataManager.cs
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Runtime/Infrastructure/Save/RunSessionProgressCommitPolicy.cs
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Runtime/Infrastructure/Save/RunSessionLifecycleService.cs
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset.meta
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs.meta
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs.meta
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Localization/GameText_ko.asset.meta
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Localization/GameText_en.asset.meta
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Localization/GameText_ja.asset.meta
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Localization/GameText_zh-Hans.asset.meta
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Localization/GameText_zh-Hant.asset.meta
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Dialogue/Affection/BossAffectionRunModifierEffect.asset
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Dialogue/Affection/InfoOnlyAffectionEffect.asset
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset
+PASS Existing credit/HUD/lifecycle/metadata/reward preserved: Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset
+PASS Authored reward cap is 500
+PASS Only cap and fallback description changed on reward asset
+PASS Reapplying setup preserves the 500 cap
+PASS Authoring changes only reward cap and five descriptions
+PASS No localization keys added or removed
+PASS Other CSV translations preserved
+PASS All five reward translations updated to 500
+PASS Existing reward locale ID/metadata retained: ko
+PASS All unrelated locale bytes preserved: ko
+PASS Existing reward locale ID/metadata retained: en
+PASS All unrelated locale bytes preserved: en
+PASS Existing reward locale ID/metadata retained: ja
+PASS All unrelated locale bytes preserved: ja
+PASS Existing reward locale ID/metadata retained: zh-Hans
+PASS All unrelated locale bytes preserved: zh-Hans
+PASS Existing reward locale ID/metadata retained: zh-Hant
+PASS All unrelated locale bytes preserved: zh-Hant
+PASS Unrelated asset inventory rows retained
+PASS Reward inventory reflects the new text only
+PASS Existing validation updated: level >= 2 ? 500 : 0
+PASS Existing validation updated: goldRetentionLimit == 500
+PASS Existing validation updated: new[] { 0, 60, 100, 180, 300, 499, 500, 501, 800 }
+PASS Existing validation updated: requestType, run, profile, 500
+PASS Existing validation updated: Math.Min(amount, 500)
+PASS Generated project covers changed source: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Generated project covers changed source: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs
+PASS: 52 configuration/localization/preservation checks.

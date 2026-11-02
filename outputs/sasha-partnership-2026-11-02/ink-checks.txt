@@ -1,0 +1,22 @@
+PASS Existing production Ink compiler compiles the whole merchant source
+PASS First opening matches approved partnership greeting
+PASS Opening resets Normal
+PASS Choices wait for the second speech window
+PASS Second opening matches approved share joke
+PASS Exactly two openings before two choices
+PASS Positive choice wording matches
+PASS No-gain choice wording matches
+PASS Branch has exactly one approved response window
+PASS Positive branch uses Happy and existing +1 request
+PASS Next conversation resets Normal after either branch
+PASS First opening matches approved partnership greeting
+PASS Opening resets Normal
+PASS Choices wait for the second speech window
+PASS Second opening matches approved share joke
+PASS Exactly two openings before two choices
+PASS Positive choice wording matches
+PASS No-gain choice wording matches
+PASS Branch has exactly one approved response window
+PASS No-gain branch uses Surprised and grants no affection
+PASS Next conversation resets Normal after either branch
+PASS: 21 focused Ink checks; no Unity Editor launch.

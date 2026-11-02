@@ -1,0 +1,27 @@
+{
+  "Date": "2026-11-01",
+  "Count": 10,
+  "UniqueIcons": 9,
+  "GeneralRelics": 8,
+  "WeaponExclusiveRelics": 2,
+  "DisplayNamesVerified": true,
+  "DatabaseRegistrationVerified": true,
+  "ProtectedSourceFiles": 48,
+  "SourceHashesPreserved": true,
+  "NearestIntegerScaling": true,
+  "NativeSpriteExports": 10,
+  "ProjectAssetsChanged": false,
+  "UnityVerification": "not executed",
+  "DocImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTMLAffected": false,
+  "NativeSpriteVisiblePixelsAndAlphaVerified": true,
+  "RenderedIntegerNearestSpritesVerified": true,
+  "MarkdownLinksVerified": 31,
+  "RenderSize": [
+    1260,
+    1390
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-b6218246-6c29-4f0d-a463-d19f02d79e29.png",
+  "sourceSize": [
+    1287,
+    1222
+  ],
+  "split": [
+    643,
+    613
+  ],
+  "pixelsOnSplitLines": [
+    0,
+    0
+  ],
+  "items": [
+    {
+      "id": "BurningFeather",
+      "region": [
+        0,
+        0,
+        643,
+        613
+      ],
+      "materialCrop": [
+        143,
+        115,
+        429,
+        498
+      ]
+    },
+    {
+      "id": "MeltedBell",
+      "region": [
+        643,
+        0,
+        1287,
+        613
+      ],
+      "materialCrop": [
+        745,
+        133,
+        429,
+        479
+      ]
+    },
+    {
+      "id": "SmokyIncense",
+      "region": [
+        0,
+        613,
+        643,
+        1222
+      ],
+      "materialCrop": [
+        174,
+        670,
+        322,
+        471
+      ]
+    },
+    {
+      "id": "CrimsonKing",
+      "region": [
+        643,
+        613,
+        1287,
+        1222
+      ],
+      "materialCrop": [
+        693,
+        803,
+        460,
+        299
+      ]
+    }
+  ]
+}

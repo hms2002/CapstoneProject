@@ -1,0 +1,102 @@
+[
+  {
+    "key": "01-compass-round",
+    "name": "추적 나침반 A — 원형",
+    "native": "01-compass-round-draft-v1-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-4d272523-b66c-42e0-822c-a36e25e94785.png",
+    "sourceMaterialBounds": [
+      245,
+      250,
+      1009,
+      1039
+    ],
+    "materialSize": [
+      23,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#E09656",
+      "#EECF5A",
+      "#F1E9D4"
+    ]
+  },
+  {
+    "key": "02-compass-diamond",
+    "name": "추적 나침반 B — 마름모형",
+    "native": "02-compass-diamond-draft-v1-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-b342b94f-212b-484e-a139-5581578dcbbc.png",
+    "sourceMaterialBounds": [
+      193,
+      217,
+      1061,
+      1054
+    ],
+    "materialSize": [
+      24,
+      23
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#E09656",
+      "#EECF5A",
+      "#F1E9D4"
+    ]
+  },
+  {
+    "key": "03-core-ring",
+    "name": "용암 봉인핵 A — 고리형",
+    "native": "03-core-ring-draft-v1-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-5c3973c8-7261-4c97-85f6-82e0ac9362b1.png",
+    "sourceMaterialBounds": [
+      243,
+      276,
+      1012,
+      970
+    ],
+    "materialSize": [
+      24,
+      22
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#E09656",
+      "#EECF5A",
+      "#F1E9D4"
+    ]
+  },
+  {
+    "key": "04-core-cage",
+    "name": "용암 봉인핵 B — 봉인틀",
+    "native": "04-core-cage-draft-v1-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-fd1676ad-21f6-453e-a512-a998e8e0e53c.png",
+    "sourceMaterialBounds": [
+      241,
+      280,
+      1011,
+      1009
+    ],
+    "materialSize": [
+      24,
+      23
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#E09656",
+      "#EECF5A",
+      "#F1E9D4"
+    ]
+  }
+]

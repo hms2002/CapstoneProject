@@ -1,0 +1,9 @@
+PASS affection_0_a choice 0: Normal opening, two choices, expected face and affection tags
+PASS affection_0_a choice 1: Normal opening, two choices, expected face and affection tags
+PASS affection_0_b choice 0: Normal opening, two choices, expected face and affection tags
+PASS affection_0_b choice 1: Normal opening, two choices, expected face and affection tags
+PASS affection_0_c choice 0: Normal opening, two choices, expected face and affection tags
+PASS affection_0_c choice 1: Normal opening, two choices, expected face and affection tags
+PASS affection_1_c choice 0: Normal opening, two choices, expected face and affection tags
+PASS affection_1_c choice 1: Normal opening, two choices, expected face and affection tags
+PASS: 8 active dialogue branch checks using the production Ink runtime.

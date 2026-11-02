@@ -1,0 +1,150 @@
+{
+  "name": "화염 유물 4종 — 간소화 및 금속 색 분리 v2",
+  "date": "2026-11-01",
+  "mode": "test draft only",
+  "tool": "built-in image_gen",
+  "generationCalls": 1,
+  "sourceGeneration": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-c35ee505-b001-4c2c-bcc7-9a9c01dc2176.png",
+  "sheetSize": [
+    32,
+    128
+  ],
+  "items": [
+    {
+      "name": "불타는 깃털",
+      "file": "01-burning-feather-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "opaqueColorCount": 5,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A"
+      ],
+      "onlyUserPalette": true,
+      "alphaValues": [
+        0,
+        255
+      ],
+      "margins": {
+        "left": 3,
+        "top": 2,
+        "right": 4,
+        "bottom": 2
+      },
+      "twoPixelContourVerified": true,
+      "sheetFrameExact": true,
+      "gridFrameExact": true
+    },
+    {
+      "name": "녹아내린 종",
+      "file": "02-melted-bell-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "opaqueColorCount": 6,
+      "palette": [
+        "#363232",
+        "#8599B0",
+        "#C2C2C2",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A"
+      ],
+      "onlyUserPalette": true,
+      "alphaValues": [
+        0,
+        255
+      ],
+      "margins": {
+        "left": 3,
+        "top": 2,
+        "right": 3,
+        "bottom": 3
+      },
+      "twoPixelContourVerified": true,
+      "sheetFrameExact": true,
+      "gridFrameExact": true
+    },
+    {
+      "name": "매캐한 향로",
+      "file": "03-smoky-incense-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "opaqueColorCount": 6,
+      "palette": [
+        "#363232",
+        "#8599B0",
+        "#C2C2C2",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A"
+      ],
+      "onlyUserPalette": true,
+      "alphaValues": [
+        0,
+        255
+      ],
+      "margins": {
+        "left": 5,
+        "top": 2,
+        "right": 6,
+        "bottom": 2
+      },
+      "twoPixelContourVerified": true,
+      "sheetFrameExact": true,
+      "gridFrameExact": true
+    },
+    {
+      "name": "홍련의 왕관",
+      "file": "04-crimson-crown-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "opaqueColorCount": 5,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A"
+      ],
+      "onlyUserPalette": true,
+      "alphaValues": [
+        0,
+        255
+      ],
+      "margins": {
+        "left": 2,
+        "top": 7,
+        "right": 2,
+        "bottom": 7
+      },
+      "twoPixelContourVerified": true,
+      "sheetFrameExact": true,
+      "gridFrameExact": true
+    }
+  ],
+  "globalOpaqueColorCount": 7,
+  "nearestPreviews": {
+    "fire-four-draft-v2-vertical-preview.png": true,
+    "fire-four-draft-v2-2x2-preview.png": true
+  },
+  "protectedFileCount": 10,
+  "protectedProjectSourcesUnchanged": true,
+  "projectAssetsChanged": false,
+  "unityVerification": "not executed; draft only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

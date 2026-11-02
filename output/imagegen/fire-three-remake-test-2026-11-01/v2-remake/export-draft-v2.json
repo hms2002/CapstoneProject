@@ -1,0 +1,77 @@
+[
+  {
+    "key": "scorching-awl",
+    "name": "작열하는 송곳",
+    "native": "scorching-awl-draft-v2-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-f93596ab-3de1-414a-948f-72b4bdf492ed.png",
+    "sourceMaterialBounds": [
+      328,
+      226,
+      1037,
+      1053
+    ],
+    "materialSize": [
+      21,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#E09656",
+      "#EECF5A",
+      "#F1E9D4"
+    ]
+  },
+  {
+    "key": "portable-brazier",
+    "name": "휴대용 화로",
+    "native": "portable-brazier-draft-v2-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-d559fd8c-f971-4945-8a75-193b8d23edb3.png",
+    "sourceMaterialBounds": [
+      196,
+      213,
+      1058,
+      1058
+    ],
+    "materialSize": [
+      24,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#E09656",
+      "#EECF5A",
+      "#F1E9D4"
+    ]
+  },
+  {
+    "key": "sun-fragment",
+    "name": "태양의 파편",
+    "native": "sun-fragment-draft-v2-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-6d20f6e3-445a-4c34-afea-6a9a8181a841.png",
+    "sourceMaterialBounds": [
+      366,
+      251,
+      894,
+      1041
+    ],
+    "materialSize": [
+      16,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#E09656",
+      "#EECF5A",
+      "#F1E9D4"
+    ]
+  }
+]

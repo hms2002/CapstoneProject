@@ -1,0 +1,228 @@
+PASS Committed merchant JSON matches compiled Ink source
+PASS Three authored rewards reuse the first effect
+PASS affection_0_a presents two choices
+PASS affection_0_a choice 0 has the correct affection outcome
+PASS affection_0_a presents two choices
+PASS affection_0_a choice 1 has the correct affection outcome
+PASS affection_0_b presents two choices
+PASS affection_0_b choice 0 has the correct affection outcome
+PASS affection_0_b presents two choices
+PASS affection_0_b choice 1 has the correct affection outcome
+PASS affection_1_a presents two choices
+PASS affection_1_a choice 0 has the correct affection outcome
+PASS affection_1_a presents two choices
+PASS affection_1_a choice 1 has the correct affection outcome
+PASS affection_1_b presents two choices
+PASS affection_1_b choice 0 has the correct affection outcome
+PASS affection_1_b presents two choices
+PASS affection_1_b choice 1 has the correct affection outcome
+PASS affection_2_a presents two choices
+PASS affection_2_a choice 0 has the correct affection outcome
+PASS affection_2_a presents two choices
+PASS affection_2_a choice 1 has the correct affection outcome
+PASS affection_2_b presents two choices
+PASS affection_2_b choice 0 has the correct affection outcome
+PASS affection_2_b presents two choices
+PASS affection_2_b choice 1 has the correct affection outcome
+PASS greeting_a is short, choice-free and grants no affection
+PASS greeting_b is short, choice-free and grants no affection
+PASS greeting_c is short, choice-free and grants no affection
+PASS greeting_full_a is short, choice-free and grants no affection
+PASS greeting_full_b is short, choice-free and grants no affection
+PASS Provided sheet is sliced left-to-right into three 32x32 frames
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.0/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.0/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.0/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.0/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.0/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.1/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.1/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.1/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.1/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.1/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.2/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.2/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.2/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.2/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.2/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.3/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.3/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.3/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.3/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.3/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.4/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.4/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.4/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.4/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_0_b.4/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.0/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.0/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.0/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.0/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.0/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.1/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.1/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.1/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.1/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.1/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.2/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.2/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.2/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.2/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.2/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.3/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.3/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.3/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.3/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.3/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.4/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.4/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.4/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.4/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_a.4/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.0/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.0/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.0/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.0/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.0/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.1/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.1/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.1/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.1/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.1/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.2/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.2/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.2/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.2/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.2/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.3/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.3/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.3/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.3/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.3/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.4/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.4/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.4/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.4/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_1_b.4/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.0/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.0/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.0/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.0/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.0/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.1/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.1/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.1/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.1/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.1/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.2/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.2/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.2/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.2/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.2/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.3/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.3/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.3/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.3/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.3/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.4/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.4/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.4/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.4/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_a.4/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.0/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.0/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.0/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.0/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.0/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.1/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.1/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.1/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.1/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.1/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.2/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.2/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.2/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.2/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.2/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.3/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.3/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.3/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.3/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.3/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.4/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.4/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.4/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.4/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.affection_2_b.4/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_a/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_a/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_a/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_a/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_a/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_b/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_b/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_b/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_b/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_b/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_c/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_c/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_c/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_c/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_c/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_full_a/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_full_a/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_full_a/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_full_a/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_full_a/zh-Hant
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_full_b/ko
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_full_b/en
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_full_b/ja
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_full_b/zh-Hans
+PASS Localized dialogue matches CSV: dialogue.merchant.run.greeting_full_b/zh-Hant
+PASS Hub has no affection conversation
+PASS Opted-in merchant cannot gain through hub dialogue
+PASS Hub routes to a choice-free greeting
+PASS First active-run encounter is available
+PASS Run dialogue does not start through automatic room introduction
+PASS First encounter selects a level-zero conversation
+PASS Interrupted conversation without a gain keeps its opportunity
+PASS Completed failure consumes the opportunity without gain
+PASS Consumed failure cannot be bypassed with a later gain request
+PASS New stage / new merchant object shares NPC-ID consumption
+PASS Repeated encounter routes to a greeting
+PASS Session DTO round-trip preserves consumption
+PASS Defeat resets consumption; outside a run remains unavailable
+PASS Old run's late completion cannot consume a new run's opportunity
+PASS Random candidate matches current affection 0
+PASS Successful choice grants level 1
+PASS Exactly one reward and continuation at level 1
+PASS Gain cannot repeat after interrupted presentation at level 1
+PASS Existing commit policy persists permanent affection 1
+PASS Random candidate matches current affection 1
+PASS Successful choice grants level 2
+PASS Exactly one reward and continuation at level 2
+PASS Gain cannot repeat after interrupted presentation at level 2
+PASS Existing commit policy persists permanent affection 2
+PASS Random candidate matches current affection 2
+PASS Successful choice grants level 3
+PASS Exactly one reward and continuation at level 3
+PASS Gain cannot repeat after interrupted presentation at level 3
+PASS Existing commit policy persists permanent affection 3
+PASS Maximum affection suppresses further conversations
+PASS Maximum affection still permits greetings
+PASS Maximum affection also hides the actual indicator renderer
+PASS An empty backpack is not full
+PASS Actual backpack slots determine fullness
+PASS Full-backpack reaction takes precedence over ordinary greetings
+PASS Allowance remains independent for another NPC ID
+PASS Bosses ignore the ordinary-NPC content fields
+PASS Existing boss positive-gain behavior is preserved outside an active run
+PASS Three identical 20-percent rewards aggregate to 60 percent
+PASS Modifier rebuild does not compound the discount
+PASS Authored bubble shows when an affection conversation is available
+PASS Bubble stays upright and fixed-size under actor mirroring/scaling
+PASS Bubble follows the independently authored position anchor
+PASS Consumed opportunity hides the authored bubble
+PASS: 226 checks; Unity Editor native execution with production assemblies and in-memory save.
+Full manual playthrough and Player build were not executed.

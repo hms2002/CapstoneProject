@@ -1,0 +1,75 @@
+PASS Final reviewed file: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png
+PASS Final reviewed file: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png.meta
+PASS Final reviewed file: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib
+PASS Final reviewed file: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS Final reviewed file: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+PASS Final reviewed file: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Protected file preserved: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib.meta
+PASS Protected file preserved: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png
+PASS Protected file preserved: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png.meta
+PASS Protected file preserved: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png
+PASS Protected file preserved: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png.meta
+PASS Protected file preserved: DataSheets/Localization/InkInventory.json
+PASS Protected file preserved: DataSheets/Localization/GameText.csv
+PASS Protected file preserved: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS Protected file preserved: Assets/_Project/Prefabs/UI/Portraitlmage.prefab
+PASS Protected file preserved: Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameFonts Shared Data.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameFonts.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameFonts_en.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameFonts_ja.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameFonts_ko.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameFonts_zh-Hans.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameFonts_zh-Hant.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameText.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameText_en.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/Locale_en.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/Locale_ja.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/Locale_ko.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/Locale_zh-Hans.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/Locale_zh-Hant.asset
+PASS Protected file preserved: Assets/_Project/Data/Localization/LocalizationSettings.asset
+PASS Changed Editor source covered by generated project
+PASS Source whitespace
+PASS Doc target: ../../output/relic-review-2026-11-02/crimson-exclusive-approved-application/README.md
+PASS Doc target: ../StructureMemory/WorldItemShadows.md
+PASS Doc target: ../../output/world-item-shadows-2026-11-02/README.md
+PASS Doc target: ../ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Doc target: ../../outputs/npc-dialogue-pool-2026-11-02/validation.txt
+PASS Doc target: ../../outputs/npc-dialogue-pool-2026-11-02/unity-validation.log
+PASS Doc target: ../../outputs/npc-dialogue-pool-2026-11-02/static-checks.txt
+PASS Doc target: ../../outputs/npc-dialogue-pool-2026-11-02/msbuild.log
+PASS Doc target: ../../outputs/npc-dialogue-pool-2026-11-02/msbuild-final.log
+PASS Doc target: ../../outputs/npc-dialogue-pool-2026-11-02/final-checks.txt
+PASS Doc target: ../ActiveTasks/sasha-discount-portraits.md
+PASS Doc target: ../../outputs/sasha-portraits-2026-11-02/validation.txt
+PASS Doc target: ../../outputs/sasha-portraits-2026-11-02/unity-validation.log
+PASS Doc target: ../../outputs/sasha-portraits-2026-11-02/portraits-native.png
+PASS Doc target: ../../outputs/sasha-portraits-2026-11-02/static-checks.txt
+PASS Doc target: ../../outputs/sasha-portraits-2026-11-02/msbuild.log
+PASS Doc target: ../../outputs/sasha-portraits-2026-11-02/final-checks.txt
+PASS Doc target: ../../outputs/sasha-happy-2026-11-02/validation.txt
+PASS Doc target: ../../outputs/sasha-happy-2026-11-02/unity-native.log
+PASS Doc target: ../../outputs/sasha-happy-2026-11-02/preservation.txt
+PASS Doc target: ../../outputs/sasha-happy-2026-11-02/msbuild.log
+PASS Doc target: ../../outputs/sasha-portraits-2026-11-02/validation.txt
+PASS Doc target: ../../outputs/sasha-portraits-2026-11-02/portraits-native.png
+PASS Doc target: ../../outputs/sasha-portraits-2026-11-02/static-checks.txt
+PASS Doc target: ../../outputs/sasha-portraits-2026-11-02/msbuild.log
+PASS Doc target: ../SessionLogs/2026-11-02.md
+PASS Doc target: ../../outputs/sasha-happy-2026-11-02/validation.txt
+PASS Doc target: ../SessionLogs/2026-11-02.md
+PASS Doc target: ../../ActiveTasks/sasha-discount-portraits.md
+PASS Doc target: ../../ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Doc target: ../../SessionLogs/2026-11-02.md
+PASS Doc target: ../../ActiveTasks/merchant-affection-rewards.md
+PASS Doc target: ../RunGoldAndShop.md
+PASS Doc target: ./RunSpecialNpcStructure.md
+PASS Focused native pass marker
+PASS Owned scratch project removed
+PASS: 74 final checks.

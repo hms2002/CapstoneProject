@@ -159,6 +159,8 @@ internal static class RunModifierAggregationService
                     bossRewardModifiers.Add(bossEffect.ModifierAggregate);
                 else if (reward.effect is ShopAffectionDiscountEffect shopEffect)
                     shopModifiers.Add(shopEffect.Delta);
+                else if (reward.effect is MerchantAffectionRewardEffect merchantEffect)
+                    shopModifiers.Add(merchantEffect.Delta);
             }
         }
     }

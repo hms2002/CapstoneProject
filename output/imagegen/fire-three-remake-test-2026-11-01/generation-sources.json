@@ -1,0 +1,47 @@
+[
+  {
+    "key": "scorching-awl",
+    "name": "작열하는 송곳",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-53ae275a-cd34-46b6-bc9a-c25f00fd2739.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      319,
+      215,
+      1034,
+      1051
+    ]
+  },
+  {
+    "key": "portable-brazier",
+    "name": "휴대용 화로",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-d1ecaf39-443d-4647-9970-af6674922767.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      261,
+      193,
+      993,
+      1052
+    ]
+  },
+  {
+    "key": "sun-fragment",
+    "name": "태양의 파편",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-8b2c54b7-08d3-4a33-9e98-d95297be868b.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      366,
+      169,
+      918,
+      1060
+    ]
+  }
+]

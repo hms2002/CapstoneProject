@@ -49,6 +49,9 @@ public sealed class ShopSlot : InteractableBase
     [SerializeField] private Component itemDisplayPresenter;
     [SerializeField] private SpriteRenderer itemSpriteRenderer;
     [SerializeField] private Component priceText;
+    [SerializeField] private Component originalPriceText;
+    [SerializeField] private GameObject specialOfferRoot;
+    [SerializeField] private Component specialOfferText;
 
     [Header("Legacy Item Sprite Normalization")]
     [SerializeField, HideInInspector] private bool normalizeItemSprite = true;
@@ -213,9 +216,26 @@ public sealed class ShopSlot : InteractableBase
             if (currentState == null || !currentState.HasItem)
                 TextPresentationBinding.TrySetText(priceText, string.Empty);
             else
-                TextPresentationBinding.TrySetText(priceText, currentState.isSold ? soldLabel : currentState.price.ToString());
+            {
+                string amount = currentState.price.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+                TextPresentationBinding.TrySetText(priceText, currentState.isSold ? soldLabel :
+                    currentState.specialDiscountPercent > 0 ? $"<color=#FFE181>{amount}</color>" : amount);
+            }
         }
 
+        bool hasDiscount = hasActiveItem && currentState.undiscountedPrice > currentState.price;
+        if (originalPriceText != null)
+        {
+            originalPriceText.gameObject.SetActive(hasDiscount);
+            if (hasDiscount)
+                TextPresentationBinding.TrySetText(originalPriceText, "<s>" +
+                    currentState.undiscountedPrice.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) + "</s>");
+        }
+        bool showSpecial = hasActiveItem && currentState.specialDiscountPercent > 0;
+        if (specialOfferRoot != null) specialOfferRoot.SetActive(showSpecial);
+        if (showSpecial && specialOfferText != null)
+            TextPresentationBinding.TrySetText(specialOfferText, "<color=#2C2016>" +
+                GameText.Format("shop.special_offer", "특가 -{0}%", currentState.specialDiscountPercent) + "</color>");
         RefreshPriceIcon(hasActiveItem && currentState != null && !currentState.isSold);
     }
 
@@ -394,9 +414,12 @@ public sealed class ShopSlot : InteractableBase
             return 0f;
 
         int visibleCharacterCount = 0;
+        bool insideTag = false;
         for (int i = 0; i < label.Length; i++)
         {
-            if (!char.IsWhiteSpace(label[i]))
+            if (label[i] == '<') { insideTag = true; continue; }
+            if (label[i] == '>') { insideTag = false; continue; }
+            if (!insideTag && !char.IsWhiteSpace(label[i]))
                 visibleCharacterCount++;
         }
 

@@ -1,0 +1,4 @@
+System.InvalidOperationException: Project pixel font covers the authored merchant line
+  at NpcBubbleOpacityPreview.Check (System.Boolean condition, System.String message) [0x0001f] in C:\Users\user\Desktop\CapstoneProject\outputs\field-speech-bubble-opacity-2026-11-02\preview-project\Assets\Editor\NpcBubbleOpacityPreview.cs:185 
+  at NpcBubbleOpacityPreview.Setup () [0x0017a] in C:\Users\user\Desktop\CapstoneProject\outputs\field-speech-bubble-opacity-2026-11-02\preview-project\Assets\Editor\NpcBubbleOpacityPreview.cs:92 
+  at NpcBubbleOpacityPreview.Run () [0x00024] in C:\Users\user\Desktop\CapstoneProject\outputs\field-speech-bubble-opacity-2026-11-02\preview-project\Assets\Editor\NpcBubbleOpacityPreview.cs:33 

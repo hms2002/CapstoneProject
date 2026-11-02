@@ -1,0 +1,377 @@
+PASS No duplicate localization CSV keys
+PASS Every pre-existing CSV row is unchanged
+PASS Exactly 30 new merchant translation rows
+PASS Active merchant source has 38 unique localized lines/choices
+PASS Compiled merchant JSON retains every active loc tag
+PASS ko: all prior serialized locale entries are byte-preserved
+PASS ko: active table matches CSV for dialogue.merchant.001
+PASS ko: active table matches CSV for dialogue.merchantdialogue_animated.95e636eb88
+PASS ko: active table matches CSV for dialogue.merchant.003
+PASS ko: active table matches CSV for dialogue.merchantdialogue_animated.470dbb5cba
+PASS ko: active table matches CSV for dialogue.merchantdialogue_animated.5526e51532
+PASS ko: active table matches CSV for dialogue.merchant.006
+PASS ko: active table matches CSV for dialogue.merchantdialogue_animated.ca8d0de524
+PASS ko: active table matches CSV for dialogue.merchantdialogue_animated.9098a11458
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_0_b.0
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_0_b.1
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_0_b.2
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_0_b.3
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_0_b.4
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_1_a.0
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_1_a.1
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_1_a.2
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_1_a.3
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_1_a.4
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_1_b.0
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_1_b.1
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_1_b.2
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_1_b.3
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_1_b.4
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_2_a.0
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_2_a.1
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_2_a.2
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_2_a.3
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_2_a.4
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_2_b.0
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_2_b.1
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_2_b.2
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_2_b.3
+PASS ko: active table matches CSV for dialogue.merchant.run.affection_2_b.4
+PASS ko: active table matches CSV for dialogue.merchant.run.greeting_a
+PASS ko: active table matches CSV for dialogue.merchant.run.greeting_b
+PASS ko: active table matches CSV for dialogue.merchant.run.greeting_c
+PASS ko: active table matches CSV for dialogue.merchant.run.greeting_full_a
+PASS ko: active table matches CSV for dialogue.merchant.run.greeting_full_b
+PASS en: all prior serialized locale entries are byte-preserved
+PASS en: active table matches CSV for dialogue.merchant.001
+PASS en: active table matches CSV for dialogue.merchantdialogue_animated.95e636eb88
+PASS en: active table matches CSV for dialogue.merchant.003
+PASS en: active table matches CSV for dialogue.merchantdialogue_animated.470dbb5cba
+PASS en: active table matches CSV for dialogue.merchantdialogue_animated.5526e51532
+PASS en: active table matches CSV for dialogue.merchant.006
+PASS en: active table matches CSV for dialogue.merchantdialogue_animated.ca8d0de524
+PASS en: active table matches CSV for dialogue.merchantdialogue_animated.9098a11458
+PASS en: active table matches CSV for dialogue.merchant.run.affection_0_b.0
+PASS en: active table matches CSV for dialogue.merchant.run.affection_0_b.1
+PASS en: active table matches CSV for dialogue.merchant.run.affection_0_b.2
+PASS en: active table matches CSV for dialogue.merchant.run.affection_0_b.3
+PASS en: active table matches CSV for dialogue.merchant.run.affection_0_b.4
+PASS en: active table matches CSV for dialogue.merchant.run.affection_1_a.0
+PASS en: active table matches CSV for dialogue.merchant.run.affection_1_a.1
+PASS en: active table matches CSV for dialogue.merchant.run.affection_1_a.2
+PASS en: active table matches CSV for dialogue.merchant.run.affection_1_a.3
+PASS en: active table matches CSV for dialogue.merchant.run.affection_1_a.4
+PASS en: active table matches CSV for dialogue.merchant.run.affection_1_b.0
+PASS en: active table matches CSV for dialogue.merchant.run.affection_1_b.1
+PASS en: active table matches CSV for dialogue.merchant.run.affection_1_b.2
+PASS en: active table matches CSV for dialogue.merchant.run.affection_1_b.3
+PASS en: active table matches CSV for dialogue.merchant.run.affection_1_b.4
+PASS en: active table matches CSV for dialogue.merchant.run.affection_2_a.0
+PASS en: active table matches CSV for dialogue.merchant.run.affection_2_a.1
+PASS en: active table matches CSV for dialogue.merchant.run.affection_2_a.2
+PASS en: active table matches CSV for dialogue.merchant.run.affection_2_a.3
+PASS en: active table matches CSV for dialogue.merchant.run.affection_2_a.4
+PASS en: active table matches CSV for dialogue.merchant.run.affection_2_b.0
+PASS en: active table matches CSV for dialogue.merchant.run.affection_2_b.1
+PASS en: active table matches CSV for dialogue.merchant.run.affection_2_b.2
+PASS en: active table matches CSV for dialogue.merchant.run.affection_2_b.3
+PASS en: active table matches CSV for dialogue.merchant.run.affection_2_b.4
+PASS en: active table matches CSV for dialogue.merchant.run.greeting_a
+PASS en: active table matches CSV for dialogue.merchant.run.greeting_b
+PASS en: active table matches CSV for dialogue.merchant.run.greeting_c
+PASS en: active table matches CSV for dialogue.merchant.run.greeting_full_a
+PASS en: active table matches CSV for dialogue.merchant.run.greeting_full_b
+PASS ja: all prior serialized locale entries are byte-preserved
+PASS ja: active table matches CSV for dialogue.merchant.001
+PASS ja: active table matches CSV for dialogue.merchantdialogue_animated.95e636eb88
+PASS ja: active table matches CSV for dialogue.merchant.003
+PASS ja: active table matches CSV for dialogue.merchantdialogue_animated.470dbb5cba
+PASS ja: active table matches CSV for dialogue.merchantdialogue_animated.5526e51532
+PASS ja: active table matches CSV for dialogue.merchant.006
+PASS ja: active table matches CSV for dialogue.merchantdialogue_animated.ca8d0de524
+PASS ja: active table matches CSV for dialogue.merchantdialogue_animated.9098a11458
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_0_b.0
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_0_b.1
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_0_b.2
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_0_b.3
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_0_b.4
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_1_a.0
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_1_a.1
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_1_a.2
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_1_a.3
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_1_a.4
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_1_b.0
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_1_b.1
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_1_b.2
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_1_b.3
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_1_b.4
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_2_a.0
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_2_a.1
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_2_a.2
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_2_a.3
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_2_a.4
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_2_b.0
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_2_b.1
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_2_b.2
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_2_b.3
+PASS ja: active table matches CSV for dialogue.merchant.run.affection_2_b.4
+PASS ja: active table matches CSV for dialogue.merchant.run.greeting_a
+PASS ja: active table matches CSV for dialogue.merchant.run.greeting_b
+PASS ja: active table matches CSV for dialogue.merchant.run.greeting_c
+PASS ja: active table matches CSV for dialogue.merchant.run.greeting_full_a
+PASS ja: active table matches CSV for dialogue.merchant.run.greeting_full_b
+PASS zh-Hans: all prior serialized locale entries are byte-preserved
+PASS zh-Hans: active table matches CSV for dialogue.merchant.001
+PASS zh-Hans: active table matches CSV for dialogue.merchantdialogue_animated.95e636eb88
+PASS zh-Hans: active table matches CSV for dialogue.merchant.003
+PASS zh-Hans: active table matches CSV for dialogue.merchantdialogue_animated.470dbb5cba
+PASS zh-Hans: active table matches CSV for dialogue.merchantdialogue_animated.5526e51532
+PASS zh-Hans: active table matches CSV for dialogue.merchant.006
+PASS zh-Hans: active table matches CSV for dialogue.merchantdialogue_animated.ca8d0de524
+PASS zh-Hans: active table matches CSV for dialogue.merchantdialogue_animated.9098a11458
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_0_b.0
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_0_b.1
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_0_b.2
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_0_b.3
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_0_b.4
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_1_a.0
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_1_a.1
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_1_a.2
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_1_a.3
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_1_a.4
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_1_b.0
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_1_b.1
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_1_b.2
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_1_b.3
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_1_b.4
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_2_a.0
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_2_a.1
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_2_a.2
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_2_a.3
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_2_a.4
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_2_b.0
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_2_b.1
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_2_b.2
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_2_b.3
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.affection_2_b.4
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.greeting_a
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.greeting_b
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.greeting_c
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.greeting_full_a
+PASS zh-Hans: active table matches CSV for dialogue.merchant.run.greeting_full_b
+PASS zh-Hant: all prior serialized locale entries are byte-preserved
+PASS zh-Hant: active table matches CSV for dialogue.merchant.001
+PASS zh-Hant: active table matches CSV for dialogue.merchantdialogue_animated.95e636eb88
+PASS zh-Hant: active table matches CSV for dialogue.merchant.003
+PASS zh-Hant: active table matches CSV for dialogue.merchantdialogue_animated.470dbb5cba
+PASS zh-Hant: active table matches CSV for dialogue.merchantdialogue_animated.5526e51532
+PASS zh-Hant: active table matches CSV for dialogue.merchant.006
+PASS zh-Hant: active table matches CSV for dialogue.merchantdialogue_animated.ca8d0de524
+PASS zh-Hant: active table matches CSV for dialogue.merchantdialogue_animated.9098a11458
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_0_b.0
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_0_b.1
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_0_b.2
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_0_b.3
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_0_b.4
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_1_a.0
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_1_a.1
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_1_a.2
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_1_a.3
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_1_a.4
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_1_b.0
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_1_b.1
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_1_b.2
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_1_b.3
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_1_b.4
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_2_a.0
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_2_a.1
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_2_a.2
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_2_a.3
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_2_a.4
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_2_b.0
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_2_b.1
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_2_b.2
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_2_b.3
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.affection_2_b.4
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.greeting_a
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.greeting_b
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.greeting_c
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.greeting_full_a
+PASS zh-Hant: active table matches CSV for dialogue.merchant.run.greeting_full_b
+PASS Source KO matches CSV: dialogue.merchant.001
+PASS Source KO matches CSV: dialogue.merchantdialogue_animated.95e636eb88
+PASS Source KO matches CSV: dialogue.merchant.003
+PASS Source KO matches CSV: dialogue.merchantdialogue_animated.470dbb5cba
+PASS Source KO matches CSV: dialogue.merchantdialogue_animated.5526e51532
+PASS Source KO matches CSV: dialogue.merchant.006
+PASS Source KO matches CSV: dialogue.merchantdialogue_animated.ca8d0de524
+PASS Source KO matches CSV: dialogue.merchantdialogue_animated.9098a11458
+PASS Source KO matches CSV: dialogue.merchant.run.affection_0_b.0
+PASS Source KO matches CSV: dialogue.merchant.run.affection_0_b.1
+PASS Source KO matches CSV: dialogue.merchant.run.affection_0_b.2
+PASS Source KO matches CSV: dialogue.merchant.run.affection_0_b.3
+PASS Source KO matches CSV: dialogue.merchant.run.affection_0_b.4
+PASS Source KO matches CSV: dialogue.merchant.run.affection_1_a.0
+PASS Source KO matches CSV: dialogue.merchant.run.affection_1_a.1
+PASS Source KO matches CSV: dialogue.merchant.run.affection_1_a.2
+PASS Source KO matches CSV: dialogue.merchant.run.affection_1_a.3
+PASS Source KO matches CSV: dialogue.merchant.run.affection_1_a.4
+PASS Source KO matches CSV: dialogue.merchant.run.affection_1_b.0
+PASS Source KO matches CSV: dialogue.merchant.run.affection_1_b.1
+PASS Source KO matches CSV: dialogue.merchant.run.affection_1_b.2
+PASS Source KO matches CSV: dialogue.merchant.run.affection_1_b.3
+PASS Source KO matches CSV: dialogue.merchant.run.affection_1_b.4
+PASS Source KO matches CSV: dialogue.merchant.run.affection_2_a.0
+PASS Source KO matches CSV: dialogue.merchant.run.affection_2_a.1
+PASS Source KO matches CSV: dialogue.merchant.run.affection_2_a.2
+PASS Source KO matches CSV: dialogue.merchant.run.affection_2_a.3
+PASS Source KO matches CSV: dialogue.merchant.run.affection_2_a.4
+PASS Source KO matches CSV: dialogue.merchant.run.affection_2_b.0
+PASS Source KO matches CSV: dialogue.merchant.run.affection_2_b.1
+PASS Source KO matches CSV: dialogue.merchant.run.affection_2_b.2
+PASS Source KO matches CSV: dialogue.merchant.run.affection_2_b.3
+PASS Source KO matches CSV: dialogue.merchant.run.affection_2_b.4
+PASS Source KO matches CSV: dialogue.merchant.run.greeting_a
+PASS Source KO matches CSV: dialogue.merchant.run.greeting_b
+PASS Source KO matches CSV: dialogue.merchant.run.greeting_c
+PASS Source KO matches CSV: dialogue.merchant.run.greeting_full_a
+PASS Source KO matches CSV: dialogue.merchant.run.greeting_full_b
+PASS Only the existing trigger transform gains two child references; every other prior prefab block is unchanged
+PASS Prefab adds only three authored objects and their five components
+PASS User-supplied PNG bytes are unchanged
+PASS No existing meta/GUID file changed
+PASS Scenes, asmdefs, Animator controllers and ProjectSettings are unchanged
+PASS Document link exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ../../ActiveTasks/npc-run-affection-dialogue.md
+PASS Document link exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ../../SessionLogs/2026-11-01.md
+PASS Document link exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ./RunSpecialNpcStructure.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/DungeonTemplateSelection.md
+PASS Document link exists: Docs/DecisionLog.md -> SessionLogs/2026-09-12.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/RunGoldAndShop.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/MonsterWorldHudAndStatus.md
+PASS Document link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-08-ui-batching-structural/README.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/PlacementTools.md
+PASS Document link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-10-lightning-tools/README.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ElementDirectHitDamage.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/EncyclopediaCreatureTabs.md
+PASS Document link exists: Docs/DecisionLog.md -> ActiveTasks/encyclopedia-creature-tabs.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/WeaponAndGASStructure.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ElementDirectHitDamage.md
+PASS Document link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-11-element-popup-ratio/README.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/WeaponAndGASStructure.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/BossAndMobEncounterStructure.md
+PASS Document link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-12.md
+PASS Document link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-12.md
+PASS Document link exists: Docs/DecisionLog.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/WeaponAndGASStructure.md
+PASS Document link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-12.md
+PASS Document link exists: Docs/DecisionLog.md -> ActiveTasks/spiri-alcohol-exposure.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/AlcoholExposure.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/AlcoholExposure.md
+PASS Document link exists: Docs/DecisionLog.md -> ActiveTasks/spiri-alcohol-exposure.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/LevelProgressionStructure.md
+PASS Document link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-30.md
+PASS Document link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-30.md
+PASS Document link exists: Docs/DecisionLog.md -> SessionLogs/2026-10-30.md
+PASS Document link exists: Docs/DecisionLog.md -> ActiveTasks/npc-run-affection-dialogue.md
+PASS Document link exists: Docs/DecisionLog.md -> StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md
+PASS Document link exists: Docs/ActiveTasks/npc-run-affection-dialogue.md -> ../SessionLogs/2026-11-01.md
+PASS Document link exists: Docs/ActiveTasks/npc-run-affection-dialogue.md -> ../StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md
+PASS Document link exists: Docs/ActiveTasks/npc-run-affection-dialogue.md -> ../StructureMemory/ScriptSystems/SceneRuntimeSaveStructure.md
+PASS Document link exists: Docs/ActiveTasks/npc-run-affection-dialogue.md -> ../SessionLogs/2026-11-01.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/full-game-localization.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/npc-run-affection-dialogue.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/spiri-alcohol-exposure.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/encyclopedia-tab-visibility-reveal.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/encyclopedia-book-inner-padding.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/encyclopedia-book-flat-top.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/encyclopedia-creature-tabs.md
+PASS Document link exists: Docs/TaskIndex.md -> StructureMemory/EncyclopediaCreatureTabs.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/lightning-spear-tool-composition.md
+PASS Document link exists: Docs/TaskIndex.md -> SessionLogs/2026-10-10-lightning-tools/README.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/lightning-spear-placement-structure.md
+PASS Document link exists: Docs/TaskIndex.md -> SessionLogs/2026-10-10-lightning-structure/README.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/chest-offer-width-consistency.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/ui-batching-structural-optimization.md
+PASS Document link exists: Docs/TaskIndex.md -> SessionLogs/2026-10-08-ui-batching-structural/README.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/ui-batching-optimization.md
+PASS Document link exists: Docs/TaskIndex.md -> RefactorBacklog/UIBatchingStructuralCandidates.md
+PASS Document link exists: Docs/TaskIndex.md -> SessionLogs/2026-10-07-ui-batching/README.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/frame-performance-measurement.md
+PASS Document link exists: Docs/TaskIndex.md -> SessionLogs/2026-10-07-frame-performance-measurement/README.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/test-scene-boss-combat-and-breath-lock.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/frame-performance-optimization.md
+PASS Document link exists: Docs/TaskIndex.md -> ActiveTasks/test-scene-and-lightning-placement.md
+PASS Document link exists: Docs/ErrorLog.md -> SessionLogs/2026-10-10.md
+PASS Document link exists: Docs/ErrorLog.md -> StructureMemory/DungeonTemplateSelection.md
+PASS Document link exists: Docs/ErrorLog.md -> StructureMemory/AlcoholExposure.md
+PASS Document link exists: Docs/ErrorLog.md -> ./SessionLogs/2026-09-03.md
+PASS Document link exists: Docs/ErrorLog.md -> SessionLogs/2026-09-12.md
+PASS Document link exists: Docs/ErrorLog.md -> ./StructureMemory/SettingsPanelLayout.md
+PASS Document link exists: Docs/ErrorLog.md -> ./SessionLogs/2026-09-17.md
+PASS Document link exists: Docs/ErrorLog.md -> ./SessionLogs/2026-09-17.md
+PASS Document link exists: Docs/ErrorLog.md -> ./SessionLogs/2026-09-17.md
+PASS Document link exists: Docs/ErrorLog.md -> ./SessionLogs/2026-10-11.md
+PASS Document link exists: Docs/ErrorLog.md -> ./SessionLogs/2026-09-18.md
+PASS Document link exists: Docs/ErrorLog.md -> ./SessionLogs/2026-09-18.md
+PASS Document link exists: Docs/ErrorLog.md -> ../outputs/encyclopedia-implementation-2026-10-11/serialized-preservation-report.json
+PASS Document link exists: Docs/ErrorLog.md -> StructureMemory/EncyclopediaCreatureTabs.md
+PASS Document link exists: Docs/ErrorLog.md -> SessionLogs/2026-10-07-ui-batching/README.md
+PASS Document link exists: Docs/ErrorLog.md -> StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document link exists: Docs/ErrorLog.md -> SessionLogs/2026-10-11.md
+PASS Document link exists: Docs/ErrorLog.md -> SessionLogs/2026-10-12.md
+PASS Document link exists: Docs/ErrorLog.md -> SessionLogs/2026-10-12.md
+PASS Document link exists: Docs/ErrorLog.md -> StructureMemory/AlcoholExposure.md
+PASS Document link exists: Docs/ErrorLog.md -> ActiveTasks/spiri-alcohol-exposure.md
+PASS Document link exists: Docs/ErrorLog.md -> SessionLogs/2026-10-12.md
+PASS Document link exists: Docs/ErrorLog.md -> StructureMemory/LocalizationFlow.md
+PASS Document link exists: Docs/ErrorLog.md -> SessionLogs/2026-10-14.md
+PASS Document link exists: Docs/ErrorLog.md -> StructureMemory/MonsterWorldHudAndStatus.md
+PASS Document link exists: Docs/ErrorLog.md -> SessionLogs/2026-10-30.md
+PASS Document link exists: Docs/ErrorLog.md -> SessionLogs/2026-10-30.md
+PASS Document link exists: Docs/ErrorLog.md -> SessionLogs/2026-11-01.md
+PASS Document link exists: Docs/StructureMemory/ScriptSystems/SceneRuntimeSaveStructure.md -> ./RunSpecialNpcStructure.md
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../ActiveTasks/npc-run-affection-dialogue.md
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Runtime/Features/Dialogue/NPC/NPCData.cs
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Runtime/Features/Dialogue/DialogueTrigger.cs
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Runtime/Features/Dialogue/Affection/AffectionManager.cs
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Runtime/UI/HUD/WorldPrompt/NpcAffectionBubble.cs
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Editor/Tools/Dialogue/NpcAffectionBubbleEditor.cs
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Editor/Tools/Data/LocalizationSheetSetup.cs
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Art/Sprites/UI/Dialogue/NpcAffectionAvailable.png
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../DataSheets/Localization/GameText.csv
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../DataSheets/Localization/InkInventory.json
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/validation.txt
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/unity-final-validation.log
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/merchant-bubble-0.png
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/merchant-bubble-1.png
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/merchant-bubble-2.png
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/msbuild-final.log
+PASS Document link exists: Docs/SessionLogs/2026-11-01.md -> ../../outputs/npc-affection-2026-11-01/static-checks.txt
+PASS Document link exists: outputs/npc-affection-2026-11-01/README.md -> validation.txt
+PASS Document link exists: outputs/npc-affection-2026-11-01/README.md -> unity-final-validation.log
+PASS Document link exists: outputs/npc-affection-2026-11-01/README.md -> msbuild-final.log
+PASS Document link exists: outputs/npc-affection-2026-11-01/README.md -> static-checks.txt
+PASS Document link exists: outputs/npc-affection-2026-11-01/README.md -> audit.py
+PASS Document link exists: outputs/npc-affection-2026-11-01/README.md -> merchant-bubble-0.png
+PASS Document link exists: outputs/npc-affection-2026-11-01/README.md -> merchant-bubble-1.png
+PASS Document link exists: outputs/npc-affection-2026-11-01/README.md -> merchant-bubble-2.png
+PASS Document link exists: outputs/npc-affection-2026-11-01/README.md -> ../../Docs/SessionLogs/2026-11-01.md
+PASS: 376 static checks, including all 190 active merchant locale values and 133 local document links.

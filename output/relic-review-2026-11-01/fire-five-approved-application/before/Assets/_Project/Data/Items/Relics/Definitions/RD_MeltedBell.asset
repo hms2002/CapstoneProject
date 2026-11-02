@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
+  m_Name: RD_MeltedBell
+  m_EditorClassIdentifier: 
+  relicId: RD_MeltedBell
+  displayName: "\uB179\uC544\uB0B4\uB9B0 \uC885"
+  icon: {fileID: -3570171897898288534, guid: 87eece6e269e518438f6bcfb7a730ad0, type: 3}
+  rarity: 0
+  description: "\uD654\uC0C1 \uC18C\uBAA8 \uC8FC\uAE30\uAC00 \uBE68\uB77C\uC9D1\uB2C8\uB2E4."
+  maxLevel: 5
+  dropLevel: 1
+  logic: {fileID: 11400000, guid: b6317e0eb27f4e6da549b6889c22899e, type: 2}
+  param: {fileID: 0}

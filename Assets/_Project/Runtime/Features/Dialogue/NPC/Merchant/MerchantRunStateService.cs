@@ -53,6 +53,7 @@ public sealed class MerchantRunStateService
             return false;
 
         runtimeState.slots = CreateEntries(slotCount, stockFactory, runtimeState.slots);
+        runtimeState.specialOfferAssigned = false;
         runtimeState.refreshCountUsed++;
         return true;
     }

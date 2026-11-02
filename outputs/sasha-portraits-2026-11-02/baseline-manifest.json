@@ -1,0 +1,21 @@
+{
+  "Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png": "e399f80a078955689898e6541e56a61b5a1afba6758bae90727a5cf6b9795006",
+  "Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png.meta": "611fd6dc3a0375507a17708a50d958e1f16bd7b2840cdaac3d6905d9a70f2b2d",
+  "Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib": "441db889198502a26b3c181591d8fcb5d2f520f7ce50e1e0e2285935ebee4879",
+  "Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib.meta": "7409e7482b3714d280b2f5811e35814746eb2d1a05f9038e22e2ed44c11ce515",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs": "df076694c28bead47856cb6b53c7a1fc89a0fc72065dda8f1c9eb602c9b289d3",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs": "53f6efe4fcc828c62d07cc663fec74befd15a69ced9a3e4b2984f001b7398d83",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs": "5faec1033ab194e743326b4e6c3cd08561bbba4bf04edb716a60042e0e328931",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs": "d949dc1432472628907ab8458e7cb6687d2171d6790a1e05f68c68d7b5908108",
+  "Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset": "8bcc8df5b084ce1912bb630ec2e1b1f016fe2fb8a21fc9955fa9aa17fa93bc54",
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink": "eccb85681816d4d31355df349bbe53605f1f0598bdd0a4faaf386c03a6b19d3a",
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json": "167360ef2bc7adb5ea8bdf1f54320b208b16a68ecb0cd17d4e92961996785cdc",
+  "DataSheets/Localization/GameText.csv": "262f37316e4b11363af4ae52616956526e0f4933f72cd4842dd89e6fb1329e95",
+  "DataSheets/Localization/InkInventory.json": "2c0ec33a780409b2937d6820234836775ccfd044ea5689c3e92145025b1dc048",
+  "Assets/_Project/Data/Localization/GameText Shared Data.asset": "af66ca2b05633cb8a0b28474f7b63266d2efb05921b244c1adecca559f4bafc3",
+  "Assets/_Project/Data/Localization/GameText_ko.asset": "68012a196b420c1dca96b29a4228718f6723604b299f4a3600ac054f41b3d5ff",
+  "Assets/_Project/Data/Localization/GameText_en.asset": "72620308b28b01ec9b19b6d33283c1de838322851ad7c64d8a646c761fd15f8b",
+  "Assets/_Project/Data/Localization/GameText_ja.asset": "24255c4ba8020a352457d0c6c2c480b309a8d51e1245d367793dee587d3049ae",
+  "Assets/_Project/Data/Localization/GameText_zh-Hans.asset": "6c5ef7ce543682e99c608eba6259ac4a393346c7d1164a1d290534e17230c15a",
+  "Assets/_Project/Data/Localization/GameText_zh-Hant.asset": "f843a10a9e6f8f270e2536f07af2e9e33fac988ce3e1edb446c4bc51adcbcd47"
+}

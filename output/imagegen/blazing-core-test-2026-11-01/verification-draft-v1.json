@@ -1,0 +1,57 @@
+{
+  "name": "타오르는 심핵 — 6색·2픽셀 외곽선 초안",
+  "mode": "edit draft only",
+  "editSource": "C:/Users/user/Desktop/CapstoneProject/output/relic-review-2026-11-01/fire-relics/icons/RD_FireBonusRelic.png",
+  "concept": "Preserve asymmetrical flame-core silhouette; simplify to broad red/orange shell and yellow/cream center",
+  "size": [
+    32,
+    32
+  ],
+  "colorCount": 6,
+  "palette": {
+    "#363232": 211,
+    "#A75064": 17,
+    "#E09656": 64,
+    "#E55C5C": 90,
+    "#EECF5A": 55,
+    "#F1E9D4": 8
+  },
+  "exactSixPaletteColors": true,
+  "alphaValues": [
+    0,
+    255
+  ],
+  "bounds": [
+    4,
+    2,
+    28,
+    30
+  ],
+  "margins": {
+    "left": 4,
+    "top": 2,
+    "right": 4,
+    "bottom": 2
+  },
+  "twoPixelOuterContourVerified": true,
+  "previewExact16xNearest": true,
+  "sha256": "35fb112b3cb8e012445f7512118178cf570183759d69480082c393b81ce41a4e",
+  "protectedHashes": {
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_FireBonusRelic.asset": "b16cc9597e5216419b5a9c1ae96ffb054439f631a86d71ad49cdf11ab6b5f57b",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_FireBonusRelic.asset.meta": "0631bbc90cdfe8c1f7eb4eb6ffafc27c775518b56ea4fa9c644614da5eb224e3",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Flame Artifact.png": "44aa3e633a3ff88371a1b6477160df129dfd8498605a8d044d434c43c6f7aa29",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Flame Artifact.png.meta": "7d4dbe59cc948c905272d5849aaf1b6edc5b01f1f17f3d65476803955bdda87b"
+  },
+  "suppliedPaletteColorsConfirmed": true,
+  "protectedProjectSourcesUnchanged": true,
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-e3cc7524-7420-4725-b216-451ec70c6278.png",
+  "export": "Uniform proportional nearest raster sampling, exact six palette colors, 2px charcoal contour; exact nearest preview",
+  "projectAssetsChanged": false,
+  "unityVerification": "not executed; draft only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

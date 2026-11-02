@@ -90,10 +90,10 @@ MonoBehaviour:
   canvasGroup: {fileID: 6042541081144591544}
   bubbleBackground: {fileID: 0}
   bubbleText: {fileID: 5127057115793199306}
-  defaultBorderColor: {r: 0, g: 0, b: 0, a: 1}
-  defaultFillColor: {r: 1, g: 1, b: 1, a: 0.52}
+  defaultBorderColor: {r: 0, g: 0, b: 0, a: 0}
+  defaultFillColor: {r: 1, g: 1, b: 1, a: 1}
   defaultFontColor: {r: 0, g: 0, b: 0, a: 1}
-  backgroundTextureInfluence: 0
+  backgroundTextureInfluence: 1
   playTypingSound: 1
   typingSoundInterval: 0.035
 --- !u!1 &7187667657728760616

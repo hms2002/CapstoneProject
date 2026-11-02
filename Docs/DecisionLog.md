@@ -3538,3 +3538,41 @@ All repeatable cards use localized training names and named effect descriptions 
 ## 2026-10-30 - Restore The Original Twenty-Level EXP Curve Only
 
 The user withdrew the Lv.13 clear target and explicitly restored the original 20-level EXP requirements, including the first 40-EXP level-up. The ordinary-clear target returns to Lv.16–18. The restored 3,570-EXP curve maps the 2,540-EXP reference to Lv.17. This supersedes only the EXP portion of the previous revision: training titles/descriptions, five-language text, reduced combat-stat tiers and reward rules remain as revised. Actual full-run balance still needs play verification. See the [session](SessionLogs/2026-10-30.md).
+
+## 2026-11-01 - Ordinary NPC Affection Conversations Belong To An Active Run
+
+The user supersedes the 2026-09-21 hub-plus-run rule for ordinary NPCs opted into the new loop, starting with Sasha. Offer one affection conversation per NPC ID during an active run. Both a completed successful choice and a completed failed choice consume the opportunity; repeated/stage-recreated encounters use short choice-free greetings. Hub interactions also use greetings. At the highest authored reward threshold, stop offering affection dialogue and its indicator. Existing active-run end/reset paths clear the opportunity list, while accumulated affection follows the existing permanent-progress commit policy. Bosses/commanders and unconfigured NPCs retain their existing behavior.
+
+Dialogue availability is gameplay/session state; the authored animated bubble projects it. Per-NPC anchors are edited in Scene view with preview and Undo. The supplied sheet is three left-to-right 32x32 frames in a 96x32 PNG. Sasha temporarily reuses the first 20% discount effect at thresholds 1/2/3 (20%/40%/60% total), pending detailed reward design. See the [scope](ActiveTasks/npc-run-affection-dialogue.md) and [structure](StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md).
+
+## 2026-11-01 - Sasha's Four Permanent Merchant Rewards
+
+The user's final reward order supersedes the temporary shared discounts above: tier 1 gives one random stocked item an additional integer 10–20% discount; tier 2 retains up to 100 held gold after Defeat/TimeOver for one next-run payment; tier 3 initially weights eligible Rare/Epic relic candidates at 1.10/1.15 relative to Common 1.00; tier 4 applies a 5% global discount. These are cumulative entitlements derived from saved affection and pending run gains. Existing affection-three slots automatically receive tiers 1–3 and can reach the new maximum of 4. Tier-3 candidates reuse existing high-affection Ink knots. Donation-box and other NPC content remain outside this slice.
+
+Special selection and percentage belong to stock state, survive reentry/repricing and stay consumed after sale; a stock refresh can assign a new offer. Calculate global and per-item discounts multiplicatively from the original price and round once. Show an original-price strikethrough, payable amount and yellow special badge in the existing world-space slot prefabs. Purchase and presentation read the same stored final price.
+
+Gold retention is an additive profile credit, committed before run balance reset and consumed/flushed before the next run becomes active. It does not become magic stones, accumulate across deaths or pay repeatedly. Victory/Abort do not create a new credit. Existing run/session/profile owners retain these responsibilities; no manager or bootstrap object is added. See [scope](ActiveTasks/merchant-affection-rewards.md) and [gold/shop structure](StructureMemory/RunGoldAndShop.md).
+
+## 2026-11-02 - NPC Conversations Unlock Cumulatively And Continue At The Cap
+
+The user replaces exact-affection candidate selection with cumulative unlocking for configured ordinary NPCs. The existing `affectionLevel` field is the minimum unlock threshold, without a serialized rename/schema change. Select uniformly among distinct unlocked Ink paths; earlier conversations remain eligible at every later level. Sasha's unilateral-partnership conversation joins the base pool, giving seven distinct paths with pool sizes 3/5/7/7/7 at affection 0/1/2/3/4; redundant level-three copies are removed.
+
+Maximum affection now suppresses positive gain, reward regrant and the authored gain indicator, while retaining one choice conversation per active run. Completed positive/negative/no-gain conversations consume the existing NPC-ID run allowance; subsequent interactions use greetings. New runs reset that allowance through the existing owner. Hub interactions and bosses/unconfigured NPCs keep their existing behavior. This supersedes the maximum-dialogue suppression rule in the November 1 NPC entry; reward tuning and save ownership are unchanged. See [scope](ActiveTasks/npc-dialogue-cumulative-pool.md).
+
+## 2026-11-02 - Ordinary NPC Conversation Conditions Use Stable Route Themes
+
+An ordinary-NPC conversation entry may specify `requiredThemeId`. Blank/missing values preserve unrestricted behavior; a specified value must match the committed active route's `StableThemeId` through `RunRoutePlayback`. Missing/inactive route context excludes only restricted entries. Do not infer the area from stage order, localized names or a concrete Infrastructure manager.
+
+The same eligibility predicate governs conversation/indicator availability and candidate filtering. Select uniformly among distinct unlocked eligible paths after filtering, without a separate random gate during availability queries. Area changes retain the existing NPC/run consumption state; a later matching area cannot restore an already used conversation.
+
+Sasha's replacement `affection_0_b` uses the existing Spiri theme ID `dragon`. Other candidate/reward/cap rules remain unchanged. See [scope](ActiveTasks/sasha-spiri-dialogue.md) and [structure](StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md).
+
+
+## 2026-11-02 - Lobby Gold HUD Displays Retained Next-Run Credit
+
+User approved showing retained gold in the lobby. The existing gold HUD projects nonnegative GameData.retainedRunGold outside an active run and current run gold during a run. This changes presentation only: spendable GetGold still returns zero outside a run, and the existing StartRun owner consumes/pays the credit exactly once. Profile reload refreshes the display; the UI does not write save data or own credit state. See [gold/shop map](StructureMemory/RunGoldAndShop.md).
+
+
+## 2026-11-02 - Sasha Gold Retention Cap Increased To 500
+
+The user raises the tier-2 cap from 100 to 500. After defeat/time-out retain min(held gold, 500), keep the captured credit visible in the lobby and pay it once on the next run. Existing saved credits are not topped up; victory/abort and other reward tuning are unchanged. This supersedes only the original November 1 100-gold tuning. See [gold/shop map](StructureMemory/RunGoldAndShop.md).

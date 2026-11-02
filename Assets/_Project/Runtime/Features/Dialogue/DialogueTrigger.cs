@@ -23,13 +23,17 @@ public class DialogueTrigger : InteractableBase, INpcRoomIntroductionSource
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
 
     private NPCFeatureController featureController;
+    private int dialogueGeneration;
 
-    public string IntroductionKey => npcData != null && !npcData.isBoss ? $"npc:{npcData.id}" : null;
+    public NPCData NpcData => npcData;
+    public bool CanOfferAffectionDialogue => NpcAffectionDialogue.CanOffer(npcData);
+    // Run affection conversations begin through player interaction, not the profile-once room intro.
+    public string IntroductionKey => npcData != null && !npcData.isBoss && !npcData.UsesRunAffectionDialogue ? $"npc:{npcData.id}" : null;
     public bool HandlesIntroductionCamera => false;
 
     public bool TryStartIntroduction(IPlayerInteractor player, System.Action<bool> onEnded)
     {
-        if (!CanInteract(player))
+        if ((npcData != null && npcData.UsesRunAffectionDialogue) || !CanInteract(player))
             return false;
 
         return DialoguePlayback.TryStartDialogueSequence(
@@ -45,6 +49,22 @@ public class DialogueTrigger : InteractableBase, INpcRoomIntroductionSource
         TryMigrateLegacyInk();
         OnUnHighlight();
     }
+
+    private void OnEnable()
+    {
+        RunSessionStore.OnRunStarted += InvalidateDialogue;
+        RunSessionStore.OnRunEnded += HandleRunEnded;
+    }
+
+    private void OnDisable()
+    {
+        RunSessionStore.OnRunStarted -= InvalidateDialogue;
+        RunSessionStore.OnRunEnded -= HandleRunEnded;
+        InvalidateDialogue();
+    }
+
+    private void InvalidateDialogue() => dialogueGeneration++;
+    private void HandleRunEnded(RunEndReason reason) => InvalidateDialogue();
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -104,6 +124,23 @@ public class DialogueTrigger : InteractableBase, INpcRoomIntroductionSource
             return;
 
         List<NPCData> participants = new() { npcData };
+        if (npcData.UsesRunAffectionDialogue)
+        {
+            var backpack = player.Transform.GetComponent<PlayerBackpackInventory>();
+            if (!NpcAffectionDialogue.TrySelect(npcData, NpcAffectionDialogue.IsBackpackFull(backpack), out string path, out bool isAffection))
+                return;
+            int generation = ++dialogueGeneration;
+            GamePlayData run = RunSessionStore.Data;
+            DialoguePlayback.TryStartDialogueSequence(
+                new[] { new DialogueStorySegment(dialogueInk, path) }, participants, featureController,
+                new DialoguePresentationOptions(onEnded: completed =>
+                {
+                    if (completed && isAffection && generation == dialogueGeneration && RunSessionStore.IsRunActive &&
+                        ReferenceEquals(run, RunSessionStore.Data))
+                        RunSessionStore.TryConsumeAffectionGain(npcData.id);
+                }));
+            return;
+        }
         DialoguePlayback.TryStartDialogue(dialogueInk, participants, featureController);
     }
 

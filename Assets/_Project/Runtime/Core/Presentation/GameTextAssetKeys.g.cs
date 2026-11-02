@@ -777,5 +777,8 @@ internal static class GameTextAssetKeys
         { "LevelRewardDefinitionSO/Reward_Stat_Bleed_2/description", "asset.425c71f2c4e07194384325805cdfa29b.description" },
         { "LevelRewardDefinitionSO/Reward_Stat_Bleed_3/displayName", "asset.334a8746e23c3e14ead8e80abd8b8124.displayName" },
         { "LevelRewardDefinitionSO/Reward_Stat_Bleed_3/description", "asset.334a8746e23c3e14ead8e80abd8b8124.description" },
+        { "MerchantAffectionRewardEffect/SashaSpecialOffer/rewardText", "asset.0d511974dcee39841b43b11efe690364.rewardText" },
+        { "MerchantAffectionRewardEffect/SashaGoldRetention/rewardText", "asset.9610f69b0692a734ab7aa1eccc8264f3.rewardText" },
+        { "MerchantAffectionRewardEffect/SashaBetterRelics/rewardText", "asset.05a8fc8c3d1883a45bc96ff32322dbdb.rewardText" },
     };
 }

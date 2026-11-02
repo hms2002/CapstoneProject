@@ -1,0 +1,117 @@
+{
+  "date": "2026-11-01",
+  "mode": "draft only",
+  "tool": "built-in image_gen",
+  "generation_calls": 3,
+  "items": [
+    {
+      "name": "작열하는 송곳",
+      "key": "scorching-awl",
+      "file": "scorching-awl-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "opaque_color_count": 6,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        3,
+        2,
+        4,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "754327ec9e4194698c84b7fddc523b341e124af62978e903cab53c41a441adbb"
+    },
+    {
+      "name": "휴대용 화로",
+      "key": "portable-brazier",
+      "file": "portable-brazier-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "opaque_color_count": 6,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "f544e6da789f2f04c745ba9e38060859ade2e263079a7a286a588ade043db3c7"
+    },
+    {
+      "name": "태양의 파편",
+      "key": "sun-fragment",
+      "file": "sun-fragment-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "opaque_color_count": 6,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        6,
+        2,
+        6,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "60b7bc1d7d8ff18a85b0903df24450a53e03200741a38d52f4c91f8f2b8afa94"
+    }
+  ],
+  "sheet_size": [
+    96,
+    32
+  ],
+  "preview_size": [
+    768,
+    256
+  ],
+  "sheet_frames_equal_individual_files": true,
+  "exact_nearest_preview": true,
+  "protected_project_files_unchanged": 378,
+  "project_applied": false,
+  "unity_import_compile_playmode": "not executed",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "markdown_links_verified": 8
+}

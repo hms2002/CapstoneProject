@@ -2,7 +2,7 @@
 status: active
 authority: task-router
 category: task-index
-last_reviewed: 2026-10-12
+last_reviewed: 2026-11-02
 ---
 
 # Task Index
@@ -33,6 +33,11 @@ Use this file to find a matching `Docs/ActiveTasks/<task-id>.md` or to decide th
 
 | Task ID | Closed Date | Replacement / Outcome |
 | --- | --- | --- |
+| sasha-spiri-dialogue | 2026-11-02 | [Completed scope](ActiveTasks/sasha-spiri-dialogue.md): replaced affection_0_b with two-window Spiri-goods conversation and Happy/Surprised replies; optional required-theme eligibility, dragon-only uniform candidate with unchanged run allowance. Unity359/359, preservation989/989 and MSBuild passed; full manual gameplay/Player build and translation review remain. |
+| sasha-discount-portraits | 2026-11-02 | [Completed scope](ActiveTasks/sasha-discount-portraits.md): supplied Normal/Surprised portraits, all eight no-gain branches and two-window discount conversation; pools 3/6/8/8/8. Unity430/430, preservation232/232 and MSBuild passed; Notion text updated. Full manual gameplay/Player build and optional Notion image-sharing approval remain. |
+| npc-dialogue-cumulative-pool | 2026-11-02 | [Completed scope](ActiveTasks/npc-dialogue-cumulative-pool.md): cumulative distinct candidate pools, one capped choice conversation per run without gain/indicator, Sasha partnership dialogue and five-language text. Unity337/337, preservation216/216 and MSBuild passed; Notion reference updated; full manual gameplay/Player build remain. |
+| merchant-affection-rewards | 2026-11-01 | [Completed scope](ActiveTasks/merchant-affection-rewards.md): four permanent tiers, one stable special offer, next-run gold credit, modest relic rarity weighting and authored two-line world price tags. Unity301/301 and preservation78/78 passed; native layout inspected, MSBuild passed; full manual gameplay/Player build remain. |
+| npc-run-affection-dialogue | 2026-11-01 | [Completed scope](ActiveTasks/npc-run-affection-dialogue.md): merchant active-run loop, 6 conversations, 5 greetings, three placeholder rewards and supplied three-frame authored bubble/Scene handle. Unity native226/226, generated Editor MSBuild and preservation/localization audit passed; full manual Play Mode/Player build remain unexecuted. |
 | spiri-alcohol-exposure | 2026-10-12 | [Completed scope](ActiveTasks/spiri-alcohol-exposure.md): recipient3s charge/1.5s drain, confusion, Spiri level1 five-second speed reward and authored mug; initial38 native cases passed. Directional dash reversal follow-up compiled with15 direction cases; current open Editor PlayMode rerun/manual combat/Player build remain unexecuted. |
 | encyclopedia-tab-visibility-reveal | 2026-10-12 | [Completed scope](ActiveTasks/encyclopedia-tab-visibility-reveal.md): complete Item detail hiding with bookmarks/selection preserved; shared Reveal order and mask-top correction. Unity26/26, Editor/test MSBuild and preservation23/23 passed; native phases use real Item/font presenters. Full hub manual flow/Player build remain. |
 | electric-scaling-and-relics | 2026-10-12 | [Completed scope](ActiveTasks/electric-scaling-and-relics.md): active direct re-electrocution doubles the requirement, shock end resets to base; chain/Echo and game explanations excluded. Native96/96 and Editor/test MSBuild passed. Earlier ten-relic/29-level actual descriptions and exact150 locale values verified; manual combat balance/Player build remain. |

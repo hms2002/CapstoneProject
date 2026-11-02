@@ -243,3 +243,164 @@ public sealed class SceneSmokePlayModeTests
         return null;
     }
 }
+
+#if UNITY_EDITOR
+/// <summary>Exercises the real Ink/tag/controller callback path without loading or saving a gameplay scene.</summary>
+public sealed class DialogueBlockingPresentationPlayModeTests
+{
+    private const System.Reflection.BindingFlags PrivateInstance =
+        System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+    private GameObject root;
+    private Component controller;
+    private Component handler;
+    private object state;
+    private System.Action pending;
+    private int featureCalls;
+
+    [SetUp]
+    public void SetUp()
+    {
+        // Keep lifecycle/service registration and scene UI discovery out of this focused fixture.
+        root = new GameObject("DialogueBlockingPresentationTest");
+        root.SetActive(false);
+        controller = root.AddComponent(RuntimeType("DialogueController"));
+        handler = root.AddComponent(RuntimeType("DialogueTagHandler"));
+        Component view = root.AddComponent(RuntimeType("DialogueView"));
+        SetField("view", view);
+        SetField("tagHandler", handler);
+        state = Field("sessionState");
+        Invoke(state, "BeginSession");
+        Invoke(state, "EndTransition");
+        handler.GetType().GetField("OnFeatureRequested").SetValue(handler,
+            (System.Action<string, System.Action>)((_, callback) => { featureCalls++; pending = callback; }));
+        handler.GetType().GetField("OnChoiceFailureRequested").SetValue(handler,
+            (System.Action<System.Action>)(callback => pending = callback));
+
+        // Bind the real NPCData-typed affection event without adding a test assembly reference to UI/Gameplay.
+        var affectionField = handler.GetType().GetField("OnAffectionRequested");
+        System.Type[] arguments = affectionField.FieldType.GetGenericArguments();
+        var npc = System.Linq.Expressions.Expression.Parameter(arguments[0]);
+        var amount = System.Linq.Expressions.Expression.Parameter(arguments[1]);
+        var completion = System.Linq.Expressions.Expression.Parameter(arguments[2]);
+        var capture = System.Linq.Expressions.Expression.Call(
+            System.Linq.Expressions.Expression.Constant(this),
+            GetType().GetMethod(nameof(CaptureCompletion), PrivateInstance), completion);
+        affectionField.SetValue(handler, System.Linq.Expressions.Expression.Lambda(
+            affectionField.FieldType, capture, npc, amount, completion).Compile());
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        if (state != null) Invoke(state, "EndSession");
+        Object.DestroyImmediate(root);
+    }
+
+    [Test]
+    public void CameraCueWaitsForFeatureThenShowsNextSpokenLineWithoutCueCard()
+    {
+        SetStory("[camera cue] # feature: scribe_cue # presentation_only\nNext spoken line.\n-> END");
+        Continue();
+        Assert.That(featureCalls, Is.EqualTo(1));
+        Assert.That(CurrentText, Is.Empty);
+        Assert.That(pending, Is.Not.Null);
+        Assert.That((bool)state.GetType().GetProperty("IsWaitingForCallback").GetValue(state), Is.True);
+        pending();
+        Assert.That(CurrentText.Trim(), Is.EqualTo("Next spoken line."));
+        Assert.That(CurrentText, Does.Not.Contain("[camera cue]"));
+        // Changing locale after the callback must refresh the spoken line, not revive the sentinel.
+        controller.GetType().GetMethod("HandleLocaleChanged", PrivateInstance).Invoke(controller, new object[] { null });
+        Assert.That(CurrentText.Trim(), Is.EqualTo("Next spoken line."));
+    }
+
+    [TestCase("add_aff: 1")]
+    [TestCase("choice_fail")]
+    [TestCase("feature: scribe_cue")]
+    public void BlockingEffectPreservesItsRealSpokenLineBeforeAdvancing(string tag)
+    {
+        SetStory("First spoken line. # " + tag + "\nFollowing line.\n-> END");
+        Continue();
+        Assert.That(CurrentText, Is.Empty);
+        Assert.That(pending, Is.Not.Null);
+        pending();
+        Assert.That(CurrentText.Trim(), Is.EqualTo("First spoken line."));
+        Invoke(state, "EndTyping");
+        Continue();
+        Assert.That(CurrentText.Trim(), Is.EqualTo("Following line."));
+    }
+
+    [Test]
+    public void ExplicitPresentationOnlyLineWithoutBlockingFeatureAlsoSkipsItsText()
+    {
+        SetStory("hidden marker # presentation_only\nVisible line.\n-> END");
+        Continue();
+        Assert.That(CurrentText.Trim(), Is.EqualTo("Visible line."));
+        Assert.That(featureCalls, Is.Zero);
+    }
+
+    [Test]
+    public void CallbackAfterSessionEndsDoesNotDisplayOrAdvance()
+    {
+        SetStory("Hidden marker # feature: scribe_cue # presentation_only\nMust not appear.\n-> END");
+        Continue();
+        Invoke(state, "EndSession");
+        pending();
+        Assert.That(CurrentText, Is.Empty);
+    }
+
+    [TestCase("intro", 9, 4)]
+    [TestCase("audience", 2, 2)]
+    [TestCase("repeat", 1, 0)]
+    public void AuthoredScribeKeepsEverySpokenLineAndCameraCue(string knot, int spokenCount, int cueCount)
+    {
+        string json = System.IO.File.ReadAllText(
+            "Assets/_Project/Data/Dialogue/Ink/GrandHallScribe.json");
+        object story = System.Activator.CreateInstance(RuntimeType("Ink.Runtime.Story"), json);
+        story.GetType().GetMethod("ChoosePathString").Invoke(story, new object[] { knot, false, new object[0] });
+        int spoken = 0, cues = 0;
+        while ((bool)story.GetType().GetProperty("canContinue").GetValue(story))
+        {
+            string text = (string)Invoke(story, "Continue");
+            var tags = (List<string>)story.GetType().GetProperty("currentTags").GetValue(story);
+            if (tags.Contains("feature: scribe_cue"))
+            {
+                Assert.That(tags, Does.Contain("presentation_only"));
+                Assert.That(text.Trim(), Is.EqualTo("[camera cue]"));
+                cues++;
+            }
+            else if (!string.IsNullOrWhiteSpace(text))
+            {
+                Assert.That(tags, Does.Not.Contain("presentation_only"));
+                spoken++;
+            }
+        }
+        Assert.That(spoken, Is.EqualTo(spokenCount));
+        Assert.That(cues, Is.EqualTo(cueCount));
+    }
+
+    private void CaptureCompletion(System.Action callback) => pending = callback;
+    private string CurrentText => (string)state.GetType().GetProperty("CurrentText").GetValue(state);
+    private object Field(string name) => controller.GetType().GetField(name, PrivateInstance).GetValue(controller);
+    private void SetField(string name, object value) => controller.GetType().GetField(name, PrivateInstance).SetValue(controller, value);
+    private void Continue() => controller.GetType().GetMethod("ContinueStory", PrivateInstance).Invoke(controller, null);
+
+    private void SetStory(string source)
+    {
+        System.Type compilerType = RuntimeType("Ink.Compiler");
+        object options = System.Activator.CreateInstance(compilerType.GetNestedType("Options"));
+        object compiler = System.Activator.CreateInstance(compilerType, source, options);
+        SetField("currentStory", Invoke(compiler, "Compile"));
+    }
+
+    private static object Invoke(object target, string method) => target.GetType().GetMethod(method).Invoke(target, null);
+    private static System.Type RuntimeType(string name)
+    {
+        foreach (System.Reflection.Assembly assembly in System.AppDomain.CurrentDomain.GetAssemblies())
+        {
+            System.Type type = assembly.GetType(name);
+            if (type != null) return type;
+        }
+        throw new System.InvalidOperationException("Missing runtime type: " + name);
+    }
+}
+#endif

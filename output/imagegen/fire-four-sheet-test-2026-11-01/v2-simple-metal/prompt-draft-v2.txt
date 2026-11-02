@@ -1,0 +1,53 @@
+Use case: precise-object-edit / style-transfer.
+Edit the FOUR-ICON sprite sheet in image 1. Produce ONE revised four-icon sheet, maintaining the SAME subjects, orientations, distinctive silhouettes, broad proportions and 2x2 arrangement. This is a deliberate simplification pass for readable native 32x32 inventory relics, NOT an embellishment pass.
+
+REFERENCE ROLES:
+Image 1 = EDIT TARGET: previous fire draft, arranged feather top-left, bell top-right, incense burner bottom-left, crown bottom-right.
+Image 2 = approved ELECTRIC relic STYLE reference. Match these very simple thick charcoal silhouettes, quiet broad flat connected color regions and minimal internal marks. Do not copy electric icon shapes or electricity.
+Image 3 = EXCLUSIVE permitted color palette.
+Image 4 = original source designs, secondary silhouette reference only. Preserve the curved-neck incense burner and low wide crown.
+
+PRIMARY CHANGE:
+The previous flames look too busy. Reduce interior detail by about half. Remove tiny cream highlights, bright specks, rippling flame ribbons and repeated nested flame layers. Each flame is ONE main warm shape with ONE broad connected yellow inner shape, optionally one orange transition. Calm chunky silhouettes with few deliberate steps. Flat light/main/shadow regions just like the electric references. Let the recognizable object and large color blocks read immediately at a distance. Do not add detail just to use the color budget.
+
+EXACT ARRANGEMENT:
+2x2 equal square logical 32x32 cells, total logical 64x64, no background.
+Top-left = BURNING FEATHER.
+Top-right = MELTED BELL.
+Bottom-left = SMOKY INCENSE BURNER.
+Bottom-right = CRIMSON CROWN.
+No icon crosses its own cell. At least 2 empty logical pixels around each icon.
+All opaque forms have a consistent 2-native-pixel charcoal outer outline #363232.
+Nearest-neighbor enlargement of coarse pixel art is welcome if necessary. No text, numbers, captions, grid or palette swatches.
+
+FEATHER:
+Keep diagonal upper-right feather, short lower-left quill. Retain broad feather shape, but reduce little tongues and barbs to only about 3 large joined lobes per side. Broad red/orange vane, one simple yellow central band; muted red quill/shadow. Avoid drawing a detailed inferno. Five colors at most: #363232 #A75064 #E55C5C #E09656 #EECF5A.
+
+BELL:
+Keep closed sturdy hanging loop, domed body and flared lower rim/clapper.
+IMPORTANT COLOR CHANGE: the large METAL BODY is now clearly cool STEEL GRAY, mostly #C2C2C2 with one broad #8599B0 shaded plane. The loop and rim also steel gray. Avoid cyan or blue light effects.
+Retain just ONE simple warm molten seam running down the body into a small hot lower edge/clapper. Fire colors #E55C5C #E09656 #EECF5A; no extra engraving, surface spots, filigree, stripes or multiple cracks. At least two-thirds of the body visibly cool gray so material and fire are distinct.
+Exactly SIX available colors including outline: #363232 #8599B0 #C2C2C2 #E55C5C #E09656 #EECF5A. Fewer is okay.
+
+INCENSE BURNER:
+Keep round plump lower vessel with small feet and a thick supporting neck curving upward to its little hook-like opening. Preserve original vessel, not a chalice or modern wide brazier.
+IMPORTANT COLOR CHANGE: round METAL VESSEL, feet and curved neck use #C2C2C2 main plane and one #8599B0 shadow plane, a clean simple steel object.
+One small chunky red/orange flame with single connected yellow center at the upper opening. Optionally one broad warm glow at vessel mouth, no decorative bands, no white glints, no fragmented flames or smoke curls. The metal must read separately from flame.
+Exactly SIX available colors including outline: #363232 #8599B0 #C2C2C2 #E55C5C #E09656 #EECF5A. Fewer is okay.
+
+CROWN:
+Retain broad LOW crown, side points and taller central point. Keep about three large simple peaks. Solid red/orange band, one broad muted-red underside, single simple yellow central inset/flame shape. Remove little bright facets, tiny bright dots and extra little fire tongues; smooth coarse stair-step silhouette.
+Keep wider than tall, do NOT stretch vertically to fill the cell.
+Five colors at most: #363232 #A75064 #E55C5C #E09656 #EECF5A.
+
+Shared sheet palette is these SEVEN colors only; EACH object uses at most SIX:
+#363232 charcoal contour
+#A75064 muted red shadow, feather/crown only
+#E55C5C red
+#E09656 warm orange
+#EECF5A yellow
+#8599B0 steel shadow, bell/incense only
+#C2C2C2 steel main plane, bell/incense only
+Every color is in the user's provided palette. No cream or white highlights.
+No gradients, dithering, antialiasing, noise, mottling, texture, glossy specks, glow halo, detached sparks, thin line art, realistic lighting or additional colors. Large contiguous flat planes. Each is designed at the native 32-pixel icon scale, not a detailed painting shrunk later.
+Preserve genuinely TRANSPARENT RGBA background.

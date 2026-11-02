@@ -12,6 +12,7 @@ public sealed class MerchantStockEntryState
     public int price;
     // Run-gold prices are rolled once; discounts always derive from this original price.
     public int undiscountedPrice = -1;
+    public int specialDiscountPercent;
     public bool isSold;
 
     public bool HasItem => !string.IsNullOrWhiteSpace(itemId);
@@ -45,6 +46,7 @@ public sealed class MerchantRuntimeState
     public string merchantId;
     public List<MerchantStockEntryState> slots = new List<MerchantStockEntryState>();
     public int refreshCountUsed;
+    public bool specialOfferAssigned;
 
     public MerchantRuntimeState() { }
 

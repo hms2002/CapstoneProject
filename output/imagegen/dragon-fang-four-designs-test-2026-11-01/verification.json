@@ -1,0 +1,184 @@
+{
+  "date": "2026-11-01",
+  "mode": "preview-only drafts",
+  "tool": "built-in image_gen",
+  "generation_calls": 4,
+  "items": [
+    {
+      "index": 1,
+      "name": "짧고 굵은 송곳니",
+      "description": "넓고 둥근 뿌리에서 짧은 촉으로 좁아지는 기본형",
+      "file": "01-short-fang-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        2,
+        3
+      ],
+      "two_pixel_outline": true,
+      "sha256": "fea2a08e424d57803cedcebed7c83c385c54da31acea000e9250a469ff989d1b"
+    },
+    {
+      "index": 2,
+      "name": "갈고리처럼 휜 이빨",
+      "description": "안쪽으로 깊게 휘어지는 곡선과 굵은 뿌리를 강조한 형태",
+      "file": "02-hook-fang-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        32,
+        0,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        4,
+        2,
+        5,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "d7c50ead34c8b874e4498712f79d8e4f1ce4760e913f99608f4eaccb39b85aaf"
+    },
+    {
+      "index": 3,
+      "name": "각진 쐐기형 이빨",
+      "description": "넓적한 삼각형 단면과 짧고 날카로운 끝을 가진 형태",
+      "file": "03-faceted-fang-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "f5afa615bae24dd6cad1024fa326b54176048f69c57d25f118f8f78f74ce0040"
+    },
+    {
+      "index": 4,
+      "name": "손잡이를 단 이빨 송곳",
+      "description": "굵은 이빨을 짧은 붉은 손잡이에 고정한 유물형",
+      "file": "04-grip-fang-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "cdea3bd099d3b3ca500b77e74b4cf21c0945e09170bf4264571acdb8d0fa5b2c"
+    }
+  ],
+  "shared_palette": [
+    "#363232",
+    "#A75064",
+    "#E09656",
+    "#E55C5C",
+    "#EECF5A",
+    "#F1E9D4"
+  ],
+  "sheet_size": [
+    64,
+    64
+  ],
+  "layout": "2x2, row-major indices 1 to 4",
+  "preview_size": [
+    512,
+    512
+  ],
+  "sheet_frames_match_native_files": true,
+  "preview_exact_nearest_8x": true,
+  "protected_project_files_unchanged": 378,
+  "project_applied": false,
+  "unity_import_compile_playmode": "not executed",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "markdown_links_verified": 9
+}
