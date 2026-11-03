@@ -1,0 +1,9 @@
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\Gameplay.dll
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\Gameplay.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\Core.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\Ink-Libraries.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\Gameplay.csproj.AssemblyReference.cache
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\Gameplay.csproj.CoreCompileInputs.cache
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\Gameplay.csproj.Up2Date
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\Gameplay.dll
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\Gameplay.pdb

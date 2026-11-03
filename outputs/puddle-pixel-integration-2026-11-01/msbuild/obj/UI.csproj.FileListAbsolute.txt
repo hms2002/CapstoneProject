@@ -1,0 +1,16 @@
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\UI.dll
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\UI.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\com.rlabrecque.steamworks.net.dll
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\Core.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\Gameplay.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\Infrastructure.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\Presentation.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\Ink-Libraries.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\DOTween.Modules.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\DOTweenPro.Scripts.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\com.rlabrecque.steamworks.net.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\UI.csproj.AssemblyReference.cache
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\UI.csproj.CoreCompileInputs.cache
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\UI.csproj.Up2Date
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\UI.dll
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\UI.pdb

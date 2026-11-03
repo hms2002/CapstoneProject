@@ -1,0 +1,8 @@
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\InkEditor.dll
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\InkEditor.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\Ink-Libraries.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\InkEditor.csproj.AssemblyReference.cache
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\InkEditor.csproj.CoreCompileInputs.cache
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\InkEditor.csproj.Up2Date
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\InkEditor.dll
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\InkEditor.pdb

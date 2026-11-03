@@ -1,0 +1,6 @@
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\Core.dll
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\bin\Core.pdb
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\Core.csproj.AssemblyReference.cache
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\Core.csproj.CoreCompileInputs.cache
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\Core.dll
+C:\Users\nadom\Desktop\졸업작품\CapstoneProject\outputs\puddle-pixel-integration-2026-11-01\msbuild\obj\Core.pdb
