@@ -1,0 +1,222 @@
+[
+  {
+    "id": "FlyingBoots",
+    "name": "날개 부츠",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FlyingBoots.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/flying_boots.png",
+    "sprite": "flying_boots",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "5e75f76ed6404d0e95d4b05a8a46ae0d",
+    "fileID": 21300000,
+    "updated": false,
+    "description": "대쉬 재사용 대기시간이 10% 감소",
+    "displayNamesVerified": true,
+    "effect": "대쉬 재사용 대기시간 10% 감소",
+    "previousName": "날개 부츠"
+  },
+  {
+    "id": "DashCoil",
+    "name": "대시 코일",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_DashCoil.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DashCoil.png",
+    "sprite": "Icon_DashCoil",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "f010418b11d045cfae759c9daecfb610",
+    "fileID": 21300000,
+    "updated": true,
+    "description": "이동 스킬을 사용하면 3초 동안 전기 속성이 증가합니다. 최대 4중첩이며 다시 사용하면 모든 중첩의 지속시간이 갱신됩니다.",
+    "displayNamesVerified": true,
+    "effect": "이동 스킬 사용 후 3초간 전기 속성 증가\n최대 4중첩 · 재사용 시 지속시간 갱신",
+    "previousName": "대시 코일"
+  },
+  {
+    "id": "CurrentShard",
+    "name": "전류 조각",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentShard.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CurrentShard.png",
+    "sprite": "Icon_CurrentShard",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "02761a86fab34a7fa8bb97619af634d3",
+    "fileID": 21300000,
+    "updated": true,
+    "description": "전기 속성 보너스가 증가합니다.",
+    "displayNamesVerified": true,
+    "effect": "전기 속성 보너스 증가",
+    "previousName": "전류 조각"
+  },
+  {
+    "id": "ThunderHeart",
+    "name": "만뢰의 인장",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderHeart.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_MyriadThunderSeal.png",
+    "sprite": "Icon_MyriadThunderSeal",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "60a42a21e7f24f5085de1b74889ac81f",
+    "fileID": 21300000,
+    "updated": true,
+    "description": "감전된 적의 수에 비례해 전기 속성이 증가합니다.",
+    "displayNamesVerified": true,
+    "effect": "감전된 적의 수에 비례해 전기 속성 증가",
+    "previousName": "천둥의 심장"
+  },
+  {
+    "id": "StormStep",
+    "name": "생명의 전류",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_StormStep.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LifeCurrent.png",
+    "sprite": "Icon_LifeCurrent",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "42d4577eae4f4bca963aa4a42beb3823",
+    "fileID": 21300000,
+    "updated": true,
+    "description": "최대 체력에 비례해 전기 속성이 증가합니다.",
+    "displayNamesVerified": true,
+    "effect": "최대 체력에 비례해 전기 속성 증가",
+    "previousName": "생명의 전류"
+  },
+  {
+    "id": "ThunderKnot",
+    "name": "잔뢰의 수정구",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderKnot.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LingeringThunderOrb.png",
+    "sprite": "Icon_LingeringThunderOrb",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "957067294e724dba9d1a8c63cf346116",
+    "fileID": 21300000,
+    "updated": true,
+    "description": "연쇄에 맞은 적의 감전 지속시간이 늘어납니다. 최대 4초까지 늘어납니다.",
+    "displayNamesVerified": true,
+    "effect": "연쇄 대상의 감전 지속시간 연장\n최대 4초까지 연장",
+    "previousName": "뇌명의 매듭"
+  },
+  {
+    "id": "ResonanceBell",
+    "name": "뇌전 분배기",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ResonanceBell.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ThunderDistributor.png",
+    "sprite": "Icon_ThunderDistributor",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "2a013a9a46134782af27eb04bdd956c6",
+    "fileID": 21300000,
+    "updated": true,
+    "description": "전기 연쇄가 맞힐 수 있는 최대 대상 수가 증가합니다.",
+    "displayNamesVerified": true,
+    "effect": "전기 연쇄의 최대 대상 수 증가",
+    "previousName": "공명의 종"
+  },
+  {
+    "id": "TinglingShackles",
+    "name": "뇌전의 망치",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_TinglingShackles.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ThunderHammer.png",
+    "sprite": "Icon_ThunderHammer",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "92b902dad7cf48a2b057f2e628a3c2a3",
+    "fileID": 21300000,
+    "updated": true,
+    "description": "적에게 감전을 부여하면 0.1초 동안 마비시킵니다. 보스에게는 적용되지 않습니다.",
+    "displayNamesVerified": true,
+    "effect": "감전 부여 시 0.1초 마비\n보스에게는 적용되지 않음",
+    "previousName": "저릿한 족쇄"
+  },
+  {
+    "id": "CurrentJar",
+    "name": "전류 항아리",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentJar.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CurrentJar.png",
+    "sprite": "Icon_CurrentJar",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "e5c550d64463476b805996e62d53f9c4",
+    "fileID": 21300000,
+    "updated": true,
+    "description": "내가 부여한 감전의 지속시간이 끝나면 전기 속성의 40%만큼 피해를 줍니다.",
+    "displayNamesVerified": true,
+    "effect": "내가 부여한 감전이 만료되면\n전기 속성의 40% 피해",
+    "previousName": "전류 항아리"
+  },
+  {
+    "id": "EchoCoil",
+    "name": "메아리 코일",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_EchoCoil.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EchoCoil.png",
+    "sprite": "Icon_EchoCoil",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "e7efc408d6d146be90b9d8289e7395c2",
+    "fileID": 21300000,
+    "updated": true,
+    "description": "연쇄 번개를 50% 피해로 한 번 더 반복합니다. 최초 대상은 제외하며 감전 지속시간은 늘어나지 않습니다.",
+    "displayNamesVerified": true,
+    "effect": "연쇄 번개를 50% 피해로 한 번 더 반복\n최초 대상 제외 · 감전 지속시간 유지",
+    "previousName": "메아리 코일"
+  },
+  {
+    "id": "ConductorRing",
+    "name": "천둥의 원론",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ConductorRing.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_PrinciplesOfThunder.png",
+    "sprite": "Icon_PrinciplesOfThunder",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "18b40d0f4ef24fb5acc33aa90d09c2b7",
+    "fileID": 21300000,
+    "updated": true,
+    "description": "연쇄될 때마다 연쇄 피해가 20%씩 증가합니다. 최대 60%까지 증가합니다.",
+    "displayNamesVerified": true,
+    "effect": "연쇄마다 연쇄 피해 20% 증가\n최대 60% 증가",
+    "previousName": "도체 고리"
+  }
+]

@@ -1,0 +1,25 @@
+Use case: precise-object-edit / style-transfer.
+EDIT the existing "타오르는 심핵" / Blazing Core relic icon into the user's established clean 32x32 pixel-art style. Preview draft only.
+
+INPUT ROLES:
+Image 1 is the EDIT TARGET, a 16x exact nearest-neighbor enlargement of the original native 32x32 flame-core sprite. Preserve its recognizable design: compact flame/heart-like ember, broad upper shoulders, deep central notch between two rising flame tongues, an uneven taller tongue curling at the upper LEFT, shorter upper-right tongue, tiny side lick, and a tapering pointed lower tip. It is a living lump of fire, not an anatomical heart.
+Image 2 is the PRIMARY STYLE reference, the user's favorite gray item. Copy the bold charcoal contour, few broad connected light/mid/shadow regions, restrained detail and deliberate stepped curves. Do not copy its shape or gray colors.
+Image 3 is the user's EXCLUSIVE color palette.
+
+KEEP THE FLAME CORE DESIGN, simplify its rendering:
+Retain its asymmetrical flame silhouette and pointed bottom, with a large warm luminous core enclosed in a red-orange flame shell. Use a few broad flame lobes instead of many hairline tips. The inner flame is one joined yellow region tapering downward, with one small connected pale-cream hot center. One broad orange transition area, a red outer body and restrained muted-red shadow on the lower-right give volume.
+Warm and fiery but rendered as flat pixel colors. No metal bezel, gemstone casing, pedestal, external particles, detached sparks, halo, blurred glow or anatomical detail. Keep the fire looking like the original ember/heart-shaped flame rather than an ordinary droplet, circular orb or smooth heart emoji.
+No scratches, scattered highlights, mottled shading, tiny facets or texture. Prioritize native 32x32 readability and large color clusters. The style must match the previous simplified relic icons, not the old busy orange-red shading.
+
+EXACT SIX OPAQUE COLORS from the supplied palette, INCLUDING outline, plus full transparency:
+#363232 charcoal exterior outline and deepest small separations;
+#A75064 muted deep red shadow, only a small restrained region;
+#E55C5C red outer flame body;
+#E09656 orange transition plane;
+#EECF5A warm yellow inner flame;
+#F1E9D4 pale warm cream hot center.
+Use ALL SIX and no other colors. No blue, green, true black, pure white, gradients, dithering, antialiasing, glow blur or partial alpha. The cream is an inner flame shape, not glossy reflection flecks.
+The contour is a deliberate thick approximately TWO-NATIVE-PIXEL charcoal outline around the whole silhouette. No thin black spines or disconnected 1px sparks.
+
+LAYOUT: genuine transparent RGBA, actual logical canvas 32x32. Keep TOP TWO and BOTTOM TWO pixel rows empty, visible silhouette y=2..29; at least two empty columns on either side. Centered upright compact flame core with natural proportions and the pointed lower end. Preserve overall design/aspect without stretching merely to fill the square.
+If renderer needs larger raster, draw on an actual 32x32 logical grid and output a perfect integer nearest-neighbor enlargement with equal square pixels. No details below that logical grid. One sprite only, no captions, swatches, grid, checkerboard artwork, UI or background.

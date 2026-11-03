@@ -1,0 +1,19 @@
+{
+  "Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs": "1504d517372da1df722777ee87d993245a634720759d489ebf43b29c1334d4a3",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs": "d8d9e00e7863d27333e3cddfeb31e776bfbea7ef05fd4bbeb37fdcd93a6eb4c3",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs": "652cecdeca463c1ac68ce6609d7407cf8c74e524617b636a976ed19ca1c9e4c7",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs": "e8527a7a332b5469037bf8afc59eafa8b5b825ada746c55653cb05546c10399c",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs": "a5f53eef2cd367b3261da4acec5bf224cdcc1f99c2f9a7feeb83663242e00212",
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink": "d7eeb17a69f4b9d84c36f26d5d4f1bbf9cf9cc248504bcf4b37bf9f8da228f78",
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json": "756108918967494f176e7e7758c3e4939bfbfd27082e50ae40506463876781b8",
+  "Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset": "78f8a0008923e30948bd48441adf04c8edeeaba4841ba1aee09c51b1ac071afa",
+  "Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab": "3c60acbb4d0b1cc82ab38a59358250990aa735c5564295e861edd122adbe7e76",
+  "DataSheets/Localization/GameText.csv": "72cb2798f79fe8ebb18eb4ae356054efef2773511e35008eb72089bb5a151b9c",
+  "DataSheets/Localization/InkInventory.json": "7bfbd231559a20068ec3d70173cb790112766c23bc8198bd0b07e2174e27f8d2",
+  "Assets/_Project/Data/Localization/GameText Shared Data.asset": "dc2bdced374f6f5bf274a7baeec326ea5ecf12a1a52512e68bc867fb16ee5470",
+  "Assets/_Project/Data/Localization/GameText_ko.asset": "c15b98c7ec9c4381344b91532b7a59a44e9d0389488869aa2e6b3e2a18efc85b",
+  "Assets/_Project/Data/Localization/GameText_en.asset": "b109e7c57b0f95d87a9497ae53e4df40ec8773a6c65642e4a97af9119e2e7aaf",
+  "Assets/_Project/Data/Localization/GameText_ja.asset": "364c88328ffaf2894533dd5ceb8d3af31769b2c821d6413f07f881b60a674c0c",
+  "Assets/_Project/Data/Localization/GameText_zh-Hans.asset": "72e7235359c9e95ceacacde382bdcb867857c87d6b98c939bbbe66d85df1f0e4",
+  "Assets/_Project/Data/Localization/GameText_zh-Hant.asset": "cd5922f54a63b6108a6c40fafc8a0eadb641f1b5bbb52101216a09fdf3e89f67"
+}

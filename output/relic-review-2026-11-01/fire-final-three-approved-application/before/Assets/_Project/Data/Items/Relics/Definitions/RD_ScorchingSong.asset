@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
+  m_Name: RD_ScorchingSong
+  m_EditorClassIdentifier: 
+  relicId: RD_ScorchingSong
+  displayName: "\uC791\uC5F4\uD558\uB294 \uC1A1\uACF3"
+  icon: {fileID: -1153950003663563308, guid: 87eece6e269e518438f6bcfb7a730ad0, type: 3}
+  rarity: 1
+  description: "\uB300\uC0C1\uC5D0\uAC8C \uD654\uC0C1\uC774 \uC5C6\uC73C\uBA74 \uD654\uC0C1\uC744 \uBD80\uC5EC\uD569\uB2C8\uB2E4."
+  maxLevel: 5
+  dropLevel: 1
+  logic: {fileID: 11400000, guid: 00d84f5fdf474fc7b1afbf8f7a0338bf, type: 2}
+  param: {fileID: 0}

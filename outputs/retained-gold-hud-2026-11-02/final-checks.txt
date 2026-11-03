@@ -1,0 +1,57 @@
+PASS Existing currency/save/lifecycle/metadata unchanged: Assets/_Project/Runtime/Features/Loot/CurrencyManager.cs
+PASS Existing currency/save/lifecycle/metadata unchanged: Assets/_Project/Runtime/Infrastructure/Save/GamePlayDataManager.cs
+PASS Existing currency/save/lifecycle/metadata unchanged: Assets/_Project/Runtime/Infrastructure/Save/RunSessionLifecycleService.cs
+PASS Existing currency/save/lifecycle/metadata unchanged: Assets/_Project/Runtime/Infrastructure/Save/RunSessionProgressCommitPolicy.cs
+PASS Existing currency/save/lifecycle/metadata unchanged: Assets/_Project/Runtime/Core/Save/GameData.cs
+PASS Existing currency/save/lifecycle/metadata unchanged: Assets/_Project/Runtime/UI/HUD/CurrencyUI.cs.meta
+PASS Changed source is covered by UI.csproj
+PASS Source whitespace
+PASS Reviewed profile event subscription/destruction cleanup and read-only display projection
+PASS Document target: ../SessionLogs/2026-11-01.md
+PASS Document target: ../../output/relic-review-2026-11-02/crimson-exclusive-approved-application/README.md
+PASS Document target: ../StructureMemory/WorldItemShadows.md
+PASS Document target: ../../output/world-item-shadows-2026-11-02/README.md
+PASS Document target: ../ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/validation.txt
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/unity-validation.log
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/static-checks.txt
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/msbuild-final.log
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/final-checks.txt
+PASS Document target: ../ActiveTasks/sasha-discount-portraits.md
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/unity-validation.log
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/portraits-native.png
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/static-checks.txt
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/final-checks.txt
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/unity-native.log
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/preservation.txt
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/msbuild.log
+PASS Document target: ../ActiveTasks/sasha-spiri-dialogue.md
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/unity-native.log
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/preservation.txt
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/final-checks.txt
+PASS Document target: ../../outputs/sasha-partnership-2026-11-02/ink-checks.txt
+PASS Document target: ../../outputs/sasha-partnership-2026-11-02/data-checks.txt
+PASS Document target: ../../outputs/sasha-partnership-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/sasha-partnership-2026-11-02/final-checks.txt
+PASS Document target: ../../outputs/sasha-active-dialogues-2026-11-02/ink-checks.txt
+PASS Document target: ../../outputs/sasha-active-dialogues-2026-11-02/data-checks.txt
+PASS Document target: ../../outputs/sasha-active-dialogues-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/field-speech-bubble-apply-2026-11-02/native-validation.txt
+PASS Document target: ../../outputs/field-speech-bubble-apply-2026-11-02/unity-native.log
+PASS Document target: ../../outputs/field-speech-bubble-apply-2026-11-02/approved-render-comparison.json
+PASS Document target: ../../outputs/field-speech-bubble-apply-2026-11-02/final-checks.json
+PASS Document target: ../../Assets/Ink/Editor/Core/Compiler/InkCompiler.cs
+PASS Document target: ../../Tools/Validation/InkCompilerImportRecoveryRegression.cs
+PASS Document target: ../../outputs/ink-import-recovery-2026-11-02/native-validation.txt
+PASS Document target: ../../outputs/ink-import-recovery-2026-11-02/unity-native.log
+PASS Document target: ../../outputs/ink-import-recovery-2026-11-02/msbuild.log
+PASS Document target: ../ErrorLog.md
+PASS Document target: ../../outputs/retained-gold-hud-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/retained-gold-hud-2026-11-02/final-checks.txt
+PASS: 56 source/preservation/document checks.

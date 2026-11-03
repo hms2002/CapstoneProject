@@ -494,7 +494,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6ba41f593a391b34e9c0038f24d19413
-    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/Boss1Surprise.png
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/Flustered.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -770,7 +770,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b3c096dac376348438c1c20063da80dd
-    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/Boss1Smile.png
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/ShySmile.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -805,7 +805,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b8dd2c5f74ef2b842be9a4918464dd0c
-    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/Boss1Default.png
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/Overwhelmed.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -951,7 +951,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d58941eb8c2553941940e2880efb81f0
-    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/Boss1Panic.png
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/disappointment.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

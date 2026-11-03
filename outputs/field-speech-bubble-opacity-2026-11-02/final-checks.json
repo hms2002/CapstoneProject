@@ -1,0 +1,17 @@
+{
+  "mode": "Investigation and NPC opacity preview",
+  "protectedFilesUnchanged": 25,
+  "changedProductionFiles": [],
+  "nativeExitCode": 0,
+  "nativeChecksPassed": 10,
+  "nativeFrames": 6,
+  "comparisonBoards": 3,
+  "gameOpacityChanged": false,
+  "backgroundIndependenceOfOpaqueBodyVerified": true,
+  "limitations": [
+    "Diagnostic layout using project assets, not a running game-scene capture",
+    "Korean project pixel font explicitly selected only in isolated copy",
+    "Full runtime localization/lifecycle/Play Mode/Player build not executed"
+  ],
+  "docImpact": "No doc update needed; SessionLogs/ErrorLog/DecisionLog unchanged; no Presentation HTML stale candidate"
+}

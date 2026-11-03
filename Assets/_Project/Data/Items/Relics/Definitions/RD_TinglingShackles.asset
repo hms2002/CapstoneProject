@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_TinglingShackles
   m_EditorClassIdentifier: Gameplay::RelicDefinition
   relicId: Relic.Electric.TinglingShackles
-  displayName: "\uC800\uB9BF\uD55C \uC871\uC1C4"
-  icon: {fileID: -9140534868678271618, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  displayName: "\uB1CC\uC804\uC758 \uB9DD\uCE58"
+  icon: {fileID: 21300000, guid: 92b902dad7cf48a2b057f2e628a3c2a3, type: 3}
   rarity: 1
   description: "\uC801\uC5D0\uAC8C \uAC10\uC804\uC744 \uBD80\uC5EC\uD558\uBA74 0.1\uCD08
     \uB3D9\uC548 \uB9C8\uBE44\uC2DC\uD0B5\uB2C8\uB2E4. \uBCF4\uC2A4\uC5D0\uAC8C\uB294

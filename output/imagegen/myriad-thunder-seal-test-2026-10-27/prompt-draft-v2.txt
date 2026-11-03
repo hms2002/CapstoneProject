@@ -1,0 +1,29 @@
+Use case: stylized-concept.
+Asset type: a single low-resolution 32x32 pixel-art roguelike relic icon, working title "Seal of Myriad Thunder" / 만뢰의 인장. Review draft only.
+
+INPUT ROLES:
+Image 1 is the user's most preferred individual gray relic icon. PRIMARY STYLE reference: bold charcoal contour, broad connected flat color planes, simple volume and deliberate stepped pixel edges. Do not copy its shape or gray colors.
+Image 2 is the user's six-item sprite sheet. SECONDARY STYLE reference: chunky readable shapes, restrained detail appropriate to 32 pixels.
+Image 3 is the user's EXCLUSIVE COLOR PALETTE; use only the seven selected colors below.
+
+SUBJECT AND SILHOUETTE:
+An ancient solid octagonal bronze seal tablet, a square with distinctly clipped corners. Front-facing, centered, subtly thick on the lower-right edge. A broad, calm, muted purple inset face is surrounded by an aged warm bronze rim. It reads as a physical arcane metal seal / sacred inscribed plaque. Nearly square silhouette, modest bevel, simple flat side plane. No heart, gemstone, crystal, coil, crown, chain, stamp handle or pedestal.
+A single LARGE golden lightning sigil is engraved into the purple face. One central descending zigzag lightning stroke with two short angular lightning branches converging into its center from the upper left and upper right. ONE joined symbol, three sources becoming one stronger current. Broad 2-3 logical-pixel strokes, with sufficient purple negative space to be readable. No tiny scattered bolts. The rune is confined inside the face. No external sparks.
+Visual hierarchy: unmistakable chunky octagonal body, one quiet purple face, one clear yellow branching lightning rune. Antique feeling comes from muted bronze and restrained shading, not scratches and noise.
+
+STYLE:
+Native 32 by 32 pixel design, simple as the primary reference. Thick 2-pixel charcoal outer contour. Large unbroken main-color areas, a single broad shadow and very restrained highlight. Prefer silhouette and rune clarity over decorations. No tiny texture, microfacets, polished flecks, gradients, noise, dithering, blur, glow halos or antialiasing. No photorealistic lighting. No more ornamental lines. No letter-like markings or text.
+
+EXACT SEVEN OPAQUE COLORS from user's palette, plus transparency:
+#363232 charcoal outer outline and deep separation;
+#8A5E40 aged bronze shadow and side;
+#D49C73 warm bronze main rim;
+#EECF5A golden lightning rune, with only a tiny connected rim highlight;
+#75656A muted purple-gray face shadow;
+#9D5789 muted purple face main;
+#BE8EC1 soft purple face highlight.
+No white, black, cyan, blue or other colors, no partial alpha. Keep the gold rune visually separate from the warm copper rim with a purple gap.
+
+LAYOUT:
+Actual 32x32 logical pixel canvas on genuinely transparent RGBA. Exactly two transparent pixel rows above and below: visible y=2..29. At least two empty pixel columns left and right. Maximum silhouette 28x28 including contour. Center the seal. Preserve nearly square proportions without stretching. One sprite only.
+If a larger output raster is necessary, render a perfect integer nearest-neighbor enlargement of this exact 32x32 grid, aligned to the complete square canvas; each logical pixel is a single equally sized square. No details below that logical grid. No grid lines, checkerboard artwork, background, caption, UI, swatches or multiple variants.

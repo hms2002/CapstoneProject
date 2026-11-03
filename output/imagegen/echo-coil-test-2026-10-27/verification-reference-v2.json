@@ -1,0 +1,48 @@
+{
+  "name": "echo-coil-reference-v2",
+  "size": [
+    32,
+    32
+  ],
+  "opaqueColors": 7,
+  "colors": [
+    "#363232",
+    "#7F4A50",
+    "#8A5E40",
+    "#D66B48",
+    "#E09656",
+    "#62494C",
+    "#978C8E"
+  ],
+  "paletteVerified": true,
+  "visibleBoundingBox": [
+    1,
+    1,
+    31,
+    31
+  ],
+  "transparentMargins": {
+    "right": 1,
+    "top": 1,
+    "bottom": 1,
+    "left": 1
+  },
+  "outline": "2px inner boundary darkest palette color",
+  "outlinePixels": 224,
+  "alphaValues": [
+    0,
+    255
+  ],
+  "electricEffects": false,
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-740fec43-aacc-4084-8d64-ce55a40088f3.png",
+  "export": "Solid-alpha bbox, nearest-neighbor 30x30 inside 32x32, exact supplied palette, 2px contour",
+  "projectAssetsChanged": false,
+  "protectedHashesVerified": 3,
+  "unityVerification": "not executed; preview-only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

@@ -89,6 +89,11 @@ public struct ShopRunModifierDelta
     public int shopSlotBonus;
     public float discountRate;
     public float affectionDiscountRate;
+    public int specialDiscountMinPercent;
+    public int specialDiscountMaxPercent;
+    public int goldRetentionLimit;
+    public float rareRelicWeightBonus;
+    public float epicRelicWeightBonus;
     public int shopRefreshCount;
 
     public void Add(ShopRunModifierDelta other)
@@ -97,6 +102,11 @@ public struct ShopRunModifierDelta
         shopSlotBonus += other.shopSlotBonus;
         discountRate += other.discountRate;
         affectionDiscountRate += other.affectionDiscountRate;
+        specialDiscountMinPercent = System.Math.Max(specialDiscountMinPercent, other.specialDiscountMinPercent);
+        specialDiscountMaxPercent = System.Math.Max(specialDiscountMaxPercent, other.specialDiscountMaxPercent);
+        goldRetentionLimit = System.Math.Max(goldRetentionLimit, other.goldRetentionLimit);
+        rareRelicWeightBonus += other.rareRelicWeightBonus;
+        epicRelicWeightBonus += other.epicRelicWeightBonus;
         shopRefreshCount += other.shopRefreshCount;
     }
 }

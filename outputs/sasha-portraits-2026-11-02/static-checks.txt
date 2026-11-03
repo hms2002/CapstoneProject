@@ -1,0 +1,233 @@
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/DarkLord_Tutorial.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/DarkLord_Tutorial.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/DemonkingCorridor.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/DemonkingCorridor.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/DragonCorridor 1.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/DragonCorridor 1.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/DragonCorridor.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/DragonCorridor.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/Grand Hall.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/Grand Hall.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/HeoMinSeokScene.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/HeoMinSeokScene.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/LEeJunmo 1.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/LEeJunmo 1.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/LEeJunmo.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/LEeJunmo.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/PixelLightTest.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/PixelLightTest.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProceduralDragonCorridor.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProceduralDragonCorridor.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProceduralDungeonV0Test.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProceduralDungeonV0Test.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProceduralShadowCorridor.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProceduralShadowCorridor.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProceduralSlimeCorridor.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProceduralSlimeCorridor.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeBoss 1.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeBoss 1.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeBoss 2.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeBoss 2.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeBoss 3.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeBoss 3.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeBoss 4.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeBoss 4.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeBossLagacy.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeBossLagacy.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeCorridor 1.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeCorridor 1.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeCorridor 2.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeCorridor 2.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeCorridor 3.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeCorridor 3.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeCorridor.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeCorridor.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeHub.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeHub.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeHubasf.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ProtoTypeHubasf.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/SampleScene.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/SangHyup_Hallway.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/SangHyup_Hallway.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ShadowCorridor.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ShadowCorridor.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ShopSlotPositionGroup.prefab
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/ShopSlotPositionGroup.prefab.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/SlimeCorridor 1.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/SlimeCorridor 1.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/SlimeCorridor.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/SlimeCorridor.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/Tests.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/TitleScene.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/TitleScene.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/TrainingDummyGroup.prefab
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/TrainingDummyGroup.prefab.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/TutorialCorridor.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/TutorialCorridor.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/SampleScene/GameObject Profile.asset
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/SampleScene/GameObject Profile.asset.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/Tests/TestScene.unity
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Scenes/Tests/TestScene.unity.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/BossAffectionRunModifierEffect.asset
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/BossAffectionRunModifierEffect.asset.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/InfoOnlyAffectionEffect.asset
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/InfoOnlyAffectionEffect.asset.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset.meta
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Runtime/UI/Dialogue/PortraitActor.cs
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Runtime/UI/Dialogue/PortraitController.cs
+PASS Protected scene/reward/placement/runtime/settings: Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/AudioManager.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/BehaviorSettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/ClusterInputManager.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/DynamicsManager.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/EditorBuildSettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/EditorSettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/GraphicsSettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/InkSettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/InputManager.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/MemorySettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/MultiplayerManager.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/NavMeshAreas.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/NetworkManager.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/PackageManagerSettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/Physics2DSettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/PresetManager.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/ProjectSettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/ProjectVersion.txt
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/QualitySettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/SceneTemplateSettings.json
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/ScriptableBuildPipeline.json
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/ShaderGraphSettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/TagManager.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/TimeManager.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/UnityConnectSettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/URPProjectSettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/VersionControlSettings.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/VFXManager.asset
+PASS Protected scene/reward/placement/runtime/settings: ProjectSettings/XRSettings.asset
+PASS Native-verified Editor source: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Native-verified Editor source: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Native-verified Editor source: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Native-verified Editor source: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs
+PASS Exact supplied PNG retained: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png
+PASS Exact supplied PNG retained: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png
+PASS Existing texture/library metadata and GUID preserved: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png.meta
+PASS Existing texture/library metadata and GUID preserved: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib.meta
+PASS Authored portrait prefab unchanged by native preview
+PASS 49 active merchant source keys
+PASS All eight no-gain choice branches use Surprised
+PASS Old Ink dialogue/outcomes unchanged outside approved face tags
+PASS CSV language header unchanged
+PASS Exactly six new CSV keys
+PASS All existing CSV translations unchanged
+PASS 30 new locale values are complete
+PASS Korean source matches CSV: dialogue.merchant.001
+PASS Korean source matches CSV: dialogue.merchantdialogue_animated.95e636eb88
+PASS Korean source matches CSV: dialogue.merchant.003
+PASS Korean source matches CSV: dialogue.merchantdialogue_animated.470dbb5cba
+PASS Korean source matches CSV: dialogue.merchantdialogue_animated.5526e51532
+PASS Korean source matches CSV: dialogue.merchant.006
+PASS Korean source matches CSV: dialogue.merchantdialogue_animated.ca8d0de524
+PASS Korean source matches CSV: dialogue.merchantdialogue_animated.9098a11458
+PASS Korean source matches CSV: dialogue.merchant.run.affection_0_b.0
+PASS Korean source matches CSV: dialogue.merchant.run.affection_0_b.1
+PASS Korean source matches CSV: dialogue.merchant.run.affection_0_b.2
+PASS Korean source matches CSV: dialogue.merchant.run.affection_0_b.3
+PASS Korean source matches CSV: dialogue.merchant.run.affection_0_b.4
+PASS Korean source matches CSV: dialogue.merchant.run.affection_0_c.0
+PASS Korean source matches CSV: dialogue.merchant.run.affection_0_c.1
+PASS Korean source matches CSV: dialogue.merchant.run.affection_0_c.2
+PASS Korean source matches CSV: dialogue.merchant.run.affection_0_c.3
+PASS Korean source matches CSV: dialogue.merchant.run.affection_0_c.4
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_a.0
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_a.1
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_a.2
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_a.3
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_a.4
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_b.0
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_b.1
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_b.2
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_b.3
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_b.4
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_c.0
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_c.1
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_c.2
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_c.3
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_c.4
+PASS Korean source matches CSV: dialogue.merchant.run.affection_1_c.5
+PASS Korean source matches CSV: dialogue.merchant.run.affection_2_a.0
+PASS Korean source matches CSV: dialogue.merchant.run.affection_2_a.1
+PASS Korean source matches CSV: dialogue.merchant.run.affection_2_a.2
+PASS Korean source matches CSV: dialogue.merchant.run.affection_2_a.3
+PASS Korean source matches CSV: dialogue.merchant.run.affection_2_a.4
+PASS Korean source matches CSV: dialogue.merchant.run.affection_2_b.0
+PASS Korean source matches CSV: dialogue.merchant.run.affection_2_b.1
+PASS Korean source matches CSV: dialogue.merchant.run.affection_2_b.2
+PASS Korean source matches CSV: dialogue.merchant.run.affection_2_b.3
+PASS Korean source matches CSV: dialogue.merchant.run.affection_2_b.4
+PASS Korean source matches CSV: dialogue.merchant.run.greeting_a
+PASS Korean source matches CSV: dialogue.merchant.run.greeting_b
+PASS Korean source matches CSV: dialogue.merchant.run.greeting_c
+PASS Korean source matches CSV: dialogue.merchant.run.greeting_full_a
+PASS Korean source matches CSV: dialogue.merchant.run.greeting_full_b
+PASS All old locale IDs/records preserved: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS Exactly six entries added: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS All old locale IDs/records preserved: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS Exactly six entries added: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS All old locale IDs/records preserved: Assets/_Project/Data/Localization/GameText_en.asset
+PASS Exactly six entries added: Assets/_Project/Data/Localization/GameText_en.asset
+PASS All old locale IDs/records preserved: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS Exactly six entries added: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS All old locale IDs/records preserved: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS Exactly six entries added: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS All old locale IDs/records preserved: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS Exactly six entries added: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS NPC fields unchanged outside approved candidate list
+PASS Eight cumulative candidate paths and thresholds
+PASS Unrelated Ink inventory unchanged
+PASS Merchant inventory covers every active source key
+PASS Library binds old Normal identity and Unity-generated Surprised GUID
+PASS 430 native checks passed
+PASS No conflicting destination edit: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png
+PASS New destination is absent or exact: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png
+PASS New destination is absent or exact: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png.meta
+PASS No conflicting destination edit: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib
+PASS No conflicting destination edit: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS No conflicting destination edit: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS No conflicting destination edit: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+PASS No conflicting destination edit: DataSheets/Localization/GameText.csv
+PASS No conflicting destination edit: DataSheets/Localization/InkInventory.json
+PASS No conflicting destination edit: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS No conflicting destination edit: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS No conflicting destination edit: Assets/_Project/Data/Localization/GameText_en.asset
+PASS No conflicting destination edit: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS No conflicting destination edit: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS No conflicting destination edit: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS Copied only reviewed portraits/library/NPC/Ink/localization; no UI prefab, scene, existing metadata, settings or reward copied
+PASS: 232 preservation checks.

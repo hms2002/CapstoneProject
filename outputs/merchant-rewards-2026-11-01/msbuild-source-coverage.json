@@ -1,0 +1,10 @@
+{
+  "Gameplay": [
+    "Assets/_Project/Runtime/Features/Dialogue/Affection/Effect/MerchantAffectionRewardEffect.cs",
+    "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantOfferPricing.cs"
+  ],
+  "Editor": [
+    "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs",
+    "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs"
+  ]
+}

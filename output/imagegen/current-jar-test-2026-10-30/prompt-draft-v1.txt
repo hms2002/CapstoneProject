@@ -1,0 +1,34 @@
+Use case: stylized-concept.
+Asset: "Current Jar" / 전류 항아리, one native 32x32 pixel-art roguelike relic icon; preview draft.
+
+REFERENCE ROLES:
+Image 1 is the user's preferred individual gray relic icon, PRIMARY STYLE only: chunky charcoal silhouette, joined broad flat light/main/shadow planes, deliberate stairstep curves, modest detail, instantly readable at native32. Do not copy its object or grayscale colors.
+Image 2 is the six-item sheet, SECONDARY STYLE only for the same simple chunky inventory art.
+Image 3 is the user's EXCLUSIVE COLOR PALETTE.
+
+SUBJECT:
+A sturdy old terracotta ceramic jar, upright and round-bellied, with a short narrow neck, thick rolled open rim, dark elliptical mouth and small flat foot. The mouth faces slightly toward the viewer so its opening is visible. No lid, handles, chains, labels, runes, gemstone or extra props.
+The jar has a REAL JAGGED CRACK: one main uneven fissure runs from below the right edge of the neck down diagonally across the belly toward the lower left, with just one short fork. Show the dark split edges with a thin cyan electrical light inside the crevice. The fracture has uneven tiny offsets like broken pottery, not a decorative lightning symbol painted on the jar. Keep most pottery as big calm color planes.
+Electricity crackles out of BOTH the open mouth AND the crack:
+- two short angular cyan/mint zigzags emerge directly from inside the mouth, one reaching upward with a small side fork;
+- a small short angular discharge projects from a side crack, with one tiny nearby spark.
+Use very few chunky pixel segments so these read clearly at 32x32. Electricity is jagged electric arcs, not blue fire, smoke, liquid or hair. No large storm cloud, aura, blurred glow or circle of effects.
+The crack, its internal energy and the mouth arcs must be visible together. Prioritize the jar silhouette and a clear crack over ornament.
+
+STYLE:
+Truly designed on a strict 32x32 logical pixel grid, NOT a detailed high-resolution illustration to be shrunk. Thick about2-logical-pixel charcoal outer contour on the body. A few broad connected shading planes on pottery; simple warm highlights, no gray/white shine. Electricity cyan with a few pale mint pixels. Big clean shapes, deliberate square pixels and stepped curves matching the primary reference. No texture, micro-scratches, tiny dots everywhere, gradients, antialiasing or excessive internal lines.
+
+EXACT SEVEN opaque RGB colors selected from user's palette, plus transparency:
+#363232 charcoal outline, empty mouth center and dark crack edges;
+#8A5E40 pottery deep shadow;
+#D66B48 warm terracotta main;
+#E09656 pottery light plane;
+#436794 dark blue energy inside mouth and crevice;
+#77BCD6 cyan electric current;
+#B1DECF pale mint electric highlights.
+No extra colors, no true white, no gray shine, no yellow flame. Alpha only0/255.
+
+COMPOSITION:
+Actual32x32 canvas, all elements fit inside visible y=2..29. Exactly two completely empty transparent pixel rows above and below, at least two empty columns left/right. Leave room for the mouth's upper sparks: pottery body mostly around y=8..29, electric arcs above it around y=2..8; main belly about20-22 pixels wide. All outer sparks obey the same margins. Preserve squat rounded pottery proportions; do not stretch to fill a square.
+One centered isolated sprite on genuine transparent RGBA. No captions, letters, grid, checkerboard artwork, swatches, UI, ground shadow or multiple versions.
+If larger raster output is necessary, draw the exact32x32 logical grid first and output a perfect integer nearest-neighbor enlargement of it. Every logical pixel must be an equally sized square and no detail may fall below that grid.

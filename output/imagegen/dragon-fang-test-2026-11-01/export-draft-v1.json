@@ -1,0 +1,25 @@
+{
+  "key": "dragon-fang",
+  "name": "용의 이빨 초안",
+  "native": "dragon-fang-draft-v1-32x32.png",
+  "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-297cdf94-4c69-48f0-9b8a-3654f028dd4b.png",
+  "sourceMaterialBounds": [
+    264,
+    222,
+    1083,
+    1092
+  ],
+  "materialSize": [
+    23,
+    24
+  ],
+  "samplingPhaseY": 0.5,
+  "palette": [
+    "#363232",
+    "#F2F9F8",
+    "#F1E9D4",
+    "#C2C2C2",
+    "#E9CEA1",
+    "#E09656"
+  ]
+}

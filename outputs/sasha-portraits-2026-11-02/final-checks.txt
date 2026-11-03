@@ -1,0 +1,255 @@
+PASS Final verified file/protected hash: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png
+PASS Final verified file/protected hash: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png
+PASS Final verified file/protected hash: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png.meta
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+PASS Final verified file/protected hash: DataSheets/Localization/GameText.csv
+PASS Final verified file/protected hash: DataSheets/Localization/InkInventory.json
+PASS Final verified file/protected hash: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Localization/GameText_en.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS Final verified file/protected hash: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Final verified file/protected hash: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Final verified file/protected hash: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Final verified file/protected hash: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs
+PASS Final verified file/protected hash: Assets/_Project/Scenes/DarkLord_Tutorial.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/DarkLord_Tutorial.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/DemonkingCorridor.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/DemonkingCorridor.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/DragonCorridor 1.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/DragonCorridor 1.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/DragonCorridor.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/DragonCorridor.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/Grand Hall.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/Grand Hall.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/HeoMinSeokScene.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/HeoMinSeokScene.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/LEeJunmo 1.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/LEeJunmo 1.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/LEeJunmo.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/LEeJunmo.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/PixelLightTest.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/PixelLightTest.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProceduralDragonCorridor.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProceduralDragonCorridor.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProceduralDungeonV0Test.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProceduralDungeonV0Test.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProceduralShadowCorridor.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProceduralShadowCorridor.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProceduralSlimeCorridor.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProceduralSlimeCorridor.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 1.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 1.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 2.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 2.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 3.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 3.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 4.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeBoss 4.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeBossLagacy.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeBossLagacy.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor 1.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor 1.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor 2.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor 2.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor 3.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor 3.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeCorridor.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeHub.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeHub.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeHubasf.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ProtoTypeHubasf.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/SampleScene.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/SangHyup_Hallway.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/SangHyup_Hallway.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ShadowCorridor.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ShadowCorridor.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ShopSlotPositionGroup.prefab
+PASS Final verified file/protected hash: Assets/_Project/Scenes/ShopSlotPositionGroup.prefab.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/SlimeCorridor 1.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/SlimeCorridor 1.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/SlimeCorridor.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/SlimeCorridor.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/Tests.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/TitleScene.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/TitleScene.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/TrainingDummyGroup.prefab
+PASS Final verified file/protected hash: Assets/_Project/Scenes/TrainingDummyGroup.prefab.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/TutorialCorridor.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/TutorialCorridor.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/SampleScene/GameObject Profile.asset
+PASS Final verified file/protected hash: Assets/_Project/Scenes/SampleScene/GameObject Profile.asset.meta
+PASS Final verified file/protected hash: Assets/_Project/Scenes/Tests/TestScene.unity
+PASS Final verified file/protected hash: Assets/_Project/Scenes/Tests/TestScene.unity.meta
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/BossAffectionRunModifierEffect.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/BossAffectionRunModifierEffect.asset.meta
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset.meta
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/InfoOnlyAffectionEffect.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/InfoOnlyAffectionEffect.asset.meta
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset.meta
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset.meta
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset.meta
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset.meta
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset.meta
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset
+PASS Final verified file/protected hash: Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset.meta
+PASS Final verified file/protected hash: Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+PASS Final verified file/protected hash: Assets/_Project/Runtime/UI/Dialogue/PortraitActor.cs
+PASS Final verified file/protected hash: Assets/_Project/Runtime/UI/Dialogue/PortraitController.cs
+PASS Final verified file/protected hash: Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+PASS Final verified file/protected hash: ProjectSettings/AudioManager.asset
+PASS Final verified file/protected hash: ProjectSettings/BehaviorSettings.asset
+PASS Final verified file/protected hash: ProjectSettings/ClusterInputManager.asset
+PASS Final verified file/protected hash: ProjectSettings/DynamicsManager.asset
+PASS Final verified file/protected hash: ProjectSettings/EditorBuildSettings.asset
+PASS Final verified file/protected hash: ProjectSettings/EditorSettings.asset
+PASS Final verified file/protected hash: ProjectSettings/GraphicsSettings.asset
+PASS Final verified file/protected hash: ProjectSettings/InkSettings.asset
+PASS Final verified file/protected hash: ProjectSettings/InputManager.asset
+PASS Final verified file/protected hash: ProjectSettings/MemorySettings.asset
+PASS Final verified file/protected hash: ProjectSettings/MultiplayerManager.asset
+PASS Final verified file/protected hash: ProjectSettings/NavMeshAreas.asset
+PASS Final verified file/protected hash: ProjectSettings/NetworkManager.asset
+PASS Final verified file/protected hash: ProjectSettings/PackageManagerSettings.asset
+PASS Final verified file/protected hash: ProjectSettings/Physics2DSettings.asset
+PASS Final verified file/protected hash: ProjectSettings/PresetManager.asset
+PASS Final verified file/protected hash: ProjectSettings/ProjectSettings.asset
+PASS Final verified file/protected hash: ProjectSettings/ProjectVersion.txt
+PASS Final verified file/protected hash: ProjectSettings/QualitySettings.asset
+PASS Final verified file/protected hash: ProjectSettings/SceneTemplateSettings.json
+PASS Final verified file/protected hash: ProjectSettings/ScriptableBuildPipeline.json
+PASS Final verified file/protected hash: ProjectSettings/ShaderGraphSettings.asset
+PASS Final verified file/protected hash: ProjectSettings/TagManager.asset
+PASS Final verified file/protected hash: ProjectSettings/TimeManager.asset
+PASS Final verified file/protected hash: ProjectSettings/UnityConnectSettings.asset
+PASS Final verified file/protected hash: ProjectSettings/URPProjectSettings.asset
+PASS Final verified file/protected hash: ProjectSettings/VersionControlSettings.asset
+PASS Final verified file/protected hash: ProjectSettings/VFXManager.asset
+PASS Final verified file/protected hash: ProjectSettings/XRSettings.asset
+PASS Old metadata identity preserved: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png.meta
+PASS Old metadata identity preserved: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib.meta
+PASS Generated project covers changed source: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Generated project covers changed source: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Generated project covers changed source: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Generated project covers changed source: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs
+PASS Document local target exists: Docs/ActiveTasks/sasha-discount-portraits.md -> ../../outputs/sasha-portraits-2026-11-02/validation.txt
+PASS Document local target exists: Docs/ActiveTasks/sasha-discount-portraits.md -> ../../outputs/sasha-portraits-2026-11-02/portraits-native.png
+PASS Document local target exists: Docs/ActiveTasks/sasha-discount-portraits.md -> ../../outputs/sasha-portraits-2026-11-02/static-checks.txt
+PASS Document local target exists: Docs/ActiveTasks/sasha-discount-portraits.md -> ../../outputs/sasha-portraits-2026-11-02/msbuild.log
+PASS Document local target exists: Docs/ActiveTasks/sasha-discount-portraits.md -> ../SessionLogs/2026-11-02.md
+PASS Document local target exists: Docs/ActiveTasks/npc-dialogue-cumulative-pool.md -> ../../outputs/npc-dialogue-pool-2026-11-02/
+PASS Document local target exists: Docs/ActiveTasks/npc-dialogue-cumulative-pool.md -> sasha-discount-portraits.md
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../output/relic-review-2026-11-02/crimson-exclusive-approved-application/README.md
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../StructureMemory/WorldItemShadows.md
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../output/world-item-shadows-2026-11-02/README.md
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../outputs/npc-dialogue-pool-2026-11-02/validation.txt
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../outputs/npc-dialogue-pool-2026-11-02/unity-validation.log
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../outputs/npc-dialogue-pool-2026-11-02/static-checks.txt
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../outputs/npc-dialogue-pool-2026-11-02/msbuild.log
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../outputs/npc-dialogue-pool-2026-11-02/msbuild-final.log
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../outputs/npc-dialogue-pool-2026-11-02/final-checks.txt
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../ActiveTasks/sasha-discount-portraits.md
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../outputs/sasha-portraits-2026-11-02/validation.txt
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../outputs/sasha-portraits-2026-11-02/unity-validation.log
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../outputs/sasha-portraits-2026-11-02/portraits-native.png
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../outputs/sasha-portraits-2026-11-02/static-checks.txt
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../outputs/sasha-portraits-2026-11-02/msbuild.log
+PASS Document local target exists: Docs/SessionLogs/2026-11-02.md -> ../../outputs/sasha-portraits-2026-11-02/final-checks.txt
+PASS Document local target exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ../../ActiveTasks/sasha-discount-portraits.md
+PASS Document local target exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ../../ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Document local target exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ../../SessionLogs/2026-11-02.md
+PASS Document local target exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ../../ActiveTasks/merchant-affection-rewards.md
+PASS Document local target exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ../RunGoldAndShop.md
+PASS Document local target exists: Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md -> ./RunSpecialNpcStructure.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/full-game-localization.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/sasha-discount-portraits.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/merchant-affection-rewards.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/npc-run-affection-dialogue.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/spiri-alcohol-exposure.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/encyclopedia-tab-visibility-reveal.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/electric-scaling-and-relics.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/encyclopedia-book-inner-padding.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/encyclopedia-book-flat-top.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/encyclopedia-creature-tabs.md
+PASS Document local target exists: Docs/TaskIndex.md -> StructureMemory/EncyclopediaCreatureTabs.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/lightning-spear-tool-composition.md
+PASS Document local target exists: Docs/TaskIndex.md -> SessionLogs/2026-10-10-lightning-tools/README.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/lightning-spear-placement-structure.md
+PASS Document local target exists: Docs/TaskIndex.md -> SessionLogs/2026-10-10-lightning-structure/README.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/chest-offer-width-consistency.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/ui-batching-structural-optimization.md
+PASS Document local target exists: Docs/TaskIndex.md -> SessionLogs/2026-10-08-ui-batching-structural/README.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/ui-batching-optimization.md
+PASS Document local target exists: Docs/TaskIndex.md -> RefactorBacklog/UIBatchingStructuralCandidates.md
+PASS Document local target exists: Docs/TaskIndex.md -> SessionLogs/2026-10-07-ui-batching/README.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/frame-performance-measurement.md
+PASS Document local target exists: Docs/TaskIndex.md -> SessionLogs/2026-10-07-frame-performance-measurement/README.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/test-scene-boss-combat-and-breath-lock.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/frame-performance-optimization.md
+PASS Document local target exists: Docs/TaskIndex.md -> ActiveTasks/test-scene-and-lightning-placement.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-10-10.md
+PASS Document local target exists: Docs/ErrorLog.md -> StructureMemory/DungeonTemplateSelection.md
+PASS Document local target exists: Docs/ErrorLog.md -> StructureMemory/AlcoholExposure.md
+PASS Document local target exists: Docs/ErrorLog.md -> ./SessionLogs/2026-09-03.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-09-12.md
+PASS Document local target exists: Docs/ErrorLog.md -> ./StructureMemory/SettingsPanelLayout.md
+PASS Document local target exists: Docs/ErrorLog.md -> ./SessionLogs/2026-09-17.md
+PASS Document local target exists: Docs/ErrorLog.md -> ./SessionLogs/2026-09-17.md
+PASS Document local target exists: Docs/ErrorLog.md -> ./SessionLogs/2026-09-17.md
+PASS Document local target exists: Docs/ErrorLog.md -> ./SessionLogs/2026-10-11.md
+PASS Document local target exists: Docs/ErrorLog.md -> ./SessionLogs/2026-09-18.md
+PASS Document local target exists: Docs/ErrorLog.md -> ./SessionLogs/2026-09-18.md
+PASS Document local target exists: Docs/ErrorLog.md -> ../outputs/encyclopedia-implementation-2026-10-11/serialized-preservation-report.json
+PASS Document local target exists: Docs/ErrorLog.md -> StructureMemory/EncyclopediaCreatureTabs.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-10-07-ui-batching/README.md
+PASS Document local target exists: Docs/ErrorLog.md -> StructureMemory/ScriptSystems/RelicRuntimeStructure.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-10-11.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-10-12.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-10-12.md
+PASS Document local target exists: Docs/ErrorLog.md -> StructureMemory/AlcoholExposure.md
+PASS Document local target exists: Docs/ErrorLog.md -> ActiveTasks/spiri-alcohol-exposure.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-10-12.md
+PASS Document local target exists: Docs/ErrorLog.md -> StructureMemory/LocalizationFlow.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-10-14.md
+PASS Document local target exists: Docs/ErrorLog.md -> StructureMemory/MonsterWorldHudAndStatus.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-10-30.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-10-30.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-11-01.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-11-02.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-11-02.md
+PASS Document local target exists: Docs/ErrorLog.md -> SessionLogs/2026-11-02.md
+PASS Native final pass marker
+PASS No native CSharp/exception/shader error
+PASS Copyback preservation receipt
+PASS Owned native scratch project removed
+PASS: 254 final checks.

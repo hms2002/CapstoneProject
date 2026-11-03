@@ -13,6 +13,12 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
 {
     private static readonly List<BossEncounterEndDirector> ActiveDirectors = new();
 
+    /// <summary>
+    /// 조우 전체의 클리어 조건이 확정됐을 때 한 번 발생한다.
+    /// 개별 보스 사망이 아닌 encounter 단위 신호이므로, 분열/다중 보스의 최종 승리 기록에 사용한다.
+    /// </summary>
+    public static event System.Action<BossEncounterEndDirector, BossControllerBase> EncounterCompleted;
+
     [Header("Clear")]
     [SerializeField] private BossEncounterClearCondition clearCondition;
     [SerializeField] private bool suppressManagedBossAutomaticRewards = true;
@@ -93,6 +99,15 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// 지정한 보스가 이 encounter의 클리어 조건에 포함되는지 반환한다.
+    /// </summary>
+    public bool ControlsBoss(BossControllerBase boss)
+    {
+        ResolveReferences();
+        return clearCondition != null && clearCondition.ControlsBoss(boss);
+    }
+
     private void Awake()
     {
         ResolveReferences();
@@ -155,8 +170,7 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
     private bool SuppressesRewardsFor(BossControllerBase boss)
     {
         return suppressManagedBossAutomaticRewards &&
-               clearCondition != null &&
-               clearCondition.ControlsBoss(boss);
+               ControlsBoss(boss);
     }
 
     private IEnumerator CompleteEncounterRoutine()
@@ -165,6 +179,9 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
         // Split bosses finish the run stage only when the entire encounter clears.
         if (suppressManagedBossAutomaticRewards)
             RunProgressPlayback.NotifyBossDefeated(rewardBoss);
+
+        EncounterCompleted?.Invoke(this, rewardBoss);
+
         if (rewardDelayAfterClearSeconds > 0f)
             yield return new WaitForSeconds(rewardDelayAfterClearSeconds);
         LogDebug($"Clear condition completed. RewardBoss={(rewardBoss != null ? rewardBoss.name : "None")}.");

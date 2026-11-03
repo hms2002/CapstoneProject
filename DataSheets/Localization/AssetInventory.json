@@ -4641,13 +4641,13 @@
       "text": "무기와 유물 해금"
     },
     {
-      "key": "asset.844437f5d3184cf69ce3cabd2160232e.rewardText",
-      "path": "Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset",
-      "type": "ShopAffectionDiscountEffect",
-      "owner": "SashaShopDiscount",
-      "field": "rewardText",
-      "text": "상점 판매 가격 20% 할인"
-    },
+    "key": "asset.844437f5d3184cf69ce3cabd2160232e.rewardText",
+    "path": "Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset",
+    "type": "ShopAffectionDiscountEffect",
+    "owner": "SashaShopDiscount",
+    "field": "rewardText",
+    "text": "상점 판매 가격 5% 할인"
+},
     {
       "key": "asset.e8c2a5f0d8d14a548a6f2c6d90377b7a.rewardText",
       "path": "Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset",
@@ -5599,6 +5599,606 @@
         "owner": "SpiriAlcoholPuddleReward",
         "field": "rewardText",
         "text": "술 장판에서 3초 동안 술을 채우면 혼란 대신 이동 속도 +25%, 공격 속도 +40% 버프를 얻습니다. 장판 안에서는 지속시간을 갱신하며, 장판을 벗어나 1.5초 동안 잔이 비워진 뒤 5초 동안 유지됩니다."
-    }
+    },
+    {
+        "key": "asset.eaa51ebec24da574bae03bcedc6f3e3d.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Attack_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Attack_1",
+        "field": "displayName",
+        "text": "공격력 훈련"
+    },
+    {
+        "key": "asset.eaa51ebec24da574bae03bcedc6f3e3d.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Attack_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Attack_1",
+        "field": "description",
+        "text": "공격력 <color=#197A67>+2</color>"
+    },
+    {
+        "key": "asset.7d216a5098fd0e946b8390c40d329e9a.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Attack_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Attack_2",
+        "field": "displayName",
+        "text": "공격력 훈련"
+    },
+    {
+        "key": "asset.7d216a5098fd0e946b8390c40d329e9a.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Attack_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Attack_2",
+        "field": "description",
+        "text": "공격력 <color=#197A67>+4</color>"
+    },
+    {
+        "key": "asset.b80e612bff0bf44429457de2c2794da7.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Attack_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Attack_3",
+        "field": "displayName",
+        "text": "공격력 훈련"
+    },
+    {
+        "key": "asset.b80e612bff0bf44429457de2c2794da7.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Attack_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Attack_3",
+        "field": "description",
+        "text": "공격력 <color=#197A67>+6</color>"
+    },
+    {
+        "key": "asset.0454138ae3021884b965d783d6092b06.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_CritChance_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_CritChance_1",
+        "field": "displayName",
+        "text": "치명타 확률 훈련"
+    },
+    {
+        "key": "asset.0454138ae3021884b965d783d6092b06.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_CritChance_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_CritChance_1",
+        "field": "description",
+        "text": "치명타 확률 <color=#197A67>+2%</color>"
+    },
+    {
+        "key": "asset.1b621570964429a44b9f58371e206916.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_CritChance_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_CritChance_2",
+        "field": "displayName",
+        "text": "치명타 확률 훈련"
+    },
+    {
+        "key": "asset.1b621570964429a44b9f58371e206916.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_CritChance_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_CritChance_2",
+        "field": "description",
+        "text": "치명타 확률 <color=#197A67>+4%</color>"
+    },
+    {
+        "key": "asset.37fe29d5a8d0a40428c2a7e465797e7e.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_CritChance_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_CritChance_3",
+        "field": "displayName",
+        "text": "치명타 확률 훈련"
+    },
+    {
+        "key": "asset.37fe29d5a8d0a40428c2a7e465797e7e.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_CritChance_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_CritChance_3",
+        "field": "description",
+        "text": "치명타 확률 <color=#197A67>+6%</color>"
+    },
+    {
+        "key": "asset.06f7bdbf7073974478991781fb5d81e2.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_CritDamage_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_CritDamage_1",
+        "field": "displayName",
+        "text": "치명타 피해 훈련"
+    },
+    {
+        "key": "asset.06f7bdbf7073974478991781fb5d81e2.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_CritDamage_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_CritDamage_1",
+        "field": "description",
+        "text": "치명타 피해 <color=#197A67>+4%</color>"
+    },
+    {
+        "key": "asset.60e6b8712efa9a94cb298cb20d0b3fe6.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_CritDamage_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_CritDamage_2",
+        "field": "displayName",
+        "text": "치명타 피해 훈련"
+    },
+    {
+        "key": "asset.60e6b8712efa9a94cb298cb20d0b3fe6.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_CritDamage_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_CritDamage_2",
+        "field": "description",
+        "text": "치명타 피해 <color=#197A67>+8%</color>"
+    },
+    {
+        "key": "asset.31565db51c1216246960398b39912d7c.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_CritDamage_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_CritDamage_3",
+        "field": "displayName",
+        "text": "치명타 피해 훈련"
+    },
+    {
+        "key": "asset.31565db51c1216246960398b39912d7c.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_CritDamage_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_CritDamage_3",
+        "field": "description",
+        "text": "치명타 피해 <color=#197A67>+12%</color>"
+    },
+    {
+        "key": "asset.6699b985f21c3ba4bbf40fa9b29dbbc8.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Evasion_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Evasion_1",
+        "field": "displayName",
+        "text": "회피율 훈련"
+    },
+    {
+        "key": "asset.6699b985f21c3ba4bbf40fa9b29dbbc8.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Evasion_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Evasion_1",
+        "field": "description",
+        "text": "회피율 <color=#197A67>+1%</color>"
+    },
+    {
+        "key": "asset.9bfe4faa921d5d84bb34e97f03f33e5a.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Evasion_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Evasion_2",
+        "field": "displayName",
+        "text": "회피율 훈련"
+    },
+    {
+        "key": "asset.9bfe4faa921d5d84bb34e97f03f33e5a.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Evasion_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Evasion_2",
+        "field": "description",
+        "text": "회피율 <color=#197A67>+2%</color>"
+    },
+    {
+        "key": "asset.add7f0fb39e185b4c8fbd60df7e87824.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Evasion_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Evasion_3",
+        "field": "displayName",
+        "text": "회피율 훈련"
+    },
+    {
+        "key": "asset.add7f0fb39e185b4c8fbd60df7e87824.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Evasion_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Evasion_3",
+        "field": "description",
+        "text": "회피율 <color=#197A67>+3%</color>"
+    },
+    {
+        "key": "asset.ce4cc7502bb5c914abd228b2bd141c5b.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_AttackSpeed_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_AttackSpeed_1",
+        "field": "displayName",
+        "text": "공격 속도 훈련"
+    },
+    {
+        "key": "asset.ce4cc7502bb5c914abd228b2bd141c5b.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_AttackSpeed_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_AttackSpeed_1",
+        "field": "description",
+        "text": "공격 속도 <color=#197A67>+2%</color>"
+    },
+    {
+        "key": "asset.ce6b5fd16174cfc4d9f6fe35d6e3e5ad.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_AttackSpeed_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_AttackSpeed_2",
+        "field": "displayName",
+        "text": "공격 속도 훈련"
+    },
+    {
+        "key": "asset.ce6b5fd16174cfc4d9f6fe35d6e3e5ad.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_AttackSpeed_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_AttackSpeed_2",
+        "field": "description",
+        "text": "공격 속도 <color=#197A67>+4%</color>"
+    },
+    {
+        "key": "asset.e99e4aeb0895e7243a532d9a97650058.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_AttackSpeed_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_AttackSpeed_3",
+        "field": "displayName",
+        "text": "공격 속도 훈련"
+    },
+    {
+        "key": "asset.e99e4aeb0895e7243a532d9a97650058.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_AttackSpeed_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_AttackSpeed_3",
+        "field": "description",
+        "text": "공격 속도 <color=#197A67>+6%</color>"
+    },
+    {
+        "key": "asset.e873912508b841244920f01623f2a181.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_MoveSpeed_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_MoveSpeed_1",
+        "field": "displayName",
+        "text": "이동 속도 훈련"
+    },
+    {
+        "key": "asset.e873912508b841244920f01623f2a181.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_MoveSpeed_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_MoveSpeed_1",
+        "field": "description",
+        "text": "이동 속도 <color=#197A67>+3%</color>"
+    },
+    {
+        "key": "asset.d10c81f7b4f9cda43812c2af2cc42b06.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_MoveSpeed_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_MoveSpeed_2",
+        "field": "displayName",
+        "text": "이동 속도 훈련"
+    },
+    {
+        "key": "asset.d10c81f7b4f9cda43812c2af2cc42b06.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_MoveSpeed_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_MoveSpeed_2",
+        "field": "description",
+        "text": "이동 속도 <color=#197A67>+5%</color>"
+    },
+    {
+        "key": "asset.a1f48da525c472b4ba6726ccdb8e86e8.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_MoveSpeed_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_MoveSpeed_3",
+        "field": "displayName",
+        "text": "이동 속도 훈련"
+    },
+    {
+        "key": "asset.a1f48da525c472b4ba6726ccdb8e86e8.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_MoveSpeed_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_MoveSpeed_3",
+        "field": "description",
+        "text": "이동 속도 <color=#197A67>+8%</color>"
+    },
+    {
+        "key": "asset.cebb79c6b0f462240874945ae8269970.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_NormalDamage_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_NormalDamage_1",
+        "field": "displayName",
+        "text": "기본 공격 피해 훈련"
+    },
+    {
+        "key": "asset.cebb79c6b0f462240874945ae8269970.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_NormalDamage_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_NormalDamage_1",
+        "field": "description",
+        "text": "기본 공격 피해 <color=#197A67>+2%</color>"
+    },
+    {
+        "key": "asset.0ba5b696e54cc2847bf72ba1d30af3bb.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_NormalDamage_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_NormalDamage_2",
+        "field": "displayName",
+        "text": "기본 공격 피해 훈련"
+    },
+    {
+        "key": "asset.0ba5b696e54cc2847bf72ba1d30af3bb.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_NormalDamage_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_NormalDamage_2",
+        "field": "description",
+        "text": "기본 공격 피해 <color=#197A67>+4%</color>"
+    },
+    {
+        "key": "asset.a4f2eb239cd2c774f9cfe4797face487.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_NormalDamage_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_NormalDamage_3",
+        "field": "displayName",
+        "text": "기본 공격 피해 훈련"
+    },
+    {
+        "key": "asset.a4f2eb239cd2c774f9cfe4797face487.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_NormalDamage_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_NormalDamage_3",
+        "field": "description",
+        "text": "기본 공격 피해 <color=#197A67>+6%</color>"
+    },
+    {
+        "key": "asset.1dcb986f02090f14098e49aba5d9baf4.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_SkillDamage_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_SkillDamage_1",
+        "field": "displayName",
+        "text": "스킬 피해 훈련"
+    },
+    {
+        "key": "asset.1dcb986f02090f14098e49aba5d9baf4.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_SkillDamage_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_SkillDamage_1",
+        "field": "description",
+        "text": "스킬 피해 <color=#197A67>+2%</color>"
+    },
+    {
+        "key": "asset.dffc49247f9a0da4486a73b45576a50f.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_SkillDamage_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_SkillDamage_2",
+        "field": "displayName",
+        "text": "스킬 피해 훈련"
+    },
+    {
+        "key": "asset.dffc49247f9a0da4486a73b45576a50f.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_SkillDamage_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_SkillDamage_2",
+        "field": "description",
+        "text": "스킬 피해 <color=#197A67>+4%</color>"
+    },
+    {
+        "key": "asset.e5300e5355e9d9d478a1221956502bb0.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_SkillDamage_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_SkillDamage_3",
+        "field": "displayName",
+        "text": "스킬 피해 훈련"
+    },
+    {
+        "key": "asset.e5300e5355e9d9d478a1221956502bb0.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_SkillDamage_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_SkillDamage_3",
+        "field": "description",
+        "text": "스킬 피해 <color=#197A67>+6%</color>"
+    },
+    {
+        "key": "asset.3e100e91998d78a42a0bac8d50e5855f.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Fire_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Fire_1",
+        "field": "displayName",
+        "text": "화염 피해 훈련"
+    },
+    {
+        "key": "asset.3e100e91998d78a42a0bac8d50e5855f.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Fire_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Fire_1",
+        "field": "description",
+        "text": "화염 피해 <color=#197A67>+1</color>"
+    },
+    {
+        "key": "asset.745468d870bf7a644a337cc964567883.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Fire_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Fire_2",
+        "field": "displayName",
+        "text": "화염 피해 훈련"
+    },
+    {
+        "key": "asset.745468d870bf7a644a337cc964567883.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Fire_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Fire_2",
+        "field": "description",
+        "text": "화염 피해 <color=#197A67>+2</color>"
+    },
+    {
+        "key": "asset.f0d4e43bd36bbb2499113b3e77f82406.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Fire_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Fire_3",
+        "field": "displayName",
+        "text": "화염 피해 훈련"
+    },
+    {
+        "key": "asset.f0d4e43bd36bbb2499113b3e77f82406.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Fire_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Fire_3",
+        "field": "description",
+        "text": "화염 피해 <color=#197A67>+3</color>"
+    },
+    {
+        "key": "asset.f90154e765cbf23428d35d0d090d6145.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Electric_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Electric_1",
+        "field": "displayName",
+        "text": "전기 피해 훈련"
+    },
+    {
+        "key": "asset.f90154e765cbf23428d35d0d090d6145.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Electric_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Electric_1",
+        "field": "description",
+        "text": "전기 피해 <color=#197A67>+1</color>"
+    },
+    {
+        "key": "asset.89ead828a85f3b743821a389bca42aa3.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Electric_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Electric_2",
+        "field": "displayName",
+        "text": "전기 피해 훈련"
+    },
+    {
+        "key": "asset.89ead828a85f3b743821a389bca42aa3.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Electric_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Electric_2",
+        "field": "description",
+        "text": "전기 피해 <color=#197A67>+2</color>"
+    },
+    {
+        "key": "asset.cbc3ab6557d0fa74589d096e49cba3b7.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Electric_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Electric_3",
+        "field": "displayName",
+        "text": "전기 피해 훈련"
+    },
+    {
+        "key": "asset.cbc3ab6557d0fa74589d096e49cba3b7.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Electric_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Electric_3",
+        "field": "description",
+        "text": "전기 피해 <color=#197A67>+3</color>"
+    },
+    {
+        "key": "asset.4a8e0c723e2488745bf3f6200a67c64c.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Poison_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Poison_1",
+        "field": "displayName",
+        "text": "중독 피해 훈련"
+    },
+    {
+        "key": "asset.4a8e0c723e2488745bf3f6200a67c64c.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Poison_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Poison_1",
+        "field": "description",
+        "text": "중독 피해 <color=#197A67>+1</color>"
+    },
+    {
+        "key": "asset.751a51f0680ef184c99052d863d274e5.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Poison_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Poison_2",
+        "field": "displayName",
+        "text": "중독 피해 훈련"
+    },
+    {
+        "key": "asset.751a51f0680ef184c99052d863d274e5.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Poison_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Poison_2",
+        "field": "description",
+        "text": "중독 피해 <color=#197A67>+2</color>"
+    },
+    {
+        "key": "asset.0df88d8a56f04084499b3672eb993f6b.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Poison_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Poison_3",
+        "field": "displayName",
+        "text": "중독 피해 훈련"
+    },
+    {
+        "key": "asset.0df88d8a56f04084499b3672eb993f6b.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Poison_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Poison_3",
+        "field": "description",
+        "text": "중독 피해 <color=#197A67>+3</color>"
+    },
+    {
+        "key": "asset.7bbef4d197762114792570fe029dfcae.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Bleed_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Bleed_1",
+        "field": "displayName",
+        "text": "출혈 피해 훈련"
+    },
+    {
+        "key": "asset.7bbef4d197762114792570fe029dfcae.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Bleed_1.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Bleed_1",
+        "field": "description",
+        "text": "출혈 피해 <color=#197A67>+1</color>"
+    },
+    {
+        "key": "asset.425c71f2c4e07194384325805cdfa29b.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Bleed_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Bleed_2",
+        "field": "displayName",
+        "text": "출혈 피해 훈련"
+    },
+    {
+        "key": "asset.425c71f2c4e07194384325805cdfa29b.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Bleed_2.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Bleed_2",
+        "field": "description",
+        "text": "출혈 피해 <color=#197A67>+2</color>"
+    },
+    {
+        "key": "asset.334a8746e23c3e14ead8e80abd8b8124.displayName",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Bleed_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Bleed_3",
+        "field": "displayName",
+        "text": "출혈 피해 훈련"
+    },
+    {
+        "key": "asset.334a8746e23c3e14ead8e80abd8b8124.description",
+        "path": "Assets/_Project/Data/Progression/Leveling/Rewards/Definitions/Reward_Stat_Bleed_3.asset",
+        "type": "LevelRewardDefinitionSO",
+        "owner": "Reward_Stat_Bleed_3",
+        "field": "description",
+        "text": "출혈 피해 <color=#197A67>+3</color>"
+    },
+    {
+    "key": "asset.0d511974dcee39841b43b11efe690364.rewardText",
+    "path": "Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset",
+    "type": "MerchantAffectionRewardEffect",
+    "owner": "SashaSpecialOffer",
+    "field": "rewardText",
+    "text": "상점마다 무작위 상품 하나가 10~20% 추가 할인됩니다."
+},
+    {
+    "key": "asset.9610f69b0692a734ab7aa1eccc8264f3.rewardText",
+    "path": "Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset",
+    "type": "MerchantAffectionRewardEffect",
+    "owner": "SashaGoldRetention",
+    "field": "rewardText",
+    "text": "게임 오버 시 보유 금화를 최대 500까지 다음 런으로 가져갑니다."
+},
+    {
+    "key": "asset.05a8fc8c3d1883a45bc96ff32322dbdb.rewardText",
+    "path": "Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset",
+    "type": "MerchantAffectionRewardEffect",
+    "owner": "SashaBetterRelics",
+    "field": "rewardText",
+    "text": "상점에서 희귀·영웅 등급 유물이 조금 더 자주 등장합니다."
+}
   ]
 }

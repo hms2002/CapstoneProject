@@ -696,7 +696,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294692171786
-    m_Localized: "\n\u25CF Reloads remaining: {0}"
+    m_Localized: "\r\n\u25CF Reloads remaining: {0}"
     m_Metadata:
       m_Items: []
   - m_Id: 46294692171787
@@ -909,7 +909,7 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 46294704754694
     m_Localized: "\u25CF [[\uD654\uC0C1]] {{pos:+{1:0}%}} per {{val:{0} stacks}}
-      of [[\uD654\uC0C1 \uD53C\uD574]] on the target\n\u25CF Up to {{val:{2:0}%}}"
+      of [[\uD654\uC0C1 \uD53C\uD574]] on the target\r\n\u25CF Up to {{val:{2:0}%}}"
     m_Metadata:
       m_Items: []
   - m_Id: 46294704754695
@@ -918,8 +918,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294704754696
-    m_Localized: "\u25CF Create a {{em:Sun Fragment}} every {{val:{0:0.##}s}}\n\u25CF
-      Maintain up to {{val:{1}}}\n"
+    m_Localized: "\u25CF Create a {{em:Sun Fragment}} every {{val:{0:0.##}s}}\r\n\u25CF
+      Maintain up to {{val:{1}}}\r\n"
     m_Metadata:
       m_Items: []
   - m_Id: 46294704754697
@@ -1465,7 +1465,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531910
-    m_Localized: Scorching Awl
+    m_Localized: "Fire Dragon's Fang"
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531911
@@ -4679,7 +4679,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 50606285688879
-    m_Localized: "\u25CF Swing the sword for {val:3 consecutive} melee attacks\n\u25CF
+    m_Localized: "\u25CF Swing the sword for {val:3 consecutive} melee attacks\r\n\u25CF
       The third attack advances farther with a wide slash"
     m_Metadata:
       m_Items: []
@@ -4689,9 +4689,9 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 50606285688881
-    m_Localized: "\u25CF Hold to charge, then release for a {em:Spinning Slash}\n\u25CF
-      Releasing at 50% or less cancels; above 50% attacks\n\u25CF Charging increases
-      {pos:damage and attack range}\n\u25CF At max charge: about {val:1.67x} damage
+    m_Localized: "\u25CF Hold to charge, then release for a {em:Spinning Slash}\r\n\u25CF
+      Releasing at 50% or less cancels; above 50% attacks\r\n\u25CF Charging increases
+      {pos:damage and attack range}\r\n\u25CF At max charge: about {val:1.67x} damage
       and {val:2x} size compared to minimum charge"
     m_Metadata:
       m_Items: []
@@ -4710,7 +4710,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 50606285688885
-    m_Localized: "\u25CF Fire a fireball in the aimed direction\n\u25CF Deal area
+    m_Localized: "\u25CF Fire a fireball in the aimed direction\r\n\u25CF Deal area
       damage equal to [[\uD654\uC5FC \uD53C\uD574]] around the impact point and inflict
       {val:3 stacks} of [[\uD654\uC0C1]]"
     m_Metadata:
@@ -4748,7 +4748,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 50606285688892
-    m_Localized: "\u25CF Scatter petals with {val:3 consecutive} slashes\n\u25CF
+    m_Localized: "\u25CF Scatter petals with {val:3 consecutive} slashes\r\n\u25CF
       The third attack advances farther with a powerful slash"
     m_Metadata:
       m_Items: []
@@ -4757,9 +4757,9 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 50606285688894
-    m_Localized: "\u25CF Basic attacks become wide slashes during [[\uAC1C\uD654]]\n\u25CF
-      Each slash changes shape to avoid overlapping the previous attack\n\u25CF Can
-      be chained rapidly at short intervals"
+    m_Localized: "\u25CF Basic attacks become wide slashes during [[\uAC1C\uD654]]\r\n\u25CF
+      Each slash changes shape to avoid overlapping the previous attack\r\n\u25CF
+      Can be chained rapidly at short intervals"
     m_Metadata:
       m_Items: []
   - m_Id: 50606285688895
@@ -4957,16 +4957,16 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 50606289883159
-    m_Localized: "\u25CF Enter {em:Bloom}\n\u25CF For {val:3 seconds}: {pos:normal
-      damage} {val:+25}, {pos:attack speed} {val:+2.5}, {pos:movement speed} {val:+60%}\n\u25CF
-      Basic attacks become {em:wide Full Bloom Slashes}\n\u25CF [[\uB300\uC2DC]]
-      becomes faster and creates {val:3} slashes along the path\n\u25CF With the
+    m_Localized: "\u25CF Enter {em:Bloom}\r\n\u25CF For {val:3 seconds}: {pos:normal
+      damage} {val:+25}, {pos:attack speed} {val:+2.5}, {pos:movement speed} {val:+60%}\r\n\u25CF
+      Basic attacks become {em:wide Full Bloom Slashes}\r\n\u25CF [[\uB300\uC2DC]]
+      becomes faster and creates {val:3} slashes along the path\r\n\u25CF With the
       exclusive relic, kills {pos:extend duration} by {val:+1 second}"
     m_Metadata:
       m_Items: []
   - m_Id: 50606289883160
     m_Localized: "\u25CF Perform {val:3 consecutive} thrusts and downward strikes
-      with a lightning spear\n\u25CF Each attack builds up [[\uC804\uAE30 \uC18D\uC131]]\n\u25CF
+      with a lightning spear\r\n\u25CF Each attack builds up [[\uC804\uAE30 \uC18D\uC131]]\r\n\u25CF
       The final hit applies heavy pressure ahead"
     m_Metadata:
       m_Items: []
@@ -4977,9 +4977,9 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 50606289883162
     m_Localized: "\u25CF With a [[\uB099\uB8B0 \uD45C\uC2DD]] near the cursor, becomes
-      {em:Thunder Spear Charge}\n\u25CF Without a mark, attacks ahead with {em:Thunder
-      Spear Sweep}\n\u25CF A successful mark charge {pos:resets Thunder Spear Charge
-      cooldown}\n\u25CF Gain {val:1} {em:Recovered Spear}"
+      {em:Thunder Spear Charge}\r\n\u25CF Without a mark, attacks ahead with {em:Thunder
+      Spear Sweep}\r\n\u25CF A successful mark charge {pos:resets Thunder Spear Charge
+      cooldown}\r\n\u25CF Gain {val:1} {em:Recovered Spear}"
     m_Metadata:
       m_Items: []
   - m_Id: 50606289883163
@@ -4989,38 +4989,38 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 50606289883164
     m_Localized: "\u25CF Create {val:6} [[\uB099\uB8B0 \uD45C\uC2DD]]s in the combat
-      area around you\n\u25CF Spears deal light landing damage; marks last {val:7
-      seconds}\n\u25CF Use the marks as {em:Thunder Spear Charge} targets"
+      area around you\r\n\u25CF Spears deal light landing damage; marks last {val:7
+      seconds}\r\n\u25CF Use the marks as {em:Thunder Spear Charge} targets"
     m_Metadata:
       m_Items: []
   - m_Id: 50606289883165
-    m_Localized: "\u25CF Spend all remaining ammo on a {em:barrage}\n\u25CF Each
-      bullet deals {val:100 fixed damage} and knockback\n\u25CF Fire at {val:0.08-second}
-      intervals with a {val:15-degree} spread\n\u25CF After use: {neg:0 ammo remaining}"
+    m_Localized: "\u25CF Spend all remaining ammo on a {em:barrage}\r\n\u25CF Each
+      bullet deals {val:100 fixed damage} and knockback\r\n\u25CF Fire at {val:0.08-second}
+      intervals with a {val:15-degree} spread\r\n\u25CF After use: {neg:0 ammo remaining}"
     m_Metadata:
       m_Items: []
   - m_Id: 50606289883166
-    m_Localized: "\u25CF Spend {val:1 remaining round} to fire a straight bullet\n\u25CF
-      The bullet deals {val:100 fixed damage} and knockback\n\u25CF Without ammo,
+    m_Localized: "\u25CF Spend {val:1 remaining round} to fire a straight bullet\r\n\u25CF
+      The bullet deals {val:100 fixed damage} and knockback\r\n\u25CF Without ammo,
       switches to {neg:Dry Fire}"
     m_Metadata:
       m_Items: []
   - m_Id: 50606289883167
     m_Localized: "\u25CF Throw {em:Odd Iron} to deal {val:60 fixed damage} and knock
-      enemies back\n\u25CF The weapon disappears and {neg:cannot be recovered}"
+      enemies back\r\n\u25CF The weapon disappears and {neg:cannot be recovered}"
     m_Metadata:
       m_Items: []
   - m_Id: 50606289883168
     m_Localized: "\u25CF Accelerate immediately, then gain further speed in stages
-      while maintained\n\u25CF On use / after {val:3 seconds} / after {val:6 seconds}:
-      [[\uC774\uB3D9\uC18D\uB3C4]] bonus {val:100% / 200% / 300%}\n\u25CF {em:Forced
-      movement toward the mouse}\n\u25CF Taking damage, colliding with an enemy or
-      attacking {neg:immediately ends acceleration}"
+      while maintained\r\n\u25CF On use / after {val:3 seconds} / after {val:6 seconds}:
+      [[\uC774\uB3D9\uC18D\uB3C4]] bonus {val:100% / 200% / 300%}\r\n\u25CF {em:Forced
+      movement toward the mouse}\r\n\u25CF Taking damage, colliding with an enemy
+      or attacking {neg:immediately ends acceleration}"
     m_Metadata:
       m_Items: []
   - m_Id: 50606289883169
-    m_Localized: "\u25CF Perform a high-speed slash ahead\n\u25CF Damage bonus equal
-      to [[\uC774\uB3D9\uC18D\uB3C4]] {val:x3}"
+    m_Localized: "\u25CF Perform a high-speed slash ahead\r\n\u25CF Damage bonus
+      equal to [[\uC774\uB3D9\uC18D\uB3C4]] {val:x3}"
     m_Metadata:
       m_Items: []
   - m_Id: 50606289883170
@@ -5127,8 +5127,8 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 50606298271749
     m_Localized: "\u25CF [[\uCE58\uBA85\uD0C0]] increases [[\uC774\uB3D9\uC18D\uB3C4]]
-      by {move_speed_gain}\n\u25CF Stacks up to {max_move_speed_bonus}\n\u25CF Taking
-      damage {neg:resets accumulated bonuses}"
+      by {move_speed_gain}\r\n\u25CF Stacks up to {max_move_speed_bonus}\r\n\u25CF
+      Taking damage {neg:resets accumulated bonuses}"
     m_Metadata:
       m_Items: []
   - m_Id: 50606298271750
@@ -5169,7 +5169,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 50606298271759
-    m_Localized: "<color=#96DCFA>\u201CEnsure sufficient distance before use.\u201D\nIts
+    m_Localized: "<color=#96DCFA>\u201CEnsure sufficient distance before use.\u201D\r\nIts
       previous owner considered \u201Csufficient\u201D a subjective concept.</color>"
     m_Metadata:
       m_Items: []
@@ -5194,45 +5194,46 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 50606298271764
-    m_Localized: "\u25CF Exclusive relic for {em:Hero's Sword}\n\u25CF {pos:Charging
-      Thrust available} while charging Spinning Slash\n\u25CF Thrust damage, size
-      and color scale with charge at activation\n\u25CF At max charge, thrust damage
-      is about {val:1.67x}\n\u25CF Release during the charge to chain into an {em:Enhanced
+    m_Localized: "\u25CF Exclusive relic for {em:Hero's Sword}\r\n\u25CF {pos:Charging
+      Thrust available} while charging Spinning Slash\r\n\u25CF Thrust damage, size
+      and color scale with charge at activation\r\n\u25CF At max charge, thrust damage
+      is about {val:1.67x}\r\n\u25CF Release during the charge to chain into an {em:Enhanced
       Spinning Slash}"
     m_Metadata:
       m_Items: []
   - m_Id: 50606298271765
-    m_Localized: "\u25CF Exclusive relic for {em:Crimson Limit}\n\u25CF Kills with
-      {em:Ignite!} create {val:1} {em:Homing Fireball} at the target's location\n\u25CF
-      The fireball tracks a nearby enemy\n\u25CF No target means no fireball; homing
+    m_Localized: "\u25CF Exclusive relic for {em:Crimson Limit}\r\n\u25CF Kills with
+      {em:Ignite!} create {val:1} {em:Homing Fireball} at the target's location\r\n\u25CF
+      The fireball tracks a nearby enemy\r\n\u25CF No target means no fireball; homing
       fireballs {neg:cannot create further fireballs}"
     m_Metadata:
       m_Items: []
   - m_Id: 50606298271766
-    m_Localized: "\u25CF Exclusive relic for {em:Crimson Limit}\n\u25CF {em:Mega
-      Explosion!} becomes a {em:giant piercing lava ball}\n\u25CF Retains Mega Explosion!'s
-      damage and size\n\u25CF Travels at {val:75%} of basic attack projectile speed\n\u25CF
-      Disappears on contact with a wall"
+    m_Localized: "\u25CF Exclusive relic for {em:Crimson Limit}\r\n\u25CF {em:Mega
+      Explosion!} becomes a {em:giant piercing lava ball}\r\n\u25CF Retains Mega
+      Explosion!'s damage and size\r\n\u25CF Travels at {val:75%} of basic attack
+      projectile speed\r\n\u25CF Disappears on contact with a wall"
     m_Metadata:
       m_Items: []
   - m_Id: 50606298271767
-    m_Localized: "\u25CF Exclusive relic for {em:Thunder Spear Galaron}\n\u25CF Lightning
-      Marks fall sequentially at enemy positions at {val:0.07-second} intervals\n\u25CF
+    m_Localized: "\u25CF Exclusive relic for {em:Thunder Spear Galaron}\r\n\u25CF
+      Lightning Marks fall sequentially at enemy positions at {val:0.07-second} intervals\r\n\u25CF
       If blocked or too close to another spear, fall at an empty location near the
       enemy"
     m_Metadata:
       m_Items: []
   - m_Id: 50606298271768
-    m_Localized: "\u25CF Exclusive relic for {em:Thunder Spear Galaron}\n\u25CF [[\uACF5\uACA9\uC18D\uB3C4]]
-      {pos:[+20%]}\n\u25CF The {val:third hit} of a basic attack drops {val:1} thunder
-      spear toward an enemy near the attack's endpoint"
+    m_Localized: "\u25CF Exclusive relic for {em:Thunder Spear Galaron}\r\n\u25CF
+      [[\uACF5\uACA9\uC18D\uB3C4]] {pos:[+20%]}\r\n\u25CF The {val:third hit} of
+      a basic attack drops {val:1} thunder spear toward an enemy near the attack's
+      endpoint"
     m_Metadata:
       m_Items: []
   - m_Id: 50606298271769
-    m_Localized: "\u25CF Exclusive relic for {em:Odd Iron}\n\u25CF Attack or {em:barrage}
-      input reloads when out of ammo\n\u25CF Reloading consumes {val:1} relic level
-      for a {pos:full magazine}\n\u25CF Press again after reloading to fire\n\u25CF
-      Relic level represents remaining reloads\n\u25CF At level {val:0}, the {neg:relic
+    m_Localized: "\u25CF Exclusive relic for {em:Odd Iron}\r\n\u25CF Attack or {em:barrage}
+      input reloads when out of ammo\r\n\u25CF Reloading consumes {val:1} relic level
+      for a {pos:full magazine}\r\n\u25CF Press again after reloading to fire\r\n\u25CF
+      Relic level represents remaining reloads\r\n\u25CF At level {val:0}, the {neg:relic
       disappears}"
     m_Metadata:
       m_Items: []
@@ -5414,7 +5415,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708304846869
-    m_Localized: ...Are you the hero?
+    m_Localized: ...Are you the hero? I am Spiri. The dragon of crimson calamity...
+      [pause=0.25]Spiri.
     m_Metadata:
       m_Items: []
   - m_Id: 53708309041152
@@ -5439,7 +5441,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708309041157
-    m_Localized: ...Forgive me, but could you wait a moment?
+    m_Localized: ...Forgive me, but could you wait a moment? At present, I am...
+      [pause=0.35]not in a particularly desirable state.
     m_Metadata:
       m_Items: []
   - m_Id: 53708309041158
@@ -5470,7 +5473,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708309041164
-    m_Localized: Oooh~ Hero! You're [slowshake][rand_size=95,110]still heeere[/rand_size][/slowshake]~!
+    m_Localized: Oooh~ Hero! You [slowshake][rand_size=95,110]still haven't left[/rand_size][/slowshake]~!
     m_Metadata:
       m_Items: []
   - m_Id: 53708309041165
@@ -5487,7 +5490,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708309041168
-    m_Localized: Just now~?
+    m_Localized: Just now~? Ehehe... [pause=0.25][slowshake][rand_size=95,108]Who
+      knooows[/rand_size][/slowshake]~?
     m_Metadata:
       m_Items: []
   - m_Id: 53708309041169
@@ -5510,7 +5514,7 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 53708309041173
     m_Localized: Huh. [pause=0.25]Why do I see [slowshake][rand_size=95,108]three
-      hands[/rand_size][/slowshake]?
+      hands[/rand_size][/slowshake]? Anyway, here I cooome~!
     m_Metadata:
       m_Items: []
   - m_Id: 53708309041174
@@ -5585,31 +5589,30 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708325818374
-    m_Localized: ...Demon King's army... [pause=0.25]Chloe, shadow spirit and Silent
-      Warden. ...Go back. This... isn't a place for your kind.
+    m_Localized: ...A member of the Demon King's army... Silent Warden... Ah, I'm
+      Chloe, a shadow spirit. ...You can't come in here.
     m_Metadata:
       m_Items: []
   - m_Id: 53708325818375
-    m_Localized: ...Don't come closer. If you touch my shadow and something happens...
-      [tremble]I won't be responsible[/tremble].
+    m_Localized: ...No one's locked up here right now. Still... it's a place I'm
+      meant to guard.
     m_Metadata:
       m_Items: []
   - m_Id: 53708325818376
-    m_Localized: You seem to be trembling. You don't really want to fight, do you?
+    m_Localized: Do I need the Warden's permission to enter?
     m_Metadata:
       m_Items: []
   - m_Id: 53708325818377
-    m_Localized: Enough tricks! I'll cut through that pathetic shadow!
+    m_Localized: Why guard a prison with no one in it?
     m_Metadata:
       m_Items: []
   - m_Id: 53708325818378
-    m_Localized: ...Huh?! U-um...? N-no! I'm a really [punch]scary spirit[/punch]!
-      Everyone trembles when they see me...!
+    m_Localized: ...Permission? Ah... I've never thought about something like that.
     m_Metadata:
       m_Items: []
   - m_Id: 53708325818379
-    m_Localized: ...You're a very strange human. My true feelings... [pause=0.3]Usually
-      everyone runs away in fear...
+    m_Localized: But... the Demon King told me to stop you, Hero. I can't let you
+      in.
     m_Metadata:
       m_Items: []
   - m_Id: 53708325818380
@@ -5618,18 +5621,16 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708325818381
-    m_Localized: ...See? Humans are all the same. My real feelings... [pause=0.35]You
-      never even try to see them.
+    m_Localized: ...Just because no one's here doesn't mean anyone may come in.
     m_Metadata:
       m_Items: []
   - m_Id: 53708325818382
-    m_Localized: ...Always making up your own assumptions... I don't care anymore.
-      Do what you want, [punch]hurt yourself for all I care[/punch].
+    m_Localized: I'm... the Warden. I can't step aside here.
     m_Metadata:
       m_Items: []
   - m_Id: 53708325818383
-    m_Localized: ...I won't be responsible if you get badly hurt. It really... [tremble]will
-      hurt[/tremble]...
+    m_Localized: ...So please watch your step. My shadows... grow deeper the darker
+      it gets.
     m_Metadata:
       m_Items: []
   - m_Id: 53708325818384
@@ -5706,7 +5707,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708334206993
-    m_Localized: Oh?
+    m_Localized: Oh? So you are the hero I've heard about.
     m_Metadata:
       m_Items: []
   - m_Id: 53708334206994
@@ -5714,7 +5715,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708334206995
-    m_Localized: <size=120%>[punch]Halt.[/punch]</size> Stop right there!
+    m_Localized: <size=120%>[punch]Halt.[/punch]</size> Stop right there! Is it not
+      proper to clean your shoes before entering my waterways?
     m_Metadata:
       m_Items: []
   - m_Id: 53708334206996
@@ -5727,7 +5729,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708334206998
-    m_Localized: '[float]Behold.[/float]'
+    m_Localized: '[float]Behold.[/float] These crystal-clear waterways.'
     m_Metadata:
       m_Items: []
   - m_Id: 53708334206999
@@ -5748,7 +5750,7 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 53708334207003
     m_Localized: And I am sovereign over all those [slowshake][rand_size=98,106]squishy[/rand_size][/slowshake]
-      subjects.
+      subjects. <size=120%>Melta, queen of the mighty slimes!</size>
     m_Metadata:
       m_Items: []
   - m_Id: 53708334207004
@@ -5760,7 +5762,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708334207006
-    m_Localized: <size=120%>[wave]Ohohohoho![/wave]</size>
+    m_Localized: <size=120%>[wave]Ohohohoho![/wave]</size> Magnificent waterways,
+      you say.
     m_Metadata:
       m_Items: []
   - m_Id: 53708334207007
@@ -5768,7 +5771,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708334207008
-    m_Localized: Yes, an exceptionally accurate assessment!
+    m_Localized: Yes, an exceptionally accurate assessment! My subjects would be
+      delighted to hear that.
     m_Metadata:
       m_Items: []
   - m_Id: 53708338401280
@@ -5776,7 +5780,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708338401281
-    m_Localized: No, they must be hearing it already.
+    m_Localized: No, they must be hearing it already. They are all watching from
+      hiding, after all.
     m_Metadata:
       m_Items: []
   - m_Id: 53708338401282
@@ -5792,7 +5797,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708338401285
-    m_Localized: '[tremble]...For slimes?[/tremble]'
+    m_Localized: '[tremble]...For slimes?[/tremble] Did you just [pause=0.2] [tremble]look
+      down on[/tremble] my subjects?'
     m_Metadata:
       m_Items: []
   - m_Id: 53708338401286
@@ -5804,7 +5810,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708338401288
-    m_Localized: They move, they think,
+    m_Localized: They move, they think, They are proud citizens who even draw up
+      their own shift schedules!
     m_Metadata:
       m_Items: []
   - m_Id: 53708338401289
@@ -5812,7 +5819,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708338401290
-    m_Localized: Very well.
+    m_Localized: Very well. You shall receive a special lesson in etiquette first.
     m_Metadata:
       m_Items: []
   - m_Id: 53708338401291
@@ -5825,7 +5832,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53708338401293
-    m_Localized: But this is my kingdom.
+    m_Localized: But this is my kingdom. If you wish to pass your queen, prove yourself
+      worthy.
     m_Metadata:
       m_Items: []
   - m_Id: 53708338401294
@@ -5943,8 +5951,8 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 53708338401320
     m_Localized: "\u25CF [[\uCE58\uBA85\uD0C0]] increases [[\uC774\uB3D9\uC18D\uB3C4]]
-      by {move_speed_gain}\n\u25CF Stacks up to {max_move_speed_bonus}\n\u25CF Taking
-      damage {neg:resets accumulated bonuses}"
+      by {move_speed_gain}\r\n\u25CF Stacks up to {max_move_speed_bonus}\r\n\u25CF
+      Taking damage {neg:resets accumulated bonuses}"
     m_Metadata:
       m_Items: []
   - m_Id: 53708338401321
@@ -5968,22 +5976,22 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 57923735556098
-    m_Localized: "\u25CF Exclusive relic for {em:Bloom}\n\u25CF Kills during {em:Bloom}
+    m_Localized: "\u25CF Exclusive relic for {em:Bloom}\r\n\u25CF Kills during {em:Bloom}
       {pos:extend duration} by {extension_seconds}"
     m_Metadata:
       m_Items: []
   - m_Id: 57923735556099
     m_Localized: "\u25CF Hits trigger an {em:additional lightning strike} on nearby
-      enemies\n\u25CF Lightning damage: {lightning_damage}\n\u25CF Radius: {radius}\n{cooldown_line}"
+      enemies\r\n\u25CF Lightning damage: {lightning_damage}\r\n\u25CF Radius: {radius}\r\n{cooldown_line}"
     m_Metadata:
       m_Items: []
   - m_Id: 57923735556100
-    m_Localized: "\u25CF On kill: [[\uACF5\uACA9\uB825]] {attack_bonus} for {duration}\n\u25CF
+    m_Localized: "\u25CF On kill: [[\uACF5\uACA9\uB825]] {attack_bonus} for {duration}\r\n\u25CF
       [[\uC774\uB3D9\uC18D\uB3C4]] {move_speed_bonus}"
     m_Metadata:
       m_Items: []
   - m_Id: 57923735556101
-    m_Localized: "\u25CF Exclusive relic for {em:Wings of Afterimage}\n\u25CF Kills
+    m_Localized: "\u25CF Exclusive relic for {em:Wings of Afterimage}\r\n\u25CF Kills
       with {em:Speed Strike} {pos:maintain Rush}"
     m_Metadata:
       m_Items: []
@@ -5993,10 +6001,10 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 57923735556103
-    m_Localized: "\u25CF Exclusive relic for {em:Wings of Afterimage}\n\u25CF Changes
-      {em:Rush}'s movement speed bonus\n\u25CF On use: [[\uC774\uB3D9\uC18D\uB3C4]]
-      {stage_0_bonus}\n\u25CF After {val:3 seconds}: [[\uC774\uB3D9\uC18D\uB3C4]]
-      {stage_1_bonus}, total {stage_1_total}\n\u25CF After {val:6 seconds}: [[\uC774\uB3D9\uC18D\uB3C4]]
+    m_Localized: "\u25CF Exclusive relic for {em:Wings of Afterimage}\r\n\u25CF Changes
+      {em:Rush}'s movement speed bonus\r\n\u25CF On use: [[\uC774\uB3D9\uC18D\uB3C4]]
+      {stage_0_bonus}\r\n\u25CF After {val:3 seconds}: [[\uC774\uB3D9\uC18D\uB3C4]]
+      {stage_1_bonus}, total {stage_1_total}\r\n\u25CF After {val:6 seconds}: [[\uC774\uB3D9\uC18D\uB3C4]]
       {stage_2_bonus}, total {stage_2_total}"
     m_Metadata:
       m_Items: []
@@ -6740,7 +6748,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 64258392887296
-    m_Localized: 20% discount on shop prices
+    m_Localized: 5% discount on shop prices
     m_Metadata:
       m_Items: []
   - m_Id: 64258392887297
@@ -6829,14 +6837,14 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 102995743117313
-    m_Localized: "\u25CF {em:Without a Lightning Mark}, sweep in front without moving\n\u25CF
+    m_Localized: "\u25CF {em:Without a Lightning Mark}, sweep in front without moving\r\n\u25CF
       Fire stored {em:Recovered Spears} one by one in a fan toward the aim direction"
     m_Metadata:
       m_Items: []
   - m_Id: 102995743117314
     m_Localized: "\u25CF Rush instantly to a [[\uB099\uB8B0 \uD45C\uC2DD]] near the
-      cursor\n\u25CF Attack along the path and at the destination\n\u25CF Consuming
-      the mark {pos:resets Thunder Spear Rush cooldown}\n\u25CF Gain {val:1} {em:Recovered
+      cursor\r\n\u25CF Attack along the path and at the destination\r\n\u25CF Consuming
+      the mark {pos:resets Thunder Spear Rush cooldown}\r\n\u25CF Gain {val:1} {em:Recovered
       Spear}"
     m_Metadata:
       m_Items: []
@@ -7198,18 +7206,18 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 139235326595091
     m_Localized: "\u25CF A [[\uCE58\uBA85\uD0C0]] against an enemy with [[\uD654\uC0C1]]
-      applies {burn_stacks} stacks of [[\uD654\uC0C1]]\n\u25CF Cooldown {cooldown}"
+      applies {burn_stacks} stacks of [[\uD654\uC0C1]]\r\n\u25CF Cooldown {cooldown}"
     m_Metadata:
       m_Items: []
   - m_Id: 139235326595092
     m_Localized: "\u25CF On a [[\uCE58\uBA85\uD0C0]], gain {chance} [[\uCE58\uBA85\uD0C0
-      \uD655\uB960]] for {duration}\n\u25CF Another critical hit {pos:refreshes the
-      duration}"
+      \uD655\uB960]] for {duration}\r\n\u25CF Another critical hit {pos:refreshes
+      the duration}"
     m_Metadata:
       m_Items: []
   - m_Id: 139235326595093
     m_Localized: "\u25CF On a non-critical hit, gain {chance_per_stack} [[\uCE58\uBA85\uD0C0
-      \uD655\uB960]]\n\u25CF Stacks up to {maximum_stacks} times, totaling {maximum_chance}\n\u25CF
+      \uD655\uB960]]\r\n\u25CF Stacks up to {maximum_stacks} times, totaling {maximum_chance}\r\n\u25CF
       A critical hit {neg:resets the accumulated bonus}"
     m_Metadata:
       m_Items: []
@@ -7547,11 +7555,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 192956156776453
-    m_Localized: Not enough magic stones.
+    m_Localized: You're short on money!
     m_Metadata:
       m_Items: []
   - m_Id: 192956156776454
-    m_Localized: Your bag is full.
+    m_Localized: Your bag is packed full!
     m_Metadata:
       m_Items: []
   - m_Id: 192956156776455
@@ -7643,7 +7651,9 @@ MonoBehaviour:
       to 50% of the Fire Damage stat.
 
 
+
       Burn can stack up to 99 times.
+
 
 
       Its
@@ -7704,22 +7714,22 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 3041892226887680
     m_Localized: "\u25CF [[\uC804\uAE30 \uC18D\uC131]] {value} per [[\uAC10\uC804]]
-      enemy within {radius}m\n\u25CF Counts up to {cap} enemies"
+      enemy within {radius}m\r\n\u25CF Counts up to {cap} enemies"
     m_Metadata:
       m_Items: []
   - m_Id: 3041892344328192
     m_Localized: "\u25CF [[\uC804\uAE30 \uC18D\uC131]] {value} per {step} [[\uCD94\uAC00
-      \uC774\uB3D9\uC18D\uB3C4]]\n\u25CF Up to {cap} steps"
+      \uC774\uB3D9\uC18D\uB3C4]]\r\n\u25CF Up to {cap} steps"
     m_Metadata:
       m_Items: []
   - m_Id: 3041892344328193
     m_Localized: "\u25CF Using a movement skill grants [[\uC804\uAE30 \uC18D\uC131]]
-      {value} for {duration}\n\u25CF Up to 4 stacks; another use refreshes all stack
-      durations"
+      {value} for {duration}\r\n\u25CF Up to 4 stacks; another use refreshes all
+      stack durations"
     m_Metadata:
       m_Items: []
   - m_Id: 3041892344328194
-    m_Localized: Thunder Heart
+    m_Localized: Seal of Myriad Thunder
     m_Metadata:
       m_Items: []
   - m_Id: 3041892344328195
@@ -7755,11 +7765,11 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 3053830046543873
     m_Localized: "\u25CF Extend the [[\uAC10\uC804]] duration of enemies hit by a
-      chain by {extension}\n\u25CF Up to {cap}"
+      chain by {extension}\r\n\u25CF Up to {cap}"
     m_Metadata:
       m_Items: []
   - m_Id: 3053830050738176
-    m_Localized: Thunder Knot
+    m_Localized: Orb of Lingering Thunder
     m_Metadata:
       m_Items: []
   - m_Id: 3053830050738177
@@ -7768,17 +7778,17 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3068729934016512
-    m_Localized: "\u25CF Maximum electric chain targets {value}\n\u25CF Base count:
+    m_Localized: "\u25CF Maximum electric chain targets {value}\r\n\u25CF Base count:
       3, including the initial target"
     m_Metadata:
       m_Items: []
   - m_Id: 3068730034679808
-    m_Localized: "\u25CF Applying [[\uAC10\uC804]] causes paralysis for {duration}\n\u25CF
+    m_Localized: "\u25CF Applying [[\uAC10\uC804]] causes paralysis for {duration}\r\n\u25CF
       Does not affect bosses"
     m_Metadata:
       m_Items: []
   - m_Id: 3068730034679809
-    m_Localized: Resonance Bell
+    m_Localized: Thunder Distributor
     m_Metadata:
       m_Items: []
   - m_Id: 3068730034679810
@@ -7786,7 +7796,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3068730034679811
-    m_Localized: Tingling Shackles
+    m_Localized: Thunder Hammer
     m_Metadata:
       m_Items: []
   - m_Id: 3068730034679812
@@ -7811,12 +7821,12 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3091035256164352
-    m_Localized: "\u25CF Repeat chain lightning once more at {damage_ratio} damage\n\u25CF
+    m_Localized: "\u25CF Repeat chain lightning once more at {damage_ratio} damage\r\n\u25CF
       Excludes the initial target; [[\uAC10\uC804]] duration is not extended"
     m_Metadata:
       m_Items: []
   - m_Id: 3091035256164353
-    m_Localized: "\u25CF Each chain step increases chain damage by {step_bonus}\n\u25CF
+    m_Localized: "\u25CF Each chain step increases chain damage by {step_bonus}\r\n\u25CF
       Up to {max_bonus} extra damage"
     m_Metadata:
       m_Items: []
@@ -7839,7 +7849,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3091035256164358
-    m_Localized: Conductor Ring
+    m_Localized: Principles of Thunder
     m_Metadata:
       m_Items: []
   - m_Id: 3091035256164359
@@ -7938,6 +7948,1201 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 11285827328839680
     m_Localized: Reroll
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027352858624
+    m_Localized: Come to think of it, I implemented the motto system you proposed
+      last time. It was more splendid than I expected!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939008
+    m_Localized: It was more splendid than I expected!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939009
+    m_Localized: '"I''m the best slime." "We''re the best slimes." "But yesterday
+      I was just one."'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939010
+    m_Localized: We're the best slimes.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939011
+    m_Localized: But yesterday I was just one.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939012
+    m_Localized: "\u2026The problem is that subject split into four today, but there's
+      only one motto. Does that make four citizens?!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939013
+    m_Localized: The motto is one. Are there four citizens?!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939014
+    m_Localized: But they say their memories and hunger are all the same! The kingdom's
+      administration has ground to a halt!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939015
+    m_Localized: My administrative bureau has ground to a halt! I need your judgment!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939016
+    m_Localized: If their bodies split, aren't they each citizens?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939017
+    m_Localized: Oho, is that so? Then our citizens have increased; therefore, the
+      kingdom has expanded further!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939018
+    m_Localized: Then our citizens have increased; therefore, the kingdom has expanded
+      further!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939019
+    m_Localized: Let's just merge the slimes back together!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939020
+    m_Localized: Do you think slimes merge that easily?! Force them together, and
+      you only get one unpleasantly huge slime!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939021
+    m_Localized: Force them together, and you only get one unpleasantly huge slime!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939022
+    m_Localized: Four citizens, four certificates, and four food budgets.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939023
+    m_Localized: Good. I'll deal with you first, then create a new system!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939024
+    m_Localized: "To treat my subjects as dough\u2014I cannot forgive it!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939025
+    m_Localized: "To treat my subjects as dough\u2014I cannot forgive it! I will
+      deal with you first, then revise the citizenship system!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158875430912
+    m_Localized: Oh~! The hero is here? Perfect timing! The sand up there is scraping
+      the bottom~. Let's finish before it all runs out!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705600
+    m_Localized: Woaah~! The hero is staggering in! You came all the way like that?
+      Impressive! Want a drink? You'll wobble even more entertainingly~!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705601
+    m_Localized: Hero! You brought that staff! Once, a mage fired magic into my barrel
+      by mistake and went flying first~. You'd better aim well~!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705602
+    m_Localized: Oh~! You're the hero who collapsed first last time! Back on your
+      feet already? Your hangover clears faster than mine~!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705603
+    m_Localized: Whaat~?! Aren't you the hero who beat me last time? Wow, it really
+      is you! Maybe empty bottles ate some of my memory~!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705604
+    m_Localized: Oh? Hero, your bag is sparkling! Those are treasures in there, right?
+      Even better if they're snacks!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705605
+    m_Localized: "Wow~! My drinking buddy really came back! Get two glasses\u2014
+      oh, right. We fight first, then drink!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705606
+    m_Localized: "Huhh? Those footsteps in the corridor\u2026 it's you again? Good,
+      good! This time I'll offer a drink first~!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705607
+    m_Localized: "Strange footsteps! Who could it be\u2014 oh, a hero guest! Sit,
+      sit, have a drink\u2026 huh? Fight first?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108483981312
+    m_Localized: Come to think of it, Melta's mad at me again~. Because I chewed
+      on a few slimes like snacks!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108630781952
+    m_Localized: She says I chewed on a few slimes like snacks!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108630781953
+    m_Localized: "\u201CTastes like booze!\u201D, \u201CI feel lighter!\u201D"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108630781954
+    m_Localized: I feel lighter!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108630781955
+    m_Localized: I was just checking how chewy they were! Look, they're enjoying
+      it too~.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108630781956
+    m_Localized: I was only checking how chewy they were!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108630781957
+    m_Localized: Slimes are not snacks.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108634976256
+    m_Localized: I knooow~! I'm keeping it under control. Look, I'm perfectly fine!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108634976257
+    m_Localized: I'll show you just how sober I am! Come heeere~!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108634976258
+    m_Localized: Next time I'll bring you real snacks.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108634976259
+    m_Localized: Really? Woaah, I love that!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108634976260
+    m_Localized: Great! I'd better knock you down quick so you'll come back with
+      snacks next time~! Here I cooome!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699656970240
+    m_Localized: Oh, right. I'm running an errand for the Demon King~. They told
+      me to clear away every empty keg!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699740856320
+    m_Localized: They told me to clear away every empty keg!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699740856321
+    m_Localized: Normally I'd leave them lying all over the place~. But it's the
+      Demon King's request!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699740856322
+    m_Localized: But it's the Demon King's request!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050624
+    m_Localized: But they have to be empty before I can clear them! So let's empty
+      them together~!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050625
+    m_Localized: So let's empty them together~!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050626
+    m_Localized: That can't mean we should make empty kegs right?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050627
+    m_Localized: "Of course it does! I'm right! Gulp gulp\u2014 ngh, everything's
+      getting wobbly...!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050628
+    m_Localized: "Gulp gulp\u2014 ngh, everything's getting wobbly...!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050629
+    m_Localized: Seee? I'm still fiiine~! So you have a drink too!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050630
+    m_Localized: Let's make empty kegs together!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050631
+    m_Localized: Oooh! Just what I'd expect from a hero! Here, catch! Empty Keg Number
+      One~!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050632
+    m_Localized: Here, catch!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050633
+    m_Localized: Empty Keg Number One~!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050634
+    m_Localized: (Spiri threw a beer keg.)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060528943104
+    m_Localized: "Ahem. \u2026Anyway."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412096
+    m_Localized: Hero! Even the shadow beneath your feet cannot move without my permission!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412097
+    m_Localized: Raise your hand a little higher.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412098
+    m_Localized: "\u2026This is enough right?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412099
+    m_Localized: Impressive. You really look like a Demon King.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412100
+    m_Localized: "Right? \u2026No, of course it is. I am the Demon King after all."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412101
+    m_Localized: Your posture slipped as soon as you received praise.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412102
+    m_Localized: Quiet. At least the hero recognizes it. Good, now I'll face you
+      properly!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412103
+    m_Localized: "Something about that is weird\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412104
+    m_Localized: See? It's weird! This guy told me to say it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412105
+    m_Localized: The hero just doesn't know anything.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412106
+    m_Localized: "Will you be quiet? \u2026Fine, let's fight already!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358447202304
+    m_Localized: "Come to think of it\u2026 you broke quite a few things on your
+      way here."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059904
+    m_Localized: "Corridor walls, statues, doors\u2026 every repair estimate from
+      the Dwarven Masons' Guild landed on my desk."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059905
+    m_Localized: Ah, brings back memories!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059906
+    m_Localized: "You once smashed through the gate and pulled out a pillar, then
+      said, \u201CThe way was blocked, so it couldn't be helped\u201D!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059907
+    m_Localized: Why bring that up?!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059908
+    m_Localized: "\u2026Anyway, don't make too much of a mess of the Demon Castle.
+      I'm the one who has to do the paperwork."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059909
+    m_Localized: I'll be as careful as I can.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059910
+    m_Localized: Really? Then maybe someday I'll get to sleep without a repair ledger.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059911
+    m_Localized: Even two of them keep you up all night, and you're dreaming like
+      that.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059912
+    m_Localized: This time you may look forward to it. First prove you have the skill
+      to keep that promise!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059913
+    m_Localized: Then we can make it even more splendid with whatever I break.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059914
+    m_Localized: "That's the problem\u2014how much it costs to make it \u201Cmore
+      splendid\u201D!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059915
+    m_Localized: Gild it, add fountains, make the pillars even fancier!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059916
+    m_Localized: Why are you getting excited too?! Fine. I'll make you learn how
+      precious this castle is firsthand!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618481508352
+    m_Localized: "Ah, you're here\u2014wait! There's almost no time left. The Demon
+      King's patience must be... nearly spent by now."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618615726080
+    m_Localized: Ah, my shadow reached you first... Hero?! You're badly hurt. You
+      didn't tumble around somewhere dark, did you?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618615726081
+    m_Localized: That sound of footsteps... it is you after all, Hero. Last time,
+      the others and I carried you to the entrance. This time, I'll make sure you
+      can walk there on your own.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618615726082
+    m_Localized: Ah... The shadow by the door told me first. It said you had come
+      again, Hero. Last time... you won, didn't you?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618615726083
+    m_Localized: You came down this path again. Last time, the way closed before
+      you could reach me. I'm glad we met a little earlier this time.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618615726084
+    m_Localized: Wah!? Footsteps this early... Hero? I'm not ready yet.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114688
+    m_Localized: Ah, judging by the sticky trail on the floor... you've met Lady
+      Melta. I hope the slimes won't get lost around here.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114689
+    m_Localized: I can faintly smell alcohol... Ah, so you've met Lady Spiri, Hero.
+      She isn't looking for me, is she?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114690
+    m_Localized: Ah... I didn't even have time to hide this time. I can recognize
+      your footsteps right away now, Hero.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114691
+    m_Localized: I heard something clattering outside the door... Ah, it's you, Hero.
+      Your bag looks very heavy.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114692
+    m_Localized: Ah, those footsteps are familiar enough to shake the bookshelves.
+      You've come again, Hero.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114693
+    m_Localized: Ah... The shadows have grown longer. You must be here, Hero.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114694
+    m_Localized: "\u2026Come to think of it, I've been trying to look dignified,
+      like a warden should. But\u2026 I don't know how."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114695
+    m_Localized: "Everyone says I just need to stay quiet\u2026 but I only missed
+      my chance to speak."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114696
+    m_Localized: I'll wait if there's something you want to say.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114697
+    m_Localized: You look impressive when you're quiet too.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114698
+    m_Localized: "\u2026You'll wait for me? Then\u2026 I think it'll be a little
+      easier to speak."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114699
+    m_Localized: "Then\u2026 [punch]you can't go any further[/punch]. \u2026I should
+      have said that first."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114700
+    m_Localized: "\u2026Do I? But if I stay quiet\u2026 when do I get to talk to
+      you?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114701
+    m_Localized: "\u2026Ah, we should be getting started\u2026! W-well, then\u2026
+      please get ready."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439906897739776
+    m_Localized: "\u2026Ah, that's right. Could you take a look at this? It's this
+      month's report."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374592
+    m_Localized: "'Prisoners this month\u2026 none.' It was the same last month.
+      \u2026Is that all right, even though I'm the warden?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374593
+    m_Localized: That means no one needed locking up.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374594
+    m_Localized: Then how about locking me up?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374595
+    m_Localized: "\u2026So I can look at it that way. Then\u2026 I did a good job
+      this month too."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374596
+    m_Localized: "\u2026I won't lock you up either. But\u2026 I still have to stop
+      intruders. \u2026I'll begin now."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374597
+    m_Localized: "\u2026What?! Th-then\u2026 do I write down your name first? Lock
+      the cell door\u2026 ah, but you're still outside\u2026!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374598
+    m_Localized: "\u2026For now, I'll try catching you first. \u2026I'll work out
+      the next step once I have."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701271498752
+    m_Localized: Your intrusion can wait. My citizenship ceremony is on the verge
+      of collapse!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744960
+    m_Localized: Citizens must have names and rights. Their citizenship certificates
+      must therefore bear portraits!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744961
+    m_Localized: '"My shape changed while he was painting.", "The painter cried."'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744962
+    m_Localized: "I had a portrait painted of one citizen, and there were three by
+      the time it was done! And the finished portrait\u2026 someone ate it!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744963
+    m_Localized: Write a phrase each citizen chooses instead of a portrait.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744964
+    m_Localized: Oh! Their shapes may change, but the words they choose remain! We
+      can use those to tell them apart!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744965
+    m_Localized: Why not just give them numbers?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744966
+    m_Localized: Numbers?! You would label my citizens like goods in a storeroom!
+      However squishy they may be, citizens are citizens!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744967
+    m_Localized: '"My motto is I''m hungry.", "I''m hungrier.", "My stamp tastes
+      good."'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744968
+    m_Localized: "\u2026First, I shall deal with you. Then I must put my citizens'
+      literacy in order!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701388939264
+    m_Localized: '"I want to be Number One.", "I want to eat Number One."'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701388939265
+    m_Localized: Behold! The numbering system has collapsed before it even began!
+      Before I resolve this administrative catastrophe, I shall deal with you first!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940162944679936
+    m_Localized: Attack Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163146006528
+    m_Localized: Attack <color=#197A67>+2</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163183755264
+    m_Localized: Attack Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163221504000
+    m_Localized: Attack <color=#197A67>+4</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163263447040
+    m_Localized: Attack Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163301195776
+    m_Localized: Attack <color=#197A67>+6</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163338944512
+    m_Localized: Critical Chance Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163385081856
+    m_Localized: Critical Chance <color=#197A67>+2%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163422830592
+    m_Localized: Critical Chance Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163460579328
+    m_Localized: Critical Chance <color=#197A67>+4%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163489939456
+    m_Localized: Critical Chance Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163527688192
+    m_Localized: Critical Chance <color=#197A67>+6%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163561242624
+    m_Localized: Critical Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163611574272
+    m_Localized: Critical Damage <color=#197A67>+4%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163657711616
+    m_Localized: Critical Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163703848960
+    m_Localized: Critical Damage <color=#197A67>+8%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163745792000
+    m_Localized: Critical Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163787735040
+    m_Localized: Critical Damage <color=#197A67>+12%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163829678080
+    m_Localized: Evasion Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163871621120
+    m_Localized: Evasion <color=#197A67>+1%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163900981248
+    m_Localized: Evasion Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163938729984
+    m_Localized: Evasion <color=#197A67>+2%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163984867328
+    m_Localized: Evasion Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164014227456
+    m_Localized: Evasion <color=#197A67>+3%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164060364800
+    m_Localized: Attack Speed Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164089724928
+    m_Localized: Attack Speed <color=#197A67>+2%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164135862272
+    m_Localized: Attack Speed Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164169416704
+    m_Localized: Attack Speed <color=#197A67>+4%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164207165440
+    m_Localized: Attack Speed Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164244914176
+    m_Localized: Attack Speed <color=#197A67>+6%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164286857216
+    m_Localized: Movement Speed Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164324605952
+    m_Localized: Movement Speed <color=#197A67>+3%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164366548992
+    m_Localized: Movement Speed Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164408492032
+    m_Localized: Movement Speed <color=#197A67>+5%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164450435072
+    m_Localized: Movement Speed Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164509155328
+    m_Localized: Movement Speed <color=#197A67>+8%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164664344576
+    m_Localized: Basic Attack Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164718870528
+    m_Localized: Basic Attack Damage <color=#197A67>+2%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164781785088
+    m_Localized: Basic Attack Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164832116736
+    m_Localized: Basic Attack Damage <color=#197A67>+4%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164890836992
+    m_Localized: Basic Attack Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164932780032
+    m_Localized: Basic Attack Damage <color=#197A67>+6%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164974723072
+    m_Localized: Skill Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165025054720
+    m_Localized: Skill Damage <color=#197A67>+2%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165071192064
+    m_Localized: Skill Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165117329408
+    m_Localized: Skill Damage <color=#197A67>+4%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165159272448
+    m_Localized: Skill Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165192826880
+    m_Localized: Skill Damage <color=#197A67>+6%</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165243158528
+    m_Localized: Fire Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165289295872
+    m_Localized: Fire Damage <color=#197A67>+1</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165331238912
+    m_Localized: Fire Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165373181952
+    m_Localized: Fire Damage <color=#197A67>+2</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165415124992
+    m_Localized: Fire Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165457068032
+    m_Localized: Fire Damage <color=#197A67>+3</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165503205376
+    m_Localized: Electric Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165549342720
+    m_Localized: Electric Damage <color=#197A67>+1</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165591285760
+    m_Localized: Electric Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165629034496
+    m_Localized: Electric Damage <color=#197A67>+2</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165670977536
+    m_Localized: Electric Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165708726272
+    m_Localized: Electric Damage <color=#197A67>+3</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165742280704
+    m_Localized: Poison Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165792612352
+    m_Localized: Poison Damage <color=#197A67>+1</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165826166784
+    m_Localized: Poison Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165863915520
+    m_Localized: Poison Damage <color=#197A67>+2</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165910052864
+    m_Localized: Poison Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165947801600
+    m_Localized: Poison Damage <color=#197A67>+3</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165989744640
+    m_Localized: Bleed Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940166031687680
+    m_Localized: Bleed Damage <color=#197A67>+1</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940166073630720
+    m_Localized: Bleed Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940166123962368
+    m_Localized: Bleed Damage <color=#197A67>+2</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940166165905408
+    m_Localized: Bleed Damage Training
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940166203654144
+    m_Localized: Bleed Damage <color=#197A67>+3</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071806197760
+    m_Localized: But more urgently, come here and listen! I have a matter of the
+      utmost national importance!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638272
+    m_Localized: That drunken dragon Spiri has been chewing on my citizens like drinking
+      snacks again! One had finally grown up nicely, only to be reduced to a little
+      squirt that fits in a palm!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638273
+    m_Localized: We got some drinks, too!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638274
+    m_Localized: And now we feel lighter!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638275
+    m_Localized: If you are pleased about it, who am I supposed to be angry with?!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638276
+    m_Localized: Introduce permits for drinking snacks.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638277
+    m_Localized: Take all of Spiri's alcohol away!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638278
+    m_Localized: "Oh\u2026 a permit system for drinking snacks."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638279
+    m_Localized: Splendid slime-rights governance! It upholds both my citizens' freedom
+      of choice and their queen's duty of care!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638280
+    m_Localized: W-what are you saying?! What if Spiri wakes up?! That would spell
+      the end of the Demon King's castle!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638281
+    m_Localized: "\u2026I said nothing just now."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638282
+    m_Localized: Very well. There is much to be done.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638283
+    m_Localized: I shall deal with you first, then settle this business with Spiri!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638284
+    m_Localized: You have arrived, Hero! The Demon King's patience is scraping the
+      bottom. Dally any longer, and this will end before you even get to challenge
+      me!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638285
+    m_Localized: You have arrived, Hero! Ohoho! My citizens have tenderized you with
+      exquisite care. You are nearly ready to serve!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638286
+    m_Localized: "At last you arri\u2014 Gah! That flashing spear is most unfriendly
+      to my water-rich citizens! That is no weapon, it is a jelly exterminator!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638287
+    m_Localized: You return, Hero! I have compiled a twelve-page report on my last
+      defeat. Seven pages are self-reproach alone!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638288
+    m_Localized: You return! Last time, you were the first to fall. I jiggled my
+      victory jelly no fewer than three times!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638289
+    m_Localized: You have arrived, Hero! What is that pack? If it bursts, your belongings
+      will flood the place before my waterway does!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638290
+    m_Localized: Welcome, Hero! Today, you shall be treated as a state guest. Pin
+      your intruder badge over your state guest badge!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638291
+    m_Localized: Here you are again. At this point, you are less an intruder and
+      more a regular waterway inspector!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638292
+    m_Localized: You have arrived, Hero. Did you wash your feet before entering?
+      Do you mean to track mud into my noble waterway again?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638293
+    m_Localized: So you finally show yourself? My patience was just about to run
+      out. Since you're late, I won't be holding back.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638294
+    m_Localized: "Wait, you made it all the way here in that state? You're not expecting
+      my people to carry you back to the entrance again, are you? \u2026That doesn't
+      mean I'll go easy on you."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638295
+    m_Localized: "You made it back here. Last time you collapsed, even my people
+      had to get involved. Try to last a little longer this time. \u2026I'm not saying
+      I'll go easy on you."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638296
+    m_Localized: Back again, huh? Do you know how many hours I spent tidying the
+      throne room after you won last time? This time, I'll act like a proper Demon
+      King.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638297
+    m_Localized: On time this time? Last time, my patience ran out first. That's
+      an improvement.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638298
+    m_Localized: "You're here already?! \u2026I mean, I'm glad. When you get here
+      early, I don't have to spend as much time alone with the paperwork."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638299
+    m_Localized: "Melta was just talking about you. Good timing. Apparently, you're
+      easier to talk to than you look. \u2026I'm not the one complimenting you."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638300
+    m_Localized: Oh, you're here? Spiri was rolling a keg around and talking about
+      you. Said you'd make good drinking company. Keep her company now and then.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638301
+    m_Localized: "Oh, you got here first. \u2026That's a relief. Your visit is the
+      least exhausting part of my day. Forget I said that."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638302
+    m_Localized: Hey, how many visits is this now? Your footprints are starting to
+      look more familiar than the throne room floor.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638303
+    m_Localized: "I knew you'd make it here. The question is why I was waiting for
+      you. \u2026Anyway, let's talk."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451195375616
+    m_Localized: Welcome, Hero! I picked these out beside that drunken dragon today.
+      Plenty of shiny things there!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507904
+    m_Localized: What if you get caught?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507905
+    m_Localized: Hehe, worried about me? Relax, I've already checked all the escape
+      routes! You have to do that much to stay in business.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507906
+    m_Localized: Are you sure that dragon hasn't noticed?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507907
+    m_Localized: ...Knew all along and let me take them? Why? ...Anyway, once you
+      buy it, it's yours!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507908
+    m_Localized: You again! Was my shop your first stop?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507909
+    m_Localized: I wanted to hear your recommendations.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507910
+    m_Localized: Hehe! Then I'll choose extra carefully today!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507911
+    m_Localized: You just happened to be on the way.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507912
+    m_Localized: Even a shop on the way has someone waiting for customers!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507913
+    m_Localized: What do I do after work? Find the next thing to sell!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507914
+    m_Localized: It's okay to rest sometimes.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507915
+    m_Localized: Huh? Looking out for me? Maybe I will finish early today.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507916
+    m_Localized: Then you could sell things cheaper.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507917
+    m_Localized: Was that just another attempt to haggle?!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507918
+    m_Localized: I saved something for you. Special treatment!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507919
+    m_Localized: Thanks for remembering me.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507920
+    m_Localized: Don't mention it! Come back safe. I'll handle the goods.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507921
+    m_Localized: You probably say that to every customer.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507922
+    m_Localized: I don't put this much thought into just anyone!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507923
+    m_Localized: Funny, huh? I can recognize your footsteps from far away.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507924
+    m_Localized: Hearing your voice puts me at ease too.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507925
+    m_Localized: R-really? Then I'll welcome you extra loudly next time!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507926
+    m_Localized: I thought you only listened for coins.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507927
+    m_Localized: I can tell coins and footsteps apart, you know!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507928
+    m_Localized: Welcome! Take your time looking, then make your choice!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507929
+    m_Localized: Come back in one piece. We have more business to do!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507930
+    m_Localized: Good wares today, as always. Still got that eye for quality?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507931
+    m_Localized: Your bag is full! Make some room for my wares first!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507932
+    m_Localized: Ready to buy, but nowhere to put it? Sort out your bag!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217630437376
+    m_Localized: One random item in each shop receives an extra 10-20% discount.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217911455744
+    m_Localized: After defeat or timeout, carry up to 500 gold into your next run.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217919844352
+    m_Localized: Rare and Epic relics appear slightly more often in shops.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217932427264
+    m_Localized: SALE -{0}%
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809219178496
+    m_Localized: "Welcome, partner! You fight at the front door, I collect things at the back! Our teamwork is flawless again today!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258880
+    m_Localized: "Then show me my share."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258881
+    m_Localized: "Sure! As my partner, you get the first chance to buy. Pay over here!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258882
+    m_Localized: "Shouldn't a partner's share be free?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258883
+    m_Localized: "Why?! It's the share I'm selling to you! I even brought the goods. Isn't that a bit much to ask of your partner?!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961339964178432
+    m_Localized: Welcome, Hero! Why so cheap? Hehe, there is a calculation behind
+      every deal!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561984
+    m_Localized: No buying costs, you kept everyone distracted, and a bargain brings
+      you back! So I still make a profit on this item at a discount. Hehe, flawless,
+      right?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561985
+    m_Localized: Should you be telling me that?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561986
+    m_Localized: Why not? You will buy it anyway. I picked it out and even lowered
+      the price!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561987
+    m_Localized: I am still not buying it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561988
+    m_Localized: Why?! I lowered the price, and the explanation was free too! ...Do
+      I need to explain more?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10999655765884928
+    m_Localized: Why is everyone so scared? Just slip a few things away while that
+      dragon sleeps off the booze. As long as I don't wake the dragon, right?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11005436400660480
+    m_Localized: "Of course I set aside your share. Hehe, I'm a merchant who looks after her partners, right?"
     m_Metadata:
       m_Items: []
   references:

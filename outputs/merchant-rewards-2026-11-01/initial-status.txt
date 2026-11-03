@@ -1,0 +1,46 @@
+ M Assets/AddressableAssetsData/AddressableAssetSettings.asset
+ M "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset"
+ M Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+ M Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+ M Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+ M "Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant SDF.asset"
+ M "Assets/_Project/Data/Localization/Fonts/NotoSansCJKtc-Regular SDF.asset"
+ M "Assets/_Project/Data/Localization/GameText Shared Data.asset"
+ M Assets/_Project/Data/Localization/GameText_en.asset
+ M Assets/_Project/Data/Localization/GameText_ja.asset
+ M Assets/_Project/Data/Localization/GameText_ko.asset
+ M Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+ M Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+ M Assets/_Project/Data/SceneFlow/LoadingManifests/PrewarmTrace_user_BOOK-SG92DF7HHL.json
+ M Assets/_Project/Editor/Tools/Data/LocalizationSheetSetup.cs
+ M Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+ M Assets/_Project/Runtime/Features/Dialogue/Affection/AffectionManager.cs
+ M Assets/_Project/Runtime/Features/Dialogue/DialogueTrigger.cs
+ M Assets/_Project/Runtime/Features/Dialogue/NPC/NPCData.cs
+ M Assets/_Project/Scenes/ProtoTypeHub.unity
+ M DataSheets/Localization/GameText.csv
+ M DataSheets/Localization/InkInventory.json
+ M Docs/DecisionLog.md
+ M Docs/ErrorLog.md
+ M Docs/StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md
+ M Docs/StructureMemory/ScriptSystems/SceneRuntimeSaveStructure.md
+ M Docs/TaskIndex.md
+?? Assets/_Project/Art/Sprites/UI/Dialogue/NpcAffectionAvailable.png
+?? Assets/_Project/Art/Sprites/UI/Dialogue/NpcAffectionAvailable.png.meta
+?? Assets/_Project/Editor/Tools/Dialogue/NpcAffectionBubbleEditor.cs
+?? Assets/_Project/Editor/Tools/Dialogue/NpcAffectionBubbleEditor.cs.meta
+?? Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+?? Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs.meta
+?? Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+?? Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs.meta
+?? Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+?? Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs.meta
+?? Assets/_Project/Runtime/UI/HUD/WorldPrompt/NpcAffectionBubble.cs
+?? Assets/_Project/Runtime/UI/HUD/WorldPrompt/NpcAffectionBubble.cs.meta
+?? Docs/ActiveTasks/npc-run-affection-dialogue.md
+?? Docs/SessionLogs/2026-11-01.md
+?? output/imagegen/blazing-core-test-2026-11-01/
+?? output/imagegen/fire-four-sheet-test-2026-11-01/
+?? output/relic-review-2026-11-01/
+?? outputs/merchant-rewards-2026-11-01/
+?? outputs/npc-affection-2026-11-01/

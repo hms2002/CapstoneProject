@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-11-01
+last_reviewed: 2026-11-04
 ---
 
 # Shop Structure
@@ -18,6 +18,7 @@ last_reviewed: 2026-11-01
 - `MerchantNPC`: 씬 소유 상점 조율자. 재고 바인딩, 플레이어/무기·유물 인벤토리/상자 상태 구독, 구매/새로고침 요청과 표시 갱신.
 - `MerchantRunStateService`: `GamePlayData.merchantStates`의 상인별 재고·판매 여부·새로고침 횟수 관리. 현재 제외 무기 또는 최대 레벨 유물인 미판매 슬롯만 보정.
 - `ShopInventoryRoll`: 최초/새로고침/부분 보정/슬롯 확장의 공통 후보 선택. 유지 슬롯도 중복 제외와 종류별 한도에 포함.
+- `MerchantOfferPricing`: 원가에서 전체 할인과 슬롯 특가를 곱해 최종 가격을 계산한다. 호감도 희귀도 보너스는 `MerchantNPC`가 최초/새로고침/부분 보정/슬롯 확장의 모든 추첨에 전달한다.
 - `MerchantPurchaseService`: 실제 인벤토리 획득 가능 여부와 통화 지출/실패 환불. 인벤토리가 최종 획득 가능 여부를 결정한다.
 - `ShopSlot`: 저장 재고를 화면과 상호작용으로 투영. 강조 중 상품 변경 시 상세 표시도 갱신하며 재고를 소유하지 않는다.
 - `MerchantRefreshInteractable`: 새로고침 상호작용·남은 횟수 표시. 텍스트는 Core `TextPresentationBinding` 경유.
@@ -45,6 +46,7 @@ last_reviewed: 2026-11-01
 - 무기 `OnInventoryChanged`, 유물 `OnChanged`, 상자 `WorldStateChanged`는 보정 필요 표시만 남기며 `Update`에서 처리한다. 인벤토리 shell 복원도 변경 이벤트를 발행한다.
 - 구매 중 무기 획득 알림은 판매 완료 표시보다 먼저 온다. 이벤트 안에서 즉시 재고를 다시 뽑으면 구매 슬롯이 새 상품으로 바뀔 수 있으므로 조율자가 구매 완료 후 처리한다.
 - 초기 저장 재고 바인딩과 구매 경계에서도 보정한다. 겹친 슬롯만 교체하며 새로고침 횟수는 사용하지 않는다.
+- 부분 보정으로 유효한 대체 상품을 넣을 때 기존 슬롯의 `specialDiscountPercent`를 유지한다. 새 상품의 원가로 가격을 다시 계산하고, 기존 특가 배정 여부를 초기화하거나 할인율을 다시 추첨하지 않는다. 후보가 없어 빈 슬롯이 되면 표시할 특가도 없으며, 실제 재고 새로고침에서만 다시 배정한다.
 - 런 골드의 원가/할인 저장 방식은 유지된다. 가격과 슬롯 수 설정을 바꾸는 곳은 `ShopDefinitionSO`와 정책 계층이다.
 
 ## Chest cooperation
@@ -68,6 +70,7 @@ last_reviewed: 2026-11-01
 
 - 후보 허용 정책: `LootPoolItemSelectionService`; 상점 종류·수량·가격: `ShopDefinitionSO`/`MerchantShopPolicy`; 보정할 슬롯 판정과 저장: `MerchantRunStateService`.
 - 슬롯 일부를 다시 뽑을 때 실제 anchor index와 유지 슬롯을 넘긴다. 유지 상품을 빼고 개수 한도를 계산하면 소모품/무기 한도를 초과할 수 있다.
+- 부분 보정의 유지 슬롯 정보와 호감도 `ShopRunModifierDelta`는 함께 전달한다. 어느 한쪽을 누락하면 중복/개수 제한 또는 희귀도 혜택이 빠진다. [병합 확인 기록](../../SessionLogs/2026-11-04.md).
 - 기존 정상 상품과 SOLD 슬롯을 인벤토리 변경 때마다 전체 재생성하지 않는다. 상점 재방문은 새로고침이 아니다.
 - 월드 드롭 생성만으로 모든 상점을 지속 재검사하는 전역 감시자는 없다. 최초/새로고침/인벤토리 변경/구매 경계에서 현재 제외 목록을 조회한다.
 - 자동 보정 결과를 표시할 때 강조 중 상세 설명도 새 상품과 맞춘다. UI는 최신 상태를 보여 주고 판매/빈 슬롯에서는 설명을 숨긴다.

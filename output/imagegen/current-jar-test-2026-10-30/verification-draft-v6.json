@@ -1,0 +1,54 @@
+{
+  "name": "current-jar-draft-v6",
+  "date": "2026-10-30",
+  "mode": "preview draft only",
+  "concept": "Warm cracked pottery jar with a mouth full of stored blue light; electricity leaking along the belly fissures and two small side leaks",
+  "size": [
+    32,
+    32
+  ],
+  "colorCountIncludingOutline": 5,
+  "palette": {
+    "#363232": 232,
+    "#77BCD6": 81,
+    "#8A5E40": 131,
+    "#B1DECF": 44,
+    "#D49C73": 163
+  },
+  "onlyUserPaletteColors": true,
+  "alphaValues": [
+    0,
+    255
+  ],
+  "bounds": [
+    1,
+    2,
+    31,
+    30
+  ],
+  "margins": {
+    "left": 1,
+    "top": 2,
+    "right": 1,
+    "bottom": 2
+  },
+  "previewExact16xNearest": true,
+  "sha256": "357cf2f607e163a3b82025114512d58890387ab05f68a259bd74dec30d80b197",
+  "protectedAssetHashes": {
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentJar.asset": "deed2485bb1927e5dba7f59b5fb98b7a98c8009f7152b12f1dc24b415112d6d8",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentJar.asset.meta": "a8210616d0f77d2f22c116014f0f4cdea76582768a7a3e22a033cdba7a15905c",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Flame Artifact.png": "44aa3e633a3ff88371a1b6477160df129dfd8498605a8d044d434c43c6f7aa29",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Flame Artifact.png.meta": "7d4dbe59cc948c905272d5849aaf1b6edc5b01f1f17f3d65476803955bdda87b"
+  },
+  "protectedAssetsUnchanged": true,
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-bb988193-f3de-43c0-93b9-e6a47196ae04.png",
+  "export": "Uniform proportional categorical raster export to 32x32; 5x5 electric-color coverage sampling preserves the generated fine crack connections; exact five-color palette, 2px dark contour and 16x nearest preview",
+  "gameAssetsChanged": false,
+  "unityVerification": "not executed; draft only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

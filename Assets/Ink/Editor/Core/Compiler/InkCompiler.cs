@@ -615,15 +615,23 @@ namespace Ink.UnityIntegration {
 
             // Create and import compiled files
 			AssetDatabase.StartAssetEditing();
-			foreach (var compilingFile in compilationStack) {
-				// Complete status is also set when an error occured, in these cases 'compiledJson' will be null so there's no import to process
-				if (compilingFile.compiledJson == null) continue;
-				
-				// Write new compiled data to the file system
-				File.WriteAllText(compilingFile.jsonAbsoluteFilePath, compilingFile.compiledJson, Encoding.UTF8);
-                if(compilingFile.inkFile.inkAsset != null) AssetDatabase.ImportAsset(compilingFile.inkFile.jsonPath);
+			try {
+				foreach (var compilingFile in compilationStack) {
+					// Complete status is also set when an error occured, in these cases 'compiledJson' will be null so there's no import to process
+					if (compilingFile.compiledJson == null) continue;
+
+					// Report write failures through the normal error and cleanup path.
+					try {
+						File.WriteAllText(compilingFile.jsonAbsoluteFilePath, compilingFile.compiledJson, Encoding.UTF8);
+					} catch (IOException e) {
+						compilingFile.unhandledErrorOutput.Add("Failed to write compiled Ink JSON at '" + compilingFile.jsonAbsoluteFilePath + "':\n" + e);
+						continue;
+					}
+					if(compilingFile.inkFile.inkAsset != null) AssetDatabase.ImportAsset(compilingFile.inkFile.jsonPath);
+				}
+			} finally {
+				AssetDatabase.StopAssetEditing();
 			}
-			AssetDatabase.StopAssetEditing();
 
 
 			// Sets output info for each InkFile (todos, warnings and errors); produces and fires the post-compliation log
@@ -651,6 +659,7 @@ namespace Ink.UnityIntegration {
                         compilingFile.inkFile.unhandledCompileErrors = compilingFile.unhandledErrorOutput;
                         errorsFound = true;
                     } else {
+                        compilingFile.inkFile.unhandledCompileErrors.Clear();
                         compilingFile.SetOutputLog();
                         bool errorsInEntireStory = false;
                         bool warningsInEntireStory = false;

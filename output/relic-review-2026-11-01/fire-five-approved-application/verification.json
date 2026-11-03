@@ -1,0 +1,203 @@
+{
+  "date": "2026-11-01",
+  "scope": "Apply five user-approved fire relic PNGs verbatim",
+  "assets": [
+    {
+      "name": "타오르는 심핵",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-6bfee0c2-4cf3-44c6-83c9-333029abc4a7.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BlazingCore.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BlazingCore.png.meta",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FireBonusRelic.asset",
+      "guid": "c516ef40dcdd491ba98999b39c724230",
+      "fileID": "21300000",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        2,
+        28,
+        30
+      ],
+      "opaque_colors": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "sha256": "c42452a428629b3c4574f78a7961e6518ab9b0a18ca06a81357aad92468863ae",
+      "source_bytes_equal": true,
+      "definition_only_icon_changed": true,
+      "import_settings": {
+        "spriteMode": 1,
+        "pixelsPerUnit": 32,
+        "filterMode": 0,
+        "mipMaps": false,
+        "compression": 0
+      }
+    },
+    {
+      "name": "불타는 깃털",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-2da68ee4-567c-41cf-811c-81a698df1c53.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BurningFeather.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BurningFeather.png.meta",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BurningFeather.asset",
+      "guid": "042c17c7c4c74dab9e72ac90d1052c5b",
+      "fileID": "21300000",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        4,
+        2,
+        28,
+        30
+      ],
+      "opaque_colors": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "sha256": "4ad16725bb3c3c017d46109919d73855efe3819976fa456b49faf130437aacd1",
+      "source_bytes_equal": true,
+      "definition_only_icon_changed": true,
+      "import_settings": {
+        "spriteMode": 1,
+        "pixelsPerUnit": 32,
+        "filterMode": 0,
+        "mipMaps": false,
+        "compression": 0
+      }
+    },
+    {
+      "name": "녹아내린 종",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-4eb84713-c0ba-4fc2-b31f-c4424ca8145b.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_MeltedBell.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_MeltedBell.png.meta",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_MeltedBell.asset",
+      "guid": "313804d7843f41bb9a0f29124fe36f32",
+      "fileID": "21300000",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        2,
+        29,
+        30
+      ],
+      "opaque_colors": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "sha256": "83d62e54def3afee969c710dcd418b7793ba5bc5fa8fcefc7071df3abc1306c5",
+      "source_bytes_equal": true,
+      "definition_only_icon_changed": true,
+      "import_settings": {
+        "spriteMode": 1,
+        "pixelsPerUnit": 32,
+        "filterMode": 0,
+        "mipMaps": false,
+        "compression": 0
+      }
+    },
+    {
+      "name": "매캐한 향로",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-3ce0b3df-f168-4610-9ef7-9a9a8636506c.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SmokyIncense.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SmokyIncense.png.meta",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SmokyIncense.asset",
+      "guid": "cf8c0cc8be3a490789cfeca716c76092",
+      "fileID": "21300000",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        6,
+        2,
+        26,
+        30
+      ],
+      "opaque_colors": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "sha256": "84b5f324fee1a7a34b35de4333b8250bb73e085bf60804523cc417b197d32bea",
+      "source_bytes_equal": true,
+      "definition_only_icon_changed": true,
+      "import_settings": {
+        "spriteMode": 1,
+        "pixelsPerUnit": 32,
+        "filterMode": 0,
+        "mipMaps": false,
+        "compression": 0
+      }
+    },
+    {
+      "name": "홍련의 왕관",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-6966eaab-9e44-4e3b-81ef-435c13022361.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonCrown.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonCrown.png.meta",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKing.asset",
+      "guid": "b9d08640b4e5410bbfb685ec1b03df98",
+      "fileID": "21300000",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        6,
+        30,
+        26
+      ],
+      "opaque_colors": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "sha256": "d9d2e8e9bd8e7e14aea90d5ed2e3949f8db3125e31418dd1872cbfe05b9bcbcd",
+      "source_bytes_equal": true,
+      "definition_only_icon_changed": true,
+      "import_settings": {
+        "spriteMode": 1,
+        "pixelsPerUnit": 32,
+        "filterMode": 0,
+        "mipMaps": false,
+        "compression": 0
+      }
+    }
+  ],
+  "protected_files_unchanged": 379,
+  "existing_guids_preserved": true,
+  "shared_atlas_unchanged": true,
+  "names_effects_localization_unchanged": true,
+  "unity_import_and_playmode": "not executed",
+  "doc_impact": "SessionLog",
+  "error_log": "unchanged by this task",
+  "decision_log": "unchanged by this task",
+  "presentation_html": "unchanged; no stale candidate",
+  "markdown_links_verified": 18,
+  "definition_diff_whitespace_passed": true,
+  "session_log_appended_once": true
+}

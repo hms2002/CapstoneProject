@@ -1,0 +1,18 @@
+Use case: stylized-concept.
+Create ONE native 32x32 pixel-art roguelike relic icon: CURRENT JAR, an old cracked pottery vessel leaking stored blue electricity. Preview only.
+
+REFERENCE ROLES: Image1 PRIMARY rendering-style reference (the user's favorite gray item): bold charcoal outline, large connected flat planes, few colors, deliberate stair-step edges and readable volume. Do not copy its object or gray colors. Image2 SECONDARY style reference: user's six-icon sheet. Image3 EXCLUSIVE palette.
+DESIGN: Upright squat-bellied ancient terracotta jar, broad rounded body, short narrow neck, thick oval open lip and small flat base. No handles, lid, chain or decorations. Slight top view lets us see the oval mouth. The entire oval interior is filled edge-to-edge by a calm luminous pale blue energy surface, with a cyan edge. No black hollow at the mouth.
+MAIN FOCUS: a large jagged crack splitting down the jar's FRONT, with one short branching crack heading sideways across its belly. Blue energy visibly leaks along these fractures, replacing the cracks' darkness: cyan tracks and a few connected pale-blue core segments. One or two tiny angular electrical teeth escape just where a side fracture meets the jar silhouette, immediately adjacent to the wall. Electricity must feel under pressure seeping out through broken pottery. Keep most of the electricity on the body cracks, not around the mouth.
+MOUTH: full of bright blue light, but quiet at its top silhouette. NO long lightning bolts, plume, flame, spray or spikes rising out of the opening. No detached sparks, starbursts, auras, fog, bloom or external light halo.
+Only TWO simple pottery planes: warm tan lit face and brown shadow. No metallic glossy reflections or texture. Thick 2px charcoal outer outline, minimal dark inner separations. Main branching fracture readable at thumbnail scale, 1-2 native pixels wide, visually connected to the opening/internal energy. A physically intact jar silhouette with glowing fissures, not shards exploding apart.
+EXACT SIX opaque colors plus transparency, all from user's palette:
+#363232 outline/deep separators;
+#8A5E40 pottery shadow;
+#D49C73 pottery main;
+#436794 deep blue energy edge and fissure depth;
+#77BCD6 electric blue main;
+#B1DECF pale blue light in the mouth and a few crack cores.
+No other colors. No white, gradients, AA, partial alpha, tiny highlights, scratches, speckling or dithering. Broad contiguous color clusters and very restrained detail like the primary reference.
+Actual logical canvas 32x32 transparent RGBA, silhouette INCLUDING any tiny lateral leak and outline within x=2..29, y=2..29. Top two and bottom two transparent pixel rows. Centered, natural squat jar proportions. Never stretch horizontally or vertically. If output must be larger, use an exact integer nearest-neighbor enlargement of an actual 32x32 grid, every logical pixel the same square size, no subpixel detail.
+No text, labels, swatches, grid, checkerboard artwork, UI, backdrop or multiple sprites.

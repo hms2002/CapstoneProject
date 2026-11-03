@@ -18,6 +18,7 @@ namespace UnityGAS
             if (targets == null)
                 return;
 
+            snapshot = CombatAttackDamageScaling.Capture(snapshot, system, spec);
             for (int i = 0; i < targets.Count; i++)
             {
                 var target = targets[i];

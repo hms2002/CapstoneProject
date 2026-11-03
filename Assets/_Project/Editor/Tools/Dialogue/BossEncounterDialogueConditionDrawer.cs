@@ -37,6 +37,10 @@ public sealed class BossEncounterDialogueConditionDrawer : PropertyDrawer
             case BossEncounterDialogueConditionType.BackpackIsFull:
                 DrawProperty(ref line, property, "expectedBool", "Expected", GetExpectedBoolTooltip(type));
                 break;
+            case BossEncounterDialogueConditionType.BossDialogueFlag:
+                DrawProperty(ref line, property, "stringValue", "Flag ID", GetStringValueTooltip(type));
+                DrawProperty(ref line, property, "expectedBool", "Expected", GetExpectedBoolTooltip(type));
+                break;
             case BossEncounterDialogueConditionType.LastRunEndReason:
                 DrawProperty(
                     ref line,
@@ -45,6 +49,14 @@ public sealed class BossEncounterDialogueConditionDrawer : PropertyDrawer
                     "Run End Reason",
                     "최근 런 종료 사유와 비교할 값입니다.");
                 DrawProperty(ref line, property, "expectedBool", "Expected", GetExpectedBoolTooltip(type));
+                break;
+            case BossEncounterDialogueConditionType.LastBossEncounterOutcome:
+                DrawProperty(
+                    ref line,
+                    property,
+                    "lastBossEncounterOutcome",
+                    "Last Outcome",
+                    "대상 보스와의 가장 최근 전투 결과입니다.");
                 break;
             case BossEncounterDialogueConditionType.PlayerHasWeapon:
             case BossEncounterDialogueConditionType.PlayerHasRelic:
@@ -119,8 +131,14 @@ public sealed class BossEncounterDialogueConditionDrawer : PropertyDrawer
             case BossEncounterDialogueConditionType.BackpackIsFull:
                 lines += 1;
                 break;
+            case BossEncounterDialogueConditionType.BossDialogueFlag:
+                lines += 2;
+                break;
             case BossEncounterDialogueConditionType.LastRunEndReason:
                 lines += 2;
+                break;
+            case BossEncounterDialogueConditionType.LastBossEncounterOutcome:
+                lines += 1;
                 break;
             case BossEncounterDialogueConditionType.PlayerHasWeapon:
             case BossEncounterDialogueConditionType.PlayerHasRelic:
@@ -165,7 +183,9 @@ public sealed class BossEncounterDialogueConditionDrawer : PropertyDrawer
             || type == BossEncounterDialogueConditionType.HasMetBoss
             || type == BossEncounterDialogueConditionType.BossVictoryCount
             || type == BossEncounterDialogueConditionType.BossDefeatCount
-            || type == BossEncounterDialogueConditionType.Affection;
+            || type == BossEncounterDialogueConditionType.Affection
+            || type == BossEncounterDialogueConditionType.BossDialogueFlag
+            || type == BossEncounterDialogueConditionType.LastBossEncounterOutcome;
     }
 
     private static int GetComparisonLineCount(SerializedProperty property)
@@ -283,6 +303,10 @@ public sealed class BossEncounterDialogueConditionDrawer : PropertyDrawer
                 return "플레이어 가방에 들어 있는 아이템 개수를 검사합니다.";
             case BossEncounterDialogueConditionType.BackpackIsFull:
                 return "플레이어 가방에 빈 슬롯이 없는지 검사합니다.";
+            case BossEncounterDialogueConditionType.BossDialogueFlag:
+                return "대상 보스의 대화 선택 플래그가 기록되었는지 검사합니다.";
+            case BossEncounterDialogueConditionType.LastBossEncounterOutcome:
+                return "대상 보스와 가장 최근에 치른 전투의 승패 결과를 검사합니다.";
             default:
                 return "이 조건이 검사할 런타임 값을 선택합니다.";
         }
@@ -323,6 +347,8 @@ public sealed class BossEncounterDialogueConditionDrawer : PropertyDrawer
             case BossEncounterDialogueConditionType.PlayerHasRelic:
             case BossEncounterDialogueConditionType.PlayerHasUnlockedRelic:
                 return "검사할 유물 ID입니다. RelicDefinition의 relicId 값을 사용합니다.";
+            case BossEncounterDialogueConditionType.BossDialogueFlag:
+                return "Ink의 set_boss_flag 태그로 기록한 보스 대화 플래그 ID입니다.";
             default:
                 return "이 조건에서 사용할 문자열 식별자입니다.";
         }
@@ -374,6 +400,10 @@ public sealed class BossEncounterDialogueConditionDrawer : PropertyDrawer
                 return "가방 아이템 개수";
             case BossEncounterDialogueConditionType.BackpackIsFull:
                 return "가방이 가득 찼는지 여부";
+            case BossEncounterDialogueConditionType.BossDialogueFlag:
+                return "보스 대화 플래그 기록 여부";
+            case BossEncounterDialogueConditionType.LastBossEncounterOutcome:
+                return "가장 최근 보스전 결과";
             default:
                 return "런타임 값";
         }

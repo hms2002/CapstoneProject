@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-01",
+  "name": "용의 이빨 초안",
+  "mode": "draft only",
+  "tool": "built-in image_gen",
+  "generation_calls": 1,
+  "native_file": "dragon-fang-draft-v1-32x32.png",
+  "size": [
+    32,
+    32
+  ],
+  "opaque_color_count": 6,
+  "palette": [
+    "#363232",
+    "#C2C2C2",
+    "#E09656",
+    "#E9CEA1",
+    "#F1E9D4",
+    "#F2F9F8"
+  ],
+  "color_pixel_counts": {
+    "#363232": 204,
+    "#C2C2C2": 38,
+    "#E09656": 6,
+    "#E9CEA1": 14,
+    "#F1E9D4": 70,
+    "#F2F9F8": 89
+  },
+  "light_tooth_surface_fraction": 0.9078,
+  "margins_l_t_r_b": [
+    2,
+    2,
+    3,
+    2
+  ],
+  "two_pixel_contour": true,
+  "alpha_values": [
+    0,
+    255
+  ],
+  "exact_nearest_16x_preview": true,
+  "sha256": "a3f5fdc47829e38dcad9e16434c94be158a9cc2f29677370fd7c8160927e8208",
+  "project_applied": false,
+  "protected_project_files_unchanged": 378,
+  "unity_import_compile_playmode": "not executed",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "markdown_links_verified": 5
+}

@@ -1,0 +1,13 @@
+Use case: precise-object-edit / exact palette-step recolor.
+Image 1 is the EDIT TARGET: the existing clean 7-color 32x32 pixel-art electric coil, shown enlarged with nearest-neighbor pixels. Image 2 is the user's exclusive palette.
+Perform ONLY this exact one-step palette recolor, uniformly for every existing pixel of the specified input color:
+#363232 -> #363232 (OUTLINE / darkest gaps: absolutely unchanged)
+#8A5E40 -> #D66B48 (copper darkest shade, one step up the warm palette ramp)
+#D66B48 -> #E09656 (copper middle shade, one step up)
+#E09656 -> #EECF5A (copper highlight, one step up)
+#436794 -> #6F81B3 (blue side-parts dark shade, one step up blue palette ramp)
+#6F81B3 -> #77BCD6 (blue side-parts highlight, one step up)
+#77BCD6 -> #B1DECF (electric spark, one step up blue/cyan palette ramp).
+The final opaque image has EXACTLY these SEVEN RGB colors: #363232 #D66B48 #E09656 #EECF5A #6F81B3 #77BCD6 #B1DECF. Transparency is not a color.
+No redesign, no new shading, no new details, no extra highlights, no textures. Preserve every existing color cluster's exact shape and position; preserve the current simple broad flat regions, coil silhouette, four windings, side parts and spark geometry. The dark outline and dark interior separations MUST remain the exact same #363232 pixels.
+Maintain a strict 32x32 logical canvas with the existing 2-pixel outline and exactly 1 transparent pixel on all four outer edges. Actual transparent RGBA, no background/checkerboard. If output larger, use only a perfect nearest-neighbor integer enlargement aligned to the full 32x32 grid. No gradients, glow, anti-aliasing, blur, soft transparency, text, grids or framing. One sprite, exact recolor only.

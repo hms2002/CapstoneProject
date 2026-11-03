@@ -1,0 +1,8 @@
+{
+  "Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs": "d55d4fa76db8c082155747ca0e158d6f640cf51cf6d7ed4fbe429bc804b021ca",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs": "df076694c28bead47856cb6b53c7a1fc89a0fc72065dda8f1c9eb602c9b289d3",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs": "5faec1033ab194e743326b4e6c3cd08561bbba4bf04edb716a60042e0e328931",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs": "53f6efe4fcc828c62d07cc663fec74befd15a69ced9a3e4b2984f001b7398d83",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs": "d949dc1432472628907ab8458e7cb6687d2171d6790a1e05f68c68d7b5908108",
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink": "eccb85681816d4d31355df349bbe53605f1f0598bdd0a4faaf386c03a6b19d3a"
+}

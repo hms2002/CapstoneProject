@@ -91,6 +91,16 @@ public class AffectionManager : MonoBehaviour
             return false;
         }
 
+        if (amount > 0 && data.UsesRunAffectionDialogue)
+        {
+            if (!NpcAffectionDialogue.CanOffer(data))
+            {
+                onComplete?.Invoke();
+                return false;
+            }
+            amount = Math.Min(amount, NpcAffectionDialogue.GetMaximumAffection(data) - GetAffection(data.id));
+        }
+
         if (amount > 0 && !RunSessionStore.TryConsumeAffectionGain(data.id))
         {
             onComplete?.Invoke();

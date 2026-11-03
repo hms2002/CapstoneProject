@@ -1,0 +1,12 @@
+{
+  "Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset": "effd11fd1c48ac1782b5dca6037d7e9f550bd301ad755e2364e0bb4e745fe608",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs": "7c29664586347e5976b87e4dfc782cdeed2de0de6400c2ab8e5e3c32d3a356b1",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs": "00fc897d908adb81612c8f1f225355f810ff5930768e5ffa909ce0057c33db35",
+  "DataSheets/Localization/GameText.csv": "3f647abe94307b4559faccba5dc418893a23e5b0ff7dda072db4f6941bdae6c6",
+  "DataSheets/Localization/AssetInventory.json": "9a8273e272e167f4adfe9b9e787ab306ad2122cd498b1323ea5fce26b9d29bcd",
+  "Assets/_Project/Data/Localization/GameText_ko.asset": "5c150cc06f65530bb66b3693eecd9893cee3df9374ec3f65fda3eb0027b30a85",
+  "Assets/_Project/Data/Localization/GameText_en.asset": "f6966317587ae655c7d4a6d3c147b8171f6046acab733093de2da4ea59bc1d74",
+  "Assets/_Project/Data/Localization/GameText_ja.asset": "6d970508eed6ae1ab7bfb089341e52358cd7504eeab5a2bf1a74f4c24f83b334",
+  "Assets/_Project/Data/Localization/GameText_zh-Hans.asset": "635132eecb82958ddca0cafa760ddd5d79dcb5036a56da5f9eeb5c6a65a693c0",
+  "Assets/_Project/Data/Localization/GameText_zh-Hant.asset": "eb7012021f9f651d569c1232397ebe73308844a62aa9e6418f783c352b8694f6"
+}

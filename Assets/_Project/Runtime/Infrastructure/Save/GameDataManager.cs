@@ -114,6 +114,8 @@ public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
         if (Data.bossDialogueData == null)
             Data.bossDialogueData = new BossDialogueSaveData();
         Data.bossDialogueData.bossRecords ??= new System.Collections.Generic.List<BossDialogueRecord>();
+        foreach (BossDialogueRecord record in Data.bossDialogueData.bossRecords)
+            record?.Normalize();
 
         Data.bossClearProgressData ??= new BossClearProgressSaveData();
         Data.bossClearProgressData.clearedBossThemeIds ??= new System.Collections.Generic.List<string>();
@@ -158,6 +160,8 @@ public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
         Data.affectionData ??= new AffectionSaveData();
         Data.bossDialogueData ??= new BossDialogueSaveData();
         Data.bossDialogueData.bossRecords ??= new System.Collections.Generic.List<BossDialogueRecord>();
+        foreach (BossDialogueRecord record in Data.bossDialogueData.bossRecords)
+            record?.Normalize();
         Data.bossClearProgressData ??= new BossClearProgressSaveData();
         Data.bossClearProgressData.clearedBossThemeIds ??= new System.Collections.Generic.List<string>();
         Data.runSpecialNpcData ??= new RunSpecialNpcSaveData();

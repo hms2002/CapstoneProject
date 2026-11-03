@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-11-03
+last_reviewed: 2026-11-04
 ---
 
 # Level Progression Structure
@@ -38,10 +38,10 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 10. `OneSwordOathLevelRewardEffectSO` seals weapon slot index 1 without deleting its contents, applies an attack modifier, and scopes cooldown reduction to abilities granted by the weapon currently in slot index 0.
 11. `RunLevelRewardOffers` rolls up to three eligible cards from a persisted run seed, stores the active IDs and reroll usage, and consumes only candidates from that stored offer. A reroll fills from rewards absent from the immediately previous offer first, then backfills previous rewards only when fewer than three novel rewards remain; it is unavailable when no novel reward exists.
 12. `LevelRewardSessionController` handles manual R-key opening, dialogue/UI/combat eligibility, shared pause/input lock, and consecutive pending selections. Authored UI only projects its events and calls its public commands.
-13. Thirteen catalog rewards combine the existing reusable effects with five new effects: Berserker Rush, Hunting Flow, Overheat, Spreading Embers, and High Voltage. The former level-scaled max-heart reward asset is retained for rollback but is no longer cataloged.
+13. Non-repeatable special rewards combine the reusable effects, including Berserker Rush, Hunting Flow, Overheat, Spreading Embers, and High Voltage. The current catalog count and repeatable stat variants are described below. The former level-scaled max-heart reward asset is retained for rollback but is no longer cataloged.
 14. `GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/LevelHUD` contains the authored HUD visuals and `LevelHudPresenter`. The presenter projects level/EXP and reward-open eligibility through independent display paths.
-15. `Data/Progression/Leveling/Rewards` contains the authored reward definitions/effect configurations and one 13-entry catalog. Conditional rewards use Thunder_Card_9, instant rewards use Earth_Card_3, and curse rewards use Void_Card_1.
-16. `GlobalUIRoot/RewardCanvas/LevelRewardSelectionRoot` contains the inactive authored selection window with a dim input blocker, panel-free bold outlined title, three centered cards, and A gilt close/reroll controls. Button backgrounds use SpriteSwap; localized action labels, shortcut labels, and the live reroll count are separate authored TMP objects.
+15. `Data/Progression/Leveling/Rewards` contains one 53-entry catalog: 17 non-repeatable special rewards and 36 repeatable stat variants (12 families, three tiers each). Conditional rewards use Thunder_Card_9, instant rewards use Earth_Card_3, curse rewards use Void_Card_1, and stat rewards use the supplied Stat_Card sheet.
+16. `GlobalUIRoot/RewardCanvas/LevelRewardSelectionRoot` contains the inactive authored selection window with a dim input blocker, panel-free bold outlined title, three centered cards, and A gilt close/reroll controls. Button backgrounds use SpriteSwap; localized action labels, shortcut labels, and the live reroll count are separate authored TMP objects. Its existing card views also project the repeatable stat rewards.
 17. `LevelRewardSelectionPresenter` projects session events into one to three authored card slots, handles fixed card/reroll inputs, and opens through the session-owned UI-stack path. `LevelRewardCardView` binds one authored card visual without creating UI at runtime.
 
 ## Key Files
@@ -82,11 +82,11 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - `GamePlayData.levelProgression` owns level, current EXP, and pending reward count for the active run.
 - The same state owns selected reward IDs, per-effect JSON payloads, and whether each instant effect already ran.
 - It also owns the reward random seed, offer sequence, active candidate IDs, and reroll usage; closing UI does not reroll or discard the offer.
-- Reroll novelty is defined against the immediately previous offer, not the full run history. With at least six eligible rewards, all three cards change; with five/four eligible rewards, at most one/two previous cards return. If no eligible reward exists outside the current offer, reroll is disabled and does not consume a reroll count.
+- Reroll novelty is defined against the immediately previous offer, not the full run history. Stat variants share one family identity, while special rewards retain their reward IDs. Each pool prefers novel kinds before backfilling previous kinds within the composition rule. With no novel eligible kind, reroll is disabled without consuming its budget.
 - UI must only query `RunLevelProgression.State`, subscribe to its events, and issue commands through the facade. UI must not mutate the DTO.
 - The `LevelHUD` prefab hierarchy and presenter are presentation-only. `ExperienceFill` reads current EXP progress; `RewardReadyBorder` and `LevelUpPrompt` read session-open eligibility and never derive from fill amount.
 - The presenter uses `ExperienceGranted` for a short unscaled-time fill animation and `StateChanged` for immediate lifecycle/restoration synchronization. Runtime progression never waits for the animation.
-- `LevelProgressionConfigSO` owns the Lv.1-to-Lv.10 requirement table. The default values match the first prototype plan.
+- `LevelProgressionConfigSO` and its authored asset own the Lv.1-to-Lv.20 requirement table. The user restored the original 20-level curve: 40/50/60/70/85/100/115/130/145/165/185/205/230/255/280/310/345/380/420 EXP (3,570 total). The former 2,540-EXP cap budget reaches Lv.17; a +50% budget reaches Lv.20. The ordinary-clear target is Lv.16–18, pending a measured full run. Training copy and the reduced combat-stat tiers remain unchanged.
 - `ExperienceRewardSource` owns per-enemy base EXP, runtime grant/multiplier overrides, per-pickup target amount, maximum pickup count, and scatter radius.
 - `ExperiencePickupDropSpawner` preserves the exact total EXP while distributing it across a deterministic golden-angle scatter. A count cap changes the amount stored by each pickup rather than losing EXP.
 - Boss EXP belongs to encounter completion rather than an individual boss death event so split/multi-boss encounters cannot pay more than once.
@@ -140,7 +140,7 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - Reward catalogs must be registered before selected IDs can be reapplied after a domain reload or fresh app start.
 - The active `LevelRewardSessionController` now references `LevelRewardCatalog.asset`; reward availability still depends on an active run, registered player, pending choice, and the existing combat/UI eligibility rules.
 - Several effect display names were absent from the source plan and currently use provisional names. Their stable `rewardId`/`effectId` values are persistence keys and must not be renamed casually even if visible names change.
-- The selection UI is a rough first-pass layout. Final sprites, card art, borders, responsive polish, and a shared fallback icon remain unassigned.
+- The existing authored card hierarchy supplies the layouts and modular overlays. Every catalog reward has artwork, including Stat_Card for repeatable increases; the shared fallback remains empty. Full-run visual/layout acceptance remains separate from binding tests.
 - `RewardCanvasRaycastGate` must continue recognizing the active level-reward Presenter; otherwise keyboard input works but authored card/control Buttons cannot receive pointer input.
 - The green border is never an EXP-full indicator. It represents current level-up selection eligibility, including a valid candidate, dialogue/UI/pause state, the shared active-room combat query.
 - The level-up sound reference is intentionally unassigned until a project sound key is authored.
@@ -251,3 +251,29 @@ LevelRewardSessionController and InventoryUIManager read MonsterSpawnRoomGroup.I
 - `HeaderRoot/TitleMount` keeps its layout but disables its background Image. `TitleText` uses TMP Bold, white face, and dedicated `Art/Font/LevelRewardTitleOutline.mat` with a #17131C outline. `LocalizeTmpFontEvent.authoredMaterial` points to that preset so localized fonts preserve its style. Existing shared font assets are unchanged.
 - No runtime UI hierarchy, manager, serialized field, input command, card animation, or session lifecycle was added. Adjust visuals in the prefab/art/material and wording in GameText; keep the existing presenter references.
 - [Integration record](../../../outputs/levelup-ui-integration-2026-11-03/README.md) contains authoring and compile evidence. Manual in-game typography, language fit, and state visuals remain unverified; no automated tests or Play Mode were requested.
+
+## Repeatable stat rewards and 20-level progression (2026-10-30)
+
+### Current structure and entry points
+
+- [StatIncreaseLevelRewardEffectSO](../../../Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/StatIncreaseLevelRewardEffectSO.cs) is the shared Persistent effect for twelve stat families. Three assets per family carry fixed amounts and tiers. Thirty-six stable reward IDs preserve the resolved increase through the existing offer-ID and selected-reward lists; no progression DTO fields were added.
+- [LevelRewardOfferRoller](../../../Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/LevelRewardOfferRoller.cs) is a pure seeded policy called by RunLevelRewardOffers. Offers normally contain one stat card (40%) or two (60%); special shortages fill with more distinct stat families. A kind appears once per offer. Novelty is family-based, so switching an attack tier cannot count as a fresh kind.
+- At each stat-kind draw, available ordinary families and the available element group have equal group weight; remaining fire/electric/poison/blood families are uniform within the element group. Tier weights are 70/25/5 after family selection. The initial catalog has eight ordinary families and four element families, with no max-health cards.
+- [LevelRewardStatAuthoring](../../../Assets/_Project/Editor/Tools/Data/LevelRewardStatAuthoring.cs) creates/preserves the 36 definition/effect pairs, appends them to the existing catalog, authors the supplied 416x304 PNG's (112,160,80,128) sprite, assigns the 19 EXP requirements, and appends 72 display fields to all five localization tables/CSV/key map/inventory. Existing reward IDs, artwork, UI hierarchy, GUIDs and unrelated localization rows remain owned by their existing assets.
+- Current card copy uses a localized training title, such as `공격력 훈련`, and a named effect, such as `공격력 +2`, with only the increase tinted. All 36 definitions and 72 fields in ko/en/ja/zh-Hans/zh-Hant follow this format. Critical damage tiers are 4/8/12 percentage points; attack speed, basic attack damage and skill damage tiers are each 2/4/6%. Critical chance remains 2/4/6 percentage points. Existing IDs still identify tiers; later data balance changes apply to those tier definitions.
+
+### Ownership and cleanup
+
+- Each selected stat reward owns one exact AttributeModifier and removes only that modifier. Repeated selections of the same SO do not remove earlier selections. RunLevelRewards disposes and rebuilds every selected instance on player changes, JSON reconstruction and run lifecycle cleanup.
+- Stat selection does not check a 100% threshold. CritChanceAdd and EvasionAdd storage allows finite float overflow; the existing combat probability rolls still clamp to one. UI/stat providers can read the raw excess for future effects.
+- [CombatAttackDamageScaling](../../../Assets/_Project/Runtime/Core/Combat/CombatAttackDamageScaling.cs) reads normal/skill multipliers through the existing player-input owner's known ability sets, exposed by ICombatAttackKindSource. Core does not depend on Gameplay. CombatHitPayload construction captures base/element HP damage; stagger, knockback and gauge snapshots are unchanged. Direct instant damage and Crimson's existing live-hit branch use the same multiplier helper at their original calculation boundary.
+- OddIron keeps its explicit fixed, noncritical physical damage via scalePhysicalDamage:false; its additional elemental HP constituents can receive the attack-kind multiplier. Unclassified abilities and independent DOT/relic effects do not borrow a normal/skill bonus.
+
+### Pitfalls and verification route
+
+- Keep stat reward IDs stable: amounts are encoded by the selected definition, not a mutable display value or a new offer payload. Existing active offers are preserved rather than silently rerolled during an upgrade.
+- Bind new artwork through the existing active CardVisualMount Image. No repeatability/lifetime tutorial text is added to cards.
+- NormalMul/SkillMul already have minValue=1. Their existing clamp can hide negative relic tradeoffs; this data was left unchanged and is a Suggested Later balance audit.
+- LevelRewardStatPlayModeTests covers seeded composition and tier/group distribution, family novelty, exhaustion backfill, authored card binding/clicks, repeated modifiers, JSON/player rebuild, overflow, actual HP damage and fixed OddIron preservation. Existing reroll/potion/fixed-attack-relic regressions are included in the session checks.
+- Native validation uses the existing -uiBatchValidationTests diagnostic isolation switch, avoiding unrelated prewarm history writes. See [session record](../../SessionLogs/2026-10-30.md). Full-run balance, visual acceptance and a Player build remain separate checks.
+- This is an implementation map, not a new architecture/contract policy. No promotion is currently required.

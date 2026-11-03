@@ -1,0 +1,32 @@
+{
+  "protected_unchanged": {
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\Ink\\Editor\\Core\\Compiler\\InkCompiler.cs.meta": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\Ink\\Editor\\InkEditor.asmdef": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\Ink\\Editor\\InkEditor.asmdef.meta": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Data\\Dialogue\\Ink\\AnimatedVariants\\MerchantDialogue_Animated.ink": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Data\\Dialogue\\Ink\\AnimatedVariants\\MerchantDialogue_Animated.json": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Scenes\\ProtoTypeHub.unity": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Prefabs\\UI\\SpeechBubble\\SpeechBubblePrefab.prefab": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Assets\\_Project\\Data\\Dialogue\\NPC\\MSShopNpc.asset": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\ProjectSettings\\ProjectVersion.txt": true,
+    "C:\\Users\\user\\Desktop\\CapstoneProject\\Packages\\manifest.json": true
+  },
+  "native_result": "INK_IMPORT_RECOVERY_PASS: 39 checks; success, Windows 1224, Console error, preserved JSON, import/auto-refresh/progress/build/reload cleanup, UTF-8 retry, syntax error.",
+  "tested_production_source_identical": true,
+  "tested_regression_source_identical": true,
+  "doc_preimages_preserved": {
+    "Docs\\ErrorLog.md": true,
+    "Docs\\SessionLogs\\2026-11-02.md": true
+  },
+  "new_markdown_links": {
+    "SessionLogs/2026-11-02.md": true,
+    "../Tools/Validation/InkCompilerImportRecoveryRegression.cs": true,
+    "../../Assets/Ink/Editor/Core/Compiler/InkCompiler.cs": true,
+    "../../Tools/Validation/InkCompilerImportRecoveryRegression.cs": true,
+    "../../outputs/ink-import-recovery-2026-11-02/native-validation.txt": true,
+    "../../outputs/ink-import-recovery-2026-11-02/unity-native.log": true,
+    "../../outputs/ink-import-recovery-2026-11-02/msbuild.log": true,
+    "../ErrorLog.md": true
+  },
+  "isolated_validation_project_removed": true
+}

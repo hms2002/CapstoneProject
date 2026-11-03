@@ -14,6 +14,7 @@ public class DialogueTagHandler : MonoBehaviour
     public Action<string, Action> OnFeatureRequested;
     public Action<NPCData, int, Action> OnAffectionRequested;
     public Action<Action> OnChoiceFailureRequested;
+    public Action<NPCData, string> OnBossDialogueFlagRequested;
 
     public bool ProcessTags(List<string> tags, NPCData currentNPC, Action onComplete)
     {
@@ -86,6 +87,11 @@ public class DialogueTagHandler : MonoBehaviour
                         OnAffectionRequested?.Invoke(currentNPC, amount, onComplete);
                         isBlocking = true;
                     }
+                    break;
+
+                case "set_boss_flag":
+                    if (!string.IsNullOrWhiteSpace(value))
+                        OnBossDialogueFlagRequested?.Invoke(currentNPC, value);
                     break;
 
                 case "choice_fail":

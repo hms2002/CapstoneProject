@@ -30,12 +30,7 @@ public sealed class LevelRewardRerollPlayModeTests
 
         var previous = new HashSet<string>(new[] { "A", "B", "C" });
         var result = new List<string>();
-        MethodInfo fill = typeof(RunLevelRewardOffers).GetMethod(
-            "FillCandidateIds",
-            BindingFlags.Static | BindingFlags.NonPublic);
-
-        Assert.That(fill, Is.Not.Null);
-        fill.Invoke(null, new object[] { definitions, previous, result });
+        Assert.That(LevelRewardOfferRoller.Roll(definitions, previous, new System.Random(43), result), Is.True);
 
         Assert.That(result, Has.Count.EqualTo(3));
         Assert.That(new HashSet<string>(result), Has.Count.EqualTo(3));

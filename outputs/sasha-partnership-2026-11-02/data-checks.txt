@@ -1,0 +1,170 @@
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Prefabs/UI/Portraitlmage.prefab
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink.meta
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json.meta
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Data/Localization/GameText Shared Data.asset.meta
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Data/Localization/GameText_ko.asset.meta
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Data/Localization/GameText_en.asset.meta
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Data/Localization/GameText_ja.asset.meta
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Data/Localization/GameText_zh-Hans.asset.meta
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Data/Localization/GameText_zh-Hant.asset.meta
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs.meta
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/Merchant 1.png
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/Merchant 1.png.meta
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png.meta
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png.meta
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png
+PASS Protected metadata/portrait/NPC/route/prefab unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png.meta
+PASS Only partnership Ink knot replaced
+PASS All other compiled Ink containers preserved
+PASS CSV adds only the second-opening key
+PASS Every unrelated CSV row preserved
+PASS Six approved text rows match all five locales
+PASS Every old shared key/ID/raw record preserved; one key added
+PASS Shared header/metadata/generator are unchanged
+PASS Locale adds only the new key ID: ko
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.0/ko
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.0/ko
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.5/ko
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.1/ko
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.1/ko
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.2/ko
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.2/ko
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.3/ko
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.3/ko
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.4/ko
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.4/ko
+PASS All other locale bytes preserved: ko
+PASS Locale adds only the new key ID: en
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.0/en
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.0/en
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.5/en
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.1/en
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.1/en
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.2/en
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.2/en
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.3/en
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.3/en
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.4/en
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.4/en
+PASS All other locale bytes preserved: en
+PASS Locale adds only the new key ID: ja
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.0/ja
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.0/ja
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.5/ja
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.1/ja
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.1/ja
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.2/ja
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.2/ja
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.3/ja
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.3/ja
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.4/ja
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.4/ja
+PASS All other locale bytes preserved: ja
+PASS Locale adds only the new key ID: zh-Hans
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.0/zh-Hans
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.0/zh-Hans
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.5/zh-Hans
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.1/zh-Hans
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.1/zh-Hans
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.2/zh-Hans
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.2/zh-Hans
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.3/zh-Hans
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.3/zh-Hans
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.4/zh-Hans
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.4/zh-Hans
+PASS All other locale bytes preserved: zh-Hans
+PASS Locale adds only the new key ID: zh-Hant
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.0/zh-Hant
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.0/zh-Hant
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.5/zh-Hant
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.1/zh-Hant
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.1/zh-Hant
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.2/zh-Hant
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.2/zh-Hant
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.3/zh-Hant
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.3/zh-Hant
+PASS YAML string value equals CSV: dialogue.merchant.run.affection_0_c.4/zh-Hant
+PASS Locale ID/metadata retained: dialogue.merchant.run.affection_0_c.4/zh-Hant
+PASS All other locale bytes preserved: zh-Hant
+PASS 51 active merchant keys
+PASS Korean source/CSV match: dialogue.merchant.001
+PASS Korean source/CSV match: dialogue.merchantdialogue_animated.95e636eb88
+PASS Korean source/CSV match: dialogue.merchant.003
+PASS Korean source/CSV match: dialogue.merchantdialogue_animated.470dbb5cba
+PASS Korean source/CSV match: dialogue.merchantdialogue_animated.5526e51532
+PASS Korean source/CSV match: dialogue.merchant.006
+PASS Korean source/CSV match: dialogue.merchantdialogue_animated.ca8d0de524
+PASS Korean source/CSV match: dialogue.merchantdialogue_animated.9098a11458
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_b.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_b.5
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_b.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_b.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_b.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_b.4
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_c.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_c.5
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_c.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_c.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_c.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_c.4
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_a.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_a.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_a.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_a.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_a.4
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_b.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_b.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_b.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_b.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_b.4
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_c.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_c.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_c.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_c.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_c.4
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_c.5
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_a.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_a.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_a.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_a.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_a.4
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_b.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_b.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_b.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_b.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_b.4
+PASS Korean source/CSV match: dialogue.merchant.run.greeting_a
+PASS Korean source/CSV match: dialogue.merchant.run.greeting_b
+PASS Korean source/CSV match: dialogue.merchant.run.greeting_c
+PASS Korean source/CSV match: dialogue.merchant.run.greeting_full_a
+PASS Korean source/CSV match: dialogue.merchant.run.greeting_full_b
+PASS Other Ink inventories preserved
+PASS Merchant inventory covers every active line/choice
+PASS Production compiler/Ink branch verification passed
+PASS No conflicting target edit: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS No conflicting target edit: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+PASS No conflicting target edit: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS No conflicting target edit: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS No conflicting target edit: Assets/_Project/Data/Localization/GameText_en.asset
+PASS No conflicting target edit: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS No conflicting target edit: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS No conflicting target edit: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS No conflicting target edit: DataSheets/Localization/GameText.csv
+PASS No conflicting target edit: DataSheets/Localization/InkInventory.json
+PASS Copied verified text/data file: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS Copied verified text/data file: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+PASS Copied verified text/data file: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS Copied verified text/data file: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS Copied verified text/data file: Assets/_Project/Data/Localization/GameText_en.asset
+PASS Copied verified text/data file: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS Copied verified text/data file: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS Copied verified text/data file: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS Copied verified text/data file: DataSheets/Localization/GameText.csv
+PASS Copied verified text/data file: DataSheets/Localization/InkInventory.json
+PASS: 169 focused data/preservation checks.

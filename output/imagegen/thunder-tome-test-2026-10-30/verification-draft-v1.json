@@ -1,0 +1,42 @@
+{
+  "name": "천둥을 품은 서책 — 기존 책 디자인·채색 수정 초안",
+  "mode": "edit draft only",
+  "editSource": "C:/Users/user/AppData/Local/Temp/codex-clipboard-c7909425-0eb5-4207-8cb5-f2027ec842f7.png",
+  "concept": "Retain closed tall book pose and page-block perspective; orange binding, blue cover, pale-blue lightning emblem and pages",
+  "size": [
+    32,
+    32
+  ],
+  "colorCount": 6,
+  "palette": [
+    "#363232",
+    "#436794",
+    "#77BCD6",
+    "#B1DECF",
+    "#D66B48",
+    "#E09656"
+  ],
+  "exactSixPaletteColors": true,
+  "alphaValues": [
+    0,
+    255
+  ],
+  "margins": {
+    "left": 5,
+    "top": 2,
+    "right": 6,
+    "bottom": 2
+  },
+  "previewExact16xNearest": true,
+  "sha256": "10fcef8c247cd9e5e6c19eab01634ffefe69e49dcb5abae4070ca0233cd8e629",
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-3efd2d3b-df11-48f4-a374-a900a1ad58ab.png",
+  "export": "Uniform proportional nearest raster sampling, exact six palette colors, 2px charcoal contour; exact nearest preview",
+  "projectAssetsChanged": false,
+  "unityVerification": "not executed; draft only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

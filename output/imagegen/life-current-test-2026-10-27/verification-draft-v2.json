@@ -1,0 +1,53 @@
+{
+  "size": [
+    32,
+    32
+  ],
+  "colorCount": 7,
+  "palette": {
+    "#363232": 228,
+    "#D49C73": 64,
+    "#EECF5A": 30,
+    "#8A5E40": 53,
+    "#B1DECF": 39,
+    "#436794": 75,
+    "#77BCD6": 116
+  },
+  "alphaValues": [
+    0,
+    255
+  ],
+  "bounds": [
+    1,
+    2,
+    30,
+    30
+  ],
+  "margins": {
+    "left": 1,
+    "top": 2,
+    "right": 2,
+    "bottom": 2
+  },
+  "previewIsExact16xNearest": true,
+  "protectedAssetHashes": {
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_StormStep.asset": "466ff9336723c516d2bfd73da1ea9e756881a880426aa57a68d39e8755817240",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png": "2157fa9bdb2e267daa8d77f8d1d2be1d2c8d12912c1304cbcb6df0c4609ad733",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png.meta": "d43db6beec990c182f0e792f603e1f50b144498718d82aa4a68e2fc12023901c"
+  },
+  "sha256": "676b74c275be9e3dd395c24dd612e8f17d163684d8fa9a285ece5a6426728f79",
+  "protectedAssetsUnchanged": true,
+  "name": "life-heartstone-draft-v2",
+  "mode": "preview draft only",
+  "concept": "Heart-shaped turquoise gem held by aged brass frame with internal pale electric-current line",
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-76946ac9-2532-43fc-8e33-79ed03eb0b84.png",
+  "export": "Proportional nearest-neighbor raster export with rounding to integer cells, fixed supplied seven-color palette and 2px dark contour",
+  "gameAssetsChanged": false,
+  "unityVerification": "not executed; draft only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

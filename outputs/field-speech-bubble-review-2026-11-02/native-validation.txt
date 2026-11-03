@@ -1,0 +1,124 @@
+PASS Original is 19x16
+PASS Candidate preserves canvas size
+PASS Candidate uses existing 9-slice borders
+PASS Point filter and 32 PPU preserved
+PASS Exact production material and shader are supported by native graphics device
+PASS Production outline thickness is 0.52
+PASS Production alpha threshold is 0.341
+PASS Native render contains visible bubble: color_dark_Default_0
+PASS Native render contains visible bubble: color_dark_Default_1
+PASS Native render contains visible bubble: color_dark_Default_2
+PASS Native render contains visible bubble: color_dark_Default_3
+PASS Native render contains visible bubble: color_dark_Slime_0
+PASS Native render contains visible bubble: color_dark_Slime_1
+PASS Native render contains visible bubble: color_dark_Slime_2
+PASS Native render contains visible bubble: color_dark_Slime_3
+PASS Native render contains visible bubble: color_dark_Dragon_0
+PASS Native render contains visible bubble: color_dark_Dragon_1
+PASS Native render contains visible bubble: color_dark_Dragon_2
+PASS Native render contains visible bubble: color_dark_Dragon_3
+PASS Native render contains visible bubble: color_dark_Witch_0
+PASS Native render contains visible bubble: color_dark_Witch_1
+PASS Native render contains visible bubble: color_dark_Witch_2
+PASS Native render contains visible bubble: color_dark_Witch_3
+PASS Native render contains visible bubble: color_dark_DemonKing_0
+PASS Native render contains visible bubble: color_dark_DemonKing_1
+PASS Native render contains visible bubble: color_dark_DemonKing_2
+PASS Native render contains visible bubble: color_dark_DemonKing_3
+PASS Native render contains visible bubble: color_light_Default_0
+PASS Native render contains visible bubble: color_light_Default_1
+PASS Native render contains visible bubble: color_light_Default_2
+PASS Native render contains visible bubble: color_light_Default_3
+PASS Native render contains visible bubble: color_light_Slime_0
+PASS Native render contains visible bubble: color_light_Slime_1
+PASS Native render contains visible bubble: color_light_Slime_2
+PASS Native render contains visible bubble: color_light_Slime_3
+PASS Native render contains visible bubble: color_light_Dragon_0
+PASS Native render contains visible bubble: color_light_Dragon_1
+PASS Native render contains visible bubble: color_light_Dragon_2
+PASS Native render contains visible bubble: color_light_Dragon_3
+PASS Native render contains visible bubble: color_light_Witch_0
+PASS Native render contains visible bubble: color_light_Witch_1
+PASS Native render contains visible bubble: color_light_Witch_2
+PASS Native render contains visible bubble: color_light_Witch_3
+PASS Native render contains visible bubble: color_light_DemonKing_0
+PASS Native render contains visible bubble: color_light_DemonKing_1
+PASS Native render contains visible bubble: color_light_DemonKing_2
+PASS Native render contains visible bubble: color_light_DemonKing_3
+PASS Native render contains visible bubble: layout_dark_0_0
+PASS Native render contains visible bubble: layout_dark_0_1
+PASS Native render contains visible bubble: layout_dark_0_2
+PASS Native render contains visible bubble: layout_dark_0_3
+PASS Native render contains visible bubble: layout_dark_1_0
+PASS Native render contains visible bubble: layout_dark_1_1
+PASS Native render contains visible bubble: layout_dark_1_2
+PASS Native render contains visible bubble: layout_dark_1_3
+PASS Native render contains visible bubble: layout_light_0_0
+PASS Native render contains visible bubble: layout_light_0_1
+PASS Native render contains visible bubble: layout_light_0_2
+PASS Native render contains visible bubble: layout_light_0_3
+PASS Native render contains visible bubble: layout_light_1_0
+PASS Native render contains visible bubble: layout_light_1_1
+PASS Native render contains visible bubble: layout_light_1_2
+PASS Native render contains visible bubble: layout_light_1_3
+PASS Submitted art adds 53 opaque border pixels outside original mask and shades 15 interior pixels
+PASS Native render contains visible bubble: color_dark_Default_4
+PASS Native render contains visible bubble: color_light_Default_4
+PASS Native render contains visible bubble: color_dark_Slime_4
+PASS Native render contains visible bubble: color_light_Slime_4
+PASS Native render contains visible bubble: color_dark_Dragon_4
+PASS Native render contains visible bubble: color_light_Dragon_4
+PASS Native render contains visible bubble: color_dark_Witch_4
+PASS Native render contains visible bubble: color_light_Witch_4
+PASS Native render contains visible bubble: color_dark_DemonKing_4
+PASS Native render contains visible bubble: color_light_DemonKing_4
+PASS Native render contains visible bubble: layout_dark_2_0
+PASS Native render contains visible bubble: layout_dark_2_1
+PASS Native render contains visible bubble: layout_dark_2_2
+PASS Native render contains visible bubble: layout_dark_2_3
+PASS Native render contains visible bubble: layout_light_2_0
+PASS Native render contains visible bubble: layout_light_2_1
+PASS Native render contains visible bubble: layout_light_2_2
+PASS Native render contains visible bubble: layout_light_2_3
+PASS Native render contains visible bubble: alpha_warning_Default
+PASS Native render contains visible bubble: alpha_warning_Witch
+PASS Native render contains visible bubble: comparison
+PASS Native render contains visible bubble: comparison
+PASS Default: candidate RGB removal makes no difference at influence=0
+PASS Native render contains visible bubble: comparison
+PASS Default: influence=1 exposes painted border and shade
+PASS Native render contains visible bubble: comparison
+PASS Default: generated outline adds a visible extra contour
+PASS Native render contains visible bubble: comparison
+PASS Native render contains visible bubble: comparison
+PASS Slime: candidate RGB removal makes no difference at influence=0
+PASS Native render contains visible bubble: comparison
+PASS Slime: influence=1 exposes painted border and shade
+PASS Native render contains visible bubble: comparison
+PASS Slime: generated outline adds a visible extra contour
+PASS Native render contains visible bubble: comparison
+PASS Native render contains visible bubble: comparison
+PASS Dragon: candidate RGB removal makes no difference at influence=0
+PASS Native render contains visible bubble: comparison
+PASS Dragon: influence=1 exposes painted border and shade
+PASS Native render contains visible bubble: comparison
+PASS Dragon: generated outline adds a visible extra contour
+PASS Native render contains visible bubble: comparison
+PASS Native render contains visible bubble: comparison
+PASS Witch: candidate RGB removal makes no difference at influence=0
+PASS Native render contains visible bubble: comparison
+PASS Witch: influence=1 exposes painted border and shade
+PASS Native render contains visible bubble: comparison
+PASS Witch: generated outline adds a visible extra contour
+PASS Native render contains visible bubble: comparison
+PASS Native render contains visible bubble: comparison
+PASS DemonKing: candidate RGB removal makes no difference at influence=0
+PASS Native render contains visible bubble: comparison
+PASS DemonKing: influence=1 exposes painted border and shade
+PASS Native render contains visible bubble: comparison
+PASS DemonKing: generated outline adds a visible extra contour
+PASS 76 native PNG captures completed
+Graphics device: Direct3D11 / NVIDIA GeForce RTX 4070 Laptop GPU
+Color space: Linear
+Fixture: exact production shader/material; copied theme values; native UGUI Sliced; point/32PPU/border 7,6,3,3.
+Scope: background rendering only. Full prefab text/layout lifecycle, runtime scene flow, atlas/URP parity, Player build and manual playtest are not covered.

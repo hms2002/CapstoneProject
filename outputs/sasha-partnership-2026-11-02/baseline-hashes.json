@@ -1,0 +1,13 @@
+{
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink": "3679eda0a628a93506336d2c4803949ccaffbfd6053e23fa603bf39af3931bf6",
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json": "9ad84c8e03a92fbbf80d22426107266ea2d132ee06a7e76c5ff73099b92b6fde",
+  "Assets/_Project/Data/Localization/GameText Shared Data.asset": "86f840756bac265e983ad69718e00af216df6ffb34783a91095d71c8b3b092b8",
+  "Assets/_Project/Data/Localization/GameText_ko.asset": "59f4d96198ced4d4d8488ccbe37b2da9e6adffc5897ff32784e1851c97d8d685",
+  "Assets/_Project/Data/Localization/GameText_en.asset": "076fd42490b5221f028f12b62d4e66889621ca057aba87a4501547648bacfc23",
+  "Assets/_Project/Data/Localization/GameText_ja.asset": "87b133afc0d36e3400d92f1a10463ce4a2296e177a2aec843a27a76f96a53d0b",
+  "Assets/_Project/Data/Localization/GameText_zh-Hans.asset": "45782f0889558c3dd5bc2ddc888253ea5a0f3ef87ed4b3f27c0b31c32c3c535c",
+  "Assets/_Project/Data/Localization/GameText_zh-Hant.asset": "be08803da6a7000538330f78e87d18874ab61d3089190b4abde0592f6ca1967f",
+  "DataSheets/Localization/GameText.csv": "81124dc64f558397da9a3f461542dae63670a58633da0214179cf34f6cd7d584",
+  "DataSheets/Localization/InkInventory.json": "4b50a2ea3a9d068ae56b0098323375156e011b77ef7a99809638ef37f2d58748",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs": "5df7f879859086eb0b612f18cb8efc5e89550a291f7ce71902d466bd51a928b6"
+}

@@ -1,0 +1,6 @@
+﻿theme,border_RGBA_hex,fill_RGBA_hex,font_RGBA_hex,notes
+Default / Player,#000000FF,#FFFFFF85,#000000FF,Prefab defaults; player asset has no custom theme override serialized
+SlimeBossSpeechData,#8CFFD9FF,#008D63FF,#8CFFD9FF,Serialized theme; nearest 8-bit RGBA values
+DragonBossSpeechData,#D3AF1EFF,#AA0500FF,#D3AF1EFF,Serialized theme; nearest 8-bit RGBA values
+WitchBossSpeechData,#EE8AF7FF,#3C007164,#EE8AF7FF,Serialized theme; nearest 8-bit RGBA values
+DarkLordBossSpeechData,#BA6CC1FF,#42334EFF,#BA6CC1FF,Serialized theme; nearest 8-bit RGBA values

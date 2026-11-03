@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gameplay::RelicDefinition
   relicId: Relic.Electric.EchoCoil
   displayName: "\uBA54\uC544\uB9AC \uCF54\uC77C"
-  icon: {fileID: 21300000, guid: 5e75f76ed6404d0e95d4b05a8a46ae0d, type: 3}
+  icon: {fileID: 21300000, guid: e7efc408d6d146be90b9d8289e7395c2, type: 3}
   rarity: 1
   description: "\uC5F0\uC1C4 \uBC88\uAC1C\uB97C 50% \uD53C\uD574\uB85C \uD55C \uBC88
     \uB354 \uBC18\uBCF5\uD569\uB2C8\uB2E4. \uCD5C\uCD08 \uB300\uC0C1\uC740 \uC81C\uC678\uD558\uBA70

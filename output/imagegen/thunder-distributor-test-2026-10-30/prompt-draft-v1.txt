@@ -1,0 +1,19 @@
+Use case: stylized-concept. One native 32x32 pixel-art fantasy roguelike relic icon: THUNDER DISTRIBUTOR / 뇌전 분배기. Preview only.
+Reference 1: PRIMARY rendering style, user's preferred gray relic: chunky contour, broad connected flat color areas, few deliberate stepped edges, clean low-resolution readability. Do not copy its object or gray palette.
+Reference 2: EXCLUSIVE supplied palette.
+Reference 3: already approved orange-and-blue electric seal, color-role reference only; make a new VOLUMETRIC object, not another flat medallion.
+
+SUBJECT: a chunky dice-like many-sided ancient metal electrical distributor. Broad HEXAGONAL FACETS, viewed in a strong three-quarter isometric view from slightly above, so approximately THREE to FOUR faces are clearly visible simultaneously. Three substantial faces dominate: a sloping upper face, a front-left face and a darker front-right face, each bounded by angular orange metal ribs. A small fourth facet/bevel may appear. The broad main panels are six-sided polygons, not square dice faces. A compact solid lump with real depth, not a sphere, flat shield, honeycomb sheet or ordinary cube. Natural beveled-polyhedron silhouette.
+Each large face contains ONE broad recessed BLUE electrode panel following its hexagonal boundary. Keep each panel as one big uninterrupted blue shape rather than patterned tiny cells. The shared thick orange structural ribs connect around the solid; that suggests a distributor sending electricity to multiple directions. No thin wires, branches, coils, antennae, detached pieces, external sparks, dice pips, digits, lettering or tiny ornament.
+CLEAR VOLUME through 3 distinct blue facet tones: pale blue upper electrode lit from upper left, medium blue front-left electrode, deep blue front-right electrode. Orange ribs use lighter upper/left edges and darker lower/right edges. Perspective and large facet-tone differences should do the work, without a pile of highlights, gradients or reflections. Clear shared edges and ample face area so this still reads at actual 32 pixels. No more than three/four big visible electrode faces.
+EXACT SIX opaque RGB colors plus transparency:
+#363232 charcoal outline/deep seams
+#D66B48 orange shadow/side frame
+#E09656 lighter orange front/upper frame
+#436794 blue shadow/right face
+#77BCD6 blue main/left face
+#B1DECF pale blue top face.
+All six colors must be used. No yellow, brown, gray, white, other colors, gradients, antialiasing or partial alpha.
+CLEAN native low-resolution pixel art: roughly 2px dark exterior contour, contiguous color planes, very restrained internal boundaries. Not a detailed 3D render downsampled. No scratches, glints, texture, dithering, glow halos or blurry light.
+Canvas actual 32x32 RGBA on genuine transparency. Top two rows and bottom two rows empty, visible y=2..29; at least two empty columns on either side. Compact centered silhouette with natural nearly-square proportions, no stretching to fill. If larger raster necessary, use perfect integer nearest-neighbor enlargement of an actual 32x32 logical pixel grid, each logical pixel one equal square.
+One isolated object only, no background, floor shadow, UI, text, grid, swatches or multiple variants.

@@ -1,0 +1,990 @@
+PASS Protected file unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/Merchant 1.png
+PASS Protected file unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/Merchant 1.png.meta
+PASS Protected file unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png
+PASS Protected file unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png.meta
+PASS Protected file unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png
+PASS Protected file unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png.meta
+PASS Protected file unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png
+PASS Protected file unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/BossAffectionRunModifierEffect.asset
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/BossAffectionRunModifierEffect.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/InfoOnlyAffectionEffect.asset
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/InfoOnlyAffectionEffect.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/BuffyEventPortrait.asset
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/BuffyEventPortrait.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/New Sprite Library Asset 3.spriteLib
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/New Sprite Library Asset 3.spriteLib.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/ParcelEventPortrait.asset
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/ParcelEventPortrait.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/ScribePortrait.asset
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/ScribePortrait.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DarkLord.spriteLib
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DarkLord.spriteLib.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DragonBoss.spriteLib
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DragonBoss.spriteLib.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Upgrade.spriteLib
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Upgrade.spriteLib.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_SlimeQueenBoss.spriteLib
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_SlimeQueenBoss.spriteLib.meta
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_WitchBoss.spriteLib
+PASS Protected file unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_WitchBoss.spriteLib.meta
+PASS Protected file unchanged: Assets/_Project/Data/Localization/GameText Shared Data.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Localization/GameText_en.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Localization/GameText_ja.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Localization/GameText_ko.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Localization/GameText_zh-Hans.asset.meta
+PASS Protected file unchanged: Assets/_Project/Data/Localization/GameText_zh-Hant.asset.meta
+PASS Protected file unchanged: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs.meta
+PASS Protected file unchanged: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs.meta
+PASS Protected file unchanged: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/DemonKing.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/DemonKing/DemonKing.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/DemonKing/DemonKing.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/DragonBoss.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/DragonBoss/DragonBoss.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/DragonBoss/DragonBoss.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/DragonBoss/DragonSpinProjectile2D .prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/DragonBoss/DragonSpinProjectile2D .prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/DragonBoss/PF_DragonFireBreathVisual.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/DragonBoss/PF_DragonFireBreathVisual.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/DragonBoss/PF_DragonThrownKeg.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/DragonBoss/PF_DragonThrownKeg.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/ShadowBoss.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/ShadowBoss/Witch.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/ShadowBoss/Witch.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/ShadowBoss/WitchNormalAttack1Tile.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/ShadowBoss/WitchNormalAttack1Tile.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/SlimeQueen.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/SlimeQueen/PF_SlimeQueenToxicDropProjectile.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/SlimeQueen/PF_SlimeQueenToxicDropProjectile.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/SlimeQueen/PF_SlimeQueenWaterCannonBeam.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/SlimeQueen/PF_SlimeQueenWaterCannonBeam.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueen.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueen.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Long.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Long.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Short.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Short.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Camera.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Camera/Main Camera.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Camera/Main Camera.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Camera/PlayerCam.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Camera/PlayerCam.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/ChestPossible.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/ChestPossible.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/ChestPossible_KillLock.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/ChestPossible_KillLock.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/KillLockTreasuteChest 1.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/KillLockTreasuteChest 1.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/KillLockTreasuteChest.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/KillLockTreasuteChest.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/KillLockTresureChest.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/KillLockTresureChest.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/LowRewardKillLockTreasureChest.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/LowRewardKillLockTreasureChest.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/LowRewardTreasureChest.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/LowRewardTreasureChest.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/TreasureChest.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Chests/TreasureChest.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Pickups.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Pickups/PF_WorldItemPickup2D.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Pickups/PF_WorldItemPickup2D.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Relics.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Relics/Props.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Relics/Props/FeatherRelic_Prop.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Relics/Props/FeatherRelic_Prop.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Visuals.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Visuals/PF_LightningSpear_ItemDisplayVisual.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Visuals/PF_LightningSpear_ItemDisplayVisual.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack1.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack1.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack2.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack2.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack3.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack3.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_Skill1_DashStab.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_Skill1_DashStab.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_Skill2_SpinPulse.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_Skill2_SpinPulse.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Attack.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Attack/Hitbox_WindWeapon_NormalAtk_HardSlash.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Attack/Hitbox_WindWeapon_NormalAtk_HardSlash.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Attack/Hitbox_WindWeapon_NormalAtk_Slash.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Attack/Hitbox_WindWeapon_NormalAtk_Slash.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Attack/MeleeAttack.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Attack/MeleeAttack.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Drops.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Drops/DroppedWeapon.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Drops/DroppedWeapon.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/FragmentShardActorPrefab .prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/FragmentShardActorPrefab .prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefabVriantOrigin.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefabVriantOrigin.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ApprenticeHeroSword.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ApprenticeHeroSword.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ChainSpear.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ChainSpear.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_CrimsonBoundary.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_CrimsonBoundary.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_EclipseSword.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_EclipseSword.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ExecutionGun.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ExecutionGun.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ExecutionerGreatsword.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_ExecutionerGreatsword.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_Flowering.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_Flowering.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_MarkSword.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_MarkSword.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_MoonBlade.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_MoonBlade.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_OddIron.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_OddIron.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_PieceSword.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_PieceSword.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_SunBlade.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_SunBlade.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_WindWeapon.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Equip/WeaponPrefab_WindWeapon.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Bloom_Slash1.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Bloom_Slash1.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Bloom_Slash2.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Bloom_Slash2.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Bloom_Slash3.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Bloom_Slash3.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Slash1.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Slash1.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Slash2.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/FX_Flowering_Slash2.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack1.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack1.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack2.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack2.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack3.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack3.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash1.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash1.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash2.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash2.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash3.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash3.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/FX_LightningSpear_BasicAttack1.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/FX_LightningSpear_BasicAttack1.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/FX_LightningSpear_BasicAttack2.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/FX_LightningSpear_BasicAttack2.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/FX_LightningSpear_BasicAttack3.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/FX_LightningSpear_BasicAttack3.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack1.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack1.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack2.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack2.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack3.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack3.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill1_MarkRush.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill1_MarkRush.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill1_NoMark.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill1_NoMark.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill2_MarkDropImpact.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill2_MarkDropImpact.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearDashStabTrail.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearDashStabTrail.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMark.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMark.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMarkHoverRangeIndicator.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMarkHoverRangeIndicator.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoverShotTrail.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoverShotTrail.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredShotSpawnEffect.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredShotSpawnEffect.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredSpear.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredSpear.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredSpearProjectile.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredSpearProjectile.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRushRangeIndicator.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRushRangeIndicator.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearSelectedMarkIndicator.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearSelectedMarkIndicator.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/WeaponPrefab_LightningSpear.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/WeaponPrefab_LightningSpear.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/OddIron.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/OddIron/PF_OddIron_Bullet.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/OddIron/PF_OddIron_Bullet.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/OddIron/PF_OddIron_ThrownWeapon.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/OddIron/PF_OddIron_ThrownWeapon.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Sword.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Sword/Projectiles.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Sword/Projectiles/PF_SwordSkill1_Projectile.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Items/Weapons/Sword/Projectiles/PF_SwordSkill1_Projectile.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot/ExperiencePickup_Square.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot/ExperiencePickup_Square.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot/GoldPickup.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot/GoldPickup.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot/MagicStonePrefab.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot/MagicStonePrefab.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot/RelicGrave.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot/RelicGrave.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot/WeaponGrave.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Loot/WeaponGrave.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Gimick.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Gimmicks.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Gimmicks/SlimeCorridor.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Gimmicks/SlimeCorridor/DrainPipe.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Gimmicks/SlimeCorridor/DrainPipe.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Gimmicks/Witch.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Gimmicks/Witch/GlobalVisionMaskRoot.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Gimmicks/Witch/GlobalVisionMaskRoot.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Gimmicks/Witch/PlayerVisionMask.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Gimmicks/Witch/PlayerVisionMask.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Interactables.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Interactables/EncyclopediaStand.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Interactables/EncyclopediaStand.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Navigation.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Navigation/HubWeaponGuidanceArrow.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Navigation/HubWeaponGuidanceArrow.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Navigation/KillLockMonsterNavigationArrow.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Navigation/KillLockMonsterNavigationArrow.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Navigation/PlayerPortalGuidance.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Navigation/PlayerPortalGuidance.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Navigation/PlayerRoomChestGuidance.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Navigation/PlayerRoomChestGuidance.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Portal.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Portal/ScenePortal.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Portal/ScenePortal.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events/AlarmBellEventModule.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events/AlarmBellEventModule.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events/BuffyHealthTime.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events/BuffyHealthTime/BuffyHealthTimeEventModule.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events/BuffyHealthTime/BuffyHealthTimeEventModule.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events/ParcelDelivery.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events/ParcelDelivery/ParcelDeliveryPointModule.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events/ParcelDelivery/ParcelDeliveryPointModule.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events/ParcelDelivery/ParcelPickupEventModule.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events/ParcelDelivery/ParcelPickupEventModule.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events/ShadowAlarmBellEventModule.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Events/ShadowAlarmBellEventModule.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Npc.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Npc/SlimeConstructionNpcModule.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Npc/SlimeConstructionNpcModule.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Npc/SlimeTeleportDestination.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Npc/SlimeTeleportDestination.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Npc/SlimeTeleportNpc.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/Npc/SlimeTeleportNpc.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ProceduralCorridorTravelPipe.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ProceduralCorridorTravelPipe.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ProceduralSceneTravelPortal.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ProceduralSceneTravelPortal.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonBossShortcut.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonBossShortcut.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonBossShortcutTravelRig.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonBossShortcutTravelRig.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonReturnPortal.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonReturnPortal.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonReturnTravelRig.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/DungeonReturnTravelRig.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnLanding.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnLanding.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Down.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Down.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Left.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Left.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Right.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Right.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Up.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/ReturnPortal_Up.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/SacrificeRewardAlcove.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Procedural/SacrificeRewardAlcove.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Puddles.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Puddles/AlcoholPuddle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Puddles/AlcoholPuddle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Puddles/FirePuddle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Puddles/FirePuddle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Puddles/PoisonCloud.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/Puddles/PoisonCloud.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/ShortCut.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/ShortCut/Door.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/ShortCut/Door.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/ShortCut/Lever.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/ShortCut/Lever.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/ShortCut/Statue.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Map/ShortCut/Statue.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/BeerMonster.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/BeerMonster.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/ArcaneMeleeGolem.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/ArcaneMeleeGolem.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/ArcaneTankGolem.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/ArcaneTankGolem.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinGunner.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinGunner.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinTank.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinTank.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinWarrior.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinWarrior.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/LizardMage.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/LizardMage.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/LizardWarrior.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/CommonCorridor/LizardWarrior.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/Frog.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/Frog.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/Frog_BOSS.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/Frog_BOSS.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/Projectiles.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/Projectiles/PF_BeerMonsterProjectile.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/Projectiles/PF_BeerMonsterProjectile.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/CorridorCandlestickMonster.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/CorridorCandlestickMonster.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/Dead'sSkeleton.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/Dead'sSkeleton.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowMonster.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowMonster.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.controller
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.controller.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/ShadowServant.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/ShadowServant.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/Candlestick.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/Candlestick.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/LightBead.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/LightBead.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/WitchShieldBreakerProjectile.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/WitchShieldBreakerProjectile.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/SlimeCorridor.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Bishop.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Bishop.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Knight.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Knight.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Pawn.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Pawn.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Rook.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Rook.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Wizard.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Wizard.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/TrainingDummy.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/TrainingDummy.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/TreasureMonster.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Monsters/TreasureMonster.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/NPCs.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Player.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Player/PF Player.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Player/PF Player.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/README.md
+PASS Protected file unchanged: Assets/_Project/Prefabs/README.md.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/Bosses.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/Bosses/DemonKing_TestRig.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/Bosses/DemonKing_TestRig.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_AlarmBell.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_AlarmBell.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_BuffyHealthTime.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_BuffyHealthTime.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_ParcelDeliveryPoint.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_ParcelDeliveryPoint.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_ParcelPickup.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_ParcelPickup.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_TravelToSlime.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Dragon_Event_TravelToSlime.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_AlarmBell.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_AlarmBell.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_BuffyHealthTime.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_BuffyHealthTime.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_ParcelDeliveryPoint.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_ParcelDeliveryPoint.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_ParcelPickup.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_ParcelPickup.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_TravelToSlime.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Shadow_Event_TravelToSlime.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_AlarmBell.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_AlarmBell.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ArrivalFromDragon.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ArrivalFromDragon.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ArrivalFromShadow.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ArrivalFromShadow.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_BuffyHealthTime.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_BuffyHealthTime.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ParcelDeliveryPoint.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ParcelDeliveryPoint.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ParcelPickup.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/Testing/EventRooms/Slime_Event_ParcelPickup.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/BossHUD_Slot.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/BossHUD_Slot.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/ChestUI.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/ChestUI.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Choice0.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Choice0.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Combat.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Combat/DamagePopupUIService.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Combat/DamagePopupUIService.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Combat/DamagePopupUI_World.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Combat/DamagePopupUI_World.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/DesignChain.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/DesignChain.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Dialogue.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Dialogue/ShopSlot.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Dialogue/ShopSlot.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Dialogue/ShopSlot_RunGold.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Dialogue/ShopSlot_RunGold.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/EffectSlotUI.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/EffectSlotUI.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/ElementGaugeUI.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/ElementGaugeUI/Canvas_MonstarElementGaugeView.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/ElementGaugeUI/Canvas_MonstarElementGaugeView.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/ElementGaugeUI/Panel_ElementGaugeSlotView.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/ElementGaugeUI/Panel_ElementGaugeSlotView.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/EmoteUIPrefab.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/EmoteUIPrefab.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/GlobalUIRoot_Deafiso.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/GlobalUIRoot_Deafiso.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/GlobalUIRoot_DialogueUpdate.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/GlobalUIRoot_DialogueUpdate.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/GlobalUIRoot_Salryojo.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/GlobalUIRoot_Salryojo.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/GlobalUIRoot_Sub.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/GlobalUIRoot_Sub.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/GlobalUIRoot_Water.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/GlobalUIRoot_Water.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/HUD.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/HUD/HeartTokenUI.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/HUD/HeartTokenUI.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/HangPanelChain.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/HangPanelChain.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/HangPanelShortChain.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/HangPanelShortChain.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Inventory.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Inventory/Common.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Inventory/Common/ItemDetailSectionView.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Inventory/Common/ItemDetailSectionView.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Consumable.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Consumable.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Weapon.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Weapon.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Inventory/Relics.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/KeyMapRow.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/KeyMapRow.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Map.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Map/DungeonMinimapView.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Map/DungeonMinimapView.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/NpcNameplate.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/NpcNameplate.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaEntrySlot.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaEntrySlot.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/Panel_AbilityBlock_Encyclopedia.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/Panel_AbilityBlock_Encyclopedia.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerInventoryUI.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerInventoryUI/InventoryElementPannel.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerInventoryUI/InventoryElementPannel.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatRowView.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatRowView.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatSectionView.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatSectionView.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatUI.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatUI.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/Panel_AbilityBlock.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/Panel_AbilityBlock.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/weaponstatLineview.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/weaponstatLineview.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/WarningPopupUI.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/PopupUI/WarningPopupUI.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Portraitlmage.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Portraitlmage.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/SpeechBubble.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/SpeechBubble/SpeechBubblePrefab.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/SpeechBubble/SpeechBubblePrefab.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/TextCanvas.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/TextCanvas.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/UnlockSlotUI.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/UnlockSlotUI.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Upgrade.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Upgrade/UpgradeSlot.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Upgrade/UpgradeSlot.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Upgrade/UpgradeTreePanel.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Upgrade/UpgradeTreePanel.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Upgrade/line.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/Upgrade/line.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/WeaponHUDUI.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/WeaponHUDUI/Skill1UI.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/WeaponHUDUI/Skill1UI.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/status_HUD_EntryView.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/UI/status_HUD_EntryView.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/AnimEffect.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1NormalAttack2Boom.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1NormalAttack2Boom.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1PhaseAttackBoom.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1PhaseAttackBoom.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1PhaseAttackFireBall.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1PhaseAttackFireBall.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1Shield.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1Shield.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/AnimEffect/SlashHit.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/AnimEffect/SlashHit.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Bosses.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Bosses/SlimeQueen.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Bosses/SlimeQueen/Effect_SlimeQueenSplitGooBurst.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Bosses/SlimeQueen/Effect_SlimeQueenSplitGooBurst.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_AcaneTankGolemSlam.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_AcaneTankGolemSlam.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_AttackSmoke_GoblinTank.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_AttackSmoke_GoblinTank.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_BishopAttackExplosion.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_BishopAttackExplosion.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_GoblinGunnerShot.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_GoblinGunnerShot.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_MonsterSpawnSmokeEffect.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_MonsterSpawnSmokeEffect.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_SlimeQueenP2Long_WaterPillar.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_SlimeQueenP2Long_WaterPillar.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_Stun_Sprak.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effect_Stun_Sprak.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effeect_FallingRock.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Common/Effeect_FallingRock.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Charge_Fire.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Charge_Fire.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Fire_Explosion.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Fire_Explosion.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Fireball.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Fireball.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Fireball_Hit.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Fireball_Hit.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Flame_Explosion.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Flame_Explosion.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Flame_Sustain.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Flame_Sustain.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Lavaball.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Lavaball.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Lavaball_Hit.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Lavaball_Hit.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Lavaball_RelicPiercing.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/CrimsonBoundary/Lavaball_RelicPiercing.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Cues.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_BossGroggyTimer.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_BossGroggyTimer.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_Falling.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_Falling.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_GroggyBreak.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_GroggyBreak.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Cues/PF_GroggyOverheadEffect.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Cues/PF_GroggyOverheadEffect.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Effect_DrainPipeParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Effect_DrainPipeParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Effect_SlimeCorridorTeleport.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Effect_SlimeCorridorTeleport.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Element.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Element/ElectricChainRibbonVfx.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Element/ElectricChainRibbonVfx.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/HitCameraShake.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/HitCameraShake.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_Dragon_CrossExplosion.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_Dragon_CrossExplosion.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_Dragon_InhaleWind.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_Dragon_InhaleWind.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_Dragon_LandEffect.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_Dragon_LandEffect.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/BasicWeaponChargeCompleteParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/BasicWeaponChargeCompleteParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/BasicWeaponChargeParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/BasicWeaponChargeParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ChestDust.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ChestDust.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ChestReavealDust.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ChestReavealDust.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/DoorDust.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/DoorDust.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ExpGainParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ExpGainParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ExplosionDebrisBounce.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_DiagonalScatter.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_DiagonalScatter.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_LowSkitter.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_LowSkitter.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ExplosionParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ExplosionParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/FallingDust.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/FallingDust.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/FlowerParticleMat.mat
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/FlowerParticleMat.mat.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/FloweringBloomImpactParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/FloweringBloomImpactParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/FloweringParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/FloweringParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/FloweringReavealParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/FloweringReavealParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/GateRevealBurstDust.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/GateRevealBurstDust.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/GateRevealLoopDust.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/GateRevealLoopDust.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/GoldGainParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/GoldGainParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/GraveDust.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/GraveDust.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/HealParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/HealParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/HeartConsumeParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/HeartConsumeParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/HitSpark.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/HitSpark.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ItemSlotParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ItemSlotParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/KillLockOffDust.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/KillLockOffDust.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/KillLockUnlockedIdle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/KillLockUnlockedIdle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/LevelUpEffect.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/LevelUpEffect.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/LeverSpark.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/LeverSpark.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/MagicStoneGainParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/MagicStoneGainParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/StatueDust.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/StatueDust.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/UIParticle.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/UIParticle/ChestImpactParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/UIParticle/ChestImpactParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/WalkDust.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/WalkDust.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/WitchNormal1AttackTileParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/WitchNormal1AttackTileParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/WitchNormal2AttackTileParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/WitchNormal2AttackTileParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/WitchPhasePatternAttackPaticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/WitchPhasePatternAttackPaticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/WitchShieldBreakParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/WitchShieldBreakParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ZZZParticle.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Particle/ZZZParticle.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Puddles.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Puddles/PF_PuddleAbsorb_Alcohol.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Puddles/PF_PuddleAbsorb_Alcohol.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Puddles/PF_PuddleAbsorb_Fire.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Puddles/PF_PuddleAbsorb_Fire.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Relics.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Relics/Fire.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Relics/Fire/PF_SunFragment.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Relics/Fire/PF_SunFragment.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Relics/Lightning.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Relics/Lightning/LightningEffect.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Relics/Lightning/LightningEffect.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Skill.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Skill/WindWeapon.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Skill/WindWeapon/RushEffect.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Skill/WindWeapon/RushEffect.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Telegraphs.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Telegraphs/AttackTelegraphView.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/Telegraphs/AttackTelegraphView.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/WeaponEffect.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/WeaponEffect/OddIron.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/WeaponEffect/OddIron/OddIronSegmentEffect.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/WeaponEffect/OddIron/OddIronSegmentEffect.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/WeaponEffect/OddIron/OddIron_ShotEffect.prefab
+PASS Protected file unchanged: Assets/_Project/Prefabs/VFX/WeaponEffect/OddIron/OddIron_ShotEffect.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/DarkLord_Tutorial.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/DarkLord_Tutorial.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/DemonkingCorridor.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/DemonkingCorridor.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/DragonCorridor 1.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/DragonCorridor 1.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/DragonCorridor.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/DragonCorridor.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/Grand Hall.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/Grand Hall.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/HeoMinSeokScene.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/HeoMinSeokScene.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/LEeJunmo 1.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/LEeJunmo 1.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/LEeJunmo.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/LEeJunmo.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/PixelLightTest.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/PixelLightTest.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProceduralDragonCorridor.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProceduralDragonCorridor.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProceduralDungeonV0Test.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProceduralDungeonV0Test.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProceduralShadowCorridor.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProceduralShadowCorridor.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProceduralSlimeCorridor.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProceduralSlimeCorridor.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeBoss 1.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeBoss 1.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeBoss 2.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeBoss 2.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeBoss 3.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeBoss 3.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeBoss 4.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeBoss 4.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeBossLagacy.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeBossLagacy.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeCorridor 1.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeCorridor 1.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeCorridor 2.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeCorridor 2.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeCorridor 3.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeCorridor 3.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeCorridor.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeCorridor.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeHub.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeHub.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeHubasf.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ProtoTypeHubasf.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/SampleScene.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/SampleScene/GameObject Profile.asset
+PASS Protected file unchanged: Assets/_Project/Scenes/SampleScene/GameObject Profile.asset.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/SangHyup_Hallway.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/SangHyup_Hallway.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ShadowCorridor.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/ShadowCorridor.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/ShopSlotPositionGroup.prefab
+PASS Protected file unchanged: Assets/_Project/Scenes/ShopSlotPositionGroup.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/SlimeCorridor 1.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/SlimeCorridor 1.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/SlimeCorridor.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/SlimeCorridor.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/Tests.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/Tests/TestScene.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/Tests/TestScene.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/TitleScene.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/TitleScene.unity.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/TrainingDummyGroup.prefab
+PASS Protected file unchanged: Assets/_Project/Scenes/TrainingDummyGroup.prefab.meta
+PASS Protected file unchanged: Assets/_Project/Scenes/TutorialCorridor.unity
+PASS Protected file unchanged: Assets/_Project/Scenes/TutorialCorridor.unity.meta
+PASS Protected file unchanged: ProjectSettings/AudioManager.asset
+PASS Protected file unchanged: ProjectSettings/BehaviorSettings.asset
+PASS Protected file unchanged: ProjectSettings/ClusterInputManager.asset
+PASS Protected file unchanged: ProjectSettings/DynamicsManager.asset
+PASS Protected file unchanged: ProjectSettings/EditorBuildSettings.asset
+PASS Protected file unchanged: ProjectSettings/EditorSettings.asset
+PASS Protected file unchanged: ProjectSettings/GraphicsSettings.asset
+PASS Protected file unchanged: ProjectSettings/InkSettings.asset
+PASS Protected file unchanged: ProjectSettings/InputManager.asset
+PASS Protected file unchanged: ProjectSettings/MemorySettings.asset
+PASS Protected file unchanged: ProjectSettings/MultiplayerManager.asset
+PASS Protected file unchanged: ProjectSettings/NavMeshAreas.asset
+PASS Protected file unchanged: ProjectSettings/NetworkManager.asset
+PASS Protected file unchanged: ProjectSettings/PackageManagerSettings.asset
+PASS Protected file unchanged: ProjectSettings/Physics2DSettings.asset
+PASS Protected file unchanged: ProjectSettings/PresetManager.asset
+PASS Protected file unchanged: ProjectSettings/ProjectSettings.asset
+PASS Protected file unchanged: ProjectSettings/ProjectVersion.txt
+PASS Protected file unchanged: ProjectSettings/QualitySettings.asset
+PASS Protected file unchanged: ProjectSettings/SceneTemplateSettings.json
+PASS Protected file unchanged: ProjectSettings/ScriptableBuildPipeline.json
+PASS Protected file unchanged: ProjectSettings/ShaderGraphSettings.asset
+PASS Protected file unchanged: ProjectSettings/TagManager.asset
+PASS Protected file unchanged: ProjectSettings/TimeManager.asset
+PASS Protected file unchanged: ProjectSettings/URPProjectSettings.asset
+PASS Protected file unchanged: ProjectSettings/UnityConnectSettings.asset
+PASS Protected file unchanged: ProjectSettings/VFXManager.asset
+PASS Protected file unchanged: ProjectSettings/VersionControlSettings.asset
+PASS Protected file unchanged: ProjectSettings/XRSettings.asset
+PASS Native project uses final source: Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+PASS Native project uses final source: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Native project uses final source: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Native project uses final source: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS All other Ink conversations/choices/outcomes preserved
+PASS 50 active merchant localization keys
+PASS Only second-opening key added to CSV
+PASS All unrelated CSV rows preserved
+PASS All 30 replacement/added translations match approved staging
+PASS Korean source/CSV match: dialogue.merchant.001
+PASS Korean source/CSV match: dialogue.merchantdialogue_animated.95e636eb88
+PASS Korean source/CSV match: dialogue.merchant.003
+PASS Korean source/CSV match: dialogue.merchantdialogue_animated.470dbb5cba
+PASS Korean source/CSV match: dialogue.merchantdialogue_animated.5526e51532
+PASS Korean source/CSV match: dialogue.merchant.006
+PASS Korean source/CSV match: dialogue.merchantdialogue_animated.ca8d0de524
+PASS Korean source/CSV match: dialogue.merchantdialogue_animated.9098a11458
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_b.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_b.5
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_b.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_b.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_b.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_b.4
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_c.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_c.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_c.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_c.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_0_c.4
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_a.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_a.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_a.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_a.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_a.4
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_b.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_b.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_b.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_b.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_b.4
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_c.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_c.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_c.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_c.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_c.4
+PASS Korean source/CSV match: dialogue.merchant.run.affection_1_c.5
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_a.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_a.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_a.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_a.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_a.4
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_b.0
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_b.1
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_b.2
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_b.3
+PASS Korean source/CSV match: dialogue.merchant.run.affection_2_b.4
+PASS Korean source/CSV match: dialogue.merchant.run.greeting_a
+PASS Korean source/CSV match: dialogue.merchant.run.greeting_b
+PASS Korean source/CSV match: dialogue.merchant.run.greeting_c
+PASS Korean source/CSV match: dialogue.merchant.run.greeting_full_a
+PASS Korean source/CSV match: dialogue.merchant.run.greeting_full_b
+PASS Five existing localization IDs retained for replacement text
+PASS Exactly one shared/locale record added: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS All unrelated old locale records preserved: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS Exactly one shared/locale record added: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS Only cosmetic serialization drift: Assets/_Project/Data/Localization/GameText_ko.asset/46294721531910
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_ko.asset/10587451195375616
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_ko.asset/10587451392507904
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_ko.asset/10587451392507905
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_ko.asset/10587451392507906
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_ko.asset/10587451392507907
+PASS All unrelated old locale records preserved: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS Exactly one shared/locale record added: Assets/_Project/Data/Localization/GameText_en.asset
+PASS Only cosmetic serialization drift: Assets/_Project/Data/Localization/GameText_en.asset/46294721531910
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_en.asset/10587451195375616
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_en.asset/10587451392507904
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_en.asset/10587451392507905
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_en.asset/10587451392507906
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_en.asset/10587451392507907
+PASS All unrelated old locale records preserved: Assets/_Project/Data/Localization/GameText_en.asset
+PASS Exactly one shared/locale record added: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS Only cosmetic serialization drift: Assets/_Project/Data/Localization/GameText_ja.asset/46294721531910
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_ja.asset/10587451195375616
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_ja.asset/10587451392507904
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_ja.asset/10587451392507905
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_ja.asset/10587451392507906
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_ja.asset/10587451392507907
+PASS All unrelated old locale records preserved: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS Exactly one shared/locale record added: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS Only cosmetic serialization drift: Assets/_Project/Data/Localization/GameText_zh-Hans.asset/46294721531910
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hans.asset/10587451195375616
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hans.asset/10587451392507904
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hans.asset/10587451392507905
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hans.asset/10587451392507906
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hans.asset/10587451392507907
+PASS All unrelated old locale records preserved: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS Exactly one shared/locale record added: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS Only cosmetic serialization drift: Assets/_Project/Data/Localization/GameText_zh-Hant.asset/46294721531910
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hant.asset/10587451195375616
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hant.asset/10587451392507904
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hant.asset/10587451392507905
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hant.asset/10587451392507906
+PASS Replaced locale ID/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hant.asset/10587451392507907
+PASS All unrelated old locale records preserved: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS NPC changes only add required-theme fields to existing candidates
+PASS Only affection_0_b requires dragon
+PASS Unrelated Ink inventory preserved
+PASS Inventory covers all active merchant lines
+PASS Native stage/Ink/localization checks passed
+PASS No conflicting destination edit: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS No conflicting destination edit: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+PASS No conflicting destination edit: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS No conflicting destination edit: DataSheets/Localization/GameText.csv
+PASS No conflicting destination edit: DataSheets/Localization/InkInventory.json
+PASS No conflicting destination edit: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS No conflicting destination edit: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS No conflicting destination edit: Assets/_Project/Data/Localization/GameText_en.asset
+PASS No conflicting destination edit: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS No conflicting destination edit: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS No conflicting destination edit: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS Verified atomic copy: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS Verified atomic copy: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+PASS Verified atomic copy: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS Verified atomic copy: DataSheets/Localization/GameText.csv
+PASS Verified atomic copy: DataSheets/Localization/InkInventory.json
+PASS Verified atomic copy: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS Verified atomic copy: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS Verified atomic copy: Assets/_Project/Data/Localization/GameText_en.asset
+PASS Verified atomic copy: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS Verified atomic copy: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS Verified atomic copy: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS: 989 preservation checks.

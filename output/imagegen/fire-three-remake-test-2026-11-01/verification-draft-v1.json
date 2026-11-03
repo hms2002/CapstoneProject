@@ -1,0 +1,76 @@
+{
+  "date": "2026-11-01",
+  "mode": "built-in image_gen; one call per relic",
+  "files": [
+    {
+      "name": "작열하는 송곳",
+      "file": "scorching-awl-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "opaque_color_count": 6,
+      "margins_l_t_r_b": [
+        3,
+        2,
+        4,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "5cc1edb06f70a7e297abab577fcd7aeeb6553d9a0a0e8d8605fa069e103409aa"
+    },
+    {
+      "name": "휴대용 화로",
+      "file": "portable-brazier-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "opaque_color_count": 6,
+      "margins_l_t_r_b": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "1633fbd1bf8620b31d52d1cc384c91dc6a6de6120a2ce0f6245c3fd58ec00082"
+    },
+    {
+      "name": "태양의 파편",
+      "file": "sun-fragment-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "opaque_color_count": 6,
+      "margins_l_t_r_b": [
+        6,
+        2,
+        7,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "674def050de3eaab1b75498986d4a6c7cb719b4d8f061afad1a0d41a1c1e992e"
+    }
+  ],
+  "shared_palette": [
+    "#363232",
+    "#A75064",
+    "#E09656",
+    "#E55C5C",
+    "#EECF5A",
+    "#F1E9D4"
+  ],
+  "exact_nearest_preview": true,
+  "sheet_frames_equal_individual_files": true,
+  "protected_project_files_unchanged": 368,
+  "project_applied": false,
+  "unity_import_compile_playmode": "not executed",
+  "SessionLogs": "unchanged by this task",
+  "ErrorLog": "unchanged by this task",
+  "DecisionLog": "unchanged by this task",
+  "doc_impact": "no doc update needed",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "markdown_links_verified": 8
+}

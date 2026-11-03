@@ -1,0 +1,17 @@
+{
+  "Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs": "d55d4fa76db8c082155747ca0e158d6f640cf51cf6d7ed4fbe429bc804b021ca",
+  "Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs": "08a7092726f637e6a26b5cadd0ead17128b8a8b471d9802924201ea05d29615c",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs": "c082194353b43696e6487d261bb6e6420692a2e1f62ead20b1eed06bbbf2fad8",
+  "Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs": "932bc49ff95b4e5d8c6985d85753885fc246decc0230b7afb8180cce7456d348",
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink": "7866682e798aa9bbc0e07842108361f17bd5c7825325b252233e31b77e5912d8",
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json": "4f6925874f94bd2dba04017009dc9badf073b3fec6e7f374803c92030a1e0f77",
+  "Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset": "7aea5f4235598c00c33e719d4bb1d031b57fe273e7f5701af47ae075adca0501",
+  "DataSheets/Localization/GameText.csv": "bd3af2a7abed15f157678bdd9d93326f66eaa054fc1faf2353ea1ed50e8e8372",
+  "DataSheets/Localization/InkInventory.json": "664434f0daadd242b504092dcf49d58db4754bc64418f4a49ad9afefae4aafb7",
+  "Assets/_Project/Data/Localization/GameText Shared Data.asset": "a1057a87be1228dd455ad0707930661f8fcae9be01a444415991249924a134f2",
+  "Assets/_Project/Data/Localization/GameText_ko.asset": "52a201be9ce27cfd3e68556f9455904edf9247b5b0053d17f7e7127918f0db26",
+  "Assets/_Project/Data/Localization/GameText_en.asset": "82de6e6a22a05161b4bb45f5dd3d418edb524a46e12faf47aeaa41ff18fe36e1",
+  "Assets/_Project/Data/Localization/GameText_ja.asset": "ac2aeaeb2bc036b1e36790a69e1dc4ca30e8b428a6b3d7ab6670aac3fa20593c",
+  "Assets/_Project/Data/Localization/GameText_zh-Hans.asset": "022b598b7d470c7699d66468e6f063ba72085b49c7561f2994f512f21a5085af",
+  "Assets/_Project/Data/Localization/GameText_zh-Hant.asset": "76b450ad1a142832d0e2e99712dbf54ac133f05ef8fdc62d691c8004dc95c4a2"
+}

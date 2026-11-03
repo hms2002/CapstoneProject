@@ -1,0 +1,36 @@
+{
+  "name": "electric-coil-simple-brighter-v1",
+  "source": "electric-coil-simple-v1-32x32.png",
+  "size": [
+    32,
+    32
+  ],
+  "opaqueColors": 7,
+  "paletteMapping": {
+    "363232": "363232",
+    "8A5E40": "D66B48",
+    "D66B48": "E09656",
+    "E09656": "EECF5A",
+    "436794": "6F81B3",
+    "6F81B3": "77BCD6",
+    "77BCD6": "B1DECF"
+  },
+  "changedPixels": 373,
+  "darkPixelsPreserved": 327,
+  "alphaAndSilhouetteUnchanged": true,
+  "allColorClustersUnchanged": true,
+  "allNonOutlineColorsBrighter": true,
+  "transparentMarginPx": 1,
+  "paletteVerified": true,
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-6293315a-92ee-4d10-af79-3de1612ced6c.png",
+  "export": "Exact native 32x32 palette-index substitution of generated recolor specification; no resampling or new details",
+  "projectAssetsChanged": false,
+  "protectedOriginalHashesVerified": 4,
+  "unityVerification": "not executed; test image only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

@@ -1,0 +1,18 @@
+Use case: stylized-concept / native pixel-art item icon.
+Asset: FIRST DRAFT of a VERTICAL ECHO COIL relic for a 2D roguelike, 32x32 actual logical pixels, transparent background.
+Reference image 1: the user's approved horizontal Dash Coil icon. Use its clean chunky pixel-art style, dark contour, orange/golden copper and muted blue component colors as the design language. This reference has an electric spark; DO NOT include that spark in the new image.
+Reference image 2: the user's exclusive permitted color palette.
+Reference image 3: original flying-boots icon, for the desired low complexity, broad flat color clusters and native 32x32 readability.
+New composition: an upright VERTICAL solenoid / wound coil, with a central blue metal shaft running up-down, four simple thick copper wire turns stacked vertically around the shaft, and compact blue end caps at TOP and BOTTOM. The stacked orange/golden winding bands are the focal point. The shaft's orientation is unmistakably vertical, not a horizontal coil merely tilted. Mild three-quarter item perspective to show the curve of the winding turns, similar simple item perspective to the reference. A compact freestanding inventory item, not an industrial scene or elaborate machine.
+CLEANNESS is more important than detail: native hand-clustered 32x32 sprite, few large connected solid color regions. One simple highlight block or strip per winding; no fine winding threads, hardware clutter, bolts, engravings, tiny broken highlights, checker dithering, surface noise, repeated decorative outlines or photorealistic gloss.
+Exactly SEVEN opaque colors TOTAL, all from supplied palette:
+#363232 dark contour / deepest gaps;
+#D66B48 copper shade;
+#E09656 main copper;
+#EECF5A restrained golden highlight;
+#436794 dark muted blue metal;
+#6F81B3 mid blue;
+#8599B0 lighter blue face.
+Blue highlights stay blue, no silver, white, gray or pale glow. Transparency is not a color. Use the golden highlight sparingly in broad intentional pixels, not as speckles.
+Hard pixel constraints: design explicitly on a strict 32x32 logical grid. Two logical pixels thick dark outline, chunky 2x2 steps. Centered composition with at least one fully transparent logical pixel on each outer edge. Tall silhouette with body narrower than its height. Fill enough canvas to be legible. No anti-aliasing, gradients, blur, smooth reflections or partially transparent edge pixels. If output resolution must be larger, render a PERFECT nearest-neighbor integer enlargement of the 32x32 drawing, aligned to the full canvas, so resampling to 32x32 does not introduce new details.
+NO electricity whatsoever: no spark, lightning bolt, arc, shock wave, energy ribbon, halo, glow, particles or speed lines. The ECHO concept must not be represented by effects at this draft stage. No text, logo, UI, backdrop, checkerboard, grid, multiple views or sheet. One finished draft sprite on actual transparent RGBA.

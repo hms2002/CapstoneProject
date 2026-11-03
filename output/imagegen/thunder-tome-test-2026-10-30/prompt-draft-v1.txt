@@ -1,0 +1,23 @@
+Use case: precise-object-edit / style-transfer.
+EDIT the provided book sprite into a fantasy relic called "천둥을 품은 서책" / Tome of Trapped Thunder.
+Image 1 is the EDIT TARGET enlarged exactly 16x with nearest-neighbor for visibility. Image 2 is the SAME EDIT TARGET at its true native 32x32 size. These are the same book, not two objects. Image 3 is the user's EXCLUSIVE COLOR PALETTE.
+
+PRESERVE the existing book's pose, silhouette, proportions, thickness, perspective, cover outline, top page-block strip and narrow right-side thickness. The book is CLOSED, a tall narrow volume leaning in perspective, seen slightly from above: its upper cover edge slopes downward toward the RIGHT. The large front cover faces us on the left; top page edges and a slim right-hand side are visible. Keep this exact orientation. Do not rotate, mirror, open the book, widen it into a square or replace it with a different book model. Preserve the simple chunky pixel-art rendering.
+CHANGE ONLY the cover design and color scheme to the established ORANGE + BLUE electric-relic family.
+Orange leather/cloth binding and the thick cover border: lighter orange on upper/right exposed edges, darker orange on shaded binding.
+The broad inset FRONT COVER is deep BLUE, a large flat calm area enclosed by orange binding. Use at most one broad medium-blue accent plane along its edge for volume.
+Remove the old little dark cover markings. Replace them with ONE clear pale BLUE LIGHTNING SIGIL, a short angular zigzag centered on the visible cover plane and aligned with the book perspective. About 2 native pixels thick and 6-7 pixels long; simple enough to recognize at real 32x32. It is an engraved/embedded magical mark, not printed writing.
+The visible PAGE BLOCK along the TOP and thin RIGHT SIDE is pale blue, with one simple deep/medium-blue separation to read as pages. No individual thin page lines, tiny runes, patterns or text.
+The book should feel like it holds thunder inside: the pale-blue page edge and lightning rune suggest contained energy. No external lightning bolts, sparks, glow aura, smoke, floating pages, chains, clasp, bookmark, handle or extra objects.
+
+EXACT SIX OPAQUE COLORS from the user's palette, plus full transparency:
+#363232 darkest outline and deep separation;
+#D66B48 orange binding shadow;
+#E09656 lighter orange binding;
+#436794 deep-blue main cover/shadow;
+#77BCD6 medium-blue secondary cover/page separation;
+#B1DECF pale-blue lightning rune and page edges.
+No other colors. No gray, brown, yellow, white, gradients, antialiasing, dithering, noise, scratches or glossy flecks. Mostly large joined flat color planes, with a roughly 2px charcoal exterior contour. Keep the source's simple low-resolution visual density. Do not add a second cover border or ornament.
+
+Actual logical output canvas 32x32, genuine transparent RGBA background. Center the same narrow tall book. Keep at least TWO empty native pixel rows top and bottom, and natural side margins from the tall silhouette; approximately 22x28 silhouette including outline. Preserve original aspect ratio and pose, never stretch.
+If the renderer needs a larger raster, draw the actual 32x32 logical pixel grid then use an exact integer nearest-neighbor enlargement, each native pixel one identical square. No subpixel detail. One isolated book only, no caption, grid, checkerboard artwork, swatches, UI or background.

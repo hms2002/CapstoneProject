@@ -1,0 +1,10 @@
+Use case: precise-object-edit.
+Asset: edit ONE four-icon pixel-art sprite sheet for a 32x128 test sheet.
+Image 1 is the EDIT TARGET: four warm-color sprites in 2x2 arrangement. Image 2 is ORIGINAL DESIGN REFERENCE, demonstrating the original purple metal of bell and incense burner. Image 3 is the EXCLUSIVE color palette.
+Change ONLY the non-fire metal areas of the upper-right bell and lower-left incense burner to plum purple. Preserve the exact same bell and incense silhouettes, proportions, orientation, flame positions and size, material boundaries and low-resolution broad flat color style of image 1. Keep feather (upper left) and crown (lower right) unchanged. No new details, no restyling.
+Bell: top hanging loop, domed metal body and rim become #9D5789 purple with ONE broad #BE8EC1 light purple plane. Retain localized molten orange-red-yellow seam and warm clapper fire.
+Incense burner: bowl/base and curved upper neck/hook become #9D5789 purple with ONE broad #BE8EC1 light purple plane. Preserve the compact flame and its warm red/orange/yellow colors.
+For bell and incense use at most SIX exact colors INCLUDING outline: #363232 outline, #9D5789 metal, #BE8EC1 light metal, #E55C5C red flame, #E09656 orange flame, #EECF5A yellow flame. No gray, brown, white or blue.
+Preserve feather/crown pixels in image 1. They will be copied untouched in the final native export.
+Crisp square pixel art, logical 32x32 per icon. Thick two native pixel charcoal contour, at least two native transparent pixels on each edge. Large contiguous flat color planes, restrained highlights, no gradients/antialiasing/dither/soft bloom, no additional texture.
+Keep exact 2x2 composition and separate transparent gutters. Actual transparent RGBA background. No text, swatches or checkerboard.

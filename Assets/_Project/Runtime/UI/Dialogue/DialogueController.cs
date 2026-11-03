@@ -322,6 +322,31 @@ public class DialogueController : MonoBehaviour
             ContinueStory();
     }
 
+    /// <summary>
+    /// Resumes a dialogue line whose tags started a blocking presentation effect.
+    /// Spoken text is shown after the effect completes. Explicitly marked
+    /// presentation-only lines advance without displaying their cue text.
+    /// </summary>
+    private void ResumeDialogueAfterBlockingTag(
+        string currentText,
+        DialogueAnimType animType,
+        DialogueCameraShakePreset cameraShakePreset,
+        bool presentationOnly)
+    {
+        sessionState.EndWaiting();
+        if (!sessionState.IsPlaying || sessionState.IsTransitioning || currentStory == null)
+            return;
+
+        if (!presentationOnly && !string.IsNullOrWhiteSpace(currentText))
+        {
+            PlayCurrentLine(currentText, animType, cameraShakePreset);
+            return;
+        }
+
+        if (!sessionState.IsTyping && !sessionState.IsChoosing)
+            ContinueStory();
+    }
+
     private void ContinueStory()
     {
         if (!sessionState.IsPlaying || sessionState.IsTransitioning || currentStory == null)
@@ -333,6 +358,7 @@ public class DialogueController : MonoBehaviour
             authoredCurrentLine = currentText;
             authoredCurrentTags = new List<string>(currentStory.currentTags);
             currentText = GameText.FromInkTags(currentStory.currentTags, currentText);
+            bool presentationOnly = currentStory.currentTags.Contains("presentation_only");
             participantRegistry.HandleSpeakerTag(currentStory.currentTags);
             DialogueAnimType animType = ResolveDialogueAnimType(currentStory.currentTags);
             DialogueCameraShakePreset cameraShakePreset = ResolveDialogueCameraShakePreset(currentStory.currentTags);
@@ -346,10 +372,18 @@ public class DialogueController : MonoBehaviour
             ResolvePendingBossChoiceFailure(currentText, currentStory.currentTags);
 
             bool isBlocking = tagHandler != null &&
-                              tagHandler.ProcessTags(currentStory.currentTags, participantRegistry.CurrentNPCData, ResumeDialogue);
+                              tagHandler.ProcessTags(
+                                  currentStory.currentTags,
+                                  participantRegistry.CurrentNPCData,
+                                  () => ResumeDialogueAfterBlockingTag(currentText, animType, cameraShakePreset, presentationOnly));
 
             if (!isBlocking)
-                PlayCurrentLine(currentText, animType, cameraShakePreset);
+            {
+                if (presentationOnly)
+                    ResumeDialogueAfterBlockingTag(currentText, animType, cameraShakePreset, true);
+                else
+                    PlayCurrentLine(currentText, animType, cameraShakePreset);
+            }
 
             return;
         }
@@ -805,6 +839,12 @@ public class DialogueController : MonoBehaviour
             onComplete?.Invoke();
     }
 
+    private void HandleBossDialogueFlag(NPCData npcData, string flagId)
+    {
+        NPCData targetNpc = npcData != null ? npcData : participantRegistry.CurrentNPCData;
+        BossDialogueProgressStore.SetDialogueFlag(targetNpc, flagId);
+    }
+
     private bool ShouldCheckBossChoiceFailure(ChoiceSetAffectionState choiceSetState, int choiceIndex)
     {
         NPCData currentNpc = participantRegistry.CurrentNPCData;
@@ -1164,6 +1204,7 @@ public class DialogueController : MonoBehaviour
             previousTagHandler.OnFeatureRequested -= HandleFeature;
             previousTagHandler.OnAffectionRequested -= HandleAffection;
             previousTagHandler.OnChoiceFailureRequested -= HandleChoiceFailure;
+            previousTagHandler.OnBossDialogueFlagRequested -= HandleBossDialogueFlag;
         }
 
         tagHandler = newTagHandler;
@@ -1179,6 +1220,7 @@ public class DialogueController : MonoBehaviour
         tagHandler.OnFeatureRequested -= HandleFeature;
         tagHandler.OnAffectionRequested -= HandleAffection;
         tagHandler.OnChoiceFailureRequested -= HandleChoiceFailure;
+        tagHandler.OnBossDialogueFlagRequested -= HandleBossDialogueFlag;
 
         tagHandler.OnPortraitEnterRequested += HandlePortraitEnter;
         tagHandler.OnPortraitFaceRequested += HandlePortraitFace;
@@ -1189,5 +1231,6 @@ public class DialogueController : MonoBehaviour
         tagHandler.OnFeatureRequested += HandleFeature;
         tagHandler.OnAffectionRequested += HandleAffection;
         tagHandler.OnChoiceFailureRequested += HandleChoiceFailure;
+        tagHandler.OnBossDialogueFlagRequested += HandleBossDialogueFlag;
     }
 }

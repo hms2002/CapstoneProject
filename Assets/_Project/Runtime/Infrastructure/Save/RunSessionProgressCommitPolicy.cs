@@ -5,11 +5,16 @@ internal readonly struct RunSessionProgressCommitRequest
 {
     public readonly GamePlayData RunData;
     public readonly GameData PersistentData;
+    public readonly int GoldRetentionLimit;
 
     public RunSessionProgressCommitRequest(GamePlayData runData, GameData persistentData)
+        : this(runData, persistentData, 0) { }
+
+    public RunSessionProgressCommitRequest(GamePlayData runData, GameData persistentData, int goldRetentionLimit)
     {
         RunData = runData;
         PersistentData = persistentData;
+        GoldRetentionLimit = Mathf.Max(0, goldRetentionLimit);
     }
 }
 
@@ -36,11 +41,21 @@ internal static class RunSessionProgressCommitPolicy
         }
 
         CommitPendingAffectionChanges(request.RunData, request.PersistentData);
+        if (request.RunData.lastRunEndReason == RunEndReason.Defeat || request.RunData.lastRunEndReason == RunEndReason.TimeOver)
+            request.PersistentData.retainedRunGold = Mathf.Min(Mathf.Max(0, request.RunData.runGold), request.GoldRetentionLimit);
         CommitPendingShortcutUnlocks(request.RunData, request.PersistentData);
         CommitPendingRunSpecialNpcConstructionStarts(request.RunData, request.PersistentData);
         MonsterEncyclopediaRunProgress.Commit(request.RunData, request.PersistentData);
         EncyclopediaDiscoveryProgress.Commit(request.RunData, request.PersistentData);
         ClearPendingRunProgress(request.RunData);
+    }
+
+    public static int ConsumeRetainedGold(GameData profile)
+    {
+        if (profile == null) return 0;
+        int amount = Mathf.Max(0, profile.retainedRunGold);
+        profile.retainedRunGold = 0;
+        return amount;
     }
 
     public static void ClearPendingRunProgress(GamePlayData runData)

@@ -1,0 +1,20 @@
+Use case: stylized-concept.
+Create ONE native 32x32 pixel-art roguelike relic icon: BRANCHING ELECTRODE / 분기 전극. Draft only.
+Image 1 is PRIMARY style reference (user's preferred gray inventory relic): chunky dark outline, broad connected flat color planes, few intentional stepped curves and restrained detail. Do not copy the object or gray palette.
+Image 2 is the user's already-approved electric relic, SECONDARY color/material-family reference: warm orange metal plus blue electrical energy. Do not copy its seal shape.
+Image 3 is the user's EXCLUSIVE palette.
+
+SUBJECT: a compact ancient copper electricity distributor with THREE distinct branching electrodes. A short sturdy lower socket supports a single orange junction which splits into three thick metal prongs: center upright and slightly taller, side prongs bend outward and then upward. Clear transparent negative-space gaps between the three prongs. Each blunt electrode terminates in a small cyan-blue contact cap with pale blue electricity stored at the tip. All three orange branches visibly meet at the lower junction. Small blue insulating collar at the squat bottom socket. Nearly symmetrical balanced front view, slightly thick on one side. A hand-sized old electrical relic, no long handle, sharp spear points, pedestal, chains, jewels or decorations. Not a weapon/trident.
+The silhouette and three blue charged tips communicate electricity being distributed to additional targets. Blue energy is concentrated on contact tips and a small junction detail, not covering the orange branches. No external lightning storm, floating sparks or glow halo. No rune text.
+STYLE: REAL native 32x32 pixel art designed with large clusters, like primary reference. 2-pixel charcoal outer contour, simple orange main and shadow planes. Do not add tiny reflections, bolts, screws, scratches, runes, metal shine or texture. Do not draw a detailed high-resolution object then compress it. Each contact cap should read at 32x32. Keep three clearly separate ends and uncomplicated broad branches.
+
+Use EXACTLY these SIX opaque colors plus full transparency:
+#363232 charcoal outline and deepest separation;
+#D66B48 warm orange metal shadow;
+#E09656 light orange metal main;
+#436794 blue insulator/contact shadow;
+#77BCD6 cyan electrical contacts;
+#B1DECF pale blue charged cores.
+No white, gray, yellow, brown, other colors, gradients, partial alpha, antialiasing, dithering or blur.
+LAYOUT: actual 32x32 logical canvas, transparent RGBA. Visible icon including dark 2px outline inside x=2..29 and y=2..29, exactly two blank rows above and below, at least two blank columns left/right. Centered squat artifact, preserve natural proportions, never stretch. One icon only. If larger raster required, render an exact integer nearest-neighbor enlargement of a strict 32x32 grid, every logical pixel the same square size, no subpixel detail.
+No background, checkerboard artwork, grid, swatches, labels, UI or extra views.

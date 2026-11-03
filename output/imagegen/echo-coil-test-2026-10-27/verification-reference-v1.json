@@ -1,0 +1,48 @@
+{
+  "name": "echo-coil-reference-v1",
+  "size": [
+    32,
+    32
+  ],
+  "opaqueColors": 6,
+  "colors": [
+    "#363232",
+    "#8A5E40",
+    "#D66B48",
+    "#E09656",
+    "#62494C",
+    "#7F4A50"
+  ],
+  "paletteVerified": true,
+  "visibleBoundingBox": [
+    1,
+    1,
+    31,
+    31
+  ],
+  "transparentMargins": {
+    "left": 1,
+    "top": 1,
+    "right": 1,
+    "bottom": 1
+  },
+  "outline": "2px inner boundary darkest color",
+  "outlinePixels": 222,
+  "alphaValues": [
+    0,
+    255
+  ],
+  "electricEffects": false,
+  "subjectReference": "user-supplied hollow copper coil image",
+  "styleReference": "flying_boots.png",
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-8c0d2868-6cec-40af-8287-75e5ae8aa383.png",
+  "export": "Opaque bbox; nearest-neighbor 30x30 inside 32x32; exact supplied palette; 2px contour enforcement",
+  "projectAssetsChanged": false,
+  "unityVerification": "not executed; preview-only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

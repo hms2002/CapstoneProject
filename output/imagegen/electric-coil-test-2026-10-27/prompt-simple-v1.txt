@@ -1,0 +1,16 @@
+Use case: precise-object-edit / deliberate native pixel-art simplification.
+Image 1 is the EDIT TARGET: current enlarged preview of a 32x32 logical-pixel electric coil. Image 2 is STYLE REFERENCE ONLY: original 32x32 flying-boots relic. Image 3 is the user's EXCLUSIVE RGB palette.
+Primary task: preserve this coil's recognizable appearance and component positions, but greatly simplify all internal shading/detail to the CLEANNESS of the flying-boots reference. It must look deliberately hand-drawn at 32x32, not like a complicated high-resolution illustration reduced in size.
+Keep the current silhouette/orientation, central four orange-copper winding bands, blue left and right end parts and upright contacts, and the cyan angular spark between the top contacts. No new objects, hardware, bolts, ridges, faces or decoration.
+HARD COLOR LIMIT: exactly SEVEN opaque RGB colors TOTAL, transparency excluded:
+#363232 dark 2px outline, deepest gaps;
+#8A5E40 copper shadow;
+#D66B48 main copper;
+#E09656 copper highlight;
+#436794 blue side-part shadow/base;
+#6F81B3 lighter blue side-part face;
+#77BCD6 cyan electric spark.
+Every opaque color must be one of these exact seven palette swatches. No white, silver, neutral gray, cream, pale mint, extra blue or extra orange. The spark keeps its existing zigzag shape but uses a SINGLE cyan color, replacing its previous white/pale accents so the whole sprite stays seven colors.
+CLEAN PIXEL CLUSTERS: replace broken mottled highlights with big connected flat regions. Central coil uses broad continuous orange winding faces with simple warm brown separation and only ONE clear broad highlight cluster per winding face. Blue side parts use TWO flat colors only, broad connected blocks, no glossy hotspots. Remove isolated highlight speckles, checker patterns, tiny dithering, alternating patchy shade fragments, microtextures, hairline reflections and ornamental interior edges. Keep the outline and material separations readable and calm like the boot. Use the absolute minimum shade boundaries needed to read the form. Do not add detailed winding threads.
+HARD GEOMETRY: 32x32 logical canvas. Exact 1 logical pixel fully transparent at top/bottom/left/right, full visible bbox inside x=1..30,y=1..30. Retain 2-logical-pixel #363232 outline in chunky steps. Preserve current outer contour. All pixels sit on the same strict 32x32 grid; no subpixel details or antialiasing. If output larger, it must be a PERFECT nearest-neighbor integer enlargement of a 32x32 drawing, full-canvas aligned, so sampling back to 32x32 preserves the clusters.
+Actual transparent RGBA background. No fake checkerboard, text, labels, grid, scene, glow, blur, gradients, shadows outside silhouette, smooth edges or extra variations. ONE final simpler seven-color sprite only.

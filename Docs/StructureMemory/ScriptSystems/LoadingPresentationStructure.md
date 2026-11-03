@@ -147,3 +147,11 @@ Loading scope policy already has `Docs/Architecture/LoadingScopes.md`, and title
 - Saved window dimensions are proportionally fitted and persisted at bootstrap/initialization. Selection preview, apply and option rebuilding use the same bounds. Oversized curated modes are excluded; a formerly saved oversized value becomes a fitted option rather than being reintroduced unbounded. Fullscreen/borderless still use desktop resolution.
 - Validation entry points: `Tools/Validation/MouseCursorApiRegression.cs` for Escape state transitions; `Tools/Validation/DisplaySettingsRegression.cs` for saved preferences/options and actual Windows client dimensions.
 - Changing monitors after startup is rechecked on display selection/application. Automatic migration of a manually dragged window and manual multi-DPI placement remain separate from this size policy.
+
+
+## Editor Prewarm Trace Persistence
+
+- `PrewarmTraceRuntime` keeps the existing tester/machine JSON path and schema under `Assets/_Project/Data/SceneFlow/LoadingManifests/`. Recommendation authoring still reads those histories and the legacy trace; history retention is twenty sessions.
+- The writer stages complete JSON in `Library/PrewarmTrace/<tester JSON filename>.tmp`, then replaces an existing target or moves a new target into place. The staging file is outside Assets, is reused after failed replacement and disappears on successful replacement/move. The writer does not release global Unity file handles.
+- Normal dirty measurements flush at one-second intervals. An I/O/access failure leaves measurements dirty, records the attempt time, warns once for that failure episode and retries automatically at five-second intervals. Success restores the normal interval and allows a later failure episode to report again. Play exit makes a final best-effort attempt; existing ResetSession/Editor shutdown does not automatically replay an unsaved staging file.
+- Trace-isolation integration depends on the existing private `HandlePlayModeStateChanged`, `FlushIfNeeded` and `ResetSession` entry points. The isolated regression entry point is `Tools/Validation/PrewarmTraceRecoveryRegression.cs`; it uses the real recorder with extracted Core trace bridge source. This local Editor persistence behavior does not need Architecture/Contracts promotion.

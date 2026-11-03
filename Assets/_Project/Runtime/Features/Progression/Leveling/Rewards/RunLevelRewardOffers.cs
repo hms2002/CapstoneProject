@@ -141,23 +141,15 @@ public static class RunLevelRewardOffers
         RunLevelRewards.CollectEligibleDefinitions(EligibleBuffer);
         if (EligibleBuffer.Count == 0) return false;
 
-        var previousIds = new HashSet<string>(
-            offer.candidateRewardIds ?? new List<string>(),
-            StringComparer.Ordinal);
+        HashSet<string> previousKinds = CollectKinds(offer.candidateRewardIds);
 
         var random = new Random(CombineSeed(
             progression.rewardRandomSeed,
             offer.offerSequence,
             offer.rerollsUsed));
 
-        for (int i = 0; i < EligibleBuffer.Count; i++)
-        {
-            int picked = random.Next(i, EligibleBuffer.Count);
-            (EligibleBuffer[i], EligibleBuffer[picked]) = (EligibleBuffer[picked], EligibleBuffer[i]);
-        }
-
         var rolledIds = new List<string>(Math.Min(CandidateCount, EligibleBuffer.Count));
-        FillCandidateIds(EligibleBuffer, previousIds, rolledIds);
+        if (!LevelRewardOfferRoller.Roll(EligibleBuffer, previousKinds, random, rolledIds)) return false;
 
         offer.candidateRewardIds ??= new List<string>();
         offer.candidateRewardIds.Clear();
@@ -165,38 +157,14 @@ public static class RunLevelRewardOffers
         return true;
     }
 
-    /// <summary>
-    /// 직전 후보가 아닌 보상을 먼저 채우고, 후보 풀이 부족할 때만 직전 후보로 남은 자리를 보충한다.
-    /// 입력 순서는 이미 결정론적으로 섞여 있으므로 두 패스 모두 그 순서를 보존한다.
-    /// </summary>
-    private static void FillCandidateIds(
-        IReadOnlyList<LevelRewardDefinitionSO> shuffledEligible,
-        HashSet<string> previousIds,
-        List<string> destination)
+    private static HashSet<string> CollectKinds(IReadOnlyList<string> rewardIds)
     {
-        destination.Clear();
-        AppendCandidates(shuffledEligible, previousIds, includePrevious: false, destination);
-        AppendCandidates(shuffledEligible, previousIds, includePrevious: true, destination);
-    }
-
-    private static void AppendCandidates(
-        IReadOnlyList<LevelRewardDefinitionSO> shuffledEligible,
-        HashSet<string> previousIds,
-        bool includePrevious,
-        List<string> destination)
-    {
-        for (int i = 0; i < shuffledEligible.Count && destination.Count < CandidateCount; i++)
-        {
-            LevelRewardDefinitionSO definition = shuffledEligible[i];
-            if (definition == null || string.IsNullOrWhiteSpace(definition.RewardId))
-                continue;
-
-            bool wasPrevious = previousIds.Contains(definition.RewardId);
-            if (wasPrevious != includePrevious)
-                continue;
-
-            destination.Add(definition.RewardId);
-        }
+        var kinds = new HashSet<string>(StringComparer.Ordinal);
+        if (rewardIds != null)
+            foreach (string id in rewardIds)
+                if (RunLevelRewards.TryGetDefinition(id, out var definition))
+                    kinds.Add(LevelRewardOfferRoller.Kind(definition));
+        return kinds;
     }
 
     private static bool HasNovelCandidate(LevelRewardOfferState offer)
@@ -205,11 +173,11 @@ public static class RunLevelRewardOffers
             return false;
 
         RunLevelRewards.CollectEligibleDefinitions(EligibleBuffer);
-        var previousIds = new HashSet<string>(offer.candidateRewardIds, StringComparer.Ordinal);
+        HashSet<string> previousKinds = CollectKinds(offer.candidateRewardIds);
         for (int i = 0; i < EligibleBuffer.Count; i++)
         {
             LevelRewardDefinitionSO definition = EligibleBuffer[i];
-            if (definition != null && !previousIds.Contains(definition.RewardId))
+            if (definition != null && !previousKinds.Contains(LevelRewardOfferRoller.Kind(definition)))
                 return true;
         }
 

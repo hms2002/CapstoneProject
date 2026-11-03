@@ -1,0 +1,181 @@
+{
+  "date": "2026-11-01",
+  "mode": "preview-only drafts",
+  "tool": "built-in image_gen",
+  "generation_calls": 4,
+  "items": [
+    {
+      "index": 1,
+      "name": "추적 나침반 A · 원반형",
+      "group": "한계선의 잔불 추격",
+      "description": "정면에서 본 둥근 금빛 나침반과 붉은 불씨 지시침",
+      "file": "01-ember-compass-round-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "opaque_color_count": 6,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        3,
+        2,
+        3,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "36cc71363b72ef5f98195d008f4ce3a993f3205d5864053d91aeb5a10a9a9536"
+    },
+    {
+      "index": 2,
+      "name": "추적 나침반 B · 입체 팔각형",
+      "group": "한계선의 잔불 추격",
+      "description": "두께가 보이는 팔각 금빛 케이스와 짧은 불씨 지시침",
+      "file": "02-ember-compass-faceted-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        32,
+        0,
+        32,
+        32
+      ],
+      "opaque_color_count": 6,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        3,
+        2,
+        4,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "997cb170ff7dc6435d91b571d63bd4117549be394d7278a74add8d66707fc87e"
+    },
+    {
+      "index": 3,
+      "name": "용암 봉인핵 A · 교차 고리형",
+      "group": "한계선의 관통 용암",
+      "description": "붉은 구체를 두 굵은 금빛 띠로 감싼 입체 봉인핵",
+      "file": "03-lava-core-crossed-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "opaque_color_count": 6,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "c9d7627bbee399bbf2f3d5c1b2ba13e1006499c3a4279c7836984b098d2824f5"
+    },
+    {
+      "index": 4,
+      "name": "용암 봉인핵 B · 고정구형",
+      "group": "한계선의 관통 용암",
+      "description": "두꺼운 금빛 고정구에 붉은 용암 핵을 끼운 형태",
+      "file": "04-lava-core-clamped-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "opaque_color_count": 6,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "7b41789b0397f43668f686799eb39511b75696f13c933c9bf6e845929d98fbaf"
+    }
+  ],
+  "sheet_size": [
+    64,
+    64
+  ],
+  "preview_size": [
+    512,
+    512
+  ],
+  "layout": "2x2, compasses top, sealed cores bottom",
+  "sheet_frames_match_individual_files": true,
+  "preview_exact_nearest_8x": true,
+  "protected_project_files_unchanged": 412,
+  "project_applied": false,
+  "relic_names_changed": false,
+  "unity_import_compile_playmode": "not executed",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "markdown_links_verified": 9
+}

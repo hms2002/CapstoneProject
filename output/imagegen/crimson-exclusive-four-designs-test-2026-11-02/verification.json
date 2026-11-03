@@ -1,0 +1,188 @@
+{
+  "date": "2026-11-02",
+  "mode": "preview-only drafts",
+  "tool": "built-in image_gen",
+  "generation_calls": 4,
+  "layout": "2x2: compass variants in top row, sealed lava core variants in bottom row",
+  "items": [
+    {
+      "index": 1,
+      "name": "추적 나침반 A — 원형",
+      "subject": "한계선의 잔불 추격",
+      "description": "두꺼운 금빛 원형 테두리와 붉은 불씨 모양 지시침",
+      "file": "01-compass-round-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "opaque_colors": 6,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        3,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "e0b035aa9f82e45e0280f45a3d10ad7dc00c89fb007ff99ea36b1facf0868674"
+    },
+    {
+      "index": 2,
+      "name": "추적 나침반 B — 마름모형",
+      "subject": "한계선의 잔불 추격",
+      "description": "각진 금빛 외장에 불씨 지시침을 넣은 나침반",
+      "file": "02-compass-diamond-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        32,
+        0,
+        32,
+        32
+      ],
+      "opaque_colors": 6,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        2,
+        3
+      ],
+      "two_pixel_outline": true,
+      "sha256": "1a22397c9bf6e105bb029365136f5484944cd51e67389c87493aa481cf53b4fd"
+    },
+    {
+      "index": 3,
+      "name": "용암 봉인핵 A — 고리형",
+      "subject": "한계선의 관통 용암",
+      "description": "붉은 구체를 두꺼운 금빛 고리가 붙잡은 입체형",
+      "file": "03-core-ring-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "opaque_colors": 6,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        3,
+        2,
+        3
+      ],
+      "two_pixel_outline": true,
+      "sha256": "85fe022f129d8553cae730bde7ce62ea024801f86aa1d8fcd3538d90fc9eb4da"
+    },
+    {
+      "index": 4,
+      "name": "용암 봉인핵 B — 봉인틀",
+      "subject": "한계선의 관통 용암",
+      "description": "각진 금빛 봉인틀 안에 붉은 핵을 넣은 입체형",
+      "file": "04-core-cage-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "opaque_colors": 6,
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        2,
+        3
+      ],
+      "two_pixel_outline": true,
+      "sha256": "d7ccfac142038cec04a2786e2dadd17c7420edfc6fd2a10ad98de84190a3676a"
+    }
+  ],
+  "shared_palette": [
+    "#363232",
+    "#A75064",
+    "#E55C5C",
+    "#E09656",
+    "#EECF5A",
+    "#F1E9D4"
+  ],
+  "sheet_size": [
+    64,
+    64
+  ],
+  "preview_size": [
+    512,
+    512
+  ],
+  "sheet_frames_equal_individual_files": true,
+  "preview_exact_nearest_8x": true,
+  "protected_project_files_unchanged": 412,
+  "project_applied": false,
+  "unity_import_compile_playmode": "not executed",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "markdown_links_verified": 9
+}

@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ca3e3429f4d51841b586ade79545d41, type: 3}
+  m_Name: MSShopNpc
+  m_EditorClassIdentifier: 
+  id: 1001
+  npcName: "\uC0AC\uC0E4"
+  roleIcon: {fileID: 21300000, guid: 5e8d2874894f4b56a31374708dacbaec, type: 3}
+  isBoss: 0
+  primaryInk: {fileID: 4900000, guid: ecf743cc4771eb243b241e9b1fe6a1c3, type: 3}
+  bossEncounterInk: {fileID: 0}
+  bossEncounterDialogues: []
+  dialogueTheme: {fileID: 11400000, guid: 2df553bfa70756f4c8272d84231479aa, type: 2}
+  affectionRewards:
+  - targetLevel: 1
+    effect: {fileID: 11400000, guid: 0d511974dcee39841b43b11efe690364, type: 2}
+  - targetLevel: 2
+    effect: {fileID: 11400000, guid: 9610f69b0692a734ab7aa1eccc8264f3, type: 2}
+  - targetLevel: 3
+    effect: {fileID: 11400000, guid: 05a8fc8c3d1883a45bc96ff32322dbdb, type: 2}
+  - targetLevel: 4
+    effect: {fileID: 11400000, guid: 844437f5d3184cf69ce3cabd2160232e, type: 2}
+  affectionDialogues:
+  - affectionLevel: 0
+    startPath: affection_0_a
+  - affectionLevel: 0
+    startPath: affection_0_b
+  - affectionLevel: 0
+    startPath: affection_0_c
+  - affectionLevel: 1
+    startPath: affection_1_a
+  - affectionLevel: 1
+    startPath: affection_1_b
+  - affectionLevel: 1
+    startPath: affection_1_c
+  - affectionLevel: 2
+    startPath: affection_2_a
+  - affectionLevel: 2
+    startPath: affection_2_b
+  greetingPaths:
+  - greeting_a
+  - greeting_b
+  - greeting_c
+  fullBackpackGreetingPaths:
+  - greeting_full_a
+  - greeting_full_b
+  spriteLibraryAsset: {fileID: 7108339969198208228, guid: 738261c1c46adaa4a9eba68347b79fa5, type: 3}
+  emoteOffset: {x: 75, y: 100}

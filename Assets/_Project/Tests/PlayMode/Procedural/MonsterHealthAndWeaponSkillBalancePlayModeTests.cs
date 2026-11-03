@@ -14,6 +14,95 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
     private const string LogicData = "Assets/_Project/Data/Items/Weapons/LogicData/";
     private const string Formulas = "Assets/_Project/Data/Attributes/Formulas/";
 
+    [TestCase("CommonCorridor/LizardWarrior.prefab", 45f, 100f, 189f)]
+    [TestCase("SlimeCorridor/Knight.prefab", 45f, 100f, 189f)]
+    [TestCase("ShadowCorridor/ShadowMonster.prefab", 45f, 100f, 189f)]
+    [TestCase("CommonCorridor/LizardMage.prefab", 30f, 60f, 126f)]
+    [TestCase("SlimeCorridor/Bishop.prefab", 30f, 60f, 126f)]
+    [TestCase("SlimeCorridor/Wizard.prefab", 30f, 60f, 126f)]
+    [TestCase("CommonCorridor/GoblinTank.prefab", 180f, 279f, 756f)]
+    [TestCase("SlimeCorridor/Rook.prefab", 180f, 279f, 756f)]
+    [TestCase("SlimeCorridor/Pawn.prefab", 15f, 23.25f, 63f)]
+    [TestCase("ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab", 55f, 85.25f, 231f)]
+    [TestCase("ShadowCorridor/ShadowServant/ShadowServant.prefab", 45f, 69.75f, 189f)]
+    [TestCase("CommonMeleeStageMonsterSet", 45f, 100f, 283.5f)]
+    [TestCase("CommonRangedStageMonsterSet", 25f, 60f, 157.5f)]
+    [TestCase("CommonTankStageMonsterSet", 180f, 279f, 567f)]
+    public void StageTwoHpRepair_SpawnAndReapplyPreserveOtherStagesAndRoles(
+        string source, float stageOneHp, float stageTwoHp, float stageThreeHp)
+    {
+        GamePlayData data = GamePlayDataManager.EnsureInstance().Data;
+        bool originalRunActive = data.isRunActive;
+        var originalDefeats = data.defeatedBossIds;
+        var settings = Load<MonsterStageHpScalingSettings>(
+            "Assets/_Project/Resources/MonsterStageHpScalingSettings.asset");
+        var health = Load<AttributeDefinition>("Assets/_Project/Data/Attributes/Definitions/HealthAttribute.asset");
+        var maxHealth = Load<AttributeDefinition>("Assets/_Project/Data/Attributes/Definitions/MaxHealthAttribute.asset");
+        System.Type directorType = typeof(MonsterSpawner).Assembly.GetType("SceneMonsterSpawnDirector", true);
+        object director = System.Activator.CreateInstance(directorType, new object[] { null, null, null, null });
+        MethodInfo spawn = directorType.GetMethod("SpawnOne");
+        MethodInfo reapply = directorType.GetMethod("ReapplyDifficultyToAliveMonsters");
+        float[] expectedHp = { stageOneHp, stageTwoHp, stageThreeHp };
+        StageMonsterSetSO stageSet = source.EndsWith("StageMonsterSet")
+            ? Load<StageMonsterSetSO>("Assets/_Project/Data/Monsters/SpawnSets/" + source + ".asset")
+            : null;
+
+        try
+        {
+            data.isRunActive = true;
+            data.defeatedBossIds = new System.Collections.Generic.List<string>();
+            for (int stage = 0; stage < 3; stage++)
+            {
+                float spawnHpMultiplier = 1f;
+                GameObject prefab;
+                if (stageSet != null)
+                    Assert.That(stageSet.TryResolveMonsterPrefab(stage, out prefab, out spawnHpMultiplier), Is.True);
+                else
+                    prefab = Load<GameObject>(Prefabs + source);
+
+                var modifiers = new DifficultyModifiers
+                {
+                    hpMultiplier = settings.CalculateStageHpMultiplier(stage),
+                    attackMultiplier = 1.25f,
+                    attackSpeedMultiplier = settings.CalculateStageAttackSpeedMultiplier(stage)
+                };
+                float originalHpMultiplier = modifiers.hpMultiplier;
+                var request = new MonsterSpawnRequest(prefab, new Vector3(10000f, 10000f),
+                    Quaternion.identity, null, null, spawnHpMultiplier: spawnHpMultiplier);
+                var instance = (GameObject)spawn.Invoke(director, new object[] { request, modifiers });
+                try
+                {
+                    var attributes = instance.GetComponent<AttributeSet>();
+                    Assert.That(attributes.GetAttributeValue(maxHealth), Is.EqualTo(expectedHp[stage]).Within(0.01f));
+                    Assert.That(attributes.GetAttributeValue(health), Is.EqualTo(expectedHp[stage]).Within(0.01f));
+                    Assert.That(modifiers.hpMultiplier, Is.EqualTo(originalHpMultiplier));
+                    Assert.That(modifiers.attackMultiplier, Is.EqualTo(1.25f));
+                    Assert.That(modifiers.attackSpeedMultiplier,
+                        Is.EqualTo(settings.CalculateStageAttackSpeedMultiplier(stage)));
+
+                    if (stage == 1)
+                    {
+                        attributes.TrySetBaseValue(health, expectedHp[stage] * 0.5f, instance);
+                        reapply.Invoke(director, new object[] { modifiers });
+                        reapply.Invoke(director, new object[] { modifiers });
+                        Assert.That(attributes.GetAttributeValue(maxHealth), Is.EqualTo(expectedHp[stage]).Within(0.01f));
+                        Assert.That(attributes.GetAttributeValue(health), Is.EqualTo(expectedHp[stage] * 0.5f).Within(0.01f));
+                    }
+                }
+                finally
+                {
+                    Object.DestroyImmediate(instance);
+                }
+                data.defeatedBossIds.Add("stage-two-hp-test-" + stage);
+            }
+        }
+        finally
+        {
+            data.isRunActive = originalRunActive;
+            data.defeatedBossIds = originalDefeats;
+        }
+    }
+
     [TestCase("CommonCorridor/GoblinWarrior.prefab", 45f, 1f)]
     [TestCase("CommonCorridor/GoblinGunner.prefab", 25f, 1f)]
     [TestCase("CommonCorridor/GoblinTank.prefab", 180f, 0.5f)]

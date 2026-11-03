@@ -1,0 +1,23 @@
+Use case: stylized-concept.
+Asset: CURRENT JAR / 전류 항아리, one 32x32 pixel-art roguelike relic icon. Preview draft only.
+
+INPUT ROLES: Image 1 is the primary STYLE reference, the user's favorite gray icon: bold dark contour, large connected color planes, simple stepped curves and very few details. Do not copy its subject or gray palette. Image 2 is the six-item sheet, secondary style reference for the same clean native pixel rendering. Image 3 is the exclusive COLOR PALETTE. Use only the five exact colors below.
+
+SUBJECT: a squat ancient earthenware jar storing blue electricity. Clearly a pottery jar, with a rounded broad belly, short neck, thick horizontal oval open rim and small flat foot. Upright front view, slightly see the inside of the opening from above. NO lid, handle, chain, glass, label or decorative emblem. Warm muted clay body, one simple darker side plane. Heavy, old, magical relic, not a polished modern container.
+
+MOST IMPORTANT: electricity is LEAKING THROUGH PHYSICAL CRACKS in the jar's belly. One prominent irregular jagged fracture travels down the curved front, with two short branches reaching toward the sides. Blue light fills these thin gaps, with a few pale electric core pixels. Natural broken pottery fissures that follow the surface, not a lightning rune painted on the front. One or two TINY angular blue current tongues seep just outside a side crack and hug the jar, at body height. Focus the crack activity on the body, not the air over the jar. The pot stays in one piece, no detached shards, no explosion.
+The OPEN MOUTH is completely filled with stored pale blue electric LIGHT: a wide, full luminous oval inside the thick lip, clear blue edge and pale core. The opening is a calm intensely filled pool of electric light, not dark or empty. NO bolts shooting up from the mouth, no plume, flame, beam or spray. Everything above the rim remains quiet.
+Hierarchy: readable solid jar silhouette, bright full mouth, branching blue leak through the belly cracks. Large warm pottery areas remain visible around the thin glowing fissures.
+
+NATIVE PIXEL ART: design directly on an exact 32 by 32 logical grid. Roughly 2-logical-pixel charcoal outer contour. Simple broad contiguous flat areas; no detailed surface shading. Cracks only about 1-2 logical pixels wide; a restrained pale core. No tiny scratches, extra crack networks, spark confetti, gradients, dithering, mottling, texture, antialiasing, blur, translucent halo or realistic reflections. Keep reference-style simplicity. No details below one logical pixel.
+
+EXACTLY FIVE OPAQUE RGB COLORS total, including contour, plus full transparency:
+#363232 charcoal contour, deepest breaks and opening separation;
+#8A5E40 clay shadow;
+#D49C73 clay body and rim;
+#77BCD6 clear blue electric fissures and mouth edge;
+#B1DECF pale ice-cyan electric core and full mouth light.
+No white, black, orange, yellow, purple, other shades or partial alpha. Blue effects use the same familiar blue/cyan family as prior electric relics.
+
+LAYOUT: actual 32x32 transparent RGBA canvas. Exactly TWO empty rows at top and TWO at bottom, all visible pixels including leaks and outline inside y=2..29. Leave at least 2 transparent columns on each side; max silhouette 28x28, body narrower with tiny side leaks included. Preserve rounded jar proportions. Do not stretch a tall bottle to fit. One centered icon only.
+If larger raster output is required, render a perfect integer nearest-neighbor enlargement of this exact native 32x32 grid aligned with the whole canvas. Each logical pixel is a single equal square. No text, UI, swatches, grid, checkerboard artwork or background.

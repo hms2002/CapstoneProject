@@ -1,0 +1,47 @@
+{
+  "name": "storm-branch-draft-v3",
+  "workingTitle": "폭풍의 가지",
+  "concept": "Thick charged wooden Y branch with exactly two terminal arms: one long thick branch and one short branch",
+  "size": [
+    32,
+    32
+  ],
+  "colorCount": 6,
+  "palette": [
+    "#363232",
+    "#436794",
+    "#77BCD6",
+    "#B1DECF",
+    "#D66B48",
+    "#E09656"
+  ],
+  "onlyPaletteColors": true,
+  "alphaValues": [
+    0,
+    255
+  ],
+  "bounds": [
+    3,
+    2,
+    29,
+    30
+  ],
+  "margins": {
+    "left": 3,
+    "top": 2,
+    "right": 3,
+    "bottom": 2
+  },
+  "previewExact16xNearest": true,
+  "tool": "built-in image_gen",
+  "generatedSource": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-e68898db-0bbe-4691-af4e-18dc8f78f540.png",
+  "export": "Uniform proportional nearest sampling, six supplied colors and 2px charcoal outline; exact 16x nearest preview",
+  "projectAssetsChanged": false,
+  "projectRelicNameChanged": false,
+  "unityVerification": "not executed; preview only",
+  "docImpact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "presentationHTMLAffected": false
+}

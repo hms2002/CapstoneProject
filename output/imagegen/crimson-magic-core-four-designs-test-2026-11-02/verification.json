@@ -1,0 +1,185 @@
+{
+  "date": "2026-11-02",
+  "mode": "preview-only magic-core drafts",
+  "tool": "built-in image_gen",
+  "generation_calls": 4,
+  "scope": "four magic-core variants only",
+  "items": [
+    {
+      "index": 1,
+      "name": "교차 고리형",
+      "description": "붉은 구체를 두 개의 굵은 금빛 고리가 비스듬히 감싼 형태",
+      "file": "01-crossed-rings-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "cce5abec2fe53ef34572947a4d59b96d0a3f9801698054b487159f5c9aa4c46a"
+    },
+    {
+      "index": 2,
+      "name": "집게 봉인형",
+      "description": "네 개의 짧고 두꺼운 금빛 집게가 구체를 고정한 형태",
+      "file": "02-clamped-core-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        32,
+        0,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        3,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "0f05fa5a7484becc1b4d306b85cb3bb2acdc17e8b4918494ae6278adeec33136"
+    },
+    {
+      "index": 3,
+      "name": "받침 안치형",
+      "description": "낮고 넓은 금빛 받침에 붉은 마력 구체를 안치한 형태",
+      "file": "03-cradle-core-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        3,
+        2,
+        4
+      ],
+      "two_pixel_outline": true,
+      "sha256": "5200d7a8496c98ceb8f5c4a9507029a8e08ca13039404b88a84b78ef93a6b6a8"
+    },
+    {
+      "index": 4,
+      "name": "외장 봉인형",
+      "description": "두꺼운 금빛 외장 일부가 열려 붉은 핵이 드러나는 입체적인 형태",
+      "file": "04-armored-core-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        3,
+        2,
+        4,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "5bd23a7bd3d1b775af245d0b2355b281fb131cf04ea80b892a4417c7f0b50bb0"
+    }
+  ],
+  "shared_palette": [
+    "#363232",
+    "#A75064",
+    "#E09656",
+    "#E55C5C",
+    "#EECF5A",
+    "#F1E9D4"
+  ],
+  "sheet_size": [
+    64,
+    64
+  ],
+  "layout": "2x2, row-major indices 1 to 4",
+  "preview_size": [
+    512,
+    512
+  ],
+  "sheet_frames_match_native_files": true,
+  "preview_exact_nearest_8x": true,
+  "protected_project_files_unchanged": 410,
+  "project_applied": false,
+  "unity_import_compile_playmode": "not executed",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged by this task",
+  "ErrorLog": "unchanged by this task",
+  "DecisionLog": "unchanged by this task",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "markdown_links_verified": 9
+}

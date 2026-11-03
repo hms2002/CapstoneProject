@@ -1,0 +1,13 @@
+{
+  "activeDefinitionCoverage": "75/75",
+  "distinctSpriteContacts": 74,
+  "independentContourChecks": 148,
+  "originalPrefabBlocksPreserved": true,
+  "localFileIdsResolved": true,
+  "protectedFilesPreserved": "1941/1941",
+  "newSourceRoslynCompilation": "runtime and Editor pass",
+  "generatedCsprojCoversNewFiles": false,
+  "unityImportCompilation": "not executed: existing Editor busy importing assets",
+  "nativeValidationAndPlayMode": "not executed",
+  "markdownLinksChecked": 4
+}

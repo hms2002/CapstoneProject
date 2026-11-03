@@ -1,0 +1,17 @@
+{
+  "Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png": "4e07f967c1e5db4cfd5625c9fe55f54feedccb0f437dcc1c80fb7559ed913485",
+  "Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png": "99a4520cb77dfafce3ce8e0175de6360a04f365f35326ef90036717a1b621a57",
+  "Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png.meta": "6b0779220ffe55f7c15a4f7da5fbba8082e4f65d451098585b2e1e3d07c75de1",
+  "Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib": "d99c6933f3d9c79928b64e4f48e00db4f8e109c9f645696616841cf3518321fd",
+  "Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset": "7aea5f4235598c00c33e719d4bb1d031b57fe273e7f5701af47ae075adca0501",
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink": "5b100a279fa99d8eab89e6e658c6008703736625099ee643a69603568ec1fade",
+  "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json": "c9ffbe021e85cc25910a433c7cb842f14fec030ce89d951eb3b1bb0d01f9ab37",
+  "DataSheets/Localization/GameText.csv": "bd3af2a7abed15f157678bdd9d93326f66eaa054fc1faf2353ea1ed50e8e8372",
+  "DataSheets/Localization/InkInventory.json": "664434f0daadd242b504092dcf49d58db4754bc64418f4a49ad9afefae4aafb7",
+  "Assets/_Project/Data/Localization/GameText Shared Data.asset": "a1057a87be1228dd455ad0707930661f8fcae9be01a444415991249924a134f2",
+  "Assets/_Project/Data/Localization/GameText_ko.asset": "52a201be9ce27cfd3e68556f9455904edf9247b5b0053d17f7e7127918f0db26",
+  "Assets/_Project/Data/Localization/GameText_en.asset": "82de6e6a22a05161b4bb45f5dd3d418edb524a46e12faf47aeaa41ff18fe36e1",
+  "Assets/_Project/Data/Localization/GameText_ja.asset": "ac2aeaeb2bc036b1e36790a69e1dc4ca30e8b428a6b3d7ab6670aac3fa20593c",
+  "Assets/_Project/Data/Localization/GameText_zh-Hans.asset": "022b598b7d470c7699d66468e6f063ba72085b49c7561f2994f512f21a5085af",
+  "Assets/_Project/Data/Localization/GameText_zh-Hant.asset": "76b450ad1a142832d0e2e99712dbf54ac133f05ef8fdc62d691c8004dc95c4a2"
+}

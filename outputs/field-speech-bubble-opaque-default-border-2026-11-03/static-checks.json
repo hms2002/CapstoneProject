@@ -1,0 +1,9 @@
+{
+  "changedAssets": [
+    "Assets/_Project/Data/Dialogue/SpeechData/WitchBossSpeechData.asset",
+    "Assets/_Project/Prefabs/UI/SpeechBubble/SpeechBubblePrefab.prefab"
+  ],
+  "exactThreeAlphaEdits": true,
+  "protectedFilesPreserved": 26,
+  "noCSharpOrSchemaChanges": true
+}

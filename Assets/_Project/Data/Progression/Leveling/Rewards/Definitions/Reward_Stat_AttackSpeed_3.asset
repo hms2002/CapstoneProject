@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92ec912023a8a3d4a89dd503cd4c8554, type: 3}
+  m_Name: Reward_Stat_AttackSpeed_3
+  m_EditorClassIdentifier: Gameplay::LevelRewardDefinitionSO
+  rewardId: level_reward.stat.attackspeed.t3
+  allowMultipleSelections: 1
+  displayName: "\uacf5\uaca9 \uc18d\ub3c4 \ud6c8\ub828"
+  description: "\uacf5\uaca9 \uc18d\ub3c4 <color=#197A67>+6%</color>"
+  icon: {fileID: 3341754456397367738, guid: 3e838e090b07d554f86efd22d27e6c54, type: 3}
+  effects:
+  - {fileID: 11400000, guid: f86a0bb66f9d1944cab28548e5fdccc2, type: 2}

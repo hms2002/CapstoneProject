@@ -1,0 +1,75 @@
+PASS Final verified/protected file: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS Final verified/protected file: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+PASS Final verified/protected file: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS Final verified/protected file: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS Final verified/protected file: Assets/_Project/Data/Localization/GameText_en.asset
+PASS Final verified/protected file: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS Final verified/protected file: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS Final verified/protected file: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS Final verified/protected file: DataSheets/Localization/GameText.csv
+PASS Final verified/protected file: DataSheets/Localization/InkInventory.json
+PASS Final verified/protected file: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Final verified/protected file: Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+PASS Final verified/protected file: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS Final verified/protected file: Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+PASS Final verified/protected file: Assets/_Project/Prefabs/UI/Portraitlmage.prefab
+PASS Final verified/protected file: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib
+PASS Final verified/protected file: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink.meta
+PASS Final verified/protected file: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json.meta
+PASS Final verified/protected file: Assets/_Project/Data/Localization/GameText Shared Data.asset.meta
+PASS Final verified/protected file: Assets/_Project/Data/Localization/GameText_ko.asset.meta
+PASS Final verified/protected file: Assets/_Project/Data/Localization/GameText_en.asset.meta
+PASS Final verified/protected file: Assets/_Project/Data/Localization/GameText_ja.asset.meta
+PASS Final verified/protected file: Assets/_Project/Data/Localization/GameText_zh-Hans.asset.meta
+PASS Final verified/protected file: Assets/_Project/Data/Localization/GameText_zh-Hant.asset.meta
+PASS Final verified/protected file: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs.meta
+PASS Final verified/protected file: Assets/_Project/Art/Sprites/NPCs/merchant/Merchant 1.png
+PASS Final verified/protected file: Assets/_Project/Art/Sprites/NPCs/merchant/Merchant 1.png.meta
+PASS Final verified/protected file: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png
+PASS Final verified/protected file: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png.meta
+PASS Final verified/protected file: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png
+PASS Final verified/protected file: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png.meta
+PASS Final verified/protected file: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png
+PASS Final verified/protected file: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png.meta
+PASS Generated Editor project covers changed fixture
+PASS Fixture whitespace
+PASS Document target: ../../output/relic-review-2026-11-02/crimson-exclusive-approved-application/README.md
+PASS Document target: ../StructureMemory/WorldItemShadows.md
+PASS Document target: ../../output/world-item-shadows-2026-11-02/README.md
+PASS Document target: ../ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/validation.txt
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/unity-validation.log
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/static-checks.txt
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/msbuild-final.log
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/final-checks.txt
+PASS Document target: ../ActiveTasks/sasha-discount-portraits.md
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/unity-validation.log
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/portraits-native.png
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/static-checks.txt
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/final-checks.txt
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/unity-native.log
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/preservation.txt
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/msbuild.log
+PASS Document target: ../ActiveTasks/sasha-spiri-dialogue.md
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/unity-native.log
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/preservation.txt
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/final-checks.txt
+PASS Document target: ../../outputs/sasha-partnership-2026-11-02/ink-checks.txt
+PASS Document target: ../../outputs/sasha-partnership-2026-11-02/data-checks.txt
+PASS Document target: ../../outputs/sasha-partnership-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/sasha-partnership-2026-11-02/final-checks.txt
+PASS Document target: ../../ActiveTasks/sasha-spiri-dialogue.md
+PASS Document target: ../../SessionLogs/2026-11-02.md
+PASS Document target: ../../ActiveTasks/sasha-discount-portraits.md
+PASS Document target: ../../ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Document target: ../../SessionLogs/2026-11-02.md
+PASS Document target: ../../ActiveTasks/merchant-affection-rewards.md
+PASS Document target: ../RunGoldAndShop.md
+PASS Document target: ./RunSpecialNpcStructure.md
+PASS: 74 final checks.

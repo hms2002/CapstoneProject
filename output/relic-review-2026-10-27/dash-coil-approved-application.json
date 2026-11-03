@@ -1,0 +1,55 @@
+{
+  "mode": "Implementation",
+  "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-05cbaa90-4e5c-4bf7-bf0a-0f505ab0b5ae.png",
+  "sourceSha256": "3c7c5d3cff25787ed55f8f3b8563dc10827ed3e8d463e602df74c8986cac5e6d",
+  "asset": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DashCoil.png",
+  "guid": "f010418b11d045cfae759c9daecfb610",
+  "spriteId": "f227c96a448c49a0b47312b6a5f2d648",
+  "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_DashCoil.asset",
+  "sourceBytesPreserved": true,
+  "onlyIconReferenceChanged": true,
+  "protectedAssetHashes": {
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/flying_boots.png": "743a6ed74c47788d5355f2426277d84e898f577750f178c4428532371004ff3b",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/flying_boots.png.meta": "3fbc70fcfd7382e6104f7eacdd841090a6ea4076fbb361537bc8cbbbddb03e72",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_EchoCoil.asset": "888a763571d5c64d07551e04b359284f15771d1003a37ae9ecfb05579c64959f",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_FlyingBoots.asset": "b1c9bfd40af8843378b7aa38f20705fbd3de07963d77c7e1b9cc20159cfff861"
+  },
+  "unityImport": "not executed; existing UnityLockfile detected",
+  "size": [
+    32,
+    32
+  ],
+  "opaqueRgbColors": [
+    "#363232",
+    "#6F81B3",
+    "#8599B0",
+    "#B4E1D3",
+    "#D16A48",
+    "#DE9452",
+    "#EFD15A"
+  ],
+  "alphaValues": [
+    0,
+    254,
+    255
+  ],
+  "visibleBoundingBox": [
+    1,
+    1,
+    31,
+    30
+  ],
+  "importerSettings": {
+    "spriteMode": "Single",
+    "filterMode": "Point",
+    "pixelsPerUnit": 32,
+    "compression": "None"
+  },
+  "notionPage": "https://app.notion.com/p/4063291840a48070b493e9fd8e94d4a6",
+  "notionTextUpdate": "completed",
+  "notionImageUpload": "blocked by automatic approval review; not bypassed",
+  "docImpact": "SessionLog",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unaffected"
+}

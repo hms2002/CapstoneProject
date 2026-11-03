@@ -1,0 +1,24 @@
+Use case: precise-object-edit / pixel-art simplification.
+Image 1 is the EDIT TARGET: the current enlarged 32x32 logical-pixel electric coil sprite.
+Image 2 is STYLE REFERENCE ONLY: the original 32x32 flying-boots relic. Closely match its clean simple clustered pixel shading, broad contiguous colors, readable small silhouette, few shades, low visual noise.
+Image 3 is the EXCLUSIVE allowed palette.
+
+Task: redraw ONLY the internal shading/detail of the current coil in a much simpler, cleaner style. Preserve its recognizable overall shape, orientation, four copper winding bands in the center, blue left/right end parts and upright contacts, and cyan zigzag spark on top. Keep silhouette and overall component positions. The previous version looks like a busy large illustration crushed down. This version must look consciously hand-drawn AT 32x32, as simple as the boots.
+
+HARD COLOR LIMIT: use exactly these EIGHT opaque RGB colors TOTAL, plus transparency:
+1 #363232 — dark outline and deepest gaps;
+2 #8A5E40 — copper shadow;
+3 #D66B48 — main orange copper;
+4 #E09656 — restrained copper highlight;
+5 #436794 — blue-part shadow;
+6 #6F81B3 — main blue parts;
+7 #77BCD6 — blue highlights and cyan electricity;
+8 #F2F9F8 — tiny white electric-arc accents ONLY.
+No other colors; no gray, silver or white highlights on the blue parts. White is allowed ONLY on the top electric spark.
+
+SIMPLIFY STRUCTURE: each of the four orange wire bands should be a broad clean contiguous shape, with one simple shadow region and at most one short connected highlight region. Remove tiny patches, dithering, noisy isolated pixels, multicolor mosaic/checkerboard shading and jagged internal striping. Simplify each blue side part to two broad blue masses and a small clean light-blue highlight, without holes or bolts or little decorative segments. The spark should be one clean angular cyan stroke with minimal white accents. Use roughly 2–3 large shading clusters per major component. The entire sprite must be immediately readable at native 32x32.
+
+32x32 logical grid. Every pixel is square and aligned. If delivering enlarged, deliver a PERFECT nearest-neighbor integer enlargement of 32x32, no grid lines.
+Keep a TWO-logical-pixel #363232 outer contour with chunky 2x2 stair steps. Leave EXACTLY 1 fully transparent logical pixel margin at all four canvas edges (visible content only x=1..30, y=1..30).
+Actual transparent RGBA background. One sprite only, no background, checkerboard, panel, border-frame, text, labels or palette display. No gradients, blur, lighting effects, soft shadows, antialiasing, 3D rendering, microdetail or extra colors.
+This is only a preview/test asset; do not modify project source assets.

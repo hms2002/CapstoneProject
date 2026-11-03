@@ -1,0 +1,32 @@
+Visual: active=True, enabled=False, bounds=Center: (-0.76, 1.07, 0.00), Extents: (0.40, 0.40, 0.08), material=Sprites/Default
+Visual: active=True, enabled=True, bounds=Center: (-0.11, 0.11, 0.00), Extents: (0.71, 0.66, 0.10), material=OutlineMaterial
+Shadow: active=True, enabled=True, bounds=Center: (-0.05, -0.47, 0.00), Extents: (0.50, 0.25, 0.10), material=OutlineMaterial
+Render: active=True, enabled=True, bounds=Center: (1.07, 0.95, -5.04), Extents: (0.67, 0.67, 0.10), material=OutlineMaterial
+PriceText: active=True, enabled=True, bounds=Center: (1.19, -0.37, -5.04), Extents: (0.53, 0.25, 0.00), material=Galmuri9 SDF Material + Galmuri9 SDF Atlas
+Icon: active=True, enabled=True, bounds=Center: (0.44, -0.35, -5.04), Extents: (0.24, 0.24, 0.10), material=Sprites/Default
+OriginalPriceText: active=True, enabled=True, bounds=Center: (1.20, 0.09, -5.04), Extents: (0.36, 0.16, 0.00), material=Galmuri9 SDF Material
+SpecialOfferTag: active=False, enabled=True, bounds=Center: (1.21, 1.81, -5.04), Extents: (0.00, 0.00, 0.00), material=Galmuri9 SDF Material + Galmuri9 SDF Atlas
+Background: active=False, enabled=True, bounds=Center: (1.21, 1.81, -5.03), Extents: (0.90, 0.23, 0.10), material=Sprites/Default
+Render: active=True, enabled=True, bounds=Center: (2.57, 0.76, -5.04), Extents: (0.50, 0.48, 0.10), material=OutlineMaterial
+PriceText: active=True, enabled=True, bounds=Center: (2.69, -0.35, -5.04), Extents: (0.35, 0.23, 0.00), material=Galmuri9 SDF Material + Galmuri9 SDF Atlas
+Icon: active=True, enabled=True, bounds=Center: (2.11, -0.35, -5.04), Extents: (0.24, 0.24, 0.10), material=Sprites/Default
+OriginalPriceText: active=True, enabled=True, bounds=Center: (2.70, 0.10, -5.04), Extents: (0.25, 0.15, 0.00), material=Galmuri9 SDF Material
+SpecialOfferTag: active=False, enabled=True, bounds=Center: (2.71, 1.81, -5.04), Extents: (0.00, 0.00, 0.00), material=Galmuri9 SDF Material + Galmuri9 SDF Atlas
+Background: active=False, enabled=True, bounds=Center: (2.71, 1.81, -5.03), Extents: (0.90, 0.23, 0.10), material=Sprites/Default
+Render: active=True, enabled=True, bounds=Center: (4.07, 0.79, -5.04), Extents: (0.50, 0.50, 0.10), material=OutlineMaterial
+PriceText: active=True, enabled=True, bounds=Center: (4.19, -0.35, -5.04), Extents: (0.39, 0.23, 0.00), material=Galmuri9 SDF Material + Galmuri9 SDF Atlas
+Icon: active=True, enabled=True, bounds=Center: (3.57, -0.35, -5.04), Extents: (0.24, 0.24, 0.10), material=Sprites/Default
+OriginalPriceText: active=True, enabled=True, bounds=Center: (4.20, 0.10, -5.04), Extents: (0.25, 0.15, 0.00), material=Galmuri9 SDF Material
+SpecialOfferTag: active=True, enabled=True, bounds=Center: (4.20, 1.81, -5.04), Extents: (0.69, 0.16, 0.00), material=Galmuri9 SDF Material
+Background: active=True, enabled=True, bounds=Center: (4.21, 1.81, -5.03), Extents: (0.90, 0.23, 0.10), material=Sprites/Default
+TMP SubMesh [Galmuri9 SDF Material + LiberationSans SDF Atlas]: active=True, enabled=True, bounds=Center: (4.21, 1.81, -5.04), Extents: (0.00, 0.00, 0.00), material=Galmuri9 SDF Material + LiberationSans SDF Atlas
+Render: active=True, enabled=True, bounds=Center: (5.57, 0.79, -5.04), Extents: (0.50, 0.50, 0.10), material=OutlineMaterial
+PriceText: active=True, enabled=True, bounds=Center: (5.69, -0.35, -5.04), Extents: (0.39, 0.23, 0.00), material=Galmuri9 SDF Material + Galmuri9 SDF Atlas
+Icon: active=True, enabled=True, bounds=Center: (5.07, -0.35, -5.04), Extents: (0.24, 0.24, 0.10), material=Sprites/Default
+OriginalPriceText: active=True, enabled=True, bounds=Center: (5.70, 0.10, -5.04), Extents: (0.25, 0.15, 0.00), material=Galmuri9 SDF Material
+SpecialOfferTag: active=False, enabled=True, bounds=Center: (5.71, 1.81, -5.04), Extents: (0.00, 0.00, 0.00), material=Galmuri9 SDF Material + Galmuri9 SDF Atlas
+Background: active=False, enabled=True, bounds=Center: (5.71, 1.81, -5.03), Extents: (0.90, 0.23, 0.10), material=Sprites/Default
+Carpet: active=True, enabled=True, bounds=Center: (2.72, -0.21, -5.09), Extents: (3.83, 1.49, 0.10), material=Sprites/Default
+RefreshButton: active=True, enabled=True, bounds=Center: (2.72, -2.31, 241.69), Extents: (0.61, 0.61, 0.10), material=OutlineMaterial
+CountText: active=True, enabled=True, bounds=Center: (2.72, -3.22, -5.04), Extents: (0.00, 0.00, 0.00), material=Galmuri9 SDF Material
+Carpet: active=False, enabled=True, bounds=Center: (2.72, -0.21, -5.09), Extents: (3.75, 1.40, 0.10), material=Sprites/Default

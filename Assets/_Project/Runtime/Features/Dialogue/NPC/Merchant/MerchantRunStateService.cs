@@ -61,7 +61,11 @@ public sealed class MerchantRunStateService
             // Preserve every other slot, including sold entries and their prices.
             var retainedEntries = new List<MerchantStockEntryState>(runtimeState.slots);
             retainedEntries.RemoveAt(i);
-            runtimeState.slots[i] = replacementFactory(i, retainedEntries) ?? MerchantStockEntryState.Empty();
+            MerchantStockEntryState replacement = replacementFactory(i, retainedEntries) ?? MerchantStockEntryState.Empty();
+            // Reconciliation is not a stock refresh: retain the assigned slot's offer rate.
+            if (replacement.HasItem)
+                replacement.specialDiscountPercent = entry.specialDiscountPercent;
+            runtimeState.slots[i] = replacement;
             changed = true;
         }
 
@@ -78,6 +82,7 @@ public sealed class MerchantRunStateService
             return false;
 
         runtimeState.slots = CreateEntries(slotCount, stockFactory, runtimeState.slots);
+        runtimeState.specialOfferAssigned = false;
         runtimeState.refreshCountUsed++;
         return true;
     }

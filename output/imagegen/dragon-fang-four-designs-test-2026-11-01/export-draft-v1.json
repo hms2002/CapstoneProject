@@ -1,0 +1,102 @@
+[
+  {
+    "key": "01-short-fang",
+    "name": "짧고 굵은 송곳니",
+    "native": "01-short-fang-draft-v1-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-6945c2ba-0948-4e0f-affd-173fa70dc462.png",
+    "sourceMaterialBounds": [
+      240,
+      244,
+      1089,
+      1044
+    ],
+    "materialSize": [
+      24,
+      23
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#E09656",
+      "#EECF5A",
+      "#F1E9D4"
+    ]
+  },
+  {
+    "key": "02-hook-fang",
+    "name": "갈고리처럼 휜 이빨",
+    "native": "02-hook-fang-draft-v1-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-5398963e-f39e-4d50-930f-1232142087bb.png",
+    "sourceMaterialBounds": [
+      319,
+      198,
+      1018,
+      1093
+    ],
+    "materialSize": [
+      19,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#E09656",
+      "#EECF5A",
+      "#F1E9D4"
+    ]
+  },
+  {
+    "key": "03-faceted-fang",
+    "name": "각진 쐐기형 이빨",
+    "native": "03-faceted-fang-draft-v1-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-3d625cca-6d0a-4dce-9cac-b1dd864faab3.png",
+    "sourceMaterialBounds": [
+      256,
+      231,
+      1118,
+      1081
+    ],
+    "materialSize": [
+      24,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#E09656",
+      "#EECF5A",
+      "#F1E9D4"
+    ]
+  },
+  {
+    "key": "04-grip-fang",
+    "name": "손잡이를 단 이빨 송곳",
+    "native": "04-grip-fang-draft-v1-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-50a4f523-7055-46e3-90e8-700c9539a435.png",
+    "sourceMaterialBounds": [
+      234,
+      208,
+      1111,
+      1072
+    ],
+    "materialSize": [
+      24,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#E09656",
+      "#EECF5A",
+      "#F1E9D4"
+    ]
+  }
+]

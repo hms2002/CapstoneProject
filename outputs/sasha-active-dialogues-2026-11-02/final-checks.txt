@@ -1,0 +1,52 @@
+PASS Final changed file: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
+PASS Final changed file: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Final changed file: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs
+PASS Final changed file: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Final changed file: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Document target: ../../output/relic-review-2026-11-02/crimson-exclusive-approved-application/README.md
+PASS Document target: ../StructureMemory/WorldItemShadows.md
+PASS Document target: ../../output/world-item-shadows-2026-11-02/README.md
+PASS Document target: ../ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/validation.txt
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/unity-validation.log
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/static-checks.txt
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/msbuild-final.log
+PASS Document target: ../../outputs/npc-dialogue-pool-2026-11-02/final-checks.txt
+PASS Document target: ../ActiveTasks/sasha-discount-portraits.md
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/unity-validation.log
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/portraits-native.png
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/static-checks.txt
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/sasha-portraits-2026-11-02/final-checks.txt
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/unity-native.log
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/preservation.txt
+PASS Document target: ../../outputs/sasha-happy-2026-11-02/msbuild.log
+PASS Document target: ../ActiveTasks/sasha-spiri-dialogue.md
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/validation.txt
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/unity-native.log
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/preservation.txt
+PASS Document target: ../../outputs/sasha-spiri-2026-11-02/final-checks.txt
+PASS Document target: ../../outputs/sasha-partnership-2026-11-02/ink-checks.txt
+PASS Document target: ../../outputs/sasha-partnership-2026-11-02/data-checks.txt
+PASS Document target: ../../outputs/sasha-partnership-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/sasha-partnership-2026-11-02/final-checks.txt
+PASS Document target: ../../outputs/sasha-active-dialogues-2026-11-02/ink-checks.txt
+PASS Document target: ../../outputs/sasha-active-dialogues-2026-11-02/data-checks.txt
+PASS Document target: ../../outputs/sasha-active-dialogues-2026-11-02/msbuild.log
+PASS Document target: ../../outputs/field-speech-bubble-apply-2026-11-02/native-validation.txt
+PASS Document target: ../../outputs/field-speech-bubble-apply-2026-11-02/unity-native.log
+PASS Document target: ../../outputs/field-speech-bubble-apply-2026-11-02/approved-render-comparison.json
+PASS Document target: ../../outputs/field-speech-bubble-apply-2026-11-02/final-checks.json
+PASS Document target: ../../ActiveTasks/sasha-spiri-dialogue.md
+PASS Document target: ../../SessionLogs/2026-11-02.md
+PASS Document target: ../../ActiveTasks/sasha-discount-portraits.md
+PASS Document target: ../../ActiveTasks/npc-dialogue-cumulative-pool.md
+PASS Document target: ../../SessionLogs/2026-11-02.md
+PASS Document target: ../../ActiveTasks/merchant-affection-rewards.md
+PASS Document target: ../RunGoldAndShop.md
+PASS Document target: ./RunSpecialNpcStructure.md
+PASS: 51 final checks.

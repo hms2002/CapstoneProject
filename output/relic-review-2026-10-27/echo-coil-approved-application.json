@@ -1,0 +1,55 @@
+{
+  "mode": "Implementation, approved local icon application",
+  "asset": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EchoCoil.png",
+  "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_EchoCoil.asset",
+  "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-4b46102f-5529-462c-8843-4eb464360e3d.png",
+  "sourceSha256": "617a25ac05986b2ab6f22f2dec52335e998a84f3606d649bf4391adf3f2f0fd5",
+  "sourceBytesPreserved": true,
+  "guid": "e7efc408d6d146be90b9d8289e7395c2",
+  "spriteId": "b2b8deef62cd45afa905caa45a50ffc7",
+  "onlyIconReferenceChanged": true,
+  "size": [
+    32,
+    32
+  ],
+  "visibleBoundingBox": [
+    3,
+    1,
+    29,
+    31
+  ],
+  "alphaValues": [
+    0,
+    255
+  ],
+  "colors": [
+    "#363232",
+    "#436794",
+    "#6F81B3",
+    "#8599B0",
+    "#D66B48",
+    "#E09656",
+    "#EECF5A"
+  ],
+  "importer": {
+    "spriteMode": "Single",
+    "filterMode": "Point",
+    "pixelsPerUnit": 32,
+    "compression": "None"
+  },
+  "protectedAssetHashes": {
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DashCoil.png": "3c7c5d3cff25787ed55f8f3b8563dc10827ed3e8d463e602df74c8986cac5e6d",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DashCoil.png.meta": "72d28832beced340788e2a3f4116fe64a2bc643206f77de753c30ca261847276",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_DashCoil.asset": "12ce85e4c3484389bcc5be4b13f642db32b2b50901d10cb72bd26b651ac6482d",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/flying_boots.png": "743a6ed74c47788d5355f2426277d84e898f577750f178c4428532371004ff3b",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/flying_boots.png.meta": "3fbc70fcfd7382e6104f7eacdd841090a6ea4076fbb361537bc8cbbbddb03e72",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_FlyingBoots.asset": "b1c9bfd40af8843378b7aa38f20705fbd3de07963d77c7e1b9cc20159cfff861",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_EchoCoil.asset.meta": "7dc640af05b2b80fc572fb854296816baa75a9aacc289ea0969122601a345513"
+  },
+  "unityImport": "not executed; existing Temp/UnityLockfile",
+  "manualUiVerification": "not executed",
+  "docImpact": "SessionLog",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unaffected"
+}

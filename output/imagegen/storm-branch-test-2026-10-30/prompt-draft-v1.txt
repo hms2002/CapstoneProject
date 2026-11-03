@@ -1,0 +1,15 @@
+Use case: stylized-concept. One native 32x32 pixel art roguelike relic icon, "Storm Branch" / 폭풍의 가지. Preview draft.
+REFERENCES: Image1 primary STYLE reference only: user's preferred gray relic, bold dark contour, broad joined color planes, few stepped pixel curves and simple volume. Image2 COLOR FAMILY reference: existing orange and blue electric coil. Do not copy the coil shape. Image3 exclusive supplied palette.
+SUBJECT: an ancient short crooked COPPER BRANCH, a single sturdy metal twig that forks organically into THREE widely separated blunt tips, asymmetrical like a small fragment of a lightning-struck tree cast in copper. One thick short stem starts lower center-left, bends toward center, branches spread upper left, upper center and upper right at different heights. Very legible forked silhouette with generous transparent gaps between arms. A compact relic, not a long staff, weapon, trident, antler, crown, circuit board, plant or tree with leaves. No base, chains, grip or pedestal.
+Copper orange body with a single simple warm highlight plane. A thin electric-blue current vein follows the stem and splits toward the three branch ends. Each tip has a small connected pale-blue cap or angular flicker. The effect should evoke electricity being passed to more targets. Keep electric accents attached to the branch tips and veins; no floating stars or large bolt explosion, no glow halo. Main subject is the distinctive crooked orange three-way branching object, not a cloud of electricity.
+Style: genuinely native low-resolution 32x32 pixel art with 2px charcoal outline. Match reference simplicity. Flat contiguous big color blocks, minimal internal dark lines, no tiny filigree, scratches, ornate rings, speckles, microtexture, shiny white flecks, gradients, dithering or antialiasing.
+ONLY SIX opaque RGB colors from supplied palette, plus full transparency:
+#363232 charcoal outline;
+#D66B48 copper orange main/shadow;
+#E09656 light orange;
+#436794 electric blue shadow;
+#77BCD6 blue current main;
+#B1DECF pale blue tips and current highlight.
+No other colors and no partial alpha.
+Composition: 32x32 logical grid, centered compact icon with natural branch proportions. ALL visible pixels INCLUDING outline and electric tips must fit within x=2..29, y=2..29. Two transparent pixel rows above and below, at least two empty columns on left/right. No stretching.
+If larger output is needed, render an integer nearest-neighbor enlargement of an exact 32x32 drawing aligned to the entire square canvas. Each native pixel should be one uniform square. No subpixel details, text, UI, grid, checkerboard artwork, swatches, background or multiple variants.

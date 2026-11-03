@@ -137,6 +137,16 @@ public class AffectionSaveData
 // Boss encounter dialogue state
 // =========================================================
 /// <summary>
+/// 책임 : 특정 보스와의 가장 최근 전투 결과를 대화 조건이 읽을 수 있는 안정 값으로 보관한다.
+/// </summary>
+public enum BossDialogueOutcome
+{
+    None,
+    PlayerVictory,
+    PlayerDefeat
+}
+
+/// <summary>
 /// 책임 : 보스 조우 대사 조건에 필요한 NPC별 조우/승패 기록을 보관한다.
 /// </summary>
 [System.Serializable]
@@ -147,10 +157,25 @@ public class BossDialogueRecord
     public int victoryCount;
     public int defeatCount;
     public float lastEncounterTotalPlaySeconds;
+    // 가장 최근에 완료된 해당 보스전의 결과다. 누적 승패 카운트와 별개로 조우 대사에 사용한다.
+    public BossDialogueOutcome lastEncounterOutcome;
+    // 선택 기반 후속 대사에 사용하는 NPC별 영구 플래그다.
+    public List<string> dialogueFlags = new List<string>();
 
     public BossDialogueRecord(int id)
     {
         npcId = id;
+    }
+
+    public void Normalize()
+    {
+        if (!System.Enum.IsDefined(typeof(BossDialogueOutcome), lastEncounterOutcome))
+            lastEncounterOutcome = BossDialogueOutcome.None;
+
+        dialogueFlags ??= new List<string>();
+        dialogueFlags.RemoveAll(string.IsNullOrWhiteSpace);
+        for (int i = 0; i < dialogueFlags.Count; i++)
+            dialogueFlags[i] = dialogueFlags[i].Trim();
     }
 }
 
@@ -168,7 +193,10 @@ public class BossDialogueSaveData
 
         BossDialogueRecord record = bossRecords.Find(x => x != null && x.npcId == npcId);
         if (record != null)
+        {
+            record.Normalize();
             return record;
+        }
 
         record = new BossDialogueRecord(npcId);
         bossRecords.Add(record);
@@ -369,6 +397,8 @@ public class GameData
 {
     public bool hasInitializedProfile;
     public int magicStone;
+    // Unspent gold carried from a completed defeat/time-out; consumed once by the next run.
+    public int retainedRunGold;
     public float totalPlaySeconds;
     public int clearCount;
     public int knownTotalUpgradeCount;

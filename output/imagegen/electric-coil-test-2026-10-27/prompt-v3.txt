@@ -1,0 +1,8 @@
+Use case: precise-object-edit. Create the next version of this exact 32x32 logical-pixel electric-coil sprite, using transparent RGBA.
+Reference 1: v1 enlarged preview, the correct ORIGINAL BLUE side parts and exact pixel layout.
+Reference 2: v2 enlarged preview, correct orange/copper central winding shading and unchanged spark, but incorrectly recolored side parts.
+Reference 3: exclusive permitted palette.
+Required correction ONLY: restore the left and right non-copper parts (left end cap/core, right end cap, their upward supports/terminals) from the current brown back to v1's BLUE FAMILY. Keep their original v1 blue shadows #436794 and blue midtone #6F81B3. Within those blue parts ONLY replace neutral white/gray shine with lighter similar BLUE: highlight #8599B0 and occasional light blue #77BCD6. Do not use neutral white, silver #C2C2C2 or gray for side-part details. Keep them visibly blue, with restrained tonal highlights.
+Preserve the ORANGE COPPER WINDING in the CENTER exactly as v2: copper/brown #D66B48 #E09656 #D49C73 #8A5E40 #7F4A50 #62494C, no further recolor of the winding.
+Preserve the TOP CYAN ELECTRIC SPARK exactly in shape, position and colors; its pale aqua/white highlights #B1DECF and #F2F9F8 are allowed and must stay. Spark is EXCLUDED from the gray-removal.
+Recolor existing pixels only; preserve exact v1 silhouette, 32x32 grid, 2-pixel #363232 dark outline, 1 pixel fully transparent at each outer edge. No new geometry, changed winding count, shifts, resizing, text, grid, checkerboard or shadow. Flat solid palette colors, no AA, gradients, blur, glow, texture or smooth reflections. If larger raster required, use perfect integer nearest-neighbor enlargement of the logical 32x32 sprite. One sprite only.

@@ -8,6 +8,7 @@ public readonly struct MerchantShopPolicySnapshot
     public readonly int RefreshLimit;
     public readonly float DiscountRate;
     public readonly MerchantPriceSettings EffectivePriceSettings;
+    public readonly ShopRunModifierDelta Modifiers;
 
     public MerchantShopPolicySnapshot(
         bool hasDefinition,
@@ -15,7 +16,8 @@ public readonly struct MerchantShopPolicySnapshot
         int visibleSlotCount,
         int refreshLimit,
         float discountRate,
-        MerchantPriceSettings effectivePriceSettings)
+        MerchantPriceSettings effectivePriceSettings,
+        ShopRunModifierDelta modifiers = default)
     {
         HasDefinition = hasDefinition;
         IsAvailable = isAvailable;
@@ -23,6 +25,7 @@ public readonly struct MerchantShopPolicySnapshot
         RefreshLimit = Mathf.Max(0, refreshLimit);
         DiscountRate = Mathf.Clamp01(discountRate);
         EffectivePriceSettings = effectivePriceSettings;
+        Modifiers = modifiers;
     }
 }
 
@@ -57,6 +60,7 @@ public static class MerchantShopPolicy
             visibleSlotCount,
             modifiers.shopRefreshCount,
             discountRate,
-            effectivePriceSettings);
+            effectivePriceSettings,
+            modifiers);
     }
 }

@@ -14,10 +14,402 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1005
   npcName: "\uB9C8\uC655"
+  roleIcon: {fileID: 0}
   isBoss: 1
   primaryInk: {fileID: 4900000, guid: 2f02d2f857e9adf46b7ac3cb9e89ce88, type: 3}
-  bossEncounterInk: {fileID: 0}
-  bossEncounterDialogues: []
+  bossEncounterInk: {fileID: 4900000, guid: 83da5e1dcbd4e024ebefb0d4d8227a37, type: 3}
+  bossEncounterDialogues:
+  - label: "\uB9C8\uC655\uC758 \uC778\uB0B4\uC2EC \uC784\uBC15"
+    startPath: DEMONKING_TIME_LOW
+    inkJSON: {fileID: 0}
+    priority: 1000
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 6
+      comparison: 3
+      expectedBool: 0
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 60
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "\uCCB4\uB825 \uBD80\uC871"
+    startPath: DEMONKING_LOW_HEALTH
+    inkJSON: {fileID: 0}
+    priority: 900
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 10
+      comparison: 3
+      expectedBool: 0
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0.3
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+      maxAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "\uC9C1\uC804 \uB9C8\uC655\uC804 \uD328\uBC30"
+    startPath: DEMONKING_PREVIOUS_PLAYER_DEFEAT
+    inkJSON: {fileID: 0}
+    priority: 850
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 23
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 2
+      invert: 0
+  - label: "\uC9C1\uC804 \uB9C8\uC655\uC804 \uC2B9\uB9AC"
+    startPath: DEMONKING_PREVIOUS_PLAYER_VICTORY
+    inkJSON: {fileID: 0}
+    priority: 840
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 23
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 1
+      invert: 0
+  - label: "\uC9C1\uC804 \uB7F0 \uC2DC\uAC04 \uCD08\uACFC"
+    startPath: DEMONKING_LAST_RUN_TIME_OVER
+    inkJSON: {fileID: 0}
+    priority: 820
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 13
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 3
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "\uC77C\uCC0D \uB3C4\uCC29"
+    startPath: DEMONKING_TIME_EARLY
+    inkJSON: {fileID: 0}
+    priority: 800
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 6
+      comparison: 5
+      expectedBool: 0
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 480
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "\uBA5C\uD0C0 \uC2DC\uBBFC\uAD8C \uC120\uD0DD"
+    startPath: DEMONKING_MELTA_CITIZENSHIP
+    inkJSON: {fileID: 0}
+    priority: 760
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 22
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: melta.citizenship.motto_selected
+      targetNpcOverride: {fileID: 11400000, guid: 8b199e36e6724de0af3a3e8504571e0a, type: 2}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "\uC2A4\uD53C\uB9AC \uD638\uAC10\uB3C4"
+    startPath: DEMONKING_SPIRI_COMPANION
+    inkJSON: {fileID: 0}
+    priority: 750
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 5
+      comparison: 5
+      expectedBool: 0
+      intValue: 1
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 11400000, guid: 5bcbe73d9f694da4b971d02f13b9d8e1, type: 2}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "\uB9C8\uC655 \uD638\uAC10\uB3C4 \uB192\uC74C"
+    startPath: DEMONKING_HIGH_AFFECTION
+    inkJSON: {fileID: 0}
+    priority: 720
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 5
+      comparison: 5
+      expectedBool: 0
+      intValue: 5
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "\uBC18\uBCF5 \uC870\uC6B0"
+    startPath: DEMONKING_FREQUENT_ENCOUNTER
+    inkJSON: {fileID: 0}
+    priority: 300
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+    - type: 1
+      comparison: 5
+      expectedBool: 0
+      intValue: 5
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
+  - label: "\uB9C8\uC655 \uC7AC\uC870\uC6B0"
+    startPath: DEMONKING_REENCOUNTER
+    inkJSON: {fileID: 0}
+    priority: 100
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      lastBossEncounterOutcome: 0
+      invert: 0
   dialogueTheme: {fileID: 11400000, guid: 7d2872e29cd11e4459ff58d02bcd6c9f, type: 2}
   affectionRewards: []
   spriteLibraryAsset: {fileID: 7108339969198208228, guid: e05ed47d741a10f48825a4b5222f99c8, type: 3}

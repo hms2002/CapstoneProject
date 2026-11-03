@@ -1,0 +1,273 @@
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Runtime/Features/Dialogue/NpcAffectionDialogue.cs
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Runtime/Features/Dialogue/Affection/AffectionManager.cs
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Prefabs/Loot/RunMerchantGroup.prefab
+PASS Protected source/text/localization/reward/metadata unchanged: DataSheets/Localization/GameText.csv
+PASS Protected source/text/localization/reward/metadata unchanged: DataSheets/Localization/InkInventory.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/BuffyEventDialogue.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/BuffyEventDialogue.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/BuffyEventDialogue.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/BuffyEventDialogue.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DarkLordTutorialDefeatDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DarkLordTutorialDefeatDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DarkLordTutorialDefeatDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DarkLordTutorialDefeatDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DarkLordTutorialOpeningDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DarkLordTutorialOpeningDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DarkLordTutorialOpeningDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DarkLordTutorialOpeningDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroFinalDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroFinalDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroFinalDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroFinalDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroGateDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroGateDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroGateDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroGateDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroJunkDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroJunkDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroJunkDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroJunkDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroTrainingDummyDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroTrainingDummyDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroTrainingDummyDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/HubIntroTrainingDummyDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ParcelEventDialogue.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ParcelEventDialogue.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ParcelEventDialogue.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ParcelEventDialogue.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/PortraitTagFlowTest_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/PortraitTagFlowTest_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/PortraitTagFlowTest_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/PortraitTagFlowTest_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/UpgradeNpcDialogue_Animated.ink
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/UpgradeNpcDialogue_Animated.ink.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/UpgradeNpcDialogue_Animated.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/UpgradeNpcDialogue_Animated.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/BossAffectionRunModifierEffect.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/BossAffectionRunModifierEffect.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/InfoOnlyAffectionEffect.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/InfoOnlyAffectionEffect.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/SashaBetterRelics.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/SashaGoldRetention.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/SashaSpecialOffer.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/BuffyEventPortrait.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/BuffyEventPortrait.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/New Sprite Library Asset 3.spriteLib
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/New Sprite Library Asset 3.spriteLib.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/ParcelEventPortrait.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/ParcelEventPortrait.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/ScribePortrait.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/ScribePortrait.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DarkLord.spriteLib
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DarkLord.spriteLib.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DragonBoss.spriteLib
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DragonBoss.spriteLib.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Merchant.spriteLib.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Upgrade.spriteLib
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Upgrade.spriteLib.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_SlimeQueenBoss.spriteLib
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_SlimeQueenBoss.spriteLib.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_WitchBoss.spriteLib
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_WitchBoss.spriteLib.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts Shared Data.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts Shared Data.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts_en.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts_en.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts_ja.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts_ja.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts_ko.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts_ko.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts_zh-Hans.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts_zh-Hans.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts_zh-Hant.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameFonts_zh-Hant.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText Shared Data.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText Shared Data.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText_en.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText_en.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText_ja.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText_ja.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText_ko.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText_ko.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hans.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/GameText_zh-Hant.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Locale_en.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Locale_en.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Locale_ja.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Locale_ja.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Locale_ko.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Locale_ko.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Locale_zh-Hans.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Locale_zh-Hans.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Locale_zh-Hant.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Locale_zh-Hant.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/LocalizationSettings.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/LocalizationSettings.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/Galmuri.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/LICENSE
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/LICENSE.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/NotoSansCJKjp-Regular SDF.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/NotoSansCJKjp-Regular SDF.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/NotoSansCJKjp-Regular.otf
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/NotoSansCJKjp-Regular.otf.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/NotoSansCJKsc-Regular SDF.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/NotoSansCJKsc-Regular SDF.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/NotoSansCJKsc-Regular.otf
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/NotoSansCJKsc-Regular.otf.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/NotoSansCJKtc-Regular SDF.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/NotoSansCJKtc-Regular SDF.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/NotoSansCJKtc-Regular.otf
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/NotoSansCJKtc-Regular.otf.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/Sources.json
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/Sources.json.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hans SDF.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hans SDF.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hans.ttf
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hans.ttf.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant SDF.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant SDF.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant.ttf
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant.ttf.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/LICENSES.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/OFL.txt
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/OFL.txt.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/Galmuri/Galmuri9 Japanese SDF.asset
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/Galmuri/Galmuri9 Japanese SDF.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/Galmuri/Galmuri9.ttf
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/Galmuri/Galmuri9.ttf.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/Galmuri/LICENSE.txt
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/Galmuri/LICENSE.txt.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/LICENSES/ark-pixel.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/LICENSES/cubic-11.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/LICENSES/galmuri.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/LICENSES/ark-pixel/OFL.txt
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/LICENSES/ark-pixel/OFL.txt.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/LICENSES/cubic-11/OFL.txt
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/LICENSES/cubic-11/OFL.txt.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/LICENSES/galmuri/LICENSE.txt
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Localization/Fonts/FusionPixel/LICENSES/galmuri/LICENSE.txt.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/Merchant 1.png
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/Merchant 1.png.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant.png.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_happy.png.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Art/Sprites/NPCs/merchant/merchant_surprised.png.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs.meta
+PASS Protected source/text/localization/reward/metadata unchanged: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs.meta
+PASS Only four unfinished candidate entries removed; all other NPC bytes preserved
+PASS Exactly the four requested paths remain
+PASS Minimum unlock levels and dragon-only condition retained
+PASS All four existing reward thresholds/bindings retained
+PASS No progression dead end or disabled candidate: dragon level 0
+PASS Expected cumulative candidate count: dragon level 0
+PASS Reviewed +1 routes remain available through max affection: dragon level 0
+PASS No progression dead end or disabled candidate: dragon level 1
+PASS Expected cumulative candidate count: dragon level 1
+PASS Reviewed +1 routes remain available through max affection: dragon level 1
+PASS No progression dead end or disabled candidate: dragon level 2
+PASS Expected cumulative candidate count: dragon level 2
+PASS Reviewed +1 routes remain available through max affection: dragon level 2
+PASS No progression dead end or disabled candidate: dragon level 3
+PASS Expected cumulative candidate count: dragon level 3
+PASS Reviewed +1 routes remain available through max affection: dragon level 3
+PASS No progression dead end or disabled candidate: dragon level 4
+PASS Expected cumulative candidate count: dragon level 4
+PASS Reviewed +1 routes remain available through max affection: dragon level 4
+PASS No progression dead end or disabled candidate: shadow level 0
+PASS Expected cumulative candidate count: shadow level 0
+PASS Reviewed +1 routes remain available through max affection: shadow level 0
+PASS No progression dead end or disabled candidate: shadow level 1
+PASS Expected cumulative candidate count: shadow level 1
+PASS Reviewed +1 routes remain available through max affection: shadow level 1
+PASS No progression dead end or disabled candidate: shadow level 2
+PASS Expected cumulative candidate count: shadow level 2
+PASS Reviewed +1 routes remain available through max affection: shadow level 2
+PASS No progression dead end or disabled candidate: shadow level 3
+PASS Expected cumulative candidate count: shadow level 3
+PASS Reviewed +1 routes remain available through max affection: shadow level 3
+PASS No progression dead end or disabled candidate: shadow level 4
+PASS Expected cumulative candidate count: shadow level 4
+PASS Reviewed +1 routes remain available through max affection: shadow level 4
+PASS No progression dead end or disabled candidate: None level 0
+PASS Expected cumulative candidate count: None level 0
+PASS Reviewed +1 routes remain available through max affection: None level 0
+PASS No progression dead end or disabled candidate: None level 1
+PASS Expected cumulative candidate count: None level 1
+PASS Reviewed +1 routes remain available through max affection: None level 1
+PASS No progression dead end or disabled candidate: None level 2
+PASS Expected cumulative candidate count: None level 2
+PASS Reviewed +1 routes remain available through max affection: None level 2
+PASS No progression dead end or disabled candidate: None level 3
+PASS Expected cumulative candidate count: None level 3
+PASS Reviewed +1 routes remain available through max affection: None level 3
+PASS No progression dead end or disabled candidate: None level 4
+PASS Expected cumulative candidate count: None level 4
+PASS Reviewed +1 routes remain available through max affection: None level 4
+PASS Disabled Ink drafts remain available for future reactivation
+PASS Ordinary/full-backpack greetings remain configured
+PASS Generated project includes changed Editor source: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsAuthoring.cs
+PASS Generated project includes changed Editor source: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/MerchantAffectionRewardsValidation.cs
+PASS Generated project includes changed Editor source: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueAuthoring.cs
+PASS Generated project includes changed Editor source: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS Source whitespace: Assets/_Project/Editor/Tools/Dialogue/NpcAffectionDialogueValidation.cs
+PASS: 272 scoped data/progression/preservation checks.

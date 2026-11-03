@@ -1,0 +1,687 @@
+using System;
+using System.Collections.Generic;
+using CapstoneAudio;
+using UnityEngine;
+
+/// <summary>
+/// 책임 :
+/// - 상인 런타임 재고, 구매 처리, 갱신 상호작용, 구매 실패 피드백을 조율한다.
+/// - 말풍선과 경고 팝업은 Core/UI 계약을 통해 호출하고 상점 도메인 상태는 내부 서비스에 위임한다.
+/// </summary>
+public sealed class MerchantNPC : MonoBehaviour
+{
+    private static readonly SoundRef PurchaseSound = SoundRef.FromKey("ui.shop.purchase");
+
+    [Serializable]
+    private struct ShopSlotAnchorDefinition
+    {
+        [SerializeField] private Transform anchor;
+        [SerializeField] private ShopSlotItemFilter itemFilter;
+
+        public Transform Anchor => anchor;
+        public ShopSlotItemFilter ItemFilter => itemFilter;
+    }
+
+    [Header("Data (Stable ID)")]
+    [SerializeField] private string merchantId;
+
+    [Header("Shop Setup")]
+    [SerializeField] private ShopDefinitionSO shopDefinition;
+    [SerializeField] private ShopSlot slotPrefab;
+    [SerializeField] private ShopSlotAnchorDefinition[] slotAnchors;
+    [SerializeField] private ShopSlot[] shopSlots;
+
+    [Header("Presentation")]
+    [SerializeField] private GameObject[] activationTargets;
+
+    [Header("Legacy Shop Setup (Unused)")]
+#pragma warning disable 0414
+    [SerializeField, HideInInspector] private ShopStockRollWeights stockRollWeights = new ShopStockRollWeights
+    {
+        weaponWeight = 1,
+        relicWeight = 1,
+        consumableWeight = 1
+    };
+    [SerializeField, HideInInspector] private MerchantPriceSettings priceSettings = new MerchantPriceSettings
+    {
+        weaponPrice = 120,
+        commonRelicPrice = 100,
+        rareRelicPrice = 180,
+        epicRelicPrice = 260,
+        consumablePrice = 40
+    };
+    [SerializeField, HideInInspector] private bool requireShopUpgrade;
+    [SerializeField, HideInInspector, Min(0)] private int baseVisibleSlotCount;
+#pragma warning restore 0414
+
+    [Header("Speech Bubble")]
+    [SerializeField] private MonoBehaviour speechBubble;
+    [SerializeField] private string notEnoughCurrencySpeech = "마정석이 부족하군.";
+    [SerializeField] private string inventoryFullSpeech = "가방이 가득 찼군.";
+
+    private readonly MerchantRunStateService runStateService = new MerchantRunStateService();
+    private readonly ShopInventoryRoll inventoryRoll = new ShopInventoryRoll();
+    private readonly LootPoolService lootPoolService = new LootPoolService();
+    private readonly MerchantPurchaseService purchaseService = new MerchantPurchaseService();
+
+    private bool UsesRunGold => shopDefinition != null && shopDefinition.UsesRunGold;
+    private string StockStateId => UsesRunGold
+        ? $"{gameObject.scene.name}/{merchantId}/{transform.position.x:F2}/{transform.position.y:F2}"
+        : merchantId;
+
+    private MerchantRuntimeState runtimeState;
+    private MerchantRefreshInteractable[] refreshInteractables;
+    private RunModifierService subscribedRunModifierService;
+    private bool hasLoggedMissingDefinition;
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (string.IsNullOrEmpty(merchantId) && !EditorAuthoringPlayback.IsPrefabAsset(this))
+        {
+            EditorAuthoringPlayback.QueueDelayCall(() =>
+            {
+                if (this == null)
+                    return;
+
+                GenerateID();
+                CollectSlotsFromChildren();
+                CollectRefreshInteractablesFromChildren();
+            });
+            return;
+        }
+
+        CollectSlotsFromChildren();
+        CollectRefreshInteractablesFromChildren();
+    }
+
+    public void GenerateID()
+    {
+        string cleanName = name.Replace("(Clone)", string.Empty).Trim();
+        string guid = System.Guid.NewGuid().ToString().Substring(0, 8);
+        merchantId = $"{cleanName}_{guid}";
+        EditorAuthoringPlayback.MarkDirty(this);
+    }
+#endif
+
+    private void Reset()
+    {
+        ResolveShopSlotReferences();
+        CollectRefreshInteractablesFromChildren();
+    }
+
+    private void Awake()
+    {
+        ResolveSpeechBubble();
+
+        ResolveShopSlotReferences();
+        CollectRefreshInteractablesFromChildren();
+        BindSlots();
+        BindRefreshInteractables();
+        RefreshRefreshInteractables();
+    }
+
+    private void OnEnable()
+    {
+        SubscribeToRunModifierService();
+        RefreshRefreshInteractables();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromRunModifierService();
+    }
+
+    private void Start()
+    {
+        SubscribeToRunModifierService();
+        InitializeStock();
+    }
+
+    private void Update()
+    {
+        if (subscribedRunModifierService == null && SubscribeToRunModifierService())
+            InitializeStock();
+    }
+
+    public void TryPurchase(int slotIndex, IPlayerInteractor player)
+    {
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        if (!policy.IsAvailable || slotIndex < 0 || slotIndex >= policy.VisibleSlotCount)
+            return;
+
+        if (!TryGetSlotEntry(slotIndex, out MerchantStockEntryState slotEntry, out ScriptableObject itemDefinition))
+            return;
+
+        MerchantPurchaseResult result = purchaseService.TryPurchase(player, slotEntry, itemDefinition, UsesRunGold);
+        if (result.Succeeded)
+        {
+            SoundPlaybackUtility.Play(PurchaseSound, sourceObject: this);
+            runStateService.MarkSlotSold(runtimeState, slotIndex);
+            RefreshSlot(slotIndex);
+            return;
+        }
+
+        ShowPurchaseWarning(result.Type);
+        SpeakFailure(result.Type);
+    }
+
+    private void InitializeStock()
+    {
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        if (!policy.HasDefinition)
+        {
+            WarnMissingDefinitionOnce();
+            ApplyShopAvailability(false, 0);
+            runtimeState = null;
+            RefreshRefreshInteractables();
+            return;
+        }
+
+        ApplyShopAvailability(policy.IsAvailable, policy.VisibleSlotCount);
+        if (!policy.IsAvailable)
+        {
+            runtimeState = null;
+            RefreshRefreshInteractables();
+            return;
+        }
+
+        runtimeState = runStateService.GetOrCreateState(
+            StockStateId,
+            policy.VisibleSlotCount,
+            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries, excludedEntries?.Count ?? 0));
+        ApplyEffectivePrices(runtimeState, policy);
+
+        BindSlots();
+        RefreshAllSlots();
+        RefreshRefreshInteractables();
+    }
+
+    public bool CanRefreshStock()
+    {
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        return policy.HasDefinition &&
+               policy.IsAvailable &&
+               runtimeState != null &&
+               runtimeState.refreshCountUsed < policy.RefreshLimit;
+    }
+
+    public bool CanShowRefreshInteractable()
+    {
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        return policy.HasDefinition &&
+               policy.IsAvailable &&
+               policy.RefreshLimit > 0;
+    }
+
+    public int GetRemainingRefreshCount()
+    {
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        if (!policy.HasDefinition || !policy.IsAvailable || policy.RefreshLimit <= 0)
+            return 0;
+
+        int usedCount = runtimeState != null ? runtimeState.refreshCountUsed : 0;
+        return Mathf.Max(0, policy.RefreshLimit - usedCount);
+    }
+
+    public bool TryRefreshStock()
+    {
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        if (!policy.HasDefinition)
+        {
+            WarnMissingDefinitionOnce();
+            ApplyShopAvailability(false, 0);
+            runtimeState = null;
+            RefreshRefreshInteractables();
+            return false;
+        }
+
+        if (!policy.IsAvailable)
+        {
+            ApplyShopAvailability(false, 0);
+            RefreshRefreshInteractables();
+            return false;
+        }
+
+        if (runtimeState == null)
+            InitializeStock();
+
+        if (runtimeState == null)
+            return false;
+
+        bool refreshed = runStateService.TryRefreshState(
+            runtimeState,
+            policy.RefreshLimit,
+            policy.VisibleSlotCount,
+            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries, 0));
+
+        if (!refreshed)
+            return false;
+
+        ApplyShopAvailability(true, policy.VisibleSlotCount);
+        ApplyEffectivePrices(runtimeState, policy);
+        BindSlots();
+        RefreshAllSlots();
+        RefreshRefreshInteractables();
+        return true;
+    }
+
+    private void HandleRunModifiersChanged()
+    {
+        InitializeStock();
+    }
+
+    private bool SubscribeToRunModifierService()
+    {
+        if (subscribedRunModifierService != null)
+            return false;
+
+        if (RunModifierService.Instance == null)
+            return false;
+
+        subscribedRunModifierService = RunModifierService.Instance;
+        subscribedRunModifierService.OnModifiersChanged += HandleRunModifiersChanged;
+        return true;
+    }
+
+    private void UnsubscribeFromRunModifierService()
+    {
+        if (subscribedRunModifierService != null)
+            subscribedRunModifierService.OnModifiersChanged -= HandleRunModifiersChanged;
+
+        subscribedRunModifierService = null;
+    }
+
+    private bool TryGetSlotEntry(
+        int slotIndex,
+        out MerchantStockEntryState slotEntry,
+        out ScriptableObject itemDefinition)
+    {
+        slotEntry = null;
+        itemDefinition = null;
+
+        if (runtimeState?.slots == null || slotIndex < 0 || slotIndex >= runtimeState.slots.Count)
+            return false;
+
+        slotEntry = runtimeState.slots[slotIndex];
+        itemDefinition = slotEntry != null ? slotEntry.ResolveDefinition() : null;
+        return slotEntry != null;
+    }
+
+    private void RefreshAllSlots()
+    {
+        if (shopSlots == null)
+            return;
+
+        for (int i = 0; i < shopSlots.Length; i++)
+            RefreshSlot(i);
+    }
+
+    private void ApplyEffectivePrices(
+        MerchantRuntimeState state,
+        MerchantShopPolicySnapshot policy)
+    {
+        if (state?.slots == null)
+            return;
+
+        for (int i = 0; i < state.slots.Count; i++)
+        {
+            MerchantStockEntryState entry = state.slots[i];
+            ScriptableObject definition = entry != null ? entry.ResolveDefinition() : null;
+            if (definition == null)
+                continue;
+
+            if (UsesRunGold)
+            {
+                // Existing stock predating discounts already contains its original rolled price.
+                if (entry.undiscountedPrice <= 0)
+                    entry.undiscountedPrice = entry.price;
+                entry.price = Mathf.Max(0, Mathf.RoundToInt(entry.undiscountedPrice * (1f - policy.DiscountRate)));
+            }
+            else
+            {
+                entry.price = policy.EffectivePriceSettings.ResolvePrice(definition);
+            }
+        }
+    }
+
+    private ShopRunModifierDelta ResolveShopModifiers()
+    {
+        ShopRunModifierDelta modifiers = RunModifierService.CurrentRewardSnapshot.ShopModifiers;
+        // Gold shops keep their authored slots/availability and exclude legacy shop upgrades.
+        return UsesRunGold
+            ? new ShopRunModifierDelta { affectionDiscountRate = modifiers.affectionDiscountRate }
+            : modifiers;
+    }
+
+    private MerchantShopPolicySnapshot ResolveShopPolicy()
+    {
+        ResolveShopSlotReferences();
+        int authoredSlotCount = shopSlots != null ? shopSlots.Length : 0;
+        return MerchantShopPolicy.Resolve(shopDefinition, ResolveShopModifiers(), authoredSlotCount);
+    }
+
+    private List<MerchantStockEntryState> RollStock(
+        int slotCount,
+        MerchantPriceSettings effectivePriceSettings,
+        IReadOnlyCollection<MerchantStockEntryState> excludedEntries,
+        int startSlotIndex)
+    {
+        var entries = shopDefinition != null
+            ? inventoryRoll.RollStock(
+                slotCount,
+                shopDefinition.StockRollWeights,
+                shopDefinition.MaxWeaponSlots,
+                shopDefinition.MaxConsumableSlots,
+                effectivePriceSettings,
+                lootPoolService.BuildWeaponExclusionSet(LootPoolContext.ShopStock),
+                excludedEntries,
+                BuildSlotFilters(slotCount, startSlotIndex),
+                consumablesOnlyInDedicatedSlots: UsesRunGold)
+            : new List<MerchantStockEntryState>();
+        if (UsesRunGold)
+            foreach (var entry in entries)
+                if (entry != null) entry.price = shopDefinition.RollGoldPrice(entry.ResolveDefinition());
+        return entries;
+    }
+
+    private IReadOnlyList<ShopSlotItemFilter> BuildSlotFilters(int slotCount, int startIndex)
+    {
+        ShopSlotItemFilter[] filters = new ShopSlotItemFilter[Mathf.Max(0, slotCount)];
+        for (int i = 0; i < filters.Length; i++)
+        {
+            int slotIndex = startIndex + i;
+            filters[i] = shopSlots != null && slotIndex < shopSlots.Length && shopSlots[slotIndex] != null
+                ? shopSlots[slotIndex].ItemFilter
+                : ShopSlotItemFilter.Any;
+        }
+
+        return filters;
+    }
+
+    private void ApplyShopAvailability(bool isAvailable, int activeSlotCount)
+    {
+        if (activationTargets != null)
+        {
+            for (int i = 0; i < activationTargets.Length; i++)
+            {
+                if (activationTargets[i] != null)
+                    activationTargets[i].SetActive(isAvailable);
+            }
+        }
+
+        ApplySlotVisibility(isAvailable ? activeSlotCount : 0);
+    }
+
+    private void ApplySlotVisibility(int activeSlotCount)
+    {
+        if (shopSlots == null)
+            return;
+
+        for (int i = 0; i < shopSlots.Length; i++)
+        {
+            if (shopSlots[i] != null)
+                shopSlots[i].gameObject.SetActive(i < activeSlotCount);
+        }
+    }
+
+    private void RefreshSlot(int slotIndex)
+    {
+        if (shopSlots == null || slotIndex < 0 || slotIndex >= shopSlots.Length || shopSlots[slotIndex] == null)
+            return;
+
+        MerchantStockEntryState slotState = runtimeState != null &&
+                                            runtimeState.slots != null &&
+                                            slotIndex < runtimeState.slots.Count
+            ? runtimeState.slots[slotIndex]
+            : MerchantStockEntryState.Empty();
+
+        shopSlots[slotIndex].ApplyState(slotState);
+    }
+
+    private void BindSlots()
+    {
+        if (shopSlots == null)
+            return;
+
+        for (int i = 0; i < shopSlots.Length; i++)
+        {
+            if (shopSlots[i] != null)
+                shopSlots[i].AssignOwner(this, i);
+        }
+    }
+
+    private void BindRefreshInteractables()
+    {
+        if (refreshInteractables == null)
+            return;
+
+        for (int i = 0; i < refreshInteractables.Length; i++)
+        {
+            if (refreshInteractables[i] != null)
+                refreshInteractables[i].AssignOwner(this);
+        }
+    }
+
+    private void RefreshRefreshInteractables()
+    {
+        CollectRefreshInteractablesFromChildren();
+
+        BindRefreshInteractables();
+
+        if (refreshInteractables == null)
+            return;
+
+        for (int i = 0; i < refreshInteractables.Length; i++)
+        {
+            if (refreshInteractables[i] != null)
+                refreshInteractables[i].RefreshPresentation();
+        }
+    }
+
+    private void SpeakFailure(MerchantPurchaseResultType resultType)
+    {
+        string line = resultType switch
+        {
+            MerchantPurchaseResultType.NotEnoughCurrency => GameText.Get("merchant.failure.currency", notEnoughCurrencySpeech),
+            MerchantPurchaseResultType.WeaponInventoryFull => GameText.Get("merchant.failure.inventory", inventoryFullSpeech),
+            MerchantPurchaseResultType.RelicInventoryFull => GameText.Get("merchant.failure.inventory", inventoryFullSpeech),
+            MerchantPurchaseResultType.ConsumableInventoryFull => GameText.Get("merchant.failure.inventory", inventoryFullSpeech),
+            _ => string.Empty
+        };
+
+        ISpeechBubblePlayback bubblePlayback = ResolveSpeechBubble();
+        if (!string.IsNullOrWhiteSpace(line) && bubblePlayback != null)
+            bubblePlayback.Speak(line);
+    }
+
+    private ISpeechBubblePlayback ResolveSpeechBubble()
+    {
+        if (speechBubble is ISpeechBubblePlayback existing)
+            return existing;
+
+        MonoBehaviour[] behaviours = GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+            if (behaviour is ISpeechBubblePlayback playback)
+            {
+                speechBubble = behaviour;
+                return playback;
+            }
+        }
+
+        speechBubble = null;
+        return null;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 상점 구매 실패 사유를 공통 경고 팝업 코드로 변환해 WarningPopupPlayback에 전달한다.
+    /// - 상점 도메인 로직이 실제 UI 문구나 팝업 구현에 직접 의존하지 않도록 분리한다.
+    /// </summary>
+    private static void ShowPurchaseWarning(MerchantPurchaseResultType resultType)
+    {
+        WarningPopupCode code = resultType switch
+        {
+            MerchantPurchaseResultType.WeaponInventoryFull => WarningPopupCode.WeaponInventoryFull,
+            MerchantPurchaseResultType.RelicInventoryFull => WarningPopupCode.RelicInventoryFull,
+            MerchantPurchaseResultType.ConsumableInventoryFull => WarningPopupCode.ConsumableInventoryFull,
+            MerchantPurchaseResultType.RelicAlreadyMaxLevel => WarningPopupCode.RelicAlreadyMaxLevel,
+            MerchantPurchaseResultType.RelicChangeWouldDefeatPlayer => WarningPopupCode.RelicChangeWouldDefeatPlayer,
+            _ => WarningPopupCode.None
+        };
+
+        if (code != WarningPopupCode.None)
+            WarningPopupPlayback.Show(code);
+    }
+
+    private void ResolveShopSlotReferences()
+    {
+        if (Application.IsPlaying(gameObject) && HasPrefabSlotAuthoring())
+        {
+            EnsurePrefabSlots();
+            return;
+        }
+
+        CollectSlotsFromChildren();
+    }
+
+    private bool HasPrefabSlotAuthoring()
+    {
+        return slotPrefab != null && slotAnchors != null && slotAnchors.Length > 0;
+    }
+
+    private void EnsurePrefabSlots()
+    {
+        var resolvedSlots = new List<ShopSlot>();
+
+        for (int i = 0; i < slotAnchors.Length; i++)
+        {
+            Transform anchor = slotAnchors[i].Anchor;
+            if (anchor == null)
+                continue;
+
+            ShopSlot slot = FindSlotAtAnchor(anchor);
+            if (slot == null && slotPrefab != null)
+                slot = Instantiate(slotPrefab, anchor);
+
+            if (slot == null)
+                continue;
+
+            ResetSlotTransform(slot.transform, anchor);
+            slot.ApplyRuntimeItemFilter(slotAnchors[i].ItemFilter);
+            resolvedSlots.Add(slot);
+        }
+
+        shopSlots = resolvedSlots.ToArray();
+    }
+
+    private static ShopSlot FindSlotAtAnchor(Transform anchor)
+    {
+        if (anchor == null)
+            return null;
+
+        ShopSlot directSlot = anchor.GetComponent<ShopSlot>();
+        if (directSlot != null)
+            return directSlot;
+
+        for (int i = 0; i < anchor.childCount; i++)
+        {
+            ShopSlot childSlot = anchor.GetChild(i).GetComponent<ShopSlot>();
+            if (childSlot != null)
+                return childSlot;
+        }
+
+        return anchor.GetComponentInChildren<ShopSlot>(true);
+    }
+
+    private static void ResetSlotTransform(Transform slotTransform, Transform anchor)
+    {
+        if (slotTransform == null || anchor == null || slotTransform == anchor)
+            return;
+
+        if (slotTransform.parent != anchor)
+            slotTransform.SetParent(anchor, false);
+
+        slotTransform.localPosition = Vector3.zero;
+        slotTransform.localRotation = Quaternion.identity;
+        slotTransform.localScale = Vector3.one;
+    }
+
+    private void CollectSlotsFromChildren()
+    {
+        ShopSlot[] childSlots = GetComponentsInChildren<ShopSlot>(true);
+        if (childSlots != null && childSlots.Length > 0)
+            shopSlots = childSlots;
+    }
+
+    private void CollectRefreshInteractablesFromChildren()
+    {
+        List<MerchantRefreshInteractable> collectedInteractables = new List<MerchantRefreshInteractable>();
+        HashSet<MerchantRefreshInteractable> seenInteractables = new HashSet<MerchantRefreshInteractable>();
+
+        CollectRefreshInteractablesFromRoot(transform, collectedInteractables, seenInteractables);
+
+        if (transform.parent != null)
+            CollectRefreshInteractablesFromRoot(transform.parent, collectedInteractables, seenInteractables);
+
+        CollectExplicitlyOwnedRefreshInteractables(collectedInteractables, seenInteractables);
+
+        refreshInteractables = collectedInteractables.ToArray();
+    }
+
+    private void CollectRefreshInteractablesFromRoot(
+        Transform root,
+        List<MerchantRefreshInteractable> collectedInteractables,
+        HashSet<MerchantRefreshInteractable> seenInteractables)
+    {
+        if (root == null)
+            return;
+
+        MerchantRefreshInteractable[] candidates = root.GetComponentsInChildren<MerchantRefreshInteractable>(true);
+        if (candidates == null)
+            return;
+
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            MerchantRefreshInteractable candidate = candidates[i];
+            if (candidate == null || !candidate.CanAssignOwner(this) || !seenInteractables.Add(candidate))
+                continue;
+
+            collectedInteractables.Add(candidate);
+        }
+    }
+
+    private void CollectExplicitlyOwnedRefreshInteractables(
+        List<MerchantRefreshInteractable> collectedInteractables,
+        HashSet<MerchantRefreshInteractable> seenInteractables)
+    {
+        MerchantRefreshInteractable[] candidates = FindObjectsByType<MerchantRefreshInteractable>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        if (candidates == null)
+            return;
+
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            MerchantRefreshInteractable candidate = candidates[i];
+            if (candidate == null || !candidate.IsAssignedOwner(this) || !seenInteractables.Add(candidate))
+                continue;
+
+            collectedInteractables.Add(candidate);
+        }
+    }
+
+    private void WarnMissingDefinitionOnce()
+    {
+        if (hasLoggedMissingDefinition)
+            return;
+
+        hasLoggedMissingDefinition = true;
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(
+            $"[MerchantNPC] ShopDefinitionSO is not assigned. Shop is disabled. merchantId={merchantId}",
+            this);
+    }
+}

@@ -1,0 +1,199 @@
+{
+  "date": "2026-11-01",
+  "mode": "Implementation",
+  "scope": "Apply three attached icons verbatim and rename the existing Scorching Awl display name in all five locales",
+  "definition_name_kept": "RD_ScorchingSong",
+  "localization_key": "asset.102507ab60734546ba64e6abfe926c11.displayName",
+  "localization_entry_id": "46294721531910",
+  "old_names": {
+    "ko": "작열하는 송곳",
+    "en": "Scorching Awl",
+    "ja": "灼熱の錐",
+    "zh-Hans": "灼热尖锥",
+    "zh-Hant": "灼熱尖錐"
+  },
+  "names": {
+    "ko": "화룡의 송곳니",
+    "en": "Fire Dragon's Fang",
+    "ja": "火竜の牙",
+    "zh-Hans": "火龙之牙",
+    "zh-Hant": "火龍之牙"
+  },
+  "icons": [
+    {
+      "name": "화룡의 송곳니",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ScorchingSong.asset",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-24042be1-108e-4214-81ee-7d5d113268c8.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FireDragonFang.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FireDragonFang.png.meta",
+      "guid": "49c9c24160c8403da198d9b0550e38c0",
+      "sprite_id": "09444f01091f4ce486fc3fd300ed18d2",
+      "fileID": "21300000",
+      "source_sha256": "368bf434761cfef48def0b614441ebe4640231c3dcef82a48f33ccec2a0d3668",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        2,
+        30,
+        30
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ]
+    },
+    {
+      "name": "휴대용 화로",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_PortableBrazier.asset",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-2e8828cc-b7e1-4e7d-9d62-e99b9662509c.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_PortableBrazier.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_PortableBrazier.png.meta",
+      "guid": "e89d5d3835f94cc1a87d7c5f90187782",
+      "sprite_id": "4e98070133e5481da2a5870057f431a4",
+      "fileID": "21300000",
+      "source_sha256": "dabad8f7d5a2a21fcce57d8b458f493f4bbe5b5d52a37de36c8fac6ebc45e327",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        4,
+        2,
+        28,
+        30
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ]
+    },
+    {
+      "name": "태양의 파편",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SunFragment.asset",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-9b82c7fe-d4f1-4c40-be32-76cc55485e96.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SunFragment.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SunFragment.png.meta",
+      "guid": "7717ecb9649f42b48c009dd9e3e2a197",
+      "sprite_id": "9748a1a24c114d2c8775390134585fa8",
+      "fileID": "21300000",
+      "source_sha256": "e0e84f5bd17c62eb97c0db0e104d05ed397caddf21e49479c5ca9776b7d2cf40",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        7,
+        2,
+        26,
+        30
+      ],
+      "palette": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#EECF5A",
+        "#F1E9D4"
+      ]
+    }
+  ],
+  "existing_changes": [
+    {
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ScorchingSong.asset",
+      "before_sha256": "ac120fac6149386a7ee3a95fc467581e2f44af2b2da7bbfd78f5a4f31ce00d4e",
+      "after_sha256": "1309d86f339373d1e0d8dbccc4e9feb7b4407108c79b0a13a04a416c46b4dee4",
+      "reason": "icon and displayName"
+    },
+    {
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_PortableBrazier.asset",
+      "before_sha256": "08daa60c70fdf23d3ecdb7fb44619404ee88fbca0a6f194ef2de67f07a20d6aa",
+      "after_sha256": "938ac9176d29b8e85fcfaba569bd1f2c9ecffcdb6eb4df60dcd847bf97e21a80",
+      "reason": "icon only"
+    },
+    {
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SunFragment.asset",
+      "before_sha256": "ff62c318dfbaf565365b3bc457f86adcfc719ab4beea9f6eddd5086fad936412",
+      "after_sha256": "a8613ec10e697c74c661335457a97199aa7437dc85fafbd73d1b745838d1c47b",
+      "reason": "icon only"
+    },
+    {
+      "path": "Assets/_Project/Data/Localization/GameText_ko.asset",
+      "before_sha256": "b4560dd66bd30426dd77204096af0b128a17e7c0a0994b860828de000f324a39",
+      "after_sha256": "c15b98c7ec9c4381344b91532b7a59a44e9d0389488869aa2e6b3e2a18efc85b",
+      "reason": "one existing localized displayName: ko"
+    },
+    {
+      "path": "Assets/_Project/Data/Localization/GameText_en.asset",
+      "before_sha256": "48c18263d85cbf7a924fceba190809d9b42e03c54d145cb1178074ee788043b6",
+      "after_sha256": "b109e7c57b0f95d87a9497ae53e4df40ec8773a6c65642e4a97af9119e2e7aaf",
+      "reason": "one existing localized displayName: en"
+    },
+    {
+      "path": "Assets/_Project/Data/Localization/GameText_ja.asset",
+      "before_sha256": "9882ff68b851c81c506265d3d270b18ed6eaabea2b369584e81ec7fbd10e8650",
+      "after_sha256": "364c88328ffaf2894533dd5ceb8d3af31769b2c821d6413f07f881b60a674c0c",
+      "reason": "one existing localized displayName: ja"
+    },
+    {
+      "path": "Assets/_Project/Data/Localization/GameText_zh-Hans.asset",
+      "before_sha256": "2c9524a8e49e830277d34aeb916acc0273968a9316a5d92102645359b62781d0",
+      "after_sha256": "72e7235359c9e95ceacacde382bdcb867857c87d6b98c939bbbe66d85df1f0e4",
+      "reason": "one existing localized displayName: zh-Hans"
+    },
+    {
+      "path": "Assets/_Project/Data/Localization/GameText_zh-Hant.asset",
+      "before_sha256": "2a3450b74fc1519d0411dff94adfa23d7906aa64ca300ae32d5916613cf081e5",
+      "after_sha256": "cd5922f54a63b6108a6c40fafc8a0eadb641f1b5bbb52101216a09fdf3e89f67",
+      "reason": "one existing localized displayName: zh-Hant"
+    },
+    {
+      "path": "DataSheets/Localization/GameText.csv",
+      "before_sha256": "e75cf744e74e4979d94e0af10ef952535ad66da561ad248c43ee0643dffbdcb8",
+      "after_sha256": "72cb2798f79fe8ebb18eb4ae356054efef2773511e35008eb72089bb5a151b9c",
+      "reason": "one canonical CSV translation row, five locale names"
+    }
+  ],
+  "new_files": [
+    {
+      "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FireDragonFang.png.meta",
+      "kind": "meta",
+      "sha256": "f52702cc759a4c0f8840ffe0070804497b3a44775b0e5a74bfb1775dee2aea02"
+    },
+    {
+      "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FireDragonFang.png",
+      "kind": "png",
+      "sha256": "368bf434761cfef48def0b614441ebe4640231c3dcef82a48f33ccec2a0d3668"
+    },
+    {
+      "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_PortableBrazier.png.meta",
+      "kind": "meta",
+      "sha256": "ed50a300636bb0ccc29def3fb0c5ff381e012864bae17505504d7f21816b10ba"
+    },
+    {
+      "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_PortableBrazier.png",
+      "kind": "png",
+      "sha256": "dabad8f7d5a2a21fcce57d8b458f493f4bbe5b5d52a37de36c8fac6ebc45e327"
+    },
+    {
+      "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SunFragment.png.meta",
+      "kind": "meta",
+      "sha256": "58fea28871a6dfeba5a592ec980c57a0e6493cacfa554913acfeb135dc606132"
+    },
+    {
+      "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SunFragment.png",
+      "kind": "png",
+      "sha256": "e0e84f5bd17c62eb97c0db0e104d05ed397caddf21e49479c5ca9776b7d2cf40"
+    }
+  ]
+}

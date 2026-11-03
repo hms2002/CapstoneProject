@@ -47,6 +47,7 @@ public sealed class NpcCustomizationHubWindow : EditorWindow
         "exit",
         "feature",
         "add_aff",
+        "set_boss_flag",
         "choice_fail",
         "aff_fail",
         "fail_aff",
@@ -1302,6 +1303,14 @@ public sealed class NpcCustomizationHubWindow : EditorWindow
 
             if (ownerNpc == null)
                 AddIssue(IssueSeverity.Warning, scope, $"{sourcePath}:{lineNumber} add_aff tag has no owner NPC context.", context);
+
+            return;
+        }
+
+        if (command.Equals("set_boss_flag", StringComparison.OrdinalIgnoreCase)
+            && string.IsNullOrWhiteSpace(value))
+        {
+            AddIssue(IssueSeverity.Error, scope, $"{sourcePath}:{lineNumber} set_boss_flag tag has no flag ID.", context);
         }
     }
 

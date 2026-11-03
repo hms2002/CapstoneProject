@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gameplay::RelicDefinition
   relicId: Relic.Electric.StormStep
   displayName: "\uC0DD\uBA85\uC758 \uC804\uB958"
-  icon: {fileID: 336388868, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  icon: {fileID: 21300000, guid: 42d4577eae4f4bca963aa4a42beb3823, type: 3}
   rarity: 1
   description: "\uCD5C\uB300 \uCCB4\uB825\uC5D0 \uBE44\uB840\uD574 \uC804\uAE30 \uC18D\uC131\uC774
     \uC99D\uAC00\uD569\uB2C8\uB2E4."

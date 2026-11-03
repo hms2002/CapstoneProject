@@ -1,0 +1,65 @@
+{
+  "mode": "Implementation, user-approved draft application",
+  "asset": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CurrentShard.png",
+  "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentShard.asset",
+  "source": "output/imagegen/current-shard-test-2026-10-27/current-shard-style-draft-v1-32x32.png",
+  "sourceSha256": "9a5911340799785af9f245e2066b66438f22a39ea58b5e9da496252be917b62f",
+  "sourceBytesPreserved": true,
+  "guid": "02761a86fab34a7fa8bb97619af634d3",
+  "spriteId": "d4b0229b080d4761a05dcd6e5e69c51e",
+  "fileId": 21300000,
+  "onlyIconReferenceChanged": true,
+  "size": [
+    32,
+    32
+  ],
+  "visibleBoundingBox": [
+    5,
+    2,
+    27,
+    30
+  ],
+  "margins": {
+    "top": 2,
+    "bottom": 2,
+    "left": 5,
+    "right": 5
+  },
+  "alphaValues": [
+    0,
+    255
+  ],
+  "colors": [
+    "#363232",
+    "#436794",
+    "#6F81B3",
+    "#77BCD6",
+    "#8599B0",
+    "#B1DECF"
+  ],
+  "importer": {
+    "spriteMode": "Single",
+    "filterMode": "Point",
+    "pixelsPerUnit": 32,
+    "compression": "None"
+  },
+  "protectedAssetHashes": {
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png": "2157fa9bdb2e267daa8d77f8d1d2be1d2c8d12912c1304cbcb6df0c4609ad733",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png.meta": "d43db6beec990c182f0e792f603e1f50b144498718d82aa4a68e2fc12023901c",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentShard.asset.meta": "75e1b1dc48d2a4ccbe9a9b217df1dad5a4f005f76765e6466b0833981fc2ad68",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderHeart.asset": "360badcca565fedabc63057ec136305b1023cd2acc96f0975b15105207c9b19b",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_ThunderKnot.asset": "f0d102f93213069d0a33cac17111c846334792ceb5711950457d9185e0fe57b3",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DashCoil.png": "3c7c5d3cff25787ed55f8f3b8563dc10827ed3e8d463e602df74c8986cac5e6d",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DashCoil.png.meta": "72d28832beced340788e2a3f4116fe64a2bc643206f77de753c30ca261847276",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_DashCoil.asset": "12ce85e4c3484389bcc5be4b13f642db32b2b50901d10cb72bd26b651ac6482d",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EchoCoil.png": "617a25ac05986b2ab6f22f2dec52335e998a84f3606d649bf4391adf3f2f0fd5",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EchoCoil.png.meta": "7b3a072a23ab879455070cbf4b51aa2cf6e5b050d1026898f1c3bfcda6b700c7",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_EchoCoil.asset": "f041b237be2948a41f5e5bb17cc76b31dddc2e6e0cd683a261c781b72c8b95ee"
+  },
+  "unityImport": "not executed; existing Temp/UnityLockfile",
+  "manualUiVerification": "not executed",
+  "docImpact": "SessionLog",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unaffected"
+}

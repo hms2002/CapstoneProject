@@ -1,0 +1,1049 @@
+{
+  "definitions": [
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_ApprenticeChargeLink.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_AttackBonusRelic.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_BalanceWeight.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_BerserkerCord.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_BlackIncense.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_BluntShield.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_BrokenClock.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_BrokenCrown.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_BronzeDice.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_BurningFeather.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_CalmHeart.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_ChainCharm.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_CombatGloves.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_ConductorRing.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_CounterKick.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_CrimsonKillShot.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_CrimsonKing.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_CrimsonLavaBall.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_CurrentJar.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_CurrentShard.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_DashCoil.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_DrunkenRush.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_EchoCoil.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_EvasionFeather.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_FeatherOrbit.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_FireBonusRelic.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_FirmStep.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_FloweringBloomExtension.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_FlyingBoots.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_FocusLens.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_GoldVein.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_GrowthSprout.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_HawkEmblem.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_HeavyBracelet.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_HunterMark.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_LastBreath.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_LastStand.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_LightCord.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_LightningSpearTargetedRain.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_LightningSpearThirdStrike.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_MasterWhetstone.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_MeltedBell.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_NimbleCloak.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_OddIronMagazine.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_OneDropOfSwiftness.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_PortableBrazier.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_PursuerClaw.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_RecoveryPendant.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_RedContract.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_ResonanceBell.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_RiftStone.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_RotatingIornBall.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_RunawayShoes.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_RunningLedger.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_ScorchingSong.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_SharpAwl.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_SmallHeart.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_SmokyIncense.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_SpeedBoots.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_SpeedMedal.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_Stenographer.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_StormStep.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_SunFragment.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_SurvivorNecklace.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_ThinArmorShard.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_ThunderHeart.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_ThunderKnot.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_TinglingShackles.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_TonicGombangdae.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_ToughBandage.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_VictoryFlag.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_WarriorOath.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_WindTablet.asset",
+    "Assets\\_Project\\Data\\Items\\Relics\\Definitions\\RD_WornWhetstone.asset",
+    "Assets\\_Project\\Data\\Items\\Consumables\\CD_HealPotion.asset"
+  ],
+  "entries": [
+    {
+      "guid": "396f0f611eb247d49653c13d59358734",
+      "fileID": -660001001,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\ConsumablePotions_3x3.png",
+      "rect": [
+        0,
+        64,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "c516ef40dcdd491ba98999b39c724230",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_BlazingCore.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "042c17c7c4c74dab9e72ac90d1052c5b",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_BurningFeather.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 29,
+      "centerFromTop": 0.90625
+    },
+    {
+      "guid": "fe26a83a4ededf64ba867c2d5e1863f8",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_CounterKick.png",
+      "rect": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "contact": 26,
+      "centerFromTop": 0.8125
+    },
+    {
+      "guid": "b9d08640b4e5410bbfb685ec1b03df98",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_CrimsonCrown.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 26,
+      "centerFromTop": 0.8125
+    },
+    {
+      "guid": "d37464f1928f44fab39518a3553403c9",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_CrimsonKillShot.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "bf5fcc2b9ddb48ee94684d1099aa3de9",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_CrimsonLavaBall.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 29,
+      "centerFromTop": 0.90625
+    },
+    {
+      "guid": "e5c550d64463476b805996e62d53f9c4",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_CurrentJar.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "02761a86fab34a7fa8bb97619af634d3",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_CurrentShard.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "f010418b11d045cfae759c9daecfb610",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_DashCoil.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "a23fffd2b25f3824fb678b34be8c8d8b",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_DrunkenRush.png",
+      "rect": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "contact": 27,
+      "centerFromTop": 0.84375
+    },
+    {
+      "guid": "e7efc408d6d146be90b9d8289e7395c2",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_EchoCoil.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 31,
+      "centerFromTop": 0.96875
+    },
+    {
+      "guid": "07e2e0377cda6d94eb4680ca1b68ab8c",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_FeatherOrbit.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 29,
+      "centerFromTop": 0.90625
+    },
+    {
+      "guid": "49c9c24160c8403da198d9b0550e38c0",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_FireDragonFang.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "8962ffe16144980439939f691764cb69",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_HawkEmblem.png",
+      "rect": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "contact": 27,
+      "centerFromTop": 0.84375
+    },
+    {
+      "guid": "42d4577eae4f4bca963aa4a42beb3823",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_LifeCurrent.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "957067294e724dba9d1a8c63cf346116",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_LingeringThunderOrb.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 29,
+      "centerFromTop": 0.90625
+    },
+    {
+      "guid": "313804d7843f41bb9a0f29124fe36f32",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_MeltedBell.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "60a42a21e7f24f5085de1b74889ac81f",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_MyriadThunderSeal.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "4af3438a19a9ff54683d8233bd993349",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_OneDropOfSwiftness.png",
+      "rect": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "contact": 31,
+      "centerFromTop": 0.96875
+    },
+    {
+      "guid": "e89d5d3835f94cc1a87d7c5f90187782",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_PortableBrazier.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "18b40d0f4ef24fb5acc33aa90d09c2b7",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_PrinciplesOfThunder.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 31,
+      "centerFromTop": 0.96875
+    },
+    {
+      "guid": "6a513faa0e54c5147a1942958fe1a540",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_RotatingIornBall.png",
+      "rect": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "contact": 27,
+      "centerFromTop": 0.84375
+    },
+    {
+      "guid": "6cd59cbf386c7134c99727cb4cdc3f83",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_RunningLedger.png",
+      "rect": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "cf8c0cc8be3a490789cfeca716c76092",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_SmokyIncense.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "d950f06d53ce11c41b1f7b2cb791c628",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_SpeedBoots.png",
+      "rect": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "contact": 27,
+      "centerFromTop": 0.84375
+    },
+    {
+      "guid": "cc05db3731cb2e447b06a5902cb16b6c",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_SpeedMedal.png",
+      "rect": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "contact": 27,
+      "centerFromTop": 0.84375
+    },
+    {
+      "guid": "6e5063279097f8b4abb904145fd23e7c",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_Stenographer.png",
+      "rect": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "contact": 31,
+      "centerFromTop": 0.96875
+    },
+    {
+      "guid": "7717ecb9649f42b48c009dd9e3e2a197",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_SunFragment.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "2a013a9a46134782af27eb04bdd956c6",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_ThunderDistributor.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "92b902dad7cf48a2b057f2e628a3c2a3",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_ThunderHammer.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "b21ecde7f4efbae44b88a07fc7a7610e",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_TonicGombangdae.png",
+      "rect": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "contact": 27,
+      "centerFromTop": 0.84375
+    },
+    {
+      "guid": "f891dbf6eb980e447b2d7d8a74a386fd",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\Icon_WindTablet.png",
+      "rect": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "contact": 26,
+      "centerFromTop": 0.8125
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -9195065147404484278,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        123,
+        117,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -9140534868678271618,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        123,
+        39,
+        41,
+        39
+      ],
+      "contact": 29,
+      "centerFromTop": 0.90625
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -8993961506304712746,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        205,
+        39,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -8815494589321632592,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        41,
+        117,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -8081933682657346706,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        246,
+        156,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -7853464663418827758,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        0,
+        117,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -7409323811495052916,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        123,
+        78,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -6626285524676906614,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        246,
+        78,
+        41,
+        39
+      ],
+      "contact": 29,
+      "centerFromTop": 0.90625
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -5249522915942291002,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        164,
+        156,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -4832650501692778596,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        164,
+        39,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -3399255907306226351,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        205,
+        117,
+        41,
+        39
+      ],
+      "contact": 26,
+      "centerFromTop": 0.8125
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -3051198569075358200,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        0,
+        78,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -1211621753745056308,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        205,
+        78,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -979860976084526476,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        0,
+        156,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": -2091944441,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        82,
+        0,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 336388868,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        164,
+        0,
+        41,
+        39
+      ],
+      "contact": 24,
+      "centerFromTop": 0.75
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 959958486,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        205,
+        0,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 745922690225715111,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        82,
+        39,
+        41,
+        39
+      ],
+      "contact": 25,
+      "centerFromTop": 0.78125
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 1230076527310467192,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        41,
+        156,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 1290818826102019816,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        164,
+        117,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 2652998765610666854,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        123,
+        156,
+        41,
+        39
+      ],
+      "contact": 27,
+      "centerFromTop": 0.84375
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 3131486497833835367,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        246,
+        39,
+        41,
+        39
+      ],
+      "contact": 29,
+      "centerFromTop": 0.90625
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 3179228444970898203,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        82,
+        156,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 6123753626580635574,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        41,
+        39,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 6214254870795243053,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        205,
+        156,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 6358970640032765685,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        0,
+        0,
+        41,
+        39
+      ],
+      "contact": 29,
+      "centerFromTop": 0.90625
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 6752461376909513456,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        82,
+        117,
+        41,
+        39
+      ],
+      "contact": 25,
+      "centerFromTop": 0.78125
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 6897696648242941555,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        164,
+        78,
+        41,
+        39
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 7824667717655779811,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        246,
+        117,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 8375218632860420053,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        41,
+        0,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+      "fileID": 9137266158227281547,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\RelicImageBundle.png",
+      "rect": [
+        41,
+        78,
+        41,
+        39
+      ],
+      "contact": 28,
+      "centerFromTop": 0.875
+    },
+    {
+      "guid": "eba60ca92d654057bce8a3f6664ed7b1",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\arrow.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "5e75f76ed6404d0e95d4b05a8a46ae0d",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\flying_boots.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 29,
+      "centerFromTop": 0.90625
+    },
+    {
+      "guid": "872382315c4b44deaa3440a4afe18c0a",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\gold_vein.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 29,
+      "centerFromTop": 0.90625
+    },
+    {
+      "guid": "7861b6e666064cd7b04a49aca55b80c9",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\plant.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 29,
+      "centerFromTop": 0.90625
+    },
+    {
+      "guid": "b7ac0f2e281a44768c35210163fd6abc",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\RelicIcon\\potion1.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 32,
+      "centerFromTop": 1.0
+    },
+    {
+      "guid": "748bd1286788d5f468f9857941b73367",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\Weapon\\BasicWeapon\\BasicWeapon.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "contact": 29,
+      "centerFromTop": 0.90625
+    },
+    {
+      "guid": "bd99ece40b3e73841bdc7fb710c6d066",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\Weapon\\Flowering\\Flowering_Artifact.png",
+      "rect": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "contact": 30,
+      "centerFromTop": 0.9375
+    },
+    {
+      "guid": "10552735fdb1e6e42a67dd8f5e1ae667",
+      "fileID": 21300000,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\Weapon\\LightningSpear\\LightningSpear.png",
+      "rect": [
+        0,
+        0,
+        16,
+        80
+      ],
+      "contact": 32,
+      "centerFromTop": 1.0
+    },
+    {
+      "guid": "959fd486b4d99da4687a456b33eb4a27",
+      "fileID": 6943876887964716198,
+      "path": "Assets\\_Project\\Art\\Sprites\\Items\\Weapons\\OddIron\\OddIron.png",
+      "rect": [
+        0,
+        0,
+        19,
+        13
+      ],
+      "contact": 21,
+      "centerFromTop": 0.65625
+    },
+    {
+      "guid": "ef16b2ddeb64123459076c2c8a541a63",
+      "fileID": -1330801700,
+      "path": "Assets\\_Project\\Art\\Sprites\\UI\\Dialogue\\bubble emotes july update.png",
+      "rect": [
+        32,
+        80,
+        16,
+        16
+      ],
+      "contact": 26,
+      "centerFromTop": 0.8125
+    }
+  ],
+  "previewGapPixels": -4,
+  "previewRasterSize": 32,
+  "width": 0.75,
+  "height": 0.25,
+  "alpha": 0.34,
+  "independentContourCollisionChecks": 148
+}

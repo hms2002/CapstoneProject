@@ -7511,6 +7511,1098 @@ MonoBehaviour:
     m_Key: ui.level_reward.reroll
     m_Metadata:
       m_Items: []
+  - m_Id: 7030060528943104
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.clear_throat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412096
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.dignified_line
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412097
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.sword_pose
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412098
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.check_pose
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412099
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.choice_praise
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412100
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.praise_reply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412101
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.sword_tease
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412102
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.praise_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412103
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.choice_weird
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412104
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.weird_reply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412105
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.sword_defense
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412106
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.weird_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358447202304
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.intro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059904
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.estimate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059905
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.sword_nostalgic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059906
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.sword_reminder
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059907
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.protest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059908
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.request
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059909
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.choice_careful
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059910
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.careful_hope
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059911
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.sword_hope_tease
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059912
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.careful_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059913
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.choice_fancy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059914
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.fancy_cost
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059915
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.sword_fancy_tease
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059916
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.fancy_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027352858624
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_intro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939008
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_success
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939009
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_slime_best_one
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939010
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_slime_best_many
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939011
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_slime_yesterday
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939012
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_problem
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939013
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_citizens
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939014
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_shared_memory
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939015
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_request
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939016
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_choice_individual
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939017
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_individual_agreement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939018
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_kingdom_expands
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939019
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_choice_merge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939020
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_merge_rebuke
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939021
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_merge_result
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939022
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_individual_budget
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939023
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_individual_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939024
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_merge_dough
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5700027440939025
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.citizenship_followup_merge_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158875430912
+    m_Key: dialogue.spiribossencounter.time_low
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705600
+    m_Key: dialogue.spiribossencounter.low_health
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705601
+    m_Key: dialogue.spiribossencounter.crimson_boundary
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705602
+    m_Key: dialogue.spiribossencounter.previous_victory
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705603
+    m_Key: dialogue.spiribossencounter.previous_defeat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705604
+    m_Key: dialogue.spiribossencounter.backpack_full
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705605
+    m_Key: dialogue.spiribossencounter.high_affection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705606
+    m_Key: dialogue.spiribossencounter.reencounter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6017158967705607
+    m_Key: dialogue.spiribossencounter.fallback
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108483981312
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_intro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108630781952
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_reason
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108630781953
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_slime_taste
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108630781954
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_slime_light
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108630781955
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_defense
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108630781956
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_just_checking
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108630781957
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_choice_not_snack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108634976256
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_negative_insists
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108634976257
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_negative_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108634976258
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_choice_real_snack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108634976259
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_positive_delight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6665108634976260
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.slime_snack_positive_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699656970240
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_intro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699740856320
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_order
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699740856321
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_usual
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699740856322
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_request
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050624
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_empty_first
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050625
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_invite
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050626
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_choice_reason
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050627
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_negative_right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050628
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_negative_gulp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050629
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_negative_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050630
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_choice_together
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050631
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_positive_hero
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050632
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_positive_catch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050633
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_positive_first
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6714699745050634
+    m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.empty_keg_throw
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618481508352
+    m_Key: dialogue.shadowbossrepeatencounterdialogue_animated.time_low
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618615726080
+    m_Key: dialogue.shadowbossrepeatencounterdialogue_animated.low_health
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618615726081
+    m_Key: dialogue.shadowbossrepeatencounterdialogue_animated.previous_player_defeat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618615726082
+    m_Key: dialogue.shadowbossrepeatencounterdialogue_animated.previous_player_victory
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618615726083
+    m_Key: dialogue.shadowbossrepeatencounterdialogue_animated.last_run_time_over
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618615726084
+    m_Key: dialogue.shadowbossrepeatencounterdialogue_animated.time_early
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114688
+    m_Key: dialogue.shadowbossrepeatencounterdialogue_animated.melta_followup
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114689
+    m_Key: dialogue.shadowbossrepeatencounterdialogue_animated.spiri_followup
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114690
+    m_Key: dialogue.shadowbossrepeatencounterdialogue_animated.high_affection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114691
+    m_Key: dialogue.shadowbossrepeatencounterdialogue_animated.backpack_full
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114692
+    m_Key: dialogue.shadowbossrepeatencounterdialogue_animated.frequent_encounter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114693
+    m_Key: dialogue.shadowbossrepeatencounterdialogue_animated.reencounter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114694
+    m_Key: dialogue.shadowbossintrodialogue_animated.silent_warden.intro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114695
+    m_Key: dialogue.shadowbossintrodialogue_animated.silent_warden.explanation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114696
+    m_Key: dialogue.shadowbossintrodialogue_animated.silent_warden.choice_wait
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114697
+    m_Key: dialogue.shadowbossintrodialogue_animated.silent_warden.choice_silence
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114698
+    m_Key: dialogue.shadowbossintrodialogue_animated.silent_warden.wait_reply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114699
+    m_Key: dialogue.shadowbossintrodialogue_animated.silent_warden.wait_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114700
+    m_Key: dialogue.shadowbossintrodialogue_animated.silent_warden.silence_reply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8430618624114701
+    m_Key: dialogue.shadowbossintrodialogue_animated.silent_warden.silence_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439906897739776
+    m_Key: dialogue.shadowbossintrodialogue_animated.prisoner_report.intro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374592
+    m_Key: dialogue.shadowbossintrodialogue_animated.prisoner_report.concern
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374593
+    m_Key: dialogue.shadowbossintrodialogue_animated.prisoner_report.choice_peace
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374594
+    m_Key: dialogue.shadowbossintrodialogue_animated.prisoner_report.choice_imprison
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374595
+    m_Key: dialogue.shadowbossintrodialogue_animated.prisoner_report.peace_reply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374596
+    m_Key: dialogue.shadowbossintrodialogue_animated.prisoner_report.peace_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374597
+    m_Key: dialogue.shadowbossintrodialogue_animated.prisoner_report.imprison_reply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8439907019374598
+    m_Key: dialogue.shadowbossintrodialogue_animated.prisoner_report.imprison_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701271498752
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.a5ab48433c
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744960
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.ab02a3e1c1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744961
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.a8e16000f0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744962
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.180fdf3a81
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744963
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.c03e8b3883
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744964
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.c609a59d42
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744965
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.f44e4cafe1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744966
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.da8d8c6323
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744967
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.8c0ea97a4e
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701384744968
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.357417752d
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701388939264
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.b953019325
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8510701388939265
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.228a04dbf3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940162944679936
+    m_Key: asset.eaa51ebec24da574bae03bcedc6f3e3d.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163146006528
+    m_Key: asset.eaa51ebec24da574bae03bcedc6f3e3d.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163183755264
+    m_Key: asset.7d216a5098fd0e946b8390c40d329e9a.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163221504000
+    m_Key: asset.7d216a5098fd0e946b8390c40d329e9a.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163263447040
+    m_Key: asset.b80e612bff0bf44429457de2c2794da7.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163301195776
+    m_Key: asset.b80e612bff0bf44429457de2c2794da7.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163338944512
+    m_Key: asset.0454138ae3021884b965d783d6092b06.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163385081856
+    m_Key: asset.0454138ae3021884b965d783d6092b06.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163422830592
+    m_Key: asset.1b621570964429a44b9f58371e206916.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163460579328
+    m_Key: asset.1b621570964429a44b9f58371e206916.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163489939456
+    m_Key: asset.37fe29d5a8d0a40428c2a7e465797e7e.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163527688192
+    m_Key: asset.37fe29d5a8d0a40428c2a7e465797e7e.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163561242624
+    m_Key: asset.06f7bdbf7073974478991781fb5d81e2.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163611574272
+    m_Key: asset.06f7bdbf7073974478991781fb5d81e2.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163657711616
+    m_Key: asset.60e6b8712efa9a94cb298cb20d0b3fe6.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163703848960
+    m_Key: asset.60e6b8712efa9a94cb298cb20d0b3fe6.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163745792000
+    m_Key: asset.31565db51c1216246960398b39912d7c.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163787735040
+    m_Key: asset.31565db51c1216246960398b39912d7c.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163829678080
+    m_Key: asset.6699b985f21c3ba4bbf40fa9b29dbbc8.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163871621120
+    m_Key: asset.6699b985f21c3ba4bbf40fa9b29dbbc8.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163900981248
+    m_Key: asset.9bfe4faa921d5d84bb34e97f03f33e5a.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163938729984
+    m_Key: asset.9bfe4faa921d5d84bb34e97f03f33e5a.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940163984867328
+    m_Key: asset.add7f0fb39e185b4c8fbd60df7e87824.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164014227456
+    m_Key: asset.add7f0fb39e185b4c8fbd60df7e87824.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164060364800
+    m_Key: asset.ce4cc7502bb5c914abd228b2bd141c5b.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164089724928
+    m_Key: asset.ce4cc7502bb5c914abd228b2bd141c5b.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164135862272
+    m_Key: asset.ce6b5fd16174cfc4d9f6fe35d6e3e5ad.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164169416704
+    m_Key: asset.ce6b5fd16174cfc4d9f6fe35d6e3e5ad.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164207165440
+    m_Key: asset.e99e4aeb0895e7243a532d9a97650058.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164244914176
+    m_Key: asset.e99e4aeb0895e7243a532d9a97650058.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164286857216
+    m_Key: asset.e873912508b841244920f01623f2a181.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164324605952
+    m_Key: asset.e873912508b841244920f01623f2a181.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164366548992
+    m_Key: asset.d10c81f7b4f9cda43812c2af2cc42b06.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164408492032
+    m_Key: asset.d10c81f7b4f9cda43812c2af2cc42b06.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164450435072
+    m_Key: asset.a1f48da525c472b4ba6726ccdb8e86e8.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164509155328
+    m_Key: asset.a1f48da525c472b4ba6726ccdb8e86e8.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164664344576
+    m_Key: asset.cebb79c6b0f462240874945ae8269970.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164718870528
+    m_Key: asset.cebb79c6b0f462240874945ae8269970.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164781785088
+    m_Key: asset.0ba5b696e54cc2847bf72ba1d30af3bb.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164832116736
+    m_Key: asset.0ba5b696e54cc2847bf72ba1d30af3bb.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164890836992
+    m_Key: asset.a4f2eb239cd2c774f9cfe4797face487.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164932780032
+    m_Key: asset.a4f2eb239cd2c774f9cfe4797face487.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940164974723072
+    m_Key: asset.1dcb986f02090f14098e49aba5d9baf4.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165025054720
+    m_Key: asset.1dcb986f02090f14098e49aba5d9baf4.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165071192064
+    m_Key: asset.dffc49247f9a0da4486a73b45576a50f.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165117329408
+    m_Key: asset.dffc49247f9a0da4486a73b45576a50f.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165159272448
+    m_Key: asset.e5300e5355e9d9d478a1221956502bb0.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165192826880
+    m_Key: asset.e5300e5355e9d9d478a1221956502bb0.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165243158528
+    m_Key: asset.3e100e91998d78a42a0bac8d50e5855f.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165289295872
+    m_Key: asset.3e100e91998d78a42a0bac8d50e5855f.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165331238912
+    m_Key: asset.745468d870bf7a644a337cc964567883.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165373181952
+    m_Key: asset.745468d870bf7a644a337cc964567883.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165415124992
+    m_Key: asset.f0d4e43bd36bbb2499113b3e77f82406.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165457068032
+    m_Key: asset.f0d4e43bd36bbb2499113b3e77f82406.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165503205376
+    m_Key: asset.f90154e765cbf23428d35d0d090d6145.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165549342720
+    m_Key: asset.f90154e765cbf23428d35d0d090d6145.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165591285760
+    m_Key: asset.89ead828a85f3b743821a389bca42aa3.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165629034496
+    m_Key: asset.89ead828a85f3b743821a389bca42aa3.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165670977536
+    m_Key: asset.cbc3ab6557d0fa74589d096e49cba3b7.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165708726272
+    m_Key: asset.cbc3ab6557d0fa74589d096e49cba3b7.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165742280704
+    m_Key: asset.4a8e0c723e2488745bf3f6200a67c64c.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165792612352
+    m_Key: asset.4a8e0c723e2488745bf3f6200a67c64c.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165826166784
+    m_Key: asset.751a51f0680ef184c99052d863d274e5.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165863915520
+    m_Key: asset.751a51f0680ef184c99052d863d274e5.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165910052864
+    m_Key: asset.0df88d8a56f04084499b3672eb993f6b.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165947801600
+    m_Key: asset.0df88d8a56f04084499b3672eb993f6b.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940165989744640
+    m_Key: asset.7bbef4d197762114792570fe029dfcae.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940166031687680
+    m_Key: asset.7bbef4d197762114792570fe029dfcae.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940166073630720
+    m_Key: asset.425c71f2c4e07194384325805cdfa29b.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940166123962368
+    m_Key: asset.425c71f2c4e07194384325805cdfa29b.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940166165905408
+    m_Key: asset.334a8746e23c3e14ead8e80abd8b8124.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9940166203654144
+    m_Key: asset.334a8746e23c3e14ead8e80abd8b8124.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071806197760
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.8750439a52
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638272
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.ec64e12488
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638273
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.b425152719
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638274
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.ead5d0beb0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638275
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.1db66961d3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638276
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.382acf40a6
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638277
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.e54547855a
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638278
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.0234737204
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638279
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.0b27058d3d
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638280
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.b233f9ae6b
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638281
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.a6ed2b7bb8
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638282
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.2b0dceac49
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638283
+    m_Key: dialogue.slimequeenintrodialogue_meltanotion_animated.d2cd8de590
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638284
+    m_Key: dialogue.slimequeenbossintro.c1ca046453
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638285
+    m_Key: dialogue.slimequeenbossintro.dbab11dbbf
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638286
+    m_Key: dialogue.slimequeenbossintro.c42ae1de75
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638287
+    m_Key: dialogue.slimequeenbossintro.004fa72148
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638288
+    m_Key: dialogue.slimequeenbossintro.0d821f392b
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638289
+    m_Key: dialogue.slimequeenbossintro.4a94e06820
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638290
+    m_Key: dialogue.slimequeenbossintro.61042ba473
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638291
+    m_Key: dialogue.slimequeenbossintro.48dc3e3822
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638292
+    m_Key: dialogue.slimequeenbossintro.eb4488caa2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638293
+    m_Key: dialogue.demonkingbossencounter.time_low
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638294
+    m_Key: dialogue.demonkingbossencounter.low_health
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638295
+    m_Key: dialogue.demonkingbossencounter.previous_player_defeat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638296
+    m_Key: dialogue.demonkingbossencounter.previous_player_victory
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638297
+    m_Key: dialogue.demonkingbossencounter.last_run_time_over
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638298
+    m_Key: dialogue.demonkingbossencounter.time_early
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638299
+    m_Key: dialogue.demonkingbossencounter.melta_citizenship
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638300
+    m_Key: dialogue.demonkingbossencounter.spiri_companion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638301
+    m_Key: dialogue.demonkingbossencounter.high_affection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638302
+    m_Key: dialogue.demonkingbossencounter.frequent_encounter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9954071923638303
+    m_Key: dialogue.demonkingbossencounter.reencounter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451195375616
+    m_Key: dialogue.merchant.run.affection_0_b.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507904
+    m_Key: dialogue.merchant.run.affection_0_b.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507905
+    m_Key: dialogue.merchant.run.affection_0_b.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507906
+    m_Key: dialogue.merchant.run.affection_0_b.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507907
+    m_Key: dialogue.merchant.run.affection_0_b.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507908
+    m_Key: dialogue.merchant.run.affection_1_a.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507909
+    m_Key: dialogue.merchant.run.affection_1_a.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507910
+    m_Key: dialogue.merchant.run.affection_1_a.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507911
+    m_Key: dialogue.merchant.run.affection_1_a.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507912
+    m_Key: dialogue.merchant.run.affection_1_a.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507913
+    m_Key: dialogue.merchant.run.affection_1_b.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507914
+    m_Key: dialogue.merchant.run.affection_1_b.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507915
+    m_Key: dialogue.merchant.run.affection_1_b.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507916
+    m_Key: dialogue.merchant.run.affection_1_b.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507917
+    m_Key: dialogue.merchant.run.affection_1_b.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507918
+    m_Key: dialogue.merchant.run.affection_2_a.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507919
+    m_Key: dialogue.merchant.run.affection_2_a.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507920
+    m_Key: dialogue.merchant.run.affection_2_a.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507921
+    m_Key: dialogue.merchant.run.affection_2_a.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507922
+    m_Key: dialogue.merchant.run.affection_2_a.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507923
+    m_Key: dialogue.merchant.run.affection_2_b.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507924
+    m_Key: dialogue.merchant.run.affection_2_b.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507925
+    m_Key: dialogue.merchant.run.affection_2_b.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507926
+    m_Key: dialogue.merchant.run.affection_2_b.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507927
+    m_Key: dialogue.merchant.run.affection_2_b.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507928
+    m_Key: dialogue.merchant.run.greeting_a
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507929
+    m_Key: dialogue.merchant.run.greeting_b
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507930
+    m_Key: dialogue.merchant.run.greeting_c
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507931
+    m_Key: dialogue.merchant.run.greeting_full_a
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10587451392507932
+    m_Key: dialogue.merchant.run.greeting_full_b
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217630437376
+    m_Key: asset.0d511974dcee39841b43b11efe690364.rewardText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217911455744
+    m_Key: asset.9610f69b0692a734ab7aa1eccc8264f3.rewardText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217919844352
+    m_Key: asset.05a8fc8c3d1883a45bc96ff32322dbdb.rewardText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10653217932427264
+    m_Key: shop.special_offer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809219178496
+    m_Key: dialogue.merchant.run.affection_0_c.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258880
+    m_Key: dialogue.merchant.run.affection_0_c.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258881
+    m_Key: dialogue.merchant.run.affection_0_c.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258882
+    m_Key: dialogue.merchant.run.affection_0_c.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10928809307258883
+    m_Key: dialogue.merchant.run.affection_0_c.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961339964178432
+    m_Key: dialogue.merchant.run.affection_1_c.0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561984
+    m_Key: dialogue.merchant.run.affection_1_c.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561985
+    m_Key: dialogue.merchant.run.affection_1_c.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561986
+    m_Key: dialogue.merchant.run.affection_1_c.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561987
+    m_Key: dialogue.merchant.run.affection_1_c.4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10961340123561988
+    m_Key: dialogue.merchant.run.affection_1_c.5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10999655765884928
+    m_Key: dialogue.merchant.run.affection_0_b.5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11005436400660480
+    m_Key: dialogue.merchant.run.affection_0_c.5
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

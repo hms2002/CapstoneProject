@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_ConductorRing
   m_EditorClassIdentifier: Gameplay::RelicDefinition
   relicId: Relic.Electric.ConductorRing
-  displayName: "\uB3C4\uCCB4 \uACE0\uB9AC"
-  icon: {fileID: -9140534868678271618, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  displayName: "\uCC9C\uB465\uC758 \uC6D0\uB860"
+  icon: {fileID: 21300000, guid: 18b40d0f4ef24fb5acc33aa90d09c2b7, type: 3}
   rarity: 1
   description: "\uC5F0\uC1C4\uB420 \uB54C\uB9C8\uB2E4 \uC5F0\uC1C4 \uD53C\uD574\uAC00
     20%\uC529 \uC99D\uAC00\uD569\uB2C8\uB2E4. \uCD5C\uB300 60%\uAE4C\uC9C0 \uC99D\uAC00\uD569\uB2C8\uB2E4."

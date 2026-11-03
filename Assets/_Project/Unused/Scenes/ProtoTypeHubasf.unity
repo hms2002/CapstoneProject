@@ -5771,8 +5771,8 @@ MonoBehaviour:
   requireShopUpgrade: 1
   baseVisibleSlotCount: 0
   speechBubble: {fileID: 1082065430}
-  notEnoughCurrencySpeech: "\uB9C8\uC815\uC11D\uC774 \uBD80\uC871\uD558\uAD70."
-  inventoryFullSpeech: "\uAC00\uBC29\uC774 \uAC00\uB4DD \uCC3C\uAD70."
+  notEnoughCurrencySpeech: "\uB3C8\uC774 \uBD80\uC871\uD558\uC796\uC544!"
+  inventoryFullSpeech: "\uAC00\uBC29\uC774 \uAF49 \uCC3C\uC796\uC544!"
 --- !u!114 &1082065427
 MonoBehaviour:
   m_ObjectHideFlags: 0

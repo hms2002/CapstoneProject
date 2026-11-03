@@ -1,0 +1,30 @@
+Use case: stylized-concept.
+Asset: ONE native 32x32 pixel-art roguelike relic icon, "Current Jar" / 전류 항아리, preview draft.
+
+REFERENCE ROLES:
+Image 1: user's most preferred gray relic icon, PRIMARY STYLE ONLY: chunky charcoal outline, broad connected color areas, deliberate stepped contours, clean readable volume at native 32x32, minimal detail.
+Image 2: user's six-relic sprite sheet, SECONDARY STYLE ONLY: coherent compact inventory icons and restrained flat shading.
+Image 3: user's EXCLUSIVE COLOR PALETTE. Use ONLY the FOUR exact opaque colors selected below. Do not copy the gray object or any object from the references.
+
+SUBJECT:
+A stout ancient ceramic jar, rounded belly, short neck, wide open oval mouth, small stable foot. Front view with just enough top view to see the opening. Aged warm clay color. No lid, handles, chain, decorative bands, writing or extra objects.
+The jar is CRACKED and barely containing powerful electricity. One bold jagged branching fracture crosses the front from beneath the neck toward the lower belly, with one short side branch. It is an actual irregular crack through the ceramic, NOT a clean lightning symbol painted on the surface. Tiny charcoal separation along part of the crack makes the split read clearly.
+Bright stored electricity shines THROUGH the fracture, using a pale bright center and restrained cyan edge. A short angular electrical snap escapes one side of the fracture.
+The OPEN MOUTH IS COMPLETELY FILLED EDGE TO EDGE WITH BRIGHT PALE LIGHT. A broad pale oval of contained electricity occupies the entire opening; no dark empty cavity and no empty ring. Use a cyan lower edge to suggest intense electric energy and a clay lip around it.
+TWO short crisp jagged electric sparks snap upward and outward immediately above the mouth. Sharp zigzags, not flames, smoke, liquid, a flower or a giant lightning bolt. The light-filled mouth is a clear focal point, with only a few compact sparks. Everything must be readable at 32x32.
+Keep the full jar shape obvious and mostly intact. Not an exploding broken pot or a pile of fragments.
+
+EXACTLY FOUR OPAQUE RGB COLORS, plus full transparency:
+#363232 charcoal: outer contour, narrow deepest gaps and underlip;
+#D49C73 muted warm clay: the entire jar body and rim, broad flat ceramic areas;
+#77BCD6 cyan: electric edge and the broader part of charged cracks / sparks;
+#F1E9D4 pale ivory: intensely bright opening and thin electric cores.
+These are the ONLY four colors, including the outline. No extra ceramic shadow or highlight colors. No white, black, yellow, orange variants or semitransparent colors. Show ceramic volume through silhouette, the oval lip and sparse charcoal separation, not extra shading tones.
+
+STYLE:
+True native low-resolution pixel art, deliberate flat clusters. Roughly 2-logical-pixel charcoal contour on the SOLID JAR. Small electric tips can be thinner and clean, not enclosed in heavy dark blobs. Big connected shapes and very few internal lines. No gradients, bloom, fuzzy glow, particles, scattered dots, texture, dithering, polished microhighlights or antialiasing. Brightness must come from large pale/cyan color masses against warm clay and charcoal, not blur.
+Do not create a detailed high-resolution illustration that only looks pixelated.
+
+LAYOUT:
+32x32 logical canvas, genuinely transparent RGBA. Keep exactly TWO clear transparent rows above the HIGHEST SPARK and TWO below the foot: all visible pixels within y=2..29. Keep at least two transparent columns on both sides. Include all electrical tips inside those bounds. Center the object; sparks occupy only a few logical rows above the mouth and do not crowd the jar. Preserve natural jar proportions, no stretching to fill a square.
+If output must be larger, make it a precise integer nearest-neighbor enlargement of the original 32x32 grid with one equally sized square per native pixel. One icon only, no grid, text, labels, swatches, checkerboard artwork, UI or background.

@@ -115,7 +115,7 @@ internal static class LocalizationSheetSetup
         if (keys.Count == 0) throw new FormatException("No translation rows.");
     }
 
-    private static IEnumerable<string[]> ReadRows(TextReader reader)
+    internal static IEnumerable<string[]> ReadRows(TextReader reader)
     {
         var cells = new List<string>();
         var value = new StringBuilder();

@@ -14,10 +14,191 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 3001
   npcName: "\uBA5C\uD0C0"
+  roleIcon: {fileID: 0}
   isBoss: 1
   primaryInk: {fileID: 4900000, guid: d395da56e5e470f48a2928562cbc0dc4, type: 3}
-  bossEncounterInk: {fileID: 0}
-  bossEncounterDialogues: []
+  bossEncounterInk: {fileID: 4900000, guid: a1df81f43f172c6489a18c9ed09c62c6, type: 3}
+  bossEncounterDialogues:
+  - label: "\uB9C8\uC655\uC758 \uC778\uB0B4\uC2EC \uC784\uBC15"
+    startPath: MELTA_TIME_LOW
+    inkJSON: {fileID: 0}
+    priority: 1000
+    conditions:
+    - type: 6
+      comparison: 3
+      expectedBool: 0
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 60
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
+  - label: "\uCCB4\uB825 \uBD80\uC871"
+    startPath: MELTA_LOW_HEALTH
+    inkJSON: {fileID: 0}
+    priority: 900
+    conditions:
+    - type: 10
+      comparison: 3
+      expectedBool: 0
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0.3
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+      maxAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+      runEndReason: 0
+      invert: 0
+  - label: "\uBC88\uAC1C\uCC3D \uC18C\uC9C0"
+    startPath: MELTA_LIGHTNING_SPEAR
+    inkJSON: {fileID: 0}
+    priority: 800
+    conditions:
+    - type: 14
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: Weapon.LightningSpear
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
+  - label: "\uBA5C\uD0C0 \uC774\uC804 \uC2B9\uB9AC"
+    startPath: MELTA_PREVIOUS_VICTORY
+    inkJSON: {fileID: 0}
+    priority: 700
+    conditions:
+    - type: 3
+      comparison: 5
+      expectedBool: 0
+      intValue: 1
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
+  - label: "\uBA5C\uD0C0 \uC774\uC804 \uD328\uBC30"
+    startPath: MELTA_PREVIOUS_DEFEAT
+    inkJSON: {fileID: 0}
+    priority: 650
+    conditions:
+    - type: 4
+      comparison: 5
+      expectedBool: 0
+      intValue: 1
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
+  - label: "\uAC00\uBC29 \uAC00\uB4DD \uCC38"
+    startPath: MELTA_BACKPACK_FULL
+    inkJSON: {fileID: 0}
+    priority: 600
+    conditions:
+    - type: 21
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
+  - label: "\uBA5C\uD0C0 \uD638\uAC10\uB3C4 \uB192\uC74C"
+    startPath: MELTA_HIGH_AFFECTION
+    inkJSON: {fileID: 0}
+    priority: 500
+    conditions:
+    - type: 5
+      comparison: 5
+      expectedBool: 0
+      intValue: 5
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
+  - label: "\uBA5C\uD0C0 \uC7AC\uC870\uC6B0"
+    startPath: MELTA_REENCOUNTER
+    inkJSON: {fileID: 0}
+    priority: 100
+    conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
+  - label: "\uAE30\uBCF8"
+    startPath: MELTA_FALLBACK
+    inkJSON: {fileID: 0}
+    priority: 0
+    conditions:
+    - type: 0
+      comparison: 0
+      expectedBool: 0
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
   dialogueTheme: {fileID: 11400000, guid: 16de5d7645fe404429b78b7115f05ed0, type: 2}
   affectionRewards:
   - targetLevel: 5
