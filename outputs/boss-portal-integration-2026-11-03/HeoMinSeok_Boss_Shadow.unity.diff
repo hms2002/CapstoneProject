@@ -1,0 +1,48 @@
+--- before/Assets\_Project\Scenes\HeoMinSeok_Boss_Shadow.unity
+
++++ Assets\_Project\Scenes\HeoMinSeok_Boss_Shadow.unity
+
+@@ -15942,6 +15942,30 @@
+
+       propertyPath: m_LocalEulerAnglesHint.z
+       value: 0
+       objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.b
++      value: 0.9098039
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.g
++      value: 0.8156863
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.r
++      value: 0.85490197
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.b
++      value: 0.7137255
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.g
++      value: 0.54901963
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.r
++      value: 0.6
++      objectReference: {fileID: 0}
+     - target: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+       propertyPath: m_Name
+       value: ScenePortal
+@@ -15958,6 +15982,10 @@
+
+       propertyPath: transitionType
+       value: 4
+       objectReference: {fileID: 0}
++    - target: {fileID: 6050417876131653467, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: m_Sprite
++      value:
++      objectReference: {fileID: 21300000, guid: 033c280b094fcc34ea68769555d83df5, type: 3}
+     m_RemovedComponents:
+     - {fileID: 5909209640859858232, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+     m_RemovedGameObjects: []

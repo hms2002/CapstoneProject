@@ -1,0 +1,31 @@
+-- Production conversion of the imagegen symbol: crop, nearest-neighbor sample,
+-- fixed two-tone/binary-alpha palette, and pixel-grid alignment. No drawn strokes.
+local source=assert(app.open(assert(app.params.source)))
+local im=source.cels[1].image
+local pc=app.pixelColor
+local function pale(p)
+  return pc.rgbaA(p)>127 and math.min(pc.rgbaR(p),pc.rgbaG(p),pc.rgbaB(p))>150
+end
+local left,top,right,bottom=im.width,im.height,-1,-1
+for y=0,im.height-1 do for x=0,im.width-1 do
+  if pale(im:getPixel(x,y)) then
+    left=math.min(left,x);right=math.max(right,x)
+    top=math.min(top,y);bottom=math.max(bottom,y)
+  end
+end end
+assert(right>left and bottom>top,'No pale symbol found')
+local width,height=right-left+1,bottom-top+1
+local scale=30/math.max(width,height)
+local w,h=math.floor(width*scale+.5),math.floor(height*scale+.5)
+local ox,oy=math.floor((48-w)/2),math.floor((48-h)/2)
+local glyph=Image(48,48,ColorMode.RGB)
+for y=0,h-1 do for x=0,w-1 do
+  local sx=left+math.min(width-1,math.floor((x+.5)*width/w))
+  local sy=top+math.min(height-1,math.floor((y+.5)*height/h))
+  if pale(im:getPixel(sx,sy)) then glyph:drawPixel(ox+x,oy+y,pc.rgba(238,226,255,255)) end
+end end
+local sprite=Sprite(48,48,ColorMode.RGB)
+sprite:newCel(sprite.layers[1],1,glyph)
+sprite:saveCopyAs(assert(app.params.output))
+sprite:close();source:close()
+print('Imagegen glyph bounds '..left..','..top..' '..width..'x'..height..'; native '..w..'x'..h..' at '..ox..','..oy)

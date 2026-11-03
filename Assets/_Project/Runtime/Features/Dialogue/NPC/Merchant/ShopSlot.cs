@@ -72,6 +72,7 @@ public sealed class ShopSlot : InteractableBase
     private MaterialPropertyBlock outlinePropertyBlock;
     private MerchantStockEntryState currentState;
     private ScriptableObject currentDefinition;
+    private bool isHighlighted;
     private Vector3 itemSpriteBaseLocalPosition;
     private bool hasItemSpriteBaseLocalPosition;
     private IItemDisplayVisualPresenter ItemDisplayPresenter => itemDisplayPresenter as IItemDisplayVisualPresenter;
@@ -129,6 +130,8 @@ public sealed class ShopSlot : InteractableBase
         currentState = state;
         currentDefinition = currentState != null ? currentState.ResolveDefinition() : null;
         RefreshView();
+        if (isHighlighted)
+            RefreshHighlightedDetail();
     }
 
     public override bool CanInteract(IPlayerInteractor player)
@@ -152,16 +155,25 @@ public sealed class ShopSlot : InteractableBase
 
     public override void OnHighlight()
     {
+        isHighlighted = true;
         SetOutline(true);
+        RefreshHighlightedDetail();
+    }
 
+    private void RefreshHighlightedDetail()
+    {
         if (currentDefinition == null || currentState == null || currentState.isSold)
+        {
+            WorldItemHoverPlayback.Hide(GetDetailAnchor());
             return;
+        }
 
         WorldItemHoverPlayback.Show(GetDetailAnchor(), currentDefinition);
     }
 
     public override void OnUnHighlight()
     {
+        isHighlighted = false;
         SetOutline(false);
         WorldItemHoverPlayback.Hide(GetDetailAnchor());
     }

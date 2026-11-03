@@ -1,0 +1,32 @@
+{
+  "mode": "Micro-fix / preview only",
+  "dimensions": [
+    192,
+    192
+  ],
+  "unchangedLayers": [
+    "outer",
+    "outer-base",
+    "outer-rim",
+    "outer-star",
+    "outer-medallions",
+    "outer-runes",
+    "outer-inset-star",
+    "inner-star",
+    "inner-inset-star",
+    "inner-rim",
+    "inner-medallions",
+    "inner-runes",
+    "medallion",
+    "glyph-directions"
+  ],
+  "addedSeparatorCirclePixels": 252,
+  "separatorPixelRadii": [
+    27.75,
+    29.25
+  ],
+  "squareGeometry": "unchanged",
+  "relativeOctagramAngleDegrees": 22.5,
+  "centralCircle": "unchanged",
+  "runtime": "unchanged"
+}

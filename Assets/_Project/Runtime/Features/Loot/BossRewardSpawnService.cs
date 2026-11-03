@@ -28,6 +28,28 @@ internal static class BossRewardSpawnService
 {
     private const float PhysicalDropScatterRadius = 0.65f;
 
+    public static bool GrantFinalMagicStoneReward(BossRewardContext context, Object logContext)
+    {
+        return TryRunRewardStep(
+            () =>
+            {
+                if (LootManager.Instance == null || CurrencyManager.Instance == null || GameDataStore.Data == null)
+                {
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning(
+                        "[BossBattleEnd] Final magic stone reward requires loot, currency, and save data.",
+                        logContext);
+                    return false;
+                }
+
+                BossRewardModifierAggregate modifiers = ResolveRewardModifiers(context);
+                int amount = Mathf.Max(0, LootManager.Instance.GetBossMagicStoneCount() + modifiers.MagicStoneBonus);
+                CurrencyManager.Instance.AddMagicStone(amount);
+                return true;
+            },
+            "GrantFinalMagicStoneReward",
+            logContext);
+    }
+
     public static bool ActivateTreasureChest(BossRewardActivationRequest request)
     {
         return TryRunRewardStep(

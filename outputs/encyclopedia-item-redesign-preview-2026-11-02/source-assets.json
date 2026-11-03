@@ -1,0 +1,74 @@
+[
+  {
+    "id": "WD_ApprenticeHeroSword",
+    "name": "용사의 검",
+    "guid": "748bd1286788d5f468f9857941b73367",
+    "path": "Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeapon.png"
+  },
+  {
+    "id": "WD_CrimsonBoundary",
+    "name": "홍련의 한계선",
+    "guid": "04aa0b7915194311ae5cd1ef91df55ca",
+    "path": "Assets/_Project/Art/Sprites/Items/Weapon/CrimsonBoundary/FireStaff.png"
+  },
+  {
+    "id": "WD_Flowering",
+    "name": "개화",
+    "guid": "3fa4a22379c20c641870d73d6590726c",
+    "path": "Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_OFF.png"
+  },
+  {
+    "id": "WD_LightningSpear",
+    "name": "뇌창 갈라론",
+    "guid": "10552735fdb1e6e42a67dd8f5e1ae667",
+    "path": "Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png"
+  },
+  {
+    "id": "WD_OddIron",
+    "name": "기묘한 쇠덩이",
+    "guid": "959fd486b4d99da4687a456b33eb4a27",
+    "path": "Assets/_Project/Art/Sprites/Items/Weapons/OddIron/OddIron.png"
+  },
+  {
+    "id": "RD_RecoveryPendant",
+    "name": "회복의 팬턴트",
+    "guid": "b7ac0f2e281a44768c35210163fd6abc",
+    "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/potion1.png"
+  },
+  {
+    "id": "RD_SpeedBoots",
+    "name": "신속의 부츠",
+    "guid": "d950f06d53ce11c41b1f7b2cb791c628",
+    "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedBoots.png"
+  },
+  {
+    "id": "RD_WindTablet",
+    "name": "질풍의 석판",
+    "guid": "f891dbf6eb980e447b2d7d8a74a386fd",
+    "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindTablet.png"
+  },
+  {
+    "id": "RD_HawkEmblem",
+    "name": "송골매의 증표",
+    "guid": "8962ffe16144980439939f691764cb69",
+    "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_HawkEmblem.png"
+  },
+  {
+    "id": "RD_SpeedMedal",
+    "name": "스피드 메달",
+    "guid": "cc05db3731cb2e447b06a5902cb16b6c",
+    "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedMedal.png"
+  },
+  {
+    "id": "RD_TonicGombangdae",
+    "name": "보약 곰방대",
+    "guid": "b21ecde7f4efbae44b88a07fc7a7610e",
+    "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_TonicGombangdae.png"
+  },
+  {
+    "id": "RD_RotatingIornBall",
+    "name": "회전하는 철구",
+    "guid": "6a513faa0e54c5147a1942958fe1a540",
+    "path": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RotatingIornBall.png"
+  }
+]

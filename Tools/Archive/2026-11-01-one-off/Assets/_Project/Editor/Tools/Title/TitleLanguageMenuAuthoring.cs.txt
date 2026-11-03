@@ -1,0 +1,130 @@
+#if UNITY_EDITOR
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using TMPro;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
+
+/// <summary>Authors the approved title language menu through Unity serialization.</summary>
+public static class TitleLanguageMenuAuthoring
+{
+    public const string ScenePath = "Assets/_Project/Scenes/TitleScene.unity";
+    public const string ArtPath = "Assets/_Project/Art/Sprites/UI/Title/Language/";
+
+    [MenuItem("Tools/UI/Apply Title Language Menu")]
+    public static void Apply()
+    {
+        if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Stop Play Mode before authoring.");
+        var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        if (scene.isDirty) throw new InvalidOperationException("Save the open scene before authoring.");
+        if (scene.path != ScenePath)
+        {
+            if (!Application.isBatchMode) throw new InvalidOperationException("Open TitleScene before authoring.");
+            scene = EditorSceneManager.OpenScene(ScenePath);
+        }
+        var controller = scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<TitleMenuController>(true)).Single();
+        if (scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<TitleLanguageMenuUI>(true)).Any())
+            throw new InvalidOperationException("Title language menu is already authored.");
+        var canvas = controller.GetComponentInParent<Canvas>();
+        if (canvas == null) canvas = scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<Canvas>(true)).First(c => c.isRootCanvas);
+        string original = File.ReadAllText(ScenePath);
+        ulong parentId = GlobalObjectId.GetGlobalObjectIdSlow(canvas.transform).targetObjectId;
+        ulong controllerId = GlobalObjectId.GetGlobalObjectIdSlow(controller).targetObjectId;
+
+        var normal = Import("Normal"); var hover = Import("Hover"); var pressed = Import("Pressed");
+        var settingsArt = AssetDatabase.LoadAllAssetsAtPath("Assets/_Project/Art/Sprites/UI/SettingsSkin/SettingsSkin.png").OfType<Sprite>().ToArray();
+        var panelSprite = settingsArt.Single(s => s.name == "Panel");
+        var rowSprite = settingsArt.Single(s => s.name == "Button");
+        var root = Rect("TitleLanguageMenu", canvas.transform); Stretch(root);
+        var menu = root.gameObject.AddComponent<TitleLanguageMenuUI>();
+        var dropdown = Rect("LanguageDropdown", root); Stretch(dropdown);
+        var dismissRect = Rect("Dismiss", dropdown); Stretch(dismissRect);
+        var dismissImage = dismissRect.gameObject.AddComponent<Image>(); dismissImage.color = Color.clear;
+        var dismiss = dismissRect.gameObject.AddComponent<Button>(); dismiss.targetGraphic = dismissImage; dismiss.transition = Selectable.Transition.None;
+        var panel = Rect("LanguageList", dropdown); TopRight(panel, new Vector2(304, 296), new Vector2(-32, -136));
+        var panelImage = panel.gameObject.AddComponent<Image>(); panelImage.sprite = panelSprite; panelImage.type = Image.Type.Sliced;
+        var labels = new[] { "한국어", "English", "日本語", "简体中文", "繁體中文" };
+        var fontPaths = new[] {
+            "Assets/_Project/Art/Font/Galmuri9 SDF.asset", "Assets/_Project/Art/Font/Galmuri9 SDF.asset",
+            "Assets/_Project/Data/Localization/Fonts/Galmuri/Galmuri9 Japanese SDF.asset",
+            "Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hans SDF.asset",
+            "Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hant SDF.asset" };
+        var buttons = new Button[5]; var marks = new GameObject[5];
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            var row = Rect("Language_" + i, panel); TopRight(row, new Vector2(276, 48), new Vector2(-14, -16 - i * 54));
+            var face = row.gameObject.AddComponent<Image>(); face.sprite = rowSprite; face.type = Image.Type.Sliced;
+            var button = row.gameObject.AddComponent<Button>(); button.targetGraphic = face;
+            var colors = button.colors; colors.normalColor = Color.white; colors.highlightedColor = new Color(1.3f,1.2f,1.5f); colors.selectedColor = colors.highlightedColor; colors.pressedColor = new Color(.7f,.6f,.8f); colors.fadeDuration = 0; button.colors = colors;
+            var textRect = Rect("NativeLanguageName", row); Stretch(textRect); textRect.offsetMin = new Vector2(38, 0); textRect.offsetMax = new Vector2(-12, 0);
+            var text = textRect.gameObject.AddComponent<TextMeshProUGUI>(); text.text = labels[i]; text.font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(fontPaths[i]);
+            text.fontSharedMaterial = text.font.material; text.fontSize = 26; text.alignment = TextAlignmentOptions.MidlineLeft; text.raycastTarget = false; text.color = new Color(.94f,.89f,1);
+            var mark = Rect("Selected", row); mark.anchorMin = mark.anchorMax = new Vector2(0,.5f); mark.sizeDelta = new Vector2(8,8); mark.anchoredPosition = new Vector2(20,0);
+            var markImage = mark.gameObject.AddComponent<Image>(); markImage.color = new Color(.67f,.94f,.87f); markImage.raycastTarget = false;
+            marks[i] = mark.gameObject; mark.gameObject.SetActive(false); buttons[i] = button;
+        }
+        var toggleRect = Rect("LanguageButton", root); TopRight(toggleRect, new Vector2(96,96), new Vector2(-32,-32));
+        var icon = toggleRect.gameObject.AddComponent<Image>(); icon.sprite = normal;
+        var toggle = toggleRect.gameObject.AddComponent<Button>(); toggle.targetGraphic = icon; toggle.transition = Selectable.Transition.SpriteSwap;
+        toggle.spriteState = new SpriteState { highlightedSprite = hover, selectedSprite = hover, pressedSprite = pressed, disabledSprite = normal };
+        Set(menu, "toggleButton", toggle); Set(menu, "dropdownRoot", dropdown.gameObject); Set(menu, "dismissButton", dismiss);
+        SetArray(menu, "languageButtons", buttons); SetArray(menu, "selectionMarks", marks);
+        dropdown.gameObject.SetActive(false);
+        Set(controller, "languageMenu", menu);
+        EditorSceneManager.SaveScene(scene);
+        PreserveUnchangedBlocks(original, parentId, controllerId);
+        Unity.CodeEditor.CodeEditor.CurrentEditor.SyncAll();
+        Directory.CreateDirectory("Library/CodexTitleLanguage");
+        File.WriteAllText("Library/CodexTitleLanguage/author-pass.txt", "TitleScene: 48px three-state icon, 5 native-name choices, serialized references authored. Existing scene blocks preserved except Canvas child list and TitleMenuController languageMenu reference.\n");
+        Debug.Log("TITLE_LANGUAGE_AUTHOR_PASS");
+    }
+
+    static Sprite Import(string state)
+    {
+        string path = ArtPath + "TitleLanguage" + state + ".png";
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+        var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+        importer.textureType = TextureImporterType.Sprite; importer.spriteImportMode = SpriteImportMode.Single;
+        importer.spritePixelsPerUnit = 100; importer.filterMode = FilterMode.Point;
+        importer.mipmapEnabled = false; importer.textureCompression = TextureImporterCompression.Uncompressed;
+        importer.npotScale = TextureImporterNPOTScale.None; importer.alphaIsTransparency = true;
+        importer.SaveAndReimport();
+        return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+    }
+    static RectTransform Rect(string name, Transform parent)
+    {
+        var t = new GameObject(name, typeof(RectTransform)).GetComponent<RectTransform>(); t.SetParent(parent, false); return t;
+    }
+    static void Stretch(RectTransform t) { t.anchorMin = Vector2.zero; t.anchorMax = Vector2.one; t.offsetMin = t.offsetMax = Vector2.zero; }
+    static void TopRight(RectTransform t, Vector2 size, Vector2 position) { t.anchorMin = t.anchorMax = t.pivot = Vector2.one; t.sizeDelta = size; t.anchoredPosition = position; }
+    static void Set(Object target, string field, Object value) { var s = new SerializedObject(target); s.FindProperty(field).objectReferenceValue = value; s.ApplyModifiedPropertiesWithoutUndo(); }
+    static void SetArray(Object target, string field, Object[] values)
+    {
+        var s = new SerializedObject(target); var p = s.FindProperty(field); p.arraySize = values.Length;
+        for (int i = 0; i < values.Length; i++) p.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
+        s.ApplyModifiedPropertiesWithoutUndo();
+    }
+    static void PreserveUnchangedBlocks(string original, params ulong[] allowed)
+    {
+        string[] Blocks(string t) => Regex.Split(t, @"(?=^--- !u!)", RegexOptions.Multiline);
+        ulong Id(string t) => ulong.TryParse(Regex.Match(t, @"^--- !u!\d+ &(\d+)").Groups[1].Value, out var id) ? id : 0;
+        var before = Blocks(original).Where(b => Id(b) != 0).ToDictionary(Id);
+        var after = Blocks(File.ReadAllText(ScenePath));
+        for (int i = 0; i < after.Length; i++)
+        {
+            if (!allowed.Contains(Id(after[i])) && before.TryGetValue(Id(after[i]), out var saved)) after[i] = saved;
+            else after[i] = Regex.Replace(after[i], @"[ \t]+(?=\r?$)", "", RegexOptions.Multiline);
+        }
+        var present = after.Select(Id).ToHashSet();
+        string staged = ScenePath + ".title-language-writing";
+        File.WriteAllText(staged, string.Concat(after) + string.Concat(before.Where(p => !present.Contains(p.Key)).Select(p => p.Value)), new UTF8Encoding(false));
+        File.Replace(staged, ScenePath, null);
+    }
+}
+#endif

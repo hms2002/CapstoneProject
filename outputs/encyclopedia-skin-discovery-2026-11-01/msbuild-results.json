@@ -1,0 +1,17 @@
+[
+  {
+    "project": "Editor",
+    "exitCode": 0,
+    "log": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-skin-discovery-2026-11-01\\msbuild-Editor.log"
+  },
+  {
+    "project": "CorePerformanceRegressionEditModeTests",
+    "exitCode": 0,
+    "log": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-skin-discovery-2026-11-01\\msbuild-CorePerformanceRegressionEditModeTests.log"
+  },
+  {
+    "project": "ProceduralPlayModeTests",
+    "exitCode": 0,
+    "log": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\encyclopedia-skin-discovery-2026-11-01\\msbuild-ProceduralPlayModeTests.log"
+  }
+]

@@ -1,0 +1,6 @@
+Beer: body/ripple RGB brighter; exact body/ripple alpha masks, cel/layer opacity and timing preserved. Ground166/255. Only surface foam shapes/alpha are reauthored as soft uneven patches and open glints. Overall footprint unchanged. Native reopen/PNG equality passed.
+Foam: three8x8 variants with3-5px peak bodies, asymmetric open cream rims, sparse off-white glints, warm translucent lower edges and a gentle pop. All keep5x80ms life, about7 births/sec and2-3 active; no change to beer transparency.
+Center ignition:64x64/16x80ms/center32,32. Monotonic irregular radial mask. First frame equals bright beer; last equals unchanged fire ground. Ground opacity166 and pivot32,32 retained; no baked flame shapes.
+All160 steady-fire preview frames match revision15 pixel-for-pixel across the entire right panel. Near35 active; airborne8-9, original colors/motion retained.
+Center demonstration:4.8s,1.28s beer hold +1.28s ignition +2.24s fire hold. Bubbles stop within burned area; individual fire particles begin from already-burned origins. Five editable preview layers.
+Aseprite 1.3.18.6

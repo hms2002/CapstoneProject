@@ -1,0 +1,72 @@
+Revision16 - brighter beer, existing-game bubbles, center ignition
+
+Scope: Implementation of standalone Aseprite samples requested by the user.
+No Unity Assets, prefabs, scenes, scripts, materials or metadata were changed.
+
+Changed/added files and purpose:
+- alcohol.aseprite +4 PNG frames/sheet: original revision10 beer geometry and timing;
+  six-color RGB remap only. Layer/cel/pixel opacity is unchanged, including the
+  ground layer's166/255 opacity. The existing foam and surface marks remain.
+- existing-game-bubble.aseprite: byte-identical copy of
+  Assets/_Project/Art/Sprites/VFX/Common/AlcholeBubble.aseprite.
+- bubble-particle.aseprite +5 PNG frames/sheet: existing32px hollow white ring
+  reduced to4-7px with conservative coverage and circular corner trimming;
+  cream tint250/238/221 from AlcoholPuddle.prefab. Five80ms growth/pop frames.
+  This is an adapted sample particle; the source game sprite is one static frame.
+- alcohol-to-fire-center.aseprite +16 PNG frames/sheet:64x64,16x80ms, pivot32,32.
+  Monotonic radial ignition starts at32,32 with an irregular boundary. Existing
+  beer ground/ripples/foam are replaced with the accepted fire ground/heat.
+  The first frame equals the brightened beer; the last equals fire-ground frame1.
+  No upright flame shapes are baked into the ground source.
+- comparison-preview.aseprite/.gif/.png: beer with bubbles beside the accepted
+  revision15 fire.608x320,160x20ms. Every fire-side pixel is unchanged.
+- alcohol-with-bubbles-preview.aseprite/.gif/.png:320x320 beer preview,3.2s loop.
+- center-ignition-preview.aseprite/.gif/.png:320x320,4.8s demonstration.
+  Beer hold1.28s, ignition1.28s, fire hold2.24s. Ground, bubbles, near flames and
+  airborne flames are separate editable layers. GIF repeats after the fire hold.
+- center-ignition-stages*.png: six sampled frames for visual inspection.
+- fire-ground*, ground-flame-particle*, airborne-flame-particle*:29 files copied
+  byte-for-byte from revision15. Near35 active / darker palette and airborne
+  8-9 active / brighter palette are retained. Preview replays that revision's
+  particle-motion.csv; no changes to the accepted trajectories or fire art.
+- author-beer-ignition.lua: reproducible native Aseprite authoring and assertions.
+- inspect-bubble.lua / existing-bubble-* / inspection logs: source inspection.
+- bubble-motion.csv / ignition-coverage.csv: sampled bubble positions and
+  monotonic burned-pixel coverage. verify-exports.py is read-only validation.
+- verification.txt / export-verification.json: native and exported checks.
+
+Existing game reference, inspected read-only:
+- Assets/_Project/Art/Materials/AlcholBubbleParticleMat.mat references the original
+  AlcholeBubble.aseprite texture (GUID4f1dc14c115fa8448af6325eb5f14df6).
+- Assets/_Project/Prefabs/Map/Puddles/AlcoholPuddle.prefab: BubbleParticles has
+  lifetime0.4s, emission7/s, cream startColor, upward velocity1, size0.2-0.4.
+- Runtime/Presentation/Map/Puddles/PuddleParticleVisual.cs configures emission7/s,
+  radius scale0.82 and stops the alcohol bubble layer after conversion.
+- The sample uses22 births per3.2s (6.875/s),400ms lifetime and6-8px upward travel.
+  Two or three bubbles are alive together. A short pop was added for the sample.
+  During ignition, bubbles stop inside burned regions and each flame begins only
+  after its birth position has burned. An initial small particle starts at32,32.
+
+Verification completed:
+- Aseprite1.3.18.6 batch authoring exit0; output/error logs empty.
+- Four beer frames: all alpha pixels identical, RGB brighter, original opacity,
+  cel positions and frame timing preserved. Native reopen equals PNG output.
+- Ground, near and airborne29 files preserved by SHA256. Original game bubble
+  SHA256 equals the copied native file; no modification of the game source.
+- Every steady-fire preview pixel retained across160 frames.
+- Ignition endpoints exact; burned coverage grows0 to1625 without regression.
+- Bubble hollow centers/rounded corners,2-3 active count and upward travel pass.
+- GIF dimensions, total durations and exact PNG/first-GIF-frame equality pass.
+- Comparison and six ignition stages visually inspected after corner correction.
+
+Limits:
+- These are Aseprite compositions on a neutral tiled floor, not Unity captures.
+- No Unity import, compilation, Play Mode or in-game integration was executed.
+- GIF previews have a baked review background. Use the native64x64 sources or
+  RGBA PNG sheets for engine use, not the enlarged preview GIFs.
+- Authoring params: sourceDir=revision-15-darker-ground-flames;
+  alcoholDir=revision-10-v2-transparency; outputDir=this directory.
+  Copy the29 fire files and original game bubble before running the Lua author.
+
+Doc Impact Check: SessionLog only. ErrorLog/DecisionLog unchanged for this task.
+No StructureMemory/RefactorBacklog/Architecture/Contracts or Presentation HTML impact.

@@ -1,0 +1,22 @@
+[
+  {
+    "file": "Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaEntrySlot.prefab",
+    "changed": true
+  },
+  {
+    "file": "Assets/_Project/Art/Sprites/UI/EncyclopediaItemSkin/Materials/Galmuri9 SDF Opaque Outline.mat",
+    "changed": true
+  },
+  {
+    "file": "Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab",
+    "changed": true
+  },
+  {
+    "file": "Assets/_Project/Art/Sprites/UI/EncyclopediaItemSkin/Materials/Galmuri9 SDF Plain.mat",
+    "changed": true
+  },
+  {
+    "file": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemLeftPage.cs",
+    "changed": true
+  }
+]

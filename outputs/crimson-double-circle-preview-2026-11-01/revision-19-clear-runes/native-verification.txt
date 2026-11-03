@@ -1,0 +1,381 @@
+PASS inner dimensions
+PASS inner editable source structure
+PASS inner PNG equality after native reopen
+PASS outer dimensions
+PASS outer editable source structure
+PASS outer PNG equality after native reopen
+PASS glyph-atlas dimensions
+PASS glyph-atlas editable source structure
+PASS glyph-atlas PNG equality after native reopen
+PASS Original 10px medallion frame restored exactly
+PASS inner concentric border shape/color preserved
+PASS outer concentric border shape/color preserved
+PASS Medallion 0 interior is transparent
+PASS Medallion 1 interior is transparent
+PASS Medallion 2 interior is transparent
+PASS Medallion 3 interior is transparent
+PASS Native animation dimensions and 120 frames
+PASS GIF dimensions and 120 frames
+PASS GIF composition starts at exact original PNG arrangement
+PASS Native/GIF 80ms timing 1
+PASS GIF exact palette and uniform 3x scale 1
+PASS Native/GIF 80ms timing 2
+PASS GIF exact palette and uniform 3x scale 2
+PASS Animation advances 2
+PASS Native/GIF 80ms timing 3
+PASS GIF exact palette and uniform 3x scale 3
+PASS Animation advances 3
+PASS Native/GIF 80ms timing 4
+PASS GIF exact palette and uniform 3x scale 4
+PASS Animation advances 4
+PASS Native/GIF 80ms timing 5
+PASS GIF exact palette and uniform 3x scale 5
+PASS Animation advances 5
+PASS Native/GIF 80ms timing 6
+PASS GIF exact palette and uniform 3x scale 6
+PASS Animation advances 6
+PASS Native/GIF 80ms timing 7
+PASS GIF exact palette and uniform 3x scale 7
+PASS Animation advances 7
+PASS Native/GIF 80ms timing 8
+PASS GIF exact palette and uniform 3x scale 8
+PASS Animation advances 8
+PASS Native/GIF 80ms timing 9
+PASS GIF exact palette and uniform 3x scale 9
+PASS Animation advances 9
+PASS Native/GIF 80ms timing 10
+PASS GIF exact palette and uniform 3x scale 10
+PASS Animation advances 10
+PASS Native/GIF 80ms timing 11
+PASS GIF exact palette and uniform 3x scale 11
+PASS Animation advances 11
+PASS Native/GIF 80ms timing 12
+PASS GIF exact palette and uniform 3x scale 12
+PASS Animation advances 12
+PASS Native/GIF 80ms timing 13
+PASS GIF exact palette and uniform 3x scale 13
+PASS Animation advances 13
+PASS Native/GIF 80ms timing 14
+PASS GIF exact palette and uniform 3x scale 14
+PASS Animation advances 14
+PASS Native/GIF 80ms timing 15
+PASS GIF exact palette and uniform 3x scale 15
+PASS Animation advances 15
+PASS Native/GIF 80ms timing 16
+PASS GIF exact palette and uniform 3x scale 16
+PASS Animation advances 16
+PASS Native/GIF 80ms timing 17
+PASS GIF exact palette and uniform 3x scale 17
+PASS Animation advances 17
+PASS Native/GIF 80ms timing 18
+PASS GIF exact palette and uniform 3x scale 18
+PASS Animation advances 18
+PASS Native/GIF 80ms timing 19
+PASS GIF exact palette and uniform 3x scale 19
+PASS Animation advances 19
+PASS Native/GIF 80ms timing 20
+PASS GIF exact palette and uniform 3x scale 20
+PASS Animation advances 20
+PASS Native/GIF 80ms timing 21
+PASS GIF exact palette and uniform 3x scale 21
+PASS Animation advances 21
+PASS Native/GIF 80ms timing 22
+PASS GIF exact palette and uniform 3x scale 22
+PASS Animation advances 22
+PASS Native/GIF 80ms timing 23
+PASS GIF exact palette and uniform 3x scale 23
+PASS Animation advances 23
+PASS Native/GIF 80ms timing 24
+PASS GIF exact palette and uniform 3x scale 24
+PASS Animation advances 24
+PASS Native/GIF 80ms timing 25
+PASS GIF exact palette and uniform 3x scale 25
+PASS Animation advances 25
+PASS Native/GIF 80ms timing 26
+PASS GIF exact palette and uniform 3x scale 26
+PASS Animation advances 26
+PASS Native/GIF 80ms timing 27
+PASS GIF exact palette and uniform 3x scale 27
+PASS Animation advances 27
+PASS Native/GIF 80ms timing 28
+PASS GIF exact palette and uniform 3x scale 28
+PASS Animation advances 28
+PASS Native/GIF 80ms timing 29
+PASS GIF exact palette and uniform 3x scale 29
+PASS Animation advances 29
+PASS Native/GIF 80ms timing 30
+PASS GIF exact palette and uniform 3x scale 30
+PASS Animation advances 30
+PASS Native/GIF 80ms timing 31
+PASS GIF exact palette and uniform 3x scale 31
+PASS Animation advances 31
+PASS Native/GIF 80ms timing 32
+PASS GIF exact palette and uniform 3x scale 32
+PASS Animation advances 32
+PASS Native/GIF 80ms timing 33
+PASS GIF exact palette and uniform 3x scale 33
+PASS Animation advances 33
+PASS Native/GIF 80ms timing 34
+PASS GIF exact palette and uniform 3x scale 34
+PASS Animation advances 34
+PASS Native/GIF 80ms timing 35
+PASS GIF exact palette and uniform 3x scale 35
+PASS Animation advances 35
+PASS Native/GIF 80ms timing 36
+PASS GIF exact palette and uniform 3x scale 36
+PASS Animation advances 36
+PASS Native/GIF 80ms timing 37
+PASS GIF exact palette and uniform 3x scale 37
+PASS Animation advances 37
+PASS Native/GIF 80ms timing 38
+PASS GIF exact palette and uniform 3x scale 38
+PASS Animation advances 38
+PASS Native/GIF 80ms timing 39
+PASS GIF exact palette and uniform 3x scale 39
+PASS Animation advances 39
+PASS Native/GIF 80ms timing 40
+PASS GIF exact palette and uniform 3x scale 40
+PASS Animation advances 40
+PASS Native/GIF 80ms timing 41
+PASS GIF exact palette and uniform 3x scale 41
+PASS Animation advances 41
+PASS Native/GIF 80ms timing 42
+PASS GIF exact palette and uniform 3x scale 42
+PASS Animation advances 42
+PASS Native/GIF 80ms timing 43
+PASS GIF exact palette and uniform 3x scale 43
+PASS Animation advances 43
+PASS Native/GIF 80ms timing 44
+PASS GIF exact palette and uniform 3x scale 44
+PASS Animation advances 44
+PASS Native/GIF 80ms timing 45
+PASS GIF exact palette and uniform 3x scale 45
+PASS Animation advances 45
+PASS Native/GIF 80ms timing 46
+PASS GIF exact palette and uniform 3x scale 46
+PASS Animation advances 46
+PASS Native/GIF 80ms timing 47
+PASS GIF exact palette and uniform 3x scale 47
+PASS Animation advances 47
+PASS Native/GIF 80ms timing 48
+PASS GIF exact palette and uniform 3x scale 48
+PASS Animation advances 48
+PASS Native/GIF 80ms timing 49
+PASS GIF exact palette and uniform 3x scale 49
+PASS Animation advances 49
+PASS Native/GIF 80ms timing 50
+PASS GIF exact palette and uniform 3x scale 50
+PASS Animation advances 50
+PASS Native/GIF 80ms timing 51
+PASS GIF exact palette and uniform 3x scale 51
+PASS Animation advances 51
+PASS Native/GIF 80ms timing 52
+PASS GIF exact palette and uniform 3x scale 52
+PASS Animation advances 52
+PASS Native/GIF 80ms timing 53
+PASS GIF exact palette and uniform 3x scale 53
+PASS Animation advances 53
+PASS Native/GIF 80ms timing 54
+PASS GIF exact palette and uniform 3x scale 54
+PASS Animation advances 54
+PASS Native/GIF 80ms timing 55
+PASS GIF exact palette and uniform 3x scale 55
+PASS Animation advances 55
+PASS Native/GIF 80ms timing 56
+PASS GIF exact palette and uniform 3x scale 56
+PASS Animation advances 56
+PASS Native/GIF 80ms timing 57
+PASS GIF exact palette and uniform 3x scale 57
+PASS Animation advances 57
+PASS Native/GIF 80ms timing 58
+PASS GIF exact palette and uniform 3x scale 58
+PASS Animation advances 58
+PASS Native/GIF 80ms timing 59
+PASS GIF exact palette and uniform 3x scale 59
+PASS Animation advances 59
+PASS Native/GIF 80ms timing 60
+PASS GIF exact palette and uniform 3x scale 60
+PASS Animation advances 60
+PASS Native/GIF 80ms timing 61
+PASS GIF exact palette and uniform 3x scale 61
+PASS Animation advances 61
+PASS Native/GIF 80ms timing 62
+PASS GIF exact palette and uniform 3x scale 62
+PASS Animation advances 62
+PASS Native/GIF 80ms timing 63
+PASS GIF exact palette and uniform 3x scale 63
+PASS Animation advances 63
+PASS Native/GIF 80ms timing 64
+PASS GIF exact palette and uniform 3x scale 64
+PASS Animation advances 64
+PASS Native/GIF 80ms timing 65
+PASS GIF exact palette and uniform 3x scale 65
+PASS Animation advances 65
+PASS Native/GIF 80ms timing 66
+PASS GIF exact palette and uniform 3x scale 66
+PASS Animation advances 66
+PASS Native/GIF 80ms timing 67
+PASS GIF exact palette and uniform 3x scale 67
+PASS Animation advances 67
+PASS Native/GIF 80ms timing 68
+PASS GIF exact palette and uniform 3x scale 68
+PASS Animation advances 68
+PASS Native/GIF 80ms timing 69
+PASS GIF exact palette and uniform 3x scale 69
+PASS Animation advances 69
+PASS Native/GIF 80ms timing 70
+PASS GIF exact palette and uniform 3x scale 70
+PASS Animation advances 70
+PASS Native/GIF 80ms timing 71
+PASS GIF exact palette and uniform 3x scale 71
+PASS Animation advances 71
+PASS Native/GIF 80ms timing 72
+PASS GIF exact palette and uniform 3x scale 72
+PASS Animation advances 72
+PASS Native/GIF 80ms timing 73
+PASS GIF exact palette and uniform 3x scale 73
+PASS Animation advances 73
+PASS Native/GIF 80ms timing 74
+PASS GIF exact palette and uniform 3x scale 74
+PASS Animation advances 74
+PASS Native/GIF 80ms timing 75
+PASS GIF exact palette and uniform 3x scale 75
+PASS Animation advances 75
+PASS Native/GIF 80ms timing 76
+PASS GIF exact palette and uniform 3x scale 76
+PASS Animation advances 76
+PASS Native/GIF 80ms timing 77
+PASS GIF exact palette and uniform 3x scale 77
+PASS Animation advances 77
+PASS Native/GIF 80ms timing 78
+PASS GIF exact palette and uniform 3x scale 78
+PASS Animation advances 78
+PASS Native/GIF 80ms timing 79
+PASS GIF exact palette and uniform 3x scale 79
+PASS Animation advances 79
+PASS Native/GIF 80ms timing 80
+PASS GIF exact palette and uniform 3x scale 80
+PASS Animation advances 80
+PASS Native/GIF 80ms timing 81
+PASS GIF exact palette and uniform 3x scale 81
+PASS Animation advances 81
+PASS Native/GIF 80ms timing 82
+PASS GIF exact palette and uniform 3x scale 82
+PASS Animation advances 82
+PASS Native/GIF 80ms timing 83
+PASS GIF exact palette and uniform 3x scale 83
+PASS Animation advances 83
+PASS Native/GIF 80ms timing 84
+PASS GIF exact palette and uniform 3x scale 84
+PASS Animation advances 84
+PASS Native/GIF 80ms timing 85
+PASS GIF exact palette and uniform 3x scale 85
+PASS Animation advances 85
+PASS Native/GIF 80ms timing 86
+PASS GIF exact palette and uniform 3x scale 86
+PASS Animation advances 86
+PASS Native/GIF 80ms timing 87
+PASS GIF exact palette and uniform 3x scale 87
+PASS Animation advances 87
+PASS Native/GIF 80ms timing 88
+PASS GIF exact palette and uniform 3x scale 88
+PASS Animation advances 88
+PASS Native/GIF 80ms timing 89
+PASS GIF exact palette and uniform 3x scale 89
+PASS Animation advances 89
+PASS Native/GIF 80ms timing 90
+PASS GIF exact palette and uniform 3x scale 90
+PASS Animation advances 90
+PASS Native/GIF 80ms timing 91
+PASS GIF exact palette and uniform 3x scale 91
+PASS Animation advances 91
+PASS Native/GIF 80ms timing 92
+PASS GIF exact palette and uniform 3x scale 92
+PASS Animation advances 92
+PASS Native/GIF 80ms timing 93
+PASS GIF exact palette and uniform 3x scale 93
+PASS Animation advances 93
+PASS Native/GIF 80ms timing 94
+PASS GIF exact palette and uniform 3x scale 94
+PASS Animation advances 94
+PASS Native/GIF 80ms timing 95
+PASS GIF exact palette and uniform 3x scale 95
+PASS Animation advances 95
+PASS Native/GIF 80ms timing 96
+PASS GIF exact palette and uniform 3x scale 96
+PASS Animation advances 96
+PASS Native/GIF 80ms timing 97
+PASS GIF exact palette and uniform 3x scale 97
+PASS Animation advances 97
+PASS Native/GIF 80ms timing 98
+PASS GIF exact palette and uniform 3x scale 98
+PASS Animation advances 98
+PASS Native/GIF 80ms timing 99
+PASS GIF exact palette and uniform 3x scale 99
+PASS Animation advances 99
+PASS Native/GIF 80ms timing 100
+PASS GIF exact palette and uniform 3x scale 100
+PASS Animation advances 100
+PASS Native/GIF 80ms timing 101
+PASS GIF exact palette and uniform 3x scale 101
+PASS Animation advances 101
+PASS Native/GIF 80ms timing 102
+PASS GIF exact palette and uniform 3x scale 102
+PASS Animation advances 102
+PASS Native/GIF 80ms timing 103
+PASS GIF exact palette and uniform 3x scale 103
+PASS Animation advances 103
+PASS Native/GIF 80ms timing 104
+PASS GIF exact palette and uniform 3x scale 104
+PASS Animation advances 104
+PASS Native/GIF 80ms timing 105
+PASS GIF exact palette and uniform 3x scale 105
+PASS Animation advances 105
+PASS Native/GIF 80ms timing 106
+PASS GIF exact palette and uniform 3x scale 106
+PASS Animation advances 106
+PASS Native/GIF 80ms timing 107
+PASS GIF exact palette and uniform 3x scale 107
+PASS Animation advances 107
+PASS Native/GIF 80ms timing 108
+PASS GIF exact palette and uniform 3x scale 108
+PASS Animation advances 108
+PASS Native/GIF 80ms timing 109
+PASS GIF exact palette and uniform 3x scale 109
+PASS Animation advances 109
+PASS Native/GIF 80ms timing 110
+PASS GIF exact palette and uniform 3x scale 110
+PASS Animation advances 110
+PASS Native/GIF 80ms timing 111
+PASS GIF exact palette and uniform 3x scale 111
+PASS Animation advances 111
+PASS Native/GIF 80ms timing 112
+PASS GIF exact palette and uniform 3x scale 112
+PASS Animation advances 112
+PASS Native/GIF 80ms timing 113
+PASS GIF exact palette and uniform 3x scale 113
+PASS Animation advances 113
+PASS Native/GIF 80ms timing 114
+PASS GIF exact palette and uniform 3x scale 114
+PASS Animation advances 114
+PASS Native/GIF 80ms timing 115
+PASS GIF exact palette and uniform 3x scale 115
+PASS Animation advances 115
+PASS Native/GIF 80ms timing 116
+PASS GIF exact palette and uniform 3x scale 116
+PASS Animation advances 116
+PASS Native/GIF 80ms timing 117
+PASS GIF exact palette and uniform 3x scale 117
+PASS Animation advances 117
+PASS Native/GIF 80ms timing 118
+PASS GIF exact palette and uniform 3x scale 118
+PASS Animation advances 118
+PASS Native/GIF 80ms timing 119
+PASS GIF exact palette and uniform 3x scale 119
+PASS Animation advances 119
+PASS Native/GIF 80ms timing 120
+PASS GIF exact palette and uniform 3x scale 120
+PASS Animation advances 120
+PASS Rendered inner medallion moves counterclockwise
+PASS Rendered outer F moves clockwise
+Total passed: 380

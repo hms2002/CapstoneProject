@@ -1,0 +1,42 @@
+[
+  {
+    "line": 132,
+    "before": "pivot: {x: 0.5, y: -0.24418604}",
+    "after": "pivot: {x: 0.49999997, y: -0.25}"
+  },
+  {
+    "line": 140,
+    "before": "width: 86",
+    "after": "width: 128"
+  },
+  {
+    "line": 141,
+    "before": "height: 86",
+    "after": "height: 128"
+  },
+  {
+    "line": 150,
+    "before": "uvTransform: {x: -17, y: -17}",
+    "after": "uvTransform: {x: -28, y: -28}"
+  },
+  {
+    "line": 172,
+    "before": "width: 128",
+    "after": "width: 192"
+  },
+  {
+    "line": 173,
+    "before": "height: 128",
+    "after": "height: 192"
+  },
+  {
+    "line": 184,
+    "before": "canvasSize: {x: 128, y: 128}",
+    "after": "canvasSize: {x: 192, y: 192}"
+  },
+  {
+    "line": 185,
+    "before": "previousTextureSize: {x: 128, y: 128}",
+    "after": "previousTextureSize: {x: 256, y: 256}"
+  }
+]

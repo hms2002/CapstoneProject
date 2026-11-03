@@ -1,0 +1,77 @@
+{
+  "radii": [
+    {
+      "charge": 0,
+      "inner": 0,
+      "outer": 0
+    },
+    {
+      "charge": 25,
+      "inner": 20,
+      "outer": 0
+    },
+    {
+      "charge": 50,
+      "inner": 40,
+      "outer": 0
+    },
+    {
+      "charge": 75,
+      "inner": 40,
+      "outer": 50
+    },
+    {
+      "charge": 100,
+      "inner": 40,
+      "outer": 60
+    }
+  ],
+  "nativePixelSizes": {
+    "inner": 80,
+    "outer": 120,
+    "proposedPpu": 20,
+    "existingCrimsonPpu": 16,
+    "maximumDiameter": 6
+  },
+  "worldDiameterPreservation": "120 / 20 = 96 / 16 = 6; proposed import, not applied to Unity",
+  "nativeSourcePixelMapping": "pass",
+  "palette": "FFC65A gold, FFF0BF cream, B63D28 deep red-brown; binary alpha",
+  "paletteCounts": {
+    "outer": {
+      "255,198,90": 859,
+      "255,240,191": 78,
+      "182,61,40": 702
+    },
+    "inner": {
+      "255,198,90": 981,
+      "255,240,191": 110,
+      "182,61,40": 860
+    }
+  },
+  "borderPaletteCounts": {
+    "outer": {
+      "255,198,90": 576,
+      "255,240,191": 28,
+      "182,61,40": 596
+    },
+    "inner": {
+      "255,198,90": 556,
+      "255,240,191": 64,
+      "182,61,40": 580
+    }
+  },
+  "geometry": "Exact v10 alpha masks for both complete sprites and borders; v11 ornaments absent",
+  "cardinalBorderThickness": "2px verified",
+  "regularRunes": "7x7 bold, individually authored color clusters; inner 12 plus 4 center marks; outer 16, separated sectors verified",
+  "wholeInnerCompletedAt50": "pass",
+  "separateLayers": "pass",
+  "innerOpaquePixels": 1951,
+  "outerOpaquePixels": 1639,
+  "fullCircumferenceAtPartialCharge": "pass",
+  "scaledBoundary": "pass",
+  "oppositePlanarRotation": "pass",
+  "pauseResume": "pass",
+  "artwork": "Flat gold face/deep inset separation and discrete cream glints; no angular light ramp or height-based glyph bands",
+  "rendering": "offline same-JavaScript Canvas pixel adapter",
+  "limitations": "Browser DOM/layout and Unity Play Mode not run. Authored shading rotates with each sprite. The 20 PPU proposal is denser than existing 16 PPU effects. Actual-camera sampling remains unverified."
+}

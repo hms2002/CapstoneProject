@@ -1,0 +1,187 @@
+#if UNITY_EDITOR
+using System;
+using TMPro;
+using UnityEditor;
+using UnityEditor.Events;
+using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
+using UnityEngine.Localization.Tables;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
+
+// Temporary native asset authoring entry point; archived outside Assets after use.
+public static class LevelRewardSkinAuthoring
+{
+    const string Prefab = "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab";
+    const string Art = "Assets/_Project/Art/Sprites/UI/LevelRewardControls/";
+    const string TitleMaterial = "Assets/_Project/Art/Font/LevelRewardTitleOutline.mat";
+    static readonly string[] States = { "Normal", "Focus", "Pressed", "Disabled" };
+    static readonly string[][] Translations = {
+        new[] { "ui.level_reward.close", "닫기", "Close", "閉じる", "关闭", "關閉" },
+        new[] { "ui.level_reward.reroll", "리롤", "Reroll", "再抽選", "重抽", "重抽" }
+    };
+
+    public static void Apply()
+    {
+        foreach (string button in new[] { "Close", "Reroll" })
+            foreach (string state in States) ImportSprite(button + state);
+        AddTranslations();
+        var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/_Project/Art/Font/Galmuri9 SDF.asset");
+        if (font == null) throw new InvalidOperationException("Galmuri9 font is missing.");
+        Material titleMaterial = AssetDatabase.LoadAssetAtPath<Material>(TitleMaterial);
+        if (titleMaterial == null)
+        {
+            titleMaterial = new Material(font.material) { name = "LevelRewardTitleOutline" };
+            AssetDatabase.CreateAsset(titleMaterial, TitleMaterial);
+        }
+        titleMaterial.SetColor(ShaderUtilities.ID_FaceColor, Color.white);
+        titleMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0f);
+        titleMaterial.SetColor(ShaderUtilities.ID_OutlineColor, Hex("17131C"));
+        titleMaterial.SetFloat(ShaderUtilities.ID_OutlineWidth, 0.314f);
+        titleMaterial.SetFloat(ShaderUtilities.ID_OutlineSoftness, 0f);
+        EditorUtility.SetDirty(titleMaterial);
+        AssetDatabase.SaveAssetIfDirty(titleMaterial);
+
+        GameObject root = PrefabUtility.LoadPrefabContents(Prefab);
+        try
+        {
+            Transform panel = root.transform.Find("RewardCanvas/LevelRewardSelectionRoot/PresentationRoot");
+            if (panel == null) throw new InvalidOperationException("Authored reward presentation root missing.");
+            Transform titleMount = panel.Find("HeaderRoot/TitleMount");
+            titleMount.GetComponent<UnityEngine.UI.Image>().enabled = false;
+            TMP_Text title = titleMount.Find("TitleText").GetComponent<TMP_Text>();
+            Style(title, font, 48, 28, Color.white);
+            title.fontStyle = FontStyles.Bold;
+            title.fontSharedMaterial = titleMaterial;
+            title.GetComponent<LocalizeTmpFontEvent>().SetAuthoredMaterial(titleMaterial);
+
+            Transform footer = panel.Find("FooterRoot");
+            Transform close = footer.Find("CloseControlMount");
+            Transform reroll = footer.Find("RerollControlMount");
+            Skin(close, "Close");
+            Skin(reroll, "Reroll");
+            TMP_Text closeLabel = close.Find("CloseLabel").GetComponent<TMP_Text>();
+            TMP_Text count = reroll.Find("RerollLabel").GetComponent<TMP_Text>();
+            TMP_Text closeKey = Label(close, "ShortcutLabel", closeLabel);
+            TMP_Text rerollKey = Label(reroll, "ShortcutLabel", count);
+            TMP_Text rerollAction = Label(reroll, "RerollActionLabel", count);
+            Color ivory = Hex("F1DEC0");
+            Style(closeLabel, font, 32, 18, ivory); Place(closeLabel, 144, 18, 84, 38);
+            Localize(closeLabel, "ui.level_reward.close", "닫기");
+            Style(closeKey, font, 20, 20, ivory); Place(closeKey, 60, 20, 60, 32); closeKey.text = "ESC";
+            Style(rerollKey, font, 24, 24, ivory); Place(rerollKey, 32, 20, 40, 32); rerollKey.text = "R";
+            Style(rerollAction, font, 32, 18, ivory); Place(rerollAction, 98, 18, 84, 38);
+            Localize(rerollAction, "ui.level_reward.reroll", "리롤");
+            Style(count, font, 24, 18, ivory); Place(count, 230, 20, 72, 34); count.text = "5/5";
+            // Only this existing field writes the live numeric badge.
+            var presenter = root.GetComponentInChildren<LevelRewardSelectionPresenter>(true);
+            if (new SerializedObject(presenter).FindProperty("rerollCountText").objectReferenceValue != count)
+                throw new InvalidOperationException("The existing rerollCountText reference changed.");
+            PrefabUtility.SaveAsPrefabAsset(root, Prefab, out bool saved);
+            if (!saved) throw new InvalidOperationException("Could not save the reward skin.");
+        }
+        finally { PrefabUtility.UnloadPrefabContents(root); }
+        Debug.Log("LEVEL_REWARD_SKIN_APPLIED: A sprites, separate localized labels/live count, panel-free Bold title. No Play Mode or tests executed.");
+    }
+
+    static void ImportSprite(string name)
+    {
+        string path = Art + name + ".png";
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+        var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+        if (importer == null) throw new InvalidOperationException(path);
+        importer.textureType = TextureImporterType.Sprite;
+        importer.spriteImportMode = SpriteImportMode.Single;
+        importer.spritePixelsPerUnit = 100;
+        importer.spriteBorder = Vector4.zero;
+        importer.filterMode = FilterMode.Point;
+        importer.mipmapEnabled = false;
+        importer.alphaIsTransparency = true;
+        importer.wrapMode = TextureWrapMode.Clamp;
+        importer.npotScale = TextureImporterNPOTScale.None;
+        importer.textureCompression = TextureImporterCompression.Uncompressed;
+        importer.maxTextureSize = 256;
+        importer.SaveAndReimport();
+    }
+
+    static void Skin(Transform root, string prefix)
+    {
+        var image = root.GetComponent<UnityEngine.UI.Image>();
+        var button = root.GetComponent<UnityEngine.UI.Button>();
+        Sprite Sprite(string state) => AssetDatabase.LoadAssetAtPath<Sprite>(Art + prefix + state + ".png");
+        image.sprite = Sprite("Normal");
+        image.color = Color.white;
+        image.type = UnityEngine.UI.Image.Type.Simple;
+        image.preserveAspect = false;
+        image.raycastTarget = true;
+        button.targetGraphic = image;
+        button.transition = Selectable.Transition.SpriteSwap;
+        button.spriteState = new SpriteState {
+            highlightedSprite = Sprite("Focus"), selectedSprite = Sprite("Focus"),
+            pressedSprite = Sprite("Pressed"), disabledSprite = Sprite("Disabled")
+        };
+    }
+
+    static TMP_Text Label(Transform parent, string name, TMP_Text sample)
+    {
+        Transform existing = parent.Find(name);
+        if (existing != null) return existing.GetComponent<TMP_Text>();
+        TMP_Text label = Object.Instantiate(sample, parent, false);
+        label.name = name;
+        return label;
+    }
+
+    static void Place(TMP_Text text, float left, float top, float width, float height)
+    {
+        RectTransform rect = text.rectTransform;
+        rect.anchorMin = rect.anchorMax = new Vector2(0, 1);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.sizeDelta = new Vector2(width, height);
+        rect.anchoredPosition = new Vector2(left + width / 2, -top - height / 2);
+    }
+
+    static void Style(TMP_Text label, TMP_FontAsset font, float size, float minimum, Color color)
+    {
+        label.font = font;
+        label.fontSharedMaterial = font.material;
+        label.GetComponent<LocalizeTmpFontEvent>().SetAuthoredMaterial(font.material);
+        label.fontStyle = FontStyles.Normal;
+        label.color = color;
+        label.fontSize = size;
+        label.fontSizeMax = size;
+        label.fontSizeMin = minimum;
+        label.enableAutoSizing = minimum < size;
+        label.alignment = TextAlignmentOptions.Center;
+        label.textWrappingMode = TextWrappingModes.NoWrap;
+        label.overflowMode = TextOverflowModes.Overflow;
+        label.margin = Vector4.zero;
+        label.raycastTarget = false;
+    }
+
+    static void Localize(TMP_Text text, string key, string fallback)
+    {
+        var binding = text.GetComponent<LocalizeStringEvent>() ?? text.gameObject.AddComponent<LocalizeStringEvent>();
+        binding.StringReference = new LocalizedString(GameText.TableName, key);
+        if (binding.OnUpdateString.GetPersistentEventCount() == 0)
+            UnityEventTools.AddPersistentListener(binding.OnUpdateString,
+                (UnityEngine.Events.UnityAction<string>)Delegate.CreateDelegate(typeof(UnityEngine.Events.UnityAction<string>), text,
+                    typeof(TMP_Text).GetProperty("text").GetSetMethod()));
+        text.text = fallback;
+    }
+
+    static void AddTranslations()
+    {
+        string[] locales = { "ko", "en", "ja", "zh-Hans", "zh-Hant" };
+        for (int i = 0; i < locales.Length; i++)
+        {
+            var table = AssetDatabase.LoadAssetAtPath<StringTable>("Assets/_Project/Data/Localization/GameText_" + locales[i] + ".asset");
+            foreach (string[] row in Translations) table.AddEntry(row[0], row[i + 1]);
+            EditorUtility.SetDirty(table); EditorUtility.SetDirty(table.SharedData);
+            AssetDatabase.SaveAssetIfDirty(table); AssetDatabase.SaveAssetIfDirty(table.SharedData);
+        }
+    }
+
+    static Color Hex(string hex) { ColorUtility.TryParseHtmlString("#" + hex, out Color result); return result; }
+}
+#endif

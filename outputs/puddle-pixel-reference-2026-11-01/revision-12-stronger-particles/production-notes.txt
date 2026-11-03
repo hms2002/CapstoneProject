@@ -1,0 +1,37 @@
+Revision12 — modestly larger and denser flame particles
+
+Scope: Aseprite preview Implementation. User requested preserving the ground and
+increasing particle count/size slightly, with more flame-like burning motion.
+
+Changes:
+- pixel-particle.aseprite retains its8x8 canvas, pivot4,6, eight80ms frames and
+  three original colors. Visible bounds grow from at most3x3 to5x6 pixels.
+  Shape now grows into a short bending flame, shrinks and disappears; last
+  frame is empty. Peak opaque area increases9 to18 pixels.
+- Emitters increase16 to20 (+25%), with40ms stagger over an800ms repeat period.
+  Exactly14 particles are active in the review instead of11-12 previously.
+  Visible life560ms, sideways drift and14px rise are retained. Half of the
+  particles are mirrored to vary the flame bend.
+- fire-ground.aseprite, all four ground PNG frames, sheet and GIF are unchanged
+  byte-for-byte copies of revision11. Ground opacity remains166/255 (65.1%).
+
+Outputs:
+pixel-particle.aseprite / PNG frames /64x8 sheet / transparent GIF: independent
+  particle artwork. Motion is composed separately from the ground sprite.
+comparison-preview.gif: alcohol / fire ground plus particles,608x320,3200ms.
+fire-with-particles-preview.gif: fire composition alone,320x320,3200ms.
+Both preview Aseprite files retain distinct background/ground and particle layers.
+author-particles.lua reproduces the revised particle sources and compositions.
+
+Verification:
+Aseprite authoring/reopen exit0. Particle source-to-PNG equality, frame timing
+and empty final frame passed. All160 ground/alcohol/background preview cels
+exactly match revision11. SHA256 comparison confirms all seven ground files
+are unchanged. Verified visible particle dimensions,20 emitters/14 active
+instances, GIF timing/dimensions/transparency and inspected the final preview.
+Evidence: verification.txt, export-verification.json and particle-motion.csv.
+
+Unity ParticleSystem integration, import/compilation/Play Mode and actual game
+scale/background acceptance were not performed. No Unity files changed.
+Doc Impact Check: SessionLog only; ErrorLog/DecisionLog unchanged; no identified
+Presentation HTML stale candidate.

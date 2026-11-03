@@ -21,8 +21,10 @@ and [Presentation Authoring Contract](../Contracts/PresentationAuthoringContract
   all contacts. Projectile damage and ignition/absorption remain on the puddle.
 - [PlayerAlcoholExposure](../../Assets/_Project/Runtime/Features/Player/Status/PlayerAlcoholExposure.cs)
   owns charge, the overlap-source list, overflow latch, drain and effect pulses.
-  Three seconds fills the mug; strictly exceeding three seconds activates the
-  effect. Last-source exit drains the current quantity over 1.5 seconds.
+  Required fill time is 2 seconds without the Spiri reward and 1 second with
+  current affection >=1. Strictly exceeding that fill time activates the effect;
+  the mug uses the same threshold for its ratio. Last-source exit still drains
+  the current quantity over 1.5 seconds.
 - [PlayerIntentInput2D](../../Assets/_Project/Runtime/Features/Player/Input/PlayerIntentInput2D.cs)
   projects confusion through `ApplyConfusionToDirection` for ordinary walking
   and [directional dash](../../Assets/_Project/Runtime/Features/Player/Abilities/AbilityLogic_Dash2D.cs).
@@ -97,3 +99,12 @@ rewrite existing localized entries to resolve unrelated authoring conflicts.
 
 This map is not a new architecture/contract. Promotion is unnecessary for this
 single feature; reconsider only if other exposure mechanics share the flow.
+
+## Timing follow-up (2026-11-02)
+
+The user requested a one-third reduction from the original 3-second charge and
+half of the shortened time for the beneficial reward: 2 seconds / 1 second.
+Existing overflow, 0.2-second refresh, 1.5-second drain and 5-second residual-buff
+ownership are retained. Reward text, five locale entries, CSV and retained
+authoring text agree. Existing exposure/visual regression expectations were
+updated but not executed. See the [change record](../../outputs/ui-gameplay-fixes-2026-11-02/README.md).

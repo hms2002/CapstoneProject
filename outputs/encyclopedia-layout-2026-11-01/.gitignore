@@ -1,0 +1,6 @@
+before/
+save-backup/
+save-backup.json
+*.log
+*.pid
+*-console.txt

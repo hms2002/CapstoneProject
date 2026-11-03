@@ -45,6 +45,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
     private InputActionId listeningAction;
     private bool listeningSecondary;
     private int listeningStartFrame = -1;
+    private int rebindCancelledFrame = -1;
     private bool listenersBound;
 
     private bool awaitingSwapConfirmation;
@@ -56,7 +57,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
     private SettingsPanelUI ownerSettingsPanel;
 
     public bool IsActive => gameObject.activeSelf && !isClosing;
-    public bool CanCloseOnEscape => listeningRow == null;
+    public bool CanCloseOnEscape => listeningRow == null && rebindCancelledFrame != Time.frameCount;
     public UIOpenGroup OpenGroup => UIOpenGroup.Overlay;
     public UIOpenGroup BlockedOpenGroups => UIOpenGroup.None;
     public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
@@ -196,6 +197,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
     public void OpenUI()
     {
         isClosing = false;
+        rebindCancelledFrame = -1;
         ResolveReferences();
         RefreshCanvasParent();
         BindListeners();
@@ -204,7 +206,8 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         RefreshRows();
         HideGuide();
         gameObject.SetActive(true);
-        dropPresentation?.PlayOpen();
+        // Key settings replaces the current page without a second panel drop.
+        dropPresentation?.SnapOpen();
     }
 
     public void OpenFromSettings(SettingsPanelUI ownerPanel)
@@ -227,17 +230,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
         CancelRebind();
         HideGuide();
-        ResolveReferences();
-        if (dropPresentation == null)
-        {
-            ClearWorkingState();
-            gameObject.SetActive(false);
-            isClosing = false;
-            return;
-        }
-
-        isClosing = true;
-        dropPresentation.PlayClose(FinalizeClose);
+        FinalizeClose();
     }
 
     public void RefreshCanvasParent()
@@ -266,6 +259,17 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
         if (!gameObject.activeInHierarchy)
             return false;
+
+        // UIManager/TitleMenuController and this panel may observe the same ESC
+        // in either Update order. Consume cancellation before considering a close.
+        if (rebindCancelledFrame == Time.frameCount)
+            return true;
+
+        if (listeningRow != null || awaitingSwapConfirmation)
+        {
+            CancelRebind();
+            return true;
+        }
 
         if (awaitingCloseConfirmation)
             return true;
@@ -387,13 +391,35 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
     private void EnsureRows()
     {
-        if (rowContainer == null || rowPrefab == null)
+        if (rowContainer == null)
             return;
 
         if (spawnedRows.Count > 0)
             return;
 
         IReadOnlyList<InputActionId> actions = ResolveActionOrder();
+        // Authored pages own their rows and column/group hierarchy. Bind in the
+        // same hierarchy order as actionOrder, without moving or spawning them.
+        KeyBindingRowUI[] authoredRows = rowContainer.GetComponentsInChildren<KeyBindingRowUI>(true);
+        if (authoredRows.Length > 0)
+        {
+            if (authoredRows.Length != actions.Count)
+            {
+                Debug.LogError($"Key mapping page has {authoredRows.Length} authored rows for {actions.Count} actions.", this);
+                return;
+            }
+            for (int i = 0; i < actions.Count; i++)
+            {
+                authoredRows[i].Bind(this, actions[i]);
+                authoredRows[i].BindRenderLayout(renderLayout);
+                spawnedRows.Add(authoredRows[i]);
+            }
+            return;
+        }
+
+        // Independent legacy panels still use the shared row prefab.
+        if (rowPrefab == null)
+            return;
         for (int i = 0; i < actions.Count; i++)
         {
             KeyBindingRowUI row = Instantiate(rowPrefab, rowContainer);
@@ -859,7 +885,10 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         bool hadActiveRebind = CancelTransientInputState();
 
         if (hadActiveRebind)
+        {
+            rebindCancelledFrame = Time.frameCount;
             RefreshRows();
+        }
 
         HideGuide();
     }

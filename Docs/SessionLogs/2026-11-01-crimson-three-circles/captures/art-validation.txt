@@ -1,0 +1,1 @@
+PASS: revision25 three separate 192px circles and editable sources; 47 VFX PNGs, six exact opaque colors, point/no mipmaps/uncompressed; authored filled gauge; 9 collision-free particle systems.

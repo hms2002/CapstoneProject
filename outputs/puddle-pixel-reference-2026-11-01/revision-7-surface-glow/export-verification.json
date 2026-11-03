@@ -1,0 +1,44 @@
+{
+  "beer": {
+    "frames": 4,
+    "RGBA_colors": 8,
+    "ground_occupancy_unchanged": true,
+    "RGBA_palette_including_transparency_unchanged": true
+  },
+  "fire-surface": {
+    "frames": 6,
+    "RGBA_colors": 7,
+    "ground_occupancy_unchanged": true
+  },
+  "beer-to-fire": {
+    "frames": 8,
+    "RGBA_colors": 15,
+    "ground_occupancy_unchanged": true
+  },
+  "puddle-cycle": {
+    "frames": 18,
+    "RGBA_colors": 15,
+    "ground_occupancy_unchanged": true
+  },
+  "foam_largest_components": [
+    11,
+    11,
+    11,
+    11
+  ],
+  "comparison-preview": {
+    "duration_ms": 3840
+  },
+  "ignition-preview": {
+    "duration_ms": 3840
+  },
+  "surface-only-preview": {
+    "duration_ms": 960
+  },
+  "main_fire_panel_matches_surface_without_particles": {
+    "frames_checked": 96,
+    "max_channel_delta": 0
+  },
+  "native_checks": 158,
+  "GIF_review_max_channel_delta": 1
+}

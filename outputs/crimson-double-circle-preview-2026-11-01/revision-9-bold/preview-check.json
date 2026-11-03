@@ -1,0 +1,52 @@
+{
+  "radii": [
+    {
+      "charge": 0,
+      "inner": 0,
+      "outer": 0
+    },
+    {
+      "charge": 25,
+      "inner": 20,
+      "outer": 0
+    },
+    {
+      "charge": 50,
+      "inner": 40,
+      "outer": 0
+    },
+    {
+      "charge": 75,
+      "inner": 40,
+      "outer": 50
+    },
+    {
+      "charge": 100,
+      "inner": 40,
+      "outer": 60
+    }
+  ],
+  "nativePixelSizes": {
+    "inner": 80,
+    "outer": 120,
+    "proposedPpu": 20,
+    "existingCrimsonPpu": 16,
+    "maximumDiameter": 6
+  },
+  "worldDiameterPreservation": "120 / 20 = 96 / 16 = 6; proposed import, not applied to Unity",
+  "nativeSourcePixelMapping": "pass",
+  "palette": "Uniform FFC65A only; binary alpha",
+  "cardinalBorderThickness": "2px verified",
+  "regularRunes": "7x7 bold; count preserved",
+  "wholeInnerCompletedAt50": "pass",
+  "separateLayers": "pass",
+  "innerOpaquePixels": 1951,
+  "outerOpaquePixels": 1524,
+  "fullCircumferenceAtPartialCharge": "pass",
+  "scaledBoundary": "pass",
+  "oppositePlanarRotation": "pass",
+  "pauseResume": "pass",
+  "artwork": "Wider rune bands, stronger octagram, larger glyphs and unified gold borders",
+  "rendering": "offline same-JavaScript Canvas pixel adapter",
+  "limitations": "Browser DOM/layout and Unity Play Mode not run. The 20 PPU proposal is denser than existing 16 PPU effects. Point filtering alone does not guarantee stable lines at every rotation/scale or under the actual camera."
+}

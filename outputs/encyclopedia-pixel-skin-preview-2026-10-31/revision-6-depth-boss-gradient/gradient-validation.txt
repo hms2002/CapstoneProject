@@ -1,0 +1,4 @@
+PASS BlackFadeBottom: 8x64, black RGB, 64 monotonic alpha levels.
+PASS BlackFadeTop: 8x64, black RGB, 64 monotonic alpha levels.
+PASS nameplates removed from all card/portrait compositions; generic unused sheet asset preserved.
+Boss-only fades. Boss portrait/frame share 1008,290,450,304 bounds; corner motifs omitted.

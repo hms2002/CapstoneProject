@@ -1,0 +1,2 @@
+Aseprite 1.3.18.6
+Revision16 body/ripple RGB restored. Revision17 foam and bubbles retained. Every beer alpha pixel unchanged. Ground layer166/255. Ignition endpoints exact; radial maximum=27.238344567183

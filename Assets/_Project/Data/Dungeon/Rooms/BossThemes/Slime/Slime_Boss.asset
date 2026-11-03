@@ -712,7 +712,7 @@ MonoBehaviour:
     travelEndpointPlacements:
     - slotId: BossGate
       kind: 0
-      mediumPrefab: {fileID: 4531407902860154786, guid: 635bbce2ba03a1e4787909e774bd3dac, type: 3}
+      mediumPrefab: {fileID: 8437103112594923084, guid: 604a1a7e65de8374bb933863a83757a8, type: 3}
       localCell: {x: 9, y: 9}
       localOffset: {x: -0.5, y: -0.39999962}
       localRotationDegrees: 0

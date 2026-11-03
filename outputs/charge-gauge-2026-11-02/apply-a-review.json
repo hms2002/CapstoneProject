@@ -1,0 +1,30 @@
+{
+  "artReview": [
+    {
+      "ratio": 0,
+      "differingPixels": 0,
+      "sharedGeometryMatches": true
+    },
+    {
+      "ratio": 0.3,
+      "differingPixels": 0,
+      "sharedGeometryMatches": true
+    },
+    {
+      "ratio": 0.7,
+      "differingPixels": 0,
+      "sharedGeometryMatches": true
+    },
+    {
+      "ratio": 1,
+      "differingPixels": 0,
+      "sharedGeometryMatches": true
+    }
+  ],
+  "objectsPreserved": true,
+  "missingLocalReferences": [],
+  "unrelatedCrimsonChanged": [],
+  "codeChanged": false,
+  "unityImport": "not verified",
+  "playMode": "not run"
+}

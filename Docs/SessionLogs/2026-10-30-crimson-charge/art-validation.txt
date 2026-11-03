@@ -1,0 +1,1 @@
+PASS: 47 PNGs, six exact opaque colors, point/no mipmaps/uncompressed; authored filled gauge; 9 collision-free particle systems.

@@ -7439,6 +7439,78 @@ MonoBehaviour:
     m_Key: asset.8d10d760988b81f4c826f2a3b4582465.rewardText
     m_Metadata:
       m_Items: []
+  - m_Id: 10245090273300480
+    m_Key: ui.settings_skin.screen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987200
+    m_Key: ui.settings_skin.environment
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987201
+    m_Key: ui.settings_skin.audio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987202
+    m_Key: ui.settings_skin.controls
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987203
+    m_Key: ui.settings_skin.movement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987204
+    m_Key: ui.settings_skin.combat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987205
+    m_Key: ui.settings_skin.consumables
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987206
+    m_Key: ui.settings_skin.utility
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987207
+    m_Key: ui.settings_skin.primary
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987208
+    m_Key: ui.settings_skin.secondary
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987209
+    m_Key: ui.settings_skin.settings_hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987210
+    m_Key: ui.settings_skin.keys_hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10548020289376256
+    m_Key: encyclopedia.item_not_acquired
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10548020859801600
+    m_Key: encyclopedia.monster_not_encountered
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10548020859801601
+    m_Key: encyclopedia.boss_not_encountered
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10990827974070272
+    m_Key: encyclopedia.item_stats
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11285825378488320
+    m_Key: ui.level_reward.close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11285827328839680
+    m_Key: ui.level_reward.reroll
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

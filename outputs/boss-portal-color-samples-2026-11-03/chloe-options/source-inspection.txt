@@ -1,0 +1,4 @@
+00-previous-ruby-portal.png: 50x49; stone/exterior differences=0; alpha differences=0; recolored pixels=664
+01-a-blue-violet-portal.png: 50x49; stone/exterior differences=0; alpha differences=0; recolored pixels=664
+02-b-midnight-portal.png: 50x49; stone/exterior differences=0; alpha differences=0; recolored pixels=664
+03-c-smoky-lilac-portal.png: 50x49; stone/exterior differences=0; alpha differences=0; recolored pixels=664

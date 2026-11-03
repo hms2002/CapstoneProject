@@ -37,11 +37,11 @@ public static class SpiriAlcoholRewardAuthoring
         },
         new[]
         {
-            "술 장판에서 3초 동안 술을 채우면 혼란 대신 이동 속도 +25%, 공격 속도 +40% 버프를 얻습니다. 장판 안에서는 지속시간을 갱신하며, 장판을 벗어나 1.5초 동안 잔이 비워진 뒤 5초 동안 유지됩니다.",
-            "Filling the mug for 3 seconds in an alcohol puddle grants +25% movement speed and +40% attack speed instead of confusion. The duration refreshes inside the puddle. After leaving, the mug drains for 1.5 seconds, then the buff lasts 5 seconds.",
-            "酒の床で3秒かけてジョッキを満たすと、混乱の代わりに移動速度+25%、攻撃速度+40%のバフを得ます。床の上では持続時間が更新されます。離れてから1.5秒でジョッキが空になり、その後5秒間バフが続きます。",
-            "在酒液区域中用3秒填满酒杯后，获得移动速度+25%、攻击速度+40%的增益，替代混乱。区域内会刷新持续时间。离开后，酒杯用1.5秒清空，随后增益持续5秒。",
-            "在酒液區域中用3秒填滿酒杯後，獲得移動速度+25%、攻擊速度+40%的增益，替代混亂。區域內會刷新持續時間。離開後，酒杯用1.5秒清空，隨後增益持續5秒。"
+            "술 장판에서 1초 동안 술을 채우면 혼란 대신 이동 속도 +25%, 공격 속도 +40% 버프를 얻습니다. 장판 안에서는 지속시간을 갱신하며, 장판을 벗어나 1.5초 동안 잔이 비워진 뒤 5초 동안 유지됩니다.",
+            "Filling the mug for 1 second in an alcohol puddle grants +25% movement speed and +40% attack speed instead of confusion. The duration refreshes inside the puddle. After leaving, the mug drains for 1.5 seconds, then the buff lasts 5 seconds.",
+            "酒の床で1秒かけてジョッキを満たすと、混乱の代わりに移動速度+25%、攻撃速度+40%のバフを得ます。床の上では持続時間が更新されます。離れてから1.5秒でジョッキが空になり、その後5秒間バフが続きます。",
+            "在酒液区域中用1秒填满酒杯后，获得移动速度+25%、攻击速度+40%的增益，替代混乱。区域内会刷新持续时间。离开后，酒杯用1.5秒清空，随后增益持续5秒。",
+            "在酒液區域中用1秒填滿酒杯後，獲得移動速度+25%、攻擊速度+40%的增益，替代混亂。區域內會刷新持續時間。離開後，酒杯用1.5秒清空，隨後增益持續5秒。"
         }
     };
 

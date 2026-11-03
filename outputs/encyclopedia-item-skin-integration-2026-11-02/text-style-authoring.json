@@ -1,0 +1,10 @@
+[
+  {
+    "prefab": "EncyclopediaUI",
+    "styledTextObjects": 13
+  },
+  {
+    "prefab": "Panel_AbilityBlock_Encyclopedia",
+    "styledTextObjects": 3
+  }
+]

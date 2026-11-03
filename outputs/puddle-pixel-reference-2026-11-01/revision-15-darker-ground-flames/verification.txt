@@ -1,0 +1,6 @@
+Ground sources/exports are unchanged copies of revision14; no ground pixels, layers, opacity or timing are edited.
+Near-ground:8x8/8x80ms/3 opaque colors;7x6 peak silhouette; grow, bend, shrink, disappear. Native source/PNG equality; final frame empty. Pivot4,6.
+Airborne source and exports are byte-for-byte copies of revision14; all colors, shapes and timing retained.
+All160 ground/alcohol/background AND airborne preview cels exactly match revision14; only near-ground particles change.
+Two independent groups:40 near-ground emitters/35 active/640ms period/0-2px rise;12 airborne emitters/800ms period/up to26px rise. Both560ms visible life. Near and airborne art and preview layers are separate; ground unchanged; no Unity integration.
+Aseprite 1.3.18.6

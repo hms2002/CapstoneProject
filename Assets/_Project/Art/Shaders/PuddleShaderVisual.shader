@@ -8,6 +8,12 @@ Shader "Custom/PuddleShaderVisual"
         _FireProjectileTex ("Fire Projectile Texture", 2D) = "white" {}
         _AlcoholProjectileTex ("Alcohol Projectile Texture", 2D) = "white" {}
 
+        [Header(Authored Pixel Ground)]
+        _PixelGroundEnabled ("Use Approved Pixel Ground", Float) = 0
+        _AlcoholGroundSheet ("Alcohol Ground 4 Frames", 2D) = "white" {}
+        _FireGroundSheet ("Fire Ground 4 Frames", 2D) = "white" {}
+        _CenterIgnitionSheet ("Center Ignition 16 Frames", 2D) = "white" {}
+
         [Header(Shape)]
         _PixelDensity ("Pixel Density", Range(8, 128)) = 42
         _BlobNoiseAmount ("Blob Noise Amount", Range(0, 0.35)) = 0.16
@@ -69,6 +75,10 @@ Shader "Custom/PuddleShaderVisual"
             sampler2D _NoiseTex;
             sampler2D _FireProjectileTex;
             sampler2D _AlcoholProjectileTex;
+            sampler2D _AlcoholGroundSheet;
+            sampler2D _FireGroundSheet;
+            sampler2D _CenterIgnitionSheet;
+            float _PixelGroundEnabled;
             float4 _MainTex_ST;
             float _PixelDensity;
             float _BlobNoiseAmount;
@@ -180,6 +190,30 @@ Shader "Custom/PuddleShaderVisual"
 
             fixed4 frag(v2f i) : SV_Target
             {
+                // The existing mesh still owns radius, wall clipping and absorb shrinking.
+                // Non-ground modes and existing materials keep their authored behavior.
+                if (_PixelGroundEnabled > 0.5 && _Mode < 1.5)
+                {
+                    float2 pixel = min(floor(saturate(i.uv) * 64.0), 63.0) + 0.5;
+                    fixed4 authored;
+                    if (_Mode > 0.5)
+                    {
+                        float frame = floor(saturate(_IgnitionProgress) * 15.0 + 0.0001);
+                        authored = tex2D(_CenterIgnitionSheet, float2((frame * 64.0 + pixel.x) / 1024.0, pixel.y / 64.0));
+                    }
+                    else if (_ElementType > 0.5)
+                    {
+                        float frame = fmod(floor((_Time.y + _TimeOffset) * 10.0), 4.0);
+                        authored = tex2D(_FireGroundSheet, float2((frame * 64.0 + pixel.x) / 256.0, pixel.y / 64.0));
+                    }
+                    else
+                    {
+                        float frame = fmod(floor((_Time.y + _TimeOffset) * 6.25), 4.0);
+                        authored = tex2D(_AlcoholGroundSheet, float2((frame * 64.0 + pixel.x) / 256.0, pixel.y / 64.0));
+                    }
+                    clip(authored.a - 0.001);
+                    return authored;
+                }
                 float2 centered = i.uv * 2.0 - 1.0;
                 float2 absorbDir = normalize(_AbsorbDirection.xy + float2(0.0001, 0.0001));
                 float flow = dot(centered, absorbDir);

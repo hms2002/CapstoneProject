@@ -1,0 +1,1452 @@
+PASS Upper chain opening releases interaction: SettingUI(Clone)
+PASS global upper panel motion retained
+PASS global settings has no scroll
+PASS global key page has no scroll
+PASS global slider handles retain authored height
+PASS global settings ko text fits Heading_screen: 화면 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS global settings ko text fits Heading_environment: 환경 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS global settings ko text fits Heading_audio: 소리 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS global settings ko text fits Heading_controls: 조작 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS global settings ko text fits OptionText: 키 매핑 설정 rect=(520.00, 50.00) preferred=144.52/28.61
+PASS global settings ko text fits OptionText: 화면 모드 rect=(548.00, 40.00) preferred=111.26/28.61
+PASS global settings ko text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ko text fits OptionText: 전체화면 rect=(440.00, 44.00) preferred=96.01/26.4
+PASS global settings ko text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ko text fits OptionText: 해상도 rect=(548.00, 40.00) preferred=78.01/28.61
+PASS global settings ko text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ko text fits OptionText: 1920 x 1080 rect=(440.00, 44.00) preferred=133.42/26.4
+PASS global settings ko text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ko text fits Text (TMP): 마스터 볼륨 rect=(548.00, 40.00) preferred=137.26/28.61
+PASS global settings ko text fits Text (TMP): 62% rect=(64.00, 40.00) preferred=48.02/26.4
+PASS global settings ko text fits Text (TMP): 효과음 볼륨 rect=(548.00, 40.00) preferred=137.26/28.61
+PASS global settings ko text fits Text (TMP): 24% rect=(64.00, 40.00) preferred=50.41/26.4
+PASS global settings ko text fits OptionText: BGM 볼륨 rect=(548.00, 40.00) preferred=106.08/28.61
+PASS global settings ko text fits Text (TMP): 34% rect=(64.00, 40.00) preferred=50.41/26.4
+PASS global settings ko text fits OptionText: 화면 흔들림 rect=(548.00, 40.00) preferred=137.26/28.61
+PASS global settings ko text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ko text fits OptionText: 켜기 rect=(440.00, 44.00) preferred=48.01/26.4
+PASS global settings ko text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ko text fits OptionText: 언어 rect=(548.00, 40.00) preferred=52.01/28.61
+PASS global settings ko text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ko text fits OptionText: 한국어 rect=(440.00, 44.00) preferred=72.01/26.4
+PASS global settings ko text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ko text fits OptionTitle: 설정 rect=(296.00, 60.00) preferred=70.39/37.41
+PASS global settings ko text fits Text (TMP): 나가기 rect=(260.00, 52.00) preferred=81.64/28.61
+PASS global settings ko text fits Text (TMP): 적용하기 rect=(300.00, 52.00) preferred=109.46/28.61
+PASS global settings ko text fits FooterHint: 화면 설정은 적용 후, 소리·언어·화면 흔들림은 즉시 반영됩니다. rect=(1184.00, 30.00) preferred=617.56/24.24
+PASS global key launcher hit target
+PASS Upper chain opening releases interaction: KeyMappingUI(Clone)
+PASS global binds 19 authored rows ko
+PASS global no duplicate row creation ko
+PASS global distinct action binding ko
+PASS global 9/10 column hierarchy ko
+PASS global keys ko text fits PrimaryHeading: 기본 키 rect=(108.00, 28.00) preferred=55.83/17.61
+PASS global keys ko text fits SecondaryHeading: 보조 키 rect=(112.00, 28.00) preferred=55.83/17.61
+PASS global keys ko text fits Heading_movement: 이동 rect=(660.00, 32.00) preferred=45.55/24.21
+PASS global keys ko text fits Heading_combat: 전투 rect=(660.00, 32.00) preferred=45.55/24.21
+PASS global keys ko text fits PrimaryHeading: 기본 키 rect=(108.00, 28.00) preferred=55.83/17.61
+PASS global keys ko text fits SecondaryHeading: 보조 키 rect=(112.00, 28.00) preferred=55.83/17.61
+PASS global keys ko text fits Heading_consumables: 소모품 rect=(660.00, 32.00) preferred=69.09/24.21
+PASS global keys ko text fits Heading_utility: 상호작용 / UI rect=(660.00, 32.00) preferred=139/24.21
+PASS global keys ko text fits OptionText: 위로 이동 rect=(382.00, 48.00) preferred=102.7/26.4
+PASS global keys ko text fits OptionText: 아래로 이동 rect=(382.00, 48.00) preferred=126.7/26.4
+PASS global keys ko text fits OptionText: 왼쪽으로 이동 rect=(382.00, 48.00) preferred=150.7/26.4
+PASS global keys ko text fits OptionText: 오른쪽으로 이동 rect=(382.00, 48.00) preferred=174.7/26.4
+PASS global keys ko text fits OptionText: 대시 rect=(382.00, 48.00) preferred=48.01/26.4
+PASS global keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ko text fits OptionText: 공격 rect=(382.00, 48.00) preferred=48.01/26.4
+PASS global keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ko text fits OptionText: 스킬 1 rect=(382.00, 48.00) preferred=64.3/26.4
+PASS global keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ko text fits OptionText: 스킬 2 rect=(382.00, 48.00) preferred=69.11/26.4
+PASS global keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ko text fits OptionText: 무기 교체 rect=(382.00, 48.00) preferred=102.7/26.4
+PASS global keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ko text fits OptionText: 소모품 1 rect=(382.00, 48.00) preferred=88.3/26.4
+PASS global keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ko text fits OptionText: 소모품 2 rect=(382.00, 48.00) preferred=93.11/26.4
+PASS global keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ko text fits OptionText: 소모품 3 rect=(382.00, 48.00) preferred=93.11/26.4
+PASS global keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ko text fits OptionText: 소모품 4 rect=(382.00, 48.00) preferred=95.5/26.4
+PASS global keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ko text fits OptionText: 상호작용 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS global keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ko text fits OptionText: 인벤토리 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS global keys ko text fits OptionText: 인벤토리 아이템 버리기 rect=(382.00, 48.00) preferred=253.4/26.4
+PASS global keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ko text fits OptionText: 레벨 보상 열기 rect=(382.00, 48.00) preferred=157.4/26.4
+PASS global keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ko text fits OptionText: 미니맵 확대 rect=(382.00, 48.00) preferred=126.7/26.4
+PASS global keys ko text fits OptionText: 미니맵 축소 rect=(382.00, 48.00) preferred=126.7/26.4
+PASS global keys ko text fits Text (TMP): 나가기 rect=(260.00, 52.00) preferred=81.64/28.61
+PASS global keys ko text fits Text (TMP): 설정 초기화 rect=(280.00, 52.00) preferred=146.36/28.61
+PASS global keys ko text fits Text (TMP): 적용하기 rect=(300.00, 52.00) preferred=109.46/28.61
+PASS global keys ko text fits OptionTitle: 키 설정 rect=(296.00, 60.00) preferred=118.63/37.41
+PASS global keys ko text fits FooterHint: 대화 넘기기는 Space로 고정됩니다. 원형 화살표로 해당 키를 초기화합니다. rect=(1344.00, 30.00) preferred=737.46/22.01
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained Button
+PASS global ko button contained Button (1)
+PASS global ko button contained Button (2)
+PASS global ko button contained QuitButton
+PASS global ko button contained ResetAll
+PASS global ko button contained ApplyButton
+PASS global ko only upper drop motion active
+PASS global ko key control hit target
+PASS Authored primary button starts rebinding
+PASS Listening guide visible
+PASS Conflict confirmation preserved
+PASS Conflict confirmation buttons visible
+PASS Conflict cancellation preserved
+PASS Dirty close asks before discard
+PASS Discard leaves saved binding untouched
+PASS Upper chain opening releases interaction: KeyMappingUI(Clone)
+PASS Reopen retains authored rows
+PASS global settings restored after keys ko
+PASS global settings en text fits Heading_screen: Display rect=(580.00, 32.00) preferred=84.06/24.21
+PASS global settings en text fits Heading_environment: Environment rect=(580.00, 32.00) preferred=149.63/24.21
+PASS global settings en text fits Heading_audio: Audio rect=(580.00, 32.00) preferred=63.38/24.21
+PASS global settings en text fits Heading_controls: Controls rect=(580.00, 32.00) preferred=103.2/24.21
+PASS global settings en text fits OptionText: Key Bindings rect=(520.00, 50.00) preferred=155.49/28.61
+PASS global settings en text fits OptionText: Display Mode rect=(548.00, 40.00) preferred=158.1/28.61
+PASS global settings en text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings en text fits OptionText: Fullscreen rect=(440.00, 44.00) preferred=122.43/26.4
+PASS global settings en text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings en text fits OptionText: Resolution rect=(548.00, 40.00) preferred=132.63/28.61
+PASS global settings en text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings en text fits OptionText: 1920 x 1080 rect=(440.00, 44.00) preferred=133.42/26.4
+PASS global settings en text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings en text fits Text (TMP): Master Volume rect=(548.00, 40.00) preferred=184.1/28.61
+PASS global settings en text fits Text (TMP): 62% rect=(64.00, 40.00) preferred=48.02/26.4
+PASS global settings en text fits Text (TMP): Sound Effects rect=(548.00, 40.00) preferred=178.89/28.61
+PASS global settings en text fits Text (TMP): 24% rect=(64.00, 40.00) preferred=50.41/26.4
+PASS global settings en text fits OptionText: Music Volume rect=(548.00, 40.00) preferred=163.3/28.61
+PASS global settings en text fits Text (TMP): 34% rect=(64.00, 40.00) preferred=50.41/26.4
+PASS global settings en text fits OptionText: Screen Shake rect=(548.00, 40.00) preferred=168.49/28.61
+PASS global settings en text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings en text fits OptionText: On rect=(440.00, 44.00) preferred=28.81/26.4
+PASS global settings en text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings en text fits OptionText: Language rect=(548.00, 40.00) preferred=122.24/28.61
+PASS global settings en text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings en text fits OptionText: English rect=(440.00, 44.00) preferred=79.22/26.4
+PASS global settings en text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings en text fits OptionTitle: Settings rect=(296.00, 60.00) preferred=152.68/37.41
+PASS global settings en text fits Text (TMP): Back rect=(260.00, 52.00) preferred=65.28/28.61
+PASS global settings en text fits Text (TMP): Apply rect=(300.00, 52.00) preferred=77.51/28.61
+PASS global settings en text fits FooterHint: Apply display changes below. Audio, language and screen shake update immediately. rect=(1184.00, 30.00) preferred=936.89/22.01
+PASS Upper chain opening releases interaction: KeyMappingUI(Clone)
+PASS global binds 19 authored rows en
+PASS global no duplicate row creation en
+PASS global distinct action binding en
+PASS global 9/10 column hierarchy en
+PASS global keys en text fits PrimaryHeading: Primary rect=(108.00, 28.00) preferred=67.53/17.61
+PASS global keys en text fits SecondaryHeading: Secondary rect=(112.00, 28.00) preferred=92.19/17.61
+PASS global keys en text fits Heading_movement: Movement rect=(660.00, 32.00) preferred=118.61/24.21
+PASS global keys en text fits Heading_combat: Combat rect=(660.00, 32.00) preferred=89.12/24.21
+PASS global keys en text fits PrimaryHeading: Primary rect=(108.00, 28.00) preferred=67.53/17.61
+PASS global keys en text fits SecondaryHeading: Secondary rect=(112.00, 28.00) preferred=92.19/17.61
+PASS global keys en text fits Heading_consumables: Consumables rect=(660.00, 32.00) preferred=154.04/24.21
+PASS global keys en text fits Heading_utility: Interaction / UI rect=(660.00, 32.00) preferred=182.8/24.21
+PASS global keys en text fits OptionText: Move Up rect=(382.00, 48.00) preferred=93.13/26.4
+PASS global keys en text fits OptionText: Move Down rect=(382.00, 48.00) preferred=121.94/26.4
+PASS global keys en text fits OptionText: Move Left rect=(382.00, 48.00) preferred=114.72/26.4
+PASS global keys en text fits OptionText: Move Right rect=(382.00, 48.00) preferred=124.33/26.4
+PASS global keys en text fits OptionText: Dash rect=(382.00, 48.00) preferred=55.22/26.4
+PASS global keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys en text fits OptionText: Attack rect=(382.00, 48.00) preferred=79.22/26.4
+PASS global keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys en text fits OptionText: Skill 1 rect=(382.00, 48.00) preferred=59.5/26.4
+PASS global keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys en text fits OptionText: Skill 2 rect=(382.00, 48.00) preferred=64.31/26.4
+PASS global keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys en text fits OptionText: Switch Weapon rect=(382.00, 48.00) preferred=165.14/26.4
+PASS global keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys en text fits OptionText: Consumable 1 rect=(382.00, 48.00) preferred=155.53/26.4
+PASS global keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys en text fits OptionText: Consumable 2 rect=(382.00, 48.00) preferred=160.34/26.4
+PASS global keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys en text fits OptionText: Consumable 3 rect=(382.00, 48.00) preferred=160.34/26.4
+PASS global keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys en text fits OptionText: Consumable 4 rect=(382.00, 48.00) preferred=162.74/26.4
+PASS global keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys en text fits OptionText: Interact rect=(382.00, 48.00) preferred=98.42/26.4
+PASS global keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys en text fits OptionText: Inventory rect=(382.00, 48.00) preferred=115.23/26.4
+PASS global keys en text fits OptionText: Discard Item rect=(382.00, 48.00) preferred=143.52/26.4
+PASS global keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys en text fits OptionText: Open Level Rewards rect=(382.00, 48.00) preferred=229.46/26.4
+PASS global keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys en text fits OptionText: Zoom In Minimap rect=(382.00, 48.00) preferred=179.03/26.4
+PASS global keys en text fits OptionText: Zoom Out Minimap rect=(382.00, 48.00) preferred=200.64/26.4
+PASS global keys en text fits Text (TMP): Back rect=(260.00, 52.00) preferred=65.28/28.61
+PASS global keys en text fits Text (TMP): Reset Settings rect=(280.00, 52.00) preferred=207.75/28.61
+PASS global keys en text fits Text (TMP): Apply rect=(300.00, 52.00) preferred=77.51/28.61
+PASS global keys en text fits OptionTitle: Key Settings rect=(296.00, 60.00) preferred=232.91/37.41
+PASS global keys en text fits FooterHint: Dialogue advance uses Space. The circular arrow resets a single action. rect=(1344.00, 30.00) preferred=801.59/22.01
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained Button
+PASS global en button contained Button (1)
+PASS global en button contained Button (2)
+PASS global en button contained QuitButton
+PASS global en button contained ResetAll
+PASS global en button contained ApplyButton
+PASS global en only upper drop motion active
+PASS global en key control hit target
+PASS global settings restored after keys en
+PASS global settings ja text fits Heading_screen: 画面 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS global settings ja text fits Heading_environment: 環境 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS global settings ja text fits Heading_audio: サウンド rect=(580.00, 32.00) preferred=92.63/24.21
+PASS global settings ja text fits Heading_controls: 操作 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS global settings ja text fits OptionText: キー割り当て rect=(520.00, 50.00) preferred=156.01/28.61
+PASS global settings ja text fits OptionText: 画面モード rect=(548.00, 40.00) preferred=130.01/28.61
+PASS global settings ja text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ja text fits OptionText: フルスクリーン rect=(440.00, 44.00) preferred=168.01/26.4
+PASS global settings ja text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ja text fits OptionText: 解像度 rect=(548.00, 40.00) preferred=78.01/28.61
+PASS global settings ja text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ja text fits OptionText: 1920 x 1080 rect=(440.00, 44.00) preferred=139.2/26.4
+PASS global settings ja text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ja text fits Text (TMP): マスター音量 rect=(548.00, 40.00) preferred=156.01/28.61
+PASS global settings ja text fits Text (TMP): 62% rect=(64.00, 40.00) preferred=48.01/26.4
+PASS global settings ja text fits Text (TMP): 効果音の音量 rect=(548.00, 40.00) preferred=156.01/28.61
+PASS global settings ja text fits Text (TMP): 24% rect=(64.00, 40.00) preferred=50.41/26.4
+PASS global settings ja text fits OptionText: BGM音量 rect=(548.00, 40.00) preferred=98.8/28.61
+PASS global settings ja text fits Text (TMP): 34% rect=(64.00, 40.00) preferred=50.41/26.4
+PASS global settings ja text fits OptionText: 画面の揺れ rect=(548.00, 40.00) preferred=130.01/28.61
+PASS global settings ja text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ja text fits OptionText: オン rect=(440.00, 44.00) preferred=48.01/26.4
+PASS global settings ja text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ja text fits OptionText: 言語 rect=(548.00, 40.00) preferred=52.01/28.61
+PASS global settings ja text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ja text fits OptionText: 日本語 rect=(440.00, 44.00) preferred=72.01/26.4
+PASS global settings ja text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS global settings ja text fits OptionTitle: 設定 rect=(296.00, 60.00) preferred=70.39/37.41
+PASS global settings ja text fits Text (TMP): 戻る rect=(260.00, 52.00) preferred=53.82/28.61
+PASS global settings ja text fits Text (TMP): 適用 rect=(300.00, 52.00) preferred=53.82/28.61
+PASS global settings ja text fits FooterHint: 画面設定は適用後、音量・言語・画面振動はすぐに反映されます。 rect=(1184.00, 30.00) preferred=640.61/22.01
+PASS Upper chain opening releases interaction: KeyMappingUI(Clone)
+PASS global binds 19 authored rows ja
+PASS global no duplicate row creation ja
+PASS global distinct action binding ja
+PASS global 9/10 column hierarchy ja
+PASS global keys ja text fits PrimaryHeading: メイン rect=(108.00, 28.00) preferred=50.25/17.61
+PASS global keys ja text fits SecondaryHeading: サブ rect=(112.00, 28.00) preferred=33.13/17.61
+PASS global keys ja text fits Heading_movement: 移動 rect=(660.00, 32.00) preferred=45.55/24.21
+PASS global keys ja text fits Heading_combat: 戦闘 rect=(660.00, 32.00) preferred=45.55/24.21
+PASS global keys ja text fits PrimaryHeading: メイン rect=(108.00, 28.00) preferred=50.25/17.61
+PASS global keys ja text fits SecondaryHeading: サブ rect=(112.00, 28.00) preferred=33.13/17.61
+PASS global keys ja text fits Heading_consumables: 消耗品 rect=(660.00, 32.00) preferred=69.09/24.21
+PASS global keys ja text fits Heading_utility: 操作 / UI rect=(660.00, 32.00) preferred=97.25/24.21
+PASS global keys ja text fits OptionText: 上に移動 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS global keys ja text fits OptionText: 下に移動 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS global keys ja text fits OptionText: 左に移動 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS global keys ja text fits OptionText: 右に移動 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS global keys ja text fits OptionText: ダッシュ rect=(382.00, 48.00) preferred=96.01/26.4
+PASS global keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ja text fits OptionText: 攻撃 rect=(382.00, 48.00) preferred=48.01/26.4
+PASS global keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ja text fits OptionText: スキル1 rect=(382.00, 48.00) preferred=81.6/26.4
+PASS global keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ja text fits OptionText: スキル2 rect=(382.00, 48.00) preferred=86.41/26.4
+PASS global keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ja text fits OptionText: 武器切替 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS global keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ja text fits OptionText: 消耗品1 rect=(382.00, 48.00) preferred=81.6/26.4
+PASS global keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ja text fits OptionText: 消耗品2 rect=(382.00, 48.00) preferred=86.41/26.4
+PASS global keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ja text fits OptionText: 消耗品3 rect=(382.00, 48.00) preferred=86.41/26.4
+PASS global keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ja text fits OptionText: 消耗品4 rect=(382.00, 48.00) preferred=88.81/26.4
+PASS global keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ja text fits OptionText: 調べる rect=(382.00, 48.00) preferred=72.01/26.4
+PASS global keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ja text fits OptionText: 所持品 rect=(382.00, 48.00) preferred=72.01/26.4
+PASS global keys ja text fits OptionText: アイテムを捨てる rect=(382.00, 48.00) preferred=192.01/26.4
+PASS global keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ja text fits OptionText: レベル報酬を開く rect=(382.00, 48.00) preferred=192.01/26.4
+PASS global keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS global keys ja text fits OptionText: ミニマップ拡大 rect=(382.00, 48.00) preferred=168.01/26.4
+PASS global keys ja text fits OptionText: ミニマップ縮小 rect=(382.00, 48.00) preferred=168.01/26.4
+PASS global keys ja text fits Text (TMP): 戻る rect=(260.00, 52.00) preferred=53.82/28.61
+PASS global keys ja text fits Text (TMP): 設定をリセット rect=(280.00, 52.00) preferred=192.92/28.61
+PASS global keys ja text fits Text (TMP): 適用 rect=(300.00, 52.00) preferred=53.82/28.61
+PASS global keys ja text fits OptionTitle: キー設定 rect=(296.00, 60.00) preferred=143.14/37.41
+PASS global keys ja text fits FooterHint: 会話送りはSpace固定です。丸い矢印で各操作をリセットします。 rect=(1344.00, 30.00) preferred=641.41/22.01
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained Button
+PASS global ja button contained Button (1)
+PASS global ja button contained Button (2)
+PASS global ja button contained QuitButton
+PASS global ja button contained ResetAll
+PASS global ja button contained ApplyButton
+PASS global ja only upper drop motion active
+PASS global ja key control hit target
+PASS global settings restored after keys ja
+PASS global settings zh-Hans text fits Heading_screen: 画面 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS global settings zh-Hans text fits Heading_environment: 环境 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS global settings zh-Hans text fits Heading_audio: 声音 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS global settings zh-Hans text fits Heading_controls: 操作 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS global settings zh-Hans text fits OptionText: 按键设置 rect=(520.00, 50.00) preferred=104.01/34.67
+PASS global settings zh-Hans text fits OptionText: 显示模式 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS global settings zh-Hans text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hans text fits OptionText: 全屏 rect=(440.00, 44.00) preferred=48.01/32.01
+PASS global settings zh-Hans text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hans text fits OptionText: 分辨率 rect=(548.00, 40.00) preferred=78.01/34.67
+PASS global settings zh-Hans text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hans text fits OptionText: 1920 x 1080 rect=(440.00, 44.00) preferred=132.01/32.01
+PASS global settings zh-Hans text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hans text fits Text (TMP): 主音量 rect=(548.00, 40.00) preferred=78.01/34.67
+PASS global settings zh-Hans text fits Text (TMP): 62% rect=(64.00, 40.00) preferred=40.01/32.01
+PASS global settings zh-Hans text fits Text (TMP): 音效音量 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS global settings zh-Hans text fits Text (TMP): 24% rect=(64.00, 40.00) preferred=40.01/32.01
+PASS global settings zh-Hans text fits OptionText: 音乐音量 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS global settings zh-Hans text fits Text (TMP): 34% rect=(64.00, 40.00) preferred=40.01/32.01
+PASS global settings zh-Hans text fits OptionText: 屏幕震动 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS global settings zh-Hans text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hans text fits OptionText: 开启 rect=(440.00, 44.00) preferred=48.01/32.01
+PASS global settings zh-Hans text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hans text fits OptionText: 语言 rect=(548.00, 40.00) preferred=52.01/34.67
+PASS global settings zh-Hans text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hans text fits OptionText: 简体中文 rect=(440.00, 44.00) preferred=96.01/32.01
+PASS global settings zh-Hans text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hans text fits OptionTitle: 设置 rect=(296.00, 60.00) preferred=70.38/45.34
+PASS global settings zh-Hans text fits Text (TMP): 返回 rect=(260.00, 52.00) preferred=53.83/34.67
+PASS global settings zh-Hans text fits Text (TMP): 应用 rect=(300.00, 52.00) preferred=53.83/34.67
+PASS global settings zh-Hans text fits FooterHint: 画面设置需点击应用；声音、语言和画面震动立即生效。 rect=(1184.00, 30.00) preferred=533.6/26.67
+PASS Upper chain opening releases interaction: KeyMappingUI(Clone)
+PASS global binds 19 authored rows zh-Hans
+PASS global no duplicate row creation zh-Hans
+PASS global distinct action binding zh-Hans
+PASS global 9/10 column hierarchy zh-Hans
+PASS global keys zh-Hans text fits PrimaryHeading: 主按键 rect=(108.00, 28.00) preferred=50.25/21.34
+PASS global keys zh-Hans text fits SecondaryHeading: 副按键 rect=(112.00, 28.00) preferred=50.25/21.34
+PASS global keys zh-Hans text fits Heading_movement: 移动 rect=(660.00, 32.00) preferred=45.55/29.34
+PASS global keys zh-Hans text fits Heading_combat: 战斗 rect=(660.00, 32.00) preferred=45.55/29.34
+PASS global keys zh-Hans text fits PrimaryHeading: 主按键 rect=(108.00, 28.00) preferred=50.25/21.34
+PASS global keys zh-Hans text fits SecondaryHeading: 副按键 rect=(112.00, 28.00) preferred=50.25/21.34
+PASS global keys zh-Hans text fits Heading_consumables: 消耗品 rect=(660.00, 32.00) preferred=69.09/29.34
+PASS global keys zh-Hans text fits Heading_utility: 交互 / UI rect=(660.00, 32.00) preferred=106.41/29.34
+PASS global keys zh-Hans text fits OptionText: 向上移动 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hans text fits OptionText: 向下移动 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hans text fits OptionText: 向左移动 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hans text fits OptionText: 向右移动 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hans text fits OptionText: 冲刺 rect=(382.00, 48.00) preferred=48.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hans text fits OptionText: 攻击 rect=(382.00, 48.00) preferred=48.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hans text fits OptionText: 技能1 rect=(382.00, 48.00) preferred=60.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hans text fits OptionText: 技能2 rect=(382.00, 48.00) preferred=60.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hans text fits OptionText: 切换武器 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hans text fits OptionText: 消耗品1 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hans text fits OptionText: 消耗品2 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hans text fits OptionText: 消耗品3 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hans text fits OptionText: 消耗品4 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hans text fits OptionText: 交互 rect=(382.00, 48.00) preferred=48.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hans text fits OptionText: 物品栏 rect=(382.00, 48.00) preferred=72.01/32.01
+PASS global keys zh-Hans text fits OptionText: 丢弃物品 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hans text fits OptionText: 打开奖励 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hans text fits OptionText: 放大小地图 rect=(382.00, 48.00) preferred=120.01/32.01
+PASS global keys zh-Hans text fits OptionText: 缩小小地图 rect=(382.00, 48.00) preferred=120.01/32.01
+PASS global keys zh-Hans text fits Text (TMP): 返回 rect=(260.00, 52.00) preferred=53.83/34.67
+PASS global keys zh-Hans text fits Text (TMP): 重置设置 rect=(280.00, 52.00) preferred=109.47/34.67
+PASS global keys zh-Hans text fits Text (TMP): 应用 rect=(300.00, 52.00) preferred=53.83/34.67
+PASS global keys zh-Hans text fits OptionTitle: 按键设置 rect=(296.00, 60.00) preferred=143.14/45.34
+PASS global keys zh-Hans text fits FooterHint: 对话推进固定为Space。圆形箭头可重置该操作。 rect=(1344.00, 30.00) preferred=463.87/26.67
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained Button
+PASS global zh-Hans button contained Button (1)
+PASS global zh-Hans button contained Button (2)
+PASS global zh-Hans button contained QuitButton
+PASS global zh-Hans button contained ResetAll
+PASS global zh-Hans button contained ApplyButton
+PASS global zh-Hans only upper drop motion active
+PASS global zh-Hans key control hit target
+PASS global settings restored after keys zh-Hans
+PASS global settings zh-Hant text fits Heading_screen: 畫面 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS global settings zh-Hant text fits Heading_environment: 環境 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS global settings zh-Hant text fits Heading_audio: 聲音 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS global settings zh-Hant text fits Heading_controls: 操作 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS global settings zh-Hant text fits OptionText: 按鍵設定 rect=(520.00, 50.00) preferred=104.01/34.67
+PASS global settings zh-Hant text fits OptionText: 顯示模式 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS global settings zh-Hant text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hant text fits OptionText: 全螢幕 rect=(440.00, 44.00) preferred=72.01/32.01
+PASS global settings zh-Hant text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hant text fits OptionText: 解析度 rect=(548.00, 40.00) preferred=78.01/34.67
+PASS global settings zh-Hant text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hant text fits OptionText: 1920 x 1080 rect=(440.00, 44.00) preferred=132.01/32.01
+PASS global settings zh-Hant text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hant text fits Text (TMP): 主音量 rect=(548.00, 40.00) preferred=78.01/34.67
+PASS global settings zh-Hant text fits Text (TMP): 62% rect=(64.00, 40.00) preferred=40.01/32.01
+PASS global settings zh-Hant text fits Text (TMP): 音效音量 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS global settings zh-Hant text fits Text (TMP): 24% rect=(64.00, 40.00) preferred=40.01/32.01
+PASS global settings zh-Hant text fits OptionText: 音樂音量 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS global settings zh-Hant text fits Text (TMP): 34% rect=(64.00, 40.00) preferred=40.01/32.01
+PASS global settings zh-Hant text fits OptionText: 畫面震動 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS global settings zh-Hant text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hant text fits OptionText: 開啟 rect=(440.00, 44.00) preferred=48.01/32.01
+PASS global settings zh-Hant text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hant text fits OptionText: 語言 rect=(548.00, 40.00) preferred=52.01/34.67
+PASS global settings zh-Hant text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hant text fits OptionText: 繁體中文 rect=(440.00, 44.00) preferred=96.01/32.01
+PASS global settings zh-Hant text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS global settings zh-Hant text fits OptionTitle: 設定 rect=(296.00, 60.00) preferred=70.38/45.34
+PASS global settings zh-Hant text fits Text (TMP): 返回 rect=(260.00, 52.00) preferred=53.83/34.67
+PASS global settings zh-Hant text fits Text (TMP): 套用 rect=(300.00, 52.00) preferred=53.83/34.67
+PASS global settings zh-Hant text fits FooterHint: 畫面設定需點擊套用；聲音、語言與畫面震動立即生效。 rect=(1184.00, 30.00) preferred=533.6/26.67
+PASS Upper chain opening releases interaction: KeyMappingUI(Clone)
+PASS global binds 19 authored rows zh-Hant
+PASS global no duplicate row creation zh-Hant
+PASS global distinct action binding zh-Hant
+PASS global 9/10 column hierarchy zh-Hant
+PASS global keys zh-Hant text fits PrimaryHeading: 主要鍵 rect=(108.00, 28.00) preferred=50.25/21.34
+PASS global keys zh-Hant text fits SecondaryHeading: 輔助鍵 rect=(112.00, 28.00) preferred=50.25/21.34
+PASS global keys zh-Hant text fits Heading_movement: 移動 rect=(660.00, 32.00) preferred=45.55/29.34
+PASS global keys zh-Hant text fits Heading_combat: 戰鬥 rect=(660.00, 32.00) preferred=45.55/29.34
+PASS global keys zh-Hant text fits PrimaryHeading: 主要鍵 rect=(108.00, 28.00) preferred=50.25/21.34
+PASS global keys zh-Hant text fits SecondaryHeading: 輔助鍵 rect=(112.00, 28.00) preferred=50.25/21.34
+PASS global keys zh-Hant text fits Heading_consumables: 消耗品 rect=(660.00, 32.00) preferred=69.09/29.34
+PASS global keys zh-Hant text fits Heading_utility: 互動 / UI rect=(660.00, 32.00) preferred=106.41/29.34
+PASS global keys zh-Hant text fits OptionText: 向上移動 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hant text fits OptionText: 向下移動 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hant text fits OptionText: 向左移動 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hant text fits OptionText: 向右移動 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hant text fits OptionText: 衝刺 rect=(382.00, 48.00) preferred=48.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hant text fits OptionText: 攻擊 rect=(382.00, 48.00) preferred=48.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hant text fits OptionText: 技能1 rect=(382.00, 48.00) preferred=60.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hant text fits OptionText: 技能2 rect=(382.00, 48.00) preferred=60.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hant text fits OptionText: 切換武器 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hant text fits OptionText: 消耗品1 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hant text fits OptionText: 消耗品2 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hant text fits OptionText: 消耗品3 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hant text fits OptionText: 消耗品4 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hant text fits OptionText: 互動 rect=(382.00, 48.00) preferred=48.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hant text fits OptionText: 物品欄 rect=(382.00, 48.00) preferred=72.01/32.01
+PASS global keys zh-Hant text fits OptionText: 丟棄物品 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hant text fits OptionText: 開啟獎勵 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS global keys zh-Hant text fits OptionText: 放大小地圖 rect=(382.00, 48.00) preferred=120.01/32.01
+PASS global keys zh-Hant text fits OptionText: 縮小小地圖 rect=(382.00, 48.00) preferred=120.01/32.01
+PASS global keys zh-Hant text fits Text (TMP): 返回 rect=(260.00, 52.00) preferred=53.83/34.67
+PASS global keys zh-Hant text fits Text (TMP): 重設設定 rect=(280.00, 52.00) preferred=109.47/34.67
+PASS global keys zh-Hant text fits Text (TMP): 套用 rect=(300.00, 52.00) preferred=53.83/34.67
+PASS global keys zh-Hant text fits OptionTitle: 按鍵設定 rect=(296.00, 60.00) preferred=143.14/45.34
+PASS global keys zh-Hant text fits FooterHint: 對話推進固定為Space。圓形箭頭可重設該操作。 rect=(1344.00, 30.00) preferred=463.87/26.67
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained Button
+PASS global zh-Hant button contained Button (1)
+PASS global zh-Hant button contained Button (2)
+PASS global zh-Hant button contained QuitButton
+PASS global zh-Hant button contained ResetAll
+PASS global zh-Hant button contained ApplyButton
+PASS global zh-Hant only upper drop motion active
+PASS global zh-Hant key control hit target
+PASS global settings restored after keys zh-Hant
+PASS Upper chain opening releases interaction: TitleTemplate_SettingUI(Clone)
+PASS title upper panel motion retained
+PASS title settings has no scroll
+PASS title key page has no scroll
+PASS title slider handles retain authored height
+PASS title settings ko text fits Heading_screen: 화면 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS title settings ko text fits Heading_environment: 환경 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS title settings ko text fits Heading_audio: 소리 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS title settings ko text fits Heading_controls: 조작 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS title settings ko text fits OptionText: 키 매핑 설정 rect=(520.00, 50.00) preferred=144.52/28.61
+PASS title settings ko text fits OptionText: 화면 모드 rect=(548.00, 40.00) preferred=111.26/28.61
+PASS title settings ko text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ko text fits OptionText: 전체화면 rect=(440.00, 44.00) preferred=96.01/26.4
+PASS title settings ko text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ko text fits OptionText: 해상도 rect=(548.00, 40.00) preferred=78.01/28.61
+PASS title settings ko text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ko text fits OptionText: 1920 x 1080 rect=(440.00, 44.00) preferred=133.42/26.4
+PASS title settings ko text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ko text fits Text (TMP): 마스터 볼륨 rect=(548.00, 40.00) preferred=137.26/28.61
+PASS title settings ko text fits Text (TMP): 62% rect=(64.00, 40.00) preferred=48.02/26.4
+PASS title settings ko text fits Text (TMP): 효과음 볼륨 rect=(548.00, 40.00) preferred=137.26/28.61
+PASS title settings ko text fits Text (TMP): 24% rect=(64.00, 40.00) preferred=50.41/26.4
+PASS title settings ko text fits OptionText: BGM 볼륨 rect=(548.00, 40.00) preferred=106.08/28.61
+PASS title settings ko text fits Text (TMP): 34% rect=(64.00, 40.00) preferred=50.41/26.4
+PASS title settings ko text fits OptionText: 화면 흔들림 rect=(548.00, 40.00) preferred=137.26/28.61
+PASS title settings ko text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ko text fits OptionText: 켜기 rect=(440.00, 44.00) preferred=48.01/26.4
+PASS title settings ko text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ko text fits OptionText: 언어 rect=(548.00, 40.00) preferred=52.01/28.61
+PASS title settings ko text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ko text fits OptionText: 한국어 rect=(440.00, 44.00) preferred=72.01/26.4
+PASS title settings ko text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ko text fits OptionTitle: 설정 rect=(296.00, 60.00) preferred=70.39/37.41
+PASS title settings ko text fits Text (TMP): 나가기 rect=(260.00, 52.00) preferred=81.64/28.61
+PASS title settings ko text fits Text (TMP): 적용하기 rect=(300.00, 52.00) preferred=109.46/28.61
+PASS title settings ko text fits FooterHint: 화면 설정은 적용 후, 소리·언어·화면 흔들림은 즉시 반영됩니다. rect=(1184.00, 30.00) preferred=617.56/24.24
+PASS title key launcher hit target
+PASS Upper chain opening releases interaction: TitleTemplate_KeyMappingUI(Clone)
+PASS title binds 19 authored rows ko
+PASS title no duplicate row creation ko
+PASS title distinct action binding ko
+PASS title 9/10 column hierarchy ko
+PASS title keys ko text fits PrimaryHeading: 기본 키 rect=(108.00, 28.00) preferred=55.83/17.61
+PASS title keys ko text fits SecondaryHeading: 보조 키 rect=(112.00, 28.00) preferred=55.83/17.61
+PASS title keys ko text fits Heading_movement: 이동 rect=(660.00, 32.00) preferred=45.55/24.21
+PASS title keys ko text fits Heading_combat: 전투 rect=(660.00, 32.00) preferred=45.55/24.21
+PASS title keys ko text fits PrimaryHeading: 기본 키 rect=(108.00, 28.00) preferred=55.83/17.61
+PASS title keys ko text fits SecondaryHeading: 보조 키 rect=(112.00, 28.00) preferred=55.83/17.61
+PASS title keys ko text fits Heading_consumables: 소모품 rect=(660.00, 32.00) preferred=69.09/24.21
+PASS title keys ko text fits Heading_utility: 상호작용 / UI rect=(660.00, 32.00) preferred=139/24.21
+PASS title keys ko text fits OptionText: 위로 이동 rect=(382.00, 48.00) preferred=102.7/26.4
+PASS title keys ko text fits OptionText: 아래로 이동 rect=(382.00, 48.00) preferred=126.7/26.4
+PASS title keys ko text fits OptionText: 왼쪽으로 이동 rect=(382.00, 48.00) preferred=150.7/26.4
+PASS title keys ko text fits OptionText: 오른쪽으로 이동 rect=(382.00, 48.00) preferred=174.7/26.4
+PASS title keys ko text fits OptionText: 대시 rect=(382.00, 48.00) preferred=48.01/26.4
+PASS title keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ko text fits OptionText: 공격 rect=(382.00, 48.00) preferred=48.01/26.4
+PASS title keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ko text fits OptionText: 스킬 1 rect=(382.00, 48.00) preferred=64.3/26.4
+PASS title keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ko text fits OptionText: 스킬 2 rect=(382.00, 48.00) preferred=69.11/26.4
+PASS title keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ko text fits OptionText: 무기 교체 rect=(382.00, 48.00) preferred=102.7/26.4
+PASS title keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ko text fits OptionText: 소모품 1 rect=(382.00, 48.00) preferred=88.3/26.4
+PASS title keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ko text fits OptionText: 소모품 2 rect=(382.00, 48.00) preferred=93.11/26.4
+PASS title keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ko text fits OptionText: 소모품 3 rect=(382.00, 48.00) preferred=93.11/26.4
+PASS title keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ko text fits OptionText: 소모품 4 rect=(382.00, 48.00) preferred=95.5/26.4
+PASS title keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ko text fits OptionText: 상호작용 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS title keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ko text fits OptionText: 인벤토리 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS title keys ko text fits OptionText: 인벤토리 아이템 버리기 rect=(382.00, 48.00) preferred=253.4/26.4
+PASS title keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ko text fits OptionText: 레벨 보상 열기 rect=(382.00, 48.00) preferred=157.4/26.4
+PASS title keys ko text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ko text fits OptionText: 미니맵 확대 rect=(382.00, 48.00) preferred=126.7/26.4
+PASS title keys ko text fits OptionText: 미니맵 축소 rect=(382.00, 48.00) preferred=126.7/26.4
+PASS title keys ko text fits Text (TMP): 나가기 rect=(260.00, 52.00) preferred=81.64/28.61
+PASS title keys ko text fits Text (TMP): 설정 초기화 rect=(280.00, 52.00) preferred=146.36/28.61
+PASS title keys ko text fits Text (TMP): 적용하기 rect=(300.00, 52.00) preferred=109.46/28.61
+PASS title keys ko text fits OptionTitle: 키 설정 rect=(296.00, 60.00) preferred=118.63/37.41
+PASS title keys ko text fits FooterHint: 대화 넘기기는 Space로 고정됩니다. 원형 화살표로 해당 키를 초기화합니다. rect=(1344.00, 30.00) preferred=737.46/22.01
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained Button
+PASS title ko button contained Button (1)
+PASS title ko button contained Button (2)
+PASS title ko button contained QuitButton
+PASS title ko button contained ResetAll
+PASS title ko button contained ApplyButton
+PASS title ko only upper drop motion active
+PASS title ko key control hit target
+PASS title settings restored after keys ko
+PASS title settings en text fits Heading_screen: Display rect=(580.00, 32.00) preferred=84.06/24.21
+PASS title settings en text fits Heading_environment: Environment rect=(580.00, 32.00) preferred=149.63/24.21
+PASS title settings en text fits Heading_audio: Audio rect=(580.00, 32.00) preferred=63.38/24.21
+PASS title settings en text fits Heading_controls: Controls rect=(580.00, 32.00) preferred=103.2/24.21
+PASS title settings en text fits OptionText: Key Bindings rect=(520.00, 50.00) preferred=155.49/28.61
+PASS title settings en text fits OptionText: Display Mode rect=(548.00, 40.00) preferred=158.1/28.61
+PASS title settings en text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings en text fits OptionText: Fullscreen rect=(440.00, 44.00) preferred=122.43/26.4
+PASS title settings en text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings en text fits OptionText: Resolution rect=(548.00, 40.00) preferred=132.63/28.61
+PASS title settings en text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings en text fits OptionText: 1920 x 1080 rect=(440.00, 44.00) preferred=133.42/26.4
+PASS title settings en text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings en text fits Text (TMP): Master Volume rect=(548.00, 40.00) preferred=184.1/28.61
+PASS title settings en text fits Text (TMP): 62% rect=(64.00, 40.00) preferred=48.02/26.4
+PASS title settings en text fits Text (TMP): Sound Effects rect=(548.00, 40.00) preferred=178.89/28.61
+PASS title settings en text fits Text (TMP): 24% rect=(64.00, 40.00) preferred=50.41/26.4
+PASS title settings en text fits OptionText: Music Volume rect=(548.00, 40.00) preferred=163.3/28.61
+PASS title settings en text fits Text (TMP): 34% rect=(64.00, 40.00) preferred=50.41/26.4
+PASS title settings en text fits OptionText: Screen Shake rect=(548.00, 40.00) preferred=168.49/28.61
+PASS title settings en text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings en text fits OptionText: On rect=(440.00, 44.00) preferred=28.81/26.4
+PASS title settings en text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings en text fits OptionText: Language rect=(548.00, 40.00) preferred=122.24/28.61
+PASS title settings en text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings en text fits OptionText: English rect=(440.00, 44.00) preferred=79.22/26.4
+PASS title settings en text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings en text fits OptionTitle: Settings rect=(296.00, 60.00) preferred=152.68/37.41
+PASS title settings en text fits Text (TMP): Back rect=(260.00, 52.00) preferred=65.28/28.61
+PASS title settings en text fits Text (TMP): Apply rect=(300.00, 52.00) preferred=77.51/28.61
+PASS title settings en text fits FooterHint: Apply display changes below. Audio, language and screen shake update immediately. rect=(1184.00, 30.00) preferred=936.89/22.01
+PASS Upper chain opening releases interaction: TitleTemplate_KeyMappingUI(Clone)
+PASS title binds 19 authored rows en
+PASS title no duplicate row creation en
+PASS title distinct action binding en
+PASS title 9/10 column hierarchy en
+PASS title keys en text fits PrimaryHeading: Primary rect=(108.00, 28.00) preferred=67.53/17.61
+PASS title keys en text fits SecondaryHeading: Secondary rect=(112.00, 28.00) preferred=92.19/17.61
+PASS title keys en text fits Heading_movement: Movement rect=(660.00, 32.00) preferred=118.61/24.21
+PASS title keys en text fits Heading_combat: Combat rect=(660.00, 32.00) preferred=89.12/24.21
+PASS title keys en text fits PrimaryHeading: Primary rect=(108.00, 28.00) preferred=67.53/17.61
+PASS title keys en text fits SecondaryHeading: Secondary rect=(112.00, 28.00) preferred=92.19/17.61
+PASS title keys en text fits Heading_consumables: Consumables rect=(660.00, 32.00) preferred=154.04/24.21
+PASS title keys en text fits Heading_utility: Interaction / UI rect=(660.00, 32.00) preferred=182.8/24.21
+PASS title keys en text fits OptionText: Move Up rect=(382.00, 48.00) preferred=93.13/26.4
+PASS title keys en text fits OptionText: Move Down rect=(382.00, 48.00) preferred=121.94/26.4
+PASS title keys en text fits OptionText: Move Left rect=(382.00, 48.00) preferred=114.72/26.4
+PASS title keys en text fits OptionText: Move Right rect=(382.00, 48.00) preferred=124.33/26.4
+PASS title keys en text fits OptionText: Dash rect=(382.00, 48.00) preferred=55.22/26.4
+PASS title keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys en text fits OptionText: Attack rect=(382.00, 48.00) preferred=79.22/26.4
+PASS title keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys en text fits OptionText: Skill 1 rect=(382.00, 48.00) preferred=59.5/26.4
+PASS title keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys en text fits OptionText: Skill 2 rect=(382.00, 48.00) preferred=64.31/26.4
+PASS title keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys en text fits OptionText: Switch Weapon rect=(382.00, 48.00) preferred=165.14/26.4
+PASS title keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys en text fits OptionText: Consumable 1 rect=(382.00, 48.00) preferred=155.53/26.4
+PASS title keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys en text fits OptionText: Consumable 2 rect=(382.00, 48.00) preferred=160.34/26.4
+PASS title keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys en text fits OptionText: Consumable 3 rect=(382.00, 48.00) preferred=160.34/26.4
+PASS title keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys en text fits OptionText: Consumable 4 rect=(382.00, 48.00) preferred=162.74/26.4
+PASS title keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys en text fits OptionText: Interact rect=(382.00, 48.00) preferred=98.42/26.4
+PASS title keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys en text fits OptionText: Inventory rect=(382.00, 48.00) preferred=115.23/26.4
+PASS title keys en text fits OptionText: Discard Item rect=(382.00, 48.00) preferred=143.52/26.4
+PASS title keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys en text fits OptionText: Open Level Rewards rect=(382.00, 48.00) preferred=229.46/26.4
+PASS title keys en text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys en text fits OptionText: Zoom In Minimap rect=(382.00, 48.00) preferred=179.03/26.4
+PASS title keys en text fits OptionText: Zoom Out Minimap rect=(382.00, 48.00) preferred=200.64/26.4
+PASS title keys en text fits Text (TMP): Back rect=(260.00, 52.00) preferred=65.28/28.61
+PASS title keys en text fits Text (TMP): Reset Settings rect=(280.00, 52.00) preferred=207.75/28.61
+PASS title keys en text fits Text (TMP): Apply rect=(300.00, 52.00) preferred=77.51/28.61
+PASS title keys en text fits OptionTitle: Key Settings rect=(296.00, 60.00) preferred=232.91/37.41
+PASS title keys en text fits FooterHint: Dialogue advance uses Space. The circular arrow resets a single action. rect=(1344.00, 30.00) preferred=801.59/22.01
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained Button
+PASS title en button contained Button (1)
+PASS title en button contained Button (2)
+PASS title en button contained QuitButton
+PASS title en button contained ResetAll
+PASS title en button contained ApplyButton
+PASS title en only upper drop motion active
+PASS title en key control hit target
+PASS title settings restored after keys en
+PASS title settings ja text fits Heading_screen: 画面 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS title settings ja text fits Heading_environment: 環境 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS title settings ja text fits Heading_audio: サウンド rect=(580.00, 32.00) preferred=92.63/24.21
+PASS title settings ja text fits Heading_controls: 操作 rect=(580.00, 32.00) preferred=45.55/24.21
+PASS title settings ja text fits OptionText: キー割り当て rect=(520.00, 50.00) preferred=156.01/28.61
+PASS title settings ja text fits OptionText: 画面モード rect=(548.00, 40.00) preferred=130.01/28.61
+PASS title settings ja text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ja text fits OptionText: フルスクリーン rect=(440.00, 44.00) preferred=168.01/26.4
+PASS title settings ja text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ja text fits OptionText: 解像度 rect=(548.00, 40.00) preferred=78.01/28.61
+PASS title settings ja text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ja text fits OptionText: 1920 x 1080 rect=(440.00, 44.00) preferred=139.2/26.4
+PASS title settings ja text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ja text fits Text (TMP): マスター音量 rect=(548.00, 40.00) preferred=156.01/28.61
+PASS title settings ja text fits Text (TMP): 62% rect=(64.00, 40.00) preferred=48.01/26.4
+PASS title settings ja text fits Text (TMP): 効果音の音量 rect=(548.00, 40.00) preferred=156.01/28.61
+PASS title settings ja text fits Text (TMP): 24% rect=(64.00, 40.00) preferred=50.41/26.4
+PASS title settings ja text fits OptionText: BGM音量 rect=(548.00, 40.00) preferred=98.8/28.61
+PASS title settings ja text fits Text (TMP): 34% rect=(64.00, 40.00) preferred=50.41/26.4
+PASS title settings ja text fits OptionText: 画面の揺れ rect=(548.00, 40.00) preferred=130.01/28.61
+PASS title settings ja text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ja text fits OptionText: オン rect=(440.00, 44.00) preferred=48.01/26.4
+PASS title settings ja text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ja text fits OptionText: 言語 rect=(548.00, 40.00) preferred=52.01/28.61
+PASS title settings ja text fits Previous: < rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ja text fits OptionText: 日本語 rect=(440.00, 44.00) preferred=72.01/26.4
+PASS title settings ja text fits Next: > rect=(44.00, 40.00) preferred=11.2/30.8
+PASS title settings ja text fits OptionTitle: 設定 rect=(296.00, 60.00) preferred=70.39/37.41
+PASS title settings ja text fits Text (TMP): 戻る rect=(260.00, 52.00) preferred=53.82/28.61
+PASS title settings ja text fits Text (TMP): 適用 rect=(300.00, 52.00) preferred=53.82/28.61
+PASS title settings ja text fits FooterHint: 画面設定は適用後、音量・言語・画面振動はすぐに反映されます。 rect=(1184.00, 30.00) preferred=640.61/22.01
+PASS Upper chain opening releases interaction: TitleTemplate_KeyMappingUI(Clone)
+PASS title binds 19 authored rows ja
+PASS title no duplicate row creation ja
+PASS title distinct action binding ja
+PASS title 9/10 column hierarchy ja
+PASS title keys ja text fits PrimaryHeading: メイン rect=(108.00, 28.00) preferred=50.25/17.61
+PASS title keys ja text fits SecondaryHeading: サブ rect=(112.00, 28.00) preferred=33.13/17.61
+PASS title keys ja text fits Heading_movement: 移動 rect=(660.00, 32.00) preferred=45.55/24.21
+PASS title keys ja text fits Heading_combat: 戦闘 rect=(660.00, 32.00) preferred=45.55/24.21
+PASS title keys ja text fits PrimaryHeading: メイン rect=(108.00, 28.00) preferred=50.25/17.61
+PASS title keys ja text fits SecondaryHeading: サブ rect=(112.00, 28.00) preferred=33.13/17.61
+PASS title keys ja text fits Heading_consumables: 消耗品 rect=(660.00, 32.00) preferred=69.09/24.21
+PASS title keys ja text fits Heading_utility: 操作 / UI rect=(660.00, 32.00) preferred=97.25/24.21
+PASS title keys ja text fits OptionText: 上に移動 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS title keys ja text fits OptionText: 下に移動 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS title keys ja text fits OptionText: 左に移動 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS title keys ja text fits OptionText: 右に移動 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS title keys ja text fits OptionText: ダッシュ rect=(382.00, 48.00) preferred=96.01/26.4
+PASS title keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ja text fits OptionText: 攻撃 rect=(382.00, 48.00) preferred=48.01/26.4
+PASS title keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ja text fits OptionText: スキル1 rect=(382.00, 48.00) preferred=81.6/26.4
+PASS title keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ja text fits OptionText: スキル2 rect=(382.00, 48.00) preferred=86.41/26.4
+PASS title keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ja text fits OptionText: 武器切替 rect=(382.00, 48.00) preferred=96.01/26.4
+PASS title keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ja text fits OptionText: 消耗品1 rect=(382.00, 48.00) preferred=81.6/26.4
+PASS title keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ja text fits OptionText: 消耗品2 rect=(382.00, 48.00) preferred=86.41/26.4
+PASS title keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ja text fits OptionText: 消耗品3 rect=(382.00, 48.00) preferred=86.41/26.4
+PASS title keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ja text fits OptionText: 消耗品4 rect=(382.00, 48.00) preferred=88.81/26.4
+PASS title keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ja text fits OptionText: 調べる rect=(382.00, 48.00) preferred=72.01/26.4
+PASS title keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ja text fits OptionText: 所持品 rect=(382.00, 48.00) preferred=72.01/26.4
+PASS title keys ja text fits OptionText: アイテムを捨てる rect=(382.00, 48.00) preferred=192.01/26.4
+PASS title keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ja text fits OptionText: レベル報酬を開く rect=(382.00, 48.00) preferred=192.01/26.4
+PASS title keys ja text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/24.21
+PASS title keys ja text fits OptionText: ミニマップ拡大 rect=(382.00, 48.00) preferred=168.01/26.4
+PASS title keys ja text fits OptionText: ミニマップ縮小 rect=(382.00, 48.00) preferred=168.01/26.4
+PASS title keys ja text fits Text (TMP): 戻る rect=(260.00, 52.00) preferred=53.82/28.61
+PASS title keys ja text fits Text (TMP): 設定をリセット rect=(280.00, 52.00) preferred=192.92/28.61
+PASS title keys ja text fits Text (TMP): 適用 rect=(300.00, 52.00) preferred=53.82/28.61
+PASS title keys ja text fits OptionTitle: キー設定 rect=(296.00, 60.00) preferred=143.14/37.41
+PASS title keys ja text fits FooterHint: 会話送りはSpace固定です。丸い矢印で各操作をリセットします。 rect=(1344.00, 30.00) preferred=641.41/22.01
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained Button
+PASS title ja button contained Button (1)
+PASS title ja button contained Button (2)
+PASS title ja button contained QuitButton
+PASS title ja button contained ResetAll
+PASS title ja button contained ApplyButton
+PASS title ja only upper drop motion active
+PASS title ja key control hit target
+PASS title settings restored after keys ja
+PASS title settings zh-Hans text fits Heading_screen: 画面 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS title settings zh-Hans text fits Heading_environment: 环境 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS title settings zh-Hans text fits Heading_audio: 声音 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS title settings zh-Hans text fits Heading_controls: 操作 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS title settings zh-Hans text fits OptionText: 按键设置 rect=(520.00, 50.00) preferred=104.01/34.67
+PASS title settings zh-Hans text fits OptionText: 显示模式 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS title settings zh-Hans text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hans text fits OptionText: 全屏 rect=(440.00, 44.00) preferred=48.01/32.01
+PASS title settings zh-Hans text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hans text fits OptionText: 分辨率 rect=(548.00, 40.00) preferred=78.01/34.67
+PASS title settings zh-Hans text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hans text fits OptionText: 1920 x 1080 rect=(440.00, 44.00) preferred=132.01/32.01
+PASS title settings zh-Hans text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hans text fits Text (TMP): 主音量 rect=(548.00, 40.00) preferred=78.01/34.67
+PASS title settings zh-Hans text fits Text (TMP): 62% rect=(64.00, 40.00) preferred=40.01/32.01
+PASS title settings zh-Hans text fits Text (TMP): 音效音量 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS title settings zh-Hans text fits Text (TMP): 24% rect=(64.00, 40.00) preferred=40.01/32.01
+PASS title settings zh-Hans text fits OptionText: 音乐音量 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS title settings zh-Hans text fits Text (TMP): 34% rect=(64.00, 40.00) preferred=40.01/32.01
+PASS title settings zh-Hans text fits OptionText: 屏幕震动 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS title settings zh-Hans text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hans text fits OptionText: 开启 rect=(440.00, 44.00) preferred=48.01/32.01
+PASS title settings zh-Hans text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hans text fits OptionText: 语言 rect=(548.00, 40.00) preferred=52.01/34.67
+PASS title settings zh-Hans text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hans text fits OptionText: 简体中文 rect=(440.00, 44.00) preferred=96.01/32.01
+PASS title settings zh-Hans text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hans text fits OptionTitle: 设置 rect=(296.00, 60.00) preferred=70.38/45.34
+PASS title settings zh-Hans text fits Text (TMP): 返回 rect=(260.00, 52.00) preferred=53.83/34.67
+PASS title settings zh-Hans text fits Text (TMP): 应用 rect=(300.00, 52.00) preferred=53.83/34.67
+PASS title settings zh-Hans text fits FooterHint: 画面设置需点击应用；声音、语言和画面震动立即生效。 rect=(1184.00, 30.00) preferred=533.6/26.67
+PASS Upper chain opening releases interaction: TitleTemplate_KeyMappingUI(Clone)
+PASS title binds 19 authored rows zh-Hans
+PASS title no duplicate row creation zh-Hans
+PASS title distinct action binding zh-Hans
+PASS title 9/10 column hierarchy zh-Hans
+PASS title keys zh-Hans text fits PrimaryHeading: 主按键 rect=(108.00, 28.00) preferred=50.25/21.34
+PASS title keys zh-Hans text fits SecondaryHeading: 副按键 rect=(112.00, 28.00) preferred=50.25/21.34
+PASS title keys zh-Hans text fits Heading_movement: 移动 rect=(660.00, 32.00) preferred=45.55/29.34
+PASS title keys zh-Hans text fits Heading_combat: 战斗 rect=(660.00, 32.00) preferred=45.55/29.34
+PASS title keys zh-Hans text fits PrimaryHeading: 主按键 rect=(108.00, 28.00) preferred=50.25/21.34
+PASS title keys zh-Hans text fits SecondaryHeading: 副按键 rect=(112.00, 28.00) preferred=50.25/21.34
+PASS title keys zh-Hans text fits Heading_consumables: 消耗品 rect=(660.00, 32.00) preferred=69.09/29.34
+PASS title keys zh-Hans text fits Heading_utility: 交互 / UI rect=(660.00, 32.00) preferred=106.41/29.34
+PASS title keys zh-Hans text fits OptionText: 向上移动 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hans text fits OptionText: 向下移动 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hans text fits OptionText: 向左移动 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hans text fits OptionText: 向右移动 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hans text fits OptionText: 冲刺 rect=(382.00, 48.00) preferred=48.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hans text fits OptionText: 攻击 rect=(382.00, 48.00) preferred=48.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hans text fits OptionText: 技能1 rect=(382.00, 48.00) preferred=60.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hans text fits OptionText: 技能2 rect=(382.00, 48.00) preferred=60.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hans text fits OptionText: 切换武器 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hans text fits OptionText: 消耗品1 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hans text fits OptionText: 消耗品2 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hans text fits OptionText: 消耗品3 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hans text fits OptionText: 消耗品4 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hans text fits OptionText: 交互 rect=(382.00, 48.00) preferred=48.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hans text fits OptionText: 物品栏 rect=(382.00, 48.00) preferred=72.01/32.01
+PASS title keys zh-Hans text fits OptionText: 丢弃物品 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hans text fits OptionText: 打开奖励 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hans text fits OptionText: 放大小地图 rect=(382.00, 48.00) preferred=120.01/32.01
+PASS title keys zh-Hans text fits OptionText: 缩小小地图 rect=(382.00, 48.00) preferred=120.01/32.01
+PASS title keys zh-Hans text fits Text (TMP): 返回 rect=(260.00, 52.00) preferred=53.83/34.67
+PASS title keys zh-Hans text fits Text (TMP): 重置设置 rect=(280.00, 52.00) preferred=109.47/34.67
+PASS title keys zh-Hans text fits Text (TMP): 应用 rect=(300.00, 52.00) preferred=53.83/34.67
+PASS title keys zh-Hans text fits OptionTitle: 按键设置 rect=(296.00, 60.00) preferred=143.14/45.34
+PASS title keys zh-Hans text fits FooterHint: 对话推进固定为Space。圆形箭头可重置该操作。 rect=(1344.00, 30.00) preferred=463.87/26.67
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained Button
+PASS title zh-Hans button contained Button (1)
+PASS title zh-Hans button contained Button (2)
+PASS title zh-Hans button contained QuitButton
+PASS title zh-Hans button contained ResetAll
+PASS title zh-Hans button contained ApplyButton
+PASS title zh-Hans only upper drop motion active
+PASS title zh-Hans key control hit target
+PASS title settings restored after keys zh-Hans
+PASS title settings zh-Hant text fits Heading_screen: 畫面 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS title settings zh-Hant text fits Heading_environment: 環境 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS title settings zh-Hant text fits Heading_audio: 聲音 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS title settings zh-Hant text fits Heading_controls: 操作 rect=(580.00, 32.00) preferred=45.55/29.34
+PASS title settings zh-Hant text fits OptionText: 按鍵設定 rect=(520.00, 50.00) preferred=104.01/34.67
+PASS title settings zh-Hant text fits OptionText: 顯示模式 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS title settings zh-Hant text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hant text fits OptionText: 全螢幕 rect=(440.00, 44.00) preferred=72.01/32.01
+PASS title settings zh-Hant text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hant text fits OptionText: 解析度 rect=(548.00, 40.00) preferred=78.01/34.67
+PASS title settings zh-Hant text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hant text fits OptionText: 1920 x 1080 rect=(440.00, 44.00) preferred=132.01/32.01
+PASS title settings zh-Hant text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hant text fits Text (TMP): 主音量 rect=(548.00, 40.00) preferred=78.01/34.67
+PASS title settings zh-Hant text fits Text (TMP): 62% rect=(64.00, 40.00) preferred=40.01/32.01
+PASS title settings zh-Hant text fits Text (TMP): 音效音量 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS title settings zh-Hant text fits Text (TMP): 24% rect=(64.00, 40.00) preferred=40.01/32.01
+PASS title settings zh-Hant text fits OptionText: 音樂音量 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS title settings zh-Hant text fits Text (TMP): 34% rect=(64.00, 40.00) preferred=40.01/32.01
+PASS title settings zh-Hant text fits OptionText: 畫面震動 rect=(548.00, 40.00) preferred=104.01/34.67
+PASS title settings zh-Hant text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hant text fits OptionText: 開啟 rect=(440.00, 44.00) preferred=48.01/32.01
+PASS title settings zh-Hant text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hant text fits OptionText: 語言 rect=(548.00, 40.00) preferred=52.01/34.67
+PASS title settings zh-Hant text fits Previous: < rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hant text fits OptionText: 繁體中文 rect=(440.00, 44.00) preferred=96.01/32.01
+PASS title settings zh-Hant text fits Next: > rect=(44.00, 40.00) preferred=11.67/37.34
+PASS title settings zh-Hant text fits OptionTitle: 設定 rect=(296.00, 60.00) preferred=70.38/45.34
+PASS title settings zh-Hant text fits Text (TMP): 返回 rect=(260.00, 52.00) preferred=53.83/34.67
+PASS title settings zh-Hant text fits Text (TMP): 套用 rect=(300.00, 52.00) preferred=53.83/34.67
+PASS title settings zh-Hant text fits FooterHint: 畫面設定需點擊套用；聲音、語言與畫面震動立即生效。 rect=(1184.00, 30.00) preferred=533.6/26.67
+PASS Upper chain opening releases interaction: TitleTemplate_KeyMappingUI(Clone)
+PASS title binds 19 authored rows zh-Hant
+PASS title no duplicate row creation zh-Hant
+PASS title distinct action binding zh-Hant
+PASS title 9/10 column hierarchy zh-Hant
+PASS title keys zh-Hant text fits PrimaryHeading: 主要鍵 rect=(108.00, 28.00) preferred=50.25/21.34
+PASS title keys zh-Hant text fits SecondaryHeading: 輔助鍵 rect=(112.00, 28.00) preferred=50.25/21.34
+PASS title keys zh-Hant text fits Heading_movement: 移動 rect=(660.00, 32.00) preferred=45.55/29.34
+PASS title keys zh-Hant text fits Heading_combat: 戰鬥 rect=(660.00, 32.00) preferred=45.55/29.34
+PASS title keys zh-Hant text fits PrimaryHeading: 主要鍵 rect=(108.00, 28.00) preferred=50.25/21.34
+PASS title keys zh-Hant text fits SecondaryHeading: 輔助鍵 rect=(112.00, 28.00) preferred=50.25/21.34
+PASS title keys zh-Hant text fits Heading_consumables: 消耗品 rect=(660.00, 32.00) preferred=69.09/29.34
+PASS title keys zh-Hant text fits Heading_utility: 互動 / UI rect=(660.00, 32.00) preferred=106.41/29.34
+PASS title keys zh-Hant text fits OptionText: 向上移動 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hant text fits OptionText: 向下移動 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hant text fits OptionText: 向左移動 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hant text fits OptionText: 向右移動 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hant text fits OptionText: 衝刺 rect=(382.00, 48.00) preferred=48.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hant text fits OptionText: 攻擊 rect=(382.00, 48.00) preferred=48.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hant text fits OptionText: 技能1 rect=(382.00, 48.00) preferred=60.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hant text fits OptionText: 技能2 rect=(382.00, 48.00) preferred=60.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hant text fits OptionText: 切換武器 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hant text fits OptionText: 消耗品1 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hant text fits OptionText: 消耗品2 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hant text fits OptionText: 消耗品3 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hant text fits OptionText: 消耗品4 rect=(382.00, 48.00) preferred=84.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hant text fits OptionText: 互動 rect=(382.00, 48.00) preferred=48.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hant text fits OptionText: 物品欄 rect=(382.00, 48.00) preferred=72.01/32.01
+PASS title keys zh-Hant text fits OptionText: 丟棄物品 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hant text fits OptionText: 開啟獎勵 rect=(382.00, 48.00) preferred=96.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): - rect=(78.00, 44.00) preferred=11.01/29.34
+PASS title keys zh-Hant text fits OptionText: 放大小地圖 rect=(382.00, 48.00) preferred=120.01/32.01
+PASS title keys zh-Hant text fits OptionText: 縮小小地圖 rect=(382.00, 48.00) preferred=120.01/32.01
+PASS title keys zh-Hant text fits Text (TMP): 返回 rect=(260.00, 52.00) preferred=53.83/34.67
+PASS title keys zh-Hant text fits Text (TMP): 重設設定 rect=(280.00, 52.00) preferred=109.47/34.67
+PASS title keys zh-Hant text fits Text (TMP): 套用 rect=(300.00, 52.00) preferred=53.83/34.67
+PASS title keys zh-Hant text fits OptionTitle: 按鍵設定 rect=(296.00, 60.00) preferred=143.14/45.34
+PASS title keys zh-Hant text fits FooterHint: 對話推進固定為Space。圓形箭頭可重設該操作。 rect=(1344.00, 30.00) preferred=463.87/26.67
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained Button
+PASS title zh-Hant button contained Button (1)
+PASS title zh-Hant button contained Button (2)
+PASS title zh-Hant button contained QuitButton
+PASS title zh-Hant button contained ResetAll
+PASS title zh-Hant button contained ApplyButton
+PASS title zh-Hant only upper drop motion active
+PASS title zh-Hant key control hit target
+PASS title settings restored after keys zh-Hant
+SETTINGS_SKIN_VALIDATION_PASS

@@ -1,0 +1,530 @@
+[
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Abilities\\Definitions\\AD_CrimsonBoundaryBigExplosion.asset",
+    "sha256": "0B32768332C852A9B97078FA3216BED6429B47F7A4ED168DB497580D6B334763"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Abilities\\Definitions\\AD_CrimsonBoundaryIgnite.asset",
+    "sha256": "DE3B23F6906D95D709609C7165DEE22DCB5E53BD1227488F555C7CCBDEE6FE81"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Data\\Items\\Weapons\\LogicData\\ALData_CrimsonBoundaryCharge.asset",
+    "sha256": "2128C8842F9287E4A2133017B2A4A0EF0C4C88061A9D529924F13C350AF1959A"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\VFX\\CrimsonBoundary\\ChargeSixColor\\CrimsonChargePresentation.prefab.meta",
+    "sha256": "E94FD9E5995332479348E4956F6EBBAE6DF7EBCA7EB1B43DAB73AD44E66E6F9F"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Items\\Weapons\\CrimsonBoundary\\CrimsonBoundaryRuntimeState.cs",
+    "sha256": "6F3CC8B0356ECF93873BF06145556F477106E776159EDFFDE514CDFE0A1C0DA9"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames.meta",
+    "sha256": "EB3457684D4EF3AB1937EC87055ECF80DE1838389C88BB07DA193249D4637427"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\debris_01.png",
+    "sha256": "1C739BAD763C5D01B9F2CA3257C1ADFACC50F904795CE9D3FBCFC8824E8ADBC4"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\debris_01.png.meta",
+    "sha256": "BF210574E08B39B83B694EB698997104A9F22033ACAA3EF727224638EB9C9B54"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\debris_02.png",
+    "sha256": "A68BAE801512DFDBEC9AEDC427FD0B590A50AFC744B5C2F29678F1E3E112BF91"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\debris_02.png.meta",
+    "sha256": "D5A0AE24BA919F11A15DE1E4BC2F2E7830ED4E8BBA5118494DB0AAF259E50E9A"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\debris_03.png",
+    "sha256": "748ABC5D429E4B19D47D493C48C65EB1AD002F6D5D9F44B9987E0B02170FC0E6"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\debris_03.png.meta",
+    "sha256": "C20829D79EDFBF61539AA0E055287CCEE2E8B590DF1D594FD8E0A3507D270E21"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\debris_04.png",
+    "sha256": "1DF7C0D47C6B8063BAA68C65F5311DD32E5FDD11635C59B4D0A00EBD6B4692E4"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\debris_04.png.meta",
+    "sha256": "150B18A206CE8B59D34F9B0BF387AEB5E45B956522C17D41DF4B560BE0A6CCF1"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\ember_01.png",
+    "sha256": "1E228AD53E762FC5A90DAD2BB382C6CD29AD6DDD5AD83948AA1A6FC8B6344D43"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\ember_01.png.meta",
+    "sha256": "817414AC7E345589214CEA51597A5EC663BB04C6CEBBC9E2B2C790C0DB13B07B"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\ember_02.png",
+    "sha256": "7EAD8D5FD43C9A1FD412C5EF7E2089C8607FEA0AE075A8FE0E93B9580A73F287"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\ember_02.png.meta",
+    "sha256": "853F73C1937DE2F3D6A1BECCE16C49451ACA3A1A683C3FCB13C7400EE1E0331A"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\ember_03.png",
+    "sha256": "D8A3CE7A324C55C0C634DAAA9A613FA6EE1DA5206C3DCE39EE5D86783DFCBF2D"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\ember_03.png.meta",
+    "sha256": "4152DEC224291F8A0EF5156A2FC3B0A83E806DC1C0615598A8CEF3AB8EA649E4"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_01.png",
+    "sha256": "9EDEA3433E41B69B35348A76FB4A9B15961AECA888C9010E87CF019984F6545F"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_01.png.meta",
+    "sha256": "03DDD1A48ACCE89185E285FCFE1A63B56A4889460B5407BCBF4CD11511FD3695"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_02.png",
+    "sha256": "AB75221EF64442BCC69CEC8D7CD1A3C3CCC855032A23BB17960A67F985EE1D36"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_02.png.meta",
+    "sha256": "97FB7CFECB244E88B14E9FF5544AFC1DD8DFABCD17D32929618C8AB21672E4FA"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_03.png",
+    "sha256": "73FF122F4A170DD099953093A89DA9ADE865305E495621C2E41B1716BFB38A31"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_03.png.meta",
+    "sha256": "65256CBF61E4D31F102A14ADD96D76D27B7263B021AE1B5809CDFA1901A681B5"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_04.png",
+    "sha256": "6889586ACEBFCE7AC5B926D7E1507248BC8D0969B1AAFD44BC7429D58011B6B0"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_04.png.meta",
+    "sha256": "FCA2CE880B5B773966FA8D2EA54BC28DCD1CD7FDDD2E26F9CEB68EBD626FC2A0"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_05.png",
+    "sha256": "357A5CC3A78BA47BEE25EF900C2B26641951123B650138B0953A4A0F38B9811D"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_05.png.meta",
+    "sha256": "4F3FE8A6FA8E072B0DB94D761AF5778C831B080AA29FF769D9CD0D5AF3C1A98A"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_06.png",
+    "sha256": "5D212D6207E3E9A4887C3246A583163C4D934315713575A0A7ECA0622BFEF10D"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_06.png.meta",
+    "sha256": "DA6CF99FC19D15FC6D3A4A5539DF716A45E7FAB45759A88A76F3E4DE7E678B43"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_07.png",
+    "sha256": "AAFF7D3B37EF76F64EDFA22B82F2973DB9BD19E1E44E7995DB06D408863987DF"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_07.png.meta",
+    "sha256": "92E7AEAF7C8F489102D4145ADD47DF830097F300F66616B3041A7FADB9C460F9"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_08.png",
+    "sha256": "4FF91542FA030DEBA7746F566286DE8C1ABC85EEBAE9D883447B9EAFACB12BDE"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\fire_puff_08.png.meta",
+    "sha256": "A71BCCC32935CB1209DFDE95C98C2C594E7634F18DB04FE1FA759E3915B3171D"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\flame_wisp_01.png",
+    "sha256": "4815A942FA455A63EAB280ECC0DD6C7B71DAB84076DA970C80868AA4595F0075"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\flame_wisp_01.png.meta",
+    "sha256": "124AD5B6020A5CD9F2BEB28E15D837E8A725302A2FD55DB643F2E8D2AC3B12B1"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\flame_wisp_02.png",
+    "sha256": "21273179846094F54343C5426D4F77E3B3C1B8D3E2CE0D27148E6E4EBE784AD6"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\flame_wisp_02.png.meta",
+    "sha256": "A6199B6C87EA17FE8C4CF0A37829608239A963EBE4E08C8A11147E357BF47625"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\flame_wisp_03.png",
+    "sha256": "B686F2143A7DD108FB77482F2B63A05371599FD5D2BE5E3EF8B9EA95FC6C85AB"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\flame_wisp_03.png.meta",
+    "sha256": "E2AB654C712436C40986B873B0838C8E307AAB23C165B806E9D8A978798271DC"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\flame_wisp_04.png",
+    "sha256": "3F40E133787B88330D19D0EEC4E1EBFC1B96630A9482933B39DC3FE8441181A6"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\flame_wisp_04.png.meta",
+    "sha256": "E3FBA761EC2DF5B92662416D8096C32BAC98C217C77FD049E9A3DA3CBFB25250"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\impact_core_01.png",
+    "sha256": "7B6703D1F5DA6E8343AA876FF0F1B2635435A5A1551986632194582915C70C0D"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\impact_core_01.png.meta",
+    "sha256": "BF3791756D6044CC3E18F34A95E71E196082A63795DD9E17CFB30BDC2B43694D"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\impact_core_02.png",
+    "sha256": "6431A1DBD6B853CE3C5B68C621D48CFA270BCC5B8950348E81289013E9F903F5"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\impact_core_02.png.meta",
+    "sha256": "BDDB823D0D87D551A590AA1A08A2EF4428DAB14D7D78722609CC42F6C8F9F473"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\impact_core_03.png",
+    "sha256": "EF9B8B2C43DB721CACA2A7BE3EFB9A35B09E763AADE14A1FBB4C99D4C6750E93"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\impact_core_03.png.meta",
+    "sha256": "819C7EAF583A2EA58CE9987653D18B00B51E8287B3E540C8BDC922444A57A57E"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\meteor_core_01.png",
+    "sha256": "6FA77A1B1D2BC72D6AC03B0323657C48F74A260B9934B1EAA29072115545F103"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\meteor_core_01.png.meta",
+    "sha256": "C2B6E3419999E17C9CBC37C816E1EB5334399B25FB3B3D92349930ECD52AC680"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\meteor_flame_01.png",
+    "sha256": "47B12AD6B9166FF315F24E5269B1F013821D01F729EFB437CD6980E4AB81D45C"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\meteor_flame_01.png.meta",
+    "sha256": "16CFCD5F34F523904F14EB3F66645DF12040FB87BEA889D13720F87821215223"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\meteor_flame_02.png",
+    "sha256": "A4A66879F8D3691FEB1328AE26726D185A02BAD3CBC549102F0D58F64CBE39B9"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\meteor_flame_02.png.meta",
+    "sha256": "428F0B26B43ADE869144699497F21B0873D54CD9F757EA01C127AB0539E904F9"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\meteor_flame_03.png",
+    "sha256": "F2690FB4F25495E34462206BA9CDA0309BDAA9A485225CBA7CDBEC97C34D2B1D"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\meteor_flame_03.png.meta",
+    "sha256": "3E2A27DDC1CFC9AF5EAC147CFBE580125248D89A527F09196DBF63BC8EB262AE"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\meteor_flame_04.png",
+    "sha256": "32D604992A9D34BA926411E5A4E160BE6FE6D92300613A589514492F1EE4F906"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\meteor_flame_04.png.meta",
+    "sha256": "2590F9EA83CA756EC8F60C585F52A15BE626F34207B67DE36EF90CA84C433CF4"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\ray_01.png",
+    "sha256": "0DCC9AB4AB2FFEA0CC25DBEE6E02C9A59264B3CAB21D7DEDCE57061060735D4D"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\ray_01.png.meta",
+    "sha256": "C89880EEA908407A2480A06A542326F44D1C8B19761BDE6F1E206FDDDFA3DEB4"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\ray_02.png",
+    "sha256": "21982627E7D592D08D6EC95F35485F43CE68C13C740E6AF1027A9E38BDCE87DE"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\ray_02.png.meta",
+    "sha256": "C6BDF45A5A4097C90B5776BF303018CB148888836BA72A91D4832F9B84C38B23"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\ray_03.png",
+    "sha256": "9F80E2D6B3B8F7E303BB3EA609CC97767F9DA8EEB9637301072FF91CDFD9D0B2"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\ray_03.png.meta",
+    "sha256": "B5FF579B10088BE2C10CD52082D872BF2B2D9C2545D5C2976E88AE3C38ABFD75"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\scorch_01.png",
+    "sha256": "5C128266A1DB3BAB4E4D471D87C207D81CB950D390EA94954414C1E9CECE6E86"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\scorch_01.png.meta",
+    "sha256": "48F74C8766341421C06045CB8E4E6B8D7C42E00B9D848671C00EF671030D4E2C"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_01.png",
+    "sha256": "3B747FDFCFCD81A581E302C0264403F096AC5EC1CDFD4345607BFD3A580168B5"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_01.png.meta",
+    "sha256": "19274167F5F948229E030DC80B60562F9C8EDD8188ACBD8BAF6497A3D72F492F"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_02.png",
+    "sha256": "9B07A68EA78E5209AD9E84E50AC8D1D7CF6D851DBCCAB73E7DAFD10422B8A24D"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_02.png.meta",
+    "sha256": "772B5AEECF36C5B1CD048C64A816026B59660C0A2528C080CA2D6292717DED00"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_03.png",
+    "sha256": "A40FB094DF9A271C8FC5A37A3A68ACBEDF6A007EED3D5D3EA03C12435371C4DB"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_03.png.meta",
+    "sha256": "C421BEF9CF609A6C8A4C92F4783AD37D03C694474BA94EA0857C354EDBBC245F"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_04.png",
+    "sha256": "68FCC199AB27596FEBC6295BDFBACEF75C6D99DF39890F3E956032D008D970CF"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_04.png.meta",
+    "sha256": "5A88FACFE3FABDE66CE7A4065E4F7AB507471E98BD0BBE9BD617C5F97DB9CB14"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_05.png",
+    "sha256": "D1F79C7B5DE346EC45A96A85FAF9191A9F65AA899E214DD39E5D5CFAE3CA44A5"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_05.png.meta",
+    "sha256": "CC2C647B4D60F590F5AF7C14FAC41910EAB067207309B506A61C9FCC7C7B8BEC"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_06.png",
+    "sha256": "8CE47B3643E5BFC5935F6EDD11A82CB43E322094361A877D2E1A49B2D216FF9F"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_06.png.meta",
+    "sha256": "7BF5EA823C2A7FE2F787045E47623F24F08EF88A551469ED12434B679D733EF0"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_07.png",
+    "sha256": "8AC07F5BF4CB83A2CCAF4096BF38FFC88DB14F3EB0E616D4A18D53376BCA09F6"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_07.png.meta",
+    "sha256": "19B4C3C69F4A3ED24978ABCCCCD810B12D3843CD52CD58456C30D8E5D415348E"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_08.png",
+    "sha256": "00E7213B4E661884564931C67A75CD2AF51AC5DF0691F60B166C323C5698C48E"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Frames\\smoke_puff_08.png.meta",
+    "sha256": "927366E0EFC0B8CD1B4A120D770016BBDCF34A9B0150645DE5011C0057D99597"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets.meta",
+    "sha256": "D6C4F08BE403865A0925FC29300FC00E1BE22B9B2FB85099E86697F5042099B9"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\debris.png",
+    "sha256": "E9509DEB46B89B6EA3024D284AE1DC74AFA09EE31F14217DA30782F61ADE216F"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\debris.png.meta",
+    "sha256": "CC8D5018B8C7A1423FA65B41D039D09512CCDAE524EBB729EB983CEA6328B4F9"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\ember.png",
+    "sha256": "1335AD78ACBD72AC4ED40AC2C0E30FC4B3F5C26F737675A50953BCFCE5F6494E"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\ember.png.meta",
+    "sha256": "286BFB71103B92371A057859ECBE5F7D788B8B566B7B8051B58F15D7FD9ABED1"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\fire_puff_A.png",
+    "sha256": "9BF5DD06CDC9472A0B7C7C8E0A27C971541C3A91FEB499711B6AD7DDFF89C80B"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\fire_puff_A.png.meta",
+    "sha256": "98F38E0CD4612CB850E92512884385A9AA229EC1FD1D8FD7F93CEDC75FDBF19C"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\fire_puff_B.png",
+    "sha256": "875022DB27A3A49DA0F1B320C3BBC535207F0170C4C5ED277CC07C0E0D23DE0E"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\fire_puff_B.png.meta",
+    "sha256": "C37596BF9DCF41362CC95264960506B2AE73FF9FB390D93804383944321AE891"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\flame_wisp.png",
+    "sha256": "469F484D9334443B79CFB29FE871335065AA5B5FA41453E8FAC8C66D860B8B75"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\flame_wisp.png.meta",
+    "sha256": "EF37527851F822E1E3FFFD6B49F5C675B35880AD7A0ED8D4DB0594173C3D470E"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\ray.png",
+    "sha256": "0BEE80743EF6E6B80BADD1BD77D3330E041B98028AE8281E71205D3270D5E895"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\ray.png.meta",
+    "sha256": "09D2538248FAA3B03EFDE93C08D9C81E272DA0097ED55CD78C01E5C29D88B1A6"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\smoke_puff_A.png",
+    "sha256": "45EC81F015A78181AF2D6B74B3A6A490B6B6A814F500C1C182A1C05F2738ED31"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\smoke_puff_A.png.meta",
+    "sha256": "E2822F833BCEC7B32F59166A3FB6DD9A9993188A869F7A21375D055126A5199F"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\smoke_puff_B.png",
+    "sha256": "830A808138E6EC26AC67D88BE06F9B6725B7F84D8F117A2821537874766A7257"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\ChargeSixColor\\Sheets\\smoke_puff_B.png.meta",
+    "sha256": "53498BCD9FD5E012ACFAD02379B8FD248C37A60B15431D7FD58F142C9BC7407A"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\AudioManager.asset",
+    "sha256": "282586EACD02FCA9B7B803B93641647ABEE5A9D1A7369381025546F0C9808CCF"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\BehaviorSettings.asset",
+    "sha256": "08082D82AD5DE31729E062BC80D0BA5200A503C17FF8CF300B3CF2DC23036DCF"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\ClusterInputManager.asset",
+    "sha256": "06A192320121E445DCFF1AE8DDAD2A948FF671CA134603C043D9F4E920427EA9"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\DynamicsManager.asset",
+    "sha256": "7BF32032957EB76DEA137D4521B8F057FFDB55259ACBF130D0954C2D201EEC68"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\EditorBuildSettings.asset",
+    "sha256": "8436F0C2ED5B429205AD47AB76073FEF555EF0FDD3015EC149FCB2D17A64F5BE"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\EditorSettings.asset",
+    "sha256": "7827F85AC2D8CE213A15BAEA0157D2DF582EB6BE435654139C974C6E3EE5C969"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\GraphicsSettings.asset",
+    "sha256": "842A1AC75BBF9FC824E40022658D487B2318B08EC896CD5679F9ACFC6317CACB"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\InkSettings.asset",
+    "sha256": "5726FD0A90599997FD5A30E37FACF50D39AD0C2EC4E6F86F13B028B2B640CE9C"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\InputManager.asset",
+    "sha256": "776C8B6C71E1101973E1F3AB569CF9058B857372A8A19210B50B3C1C6A1A42A6"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\MemorySettings.asset",
+    "sha256": "A660CB9890D880DF92F3B80FA40723F183CC5EF2CB3ECC850B366191F05834C7"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\MultiplayerManager.asset",
+    "sha256": "83DED116CA3ED35A6ACAC9B0FED830F04DFE5C008C185BE50B1C132C88AEA505"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\NavMeshAreas.asset",
+    "sha256": "DECA65F3094943A1AF148CF64FD6C0DEB503219D12DE0E172B7F948D07A8E6A8"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\NetworkManager.asset",
+    "sha256": "AA28E567E0F09D53D4DC57A068C913A4A9A0F09C602C49F0278990BF666550A9"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\PackageManagerSettings.asset",
+    "sha256": "FFB0622DFC4909F7A67E773C7C0FEA32626C5499A9E838E4153F2055F7237F30"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\Physics2DSettings.asset",
+    "sha256": "DBFB81493E3536EFF2A9690F46C4B718973CD2CB9CA5FB8EECE1A60DC868DC68"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\PresetManager.asset",
+    "sha256": "6BA879310E2BE2E5BA18702578CDA93B26B030ECD88E883FEF22AB456A9F9697"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\ProjectSettings.asset",
+    "sha256": "33D4EB966E845BCB14C154B3DE34E8F80977AAA112623EE4FFB8BBC827D7EF1D"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\ProjectVersion.txt",
+    "sha256": "470B50FAF8F9101BB9E4E613F89C07E126499DD4BB5AD24236828E63B88FC36E"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\QualitySettings.asset",
+    "sha256": "2F9C4C7BDBCCCA06C23EDE3E4996AA17DB072733EC9B4EDDC430785742747A4D"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\SceneTemplateSettings.json",
+    "sha256": "BB9098B3BFCDE78D93E264B96F7B77B5430E64E8C57A7AAD7F5A5D9C3945E16A"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\ScriptableBuildPipeline.json",
+    "sha256": "3BB1F2F633C111045634BAB34F3BD189B9D9B95223C49B26D0F6F041F48BA8BA"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\ShaderGraphSettings.asset",
+    "sha256": "5C432C9C73FDF73FEE91C8823EA02AB98E3B7A8EDF341B5AE6901D699CCE52A7"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\TagManager.asset",
+    "sha256": "CAD7E0551896293A54628B2AF126090FDC5368956C19D2722B0639B7F97CFE91"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\TimeManager.asset",
+    "sha256": "6C320EE59AE1E55AA74558F012437F63CB9DE59D69FDA62FC321C4F1971C52CB"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\UnityConnectSettings.asset",
+    "sha256": "210F1B07FA9D1209B4433E01699046F790DC5755A6101EF909263C642B4A4247"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\URPProjectSettings.asset",
+    "sha256": "C7FB928E0AABAB57310310D78F03B61C028A8818EE6F183FC150B8EB6CA249A5"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\VersionControlSettings.asset",
+    "sha256": "3FE15395F872B9CFE908A111A1E87BE2055C6EE367E2876E7E83A408C2B89D57"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\VFXManager.asset",
+    "sha256": "A8950860670C6FA8F83A43E37DEB966BEACFD7B535721C4CD9C2A7E5B46305E8"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\XRSettings.asset",
+    "sha256": "71F175773593BA28D42BF1AF0543B2A465E0316D3B8F435AEBF48EA66B31B621"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Packages\\manifest.json",
+    "sha256": "11DE0060EA14FBB3CEA3131A53BED9A0FD3FB9D99711F6025054764D2D5A29DD"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\ProjectVersion.txt",
+    "sha256": "470B50FAF8F9101BB9E4E613F89C07E126499DD4BB5AD24236828E63B88FC36E"
+  }
+]

@@ -1,0 +1,201 @@
+#if UNITY_EDITOR
+using System;
+using System.IO;
+using System.Linq;
+using TMPro;
+using UnityEditor;
+using UnityEngine;
+using Object = UnityEngine.Object;
+using Image = UnityEngine.UI.Image;
+using Button = UnityEngine.UI.Button;
+
+/// <summary>Authors the item page, empty messages and paper illustration viewer in the existing book.</summary>
+public static class EncyclopediaLayoutAuthoring
+{
+    public const string Evidence = "outputs/encyclopedia-layout-2026-11-01";
+    private static readonly Color Ink = new Color32(65, 43, 34, 255);
+
+    [MenuItem("Tools/Encyclopedia/Align Items And Paper Illustration Viewer")]
+    public static void Apply()
+    {
+        EncyclopediaCreatureLocalizationAuthoring.Populate(Evidence + "/localization-report.txt");
+        string path = EncyclopediaCreatureUIAuthoring.PrefabPath;
+        var source = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+        var preservation = UiPrefabPresentationPreservation.Capture(source,
+            "Book/LeftPage/TitleGroup", "Book/LeftPage/SlotGrid", "Book/LeftPage/PageButtonGroup",
+            "Book/RightPage/ItemDetailPanel", "Book/RightPage/ItemPageContent",
+            "Book/CreatureRightPage/UndiscoveredDetail", "Book/CreatureFullIllustration");
+        var fontMaterials = source.GetComponentsInChildren<LocalizeTmpFontEvent>(true)
+            // Keep nested overrides intact even when a referenced subasset resolves to null.
+            .Where(binding => !PrefabUtility.IsPartOfPrefabInstance(binding))
+            .Select(binding => (path: AnimationUtility.CalculateTransformPath(binding.transform, source.transform), material: binding.AuthoredMaterial)).ToArray();
+        var root = PrefabUtility.LoadPrefabContents(path);
+        try
+        {
+            preservation.BindLoadedRoot(root);
+            var loadedFontMaterials = fontMaterials.Select(saved =>
+                (binding: root.transform.Find(saved.path).GetComponent<LocalizeTmpFontEvent>(), material: saved.material)).ToArray();
+            var item = root.GetComponentInChildren<EncyclopediaItemRightPage>(true);
+            var detail = root.GetComponentInChildren<EncyclopediaCreatureDetailView>(true);
+            var itemSO = new SerializedObject(item);
+            var detailSO = new SerializedObject(detail);
+            AuthorItems(item, itemSO, detailSO);
+            AuthorUndiscovered(detailSO);
+            AuthorFullView(detailSO);
+            itemSO.ApplyModifiedPropertiesWithoutUndo();
+            detailSO.ApplyModifiedPropertiesWithoutUndo();
+            preservation.RestoreBeforeSave();
+            foreach (var saved in loadedFontMaterials) saved.binding.SetAuthoredMaterial(saved.material);
+            FitText(Field<TMP_Text>(itemSO, "titleText"), 33, 22);
+            // Keep original font/material assets; only these captions need new fitting rules.
+            foreach (TMP_Text text in new[] { Field<TMP_Text>(itemSO, "undiscoveredText"),
+                Field<TMP_Text>(detailSO, "undiscoveredText"), Field<TMP_Text>(detailSO, "fullViewTitleText") })
+                FitText(text, 26, 20);
+            PrefabUtility.SaveAsPrefabAsset(root, path);
+        }
+        finally { PrefabUtility.UnloadPrefabContents(root); }
+        Unity.CodeEditor.CodeEditor.CurrentEditor.SyncAll();
+        Directory.CreateDirectory(Evidence);
+        File.WriteAllText(Evidence + "/authoring.txt.writing", "ENCYCLOPEDIA_LAYOUT_AUTHOR_PASS\n");
+        if (File.Exists(Evidence + "/authoring.txt")) File.Replace(Evidence + "/authoring.txt.writing", Evidence + "/authoring.txt", null);
+        else File.Move(Evidence + "/authoring.txt.writing", Evidence + "/authoring.txt");
+        Debug.Log("ENCYCLOPEDIA_LAYOUT_AUTHOR_PASS");
+    }
+
+    private static void AuthorItems(EncyclopediaItemRightPage item, SerializedObject so, SerializedObject detail)
+    {
+        Transform right = item.transform;
+        var wrapper = Rect(right, "ItemPageContent"); Stretch(wrapper);
+        var scroll = Field<UnityEngine.UI.ScrollRect>(so, "detailScrollRect");
+        scroll.transform.SetParent(wrapper, false);
+        var panel = (RectTransform)scroll.transform;
+        Place(panel, new Vector2(.5f, 1), new Vector2(0, -25), new Vector2(550, 650), new Vector2(.5f, 1));
+        panel.GetComponent<Image>().color = Color.clear;
+        panel.GetComponent<Image>().raycastTarget = true;
+        var content = scroll.content;
+        content.anchorMin = new Vector2(0, 1); content.anchorMax = Vector2.one;
+        content.pivot = new Vector2(.5f, 1); content.anchoredPosition = Vector2.zero;
+        content.sizeDelta = new Vector2(0, content.sizeDelta.y);
+        var layout = content.GetComponent<UnityEngine.UI.VerticalLayoutGroup>();
+        layout.padding = new RectOffset(12, 12, 8, 16);
+        layout.childControlWidth = true; layout.childForceExpandWidth = true;
+        var fit = content.GetComponent<UnityEngine.UI.ContentSizeFitter>();
+        fit.horizontalFit = UnityEngine.UI.ContentSizeFitter.FitMode.Unconstrained;
+        var hint = (GameObject)so.FindProperty("weaponDescriptionHint").FindPropertyRelative("root").objectReferenceValue;
+        hint.transform.SetParent(wrapper, false);
+        Place((RectTransform)hint.transform, new Vector2(.5f, 0), new Vector2(0, 28), new Vector2(340, 42), new Vector2(.5f, 0));
+        var hintGlyph = (Image)so.FindProperty("weaponDescriptionHint").FindPropertyRelative("keyIcon").objectReferenceValue;
+        var hintLabel = (TMP_Text)so.FindProperty("weaponDescriptionHint").FindPropertyRelative("label").objectReferenceValue;
+        Place(hintGlyph.rectTransform, new Vector2(0, .5f), new Vector2(12, 0), new Vector2(36, 36), new Vector2(0, .5f));
+        Stretch(hintLabel.rectTransform);
+        hintLabel.rectTransform.offsetMin = new Vector2(58, 0); hintLabel.rectTransform.offsetMax = new Vector2(-12, 0);
+        hintLabel.alignment = TextAlignmentOptions.MidlineLeft; hintLabel.color = Ink;
+        var title = Field<TMP_Text>(so, "titleText");
+        title.color = Ink;
+        var nameLayout = Field<RectTransform>(so, "namePanelRoot").GetComponent<UnityEngine.UI.HorizontalLayoutGroup>();
+        nameLayout.childControlWidth = nameLayout.childControlHeight = true;
+        nameLayout.childForceExpandWidth = nameLayout.childForceExpandHeight = true;
+        var titleFitter = title.GetComponent<UnityEngine.UI.ContentSizeFitter>();
+        if (titleFitter != null) titleFitter.horizontalFit = UnityEngine.UI.ContentSizeFitter.FitMode.Unconstrained;
+        Ref(so, "descriptionRoot", Field<TMP_Text>(so, "storyText").transform.parent.gameObject);
+        var hintLayout = hint.GetComponent<UnityEngine.UI.HorizontalLayoutGroup>() ?? hint.AddComponent<UnityEngine.UI.HorizontalLayoutGroup>();
+        hintLayout.padding = new RectOffset(); hintLayout.spacing = 10;
+        hintLayout.childAlignment = TextAnchor.MiddleCenter;
+        hintLayout.childControlWidth = hintLayout.childControlHeight = true;
+        hintLayout.childForceExpandWidth = hintLayout.childForceExpandHeight = false;
+        var glyphSize = hintGlyph.GetComponent<UnityEngine.UI.LayoutElement>() ?? hintGlyph.gameObject.AddComponent<UnityEngine.UI.LayoutElement>();
+        glyphSize.minWidth = glyphSize.preferredWidth = glyphSize.minHeight = glyphSize.preferredHeight = 36;
+
+        var unknown = Rect(wrapper, "UndiscoveredItem"); Stretch(unknown);
+        var message = Text(unknown, "Message", Field<TMP_Text>(detail, "monsterTitleText"));
+        Place(message.rectTransform, Vector2.one * .5f, Vector2.zero, new Vector2(520, 100), Vector2.one * .5f);
+        message.text = "아직 획득하지 못한 아이템입니다.";
+        Ref(so, "pageContentRoot", wrapper.gameObject);
+        Ref(so, "undiscoveredRoot", unknown.gameObject); Ref(so, "undiscoveredText", message);
+        unknown.gameObject.SetActive(false);
+
+        Transform left = right.parent.Find("LeftPage");
+        var titleGroup = (RectTransform)left.Find("TitleGroup");
+        Place(titleGroup, new Vector2(.5f, 1), new Vector2(0, -25), new Vector2(550, 62), new Vector2(.5f, 1));
+        var titleLayout = titleGroup.GetComponent<UnityEngine.UI.HorizontalLayoutGroup>();
+        titleLayout.padding = new RectOffset(); titleLayout.childAlignment = TextAnchor.MiddleCenter;
+        titleLayout.childControlWidth = true; titleLayout.childForceExpandWidth = false;
+        var titleFit = titleGroup.GetComponent<UnityEngine.UI.ContentSizeFitter>();
+        if (titleFit != null) titleFit.horizontalFit = UnityEngine.UI.ContentSizeFitter.FitMode.Unconstrained;
+        var grid = (RectTransform)left.Find("SlotGrid");
+        Place(grid, new Vector2(.5f, 1), new Vector2(0, -100), new Vector2(550, 560), new Vector2(.5f, 1));
+        grid.GetComponent<UnityEngine.UI.GridLayoutGroup>().childAlignment = TextAnchor.UpperCenter;
+        var paging = (RectTransform)left.Find("PageButtonGroup");
+        Place(paging, new Vector2(.5f, 0), new Vector2(0, 30), new Vector2(550, 50), Vector2.one * .5f);
+    }
+
+    private static void AuthorUndiscovered(SerializedObject detail)
+    {
+        var unknown = Field<GameObject>(detail, "undiscoveredRoot");
+        Field<Image>(detail, "undiscoveredImage").gameObject.SetActive(false);
+        var message = unknown.transform.Find("UnknownName").GetComponent<TMP_Text>();
+        Place(message.rectTransform, Vector2.one * .5f, Vector2.zero, new Vector2(520, 100), Vector2.one * .5f);
+        message.text = "아직 조우하지 못한 몬스터입니다."; message.color = Ink;
+        message.alignment = TextAlignmentOptions.Center;
+        Ref(detail, "undiscoveredText", message);
+    }
+
+    private static void AuthorFullView(SerializedObject detail)
+    {
+        var full = Field<GameObject>(detail, "fullViewRoot");
+        Skin(full.GetComponent<Image>(), "RewardPanel"); full.GetComponent<Image>().raycastTarget = true;
+        var portrait = Field<Image>(detail, "fullViewImage");
+        var frame = (RectTransform)portrait.transform.parent;
+        Stretch(frame); frame.offsetMin = new Vector2(90, 85); frame.offsetMax = new Vector2(-90, -95);
+        var title = Text(full.transform, "Title", Field<TMP_Text>(detail, "monsterTitleText"));
+        Place(title.rectTransform, new Vector2(.5f, 1), new Vector2(-40, -30), new Vector2(700, 48), new Vector2(.5f, 1));
+        Ref(detail, "fullViewTitleText", title);
+        var page = Text(full.transform, "Page", Field<TMP_Text>(detail, "monsterTitleText"));
+        Place(page.rectTransform, new Vector2(.5f, 0), new Vector2(0, 28), new Vector2(180, 40), new Vector2(.5f, 0));
+        page.text = "1 / 1"; Ref(detail, "fullViewPageText", page);
+        var previous = CloneButton(full.transform, "PreviousPortrait", Field<Button>(detail, "previousPortraitButton"));
+        var next = CloneButton(full.transform, "NextPortrait", Field<Button>(detail, "nextPortraitButton"));
+        Place((RectTransform)previous.transform, new Vector2(0, .5f), new Vector2(24, 0), new Vector2(60, 60), new Vector2(0, .5f));
+        Place((RectTransform)next.transform, new Vector2(1, .5f), new Vector2(-24, 0), new Vector2(60, 60), new Vector2(1, .5f));
+        Ref(detail, "fullViewPreviousButton", previous); Ref(detail, "fullViewNextButton", next);
+        var close = Field<Button>(detail, "fullViewCloseButton");
+        Place((RectTransform)close.transform, Vector2.one, new Vector2(-28, -28), new Vector2(120, 50), Vector2.one);
+        close.transform.SetAsLastSibling();
+        full.SetActive(false);
+    }
+
+    private static Button CloneButton(Transform parent, string name, Button template)
+    {
+        var found = parent.Find(name);
+        var button = found != null ? found.GetComponent<Button>() : Object.Instantiate(template, parent, false);
+        button.name = name; button.onClick = new Button.ButtonClickedEvent(); return button;
+    }
+    private static TMP_Text Text(Transform parent, string name, TMP_Text template)
+    {
+        var found = parent.Find(name);
+        var text = found != null ? found.GetComponent<TMP_Text>() : Object.Instantiate(template, parent, false);
+        text.name = name; text.color = Ink; text.alignment = TextAlignmentOptions.Center;
+        text.raycastTarget = false; FitText(text, 26, 20); return text;
+    }
+    private static void FitText(TMP_Text text, float size, float min)
+    { text.fontSize = size; text.fontSizeMax = size; text.fontSizeMin = min; text.enableAutoSizing = true; }
+    private static RectTransform Rect(Transform parent, string name)
+    {
+        var found = parent.Find(name) as RectTransform;
+        if (found != null) return found;
+        var rect = new GameObject(name, typeof(RectTransform)).GetComponent<RectTransform>();
+        rect.SetParent(parent, false); return rect;
+    }
+    private static void Place(RectTransform rect, Vector2 anchor, Vector2 position, Vector2 size, Vector2 pivot)
+    { rect.anchorMin = rect.anchorMax = anchor; rect.pivot = pivot; rect.sizeDelta = size; rect.anchoredPosition = position; }
+    private static void Stretch(RectTransform rect)
+    { rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one; rect.offsetMin = rect.offsetMax = Vector2.zero; }
+    private static void Skin(Image image, string name)
+    {
+        image.sprite = AssetDatabase.LoadAllAssetsAtPath(EncyclopediaSkinAuthoring.Art + "EncyclopediaPixelSkin.png").OfType<Sprite>().Single(s => s.name == name);
+        image.color = Color.white; image.type = Image.Type.Sliced; image.pixelsPerUnitMultiplier = .4f;
+    }
+    private static T Field<T>(SerializedObject owner, string name) where T : Object => (T)owner.FindProperty(name).objectReferenceValue;
+    private static void Ref(SerializedObject owner, string name, Object value) => owner.FindProperty(name).objectReferenceValue = value;
+}
+#endif

@@ -1,0 +1,493 @@
+fileFormatVersion: 2
+guid: e9983521b8108c44ba5c7e5f0c8afd27
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7059036758466346177
+    second: EncyclopediaItemSkin_0
+  - first:
+      213: -6517473577831697883
+    second: EncyclopediaItemSkin_1
+  - first:
+      213: 548620158633556708
+    second: EncyclopediaItemSkin_2
+  - first:
+      213: 4679222379384648953
+    second: EncyclopediaItemSkin_3
+  - first:
+      213: 843080478893534924
+    second: EncyclopediaItemSkin_4
+  - first:
+      213: -6517523122014334645
+    second: EncyclopediaItemSkin_5
+  - first:
+      213: -7830159144881163240
+    second: EncyclopediaItemSkin_6
+  - first:
+      213: 5982581863562182369
+    second: EncyclopediaItemSkin_7
+  - first:
+      213: 3069437398226174284
+    second: EncyclopediaItemSkin_8
+  - first:
+      213: 4756032626221106778
+    second: EncyclopediaItemSkin_9
+  - first:
+      213: -7636280226087678560
+    second: EncyclopediaItemSkin_10
+  - first:
+      213: 8388518949471622785
+    second: EncyclopediaItemSkin_11
+  - first:
+      213: 5125773047302190780
+    second: EncyclopediaItemSkin_12
+  - first:
+      213: 7172454978130757241
+    second: EncyclopediaItemSkin_13
+  - first:
+      213: 3517303317477481835
+    second: EncyclopediaItemSkin_14
+  - first:
+      213: -5282215566927284684
+    second: EncyclopediaItemSkin_15
+  - first:
+      213: 8095320485911219244
+    second: Page
+  - first:
+      213: -388596668819454892
+    second: Category
+  - first:
+      213: -3938619207596863538
+    second: Name
+  - first:
+      213: -7804183600648635832
+    second: Section
+  - first:
+      213: 2600590399502604250
+    second: Stats
+  - first:
+      213: -1814154226423123265
+    second: Level
+  - first:
+      213: -8229457608874595268
+    second: Slot
+  - first:
+      213: 723857918280279797
+    second: Selected
+  - first:
+      213: 631727818153674518
+    second: Illustration
+  - first:
+      213: -8642342141966254469
+    second: Skill
+  - first:
+      213: -7390322182623993024
+    second: Previous
+  - first:
+      213: -6358939600657027692
+    second: Next
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Page
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 448
+        width: 460
+        height: 576
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2c4ea1571b585070800000000000000
+      internalID: 8095320485911219244
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Category
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 970
+        width: 436
+        height: 54
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 4, y: 4, z: 4, w: 4}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 454cd1a736d6b9af0800000000000000
+      internalID: -388596668819454892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Name
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 922
+        width: 426
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 4, y: 4, z: 4, w: 4}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ecf88a9c2b63759c0800000000000000
+      internalID: -3938619207596863538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Section
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 884
+        width: 420
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 4, y: 4, z: 4, w: 4}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84ab8611d58f1b390800000000000000
+      internalID: -7804183600648635832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Stats
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 808
+        width: 310
+        height: 66
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 8, y: 8, z: 8, w: 8}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad7d4a89037271420800000000000000
+      internalID: 2600590399502604250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 762
+        width: 220
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 4, y: 4, z: 4, w: 4}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb2b646c754d2d6e0800000000000000
+      internalID: -1814154226423123265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slot
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 656
+        width: 88
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3ce4e008e71bcd80800000000000000
+      internalID: -8229457608874595268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Selected
+      rect:
+        serializedVersion: 2
+        x: 580
+        y: 656
+        width: 88
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f623f601f8ab0a00800000000000000
+      internalID: 723857918280279797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Illustration
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 662
+        width: 90
+        height: 82
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61748c38a1954c800800000000000000
+      internalID: 631727818153674518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Skill
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 612
+        width: 420
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7e76b86c9b301880800000000000000
+      internalID: -8642342141966254469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Previous
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 588
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 043e109612d407990800000000000000
+      internalID: -7390322182623993024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Next
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 588
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49d6ca2df1280c7a0800000000000000
+      internalID: -6358939600657027692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Category: -388596668819454892
+      EncyclopediaItemSkin_0: -7059036758466346177
+      EncyclopediaItemSkin_1: -6517473577831697883
+      EncyclopediaItemSkin_10: -7636280226087678560
+      EncyclopediaItemSkin_11: 8388518949471622785
+      EncyclopediaItemSkin_12: 5125773047302190780
+      EncyclopediaItemSkin_13: 7172454978130757241
+      EncyclopediaItemSkin_14: 3517303317477481835
+      EncyclopediaItemSkin_15: -5282215566927284684
+      EncyclopediaItemSkin_2: 548620158633556708
+      EncyclopediaItemSkin_3: 4679222379384648953
+      EncyclopediaItemSkin_4: 843080478893534924
+      EncyclopediaItemSkin_5: -6517523122014334645
+      EncyclopediaItemSkin_6: -7830159144881163240
+      EncyclopediaItemSkin_7: 5982581863562182369
+      EncyclopediaItemSkin_8: 3069437398226174284
+      EncyclopediaItemSkin_9: 4756032626221106778
+      Illustration: 631727818153674518
+      Level: -1814154226423123265
+      Name: -3938619207596863538
+      Next: -6358939600657027692
+      Page: 8095320485911219244
+      Previous: -7390322182623993024
+      Section: -7804183600648635832
+      Selected: 723857918280279797
+      Skill: -8642342141966254469
+      Slot: -8229457608874595268
+      Stats: 2600590399502604250
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

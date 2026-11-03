@@ -1,0 +1,71 @@
+{
+  "ground_files_byte_identical": [
+    "fire-ground-frame-1.png",
+    "fire-ground-frame-2.png",
+    "fire-ground-frame-3.png",
+    "fire-ground-frame-4.png",
+    "fire-ground-sheet.png",
+    "fire-ground.aseprite",
+    "fire-ground.gif"
+  ],
+  "before": {
+    "emitters": 20,
+    "large_flare_emitters": 0,
+    "active_instances": [
+      14,
+      14
+    ],
+    "ground_pixels_reached_over_cycle": 888,
+    "ground_coverage_percent": 54.6,
+    "unique_birth_positions": 0
+  },
+  "after": {
+    "emitters": 32,
+    "large_flare_emitters": 8,
+    "active_instances": [
+      22,
+      23
+    ],
+    "ground_pixels_reached_over_cycle": 1580,
+    "ground_coverage_percent": 97.2,
+    "unique_birth_positions": 127
+  },
+  "pixel-particle": {
+    "size": [
+      8,
+      8
+    ],
+    "duration_ms": 640,
+    "max_visible_bounds": [
+      5,
+      6
+    ]
+  },
+  "flare-particle": {
+    "size": [
+      12,
+      12
+    ],
+    "duration_ms": 640,
+    "max_visible_bounds": [
+      7,
+      10
+    ]
+  },
+  "comparison-preview": {
+    "size": [
+      608,
+      320
+    ],
+    "duration_ms": 3200
+  },
+  "fire-with-particles-preview": {
+    "size": [
+      320,
+      320
+    ],
+    "duration_ms": 3200
+  },
+  "all_160_underlying_preview_frames_unchanged": "Verified natively in Aseprite",
+  "no_particle_pixels_clipped": true
+}

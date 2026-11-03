@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: f432ed5e8a94ba44dbc2bdd8ebfb5e9a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6207817202479639815
+    second: CenterIgnition_0
+  - first:
+      213: 5045603882986035681
+    second: CenterIgnition_1
+  - first:
+      213: -1725749865011240224
+    second: CenterIgnition_2
+  - first:
+      213: -7001534926074889370
+    second: CenterIgnition_3
+  - first:
+      213: -693595709421196798
+    second: CenterIgnition_4
+  - first:
+      213: 4245700196038866386
+    second: CenterIgnition_5
+  - first:
+      213: 9118953515330526656
+    second: CenterIgnition_6
+  - first:
+      213: -1540293162053485158
+    second: CenterIgnition_7
+  - first:
+      213: 2540582075869677834
+    second: CenterIgnition_8
+  - first:
+      213: 6489527917097567819
+    second: CenterIgnition_9
+  - first:
+      213: -3202148448222312950
+    second: CenterIgnition_10
+  - first:
+      213: 8059695126707457469
+    second: CenterIgnition_11
+  - first:
+      213: 5351462689723470470
+    second: CenterIgnition_12
+  - first:
+      213: -8208321022477843317
+    second: CenterIgnition_13
+  - first:
+      213: 1701720077443687286
+    second: CenterIgnition_14
+  - first:
+      213: 6781196735743903550
+    second: CenterIgnition_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 64
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 0
+  spriteTessellationDetail: -1
+  textureType: 0
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: CenterIgnition_0
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70dab50fad8962650800000000000000
+      internalID: 6207817202479639815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_1
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e9d6b2bff5950640800000000000000
+      internalID: 5045603882986035681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_2
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e2a3d424a7ec08e0800000000000000
+      internalID: -1725749865011240224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_3
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66bb0d8941d85de90800000000000000
+      internalID: -7001534926074889370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_4
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20ae63a806adf56f0800000000000000
+      internalID: -693595709421196798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_5
+      rect:
+        serializedVersion: 2
+        x: 326
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d5f3b765d1cbea30800000000000000
+      internalID: 4245700196038866386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_6
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cd539c68e70d8e70800000000000000
+      internalID: 9118953515330526656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_7
+      rect:
+        serializedVersion: 2
+        x: 454
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9db6d9a787cf9ae0800000000000000
+      internalID: -1540293162053485158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_8
+      rect:
+        serializedVersion: 2
+        x: 518
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a09cfeaffe5f14320800000000000000
+      internalID: 2540582075869677834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_9
+      rect:
+        serializedVersion: 2
+        x: 582
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b46c492f14f6f0a50800000000000000
+      internalID: 6489527917097567819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_10
+      rect:
+        serializedVersion: 2
+        x: 646
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0604a9b3feaf83d0800000000000000
+      internalID: -3202148448222312950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_11
+      rect:
+        serializedVersion: 2
+        x: 710
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbd4851040ac9df60800000000000000
+      internalID: 8059695126707457469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_12
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68259b986f6344a40800000000000000
+      internalID: 5351462689723470470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_13
+      rect:
+        serializedVersion: 2
+        x: 838
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8446d4058f261e80800000000000000
+      internalID: -8208321022477843317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_14
+      rect:
+        serializedVersion: 2
+        x: 902
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6736e23f469bd9710800000000000000
+      internalID: 1701720077443687286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CenterIgnition_15
+      rect:
+        serializedVersion: 2
+        x: 966
+        y: 8
+        width: 51
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e37cd0ab086ab1e50800000000000000
+      internalID: 6781196735743903550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      CenterIgnition_0: 6207817202479639815
+      CenterIgnition_1: 5045603882986035681
+      CenterIgnition_10: -3202148448222312950
+      CenterIgnition_11: 8059695126707457469
+      CenterIgnition_12: 5351462689723470470
+      CenterIgnition_13: -8208321022477843317
+      CenterIgnition_14: 1701720077443687286
+      CenterIgnition_15: 6781196735743903550
+      CenterIgnition_2: -1725749865011240224
+      CenterIgnition_3: -7001534926074889370
+      CenterIgnition_4: -693595709421196798
+      CenterIgnition_5: 4245700196038866386
+      CenterIgnition_6: 9118953515330526656
+      CenterIgnition_7: -1540293162053485158
+      CenterIgnition_8: 2540582075869677834
+      CenterIgnition_9: 6489527917097567819
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

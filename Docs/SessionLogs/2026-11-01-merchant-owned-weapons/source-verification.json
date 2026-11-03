@@ -1,0 +1,16 @@
+{
+  "protectedFilesChecked": 39,
+  "changedFiles": [
+    "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs",
+    "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRunStateService.cs",
+    "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopInventoryRoll.cs",
+    "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopSlot.cs"
+  ],
+  "protectedFilesChanged": [],
+  "changedFilesMissingFromGameplayProject": [],
+  "automatedTests": "not executed",
+  "unityPlayMode": "not executed",
+  "msbuildGameplayExitCode": 0,
+  "brokenDocumentationLinks": [],
+  "finalCompile": "Gameplay.csproj MSBuild /t:Build /p:Configuration=Debug exit 0"
+}

@@ -1,0 +1,6 @@
+{
+  "Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab": "d61a1bab99aed488b011adc296dc0cd143acf583e660763a4c19d168f16384e1",
+  "Assets/_Project/Data/Encyclopedia/EncyclopediaCatalog.asset": "36fead9a57822c5bc32d921e9e318f6bddd80aecbe03da35e44d5a08a422e167",
+  "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCreatureTab.cs": "f456d8cdac8856fe777aac92850af06becef0791607ae5d7f0468a2cf051aa9a",
+  "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCreatureDetailView.cs": "eb5e3358345935dd8567f7f40fc2cad736152f5cccf57dc972e9b2436cfd51ed"
+}

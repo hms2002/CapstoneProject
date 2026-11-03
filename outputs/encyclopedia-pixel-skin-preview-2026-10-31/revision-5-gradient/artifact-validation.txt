@@ -1,0 +1,7 @@
+PASS 4 protected project file hashes unchanged.
+PASS 20 original sprite-reference hashes unchanged.
+PASS all 22 base UI sprite PNGs, sheet PNG and slice metadata identical to revision 4.
+PASS both preview PNGs are 1180x740.
+PASS no nameplate draw calls remain in monster/boss compositions.
+PASS native Aseprite exit 0; stderr empty; final Monster/Boss images visually inspected.
+Unity import/compile/Play Mode/build not executed. Preview only.

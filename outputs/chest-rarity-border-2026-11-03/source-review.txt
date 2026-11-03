@@ -1,0 +1,8 @@
+MSBuild source included: Assets/_Project/Runtime/UI/Inventory/Common/ItemTypeBorderGraphic.cs = True
+MSBuild source included: Assets/_Project/Runtime/UI/Inventory/Common/ItemSlotUI.cs = True
+MSBuild source included: Assets/_Project/Runtime/UI/Chest/ChestScreen.cs = True
+Existing UI -> Gameplay assembly reference: True
+Exclusive relic assets: 6
+Scope: chest offer / reroll / acquisition snapshot Bind calls opt in; other Bind callers default to existing item-type frames.
+No new serialized fields, lifecycle methods, assembly references, runtime hierarchy construction, or gameplay/save state ownership.
+Automated tests / Play Mode / gameplay acquisition were not executed.

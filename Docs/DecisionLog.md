@@ -7,6 +7,24 @@ last_reviewed: 2026-06-01
 
 # Decision Log
 
+## 2026-11-02 - Encyclopedia keeps two equal facing pages
+
+- 사용자가 도감을 같은 크기의 페이지 2개로 양분하는 구성을 반드시 유지하도록 지정했다. 이후 견본과 적용 작업에서도 좌우 페이지 크기 및 중앙 접힘선을 유지한다.
+- 사용자가 페이지 역할도 고정했다: 왼쪽은 아이템 목록, 오른쪽은 선택한 아이템 정보다. 이름·상세 삽화·능력치·레벨·스토리·스킬·효과를 왼쪽에 분산하거나 목록을 오른쪽/양면으로 옮기지 않는다. 목록의 항목명과 아이콘은 왼쪽 목록 구성 요소다. 실험은 각 페이지 내부의 배열·단수·정보 묶음 안에서 진행한다. [좌우 역할 고정 21–30 견본](../outputs/encyclopedia-item-redesign-preview-2026-11-02/revision-10-fixed-page-roles/README.md).
+- 한쪽 페이지를 넓히거나 중앙을 덮는 전폭 패널은 사용하지 않는다. 목록, 머리말, 구분선과 본문은 각 페이지 안에서 재배치할 수 있으며, 기존 필수 정보와 글자색 역할은 유지한다.
+- 승인한 무기 배치는 28번 오른쪽 정보 구성과 왼쪽 아이콘 전용 4열 그리드다. 목록 항목의 이름·번호는 제외하고 선택 테두리·페이지 이동을 유지한다. [28번 아이콘 그리드 수정](../outputs/encyclopedia-item-redesign-preview-2026-11-02/revision-11-option28-icon-grid/README.md).
+- 소모품·유물은 오른쪽 페이지의 아이콘을 가로 중앙에 놓고 그 아래에 효과 섹션을 둔다. 무기와 왼쪽 아이콘 그리드는 유지한다. 유물은 후속 요청에 따라 `레벨` 제목을 없애고 Q/E·레벨 수치를 아이콘 아래·효과 위에 가운데 정렬한다. [현재 유물 견본](../outputs/encyclopedia-item-redesign-preview-2026-11-02/revision-14-relic-level-below-icon/README.md), [소모품 견본](../outputs/encyclopedia-item-redesign-preview-2026-11-02/revision-13-centered-icons/README.md).
+- 가능하면 무기 능력치와 유물 레벨은 이름·설명과 구분되는 별도 섹션으로 표현한다. 이번 견본은 소제목·구분선·여백으로 분리했다. [능력치·레벨 분리 E–H 견본](../outputs/encyclopedia-item-redesign-preview-2026-11-02/revision-7-stats-level-sections/README.md).
+- 후속으로 사용자가 무기·유물·소모품의 마지막 견본 적용을 명시적으로 승인했다. 위 배치를 Unity 저작 프리팹과 Aseprite 에셋으로 연결했으며, 이전의 견본 전용 범위는 이 승인으로 확장되었다. 긴 실제 설명은 기존 스크롤과 데이터 바인딩을 유지한다. [적용 기록과 확인 한계](../outputs/encyclopedia-item-skin-integration-2026-11-02/README.md).
+- 실제 적용 화면 피드백으로 무기의 능력치 섹션을 중앙 아이콘 아래에 두도록 변경했다. 무기는 이름 → 중앙 아이콘 → 전체 너비 능력치 → 스토리·스킬 순서를 사용한다. 유물·소모품의 승인된 순서는 유지한다. [배치·가독성 수정](../outputs/encyclopedia-item-layout-fix-2026-11-02/README.md).
+
+## 2026-11-01 - Encyclopedia discovery records actual acquisition and encounter
+
+- Spawn unlocks are not acquisition history. Weapon/Relic discovery is recorded only from actual inventory contents after successful mutations/restores; Monsters are discovered by actual encounter, while Bosses reuse existing encounter/outcome records.
+- Additive v1 profile discovery plus active-run pending discovery follows the existing run-end commit/discard and profile-switch reset boundaries. UI only projects these values. Old-save monster kills are valid positive encounter evidence; missing historical item acquisitions are not inferred from loot unlocks.
+- Undiscovered entries remain selectable as black silhouettes with `???`, with details and alternate portraits/full view hidden. NPC and Consumable policy is unchanged.
+- Source map: [Encyclopedia discovery ownership](StructureMemory/EncyclopediaCreatureTabs.md#approved-skin-and-discovery-ownership-2026-11-01). Architecture/Contracts promotion is a separate approval candidate.
+
 ## 2026-09-11 - Backtrack Templates Before Relaxing Room Repetition
 
 Keep procedural topology and physical embedding separate from template assignment. Precompute compatible node domains, use constrained-node-first assignment and forward checking, and allow bounded rollback of ordinary/provisional Combat templates. Explicitly guaranteed identities remain pinned. Relax nearby repetition first, adjacent shape second and adjacent identical room last; never relax socket/role requirements, positive quota targets or the Large cap. Compare physically valid results by repetition metrics before corridor aesthetics. Record budget exhaustion separately from domain infeasibility instead of claiming every remaining repeat is unavoidable.
@@ -3519,3 +3537,100 @@ PlayerAlcoholExposure가 겹친 장판의 충전/효과 수명을 소유하고, 
 ## 2026-10-12 — Confusion also reverses directional dash
 
 술 노출 구현 후 사용자가 대시도 방향키 입력과 함께 반전하도록 기존 walking-only 선택을 변경했다. 일반 걷기와 기본 대시의 방향 입력은 PlayerIntentInput2D.ApplyConfusionToDirection을 공유한다. 대시의 cached raw 경로와 Update 전 직접 입력 조회 경로에 모두 적용하며 raw 입력, 다른 스킬 입력, 강제 이동, 방향 입력 없는 aim fallback은 유지한다. prefab/GE/save schema 변경은 없다. [구조](StructureMemory/AlcoholExposure.md), [범위](ActiveTasks/spiri-alcohol-exposure.md).
+
+## 2026-10-30 — Crimson charged Skill1 separates gameplay impact from six-color presentation
+
+사용자는 승인한6색 부품을 우클릭 차징 공격에 적용하고, 투사체는 충돌 없는 연출로 구성하도록 지정했다. 노션의 .7초 최소/1.4초 최대 차지, 해제 시8초 쿨다운, .5초 비행 후 착탄을 따른다. 기존 Skill1 GUID/이름을 유지하고 화상 소모형 로직을 차징 로직으로 교체하며, 기본 공격과 Q는 유지한다.
+
+범위/피해/화상은 Gameplay가 소유하고, authored prefab은 인터페이스로 상태를 받아 스프라이트와 파티클을 표시한다. 운석에는 충돌 판정이 없고 착탄 시 원형 hurtbox query만 한 번 수행한다. 게이지는 uGUI Fill,50%부터 주황,100% 금색이고 최소 차지 표시는 없다. 범위 원은 고정 두께 점선 mesh를 사용한다. 원본6색은 유지하되 alpha fade는 허용한다. [구조](StructureMemory/ScriptSystems/BurnStatusAndCrimsonBoundaryWeapon.md), [검증 기록](SessionLogs/2026-10-30.md).
+
+같은 날 후속 요청에 따라 운석 진입 방향을 우상단에서 좌하단으로 향하는45도 사선으로 변경했다. 목표 위치에 따라 각도가 달라지지 않도록 동일 방향으로 화면 경계 밖에서 출발하며, 비행 .5초와 착탄 판정은 유지한다. 이 지시가 초기 수평/3시 방향 해석을 대체한다.
+
+사용자가 최초 Aseprite 게이지 시안과의 차이를 지적해, 구현 중 임의로 단순화했던32×4 단색 막대를 원본32×10 형태로 복원했다. 최소 차지 표시를 없애고50%에서 주황색으로 바꾼 v2 시안의 테두리·내부 음영·3단 채움 명암·풀차징 밝은 테두리가 기준이다. `Image.fillAmount` 요구는 시안의 디자인을 단순화한다는 뜻이 아니며,6색 VFX 제한을 별도 승인된 게이지 팔레트에 확장하지 않는다. 각 명암 띠를 동일 fillAmount로 표시하고, 모든 계층은 prefab에 authoring한다.
+
+## 2026-10-30 — Monster HP uses approved Aseprite artwork in both render paths
+
+사용자가 승인한6색 픽셀 HP 시안을 공통 몬스터 HUD에 적용한다. 테두리/배경/체력/피해 잔상을 한 PNG 시트로 내보내고, 기존 공유 메시 셰이더와 겹침용 Images가 동일 에셋을 읽는다. 외형을 다시 코드 색상/사각형으로 근사하지 않는다. 끝부분은 원본 픽셀 비율을 유지하고 중앙만 폭에 맞춘다.
+
+75/100/140 폭, 높이10, world scale.014, 체력 상태 소유권과 피해 잔상.3초 대기/.5초 보간, 그로기·상태 표시·overlap 정렬은 유지한다. 보스 전용 HP UI에는 적용하지 않는다. 새 Manager나 런타임 UI 계층을 만들지 않으며, 성능 향상은 별도 측정 없이 주장하지 않는다. [범위](ActiveTasks/monster-pixel-hp.md), [구조](StructureMemory/MonsterWorldHudAndStatus.md), [검증](SessionLogs/2026-10-30.md).
+
+## 2026-11-01 — Crimson charge uses approved double-circle art and post-impact fade
+
+사용자가 revision19 마법진을 우클릭 차징에 적용하도록 승인했다. 안쪽은0~50%, 바깥쪽은50~100% 구간에서 Scale로 성장하며, 안쪽 반시계/바깥쪽 시계 방향으로 회전한다.128×128 PNG의 안쪽86px/바깥쪽128px 비율을 유지하고,50% 공격 지름도 기존3이 아니라4.03125로 변경하는 선택을 명시적으로 받았다. 최대 지름6과 피해/화상/비행/쿨다운은 그대로다. Gameplay의 `ChargeDiameter`가 표시와 실제 판정에 같은 크기를 공급한다.
+
+발사 후에는 목표 위치와 두 원의 크기를 고정하고 계속 회전한다. 착탄 시점부터.25초간 alpha만 감소시키고 경고 자식을 끈다. 기존.5초 비행/2.1초 충돌 없는 연출 꼬리와 owner cleanup은 유지한다. 이 결정은2026-10-30의 점선 mesh 및2026-10-31의 낙하 중 축소 표현을 대체한다. 승인 PNG 원본은 바꾸지 않으며, 실제 게임 화면에서 축소/회전 시 가는 획 손실을 줄이는 전용 공유 머티리얼을 사용한다. [현재 구조](StructureMemory/ScriptSystems/BurnStatusAndCrimsonBoundaryWeapon.md), [검증](SessionLogs/2026-11-01-crimson-magic-circles/README.md).
+
+## 2026-11-01 — Crimson circle opacity confirms on valid release
+
+차징 중에는 두 마법진의 투명도를50%(alpha.5)로 유지한다.100%에 도달해도 누르고 있는 동안에는 불투명해지지 않는다. 사용자가 선택한 확정 시점은 마우스를 놓아 유효하게 발사하는 순간이며, 부분 차징과 풀 차징 모두 즉시 투명도0%(alpha1)가 된다. 착탄 전까지 유지한 뒤 기존.25초 페이드를 사용한다. 최소 차징 이전 취소 동작은 변경하지 않는다.
+
+192×192 버전은 별도 견본으로만 제공하며 게임에 연결된128×128 에셋은 교체하지 않는다. [구현 및 검증](SessionLogs/2026-11-01-crimson-charge-opacity/README.md).
+
+## 2026-11-01 — Crimson192px art preserves the existing charge and opacity contract
+
+사용자가 revision24의192×192 마법진 적용을 승인하면서 차징 방식과 투명도 로직 유지를 명시했다. 기존 PNG/Aseprite 경로와 GUID를 유지해 교체하고, 안쪽 스프라이트의 실제 표시 비율128/192만 Presentation에서 보정한다. Gameplay의86/128 비율과50% 지름4.03125/풀 차징 지름6은 유지한다. 그림 해상도를 공격 범위 변경의 근거로 사용하지 않는다.
+
+차징 중 alpha.5, 유효한 부분/풀 발사 순간 alpha1, 착탄 뒤.25초 페이드와 반대 회전은 그대로다. 새 그림은 원과 사각형이 접하고 두8각성이22.5° 엇갈리며, 도형은 기존 두 주황색/문자는 노랑을 사용한다. [구현 및 검증 한계](SessionLogs/2026-11-01-crimson-magic-circles-192/README.md).
+
+## 2026-11-01 — Crimson opaque hold and bounded damped cursor following
+
+사용자가 차징 중 투명도 연출 제거와 가벼운 마우스 추적 댐핑을 요청했다. 차징/비행은 alpha1을 유지하고 착탄 후.25초 페이드만 남긴다. 앞선 차징 alpha.5 결정은 이 요청으로 대체한다.
+
+추적은0.06초 지수 댐핑과 최대0.75유닛 이격 제한을 사용한다. 사용자의 거리 표현은 빠른 커서를 놓치지 않기 위한 최대 뒤처짐으로 해석했으며, 최소 간격을 강제로 두거나 dead zone을 만들지 않는다. Gameplay가 조준 중심을 소유하고 표시/운석/판정에 함께 공급한다. 발사는 그때 보이는 마법진 중심을 고정해 원시 커서로 순간이동하거나 표시와 판정이 어긋나지 않도록 한다. 수치는 로컬 상수로 두고 새 직렬화 스키마는 추가하지 않는다. [구현과 검증 한계](SessionLogs/2026-11-01-crimson-damped-aim/README.md).
+
+## 2026-11-01 — Approved puddle pixel artwork applied
+
+사용자의 이전 색 복귀 및 게임 적용 요청에 따라 술 본체/물결은 revision16 RGB, 자연스러운 표면 거품과 상승 거품은 revision17을 사용한다. 장판 본체 alpha166/255와 기존 형태를 유지한다. 화염은 승인된 어두운 근접 파티클과 밝은 비산 파티클을 분리하고, 기존0.8초 점화 진행도를 중심부터 퍼지는 그림/파티클에 함께 전달한다. 실제 적용 대상은 기존 Alcohol/Fire 장판 프리팹이다. 판정·버프·흡수·탄막 소유권은 변경하지 않는다. [구조](StructureMemory/PuddlePixelPresentation.md), [적용 파일과 검증](../outputs/puddle-pixel-integration-2026-11-01/README.md).
+
+## 2026-11-01 — Three-circle Crimson charge and explicit test requests
+
+사용자 레퍼런스에 따라 가장 작은 주황 원과 새 노란 사각형 두 개를 center 레이어로 분리한다. 중간 반시계37.5°/s, 바깥 시계37.5°/s, 중심 시계56.25°/s로 각각 회전한다. 중심/중간은 첫50%에서 함께 커지며 기존50%/50% 차징, 불투명 표시, 조준 댐핑과 착탄 후 페이드를 유지한다. 노랑을 문자에만 쓰던 이전 제약은 새 중앙 사각형 두 개에 한해 변경됐다. [적용 기록](SessionLogs/2026-11-01-crimson-three-circles/README.md).
+
+이후 사용자가 테스트는 명시적으로 부탁할 때만 실행하도록 요청했다. 구현·정리·리뷰 자체를 테스트 실행 승인으로 해석하지 않는다. 이번 정리는 일회성 UI/이펙트/마이그레이션 확인과 작업 한정 제작·검증 툴에 한정하며, 게임 로직·저장 회귀 테스트 및 재사용 편집 도구는 유지한다. 원본은 Assets 밖 보관 폴더에 두고 실행 대상에서 제외한다. AGENTS.md의 Verification Rules에 향후 실행 기준을 기록했다.
+## 2026-11-01 — Current weapon ownership takes precedence over cached shop offers
+
+The requested owned-weapon shop fix uses existing `LootPoolContext.ShopStock` exclusions for both rolling and cached-stock reconciliation. Replace only conflicting unsold weapon entries; retain valid offers, SOLD slots, existing prices and refresh usage. This is a validity repair, not a full refresh or permanent run acquisition history. Initial stock, refresh and partial replacement share ShopInventoryRoll; retained entries also consume category caps. [Current rules and implementation](StructureMemory/ScriptSystems/ShopStructure.md).
+
+## 2026-11-01 — Chest/shop live weapon offers and relic level eligibility
+
+User directed chests to exclude floor weapons and weapons left in already opened chests, and shops to exclude maximum-level relics. Combined with the preceding mutual-exclusion rule: chest rolls exclude owned/world/other-opened-chest/unsold-shop weapons; shop rolls exclude owned/world/opened-chest weapons. A consumed chest releases discarded offers; closing without acquisition retains them. The source chest does not reserve its entire previous roll, while retained selections remain excluded.
+
+Use existing run snapshots for unloaded dungeon leftovers and live inventories for successfully regenerated dungeons. Keep existing historical MerchantStock semantics for grave callers and add UnsoldMerchantStock for chests. Shop relic candidate/repair paths share CanGainRelicLevels with chests, preserving ordinary upgrades and the parcel exception. This adds no pre-generation or reservation manager and changes no save schema. [Current scope and verification limits](SessionLogs/2026-11-01-chest-shop-policy/README.md).
+
+
+## 2026-11-02 — Charging skills always expose charge progress through a gauge
+
+사용자가 “차징 스킬은 차징 게이지를 통해 차징 정도를 표기한다”를 규칙으로 지정했다. 차징 시간·완충 판정은 Gameplay가 소유하고, authored 게이지는 현재0~100% 비율을 표시한다. 해제·취소·무기 교체·owner 비활성화·씬 전환에서는 숨기거나 정리해 잔상이 남지 않도록 한다. 규칙은 AGENTS.md에도 기록했다.
+
+견습용사의 검 우클릭에 기존 홍련과 같은 게이지를 연결했다. 공용 ChargeGaugePresentation은50% 미만 빨강/50%부터 주황/100% 금색 테두리를 표시한다. 기존32×10 모양은 유지하고, 더 작고 얇은4종 Aseprite는 선택 전 견본으로만 제공한다. 이 요청은 이전 승인 디자인을 즉시 다른 모양으로 바꾸라는 승인이 아니다. [구현·견본·검증 한계](../outputs/charge-gauge-2026-11-02/README.md).
+
+
+## 2026-11-02 — Apply charge gauge option A to Apprentice and Crimson
+
+사용자가4개 견본 중 A안을 선택했다. 양쪽 게이지의 현재 기준은24×4픽셀/20PPU, 월드1.2×0.2, owner offset1.4다.1픽셀 테두리와2픽셀 채움, 완충의 금색 윗선 및 밝은 끝점까지 승인 Aseprite를 따른다. 기존32×10 디자인 보존 결정은 이 선택으로 대체하며,50% 색상 전환과 차징/해제 gameplay는 유지한다. B~D는 적용하지 않는다. [적용·검증 기록](../outputs/charge-gauge-2026-11-02/README.md).
+
+## 2026-11-02 — Flat charge gauge follow-up
+
+The user requested removal of charge-gauge shading/gloss in favor of the dash
+cooldown bar's flat style. This supersedes the selected A design's shaded fill,
+gold top edge and bright terminal pixel. Both authored gauges retain24x4/20PPU,
+offset1.4 and existing charge readiness colors, with one22x2 flat fill and uniform
+dark-brown border/trough. Charge ownership and cleanup remain unchanged.
+[Implementation record](../outputs/ui-gameplay-fixes-2026-11-02/README.md).
+
+## 2026-11-03 — EXP and gold wait for combat clear before collection
+
+사용자 요청에 따라 경험치와 런 골드 픽업은 전투 중 바닥에서 반투명으로 대기하고, 전투 종료 후 함께 짧게 떠올라 플레이어에게 흡수된다. 전투 판단은 기존 `MonsterSpawnRoomGroup.IsPlayerInCombat`을 사용하므로 웨이브 사이, 예약 스폰, encounter hold도 대기에 포함된다. 마석과 필드 회복 픽업은 이 변경에 포함하지 않는다.
+
+픽업별 상태가 alpha/이동을 소유하며 신규 전역 Manager를 추가하지 않는다. 전투 종료 직후 포탈 이동은 대기/상승 중인 EXP·골드도 기존 지급 경로로 정산해 손실을 막지만, 전투 중에는 강제 정산을 허용하지 않는다. 보상 총량·중복 지급 방지·획득 파티클은 기존 소유권을 유지한다. 두 프리팹의 기존 `homingSpeed` 필드는 이제 월드 속도 대신 초당 흡수 진행률로 해석한다. [구조와 조정 지점](StructureMemory/RunGoldAndShop.md#combat-reward-collection-2026-11-03), [구현과 검증](../outputs/combat-reward-pickups-2026-11-03/README.md).
+
+## 2026-11-03 — 보스 보상 동시 시작과 마왕 마정석 전용 보상
+
+사용자 확정: 일반 보스는 처치 연출 종료 후 골드·경험치·마정석 생성, 상자 활성화, 포탈 등장 연출 시작을 같은 프레임에 처리한다. 동시성의 기준은 시작 시점이며 픽업 흡수, 상자 개봉, 포탈 연출 완료를 기다리지 않는다. 슬라임 여왕의 2페이즈 두 개체 처치는 클리어 조건이고, 보상 시퀀스 예외가 아니다.
+
+마왕(final route)의 보상은 마정석만이다. 기존 테이블 수량과 `MagicStoneBonus`를 기존 `CurrencyManager.AddMagicStone`으로 엔딩 결과 캡처 전에 직접 지급한다. 골드·경험치·상자·회복 하트·포탈은 생략하고 기존 엔딩 대화/아웃트로/승리 결과를 유지한다. 일반 보스의 보상량·픽업 흡수 동작은 유지한다. [현재 구조](StructureMemory/ScriptSystems/LootRewardStructure.md#boss-completion-timing).
+
+
+## 2026-11-03 — 레벨업 하단 버튼 A 금테와 패널 없는 제목
+
+사용자가 레벨업 카드 하단 닫기/리롤 버튼을 **A 고전 금테**로 선택했다. 최상단 `Level UP`은 뒤의 사각 패널을 없애고 Bold와 외곽선으로 읽히게 하는 방향을 요청했다. [선택 반영 Aseprite 시안](../outputs/levelup-button-designs-2026-11-03/revision-2-selected-a-title/README.md)은 흰색 Bold/짙은 외곽선으로 제작했다. 후속 “적용해줘” 요청으로 [실제 프리팹에 연결](../outputs/levelup-ui-integration-2026-11-03/README.md)했다. 버튼 배경만 PNG로 사용하며 제목/문구/단축키/횟수는 TMP를 유지한다. 정적 문구는 기존 로컬라이징 경로, 횟수 배지는 기존 세션 상태 투영을 사용한다. 제목 외곽선은 전용 재질로 분리하여 공유 글꼴을 변경하지 않는다.

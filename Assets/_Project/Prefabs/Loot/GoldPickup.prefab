@@ -151,6 +151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ee2da6e5404b45853dad2fc837d106, type: 3}
   m_Name:
   m_EditorClassIdentifier: Gameplay::GoldPickup2D
-  homingDelay: 1
-  homingSpeed: 8
+  homingDelay: 0.15
+  homingSpeed: 3.333333
+  pickupRenderer: {fileID: 5166873198201453662}
+  groundAlpha: 0.45
+  riseHeight: 0.25
   gainParticlePrefab: {fileID: 361241697615398169, guid: a2b10a9062b84458a6abd0dc3ec86652, type: 3}

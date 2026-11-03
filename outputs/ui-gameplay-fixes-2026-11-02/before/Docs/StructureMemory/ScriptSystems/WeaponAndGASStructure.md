@@ -1,0 +1,492 @@
+---
+status: active
+authority: structure-memory
+category: script-system-map
+last_reviewed: 2026-10-12
+---
+
+# Weapon And GAS Structure
+
+## Purpose
+
+Map the weapon, GAS/ability, combat, status, movement, and player-adjacent runtime scripts before any physical reorganization.
+
+For the current direct weapon HP/gauge boundary, capture timing, one-effect hit application and element/critical popup ownership, see [ElementDirectHitDamage](../ElementDirectHitDamage.md). That map distinguishes additional HP constituents from the pre-existing gauge snapshot path and records the fixed-damage Odd Iron and explicit Crimson Boundary branches.
+
+## Weapon Facing Dead Zone
+
+- `WeaponPresentationRig2D.UpdateSideOffset` owns the last left/right side. Cursor X within the owner-centered dead zone preserves that side; `PF Player.prefab` and the script default use 0.2 world units per side.
+- `BeginAimPresentationOverride` refreshes the rig and captures that resolved side, so starting an attack cannot bypass hysteresis through the normalized cast direction. Cast direction still supplies the attack aim angle. Existing cinematic locks remain authoritative.
+- `CombatFeelLootQuestPlayModeTests.WeaponFacing_CenterJitterAndAttackStart_KeepSideUntilOppositeThreshold` covers jitter, attack start and crossing both thresholds.
+
+## Current Structure
+
+### Charging Skill Gauges (2026-11-02)
+
+- All charging skills must display their charge progress through an authored gauge (user rule in `AGENTS.md` and `DecisionLog`). Gameplay remains the owner of elapsed charge and release decisions.
+- `IChargeGaugePresentation` in Gameplay is implemented by `CapstonePresentation.ChargeGaugePresentation`. Its three fill bands share one clamped ratio; below50% is red,50%+ orange,100% uses a gold frame. The view owns no charge timer or combat state.
+- Apprentice `ApprenticeHeroSwordChargeSpinData.ChargeGaugePrefab` binds `Prefabs/VFX/ChargeGauge.prefab`. The existing per-spec charge presentation runtime instantiates it under the owner, supplies the same live ratio as the weapon reveal, and hides/destroys it in `Release`; normal release, cancellation/finally and scene cleanup use that path. Parent disable resets and hides the view so stale progress does not reappear. A disabled AbilitySystem also exits the charging loop.
+- Crimson retains its authored `HeadChargeGauge` hierarchy and delegates progress/color/hide behavior to the same view component. No Gameplay→Presentation assembly reference or new manager was added.
+- User-selected A artwork is installed in both gauges:24×4 at20PPU, world size1.2×0.2, offset1.4 above the owner. Fill and highlight form two1px bands; the legacy third shadow band/decorations stay inactive with references retained. A gold top edge and bright terminal pixel appear at full charge. B~D remain preview-only: [sources and validation limits](../../../outputs/charge-gauge-2026-11-02/README.md). New skills should author the view and connect update/cleanup; merely adding a skill does not automatically infer its charge duration.
+
+### Skill Damage Authoring
+
+- Keep the shared `SF_ATKx1` at AttackFinal x1 for normal attacks. The September 2026 skill pass uses independently authored formula assets instead of increasing the shared normal-attack formula.
+- Separate formulas: `SF_ApprenticeHeroSwordDashStab`, `SF_LightningSpearMarkRush`, `SF_LightningSpearSweep`, `SF_LightningSpearRecoveredShot`, `SF_LightningSpearMarkRain`, and `SF_FragmentBladeRecall`. Each preserves damage at AttackFinal 10 with 70% baseline plus 30% former attack-scaled damage (for example, sword dash is `84 + 3.6 * AttackFinal`).
+- `SF_Skill_ATK_Growth30` outputs `7 + 0.3 * AttackFinal`. Charge spin and Flowering dash slashes multiply this normalized value by their existing per-skill damage scales. Charge spin resolves its scale over the minimum-to-maximum charge interval; visual charge ratio remains unchanged.
+- Fragment skill-2 follow-up uses `piercingDamageFormula` and `piercingDamageScale`, not the normal formula or `minimumDamageScale`. `PiercingDamageFormula` falls back to the normal formula only for older/unconfigured assets. The authored asset uses `SF_Skill_ATK_Growth30`; normal attacks retain full attack scaling.
+- Crimson's `skillFireFormula` outputs `3.5 + 0.3 * FireFinal`, preserving its equipped baseline FireFinal 5. Skill 1 uses `burnConsumptionMultiplier` 6; Skill 2 and its Crimson Lava Ball relic path use `skill2BaseMultiplier` 13 plus the separate `skill2BurnConsumptionMultiplier` 2. This keeps the Q reduction local instead of reducing Ignite. An unset formula preserves raw-fire behavior, and missing source stats produce no flat damage. Normal shots omit the skill formula, retaining raw FireFinal scaling and burn-stack application.
+- Wind `SSF_SpeedStrikeDamage` is `(7 + 0.3 * AttackFinal) * MoveSpeedFinal * 3`: attack growth is reduced, but full movement-speed/rush synergy is deliberately retained. OddIron remains fixed damage; unfinished debug skills are unchanged.
+- The 30% coefficient applies before crit/final modifiers, not to all possible sources of damage growth. Baseline constants assume AttackFinal 10 / equipped Crimson FireFinal 5 and should be revisited if starting stats change.
+- Formula changes still flow through existing damage snapshots, crit/final processing and combat application. No new damage-application path is introduced.
+
+| Area | Count | Responsibility |
+| --- | ---: | --- |
+| Weapons | 143 | Weapon definitions, inventory/equip runtime, runtime data/processors, loadouts, selection strategies, executors, actors, interaction rules, weapon-specific ability logic. |
+| GAS / Abilities | 83 | AbilitySystem, ability definitions/specs, effects, attributes, tags, cues, gameplay event relay, presentation routing, root gameplay tag constants. |
+| Combat | 47 | Damage requests/snapshots/application, hurtboxes, invulnerability/evasion, stagger, element gauges, telegraphs, hit feedback, combat height helpers. |
+| Player | 14 | Player interactor, input, health/death, spawn/cinematic protection, animation, pickup collection, player presentation. |
+| Movement | 8 | Shared 2D movement motor, knockback, external movement, soft collision, collision profile, ability motion. |
+| Status | 6 | Player status runtime, buff/debuff application, runtime stat projection sources. |
+
+### Weapon Breakdown
+
+| Area | Count | Responsibility |
+| --- | ---: | --- |
+| Ability Runtime | 66 | Weapon loadouts, selectors, runtime states, executors, actors, and ability-facing runtime helpers. |
+| Weapon Data / Tuning | 34 | Weapon runtime data, processors, attack data, payload config, and tuning ScriptableObjects. |
+| Weapon Logic Implementations | 21 | Weapon-specific ability logic and damage helpers. |
+| Weapon Interactions | 7 | Pair rules and interaction-layer helpers for weapon-to-weapon state influence. |
+| Equipment / Presentation Rig | 6 | Equip controller, aim presentation settings, and weapon visual/presentation rigs. |
+| Weapon Inventory Runtime | 5 | Weapon inventory, equip runtime, and inventory/runtime binders. |
+| Weapon Runtime Root | 4 | Weapon definition, drop, persistent payload, and runtime state bridge root scripts. |
+
+### Weapon Hotspots
+
+| Parent path | Hotspot | Count | Responsibility |
+| --- | --- | ---: | --- |
+| Weapons > Ability Runtime | Weapon Ability Framework | 15 | Shared weapon ability bridge, selector, loadout, executor, execution context, runtime state, and base attack framework. |
+| Weapons > Ability Runtime | Lightning Spear Runtime | 13 | Lightning Spear loadout/state/selection, marks, recovered spear actors/projectiles, feedback, trails, hit config, and event relays. |
+| Weapons > Ability Runtime | Named Blade Runtime | 12 | Sun, Moon, Eclipse, and Mark Sword loadouts, runtime states, selection strategies, and related named blade runtime helpers. |
+| Weapons > Ability Runtime | Fragment Blade Runtime | 7 | Fragment Blade loadout/state/selection, presentation actors, bound shard visuals, and shard actor. |
+| Weapons > Ability Runtime | Execution Weapon Runtime | 6 | Execution Gun and Executioner Greatsword loadouts, runtime states, and selection strategies. |
+| Weapons > Ability Runtime | Odd Iron Runtime | 6 | Odd Iron loadout/state/selection, projectile/thrown projectile, and break VFX. |
+| Weapons > Ability Runtime | Chain Spear Runtime | 4 | Chain Spear loadout/state/selection and throw executor. |
+| Weapons > Ability Runtime | Shared Actors / Presentation | 3 | Shared melee hitbox, hitbox visual animator, and sword projectile actor. |
+| Weapons > Weapon Data / Tuning | Runtime Data Infrastructure | 6 | Shared weapon runtime data, factory, processor, processor factory, coordinator, and process context. |
+| Weapons > Weapon Data / Tuning | Weapon Runtime Data / Processors | 12 | Weapon-specific runtime data and processors for Sun, Moon, Mark, Odd Iron, Lightning Spear, Fragment Blade, Execution Gun, and Eclipse Sword. |
+| Weapons > Weapon Data / Tuning | Attack / Skill Data | 15 | Weapon attack/skill data objects, combo data, recall data, dry-fire/shot/throw data, and damage payload config. |
+| Weapons > Weapon Data / Tuning | Data Interfaces | 1 | Attack-speed-scaled step data interface. |
+| Weapons > Weapon Logic Implementations | Legacy / Sword / RealWeapon | 6 | Sword combo/projectile/big slash logic and RealWeapon attack/rush/speed-strike logic. |
+| Weapons > Weapon Logic Implementations | Odd Iron | 5 | Odd Iron throw, shot, dry-fire, barrage logic, and utility. |
+| Weapons > Weapon Logic Implementations | Fragment Blade | 4 | Fragment Blade attack, bind enhance, recall, and damage utility. |
+| Weapons > Weapon Logic Implementations | Lightning Spear | 3 | Lightning Spear attack, skill 1, and skill 2 logic. |
+| Weapons > Weapon Logic Implementations | Debug Actions | 3 | Executioner, Eclipse, and Chain Spear debug action ability logic. |
+
+### GAS / Ability Breakdown
+
+| Area | Count | Responsibility |
+| --- | ---: | --- |
+| Ability Runtime Core | 31 | AbilitySystem, definitions/specs, execution coordination, cooldowns, events, presentation and cleanup routing. |
+| Gameplay Cues | 15 | Cue database, cue manager, cue notify scripts, hit/groggy/falling/camera presentation cue implementations. |
+| Attributes | 14 | Attribute definitions, sets, modifiers, stat providers, catalogs, and stat binding support. |
+| Gameplay Effects | 12 | GameplayEffect specs/runners, active effect repository, cooldown/status/damage/knockback effect definitions. |
+| Gameplay Tags | 6 | Gameplay tag runtime, registry, masks, tag sets, and root `UGAS_Tags` constants. |
+| Ability Visuals | 2 | Ability afterimage and visual runtime helpers. |
+| Generic Ability Logics / Debug Tools | 2 | Generic dash logic and realtime hitbox debug helper. |
+| Animation Relay | 1 | Ability animation event relay. |
+
+### GAS / Ability Hotspots
+
+| Parent path | Hotspot | Count | Responsibility |
+| --- | --- | ---: | --- |
+| GAS / Abilities > Ability Runtime Core | Presentation Runtime | 8 | Gameplay presentation runtime/definition/phase, world object presentation, particle/afterimage/runtime guard visual helpers. |
+| GAS / Abilities > Ability Runtime Core | Lifecycle / Execution | 7 | AbilitySystem, definition/spec, base logic, task model, execution coordinator, and parallel execution. |
+| GAS / Abilities > Ability Runtime Core | Gameplay Event Pipeline | 5 | Ability event data, event channel/relay, event waiter, and gameplay event listener contract. |
+| GAS / Abilities > Ability Runtime Core | State / Cooldown / Cleanup | 4 | Ability cooldown, cancellation token, persistent state, and cleanup contract. |
+| GAS / Abilities > Ability Runtime Core | Resolver / Movement Support | 3 | Attack speed resolver, move direction resolver, and movement state provider. |
+| GAS / Abilities > Ability Runtime Core | Routing / Audio / Cues | 2 | Ability presentation/audio routing and hit cue routing. |
+| GAS / Abilities > Ability Runtime Core | Effect Containers | 1 | Ability effect container. |
+| GAS / Abilities > Ability Runtime Core | Runtime Other | 1 | Remaining runtime support script not yet worth a narrower bucket. |
+| GAS / Abilities > Gameplay Cues | Cue Framework | 7 | Cue database, definition, manager, notify, params, tag bridge, and transform stack. |
+| GAS / Abilities > Gameplay Cues | Hit / Particle Cues | 3 | Slash hit, hit spark particles, and particle-system cue implementations. |
+| GAS / Abilities > Gameplay Cues | Groggy Cues | 3 | Groggy presentation and groggy-break sprite/driver cues. |
+| GAS / Abilities > Gameplay Cues | Movement / Camera Cues | 2 | Falling and camera shake cues. |
+
+### Combat Breakdown
+
+| Area | Count | Responsibility |
+| --- | ---: | --- |
+| Damage / Hit Pipeline | 12 | Damage requests, snapshots, applicators/actions, hurtboxes, hit payload, and target resolution. |
+| Element Gauge / Elemental Damage | 7 | Element definitions, catalogs, buildup resolver/formula, offense source, and element gauge system. |
+| Attack Telegraph | 6 | Telegraph service, specs, shapes, styles, and wall-clipped/standard telegraph views. |
+| Aim / Facing / Socket Utilities | 5 | Aim/facing direction sources, mirrored sockets, facing offsets, and aim resolver helpers. |
+| Feedback / Camera / Audio | 5 | Player/monster hit feedback, camera shake/impulse, and combat hit audio routing. |
+| Combat Rules Utilities | 4 | Invulnerability, evasion, hazard damage action, and stagger gauge helpers. |
+| Combat Height | 4 | Height state, filter, presentation, and collision binding. |
+| Formulas / Attribute Mutation | 4 | Scaled/stack stat formulas and attribute mutation policy/extensions. |
+
+## Key Files
+
+- `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Abilities/Runtime/AbilitySystem.cs`
+- `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Weapons/Runtime/Abilities/WeaponExecutorRunner.cs`
+- `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Weapons/Runtime/Data/WeaponRuntimeData.cs`
+- `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Combat/Runtime/CombatDamageAction.cs`
+
+## Ownership And Lifecycle
+
+- Weapon state should stay owned by weapon runtime data, processors, and selected weapon runtime state objects.
+- GAS/ASC should execute selected ability behavior; it should not become the owner of weapon-specific persistent state.
+- Combat damage/hit pipeline is shared infrastructure and should remain independent from a single weapon or enemy.
+- Attack telegraph fill progression is shape-specific: rectangles and sectors grow from the local attack start/origin toward the endpoint, while circles and rings keep radial/center-based fill.
+- HUD and tooltip-facing weapon data should project current runtime state rather than own it.
+
+## Runtime Boundary Review
+
+The current combat/status structure is broadly aligned with the Architecture documents: damage is applied through GAS/effects, status HUD data is projected through `PlayerStatusRuntime`, and HUD views should display current state rather than own it.
+
+The concrete risks are narrower than a full combat rewrite.
+
+| Boundary | Intended responsibility | Current pressure point |
+| --- | --- | --- |
+| Element Build-Up Source | Keep one explicit source of truth for applied elemental build-up calculation. | `CombatDamageAction` routes application through `ElementBuildUpResolver.ResolveForApplication(...)`, which uses attacker `ElementOffenseSource`; runtime hit payload APIs no longer carry per-hit element build-up, while legacy serialized fields remain compatibility-only data until an explicit asset/schema migration. |
+| Damage Preflight | Keep invulnerability, evasion, HP change checks, and damaged-event emission consistent across combat and hazards. | `CombatDamageAction` and `HazardDamageAction` intentionally differ on hit/kill confirm, but they duplicate several preflight and post-damage checks. |
+| Status Runtime | Keep `PlayerStatusRuntime` as an apply/projection hub, not as the real owner of gameplay effects. | Current `CombatBuffDebuffApplier` flow mostly follows this, but `GetOrAdd` component creation remains a prefab/scene authoring risk when the player root is missing expected components. |
+| Combat Presentation Hooks | Keep combat state and authored presentation references separate enough to move safely later. | `ElementGaugeSystem` owns trigger/sustain VFX instances and `StaggerGaugeSystem` can spawn a boss groggy timer prefab, so file movement needs serialized-reference review. |
+
+### Hit Confirm Presentation
+
+- `AbilityHitCueRouter` listens for `Event.HitConfirm`, runs explicit `AbilityDefinition` hit-confirmed cues/presentation, then applies an automatic hit-impact cue resolved from the hit event's `HitImpactCueKind`.
+- `HitImpactCueKind` is authored on ALData at the actual hit unit. Combo data can set it per step, while single-hit data can set it on the root hit data/config. The runtime transport path is `ALData -> CombatHitPayload -> CombatDamageAction -> AbilityEventData -> AbilityHitCueRouter`.
+- The current cue map resolves `Default`, `Slash`, and `Blow` to `Cue.Ability.Sword.Hit` because `SlashHit` is the only finished hit-impact cue. `None` suppresses the automatic cue. Future `BlowHit` should update the router mapping without moving the authoring owner out of ALData.
+- Existing explicit additions such as hit spark and camera shake still run through the `AbilityDefinition` cue list. If an explicit cue is the same as the automatic hit-impact cue, the router skips the automatic duplicate.
+
+### Weapon Detail Audio Hooks
+
+- `AbilityDefinition` audio fields remain broad lifecycle slots. Weapon-specific sub-timing sounds are authored on the logic data that owns the timing and are played through `AbilityAudioRouter.PlayOneShotAtPosition(...)` when the timing is world-positioned.
+- Flowering owns BloomSlash, cut-in open, weapon reveal in/out, final shake, and dash slash `SoundRef` hooks on `FloweringAttackData` / `FloweringBloomData`. Empty slots are no-op defaults, so existing behavior is unchanged until keys are authored.
+- Lightning Spear owns NoMark sweep, MarkRush start/arrival, recovered spear spawn/despawn/shot spawn/shot fire, and MarkRain spawn/mark/landing `SoundRef` hooks on `LightningSpearSkill1Data` / `LightningSpearSkill2Data`.
+
+### Apprentice Hero Sword Tutorial Weapon Extension
+
+- Apprentice sword attack-to-skill input is handled by `PlayerCombatInput2D`, gated by the selected attack logic type. Q requests immediate attack cancellation; held Skill1 waits for `AbilityLogic_ApprenticeHeroSwordAttack.HitSpawnedKey`, then cancels recovery. The marker means hitbox spawn, not confirmed damage, and is reset on each attack execution.
+- Pending input is local to the player input component and cleared on release (Skill1), combat/UI/interaction blocking, disable, and weapon changes. Cancellation finishes through the existing ASC coroutine before skill activation; pending skills suppress automatic attack restart. Dash input discards the pending request.
+- `AD_ApprenticeHeroSwordSkill1_ChargeSpin.castTime` is zero: charge presentation and charge accumulation begin at ability execution without a separate pre-charge cast delay.
+
+- `ApprenticeHeroSwordChargeSpinData` owns Skill2 charge-presentation tuning for the tutorial default weapon: optional looping charge particle prefab, blade-fill reveal sprite, full-charge reveal sprite/color, player-anchored full-charge VFX prefab, directional local-coordinate mask reveal settings, release attack color/size scaling, sorting offset, and particle stop delay.
+- `AbilityLogic_ApprenticeHeroSwordChargeSpin` keeps the visuals transient and ability-owned. During the charge hold window it instantiates the authored particle under the current weapon render root, creates a runtime `SpriteRenderer` plus `SpriteMask` reveal overlay under the equipped weapon renderer, updates the mask from live charge ratio, plays the full-charge VFX once under the player/`AbilitySystem` transform, and releases the charge objects on Skill2 release/cancel/cleanup.
+- Directional charge reveal uses a generated square `SpriteMask` when no mask sprite is assigned, projects the current reveal sprite bounds onto `chargeRevealMaskLocalDirection`, and mirrors the local direction with the equipped weapon renderer's `flipX`/`flipY`.
+- Skill2 release attack color and size are derived from charge ratio: partial charges lerp between min and max partial values, while full charge uses separate color and larger size multipliers for both hitbox size and hitbox-owned visuals.
+- `ALData_ApprenticeHeroSwordChargeSpin.asset` currently wires `BasicWeaponSkill1ChargeAura_0` as the normal charge reveal sprite and `_1` as the full-charge reveal sprite. Its charge loop and full-charge particle refs point to the BasicWeapon charge particle prefabs.
+- Particle gathering behavior remains prefab-authored through the assigned particle setup, including any `ParticleSystemForceField`; the weapon logic only controls lifetime, transform, loop/play state, and cleanup.
+
+### Electric Element Extension
+
+- Electric build-up follows the same attacker-wide `ElementOffenseSource` and `ElementBuildUpFormulaProfile` route as Fire/Blood/Poison.
+- `Element.Electric` resolves from `StatId.ElectricFinal`, which is a `StatTypeBindings` composite over Electric base/add/mul attributes.
+- Electric gauge completion runs `GE_ElectricShockTrigger`, not the status effect directly.
+- `GE_ElectricShockTrigger` applies or refreshes `GE_ElectrocutedStatus` only on the initial discharge target, applies configured secondary damage through `GE_Damage_Spec`, then discharges through nearest already-electrocuted targets. Baseline chained targets receive damage while keeping their existing electrocution lifetime.
+- ElectricFinal is read once from the instigator before initial status callbacks. Initial damage is base 5 + E×1.0; follow-on damage is base 5 + E×0.5, followed by existing discharge damage modifiers. Missing instigator/provider contributes zero E. The coefficient fields and authored effect values are aligned; no critical roll or extra gauge application is introduced.
+- `ElementGaugeSystem` owns a private transient requirement multiplier bound to the actual active shock instance. After successful initial-target application, the trigger records whether shock was already active before application. It resolves the element from the existing gauge definition's trigger identity, independently of damage-popup metadata. Fresh shock keeps the current base requirement; direct renewal doubles it (default50→100→200→400→800), including an already-active shock supplied by another effect/restore. Followers, Echo and duration-only extension do not record renewals. All gauge/decay/HUD threshold reads use live base attribute×multiplier rather than mutating the authored max500 attribute.
+- Expiry/removal, a replaced/restored fresh instance, inactive/dead target or existing ClearAll/Rebuild discards the multiplier. Residual buildup and unrelated lifecycle behavior remain. Electric overflow pays one current requirement, applies its direct effect, then rereads the possibly doubled requirement before another completion. Non-electric overflow stays on its original aggregate path. The multiplier is neither a save field nor gameplay description text.
+- `ElectricDischargeRelicBonuses` snapshots owner-filtered Conductor/Echo rules at the same boundary. Conductor applies20%-step bonuses capped60% after existing modifiers, with no initial bonus and a fresh index per discharge. Echo records only positive follower submissions and repeats them once at50% after the original burst/presentation. It stores original points and repeats chain links/snaps through `IChainReplayPresentation`, keeping initial origin but skipping initial hit snap. No-chain bursts do not replay. Original VFX scale/rhythm and Play API remain. The shared secondary route does not apply shock, search, extension, paralysis, gauge or recursive Echo.
+- `GameplayEffectRunner.NaturallyExpired` is emitted only after timed expiry cleanup and repository iteration. `RelicLogic_ElectricExpiryDamage_Managed` filters the exact shock effect/instigator and deals the living applying owner's current ElectricFinal×0.4 through the same secondary route. Explicit removal, cleanse, death cleanup and restore do not emit this event; restored active effects may expire later normally. Subscriptions belong to equipment procs and are disposed on reapply/removal/destruction.
+- Discharge scans from the current target at every step and tracks visited roots so one unit is hit at most once per discharge event. The authored `maxTargetsPerDischarge` remains 3, including the initial target (at most two further baseline recipients). `ElectricChainTargetBonuses` snapshots the instigator's disposable contributions once per discharge; `공명의 종` adds 1/2/3 targets for four/five/six total targets. The `ui.item_keyword.electrocuted.description` companion card explains the baseline limit and possible relic-based target/duration changes.
+- `ElectricChainDurationBonuses` is a Core registry of disposable, source-owned duration contributions. `RelicLogic_ChainShockExtension_Managed` registers the `RD_ThunderKnot` owner's 0.5/1/1.5-second bonus and ignores discharges from other instigators. The trigger snapshots the bonus once per discharge and calls `ExtendChainDuration` only after each follower's damage; the initial target follows ordinary status application.
+- Chain extension adds to the existing active effect's `TimeRemaining` and caps it at `GE_ElectrocutedStatus.duration` (currently four seconds). It does not reapply the effect, refresh tags/cues, recreate expired/missing/death-cleared effects, or shorten a remaining time already at or above that cap. `MonsterStatusRuntime` projects the updated runner time. The relic references the status effect for its tooltip cap, and unequip/reapply/manager destruction dispose the hook.
+- `ElectricShockApplications` notifies successful initial shock application/renewal after `runner.ApplyEffectSpec`; follower hits, duration-only changes, and restore do not notify it. `RelicLogic_ShockParalysis_Managed` filters the instigator to its relic owner and requires a living, active Enemy before requesting the fixed 0.1-second paralysis. Bosses retain the Core `ICombatHitPauseImmune` exclusion. These hooks are token-owned, disposable registrations rather than a new Manager or saved runtime schema.
+- `CombatHitPause2D.ApplyParalysis` retains current action state and uses scaled game time. `GetActionTime`/`GetActionTimeAsDouble` subtract only local paralysis intervals, and `GetActionDeltaTime` supplies zero during paralysis and the unpaused portion of the resume frame. Existing ordinary hit-pause clocks retain their prior behavior. Overlap extends the expiration by a maximum, UI pause preserves game-time remaining duration, and animation restoration waits for other active stun ownership.
+- `Enemy` implements Core `ICombatActionState` through its existing `IsDead` property, allowing Core action-bound effects to test lifecycle without referencing Gameplay Enemy. `Enemy.Die` calls `ClearParalysis` before status/FSM/death-animation cleanup; stopped or disabled owners do not resume bound attacks. Monster timers, bound telegraph progress/despawn, and attached or owner-bound melee lifetime/hit records follow the same actor clock. Detached effects and launched projectiles retain independent timing. See [Boss And Mob Encounter Structure](BossAndMobEncounterStructure.md#electric-paralysis-and-local-monster-action-time-2026-10-11) for participating paths and manual verification limits.
+- `ElectricChainRibbonVfx` is a presentation helper only: it receives ordered world points, renders adjacent SpriteRenderer segments simultaneously with `SpriteDrawMode.Tiled`, spawns `ElectricSnap` sprites on each chain point, fades them out together, then destroys the spawned VFX instance. A one-point input is valid and plays only the `ElectricSnap` hit effect, so standalone electrocute applications show a hit snap while discharge chains reuse the chain point snaps without duplicating the effect.
+- `GE_ElectricShockTrigger.chainVfxPrefab` currently points to the temporary authored prefab `Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectricChainRibbonVfx.prefab`, which uses a disabled `SegmentTemplate` SpriteRenderer with `Assets/Sprites/Effects/Elemental/ElectricParticleTrail.png`. Segment length is driven through `SpriteRenderer.size`, not transform x-scale, so the texture repeats instead of stretching. Chain visual points resolve from target `SpriteRenderer.bounds.center` when available, falling back to root transform position only when no usable sprite renderer exists.
+- Electric chain segments pulse only on their rendered Y size using configurable scale-in/scale-out seconds. The helper stores each segment midpoint, rotation, base size, and sprite pivot-center offset so height animation stays centered on the ordered chain point line even when the source sprite pivot is not centered.
+- `GE_ElectrocutedStatus.presentationWhileActive` now spawns `ElectrocutedSparkParticle.prefab` as an attached ManualRelease particle visual while the status is active. The prefab uses `LightningSparkParticle.png` as a 4x3 texture sheet: three row variations, four animation frames per particle. Its presentation hook opts into target sprite-bounds anchoring and uniform target sprite-bounds scaling so small/large monsters and scaled targets use their visible sprite bounds rather than root transform position.
+- `SpawnedPresentationHook.attachToTarget` lets authored spawned presentation stay parented to the target after spawn. `SpawnedPresentationHook.anchorMode` and `scaleMode` optionally resolve from the target `SpriteRenderer.bounds` while keeping context-position/no-extra-scale as default behavior. `GameplayEffectPresentationRouter` owns ManualRelease while-active visual handles and releases them from `RemoveWhileActive(...)`; auto-release visuals still flow through `WorldPresentationRuntime.PlayMerged(...)`.
+
+### Training Dummy Test Target Extension
+
+- `TrainingDummy2D` is the lobby/test target bridge on `TrainingDummy.prefab`: it listens for `HealthAttribute` decreases through `AttributeSet.OnAttributeChanged`, keeps the existing floating damage popup, and restores health through the existing never-die path.
+- Damage reactions should use the dummy root Animator states `Hit_01` and `Hit_02`. The script restarts one state immediately per accepted hit and falls back to the legacy `Damaged` trigger only if the configured states are unavailable.
+- `TrainingDummyDamageReadout2D` lives under `Assets/_Project/Runtime/Presentation/Tutorial` and is presentation-only. It observes health loss, records last/max hit damage, rolling one-second DPS/max DPS, and total damage, then hides the `TMP_Text` readout by alpha after five seconds without clearing the records.
+- The prefab readout is a prefab-authored world-space Canvas with `TextMeshProUGUI`, not a runtime-created Canvas and not a 3D `TextMeshPro` MeshRenderer. Keep the Canvas/RectTransform authored on the prefab so the readout remains visible above the dummy.
+- The readout record lifetime is the scene instance lifetime. Do not persist these values or move ownership into UI/HUD state unless a future task explicitly changes the testing contract.
+- `Assets/Sprites/ThirdParty/TrainingDummy/Training_Dummy_Sprite_Sheet.png` is sliced as 32px frames from a 256x96 sheet. Only rows 1 and 2 are currently used for `TrainingDummy_Hit_01` and `TrainingDummy_Hit_02`; row 3 is intentionally unused.
+- `ProtoTypeHub 1` owns the scene-authored `TrainingDummy_Right` prefab instance. Runtime creation of dummy UI or a dummy manager is not part of this flow.
+
+### Flowering Weapon Prototype Extension
+
+- `개화` is authored as its own `WeaponDefinition` / `FloweringLoadout` / `FloweringSelectionStrategy` and uses `FloweringRuntimeData` for Bloom active state and remaining time.
+- `AD_FloweringAttack_Base` uses the existing import-stable `AL_FloweringAttack` asset as a dispatcher with dedicated `FloweringBaseAttackData`, modeled after the active LightningSpear basic attack schema. `ALData_FloweringAttack_Base` owns a nested `combo.steps[].attackPrefab` setup that points to `Hitbox_Flowering_BasicAttack1/2/3`; those hitbox prefabs own `VisualRoot/Render` slash visuals with the 1/2/1 Flowering clip mapping while preserving the existing three-hit timing, damage, lunge, hit-event, and hit cue values.
+- `AD_FloweringAttack_Bloom` remains on `AbilityLogic_FloweringAttack`. It does not read or write normal combo state; one activation spawns one world-positioned hitbox-owned BloomSlash visual, stores the last variant index on the `AbilitySpec`, and avoids immediately repeating that visual variant across rapid repeated activations. `FloweringAttackData.animationTriggersByHitboxVariant` maps the chosen hitbox variant index to the weapon Animator trigger, with the root `animationTrigger` kept as fallback.
+- Bloom Skill1 uses `AbilityLogic_FloweringBloom` with `startCooldownOnEnd`; the logic stays alive as a parallel ability until Bloom duration and kill extensions end, so normal attacks can continue while the cooldown starts only afterward.
+- Scene travel ends active Bloom. `AbilitySystem.ForceCleanupParallelExecution` settles its deferred cooldown before capture even when stopping the coroutine skips the coordinator's `finally`; a cleared execution token prevents charging an already-completed execution twice. The saved ability cooldown then follows the existing weapon state restore path.
+- Dash remains the global `AD_Dash`. `AbilityLogic_Dash2D` resolves optional `IWeaponDashAugment` implementers and calls them to modify dash distance/duration and observe dash start/end.
+- `FloweringRuntimeState` is a transient player-root runtime component created by Bloom logic. It applies/removes Bloom attribute modifiers, registers for kill-confirm gameplay events, keeps dash cooldown at zero during Bloom, spawns the delayed dash slash hitboxes/effects, and requests Bloom presentation only through `FloweringBloomPresentationPlayback` / `IFloweringBloomPresentation`.
+- Flowering Skill1/Bloom locks active weapon changes from cut-in start through active Bloom and reveal-out cleanup. `WeaponInventory2D` rejects swap input, direct active equip, active drop/unequip/destroy, active slot replacement, and active slot inventory swaps while `FloweringRuntimeState.BlocksWeaponSwap` is true; non-active slot changes remain allowed.
+- Flowering kill extension is relic-gated: `RelicLogic_FloweringBloomExtension_Managed` grants `State.Relic.FloweringBloomExtension`, and `FloweringRuntimeState` checks `FloweringBloomData.killExtensionRequiredTag` before applying `FloweringRuntimeData.ExtendBloom(...)`.
+- Bloom state HUD is projected through `PlayerStatusRuntime` using `SHD_FloweringBloom`; Skill1 HUD active-duration fill is projected through `IWeaponAbilityHudDurationOverrideProvider` and returns to the normal cooldown display when Bloom ends. `WeaponSkillHUD2D.SkillSlotUI.activeDurationFill` is the preferred dedicated authored Image for this display; if it is not assigned, the code falls back to the legacy `cooldownFill`. The HUD resolver checks both the equipped weapon prefab runtime state and the player `AbilitySystem` root, because Flowering's active Bloom runtime state is attached to the player root.
+- Dash slash scheduling is owned by Bloom runtime state cleanup rather than the short dash ability token, so the delayed three-hit sequence can finish after dash movement ends while still stopping on Bloom end/weapon cleanup.
+- Dash slash damage uses direct `FloweringDashSlashHitboxActor` overlap scans with a wall-layer line-of-sight check before applying `CombatHitPayload`. Collider layer filtering comes from `OverlapBoxAll`; the resolved target root layer is not rechecked because many targets resolve from child hurtboxes to differently-layered roots.
+- Dash slash presentation directly instantiates `Assets/LeeJunMo/Prefab/Effect/AnimEffect/SlashHit.prefab`, tints child `SpriteRenderer`s red, bumps their sorting order, and destroys the instance after a short lifetime. It intentionally does not go through GameplayCue so rotation/tint are fixed per slash mark.
+- `FloweringBloomPresentationController` now lives under `Assets/_Project/Runtime/Presentation/Items/Weapons/Flowering` and registers the concrete `IFloweringBloomPresentationBackend`. It owns Bloom cut-in, screen border, player silhouette, weapon reveal, and cleanup presentation.
+- Bloom cut-in/active screen border now creates a runtime UI overlay using Presentation/Common `AffectionGradientBorderGraphic` and `M_UIAffectionGradientBorder.mat`, while the player outline remains duplicate-sprite prototype presentation. If this presentation is reused, move the overlay to a scene/prefab-authored owner.
+- Bloom cut-in also owns short-lived runtime presentation for zoom-in shake, Player_Idle first-frame silhouette blackout, one-shot `Eagle-eyed_NoPlayer` playback after the silhouette reaches target tint, Flowering OFF/ON weapon reveal through a target sprite overlay plus runtime `SpriteMask`, and a final-shake completion particle spawned at the player visual center. During fade-in, the runtime plays `FloweringBloomData.cutInAnimationTrigger` on the weapon Animator, applies `FloweringBloomData.cutInAimPresentation` so the Skill1 weapon motion ignores aim angle and only mirrors the cast-time left/right side, and waits for `Event.Anim.Flowering.WeaponReveal` from the Skill1 animation event before starting the reveal. The weapon Animator is temporarily moved to unscaled update mode because the cut-in pauses combat time. The cut-in acquires a `GameFlowInputBlocker` while the time freeze is active so unrelated pause/menu UI cannot stack another freeze over it. Reveal timing is split: `weaponRevealSeconds` / `WeaponRevealInSeconds` drives OFF→ON, and `weaponRevealOutSeconds` / `WeaponRevealOutSeconds` drives ON→OFF. The older reveal material fields remain serialized on `FloweringBloomData` for compatibility but are not the active runtime path.
+
+### Refactor Candidate
+
+- `Docs/RefactorBacklog/CombatElementBuildUpSourceUnification.md` is resolved for runtime/code debt. Reopen it only for explicit asset/schema migration, new elemental weapon tuning policy, or a regression in attacker-wide build-up application.
+- Do not treat endpoint weapon-specific elemental behavior as the problem. The applied source is attacker-wide `ElementOffenseSource`; legacy serialized data names are compatibility artifacts and do not imply per-hit tuning still applies.
+
+## Extension Entry Points
+
+- Add new weapon behavior through weapon data, loadout/selection, executor/logic, and runtime state patterns already present in this map.
+- Add shared ability behavior through GAS runtime/core when multiple systems need it.
+- Add combat rules only when they belong in shared hit/damage/element/telegraph flow rather than a single weapon.
+- For new element reactions, prefer a trigger-effect ScriptableObject that composes status/damage/presentation instead of making a duration status effect own reaction chaining.
+
+## Known Pitfalls
+
+- Do not move MonoBehaviour or ScriptableObject weapon/GAS scripts without Unity serialized reference review.
+- Do not collapse weapon runtime state into GAS unless an Architecture update explicitly approves it.
+- Applied elemental build-up policy is attacker `ElementOffenseSource`; do not reintroduce per-hit payload application without a named merge/override policy and serialized weapon data audit.
+- Electric discharge candidate scans should use damage-target roots from hurtboxes, not arbitrary child colliders, otherwise a chain can select attack/effect children or non-unit colliders.
+- ManualRelease while-active presentation must have an owner-held handle and a matching remove path. A looping attached particle should not be routed through auto-detected one-shot lifetime because looping ParticleSystems otherwise release too early or never release.
+- Attached particle prefabs should use local/move-with-transform simulation if the emitted particles must stay with a moving target.
+- Body-centered attached VFX should opt into sprite-bounds anchoring or another explicit visual anchor. Root transforms on enemies may be authored at feet/base positions and should not be treated as visual body centers by default.
+- `SwordCombo2D` and RealWeapon naming appear legacy/sample-like; treat them as existing behavior, not project-wide policy, unless a task targets them.
+
+## Promotion Candidate
+
+Some stable rules already exist in `Docs/Architecture/GameplayAbilityWeaponArchitecture.md` and combat architecture. This map should remain `StructureMemory` until a focused task proves a new rule should be promoted.
+
+## Local Hit Feel Prototype and Lunge Presentation (2026-09-12)
+
+- AbilityDefinition.hitFeel supplies targetStunSeconds / attackerStopSeconds; optional hitFeelByAttack entries override zero-based attack indices. Combo logic records Combat.HitFeelIndex before producing a payload. CombatHitPayload snapshots timing, so delayed hits retain their originating attack settings.
+- CombatDamageAction applies local pause only after actual HP loss; dead or stagger-suppressed targets do not receive the target pause. CombatHitPause2D owns the pause deadline, child Animator speed restoration, and disable cleanup. Global time and camera state are unchanged.
+- MovementMotor2D holds movement while paused. AbilitySystem holds casting/new activations; AbilityExecutionCoordinator iterates nested logic with cancellation disposal and pauses recovery. AbilityTasks.WaitDelay excludes local pause time.
+- This is a feel prototype, not a general per-actor time system: weapon-specific absolute Time.time deadlines, independent projectiles/VFX, and legacy non-GAS AI timers still use global time. Consider a separate actor-clock design only if playtesting proves it necessary.
+- AbilityMotionController2D.IsLunging and MovementMotor2D.IsLungeMovement suppress player Walking during lunge, including the final movement tick. Dash is a separate motion kind.
+- Apprentice basic attack grants the existing State.Move.Intent.Blocked tag while active. Its side-offset basis preserves world-up on left-facing attacks, matching the existing visual mirror convention; forward offset follows aim direction. Right-authored values remain unchanged.
+- Current implementation paths: Assets/_Project/Runtime/Core/Combat/CombatHitPause2D.cs, Core/Abilities, Core/Combat/Movement, Features/Items/Weapons, and Features/Player/Animation/PlayerAnimatorController2D.cs. Timing assets are in Data/Abilities/Definitions.
+- Promotion: keep local pause behavior as prototype StructureMemory until the timing policy is playtested.
+
+### Crisp weapon attack lunges (2026-09-12 follow-up)
+
+Four weapon attack call sites now use AbilityMotionController2D.StartAttackLunge: preserve authored distance, use half the authored duration, and travel linearly without a deceleration tail. The following motion tick is zero; attack/recovery ownership still determines normal movement availability. Non-weapon StartLunge callers retain the existing curve and duration. Walking remains suppressed during attack lunges.
+
+
+### Uniform hit-feel tuning (2026-09-12 follow-up)
+
+All 19 weapon attack definitions now use 0.1 seconds for both target stun and attacker stop, including Apprentice combo overrides. AD_Dash also carries these values because FloweringRuntimeState builds its Bloom dash-slash payload from the dash spec. Non-damaging dash motion alone does not trigger hit pause. This is prototype tuning, not a global override of future per-attack authoring.
+
+### Hit-feel refinement (2026-09-12)
+
+CombatDamageAction observes HP decrease synchronously around damage application and unsubscribes in finally. This detects real damage even when TrainingDummy immediately restores HP inside its attribute event. Target stun still respects alive/stagger-suppression gates.
+
+Latest tuning supersedes the earlier uniform attacker-stop prototype: basic attacks and every Flowering attack (including AD_Dash bloom slashes) have attackerStopSeconds=0; targetStunSeconds remains 0.1. Other damaging weapon skills retain attackerStopSeconds=0.1. Timing stays authored per AbilityDefinition/attack override.
+
+Related verification: [2026-09-12 session](../../SessionLogs/2026-09-12.md).
+
+### Melee control and skill hitstop (2026-09-12)
+
+PlayerCombatInput2D owns the basic-attack movement/aim lock, read by PlayerIntentInput2D and PlayerAim2D. It watches attack animation normalized time 0.8 (or 80% scaled recovery/next-activation timing without a usable attack animation), active lunge, and held primary input. Once the motion/lunge gates finish, releasing input unlocks; holding keeps the same aim through auto-attack gaps. Combo expiry remains owned by the existing weapon logic. Skill/dash activation, equipment changes, disabled owner, and UI/flow interruption clear this basic lock. OddIron and CrimsonBoundary ranged basics bypass it.
+
+Full-execution movement/aim grant tags were removed from the three basic definitions that carried them; skill-specific tags remain. Apprentice charge hitFeelByAttack[0] is 0.3 seconds and is selected only on full charge. Its default partial stop is 0.05; DashStab/Q stop is 0.1. Lightning skills retain 0.05. Basic and Flowering attacker-stop zero policy remains.
+
+### Held re-aim and world hitstop revision (2026-09-12)
+
+The latest rule supersedes hold-to-retain direction: the melee control lock ends after animation 80% and active lunge, regardless of held primary input. Auto-repeat waits for this release and the existing re-aim gap; combo expiry remains unchanged. PlayerIntentInput2D.AbilityMoveInput reads live raw input for move-then-aim lunge resolution, while MoveInput remains permission-filtered for walking. Lunge direction/endpoints stay fixed per attack; authored motion distance/timing/easing are untouched.
+
+CombatDamageAction now maps attackerStopSeconds to CombatHitPause2D.ApplyWorldPause, an owner-scoped TimeScalePausePlayback token expiring on unscaled time. Multiple owners/menu pause compose, and disable releases only the component's token. Local Apply remains target stun and continues to exclude bosses. Global hitstop pauses bosses with the rest of the world without assigning Animator.speed=0. Aim/combat input and ability iteration honor global pause.
+
+### Player impact and mirrored slash offsets (2026-09-12)
+
+PlayerHitFeedback2D requests 0.1s world hitstop for live-player damage feedback before pose/skill-reaction immunity checks. CameraShakeService runs Cinemachine impulse envelopes on unscaled time and refreshes the last shake camera during timeScale zero, temporarily bypassing SmartUpdate's physics clock while restoring its policy immediately. Explicit manual shake settings still use the unscaled CameraManualShakeDriver.
+
+Slash center side offsets in ApprenticeHeroSword, Flowering base/bloom, LightningSpearAttack and SwordCombo2D use a perpendicular whose Y is abs(aim.x) and X is -aim.y times the facing sign. Mirrored left/right aim preserves world Y and reflects world X, keeping right-facing authored placement. This convention is for mirrored slash placement, not general direction-local projectile or trail coordinates.
+
+AttackTelegraphView disables clipping for Line/Rectangle/Circle both when shown and updated, after inherited clipping settings are resolved. Sector/Ring preserve clipping. This presentation policy does not change actual hit collision.
+
+### Player popup target presentation (2026-09-12)
+
+DamagePopupRequest carries an optional IsPlayerTarget flag. CombatDamageAction, HazardDamageAction, GE_Damage_Spec and the AttributeSet listener pass the existing Player-tag classification. DamagePopupFormatProfileSO resolves player damage to #FF4D4D and player EVADE to #329CC7, including the service code fallback. Critical/element format and animation stay intact; non-player colors keep the original profile rules.
+
+### Weapon skills survive hit reactions (2026-09-12)
+
+PlayerHitFeedback2D resolves State.Skill when its authored reference is empty, and also checks the current cast/execution definition against granted State.Skill or PlayerCombatInput2D known Skill1/Skill2 selections. Input records resolved skill definitions before activation so casting and runtime selections are covered. Protected hits retain world hitstop, flash and shake while skipping hit pose/state tags and forced cancellation. Death-owned forced cancellation is unchanged. The legacy allowHitReactDuringSkillTag no longer overrides weapon skill protection under the user revision.
+
+
+## Local weapon mask scopes (2026-09-13)
+
+- Apprentice charge reveal owns a SortingGroup on its existing runtime reveal root; external sorting follows the source weapon plus configured offset, internal reveal order is zero. Group lifetime follows revealRoot destruction.
+- PF_LightningSpear_ItemDisplayVisual authors a SortingGroup. ItemDisplayVisualPresenter2D assigns host sorting to that group and keeps internal sprite/mask ordering local, avoiding interference between simultaneous dropped weapons and charge effects.
+- PlayerVisionMask and StrangeCandlestick vision masks limit their custom range to MaskRender (the existing dark-overlay layer); they do not affect weapon sprite layers. No ProjectSettings sorting layers were added. Validate combined darkness/drop/charge rendering in Editor after changes.
+
+
+### Lightning Spear per-attack feedback (2026-09-14)
+
+This revision supersedes the historical Lightning/global-hitstop timing paragraphs above. Current shared slowdown ownership is mapped in BossAndMobEncounterStructure.md. World stays at 0.15 during participant impact freeze; ordinary boss stun immunity remains.
+
+LightningSpearHitFeedback in LightningSpearHitConfig.cs configures runtime payloads by role, without changing serialized schemas or prefab references. Sweep uses actor/victim freeze 0.12s, punch 1.4/0.10s, following shake 0.10/0.05s. Rush uses freeze 0.1s, punch 0.9/0.12s, shake 0.12/0.06s. Both the trail-driven hitboxes and fallback arrival hitbox receive Rush configuration and preserve the actual rush direction. Recovered shots and mark landings use ordinary target stun 0.05s with no attacker/world stop; recovered shots suppress added camera feedback, while landing requests one 0.08-amplitude/0.05s shake per activation.
+
+The three basic hits keep target stun 0.1s and attacker stop zero. The third hit carries camera-only scale 1.3; the other hits carry 1. This scales both amplitude and its cap, leaving cue magnitude, particles and audio unchanged.
+
+CombatHitPayload snapshots optional impactCameraOverride and hitCameraScale. CombatDamageAction executes the custom camera only after damage, with HitStopActivation grouping, and forwards camera scale through AbilityEventData to GameplayCueParams. AbilityHitCueRouter scales only presentation camera hooks; GameplayCue_CameraShake scales only the camera cue. Null metadata preserves existing weapons. CameraManualShakeDriver computes the following shake decay after the punch so punch duration does not consume shake amplitude.
+
+LightningSpearMarkActor captures the activation group during Initialize, so delayed six-mark landings keep their original once-only feedback budget after another cast. Payload references and closures are not stored globally; existing actor/projectile cleanup releases them.
+
+Verification: regression sources exercise two victims sharing one impact/landing request, support attacks leaving the attacker/world unpaused, directional punch values and capped camera scale/suppression. MSBuild passed; Unity execution and visual feel are not yet verified. This is a structure map, not a new Architecture/Contracts authority.
+
+### Basic attack walking lock and player wall sliding (2026-09-14)
+
+PlayerCombatInput2D's IsBasicAttackMovementLocked projects an execution-owned basic-attack lock. AbilityExecutionCoordinator raises AbilitySystem.AbilityExecutionStarted after creating the execution token and before ability logic runs, and AbilityExecutionEnded before consuming the buffered successor. PlayerCombatInput2D subscribes while enabled, classifies the executed definition using the known basic-attack set (or current selection), and snapshots its spec/token/Animator. Request acceptance is not a start signal: a buffered request or consumed skill input never begins this lock. Comparing against a newly advanced combo selection after activation is no longer used.
+
+Walking remains blocked while the actual attack logic/recovery executes, the observed attack animation is unfinished, or the lunge is active. The old 80% estimate and early animation threshold are removed; animation completion uses normalized time 1 or state exit. Execution duration includes RecoveryOverride and hit-pause handling from the existing coordinator rather than a second input-layer timer. GetAnimationTarget uses the same player/weapon Animator fallback as animation playback. Cancelled tokens, cancellation completion, disable/UI/interaction/equip paths release the lock. Held input requests repeat attacks only and cannot independently lock walking. Combo expiry and raw lunge direction input remain unchanged. Ranged basics use the same lock.
+
+PlayerIntentInput2D uses the walking lock in both Update and GetIntent, while AbilityMoveInput continues reading raw normalized keys for lunge direction. PlayerCombatInput2D refreshes PlayerAim2D before attack activation, respecting current aim locks and avoiding Update-order stale mouse direction.
+
+IWallSlidingMovementSource2D opts player intent into MovementMotor2D's bounded sweep/slide path for ordinary walking and non-lunge motion without external velocity. Sweeps start from the Rigidbody physics pose (including child collider offsets), spend approach distance, remove inward normal displacement, and recast the remaining tangent up to three times. Lost normal distance is not replenished, and dash duration remains owned by AbilityMotionController2D. Low-speed walking also uses this path. Lunge/external-motion and non-player callers retain the previous wall policy; the final dash tick is retained for opted-in player movement.
+
+This map does not change Contracts/Architecture authority. See the 2026-09-14 SessionLog for validation and remaining playtest coverage.
+
+### Crimson Boundary projectile collision channels (2026-09-14)
+
+`CrimsonBoundaryProjectile2D` owns separate serialized `wallCollider` and `damageCollider` references. `Fireball.prefab` authors two root BoxCollider2D triggers: wall size 0.12 × 0.12 and damage size 0.32 × 0.32. Their local sizes/offsets and transform scale feed independent collider sweeps against WallLayers and DamageLayers. A hard-coded shared box size is no longer used.
+
+The projectile processes the closest valid contact across both sweeps, with walls winning equal-distance ties. Its Enter/Stay overrides deliberately bypass AttackBase trigger handling: otherwise the larger damage trigger would still destroy the projectile on walls. Sweeps include initial overlaps and use growable result lists; an impact guard prevents another hit during deferred destruction. Damage payload, burn application, visual ownership and lifetime cleanup retain their existing paths.
+
+When adjusting this projectile, edit the two referenced colliders in the prefab. Both references must be distinct and assigned. Other AttackBase subclasses keep their original trigger behavior. Actual wall-grazing feel still needs main-project playtesting; this subsection is a structure map, not a new contract.
+
+### SpriteMask rendering channels (2026-09-15)
+
+TagManager Rendering Layers currently reserve Default (bit 0) for existing world/vision presentation, WeaponDropVisual (bit 1) for the authored Lightning Spear display renderer/buried mask, and WeaponChargeEffect (bit 2) for Apprentice Hero Sword runtime charge renderer/reveal mask. These are Rendering Layers, not Sorting Layers or GameObject layers. Dedicated targets omit Default in their rendering channel. This bit assignment alone did not prevent the reported Shadow Corridor charge reveal; do not treat Rendering Layers as verified SpriteMask isolation.
+
+`PF_LightningSpear_ItemDisplayVisual.prefab` owns the drop pair and its per-instance SortingGroup. `ItemDisplayVisualPresenter2D.ApplyHostSorting` updates the group world sorting without changing the rendering channel. ChargeSpin CreateReveal assigns the same bit to both runtime components. Its outer SortingGroup uses the dedicated WeaponChargeEffect Sorting Layer (after Entity, before ItemDisplay) with sortAtRoot enabled. The internal reveal renderer uses Default (ID 0, order 0), and its local mask spans orders -1 through +1. Moving only the internal pair to Default was insufficient: a group still sorted on Entity inherited the active vision stencil. Existing cleanup remains ability-owned. The hard-coded charge bit corresponds to TagManager index 2; changing that index requires updating the assignment. The full-charge threshold is unchanged. Charge now draws above Entity bodies and below ItemDisplay, foreground, and the darkness overlay. This is a structure map, not an Architecture/Contracts promotion.
+
+### Apprentice charge suction and reveal follow-up (2026-09-16)
+
+Suction particles are instantiated under the AbilitySystem owner, using the authored local offset/rotation/scale there. They follow the player without inheriting WeaponVisualRoot aim, MirrorRoot mirroring or RenderRoot authoring rotation. The blade reveal still follows RenderRoot. Full-charge VFX and release/cleanup behavior are unchanged.
+
+`CombatPresentationRegressionPlayModeTests.ApprenticeCharge_RevealsProgressively_WithoutVisionMaskChangingCoverage` captures real rendered alpha coverage at 25%, 65%, and 100%, comparing the authored PlayerVisionMask active/inactive under a nested SortingGroup. The equivalent isolated Unity GPU probe now passes using current Gameplay/Core and URP 17.4; the main-project NUnit runner and interactive corridor acceptance remain separate.
+
+### Charge masking and skill direction lock (2026-09-16 follow-up)
+
+ShadowCorridor uses GlobalVisionMaskRoot without mask-range overrides. PlayerVisionMask and StrangeCandlestick already have separate exact Entity and MaskRender ranges; previously unbounded masks in Candlestick, LightBead and Dead'sSkeleton now have the same split. Each original aperture masks MaskRender, with an authored EntitySightMask child copying its sprite and alpha cutoff. The child inherits scale and activation. Both assets in a pair must be updated if the aperture artwork changes. Rendering Layer bit 2 remains configured, but actual isolation depends on the outer charge Sorting Layer and all external mask ranges.
+
+ChargeSpin captures the release aim before starting its attack animation; DashStab captures initial dash aim before its animation. Each logic holds a per-spec WeaponPresentationRig2D token in LockedAtCast mode, locking angle and facing side. Normal release honors active/recovery minimum hold; cancellation and scene cleanup use CancelAimPresentationOverride(token), which ignores stale tokens. Charging itself still follows aim. No aim data, damage geometry or gameplay timing ownership moved into presentation.
+
+### Player dash and weapon skill overlap
+
+- Global AD_Dash runs ParallelIndependent; weapon skills can activate during it. Apprentice ChargeSpin/DashStab no longer block on State.Move.Dash, while ordinary skill/dash-blocked restrictions and cooldowns remain.
+- AbilityMotionController2D.MotionVersion identifies the current motion revision. Dash2D stores its starting revision on AbilitySpec and only cancels its own still-current motion during cleanup. Motion replacement by a skill is preserved. This does not change StartLunge's existing dash-priority rule or introduce multiple movement channels.
+- Regression source: MonsterProjectileBurstCadencePlayModeTests.PlayerDash_CleanupOnlyStopsItsOwnMotion plus the existing hard-stop cleanup case. The input bridge continues using normal AbilitySystem activation.
+
+
+### Independent weapon relic execution (2026-09-16)
+
+- LightningSpearAttack applies ThirdStrike's 1.2 attack-speed factor to existing combo timing and requests one mark on the third swing regardless of hit. LightningSpearRuntimeState selects an enemy within 1.5 units of the attack endpoint, then uses existing placement validation/fallback nearby. TargetedRain independently prioritizes enemy positions before random valid placements, reserves spacing, and spawns successive marks 0.15 seconds apart with cancellation checks.
+- Crimson Ignite detects its own alive-to-dead damage transitions and spawns one normal projectile from each kill position toward the nearest other enemy (40-unit search). CrimsonBoundaryProjectile2D optionally steers toward this target; no kill-projectile spawning occurs in the projectile path. Dead spawn-source hurtboxes are skipped for homing shots.
+- Crimson BigExplosion preserves the base falling/explosion-only Q branch. LavaBall relic selects an authored Lavaball_RelicPiercing prefab and CrimsonBoundaryLavaProjectile2D instead: swept piercing damage once per target, first solid wall ends travel, wall impact is visual-only Lavaball_Hit. Visual size is copied from the original meteor. Speed is existing projectileSpeed times 0.75 (18 -> 13.5); original falling Q uses interpolation and has no fixed velocity field. Active balls and impact visuals register with CrimsonBoundaryRuntimeState for weapon/scene cleanup.
+- AbilityLogic.RequestsParallelExecution is a default-false runtime policy hook; AbilitySystem checks it after ordinary eligibility/cooldown/movement checks. Only Apprentice DashStab overrides it, gated by ChargeLink. It uses the existing parallel execution list and cancellation lifecycle without mutating shared AbilityDefinition.executionPolicy.
+- ChargeSpin exposes per-spec Holding/Seconds during the hold; Q snapshots damage multiplier, size and color at activation without consuming charge. Right-click release remains charge owner and clears the hold. With ChargeLink, the released spin hitbox attaches to the player so it travels during Q. Existing no-relic geometry and exclusive Q are retained. Explicit scene cleanup clears the snapshot as well as visuals/hitboxes.
+- Native probe: Tools/Validation/WeaponRelicsNativeRegression.cs. Actual charge/Q animation overlap, enemy targeting and corridor placement still need interactive acceptance.
+
+
+### Crimson relic Q authored collision channels (2026-09-16 follow-up)
+
+- ALData_CrimsonBoundary.relicLavaBallPrefab explicitly references Visual component fileID 104 of Lavaball_RelicPiercing (GUID 8d3a284548c54c449788eea30a839434). Missing this reference silently prevented spawn after cooldown was committed; asset-path verification is covered separately from the direct projectile probe.
+- The relic prefab owns a kinematic Rigidbody2D, wall BoxCollider2D (0.12 x 0.12, matching basic Fireball) and damage CircleCollider2D (radius 2.5, retaining prior diameter 5). CrimsonBoundaryLavaProjectile2D serializes both references and sweeps each through its corresponding layer mask. Trigger contact itself never destroys the ball. Runtime no longer derives relic projectile geometry from skill2Diameter; that field remains the base falling Q's explosion geometry. Adjust the relic prefab's damage circle for its enemy collision size.
+- First solid wall limits travel; the broad enemy sweep and line-of-sight check cannot hit through it. The projectile implements IAttackCollisionSource2D so its new trigger colliders cannot be mistaken for victim hurtboxes. Impact remains visual-only and the existing runtime owner releases transient objects.
+- Regression entry point: Tools/Validation/CrimsonRelicAuthoredRegression.cs; isolated copies remap source MonoScript references to current compiled DLL identities while retaining authored object references, shapes and component IDs.
+
+
+### Lightning relic nearest-target placement (2026-09-16)
+
+- Both relic paths share LightningSpearRuntimeState.TryFindNearestMarkPosition. It tests the exact enemy/root ground position first (no tile-center snapping when valid), then orders authored ground tile centers by distance to that target and picks the first valid one. Enumeration is clipped to the existing seven-unit cast range; transformed grid corners bound cell enumeration.
+- Existing room, wall tile, path obstruction, landing clearance, minimum player distance (1.2) and mark spacing (2) checks remain. The pending request list reserves future Q locations; the active mark list also blocks occupied positions. If no tile candidate exists, the original random fallback remains.
+- Q cycles through nearby enemies repeatedly until six positions are reserved, keeping surplus strikes near enemies rather than scattering all surplus immediately. The third-combo mark retains the previously agreed 1.5-unit targeting radius around the attack endpoint. Q sequential spawn spacing is now 0.07 seconds, with the same per-mark activation delay. Positions are fixed ground locations selected at cast/third-strike time; this is not an airborne homing rewrite.
+- Native placement probe: Tools/Validation/LightningRelicPlacementRegression.cs checks exact position, nearest eligible tile, reserved spacing, wall exclusion and no-ground rejection.
+
+
+### Apprentice Q charge-growth correction (2026-09-16)
+
+DashStab now transfers ResolveDamageScale(seconds) / MinDamageScale instead of the raw charge attack coefficient. With current authored scales 6..10, Q multiplies its own damage by 1..1.6667. A zero baseline transfers no increase (1). ChargeSpin's own damage formula and scales are unchanged. Snapshot timing, size/color linkage, charge preservation and parallel execution remain the same. ChargeSpin and ChargeLink descriptions now state approximately 1.67, with the skill tooltip explicitly comparing maximum to minimum charge.
+
+
+### Spear relic training dummy targets (2026-09-16)
+
+Both targeted Q rain and third-strike mark guidance use LightningSpearRuntimeState.FindMarkTargets. It accepts active, alive Enemy roots and active TrainingDummy2D roots discovered through overlapped colliders, deduplicates roots across multiple colliders, and sorts by distance. TrainingDummy2D does not inherit Enemy, so the shared enemy-only relic search could not see hub dummies. This exception is local to spear placement; WeaponExclusiveRelics.FindEnemies and Crimson kill-shot targeting are unchanged. Existing search ranges, tile validation, reservations and spacing still apply.
+
+### Cached weapon motion pose restoration (2026-09-16)
+
+WeaponVisualRig2D owns a nonserialized, capture-once local position/rotation/scale snapshot of the explicit MotionRoot. Awake captures active instances; WeaponEquipController.CreateInstance explicitly captures inactive prefab instances before their first activation. Missing MotionRoot is not replaced by the mirror/root fallback for restoration. WeaponEquipController deactivates the outgoing instance first (allowing weapon-local OnDisable cleanup), then restores its motion pose. Incoming instances restore before activation and Animator.Rebind/Update(0), so an interrupted swing cannot become the cached default pose. Facing/mirror and authored RenderRoot offsets remain owned by their existing paths. Runtime scripts must not recapture the baseline during attacks. Tools/Validation/WeaponSwapPoseRegression.cs exercises the production equip path with synthetic authored rigs, an empty Idle and an animated MotionRoot.
+
+### Timed attack combos end on equipment change (2026-09-16)
+
+WeaponInventory2D.CleanupTransientAbilitiesForWeaponChange first cancels transient executions, then visits the outgoing weapon's granted ability specs. Logic implementing IWeaponAttackComboReset (declared in WeaponRuntimeState.cs) clears its own combo index and expiry. Implementations cover SwordCombo2D, LightningSpearAttack, ApprenticeHeroSwordAttack, FloweringBaseAttack and FloweringAttack's base-attack delegation. This includes an idle gap with a still-valid combo window, not just an active attack. Cooldown, charges, ammo and specialized persistent stance/reward data are not reset. Crimson's separate sampled swing already resets on disable. Equipment changes rejected by existing gates do not reach cleanup.
+
+### Odd Iron overhead ammo HUD (2026-09-16)
+
+PF Player.prefab authors an OddIronAmmoHUD world-space Canvas and AmmoText child at local Y 1.65, scale 0.01, font size 32 using Galmuri9 SDF BlackOutline. OddIronAmmoWorldHUD (UI assembly) has serialized inventory/Canvas/TMP references. It reads the equipped slot's OddIronRuntimeData.CurrentAmmo/MaxAmmo and the owner's OddIronMagazine relic level in LateUpdate; TMP text is updated only when the integers change, using the exact format `{0} / {1}`. The Canvas starts disabled, is shown only for equipped OddIron data, and is disabled with the presenter. The parent follows the player; the presenter holds world rotation upright. No runtime UI creation or ammo state ownership. The right-hand count is reserve ammo only: MaxAmmo * remaining magazine-relic levels. With a full six-round magazine, levels 0/1/2/3 display 6 / 0, 6 / 6, 6 / 12, and 6 / 18 (corrected 2026-09-17). Numerator remains CurrentAmmo. This affects display only, not actual magazine capacity.
+
+### Odd Iron barrage consumes ammo per emitted shot (2026-09-16)
+
+AbilityLogic_OddIronBarrage snapshots CurrentAmmo without reloading, then checks cancellation and available ammo for each shot. FireOnce now reports projectile creation/setup success; each successful emission consumes one round in the same coroutine step, before the inter-shot wait. Failure or cancellation leaves unshot rounds in the magazine. Barrage never reloads inside its loop, so it cannot extend into reserve magazines. OddIronAmmoWorldHUD shows current magazine ammo / reserve ammo, with spaces (see overhead HUD section). Normal-shot consumption timing remains unchanged.
+
+### Odd Iron attack reload audio (2026-09-17)
+
+An empty-magazine Attack or barrage input with a magazine relic selects Shot, whose AL starts the prefab-authored OddIronReloadExecutor through WeaponExecutorRunner. AL_OddIronShot owns the reload SoundRef; DefaultAudioCatalog maps weapon.oddiron.reload to Audio/Player/Weapon/Gun/AC_OddIron_Reload.wav (the supplied metal-flick clip, normal speed, non-looping). The AL waits while the executor runs, keeping GAS busy and avoiding duplicate reloads. The executor tracks the audio handle and calls WeaponExclusiveRelics.TryReload only after playback ends: one relic level is consumed and the slot magazine is refilled, with no shot in that activation. With one reserve magazine, the HUD changes from 0 / 6 to 6 / 0; with two reserves, it changes from 0 / 12 to 6 / 6.
+
+Cancellation, owner disable, and weapon swap stop the tracked sound through executor cleanup without consuming the relic. RuntimeData and RelicInventory remain the persistent owners; no reload-in-progress state is saved. Missing audio cancels the attempt. An empty Skill2/barrage input now performs this same reload-only activation and requires a new input to fire; the barrage AL itself no longer reloads. Audio pool interruption and pause/resume timing still need live Play Mode verification. This is a local implementation map, not an Architecture/Contracts promotion candidate.
+
+### Odd Iron reload movement (2026-09-17)
+
+PlayerCombatInput2D.HandleAbilityExecutionStarted excludes the empty OddIron Shot + available magazine relic branch from its basic-attack movement/aim lock. The execution-start notification occurs before the AL consumes ammo, so a loaded last shot still receives its normal lock. Reload keeps GAS busy for duplicate-input prevention while walking remains available; unrelated status/UI/movement blocking rules continue to apply. No ability data, prefab or serialized fields changed.
+
+### Odd Iron recoil baseline (2026-09-17)
+
+OddIronRuntimeState caches the resting local position once per recoil Transform. Subsequent shots preserve that baseline, including bursts whose 0.08s interval interrupts the 0.125s recoil cycle. A restarted recoil interpolates from the current displaced position toward baseline + recoil offset, then returns to the fixed baseline. OnDisable/equip cleanup restores the same baseline. No serialized fields, prefab offsets, recoil tuning or ammo rules changed.
+
+### Skill-key binding notifications (2026-09-17)
+
+InputBindingService publishes BindingChanged after an applied primary/secondary binding changes. WeaponSkillHUD2D and SwapWeaponSkillHUD2D subscribe when resolving the existing service and release the subscription on destruction or service replacement. The content-only subscription deliberately remains attached while the HUD is disabled: RefreshInputGuideIcon updates the sprite without activating objects, enabling graphics, or resetting cooldown/charge/flash state. Existing OnEnable slot binding resynchronizes a HUD that has not yet initialized. The earlier LateUpdate-only guide refresh was superseded after the user reported that it did not fix the ESC/settings flow. Keybinding-panel working edits still require Apply; cancelling edits does not change the gameplay binding. InputHudCleanupPlayModeTests adds paused/inactive/blocked HUD cases for both HUD types; compilation passed, runtime tests remain pending.
+
+### Hero Sword charge release and Lightning Spear mark guidance (2026-09-18)
+
+- Display name is now 용사의 검; `Weapon.ApprenticeHeroSword`, asset paths and GUIDs remain stable. Weapon story and the exclusive relic's weapon-name reference were updated.
+- ChargeSpin evaluates raw held time before minimum-charge clamping. At <=40% it cancels the token and skips release animation/hitbox/recovery; the existing finally clears hold snapshots and charge presentation. Above 40%, including full charge, it uses the existing release path. Existing cooldown policy remains unchanged. The skill tooltip states the threshold.
+- `LightningSpearRuntimeState.RefreshMarkFeedback` gates mark highlighting on readiness, no active execution/UI/flow/hit-pause/input block, movement permission, ability tags/cost and existing range/landing/path checks. The existing buffered-rush range presentation stays independent of immediate readiness. `AbilityDefinition.CanActivate` has a diagnostics-disabled overload for repeated presentation queries, preserving activation checks and default logging behavior.
+- `LightningSpearMark.prefab` authors the outline-capable active renderer and a RushKeyIcon SpriteRenderer above the mark. `LightningSpearMarkActor` projects outline and current Skill1 binding sprite; SelectedVisual plays its authored Idle loop for every active, enabled mark until consumption or expiry (2026-11-01). Its serialized field and prefab binding retain their existing names. No runtime UI hierarchy creation is used. Disable clears Idle and rush feedback; re-enable restores Idle for a still-active mark. Icon lookup through `InputActionQuery`/`IInputActionQueryBackend` keeps Gameplay independent of Infrastructure; InputBindingService forwards its existing glyph mapping. Per-frame icon refresh observes applied remaps while paused.
+- Verification: Gameplay/Core/Infrastructure and ProceduralPlayModeTests MSBuild passed; seven WeaponFeedback cases added and compiled (charge boundaries, quick cancellation, authored mark outline/key/remap/disable). Unity PlayMode and visual acceptance not executed because the project Editor was open. Check 40/41/99/100% releases, marker white edges, key size/placement, cooldown/blocked paths and remapping in Editor.
+
+#### Lightning Spear hover-only guidance refinement
+
+Outline and bound key icon require `IsActive && canRush && isSelected` together in `LightningSpearMarkActor.SetFeedback`. RuntimeState supplies cursor selection from the existing selectable-mark search and actual rush eligibility separately; before the first mark-rush tutorial completes, its existing guidance also permits unselected eligible marks. Moving off the mark after that tutorial or losing eligibility hides outline/key guidance. As of 2026-11-01, the authored SelectedVisual Idle loop follows the mark's activation/cleanup lifecycle independently of SetFeedback, so cooldowns, blocked input and cursor changes leave active marks' Idle running. Outline thickness remains 2 texels. RuntimeState no longer creates hover-range or selected-ground-circle indicators. Cursor selection uses 1.38 times the authored radius (1.2 times the previous 1.15 multiplier) for both feedback and rush targeting. Loadout indicator references remain serialized for asset compatibility but are unused.
+
+#### Hero Sword failed-charge cooldown refund
+
+A <=40% released charge now sets the runtime-only `AbilitySpec.SkipCooldownOnEnd` flag and clears current cooldown through `AbilitySystem.TrySetCooldownRemaining`. `AbilityExecutionCoordinator` resets the flag at every BeginExecution and suppresses only the explicitly refunded execution's end cooldown. Normal releases and other cancellation reasons retain their existing cooldown behavior. This supersedes the earlier note that short-charge cancellation retains cooldown. No shared AbilityDefinition or serialized schema is mutated. The seven WeaponFeedback PlayMode cases passed on 2026-09-18, including failed-charge refund, no cooldown restart at end, next-execution cooldown restoration, charge thresholds and hover-only spear feedback.
+
+Marker color follow-up (2026-09-18): the hover-only eligible-rush outline now uses saturated sky blue #00A0E6 instead of white. Cursor selection and actual rush eligibility still gate the outline and key icon together.
+
+Charge cutoff tuning follow-up (2026-09-18): Hero Sword now cancels at <=50% and executes above 50%, superseding the earlier 40% threshold. Failed releases still refund cooldown; full charge behavior is unchanged. Skill tooltip and boundary tests use the new threshold.
+### 2026-09-18 player attack launch origin
+
+`PlayerAttackOrigin` in `AttackBase.cs` resolves player-origin melee/basic and projectile starts from the body collider bounds center plus aim direction times the world-space body radius plus 0.08. It respects `EntityCollisionProfile2D` body ownership and collider scaling/offset. With an existing wall mask, a short circle cast clamps the start before a wall; this safety exception can reduce the body clearance. Existing target-origin secondary effects, placed marks and ground-area skills retain their own origins.
+
+Consumers include Crimson Boundary, Odd Iron shots/throws, Sword projectile/combo, Fragment Blade, Real Weapon, Lightning Spear basic/recovered shot, Apprentice Hero Sword and Flowering basics/hitboxes. Attack runners still own damage, timing and cleanup; the helper owns no runtime state and creates no objects.
+
+
+### Skill HUD hover and lightning rush distance (2026-09-19)
+
+- WeaponSkillHUD2D and SwapWeaponSkillHUD2D own separate WeaponSkillHudTooltipPresenter sessions (helper in WeaponSkillHudSlotPresenter.cs). They poll their authored icon rectangles and use MonsterSpawnRoomGroup.IsPlayerInCombat plus UIManager.HasBlockingUI to gate descriptions. Disable, ability-reference refresh, hidden icons and combat dismiss the owned hover immediately.
+- StatusHudTooltipView also projects AbilityDefinition via the existing authored tooltip. IDetailProvider supplies numerical/detail text; IAbilityTooltipVariantProvider supplies all variant explanations. DetailTextFormatter renders semantic tags. UIManager/HoverUIController scoped immediate hide matches both view and anchor, preserving other hover owners.
+- LightningSpearRuntimeState no longer limits player-to-mark rush distance or instantiates the maximum-range indicator. Serialized MarkRushRange and RushRangeIndicatorPrefab values remain for asset compatibility but are not consumed. Same-room, landing and blocker checks, mark selection remains active; hover-range and selected-ground-circle indicators were removed on 2026-09-21.
+
+### Attack placement and dash avoidance feedback
+
+- ApprenticeHeroSword, SwordCombo2D, LightningSpearAttack, Flowering base/bloom add authored forward and mirrored side offsets to `PlayerAttackOrigin.Resolve`; FragmentBladeAttack and RealWeaponAttack1 add their forward offsets. Mirrored side basis remains the convention described above.
+- ApprenticeHeroSword basic step 3 multiplies HP damage by 1.5 (30 at the default attack stat of 20), supplies hit-camera scale 1.2, and authors lunge distance 0.9. Other combo steps and damage channels keep their prior values.
+- Dash execution owns the `Dash2D.Invulnerable` spec flag and clears it with its tags in cleanup. `PlayerCombatInput2D` exposes this as the read-only Core `ICombatEvadeState` interface; it does not own a second invulnerability state.
+- Combat payload, direct combat damage and hazard invulnerability exits ask `CombatInvulnerabilityUtil.ShowEvadeFeedback` to emit player-only `Evade`. `DamagePopupFormatProfileSO` projects that text in gold; chance-based `EVADE` retains blue. The query-only `IsDamageSuppressed` stays free of presentation side effects.
+- Per-bullet evade text: `AttackBase` and `DemonKingProjectile2D` own an instance-local target set, reset at SetupBase/Initialize. `CombatHitPayloadApplier` forwards it to dash/chance evade presentation. Repeated collision callbacks, payload reconstruction and shared volley payloads therefore do not duplicate or merge a bullet's target feedback. The set is presentation-only: it does not suppress damage evaluation or change projectile destruction. Callers without a set retain their previous behavior.

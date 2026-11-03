@@ -1,0 +1,242 @@
+{
+  "monster.beer": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Monsters/DragonLevel_BeerMonster/Drink.png",
+    "rect": [
+      0,
+      0,
+      24,
+      23
+    ],
+    "guid": "6381a51d56edf6c4089caf6be074034b",
+    "fileID": "-6033280328393917619",
+    "sha256": "6e6a83a70e06a52baeff158e5090aa2776416e875fd0facb09bbcfce7cfe873b"
+  },
+  "monster.treasure": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Monsters/DragonLevel_TreasureMonster/GoldMonster.png",
+    "rect": [
+      0,
+      0,
+      21,
+      23
+    ],
+    "guid": "15c91a5b134cee44185165d194272923",
+    "fileID": "-2987867392972033973",
+    "sha256": "8e3033b5b3d24f6cc3104be5d130471a03c70d76cceaa280bd623e0dcfb06a05"
+  },
+  "monster.frog": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/MonsterSprite/ToxicFrog/GreenBrown/ToxicFrogGreenBrown_Idle.png",
+    "rect": [
+      11,
+      17,
+      21,
+      16
+    ],
+    "guid": "04c50facf069bad43845261d3131b7df",
+    "fileID": "1559784003",
+    "sha256": "fb47efa257eb888e36c3a82275870d79991c46061b22e4d297e13ded2136a8ae"
+  },
+  "monster.frog_elite": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/MonsterSprite/ToxicFrog/GreenBrown/ToxicFrogGreenBrown_Idle.png",
+    "rect": [
+      11,
+      17,
+      21,
+      16
+    ],
+    "guid": "04c50facf069bad43845261d3131b7df",
+    "fileID": "1559784003",
+    "sha256": "fb47efa257eb888e36c3a82275870d79991c46061b22e4d297e13ded2136a8ae"
+  },
+  "monster.slime_pawn": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Monsters/SlimeMonster/PawnSlime.png",
+    "rect": [
+      36,
+      0,
+      12,
+      10
+    ],
+    "guid": "1921a38ea9bc71c47817fd2c437f2f66",
+    "fileID": "-2074013794",
+    "sha256": "9ddf670a952aa004e7d09013c8ccfafba0d1b73f3a55fa4fbcd3c6c4d6ff8c52"
+  },
+  "monster.slime_rook": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Monsters/SlimeMonster/RookSlime.png",
+    "rect": [
+      0,
+      0,
+      60,
+      60
+    ],
+    "guid": "660c1a84d0a18f6499eb14f7ba92dcc8",
+    "fileID": "2762096629116607745",
+    "sha256": "d95fa1bb95932b1b583679ba5e92d361c0bdcf580bfcc4c1517c06b5d060c5cb"
+  },
+  "monster.slime_knight": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Monsters/SlimeMonster/KnightSlime.png",
+    "rect": [
+      0,
+      0,
+      23,
+      23
+    ],
+    "guid": "2ed2f4140059f244697c7f7ee698371c",
+    "fileID": "6552813186526701887",
+    "sha256": "93c7ce2a66148d3f74883d86946d611bbe0faa2d333b60a86b616bad0718503a"
+  },
+  "monster.slime_bishop": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Monsters/SlimeMonster/BishopSlime.png",
+    "rect": [
+      0,
+      0,
+      50,
+      64
+    ],
+    "guid": "671f5d2f7d123904d89d54d06004f714",
+    "fileID": "4071256717814935889",
+    "sha256": "1747f9510a66dcd680a7958ab1a38257ef60d0df6879051a26c309108816cbf6"
+  },
+  "monster.slime_wizard": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Monsters/SlimeMonster/MageSlime.png",
+    "rect": [
+      0,
+      0,
+      23,
+      21
+    ],
+    "guid": "00e14fb0365f4564bb434a6db18a81bc",
+    "fileID": "2941724131493569441",
+    "sha256": "cf12eb172eb429523d8316f5fa637f44ea25a665e6a211d78ffbf1d495b0f9ba"
+  },
+  "monster.candlestick_corridor": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Monsters/DragonLevel_candleMonster/Candlestick.png",
+    "rect": [
+      0,
+      0,
+      23,
+      36
+    ],
+    "guid": "0cd15dfdc5f4f624ca832f6db92b3067",
+    "fileID": "-7070716281622634784",
+    "sha256": "917642697eddf918a34e6b19dae85cb751b81d4ceeb567cee6fac821c800b22f"
+  },
+  "monster.deads_skeleton": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/Dead'sSkeleton_Float.png",
+    "rect": [
+      0,
+      1,
+      25,
+      26
+    ],
+    "guid": "65633814affcc704fbd9de0c57f8591b",
+    "fileID": "1208040618",
+    "sha256": "bb7f7dfbda9a5f84b446dde4ace7a33dbf4a7955d1896c32977abfc8606f96b5"
+  },
+  "monster.shadow": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Monsters/ShadowMonster/Shadowling Sprite Sheet.png",
+    "rect": [
+      0,
+      0,
+      64,
+      64
+    ],
+    "guid": "d5ff37767c10f0a41bfb6b71b379437c",
+    "fileID": "-7803983009448536926",
+    "sha256": "bca0a4560b115ef48b22f2e1081bd9cbbebf7f8d10a896f2d1991a206e9fca54"
+  },
+  "monster.shadow_servant": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Monsters/ShadowServant/ShadowServant.png",
+    "rect": [
+      0,
+      0,
+      21,
+      20
+    ],
+    "guid": "78ad9bb39ac5f284bbe1dc2c6595339d",
+    "fileID": "-653279953",
+    "sha256": "891034b94b6916db65a548c29473ebefbcaf79e2490e03efae503457ec145af8"
+  },
+  "monster.strange_candlestick": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Monsters/StrangeCandlestick/StrangeCandlestick_Idle.png",
+    "rect": [
+      0,
+      0,
+      64,
+      64
+    ],
+    "guid": "2d370c720c67ace438e1a523e59bf411",
+    "fileID": "-1716854004214877319",
+    "sha256": "8035ecc29922e27b1b9bc58f1ad130e6db63574f862ea960a93a3d10ef24792f"
+  },
+  "boss.slime_queen": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Bosses/Slime/DialogueSprite/MeltaNotion/Melta_Idle.png",
+    "rect": [
+      0,
+      0,
+      1254,
+      1254
+    ],
+    "guid": "bd783ac71f9946b58a6d1b451cb282f1",
+    "fileID": "21300000",
+    "sha256": "1e90d9feca0098c73950e8327e9a8957d2c037fb99d54b4348559dd471dcd504"
+  },
+  "boss.witch_chloe": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/Normal.png",
+    "rect": [
+      0,
+      0,
+      1240,
+      1240
+    ],
+    "guid": "f309aae6e82882b43837c57b28a49628",
+    "fileID": "21300000",
+    "sha256": "b53f65fd7efdc205b1e719ae90a2611ecdaad98c0d257a5945b0c0f5d624b017"
+  },
+  "boss.dragon": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Bosses/Dragon/DialogueSprite/SpiriNotion/Spiri_Idle.png",
+    "rect": [
+      0,
+      0,
+      1240,
+      1240
+    ],
+    "guid": "87addf85fa8b5234bbcb900d04fa6921",
+    "fileID": "4410287023350739978",
+    "sha256": "f3454caddf678eb1d02be70db4bebc270daeec11a52818e168349d89f61de73c"
+  },
+  "boss.demon_king": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/Bosses/DarkLord/Dark Lord_Idle.png",
+    "rect": [
+      0,
+      0,
+      1024,
+      1024
+    ],
+    "guid": "b3287ed3fca20324d904e25f0e659af8",
+    "fileID": "21300000",
+    "sha256": "67094a53eb49182d125037479d21f3e561a13b0099a5f40c4cc47053aa67bfc1"
+  },
+  "heart.empty": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/UI/HeartUIAsset/EmptyHeartImage.png",
+    "rect": [
+      1,
+      1,
+      23,
+      20
+    ],
+    "guid": "369e5a5850cde054c8a4361c28ba81b9",
+    "fileID": "-4538568396499552771",
+    "sha256": "e3062fad18c1ca5931c5d47c137d6b51a0a4dbdc23cb6343f260da201d9245b0"
+  },
+  "heart.full": {
+    "path": "C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Assets/_Project/Art/Sprites/UI/HeartUIAsset/Free Version 1.1/SpriteSheet/Spritesheet.png",
+    "rect": [
+      68,
+      294,
+      23,
+      20
+    ],
+    "guid": "e75f469ea29530246a4a0543396316af",
+    "fileID": "3919147750717110911",
+    "sha256": "865376c95c93574b26bef9294f41b4b55b12d99cdbffe83ce66f15b0b2915adf"
+  }
+}

@@ -23,6 +23,14 @@ public static class MonsterEncyclopediaProgress
         return GameDataStore.Data != null && RunSessionStore.RecordMonsterEncyclopediaKill(monsterId);
     }
 
+    public static void RecordEncounter(GameObject monster)
+    {
+        if (monster == null || !RunSessionStore.IsRunActive ||
+            monster.scene.name.IndexOf("Tutorial", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            !monster.TryGetComponent(out MonsterEncyclopediaIdentity identity)) return;
+        EncyclopediaDiscoveryProgress.Record(EncyclopediaDiscoveryKind.Monster, identity.MonsterId, monster.scene.name);
+    }
+
     private static void HandleDeathStarted(Enemy enemy)
     {
         if (!(enemy is Mob) || !RunSessionStore.IsRunActive)

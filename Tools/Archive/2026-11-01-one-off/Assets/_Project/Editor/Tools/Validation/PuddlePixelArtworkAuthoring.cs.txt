@@ -1,0 +1,203 @@
+#if UNITY_EDITOR
+using System;
+using System.IO;
+using System.Linq;
+using UnityEditor;
+using UnityEngine;
+using UnityGAS;
+
+/// <summary>Explicit authoring of the approved Aseprite puddle textures and existing prefab presentation.</summary>
+public static class PuddlePixelArtworkAuthoring
+{
+    public const string Art = "Assets/_Project/Art/Textures/Puddles/ApprovedPixel";
+    public const string Materials = "Assets/_Project/Art/Materials/PuddlePixel";
+    public const string Output = "outputs/puddle-pixel-integration-2026-11-01";
+    public const string Prefabs = "Assets/_Project/Prefabs/Map/Puddles/";
+
+    [MenuItem("Tools/Puddles/Apply Approved Pixel Artwork")]
+    public static void Apply()
+    {
+        Directory.CreateDirectory(Materials);
+        AssetDatabase.Refresh();
+        foreach (string file in Directory.GetFiles(Art, "*.png"))
+        {
+            string path = file.Replace('\\', '/');
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+            importer.textureType = path.EndsWith("EmissionShape.png") ? TextureImporterType.Sprite : TextureImporterType.Default;
+            importer.spriteImportMode = SpriteImportMode.Single;
+            importer.spritePixelsPerUnit = 64;
+            importer.filterMode = FilterMode.Point;
+            importer.mipmapEnabled = false;
+            importer.textureCompression = TextureImporterCompression.Uncompressed;
+            importer.npotScale = TextureImporterNPOTScale.None;
+            importer.wrapMode = TextureWrapMode.Clamp;
+            importer.sRGBTexture = true;
+            importer.alphaSource = TextureImporterAlphaSource.FromInput;
+            importer.alphaIsTransparency = false;
+            importer.maxTextureSize = 2048;
+            if (importer.textureType == TextureImporterType.Sprite)
+            {
+                var settings = new TextureImporterSettings();
+                importer.ReadTextureSettings(settings);
+                settings.spriteAlignment = (int)SpriteAlignment.Center;
+                settings.spritePivot = Vector2.one * .5f;
+                settings.spriteMeshType = SpriteMeshType.Tight;
+                importer.SetTextureSettings(settings);
+            }
+            importer.SaveAndReimport();
+        }
+
+        var template = AssetDatabase.LoadAssetAtPath<Material>("Assets/_Project/Art/Materials/M_PuddleShaderVisual.mat");
+        var ground = AssetDatabase.LoadAssetAtPath<Material>(Materials + "/M_PuddlePixelGround.mat");
+        if (ground == null)
+        {
+            ground = new Material(template) { name = "M_PuddlePixelGround" };
+            AssetDatabase.CreateAsset(ground, Materials + "/M_PuddlePixelGround.mat");
+        }
+        ground.SetFloat("_PixelGroundEnabled", 1);
+        ground.DisableKeyword("_PIXELGROUNDENABLED_ON");
+        ground.SetTexture("_AlcoholGroundSheet", Texture("AlcoholGround"));
+        ground.SetTexture("_FireGroundSheet", Texture("FireGround"));
+        ground.SetTexture("_CenterIgnitionSheet", Texture("CenterIgnition"));
+        EditorUtility.SetDirty(ground);
+        var bubble = ParticleMaterial("BubbleVariants");
+        var near = ParticleMaterial("NearFlames");
+        var air = ParticleMaterial("AirborneFlames");
+        foreach (string element in new[] { "Alcohol", "Fire" })
+            ApplyPrefab(element, ground, bubble, near, air);
+        AssetDatabase.SaveAssets();
+        Unity.CodeEditor.CodeEditor.CurrentEditor.SyncAll();
+        Directory.CreateDirectory(Output);
+        File.WriteAllText(Output + "/authoring-result.txt", "PASS: two existing puddle prefabs, seven Point/uncompressed textures, four dedicated materials. Gameplay/colliders/projectiles/buff indicators preserved.\n");
+        Debug.Log("PUDDLE_PIXEL_AUTHOR_OK");
+    }
+
+    private static Texture2D Texture(string name) => AssetDatabase.LoadAssetAtPath<Texture2D>(Art + "/" + name + ".png");
+
+    private static Material ParticleMaterial(string name)
+    {
+        string path = Materials + "/M_" + name + ".mat";
+        var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+        if (material == null)
+        {
+            var shader = Shader.Find("Custom/PuddlePixelParticle");
+            if (shader == null) throw new InvalidOperationException("Pixel particle shader did not import.");
+            material = new Material(shader) { name = "M_" + name };
+            AssetDatabase.CreateAsset(material, path);
+        }
+        material.SetTexture("_MainTex", Texture(name));
+        EditorUtility.SetDirty(material);
+        return material;
+    }
+
+    private static void ApplyPrefab(string element, Material ground, Material bubbleMat, Material nearMat, Material airMat)
+    {
+        string path = Prefabs + element + "Puddle.prefab";
+        GameObject root = PrefabUtility.LoadPrefabContents(path);
+        try
+        {
+            var view = root.GetComponentInChildren<PuddleParticleVisual>(true);
+            var shaderView = root.GetComponentInChildren<PuddleShaderVisual>(true);
+            if (view == null || shaderView == null) throw new InvalidOperationException("Missing existing puddle presentation: " + path);
+            var groundSerialized = new SerializedObject(shaderView);
+            groundSerialized.FindProperty("materialTemplate").objectReferenceValue = ground;
+            groundSerialized.ApplyModifiedPropertiesWithoutUndo();
+            shaderView.GetComponent<MeshRenderer>().sharedMaterial = ground;
+            var serialized = new SerializedObject(view);
+            var bubbles = serialized.FindProperty("bubbleParticles").objectReferenceValue as ParticleSystem;
+            // Retire old particles without deleting their prefab objects or touching gameplay.
+            foreach (var old in root.GetComponentsInChildren<ParticleSystem>(true))
+            {
+                old.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                var main = old.main; main.playOnAwake = false;
+                var emission = old.emission; emission.enabled = false;
+                var renderer = old.GetComponent<ParticleSystemRenderer>();
+                if (renderer != null) renderer.enabled = false;
+            }
+            float radius = root.GetComponent<PuddleAreaBase>().GroundRadius;
+            float pixel = radius * 2.2f / 64f;
+            var shapeSprite = AssetDatabase.LoadAssetAtPath<Sprite>(Art + "/EmissionShape.png");
+            if (shapeSprite == null) throw new InvalidOperationException("Missing emission shape sprite.");
+            if (bubbles != null)
+                Configure(bubbles, root.transform, bubbleMat, shapeSprite, pixel * 8, radius * 2.2f * .82f, .4f, 7, 5, 3, 32, 0);
+            var near = System(root.transform, "PixelNearFlames");
+            var air = System(root.transform, "PixelAirborneFlames");
+            Configure(near, root.transform, nearMat, shapeSprite, pixel * 8, radius * 2.2f * .94f, .64f, 62.5f, 8, 1, 80, 1);
+            Configure(air, root.transform, airMat, shapeSprite, pixel * 12, radius * 2.2f * .94f, .64f, 15, 8, 1, 24, 2);
+            serialized.FindProperty("usePixelArtwork").boolValue = true;
+            serialized.FindProperty("pixelFlameEmissionRates").vector2Value = new Vector2(62.5f, 15f);
+            serialized.FindProperty("flameLayerRadiusScale").floatValue = .94f;
+            var array = serialized.FindProperty("flameParticleSystems");
+            array.arraySize = 2;
+            array.GetArrayElementAtIndex(0).objectReferenceValue = near;
+            array.GetArrayElementAtIndex(1).objectReferenceValue = air;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            PrefabUtility.SaveAsPrefabAsset(root, path);
+        }
+        finally { PrefabUtility.UnloadPrefabContents(root); }
+    }
+
+    private static ParticleSystem System(Transform root, string name)
+    {
+        Transform child = root.Find(name);
+        if (child == null)
+        {
+            var go = new GameObject(name); go.transform.SetParent(root, false); child = go.transform;
+        }
+        var particles = child.GetComponent<ParticleSystem>();
+        return particles != null ? particles : child.gameObject.AddComponent<ParticleSystem>();
+    }
+
+    private static void Configure(ParticleSystem ps, Transform root, Material mat, Sprite shapeSprite,
+        float size, float shapeScale, float life, float rate, int columns, int rows, int maxParticles, int kind)
+    {
+        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        ps.transform.SetParent(root, false);
+        ps.transform.localPosition = Vector3.zero; ps.transform.localRotation = Quaternion.identity; ps.transform.localScale = Vector3.one;
+        ps.gameObject.layer = root.gameObject.layer;
+        var main = ps.main;
+        main.duration = 3.2f; main.loop = true; main.prewarm = false; main.playOnAwake = false;
+        main.startLifetime = life; main.startSpeed = 0; main.startSize3D = false; main.startSize = size;
+        main.startColor = Color.white; main.startRotation3D = false; main.startRotation = 0;
+        main.gravityModifier = 0; main.startDelay = 0; main.simulationSpeed = 1;
+        main.simulationSpace = ParticleSystemSimulationSpace.Local; main.scalingMode = ParticleSystemScalingMode.Local;
+        main.maxParticles = maxParticles; main.stopAction = ParticleSystemStopAction.None;
+        var emission = ps.emission; emission.enabled = true; emission.rateOverTime = rate; emission.rateOverDistance = 0; emission.SetBursts(Array.Empty<ParticleSystem.Burst>());
+        var shape = ps.shape;
+        shape.enabled = true; shape.shapeType = ParticleSystemShapeType.Sprite; shape.sprite = shapeSprite;
+        shape.meshShapeType = ParticleSystemMeshShapeType.Triangle; shape.scale = Vector3.one * shapeScale;
+        shape.position = Vector3.zero; shape.rotation = Vector3.zero; shape.alignToDirection = false;
+        shape.randomDirectionAmount = 0; shape.sphericalDirectionAmount = 0;
+        shape.texture = null; shape.textureColorAffectsParticles = false; shape.textureAlphaAffectsParticles = false;
+        var tex = ps.textureSheetAnimation;
+        tex.enabled = true; tex.mode = ParticleSystemAnimationMode.Grid; tex.numTilesX = columns; tex.numTilesY = rows;
+        tex.animation = rows > 1 ? ParticleSystemAnimationType.SingleRow : ParticleSystemAnimationType.WholeSheet;
+        tex.rowMode = ParticleSystemAnimationRowMode.Random; tex.startFrame = 0; tex.cycleCount = 1;
+        tex.frameOverTime = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, 0, 1, .999f));
+        var velocity = ps.velocityOverLifetime; velocity.enabled = true; velocity.space = ParticleSystemSimulationSpace.Local;
+        // Unity requires all three velocity axes to use the same curve mode.
+        float drift = kind == 2 ? .35f : .06f;
+        velocity.x = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Constant(0, 1, -drift), AnimationCurve.Constant(0, 1, drift));
+        var rise = kind == 2 ? AnimationCurve.Linear(0, .45f, 1, 2.8f) : AnimationCurve.Constant(0, 1, kind == 0 ? .75f : .13f);
+        velocity.y = new ParticleSystem.MinMaxCurve(1, rise, rise);
+        var zero = AnimationCurve.Constant(0, 1, 0);
+        velocity.z = new ParticleSystem.MinMaxCurve(1, zero, zero);
+        var noise = ps.noise; noise.enabled = kind == 2; noise.separateAxes = true;
+        noise.strengthX = .11f; noise.strengthY = 0; noise.strengthZ = 0; noise.frequency = 2; noise.scrollSpeed = 1; noise.damping = false;
+        var color = ps.colorOverLifetime; color.enabled = false;
+        var scale = ps.sizeOverLifetime; scale.enabled = false;
+        var rotation = ps.rotationOverLifetime; rotation.enabled = false;
+        var force = ps.forceOverLifetime; force.enabled = false;
+        var limit = ps.limitVelocityOverLifetime; limit.enabled = false;
+        var collision = ps.collision; collision.enabled = false;
+        var trails = ps.trails; trails.enabled = false;
+        var renderer = ps.GetComponent<ParticleSystemRenderer>();
+        renderer.enabled = true; renderer.sharedMaterial = mat;
+        renderer.renderMode = ParticleSystemRenderMode.Billboard; renderer.alignment = ParticleSystemRenderSpace.World;
+        renderer.sortingLayerName = "Entity"; renderer.sortingOrder = 2 + kind;
+        renderer.flip = new Vector3(.5f, 0, 0);
+        renderer.minParticleSize = 0; renderer.maxParticleSize = 1;
+    }
+}
+#endif

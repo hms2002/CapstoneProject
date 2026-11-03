@@ -1,0 +1,1157 @@
+fileFormatVersion: 2
+guid: 251f64bfb4e57164ea66549bf6553282
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2787945161722205473
+    second: ExperiencePickupColorCycle_0
+  - first:
+      213: -8668621008414418238
+    second: ExperiencePickupColorCycle_1
+  - first:
+      213: -3313342120912893030
+    second: ExperiencePickupColorCycle_2
+  - first:
+      213: -5961813161631334678
+    second: ExperiencePickupColorCycle_3
+  - first:
+      213: -3776177975483380907
+    second: ExperiencePickupColorCycle_4
+  - first:
+      213: -1754566970852461024
+    second: ExperiencePickupColorCycle_5
+  - first:
+      213: 7258224497604896213
+    second: ExperiencePickupColorCycle_6
+  - first:
+      213: 3533868171567298644
+    second: ExperiencePickupColorCycle_7
+  - first:
+      213: -8985761724750752435
+    second: ExperiencePickupColorCycle_8
+  - first:
+      213: -3767036107099407046
+    second: ExperiencePickupColorCycle_9
+  - first:
+      213: -126633800627507217
+    second: ExperiencePickupColorCycle_10
+  - first:
+      213: 5822128608322722120
+    second: ExperiencePickupColorCycle_11
+  - first:
+      213: -5871097766049776275
+    second: ExperiencePickupColorCycle_12
+  - first:
+      213: -5608005330024679576
+    second: ExperiencePickupColorCycle_13
+  - first:
+      213: 8407676041257789153
+    second: ExperiencePickupColorCycle_14
+  - first:
+      213: -8359514883755485912
+    second: ExperiencePickupColorCycle_15
+  - first:
+      213: -709708236195174736
+    second: ExperiencePickupColorCycle_16
+  - first:
+      213: -419649000353592554
+    second: ExperiencePickupColorCycle_17
+  - first:
+      213: -6208356169691199323
+    second: ExperiencePickupColorCycle_18
+  - first:
+      213: -7947716932466398450
+    second: ExperiencePickupColorCycle_19
+  - first:
+      213: 5478526694532954161
+    second: ExperiencePickupColorCycle_20
+  - first:
+      213: -1284947693969494440
+    second: ExperiencePickupColorCycle_21
+  - first:
+      213: 5263712834939939720
+    second: ExperiencePickupColorCycle_22
+  - first:
+      213: -4849912492958249634
+    second: ExperiencePickupColorCycle_23
+  - first:
+      213: -2680983040753671137
+    second: ExperiencePickupColorCycle_24
+  - first:
+      213: -4232139902948083451
+    second: ExperiencePickupColorCycle_25
+  - first:
+      213: -5169915598146422922
+    second: ExperiencePickupColorCycle_26
+  - first:
+      213: 5038046336253965420
+    second: ExperiencePickupColorCycle_27
+  - first:
+      213: -3825304179412861470
+    second: ExperiencePickupColorCycle_28
+  - first:
+      213: -8237341668855201232
+    second: ExperiencePickupColorCycle_29
+  - first:
+      213: 203974410647764103
+    second: ExperiencePickupColorCycle_30
+  - first:
+      213: 3864743691074637280
+    second: ExperiencePickupColorCycle_31
+  - first:
+      213: 3100887909542907246
+    second: ExperiencePickupColorCycle_32
+  - first:
+      213: -7230467316177681069
+    second: ExperiencePickupColorCycle_33
+  - first:
+      213: -215254291473807061
+    second: ExperiencePickupColorCycle_34
+  - first:
+      213: -4287346628437498500
+    second: ExperiencePickupColorCycle_35
+  - first:
+      213: -6203495062641570860
+    second: ExperiencePickupColorCycle_36
+  - first:
+      213: -7865426299652917668
+    second: ExperiencePickupColorCycle_37
+  - first:
+      213: 5492546941569619109
+    second: ExperiencePickupColorCycle_38
+  - first:
+      213: -6991124802783609665
+    second: ExperiencePickupColorCycle_39
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 0
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 8
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ExperiencePickup_00
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bce75563edae3114d98718c5fef73fdf
+      internalID: 650052143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_01
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4c73983bd2c5fe4fb6da47f108b40ab
+      internalID: -1324635853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_02
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92a7d5a1f82b22d44a80b5ddadbeb2bf
+      internalID: -1194576988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_03
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 177df9c187da9e04fb64b7d596651d96
+      internalID: -386891569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_04
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ad06d3b7684cc84cade6704463cc0a0
+      internalID: -1322641547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_05
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a3f17dbfcdf0764caceec949309692b
+      internalID: -1699134069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_06
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0ae810c7de65f14b9b6fb2bdfa25538
+      internalID: -1818736765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_07
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08b87fab0e77f2c468c19be6b2892a0b
+      internalID: 220549125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_08
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 61eda1afc1d21194da955c63198154e7
+      internalID: -5157798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_09
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5c88615a25fc014192236bb267b100b
+      internalID: 1211364203
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_10
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 09a435c18e6b90d468c862b4fde5e5c1
+      internalID: 1821217433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_11
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7eb814b545c0b84cb3f7b23204f547a
+      internalID: -143568311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_12
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 27fd02fb0ddeb254ca11b35c0a41ac82
+      internalID: -1676216250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_13
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d4638a9401edd304e9fe9f41a303b487
+      internalID: -793514939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_14
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d7299bab3f9d8e4f8eb26ce82b4688f
+      internalID: -1235275589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_15
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2dbc8c7d56b125543a5e735909e1e11f
+      internalID: -845513808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_16
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d083992f3365a3b48a952180b3d66646
+      internalID: 895780745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_17
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84fe010536ac85f4c9ebc30f510db4be
+      internalID: -1055175518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_18
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 15d31ace366a1124e927fbcb800a9d9a
+      internalID: -2064881392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_19
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78736dffc9f441445a9faf2577bf96f6
+      internalID: -170741423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_20
+      rect:
+        serializedVersion: 2
+        x: 324
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 79c0e7fdc49175d4397c559d43419aa0
+      internalID: 1176320828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_21
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c736cae4a8161a84dbcf7c430edd3aa6
+      internalID: 762581879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_22
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1fbfea26133ce7647a0059acc1ee3485
+      internalID: 1997134819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_23
+      rect:
+        serializedVersion: 2
+        x: 372
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e72c404899607ae4c8f8c87ec75594ec
+      internalID: -675514097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_24
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ceedd8884479135419a5670dde4e8b56
+      internalID: 282559064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_25
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 346fd62f4f795494891e2e46a4547d34
+      internalID: -198408727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_26
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff6c5161c90759742b6f4f81b811de1f
+      internalID: 1953433302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_27
+      rect:
+        serializedVersion: 2
+        x: 436
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc3e983fe93049441939b0f4c321e22f
+      internalID: 1511429280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_28
+      rect:
+        serializedVersion: 2
+        x: 452
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c1068a50ef6d1fe4abfed7d616d39650
+      internalID: 1063394289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_29
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 75fecc426d8f864468ac4f9897640465
+      internalID: -1314788502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_30
+      rect:
+        serializedVersion: 2
+        x: 484
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d51f7268ad22be240a89e72b19a02883
+      internalID: 1404431210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_31
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9cd50025e0b043c47a4b07acb4b630f9
+      internalID: 1209116467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_32
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 22e3d536484dc50488e3cec096f9cae9
+      internalID: -298972481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_33
+      rect:
+        serializedVersion: 2
+        x: 532
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3fb0890379ec1604f9ad7621275b8c2d
+      internalID: 902432417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_34
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07d7f86ccbca7784990bc8fc18e38417
+      internalID: 1324320064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_35
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ccbd3b5f090968c4dad9a4c42beccac5
+      internalID: 678124815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_36
+      rect:
+        serializedVersion: 2
+        x: 580
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c5fe6d1c6cff4b241a9005e4095ac938
+      internalID: -1249443593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_37
+      rect:
+        serializedVersion: 2
+        x: 596
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 94c977e6d8b9cda41b033e4ba246694d
+      internalID: -1831654273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_38
+      rect:
+        serializedVersion: 2
+        x: 612
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08069eb8f0765084b954b18c95e48bec
+      internalID: -1228348127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExperiencePickup_39
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 4
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5088371ce4e59fa4b8de8e848cf71c80
+      internalID: -693484192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 894574409ea704249bb73bbcffc45ce3
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ExperiencePickup_00: 650052143
+      ExperiencePickup_01: -1324635853
+      ExperiencePickup_02: -1194576988
+      ExperiencePickup_03: -386891569
+      ExperiencePickup_04: -1322641547
+      ExperiencePickup_05: -1699134069
+      ExperiencePickup_06: -1818736765
+      ExperiencePickup_07: 220549125
+      ExperiencePickup_08: -5157798
+      ExperiencePickup_09: 1211364203
+      ExperiencePickup_10: 1821217433
+      ExperiencePickup_11: -143568311
+      ExperiencePickup_12: -1676216250
+      ExperiencePickup_13: -793514939
+      ExperiencePickup_14: -1235275589
+      ExperiencePickup_15: -845513808
+      ExperiencePickup_16: 895780745
+      ExperiencePickup_17: -1055175518
+      ExperiencePickup_18: -2064881392
+      ExperiencePickup_19: -170741423
+      ExperiencePickup_20: 1176320828
+      ExperiencePickup_21: 762581879
+      ExperiencePickup_22: 1997134819
+      ExperiencePickup_23: -675514097
+      ExperiencePickup_24: 282559064
+      ExperiencePickup_25: -198408727
+      ExperiencePickup_26: 1953433302
+      ExperiencePickup_27: 1511429280
+      ExperiencePickup_28: 1063394289
+      ExperiencePickup_29: -1314788502
+      ExperiencePickup_30: 1404431210
+      ExperiencePickup_31: 1209116467
+      ExperiencePickup_32: -298972481
+      ExperiencePickup_33: 902432417
+      ExperiencePickup_34: 1324320064
+      ExperiencePickup_35: 678124815
+      ExperiencePickup_36: -1249443593
+      ExperiencePickup_37: -1831654273
+      ExperiencePickup_38: -1228348127
+      ExperiencePickup_39: -693484192
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,7 @@
+Original layered Aseprite vs native Unity 32x10 gauge. RGB tolerance: 1 byte.
+25%/75% reference rounds fill width down; continuous uGUI fill is rasterized at pixel centers.
+0%: 236 opaque pixels, 0 mismatched, max RGB error=1
+25%: 236 opaque pixels, 0 mismatched, max RGB error=1
+50%: 236 opaque pixels, 0 mismatched, max RGB error=1
+75%: 236 opaque pixels, 0 mismatched, max RGB error=1
+100%: 236 opaque pixels, 0 mismatched, max RGB error=1

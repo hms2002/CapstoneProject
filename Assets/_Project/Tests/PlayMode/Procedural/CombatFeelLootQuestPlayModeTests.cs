@@ -1432,7 +1432,7 @@ public sealed class CombatFeelLootQuestPlayModeTests
         Assert.AreEqual(0, statusRuntime.ActiveStatusCount);
     }
 
-    [Test] public void GoldPickup_CollectsAtDestinationWithoutCollider_OnlyOnce()
+    [UnityTest] public IEnumerator GoldPickups_WaitForCombatThenRiseAndArriveTogetherWithoutColliders()
     {
         var data = RunSessionStore.Data;
         Assert.IsNotNull(data);
@@ -1443,24 +1443,46 @@ public sealed class CombatFeelLootQuestPlayModeTests
         {
             data.isRunActive = true;
             data.runGold = 0;
-            var destination = Own(new GameObject("PickupDestination"));
-            var pickup = Own(new GameObject("GoldWithoutCollider")).AddComponent<GoldPickup2D>();
-            pickup.Initialize(60);
-            Set(pickup, "target", destination.transform);
-            Set(pickup, "homingStartTime", float.PositiveInfinity);
-            var update = typeof(GoldPickup2D).GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic);
-            update.Invoke(pickup, null);
-            Assert.AreEqual(0, data.runGold, "Arrival must respect the initial homing delay.");
-            Set(pickup, "homingStartTime", float.NegativeInfinity);
-            Set(pickup, "homingSpeed", 0f);
-            pickup.transform.position = Vector3.right;
-            update.Invoke(pickup, null);
-            Assert.AreEqual(0, data.runGold, "Nearby pickups must first reach the destination.");
-            pickup.transform.position = destination.transform.position;
-            update.Invoke(pickup, null);
-            update.Invoke(pickup, null);
-            Assert.IsNull(pickup.GetComponent<Collider2D>());
-            Assert.AreEqual(60, data.runGold);
+            var room = Own(new GameObject("PickupCombatRoom")).AddComponent<MonsterSpawnRoomGroup>();
+            room.RestoreWaveState(new DungeonRoomWaveRuntimeStateData { hasStarted = true, completed = true });
+            room.NotifyPlayerEnteredEncounter();
+            room.PushEncounterHold();
+            var destination = Own(new GameObject("PickupDestination")).transform;
+            GoldPickup2D CreatePickup(string name, int amount, float distance)
+            {
+                var actor = Own(new GameObject(name));
+                actor.transform.position = Vector3.right * distance;
+                var renderer = actor.AddComponent<SpriteRenderer>();
+                var pickup = actor.AddComponent<GoldPickup2D>();
+                Set(pickup, "pickupRenderer", renderer);
+                pickup.Initialize(amount);
+                Set(pickup, "target", destination);
+                Assert.IsNull(pickup.GetComponent<Collider2D>());
+                return pickup;
+            }
+            var near = CreatePickup("NearGold", 60, 1f);
+            var far = CreatePickup("FarGold", 40, 10f);
+            yield return null;
+            Assert.AreEqual(Vector3.right, near.transform.position);
+            Assert.AreEqual(Vector3.right * 10f, far.transform.position);
+            Assert.That(near.GetComponent<SpriteRenderer>().color.a, Is.EqualTo(0.45f).Within(0.001f));
+            Assert.IsFalse(near.TryCollectForTravel(destination), "Combat must also block forced portal collection.");
+            Assert.AreEqual(0, data.runGold);
+
+            room.PopEncounterHold();
+            bool observedRise = false;
+            float deadline = Time.realtimeSinceStartup + 2f;
+            while (data.runGold < 100 && Time.realtimeSinceStartup < deadline)
+            {
+                Assert.AreEqual(0, data.runGold, "Different distances must not stagger the batch arrival.");
+                if (near != null && near.transform.position.y > 0f)
+                    observedRise = true;
+                yield return null;
+            }
+            Assert.IsTrue(observedRise, "Rewards must visibly rise before reaching the player.");
+            Assert.AreEqual(100, data.runGold);
+            yield return null;
+            Assert.AreEqual(100, data.runGold, "Deferred Destroy must not grant a second time.");
         }
         finally { data.runGold = previousGold; data.isRunActive = wasActive; }
     }

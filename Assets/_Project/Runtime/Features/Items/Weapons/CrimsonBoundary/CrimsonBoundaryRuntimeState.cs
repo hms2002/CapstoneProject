@@ -7,6 +7,7 @@ using UnityGAS;
 public sealed class CrimsonBoundaryRuntimeState : WeaponAbilityRuntimeState
 {
     private readonly List<GameObject> transients = new();
+    private GameObject chargePresentation;
 
     [Header("Basic attack motion")]
     [SerializeField] private Transform motionRoot;
@@ -95,7 +96,8 @@ public sealed class CrimsonBoundaryRuntimeState : WeaponAbilityRuntimeState
 
     public override bool TryHandleAbilityInput(WeaponDefinition weapon, WeaponAbilitySlot slot, AbilityDefinition ability)
     {
-        if (slot != WeaponAbilitySlot.Skill1 || ability == null)
+        if (slot != WeaponAbilitySlot.Skill1 || ability == null ||
+            !(ability.logic is AbilityLogic_CrimsonBoundaryIgnite))
             return false;
 
         // 대상이 없으면 입력만 소비하여 Ability commit/쿨다운이 발생하지 않게 합니다.
@@ -109,6 +111,24 @@ public sealed class CrimsonBoundaryRuntimeState : WeaponAbilityRuntimeState
             transients.Add(transient);
     }
 
+    public void TrackChargePresentation(GameObject instance)
+    {
+        CancelChargePresentation();
+        chargePresentation = instance;
+        Register(instance);
+    }
+
+    public void ReleaseChargePresentation(GameObject instance)
+    {
+        if (chargePresentation == instance) chargePresentation = null;
+    }
+
+    public void CancelChargePresentation()
+    {
+        if (chargePresentation != null) Destroy(chargePresentation);
+        chargePresentation = null;
+    }
+
     public void Forget(GameObject transient)
     {
         if (transient != null)
@@ -120,5 +140,6 @@ public sealed class CrimsonBoundaryRuntimeState : WeaponAbilityRuntimeState
         for (int i = transients.Count - 1; i >= 0; i--)
             if (transients[i] != null) Destroy(transients[i]);
         transients.Clear();
+        chargePresentation = null;
     }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6591e5c22257414ab0e679bbf7b06ba6, type: 3}
   m_Name: SpiriAlcoholPuddleReward
   m_EditorClassIdentifier: Gameplay::InfoOnlyAffectionEffect
-  rewardText: "\uC220 \uC7A5\uD310\uC5D0\uC11C 3\uCD08 \uB3D9\uC548 \uC220\uC744
+  rewardText: "\uC220 \uC7A5\uD310\uC5D0\uC11C 1\uCD08 \uB3D9\uC548 \uC220\uC744
     \uCC44\uC6B0\uBA74 \uD63C\uB780 \uB300\uC2E0 \uC774\uB3D9 \uC18D\uB3C4 +25%,
     \uACF5\uACA9 \uC18D\uB3C4 +40% \uBC84\uD504\uB97C \uC5BB\uC2B5\uB2C8\uB2E4. \uC7A5\uD310
     \uC548\uC5D0\uC11C\uB294 \uC9C0\uC18D\uC2DC\uAC04\uC744 \uAC31\uC2E0\uD558\uBA70,

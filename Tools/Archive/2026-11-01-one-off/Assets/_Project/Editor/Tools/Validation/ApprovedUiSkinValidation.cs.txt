@@ -1,0 +1,349 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using TMPro;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Localization.Settings;
+using UnityEngine.UI;
+using UnityGAS;
+using Object = UnityEngine.Object;
+
+/// <summary>Disposable Play Mode fixtures using the shipped prefabs and presenters; never saves a scene or grants a reward.</summary>
+[InitializeOnLoad]
+public static class ApprovedUiSkinValidation
+{
+    const string Pending = "Capstone.ApprovedUiSkinValidation";
+    const string StatsOnly = "Capstone.ApprovedUiSkinValidation.StatsOnly";
+    static string Output => SessionState.GetBool(StatsOnly, false)
+        ? "Library/CodexStatRevision/Captures" : "Library/CodexApprovedUiSkin/Captures";
+    const BindingFlags Fields = BindingFlags.Instance | BindingFlags.NonPublic;
+    static readonly Stack<IEnumerator> routines = new();
+    static readonly List<string> checks = new();
+    static int lastFrame = -1;
+    static double deadline;
+    static Camera camera;
+    static Canvas canvas;
+    static UnityEngine.Localization.Locale originalLocale;
+
+    static ApprovedUiSkinValidation() => EditorApplication.update += Update;
+
+    public static void AuthorAndRun() { PlayerStatsAndRewardUiAuthoring.Apply(); Run(); }
+    public static void AuthorStatRevisionAndRun() { PlayerStatsAndRewardUiAuthoring.ApplyStatRevision(); Start(true); }
+    public static void RunStatRevision() => Start(true);
+
+    public static void Run() => Start(false);
+
+    static void Start(bool statsOnly)
+    {
+        if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Stop Play Mode first.");
+        if (!Application.isBatchMode && UnityEngine.SceneManagement.SceneManager.GetActiveScene().isDirty)
+            throw new InvalidOperationException("Save or discard the current scene before validation.");
+        EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+        SessionState.SetBool(StatsOnly, statsOnly);
+        SessionState.SetBool(Pending, true);
+        EditorApplication.isPlaying = true;
+    }
+
+    static void Update()
+    {
+        if (!SessionState.GetBool(Pending, false) || !EditorApplication.isPlaying || Time.frameCount == lastFrame) return;
+        lastFrame = Time.frameCount;
+        try
+        {
+            if (deadline == 0) { deadline = EditorApplication.timeSinceStartup + 240; routines.Push(Suite()); }
+            if (EditorApplication.timeSinceStartup > deadline) throw new TimeoutException("Skin validation timed out.");
+            while (routines.Count > 0)
+            {
+                IEnumerator next = routines.Peek();
+                if (!next.MoveNext()) { routines.Pop(); continue; }
+                if (next.Current is IEnumerator nested) { routines.Push(nested); continue; }
+                return;
+            }
+            Finish(null);
+        }
+        catch (Exception error) { Finish(error.ToString()); }
+    }
+
+    static IEnumerator Suite()
+    {
+        Directory.CreateDirectory(Output);
+        for (int i = 0; i < 5; i++) yield return null;
+        while (!LocalizationSettings.InitializationOperation.IsDone) yield return null;
+        // The settings service loads the saved language asynchronously on startup.
+        // Let that finish before the fixture selects locales; never write PlayerPrefs.
+        while (GameSettingsService.Instance != null && typeof(GameSettingsService)
+            .GetField("localeInitialization", Fields).GetValue(GameSettingsService.Instance) != null) yield return null;
+        originalLocale = LocalizationSettings.SelectedLocale;
+        canvas = new GameObject("SkinValidationCanvas", typeof(RectTransform), typeof(Canvas)).GetComponent<Canvas>();
+        canvas.renderMode = RenderMode.WorldSpace;
+        ((RectTransform)canvas.transform).sizeDelta = new Vector2(1920, 1080);
+        canvas.transform.localScale = Vector3.one * .01f;
+        camera = new GameObject("SkinValidationCamera", typeof(Camera)).GetComponent<Camera>();
+        camera.orthographic = true; camera.clearFlags = CameraClearFlags.SolidColor;
+        camera.backgroundColor = new Color32(20, 25, 34, 255);
+        camera.nearClipPlane = .01f; camera.farClipPlane = 100;
+        canvas.worldCamera = camera;
+
+        if (SessionState.GetBool(StatsOnly, false))
+        {
+            yield return ValidateStatRevision();
+            yield break;
+        }
+
+        var health = LoadGuid<AttributeDefinition>("3ff045849daafe84d97370c69cd17747");
+        var maxHealth = LoadGuid<AttributeDefinition>("0e177e1d15e428745b5859fac08ce203");
+        var catalog = ScriptableObject.CreateInstance<AttributeCatalogSO>();
+        Set(catalog, "attributes", new[] { health, maxHealth });
+        var owner = new GameObject("TemporarySkinValidationOwner"); owner.SetActive(false);
+        var attributes = owner.AddComponent<AttributeSet>(); Set(attributes, "attributeCatalog", catalog);
+        var inventory = owner.AddComponent<PlayerConsumableInventory>(); owner.SetActive(true);
+        Check(attributes.TrySetBaseValue(maxHealth, 6, owner), "Fixture max health");
+        Check(attributes.TrySetBaseValue(health, 4, owner), "Fixture health");
+        var stats = Clone(AssetDatabase.LoadAssetAtPath<GameObject>(PlayerStatsAndRewardUiAuthoring.Stats + "PlayerStatUI.prefab"));
+        var statView = stats.GetComponent<PlayerStatPanelView>(); statView.Bind(owner.transform);
+        yield return null;
+        Check(stats.GetComponentsInChildren<PlayerStatRowView>().Length == 13, "Thirteen authored stat rows");
+        foreach (string code in new[] { "ko", "en", "ja", "zh-Hans", "zh-Hant" })
+        {
+            yield return Locale(code, stats); statView.Refresh(); yield return null;
+            Rebuild(stats); CheckText(stats, "stats-" + code);
+            Capture(stats.GetComponent<RectTransform>(), "stats-" + code);
+        }
+        attributes.TrySetBaseValue(health, 5, owner); yield return null; yield return null;
+        Check(stats.GetComponentsInChildren<TMP_Text>().Any(t => t.text.Replace(" ", "").Contains("5/6")), "Stats refresh after attribute event");
+        stats.SetActive(false);
+
+        GameObject global = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerStatsAndRewardUiAuthoring.Global);
+        var potion = Clone(global.transform.Find(PlayerStatsAndRewardUiAuthoring.PotionPath).gameObject);
+        yield return null; yield return null;
+        var hud = potion.GetComponent<PlayerConsumableHUD2D>(); Set(hud, "consumableInventory", inventory);
+        Invoke(hud, "BindInventoryEvents"); Invoke(hud, "RefreshAllSlots");
+        var definition = AssetDatabase.LoadAssetAtPath<ConsumableDefinition>("Assets/_Project/Data/Items/Consumables/CD_HealPotion.asset");
+        Check(inventory.TryAcquire(definition) && inventory.TryAcquire(definition), "Potion acquisition updates HUD");
+        yield return Locale("ko", potion); Rebuild(potion);
+        for (int i = 0; i < 4; i++)
+        {
+            RectTransform slot = hud.GetSlotRect(i);
+            var icon = (RectTransform)slot.Find("Icon");
+            Check(slot.gameObject.activeSelf && icon.sizeDelta == new Vector2(36, 36) && icon.anchoredPosition == Vector2.zero,
+                "Potion slot " + i + " centered 36px icon / visible frame");
+            Check(icon.gameObject.activeSelf == (i < 2), "Potion slot " + i + " inventory visibility");
+            Check(slot.Find("KeyGuideText").GetSiblingIndex() > icon.GetSiblingIndex(), "Potion key overlays icon " + i);
+        }
+        CaptureUnion(Enumerable.Range(0, 4).Select(hud.GetSlotRect).ToArray(), "potion-ko");
+        Check(inventory.TryUseAt(0), "Potion use succeeds"); yield return null;
+        Check(!hud.GetSlotRect(0).Find("Icon").gameObject.activeSelf && hud.GetSlotRect(0).gameObject.activeSelf,
+            "Consumed potion clears icon and preserves slot");
+        potion.SetActive(false);
+
+        var reward = Clone(global.transform.Find(PlayerStatsAndRewardUiAuthoring.RewardPath).gameObject);
+        var view = reward.GetComponent<RewardDisplayUI>();
+        var node = AssetDatabase.LoadAssetAtPath<UpgradeNodeSO>("Assets/_Project/Resources/Upgrades/Nodes/Node_639129975891255292.asset");
+        var affection = AssetDatabase.LoadAssetAtPath<AffectionEffect>("Assets/_Project/Data/Dialogue/Affection/SashaShopDiscount.asset");
+        var unlock = AssetDatabase.LoadAssetAtPath<AffectionEffect>("Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset");
+        foreach (string code in new[] { "ko", "en", "ja", "zh-Hans", "zh-Hant" })
+        {
+            yield return Locale(code, reward);
+            foreach (string variant in new[] { "upgrade", "affection", "multiple", "unlock" })
+            {
+                int closed = 0;
+                List<AffectionEffect> effects = variant == "upgrade" ? null :
+                    variant == "multiple" ? Enumerable.Repeat(affection, 4).ToList() : new List<AffectionEffect> { variant == "unlock" ? unlock : affection };
+                Check(view.ShowReward(variant == "upgrade" ? node.effects : null, effects, () => closed++, false,
+                    variant == "upgrade" ? node : null), "Open " + variant + " " + code);
+                yield return Settle(view);
+                yield return Locale(code, reward); Rebuild(reward);
+                var card = (RectTransform)reward.transform.Find("RewardUI");
+                CheckText(card.gameObject, variant + "-" + code);
+                var content = (RectTransform)card.Find("ContextText");
+                var button = card.Find("Button").GetComponent<Button>();
+                Check(Bounds(content).min.y > Bounds((RectTransform)button.transform).max.y, "Body and confirm do not overlap " + variant + " " + code);
+                foreach (Transform slot in card.Find("SlotParent"))
+                    Check(Bounds(card).Contains(Bounds((RectTransform)slot).min) && Bounds(card).Contains(Bounds((RectTransform)slot).max), "Reward slot contained " + variant + " " + code);
+                Capture(card, variant + "-" + code);
+                button.onClick.Invoke(); yield return Settle(view);
+                Check(!view.IsActive && closed == 1, "Close callback once " + variant + " " + code);
+            }
+        }
+        Object.Destroy(reward); Object.Destroy(potion); Object.Destroy(stats); Object.Destroy(owner); Object.Destroy(catalog);
+        yield return null;
+    }
+
+    static IEnumerator ValidateStatRevision()
+    {
+        var catalog = Object.Instantiate(AssetDatabase.LoadAssetAtPath<AttributeCatalogSO>("Assets/_Project/Data/Attributes/Definitions/AttributeCatalog.asset"));
+        var bindings = AssetDatabase.LoadAssetAtPath<StatTypeBindings>("Assets/_Project/Data/Attributes/Formulas/StatTypeBindings.asset");
+        var owner = new GameObject("TemporaryStatRevisionOwner"); owner.SetActive(false);
+        var attributes = owner.AddComponent<AttributeSet>(); Set(attributes, "attributeCatalog", catalog);
+        var statSource = owner.AddComponent<AttributeStatSource>(); Set(statSource, "statBindingsOverride", bindings);
+        var relics = owner.AddComponent<RelicInventory>(); owner.SetActive(true);
+        foreach (var binding in bindings.Bindings)
+            if (binding.isMultiplier) Check(attributes.TrySetBaseValue(binding.attribute, 1, owner), "Fixture multiplier " + binding.id);
+        AttributeDefinition Attribute(StatId id) => bindings.TryGetBinding(id, out var binding) ? binding.attribute : throw new InvalidOperationException("Missing " + id);
+        void Base(StatId id, float value) => Check(attributes.TrySetBaseValue(Attribute(id), value, owner), "Fixture base " + id);
+        Base(StatId.MaxHealth, 6); Base(StatId.Health, 6);
+        Base(StatId.AttackBase, 10); Base(StatId.AttackAdd, 0);
+        Base(StatId.MoveSpeedBase, 5); Base(StatId.MoveSpeedAdd, 0);
+        // Authored movement/normal multipliers have a minimum of 1. Start above
+        // that floor so negative preview checks exercise an actual permitted loss.
+        Base(StatId.MoveSpeedMul, 1.2f); Base(StatId.NormalMul, 1.2f);
+        Base(StatId.AttackSpeedBase, 1); Base(StatId.AttackSpeedAdd, 0);
+        Base(StatId.CritChanceBase, .1f); Base(StatId.CritChanceAdd, 0); Base(StatId.CritMultiplier, 1.5f);
+        Base(StatId.EvasionBase, .05f); Base(StatId.EvasionAdd, 0);
+        Base(StatId.FireBase, 0); Base(StatId.FireAdd, 0); Base(StatId.BleedBase, 0); Base(StatId.BleedAdd, 0);
+        Base(StatId.PoisonBase, 0); Base(StatId.PoisonAdd, 0); Base(StatId.ElectricBase, 5); Base(StatId.ElectricAdd, 0);
+
+        // Temporary data, real generic relic projection/equip and transfer owners.
+        // These illustrative combined effects are not saved as a game relic.
+        var logic = ScriptableObject.CreateInstance<RelicLogic_StatModifiers>();
+        foreach (var effect in new[] { (StatId.AttackAdd, 3f), (StatId.MoveSpeedMul, -.1f), (StatId.AttackSpeedAdd, .2f),
+                     (StatId.CritChanceAdd, .05f), (StatId.FireAdd, 5f), (StatId.SkillMul, .15f), (StatId.NormalMul, -.1f) })
+            logic.entries.Add(new RelicLogic_StatModifiers.Entry { attribute = Attribute(effect.Item1), type = ModifierType.Flat, value = effect.Item2 });
+        var relic = ScriptableObject.CreateInstance<RelicDefinition>();
+        relic.relicId = "Validation.StatRevision"; relic.logic = logic;
+        var chest = new ChestInventory(1); chest.Set(0, relic);
+        using var source = new ChestContainerAdapter(chest);
+        using var target = new PlayerRelicContainerAdapter(relics);
+        Check(ChestSelectionTransferService.TryCreatePlan(source, new List<int> { 0 }, null, null, target, out var plan, out _), "Valid relic transfer plan");
+        var stats = Clone(AssetDatabase.LoadAssetAtPath<GameObject>(PlayerStatsAndRewardUiAuthoring.Stats + "PlayerStatUI.prefab"));
+        var view = stats.GetComponent<PlayerStatPanelView>(); view.Bind(owner.transform); yield return null;
+        var sections = stats.GetComponentsInChildren<PlayerStatSectionView>();
+        var rows = stats.GetComponentsInChildren<PlayerStatRowView>();
+        string[] order = { "HP", "Attack", "MoveSpeed", "AttackSpeed", "CritChance", "CritDamage", "Evasion", "ElementDamage", "BleedDamage", "PoisonDamage", "ElectricDamage", "SkillDamage", "NormalDamage" };
+        var actual = sections.SelectMany(section => (List<StatInfoUIDefinition>)typeof(PlayerStatSectionView).GetField("boundEntries", Fields).GetValue(section)).ToArray();
+        Check(sections.Length == 2 && sections[0].GetComponentsInChildren<PlayerStatRowView>().Length == 7 && sections[1].GetComponentsInChildren<PlayerStatRowView>().Length == 6, "Basic7 / Other6");
+        Check(actual.Select(d => d.name).SequenceEqual(order.Select(name => "PS_StatInfo_" + name)), "Thirteen rows follow approved order, critical damage immediately after chance");
+        TMP_Text Value(int index) => rows[index].transform.Find("Text_Value").GetComponent<TMP_Text>();
+        foreach (var locale in new[] { ("ko", "기타 능력치"), ("en", "Other Stats"), ("ja", "その他の能力値"), ("zh-Hans", "其他属性"), ("zh-Hant", "其他屬性") })
+        {
+            yield return Locale(locale.Item1, stats); view.Refresh(); yield return null; Rebuild(stats);
+            Check(sections[1].transform.Find("Text_Title").GetComponent<TMP_Text>().text == locale.Item2, "Other title localized " + locale.Item1);
+            Check(Value(3).text == "100%", "Attack speed x1 shown as 100% " + locale.Item1);
+            Check(Mathf.Abs(((RectTransform)stats.transform).rect.width - 390) < .01f && Mathf.Abs(((RectTransform)stats.transform).rect.height - 742) < .01f, "Panel 390x742 " + locale.Item1);
+            foreach (var row in rows) Check(Mathf.Abs(((RectTransform)row.transform).rect.height - 38) < .01f, "Row height38 " + locale.Item1);
+            CheckText(stats, "stats-base-" + locale.Item1); Capture((RectTransform)stats.transform, "stats-base-" + locale.Item1);
+            view.SetSelectionPreview(plan); yield return null; Rebuild(stats);
+            Check(Value(1).text == "10 <color=#66DD88>(+3)</color>", "Positive relic delta " + locale.Item1);
+            Check(Value(2).text == "120.00% <color=#FF6666>(-10.00%)</color>", "Negative movement delta " + locale.Item1 + ": " + Value(2).text);
+            Check(Value(3).text == "100% <color=#66DD88>(+20%)</color>", "Attack speed percentage delta " + locale.Item1);
+            Check(Value(12).text == "120% <color=#FF6666>(-10%)</color>", "Negative damage delta " + locale.Item1 + ": " + Value(12).text);
+            Check(relics.Count == 0 && Mathf.Abs(statSource.Get(StatId.AttackFinal) - 10) < .001f, "Selection does not grant or mutate actual stats " + locale.Item1);
+            CheckText(stats, "stats-delta-" + locale.Item1);
+            foreach (var row in rows)
+            {
+                var label = row.transform.Find("Text_Label").GetComponent<TMP_Text>();
+                var value = row.transform.Find("Text_Value").GetComponent<TMP_Text>();
+                Check(Bounds(label.rectTransform).max.x <= Bounds(value.rectTransform).min.x + .0001f && value.fontSize >= 12 && value.fontSize <= 18,
+                    "Value column and font fit " + locale.Item1 + " / " + label.text);
+            }
+            Capture((RectTransform)stats.transform, "stats-delta-" + locale.Item1);
+            view.SetSelectionPreview(null); yield return null;
+            Check(!rows.Any(row => row.transform.Find("Text_Value").GetComponent<TMP_Text>().text.Contains("<color=")), "Cancel clears every delta " + locale.Item1);
+        }
+        Check(ChestSelectionTransferService.TryCommitPlanWithFailure(plan, out _).Succeeded, "Real transfer commits relic acquisition");
+        yield return null; yield return null;
+        yield return Locale("ko", stats); view.Refresh(); Rebuild(stats);
+        Check(relics.Count == 1 && chest.Get(0) == null, "Relic moved from chest to inventory");
+        Check(Value(1).text == "13" && Value(2).text == "110.00%" && Value(3).text == "120%" && Value(12).text == "110%", "Acquired values match positive/negative previews without suffixes");
+        CheckText(stats, "stats-acquired-ko"); Capture((RectTransform)stats.transform, "stats-acquired-ko");
+        Check(relics.RemoveAt(0), "Relic removal succeeds"); yield return null; yield return null;
+        Check(Value(1).text == "10" && Value(3).text == "100%", "Removing relic restores current stats through events");
+        Object.Destroy(stats); Object.Destroy(owner); Object.Destroy(relic); Object.Destroy(logic); Object.Destroy(catalog);
+        yield return null;
+    }
+
+    static IEnumerator Settle(RewardDisplayUI view)
+    {
+        double until = EditorApplication.timeSinceStartup + 8;
+        do { yield return null; if (EditorApplication.timeSinceStartup > until) throw new TimeoutException("Reward animation did not complete."); }
+        while (typeof(RewardDisplayUI).GetField("presentationRoutine", Fields).GetValue(view) != null);
+        yield return null;
+    }
+
+    static IEnumerator Locale(string code, GameObject root)
+    {
+        var locale = LocalizationSettings.AvailableLocales.GetLocale(code);
+        Check(locale != null, "Locale exists " + code);
+        LocalizationSettings.SelectedLocale = locale;
+        var strings = LocalizationSettings.StringDatabase.GetTableAsync(GameText.TableName, locale);
+        var fonts = LocalizationSettings.AssetDatabase.GetTableAsync("GameFonts", locale);
+        while (!strings.IsDone || !fonts.IsDone) yield return null;
+        foreach (LocalizeTmpFontEvent binding in root.GetComponentsInChildren<LocalizeTmpFontEvent>(true))
+        {
+            var op = binding.AssetReference.LoadAssetAsync(); while (!op.IsDone) yield return null;
+            binding.ApplyLocalizedFont(op.Result); binding.FlushPendingLayout();
+        }
+        yield return null; yield return null;
+        Check(LocalizationSettings.SelectedLocale == locale, "Selected locale stable " + code);
+    }
+
+    static GameObject Clone(GameObject source)
+    {
+        GameObject copy = Object.Instantiate(source, canvas.transform); copy.name = source.name;
+        copy.transform.localScale = Vector3.one; copy.SetActive(true); return copy;
+    }
+    static void Rebuild(GameObject root)
+    {
+        for (int pass = 0; pass < 4; pass++)
+        {
+            foreach (RectTransform rect in root.GetComponentsInChildren<RectTransform>(true).Reverse())
+                if (rect.gameObject.activeInHierarchy) LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
+            Canvas.ForceUpdateCanvases();
+        }
+    }
+    static void CheckText(GameObject root, string label)
+    {
+        foreach (TMP_Text text in root.GetComponentsInChildren<TMP_Text>())
+        {
+            text.ForceMeshUpdate();
+            Check(!text.isTextOverflowing && text.rectTransform.rect.width > 0 && text.rectTransform.rect.height > 0,
+                label + " text fits " + text.name + ": " + text.text);
+        }
+    }
+    static Bounds Bounds(RectTransform rect)
+    {
+        var corners = new Vector3[4]; rect.GetWorldCorners(corners);
+        var result = new Bounds(corners[0], Vector3.zero); foreach (Vector3 c in corners) result.Encapsulate(c); return result;
+    }
+    static void Capture(RectTransform rect, string name) => CaptureUnion(new[] { rect }, name);
+    static void CaptureUnion(RectTransform[] rects, string name)
+    {
+        Bounds bounds = Bounds(rects[0]); foreach (RectTransform rect in rects) bounds.Encapsulate(Bounds(rect));
+        int width = Mathf.CeilToInt(bounds.size.x * 100) + 40, height = Mathf.CeilToInt(bounds.size.y * 100) + 40;
+        Check(width > 40 && height > 40 && width < 1920 && height < 1080, name + " capture bounds " + width + "x" + height);
+        camera.transform.position = bounds.center + Vector3.back * 10;
+        camera.orthographicSize = height * .005f;
+        var target = new RenderTexture(width, height, 24); var previous = RenderTexture.active;
+        var texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        try
+        {
+            camera.targetTexture = target; camera.Render(); RenderTexture.active = target;
+            texture.ReadPixels(new Rect(0, 0, width, height), 0, 0); texture.Apply();
+            Check(texture.GetPixels32().Select(c => c.r + (c.g << 8) + (c.b << 16)).Distinct().Count() > 12, name + " nonblank render");
+            File.WriteAllBytes(Path.Combine(Output, name + ".png"), texture.EncodeToPNG());
+        }
+        finally { camera.targetTexture = null; RenderTexture.active = previous; Object.DestroyImmediate(texture); Object.DestroyImmediate(target); }
+    }
+    static void Check(bool result, string label) { if (!result) throw new InvalidOperationException(label); checks.Add("PASS " + label); }
+    static T LoadGuid<T>(string guid) where T : Object => AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guid));
+    static void Set(object target, string field, object value) => target.GetType().GetField(field, Fields).SetValue(target, value);
+    static void Invoke(object target, string method) => target.GetType().GetMethod(method, Fields).Invoke(target, null);
+    static void Finish(string error)
+    {
+        SessionState.SetBool(Pending, false);
+        if (originalLocale != null) LocalizationSettings.SelectedLocale = originalLocale;
+        Directory.CreateDirectory(Output);
+        File.WriteAllLines(Path.Combine(Output, "validation.txt"), checks.Concat(new[] { error ?? "APPROVED_UI_SKIN_VALIDATION_PASS" }));
+        SessionState.SetBool(StatsOnly, false);
+        if (error == null) Debug.Log("APPROVED_UI_SKIN_VALIDATION_PASS: " + checks.Count + " checks"); else Debug.LogError(error);
+        routines.Clear(); deadline = 0;
+        if (Application.isBatchMode) EditorApplication.Exit(error == null ? 0 : 1); else EditorApplication.isPlaying = false;
+    }
+}
+#endif

@@ -238,10 +238,10 @@ public readonly struct ChestLootRequest
     public IReadOnlyList<ScriptableObject> RetainedItems { get; }
     public bool HasOverrideProfile => OverrideProfile != null;
     public LootPoolContext WeaponExclusionContext =>
-        hasWeaponExclusionContext ? weaponExclusionContext : LootPoolContext.PlayerInventory;
+        hasWeaponExclusionContext ? weaponExclusionContext : LootPoolContext.ChestStock;
 
     public ChestLootRequest(ChestRunModifierDelta extraModifiers)
-        : this(extraModifiers, LootPoolContext.PlayerInventory)
+        : this(extraModifiers, LootPoolContext.ChestStock)
     {
     }
 

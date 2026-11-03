@@ -1,0 +1,4 @@
+PASS all 22 PNG sizes and existing slice names/rectangles/borders preserved.
+PASS four-arrow full-view icon byte-identical to revision2.
+PASS four protected project files and20 original sprite references unchanged.
+PASS both composites 1180x740.

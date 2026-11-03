@@ -22,15 +22,25 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs: []
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: edad41850b4fecc49ad6cff086ab1911, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats: []
     m_Colors:
     - _BorderColor: {r: 0, g: 0, b: 0, a: 1}
     - _FillColor: {r: 0.8, g: 0.023529412, b: 0.078431375, a: 1}
+    - _FillRect: {r: 0.03125, g: 0.3125, b: 0.5625, a: 0.125}
+    - _FrameBorder: {r: 2, g: 2, b: 2, a: 2}
     - _FrameColor: {r: 0.56078434, g: 0.54901963, b: 0.5686275, a: 1}
+    - _FrameRect: {r: 0.03125, g: 0.6875, b: 0.625, a: 0.25}
+    - _FrameSize: {r: 40, g: 8, b: 0, a: 0}
     - _ShineColor: {r: 1, g: 0.16862746, b: 0.23137255, a: 1}
     - _TrackColor: {r: 0.023529412, g: 0.019607844, b: 0.03137255, a: 1}
+    - _TrackRect: {r: 0.03125, g: 0.5, b: 0.5625, a: 0.125}
     - _TrailColor: {r: 1, g: 1, b: 1, a: 1}
+    - _TrailRect: {r: 0.03125, g: 0.125, b: 0.5625, a: 0.125}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

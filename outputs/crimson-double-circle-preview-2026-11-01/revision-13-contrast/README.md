@@ -1,0 +1,12 @@
+# Flat pixel clusters and stronger light–dark contrast
+
+- Mode/scope: preview Micro-fix. User rejected the gradient-like treatment on both borders and characters and requested distinct light/dark contrast. Geometry remains unchanged.
+- [Inner PNG](inner-preview.png) / [editable Aseprite](inner.aseprite), [outer PNG](outer-preview.png) / [editable Aseprite](outer.aseprite): original 80/120px silhouettes, border masks, rune shapes and 16 outer runes preserved exactly.
+- Palette remains three colors. Gold `FFC65A` is the main face; cream `FFF0BF` marks short glints; deep red-brown `B63D28` replaces the previous orange `F16B32` for clearer contrast. All three belong to the existing Crimson family palette.
+- Borders now separate the flat outer face from a dark inner edge around the whole circumference. Four compact cream clusters mark each ring. Removed the global upper-left/lower-right color progression.
+- Six regular rune patterns have individually painted color clusters following each stroke. Removed all height-based cap/foot coloring. Tiny medallion and center marks remain solid gold for readability. The octagram uses the same flat face/inset contrast and small vertex glints.
+- [Native Aseprite source script](author-native.lua) contains the editable rune color maps and preserves the original raster masks. Existing source alpha is binary; no blended colors, blur, extra shape or perspective tilt is added.
+- [Full 3× view](charge-100-3x.png), [rotated](charge-rotated.png), [lighter floor](charge-light.png) visually inspected. The preview keeps sequential scaling, opposite rotation, and full-charge paused initial state.
+- [Verification report](preview-check.json): exact original sprite/border alpha masks, exactly three colors, all three present on both borders, rune spacing, native pixel mapping, staged bounds, inner complete at 50%, layer separation, circumference and rotation/pause passed through [the offline preview harness](check-preview.cjs). The color-detection threshold was adjusted to include the new dark shade when comparing the entire visible mask.
+- No Unity files changed. Browser DOM/layout, Unity compilation/import and Play Mode were not run. Actual-camera readability remains for integration acceptance; proposed 20 PPU remains unapplied.
+- Doc Impact Check: SessionLog only. ErrorLog/DecisionLog/StructureMemory unchanged; no Presentation HTML stale candidate.

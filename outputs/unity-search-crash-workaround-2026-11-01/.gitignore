@@ -1,0 +1,5 @@
+backup/
+before.json
+editor-validation.log
+git-status-*.txt
+unexpected-prefab-diff-vs-navigation-before.txt

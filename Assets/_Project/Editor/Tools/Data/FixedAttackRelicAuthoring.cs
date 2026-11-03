@@ -62,7 +62,8 @@ public static class FixedAttackRelicAuthoring
             var report = new Report();
             for (int i = 0; i < Names.Length; i++)
             {
-                string definitionPath = Root + "Definitions/RD_" + Names[i] + ".asset";
+                string definitionPath = (Names[i] == "FeatherOrbit"
+                    ? "Assets/_Project/Unused/Items/Relics/" : Root + "Definitions/") + "RD_" + Names[i] + ".asset";
                 string strategyPath = Root + "Strategies/" + StrategyNames[i] + ".asset";
                 var definition = Load<RelicDefinition>(definitionPath);
                 var logic = definition.logic;

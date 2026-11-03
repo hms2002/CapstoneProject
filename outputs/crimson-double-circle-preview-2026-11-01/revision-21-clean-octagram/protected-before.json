@@ -1,0 +1,278 @@
+[
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\inner.aseprite",
+    "Hash": "1902B966C009078DB10D954AD1C545A10C832C3631F89EBD7C58A9BB6A825E21"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\inner.aseprite.meta",
+    "Hash": "315F0646CABDF571395CB6C0CD6547BC5B45680F4C4CEADB0A101077F991AEB3"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\inner.png",
+    "Hash": "7C61641A861D1F789342EBDC5125850A6CF112F4925BF3A436560DDE2DEA413E"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\inner.png.meta",
+    "Hash": "1F7B9743D84E3C579C9420BBAB131F86D26DEA30913500517D2A7A27EA3BA4DB"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\outer.aseprite",
+    "Hash": "A5AE677D1B23F8ED4FBDD677A41A794F53E407BA0D30D004DCCD5EE943956593"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\outer.aseprite.meta",
+    "Hash": "B02E9A43E95093754AF4D10475D444B87D3665D4C08A72BFEAD9BB2C78107113"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\outer.png",
+    "Hash": "887E1D2DE296F731D980F06C3848AE9DFB11B98928DAC3D2B1AF0D8AF871E55A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\outer.png.meta",
+    "Hash": "2241CA2CF3DF8FE09DF8B00EAC0075BD3C68F7890A86DE1FF534D09CB56BDCB7"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Presentation\\VFX\\Presentation\\CrimsonBoundaryChargePresentation.cs",
+    "Hash": "C8ADAC9800FD4B01DAB4DDAF45E4C7A2D1898A12440FA80C50C74E3F7C357948"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\author-native.lua",
+    "Hash": "E2DF9E58113FB628AA949AAB1B79E56AFE40B3F58A01FB59A64C452423DE23E8"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\check-pixels.cjs",
+    "Hash": "C91F6A06DA453F8D0D674791D13620A0656D1AE0B707F292124D605019CDA390"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\combined-192.png",
+    "Hash": "205966AFC7CD4347DEEFC86F1D3C57BCC676F4253DA7C60D8F0BAC601367A506"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\combined-192.rgba",
+    "Hash": "6A983C3C4106F3B1D3B69365D4784C52AC90096F7E519900438ACF82C200C0E8"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\combined-3x.png",
+    "Hash": "1CB01D05BB89AC685809C491D4156A408AD2A6D844AD28B0B27B720A53B180F3"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\combined-3x.rgba",
+    "Hash": "7E72A72E6108626E55A3291E416273E2C4E7B9A7906CC496DF9C5FBAE596CD00"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\comparison-128-left-192-right.png",
+    "Hash": "B17033F9308BF9A82441A8C5EBF70AE62B24CC80CBC4D543225558857F20B980"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\comparison-128-left-192-right.rgba",
+    "Hash": "2F74C8C16D2D71F9F4C1BAFA3649C2D304A17438910399E905BC987D379EE4F3"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\glyph-directions.png",
+    "Hash": "517828B500C801AAB8A8ABABEF71F5BD4B0A9EA7E3B046578D7CDCF012795388"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\glyph-directions.rgba",
+    "Hash": "53E9E14B59F3DE2B67AD0AE76DECE0D9FA849D2A249882172978BC9DA74BFE5F"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner-base.png",
+    "Hash": "781562DBA783D85A49319FFF332E0E754F1B7E6DA9691083E9BED00A3583F12A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner-base.rgba",
+    "Hash": "96FAD36A31AF023D66E8C712B434BD494691F623A69BC2E545B675EA46139DB7"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner-medallions.png",
+    "Hash": "F23872F89F1BC343DD35B85C4C366941AE5FA82196A900057EAD41D79B97B85F"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner-medallions.rgba",
+    "Hash": "30D9846814C77926F71A7ED7DBE65F0F241463A182CCC81EDA20535B368C3912"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner-rim.png",
+    "Hash": "9B08E5EC2D677A30151CA3B6163F6D5E524760F225B2318BC94E27C7690BD683"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner-rim.rgba",
+    "Hash": "A3B283861CD5754283E116BDD1FC4BB3DC7A3B27FF046B06A736F8F0C5791CD3"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner-runes.png",
+    "Hash": "D3FBC42B2BE8403A5D9A5415185337DFDAF3CF21A79951A8F7CE7944B02BA0FC"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner-runes.rgba",
+    "Hash": "6777A138789C5F306D1E1E0177ABB189093B8D7780A6AC93537AEFB40B889B5F"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner-star.png",
+    "Hash": "121D4AE12276718AD5DAE1036ED297F199BEBCEDFDB8C9317A6F6F9B849DC83D"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner-star.rgba",
+    "Hash": "1EE9A45C21545686EC4D4DAE459FE896FA6A9CD288754402BA61D4416C6805F4"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner.aseprite",
+    "Hash": "4B6CD48BE4C267CB530E4C3AF257C2ECB48A2C2B1AFF9CEBF92B3D24B04AC59F"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner.png",
+    "Hash": "0E160DB6CA16305CBA29B3D01AB1436E0CA3A451CCCEC0A70BA67840C61C5E7C"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\inner.rgba",
+    "Hash": "231D0F6857E64D0BE4D64408586D4C4AD5D06895107ACF1774037B29F6E341B9"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\medallion.png",
+    "Hash": "496E1C6EDD140EB7630BABBCFACBD9DC6B0DFEB821D356F2DBEC79C5AE388AB0"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\medallion.rgba",
+    "Hash": "924E5FD152A05527E5A446877987D11BFBE88175A0720D38F95FDF6B4F035FEC"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\media-verification.json",
+    "Hash": "F5F811A5BCF61DCB741E567E4E96CC8FCEF852B8714E3459D01F1B2BA3D30E71"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\opposing-rotation.gif",
+    "Hash": "66638AE75733D67F9352EE6EFDEE3E64DF0E8D1D28333494B82FC6294E16D788"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer-base.png",
+    "Hash": "BBCBF60575E38A30697542A2682CD3BDEFF13F47E2FBA1289A2B5FD7D19B000C"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer-base.rgba",
+    "Hash": "4E7371FF86F18F32EE043B3B3166DA6C73A00F0392860A97BABB27858FE991B6"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer-medallions.png",
+    "Hash": "943211FB969179A1ADA9792D98AA6EA5C3D9E8C72E35FE202B24641D774836DF"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer-medallions.rgba",
+    "Hash": "8123C216413F82BBAA0339C27A43D9822C2A043E20662B27C97874429B996E9A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer-rim.png",
+    "Hash": "BADDE137FD6D41B53F0C478A058574C962BBB543767ABB27EB46C7ED1C04FBE0"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer-rim.rgba",
+    "Hash": "38DA8B12DB48648D6BE190FFDECEFF71F28DA34D30287A2DEB387968E457D9CB"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer-runes.png",
+    "Hash": "AF1C3E42AC091625B704463A280776E5D5AE9E9A5D502DDB4BA0A59CA44AF117"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer-runes.rgba",
+    "Hash": "8A68750A5DC5AA8684BDC0452F23640ADB54ED56D0E7D15A493D30D74BB7954C"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer-star.png",
+    "Hash": "943211FB969179A1ADA9792D98AA6EA5C3D9E8C72E35FE202B24641D774836DF"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer-star.rgba",
+    "Hash": "8123C216413F82BBAA0339C27A43D9822C2A043E20662B27C97874429B996E9A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer.aseprite",
+    "Hash": "6A02CE2F69F23692E3B8B9722B905679DD2818105A60DEB1611245697FB3A544"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer.png",
+    "Hash": "F63F8EF114AED436DD6DDE19B3E9FE5BD9FAD7A5FD78DF848ABD266AB1A77DA7"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\outer.rgba",
+    "Hash": "25AAFB2B44D78CBD9A6E119EAEDFDDB0D1AEF0EA878F79484C3005BB1B37B78E"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\pixel-verification.json",
+    "Hash": "01C6A0572CD3452ED5BA31A42988BCB40D13514E756AF2E97F1068E078034FB1"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\README.md",
+    "Hash": "3C4DE6AEACD115A16063DE67BA569CF2BCB80F19EFC25DF579D4FFB16456DEBF"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-0.png",
+    "Hash": "CDF1894F4F73E54DC618563279C7CB53C496FFE7195C3F31AAE006701AE9154A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-0.rgba",
+    "Hash": "FA6185A315E989B3ABCCDCB82C1813E4D63BA52CC38ACC947B77FAC7EEBBBDCA"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-105.png",
+    "Hash": "22840935F87F77049B6ADE8290D069A3E0D21F802292B61B8C7F3D950635E7A9"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-105.rgba",
+    "Hash": "3CC5C404B4E0F5B4C3A24EC8E20FB88BAECFE54A120D0B36406FEA8E696743A4"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-15.png",
+    "Hash": "0A24A989DB1160876CF092FB140C2F9C063C1D026D7ED7622115303B8B0F9ABF"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-15.rgba",
+    "Hash": "2C5CBAC08CE2F52FA34B5E879238A6FF910A795C9EF5FD769911AF85D8344AF2"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-30.png",
+    "Hash": "DC84BF6960E5A1A7636FB206F475D3709DD1F7761629C5088CA77F03E1500B74"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-30.rgba",
+    "Hash": "97A33487ACAF853C35B64BFD5DA9B1AA7E8EB2AF14AA98ECC11F6C7AACF19DCC"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-45.png",
+    "Hash": "798815153A487F7C8698E5A713851278272201E559041809915DFC54095EF733"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-45.rgba",
+    "Hash": "E2A60155C28836FD9969428C6F58F21336901657E14FB3F74B2AA1E819EF42E5"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-60.png",
+    "Hash": "98D017531D6DE4471D7EAD4C84F17F07D804057B89FC4A5B7B42750EE724E403"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-60.rgba",
+    "Hash": "02D92AAC170DC862B1F77E04A69FC05D448478F4A0CCE83799F8FE6E24ECCF40"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-75.png",
+    "Hash": "385932A33A571D1E396A826ED45312856D464BC99F9136327C27071D0645A84C"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-75.rgba",
+    "Hash": "D16C0C05F45C513E195D72412BCC1DA3FC54CD15EB88555D136348E59FF0D453"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-90.png",
+    "Hash": "0AE5E7954F4D7F8D0C45F3FFAE2F95E7EE05339BE29BC2095E0EEBDF4DDF7D1D"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-90.rgba",
+    "Hash": "905BB18B117D4F1831A27DE9A461435A2EA7CCD87BC92150315F6FC3AE10B787"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\rotation-native.aseprite",
+    "Hash": "E43CEECE9CB81A31AA84059EE5ACE8C5D581FDEA1A331FE59B4C3F0AFCE089EE"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-20-192-preview\\verify-native.lua",
+    "Hash": "1CBCEF607E150FFFBFB4B49550A31EBF28EBF8283AA97557DBCEED2B7DCD6F23"
+  }
+]

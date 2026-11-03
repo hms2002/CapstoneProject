@@ -1102,7 +1102,7 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(bandage.maxLevel, Is.EqualTo(2));
 
         RelicDefinition strengthCharm = Load<RelicDefinition>(
-            "Assets/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset");
+            "Assets/_Project/Unused/Items/Relics/RD_AttackBonusRelic.asset");
         Assert.That(strengthCharm.maxLevel, Is.EqualTo(3));
         using (var serialized = new SerializedObject(strengthCharm.logic))
         {
@@ -1147,7 +1147,7 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(ironBallTooltip, Does.Contain("[+2]"));
 
         RelicDefinition feather = Load<RelicDefinition>(
-            "Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset");
+            "Assets/_Project/Unused/Items/Relics/RD_FeatherOrbit.asset");
         string featherTooltip = feather.logic.BuildTooltip(
             feather,
             1,

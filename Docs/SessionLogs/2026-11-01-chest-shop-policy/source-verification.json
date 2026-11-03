@@ -1,0 +1,26 @@
+{
+  "protectedFilesChecked": 48,
+  "protectedFilesChanged": [],
+  "changedSourceFiles": [
+    "Assets/_Project/Runtime/Features/Loot/LootPoolContext.cs",
+    "Assets/_Project/Runtime/Features/Loot/LootPoolWeaponExclusionProvider.cs",
+    "Assets/_Project/Runtime/Features/Loot/ChestLootGenerationService.cs",
+    "Assets/_Project/Runtime/Features/Loot/Chests/TreasureChest.cs",
+    "Assets/_Project/Runtime/Features/Loot/LootPoolItemSelectionService.cs",
+    "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopInventoryRoll.cs",
+    "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRunStateService.cs",
+    "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs"
+  ],
+  "missingFromGameplayProject": [],
+  "originalExclusionEnumValuesPreserved": {
+    "None": true,
+    "PlayerInventory": true,
+    "WorldPickups": true,
+    "SceneWeaponDrops": true,
+    "MerchantStock": true
+  },
+  "automatedTests": "not executed",
+  "unityEditorImportAndPlayMode": "not executed",
+  "finalCompile": "Gameplay.csproj MSBuild /t:Build /p:Configuration=Debug exit 0",
+  "brokenDocumentationLinks": []
+}

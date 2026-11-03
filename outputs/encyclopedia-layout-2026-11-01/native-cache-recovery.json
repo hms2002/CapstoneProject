@@ -1,0 +1,6 @@
+{
+  "record": "977894383399244358",
+  "reason": "Native SaveAsPrefabAsset normalized three pre-existing unresolved nested authoredMaterial references to null, even with nested binding restoration excluded. Reverted only this verified side effect using the exact original instance record.",
+  "other_record_bytes_preserved": true,
+  "recovered_after_final_authoring": true
+}

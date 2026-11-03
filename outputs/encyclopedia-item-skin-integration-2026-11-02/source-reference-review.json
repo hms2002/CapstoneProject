@@ -1,0 +1,19 @@
+{
+  "EncyclopediaUI": {
+    "records": 2906,
+    "existingObjectIdsRemoved": [],
+    "unresolvedLocalReferences": [],
+    "changedOutsideItemRecords": []
+  },
+  "EncyclopediaEntrySlot": {
+    "records": 30,
+    "existingObjectIdsRemoved": [],
+    "unresolvedLocalReferences": []
+  },
+  "Panel_AbilityBlock_Encyclopedia": {
+    "records": 67,
+    "existingObjectIdsRemoved": [],
+    "unresolvedLocalReferences": []
+  },
+  "runtimeSourceIncludedInUIProject": true
+}

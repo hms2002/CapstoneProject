@@ -1,5 +1,25 @@
 # Localization Flow
 
+## Title language dropdown (2026-11-01)
+
+- `TitleScene/Canvas/TitleLanguageMenu` is scene-authored: a 48px sprite button
+  displayed at 96 reference units, full-canvas dismiss surface and five fixed rows.
+  `TitleLanguageMenuUI` owns only transient open/focus state. Selection calls the
+  existing `GameSettingsService.SetLanguage`; no separate language owner is added.
+- `TitleMenuController.languageMenu` coordinates keyboard navigation, Escape and
+  visibility during settings/profile/intro/loading locks. Closing the list restores
+  focus to the button; main-menu navigation is suspended while the list is open.
+- Native names deliberately retain the matching locale's pixel font rather than
+  following the selected locale, so all five scripts remain readable together.
+  The selected marker reads `CurrentLanguage` when the list opens.
+- Extend layout in the saved scene; production sprites and Aseprite source live in
+  `Assets/_Project/Art/Sprites/UI/Title/Language/`. The one-time Editor authoring tool
+  refuses duplicate menus and preserves unrelated scene blocks. Reproduction and
+  validation: [integration evidence](../SessionLogs/2026-11-01-title-language/README.md).
+- No Architecture/Contracts promotion needed for this local UI projection.
+
+## Existing settings and localization flow
+
 Settings follow-up (2026-10-08): KeyMapRow action captions have a single dynamic writer; the copied Screen Mode static event was removed. Reset/listening now have explicit five-language keys. SettingsPanelUI's existing TitleTextPanel uses horizontal preferred-size ContentSizeFitter plus HorizontalLayoutGroup (100 left/right padding, original 400 minimum width, fixed height). OptionTitle is NoWrap. ApplySettingsFixBatch authors this in GlobalUIRoot and TitleScene through Unity APIs; ReviewSettingsScreensBatch captures the two actual screens per language.
 
 2026-10-03. 공식 계약이 아닌 현재 구현 지도.

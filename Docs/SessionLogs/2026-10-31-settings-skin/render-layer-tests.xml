@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Passed" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-31 09:19:38Z" end-time="2026-10-31 09:19:38Z" duration="0.5709805">
+  <test-suite type="TestSuite" id="2428" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="1194" result="Passed" start-time="2026-10-31 09:19:38Z" end-time="2026-10-31 09:19:38Z" duration="0.570981" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2424" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="1187" result="Passed" start-time="2026-10-31 09:19:38Z" end-time="2026-10-31 09:19:38Z" duration="0.531054" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="34892" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2341" name="UiRenderLayerLayoutPlayModeTests" fullname="UiRenderLayerLayoutPlayModeTests" classname="UiRenderLayerLayoutPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-31 09:19:38Z" end-time="2026-10-31 09:19:38Z" duration="0.506261" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="2344" name="ExistingButtonTargetGraphicClickAndNavigationReferences_SurviveProjection" fullname="UiRenderLayerLayoutPlayModeTests.ExistingButtonTargetGraphicClickAndNavigationReferences_SurviveProjection" methodname="ExistingButtonTargetGraphicClickAndNavigationReferences_SurviveProjection" classname="UiRenderLayerLayoutPlayModeTests" runstate="Runnable" seed="551934316" result="Passed" start-time="2026-10-31 09:19:38Z" end-time="2026-10-31 09:19:38Z" duration="0.087965" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2342" name="Projection_PreservesCornersThroughScrollScaleAndRotation_AndStableFramesDoNotWrite" fullname="UiRenderLayerLayoutPlayModeTests.Projection_PreservesCornersThroughScrollScaleAndRotation_AndStableFramesDoNotWrite" methodname="Projection_PreservesCornersThroughScrollScaleAndRotation_AndStableFramesDoNotWrite" classname="UiRenderLayerLayoutPlayModeTests" runstate="Runnable" seed="1180571643" result="Passed" start-time="2026-10-31 09:19:38Z" end-time="2026-10-31 09:19:38Z" duration="0.060923" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2343" name="TargetVisibility_RowDisableReenableAndDestroy_KeepExplicitAnchorOwnership" fullname="UiRenderLayerLayoutPlayModeTests.TargetVisibility_RowDisableReenableAndDestroy_KeepExplicitAnchorOwnership" methodname="TargetVisibility_RowDisableReenableAndDestroy_KeepExplicitAnchorOwnership" classname="UiRenderLayerLayoutPlayModeTests" runstate="Runnable" seed="2032379677" result="Passed" start-time="2026-10-31 09:19:38Z" end-time="2026-10-31 09:19:38Z" duration="0.026113" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

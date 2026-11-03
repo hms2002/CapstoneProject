@@ -1,0 +1,37 @@
+PASS text width 81/450 : 몬스터
+PASS text width 179/450 : Beer Monster
+PASS text width 28/90 : Beer
+PASS text width 47/90 : Monster
+PASS text width 54/90 : Treasure
+PASS text width 47/90 : Monster
+PASS text width 27/90 : Frog
+PASS text width 27/90 : Frog
+PASS text width 29/90 : Pawn
+PASS text width 28/90 : Rook
+PASS text width 38/90 : Knight
+PASS text width 38/90 : Bishop
+PASS text width 18/90 : ???
+PASS text width 18/90 : ???
+PASS text width 18/90 : ???
+PASS text width 18/90 : ???
+PASS text width 141/222 : 누적 처치 수 0회
+PASS text width 36/450 : 설명
+PASS text width 134/450 : 술기운에 잠식된
+PASS text width 159/450 : 하급 몬스터입니다.
+PASS text width 40/100 : 1 / 2
+PASS text width 360/1000 : 평면 픽셀 UI + 검은 그라데이션 · 이름 패널 제거 / 미조우 실루엣
+PASS text width 55/450 : 보스
+PASS text width 36/180 : 멜타
+PASS text width 54/180 : 클로에
+PASS text width 27/180 : ???
+PASS text width 27/180 : ???
+PASS text width 36/164 : 멜타
+PASS text width 98/200 : 현재 호감도
+PASS text width 98/450 : 호감도 보상
+PASS text width 72/168 : 호감도 5
+PASS text width 36/80 : 미해금
+PASS text width 162/326 : 특별 NPC 이용 가능
+PASS text width 112/450 : 설명 · 스토리
+PASS text width 209/420 : 슬라임 루트의 여왕 보스.
+PASS text width 36/100 : 1 / 1
+PASS text width 413/1000 : 평면 픽셀 UI + 검은 그라데이션 · 이름 패널 제거 / 일러스트 표시 최대 5개

@@ -1,0 +1,640 @@
+{
+  "weapon": [
+    {
+      "text": "몬스터",
+      "x": 1524,
+      "y": 395,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 84
+    },
+    {
+      "text": "보스",
+      "x": 1524,
+      "y": 460,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 84
+    },
+    {
+      "text": "NPC",
+      "x": 1524,
+      "y": 523,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 84
+    },
+    {
+      "text": "무기",
+      "x": 480,
+      "y": 292,
+      "size": 36,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "수집한 무기를 살펴보세요",
+      "x": 482,
+      "y": 340,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "5 / 6 획득",
+      "x": 482,
+      "y": 823,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "1 / 1",
+      "x": 850,
+      "y": 822,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 430
+    },
+    {
+      "text": "뇌창 갈라론",
+      "x": 1024,
+      "y": 292,
+      "size": 36,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "전기",
+      "x": 1048,
+      "y": 347,
+      "size": 18,
+      "color": "285867",
+      "align": "Center",
+      "maxWidth": 430
+    },
+    {
+      "text": "장창",
+      "x": 1120,
+      "y": 347,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Center",
+      "maxWidth": 430
+    },
+    {
+      "text": "번뜩이는 섬광이 시야를 스치기 전,",
+      "x": 1024,
+      "y": 386,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "적의 전열은 이미 꿰뚫려 있다.",
+      "x": 1024,
+      "y": 413,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "뇌창 휩쓸기",
+      "x": 1086,
+      "y": 467,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 270
+    },
+    {
+      "text": "우클릭",
+      "x": 1400,
+      "y": 477,
+      "size": 18,
+      "color": "FFF0D4",
+      "align": "Center",
+      "maxWidth": 80
+    },
+    {
+      "text": "표식 없음",
+      "x": 1034,
+      "y": 514,
+      "size": 18,
+      "color": "285867",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "전방을 베어 공격합니다.",
+      "x": 1034,
+      "y": 539,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "표식 있음",
+      "x": 1034,
+      "y": 584,
+      "size": 18,
+      "color": "285867",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "표식을 향해 돌진합니다.",
+      "x": 1034,
+      "y": 609,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "낙뢰 표식",
+      "x": 1086,
+      "y": 677,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "Q",
+      "x": 1400,
+      "y": 687,
+      "size": 18,
+      "color": "FFF0D4",
+      "align": "Center",
+      "maxWidth": 80
+    },
+    {
+      "text": "낙뢰 표식을 떨어뜨려",
+      "x": 1034,
+      "y": 731,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "주변 적을 공격합니다.",
+      "x": 1034,
+      "y": 766,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "~",
+      "x": 1040,
+      "y": 835,
+      "size": 18,
+      "color": "FFF0D4",
+      "align": "Center",
+      "maxWidth": 430
+    },
+    {
+      "text": "상세 설명 보기",
+      "x": 1074,
+      "y": 835,
+      "size": 18,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "요약",
+      "x": 1448,
+      "y": 835,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Right",
+      "maxWidth": 430
+    },
+    {
+      "text": "용사의 검",
+      "x": 582,
+      "y": 480,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 196
+    },
+    {
+      "text": "뇌창 갈라론",
+      "x": 802,
+      "y": 480,
+      "size": 18,
+      "color": "FFF0D4",
+      "align": "Center",
+      "maxWidth": 196
+    },
+    {
+      "text": "개화",
+      "x": 582,
+      "y": 618,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 196
+    },
+    {
+      "text": "기묘한 쇠덩이",
+      "x": 802,
+      "y": 618,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 196
+    },
+    {
+      "text": "홍련의 한계선",
+      "x": 582,
+      "y": 756,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 196
+    },
+    {
+      "text": "???",
+      "x": 802,
+      "y": 756,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 196
+    }
+  ],
+  "relic": [
+    {
+      "text": "몬스터",
+      "x": 1524,
+      "y": 395,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 84
+    },
+    {
+      "text": "보스",
+      "x": 1524,
+      "y": 460,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 84
+    },
+    {
+      "text": "NPC",
+      "x": 1524,
+      "y": 523,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 84
+    },
+    {
+      "text": "유물",
+      "x": 480,
+      "y": 292,
+      "size": 36,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "효과와 레벨을 확인하세요",
+      "x": 482,
+      "y": 340,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "7 / 9 획득",
+      "x": 482,
+      "y": 823,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "1 / 5",
+      "x": 850,
+      "y": 822,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 430
+    },
+    {
+      "text": "회복의 팬턴트",
+      "x": 1024,
+      "y": 292,
+      "size": 36,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "포션 강화",
+      "x": 1026,
+      "y": 348,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "포션 회복량",
+      "x": 1190,
+      "y": 454,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 240
+    },
+    {
+      "text": "1 → 2",
+      "x": 1184,
+      "y": 493,
+      "size": 54,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 250
+    },
+    {
+      "text": "포션의 회복량이",
+      "x": 1040,
+      "y": 599,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "1에서 2로 증가합니다.",
+      "x": 1040,
+      "y": 635,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "레벨 미리보기",
+      "x": 1024,
+      "y": 704,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "Q",
+      "x": 1050,
+      "y": 756,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Center",
+      "maxWidth": 430
+    },
+    {
+      "text": "1 / 1",
+      "x": 1232,
+      "y": 748,
+      "size": 27,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 430
+    },
+    {
+      "text": "E",
+      "x": 1414,
+      "y": 756,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Center",
+      "maxWidth": 430
+    },
+    {
+      "text": "단일 레벨 유물",
+      "x": 1232,
+      "y": 823,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Center",
+      "maxWidth": 430
+    },
+    {
+      "text": "회복의 팬턴트",
+      "x": 546,
+      "y": 480,
+      "size": 18,
+      "color": "FFF0D4",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "신속의 부츠",
+      "x": 692,
+      "y": 480,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "질풍의 석판",
+      "x": 838,
+      "y": 480,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "송골매의 증표",
+      "x": 546,
+      "y": 618,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "스피드 메달",
+      "x": 692,
+      "y": 618,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "보약 곰방대",
+      "x": 838,
+      "y": 618,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "회전하는 철구",
+      "x": 546,
+      "y": 756,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "???",
+      "x": 692,
+      "y": 756,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "???",
+      "x": 838,
+      "y": 756,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    }
+  ],
+  "typography": [
+    {
+      "text": "도감 전체 · 글자 가독성 기준",
+      "x": 46,
+      "y": 28,
+      "size": 36,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 1180
+    },
+    {
+      "text": "현재 방식 참고",
+      "x": 64,
+      "y": 106,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "제안",
+      "x": 676,
+      "y": 106,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "반투명 외곽선 + 밝은 본문",
+      "x": 64,
+      "y": 151,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 520
+    },
+    {
+      "text": "외곽선 없음 + 불투명한 진한 본문",
+      "x": 676,
+      "y": 151,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 540
+    },
+    {
+      "text": "포션의 회복량이",
+      "x": 64,
+      "y": 210,
+      "size": 27,
+      "color": "FFFFFF",
+      "align": "Left",
+      "maxWidth": 430,
+      "outline": true
+    },
+    {
+      "text": "1에서 2로 증가합니다.",
+      "x": 64,
+      "y": 252,
+      "size": 27,
+      "color": "FFFFFF",
+      "align": "Left",
+      "maxWidth": 430,
+      "outline": true
+    },
+    {
+      "text": "포션의 회복량이",
+      "x": 676,
+      "y": 210,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "1에서 2로 증가합니다.",
+      "x": 676,
+      "y": 252,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "종이 위: 진한 갈색 100%",
+      "x": 64,
+      "y": 360,
+      "size": 27,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "어두운 보스 패널: 밝은 아이보리 100%",
+      "x": 64,
+      "y": 412,
+      "size": 27,
+      "color": "FFF0D4",
+      "align": "Left",
+      "maxWidth": 1150
+    },
+    {
+      "text": "본문 27px · 행간 35–38px · 강조는 핵심 단어에만",
+      "x": 64,
+      "y": 486,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 1140
+    }
+  ]
+}

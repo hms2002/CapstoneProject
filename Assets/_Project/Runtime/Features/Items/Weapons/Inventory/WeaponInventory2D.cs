@@ -1079,6 +1079,9 @@ public class WeaponInventory2D : MonoBehaviour
 
     private void NotifyInventoryChanged()
     {
+        foreach (WeaponDefinition weapon in slots)
+            if (weapon != null)
+                EncyclopediaDiscoveryProgress.Record(EncyclopediaDiscoveryKind.Weapon, weapon.weaponId, gameObject.scene.name);
         RecordWeaponSwapHintAvailability();
         OnInventoryChanged?.Invoke();
     }

@@ -1,0 +1,53 @@
+"""Compare native UI saves against the task's before snapshots, not Git HEAD."""
+from pathlib import Path
+import re
+
+ROOT = Path(__file__).resolve().parents[2]
+BASE = ROOT / 'Library/CodexSettingsSkin/Before'
+
+def blocks(text):
+    return {int(m.group(2)): m.group(0) for m in re.finditer(
+        r'^--- !u!(\d+) &(\d+).*?(?=^--- !u!|\Z)', text, re.M | re.S)}
+
+def field(block, name):
+    match = re.search(r'^  '+re.escape(name)+r': \{fileID: (-?\d+)', block, re.M)
+    return int(match.group(1)) if match else 0
+
+results = []
+for relative in ('Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab',
+                 'Assets/_Project/Scenes/TitleScene.unity',
+                 'Assets/_Project/Prefabs/UI/KeyMapRow.prefab'):
+    old = blocks((BASE / relative).read_text(encoding='utf-8-sig'))
+    new = blocks((ROOT / relative).read_text(encoding='utf-8-sig'))
+    assert old.keys() <= new.keys(), f'Existing object removed: {relative}'
+    names = {key: re.search(r'^  m_Name: (.*)', value, re.M).group(1)
+             for key, value in old.items() if value.startswith('--- !u!1 ') and '\n  m_Name:' in value}
+    transforms = {field(value, 'm_GameObject'): key for key, value in old.items()
+                  if value.startswith(('--- !u!224 ', '--- !u!4 '))}
+    def path(key):
+        go = key if key in names else field(old[key], 'm_GameObject')
+        route = []
+        while go:
+            route.append(names.get(go, '?'))
+            t = transforms.get(go, 0)
+            parent = field(old.get(t, ''), 'm_Father')
+            go = field(old.get(parent, ''), 'm_GameObject')
+        return '/'.join(reversed(route))
+    changed = [key for key in old if old[key] != new[key]]
+    for key in changed:
+        p = path(key)
+        assert relative.endswith('KeyMapRow.prefab') or any(
+            '/'+name+'/' in '/'+p+'/' for name in ('SettingUI', 'KeyMappingUI')), f'Out of scope {relative}: {key} {p}'
+        for name in ('m_fontAsset', 'm_sharedMaterial', 'm_fontSharedMaterials'):
+            pattern = r'^  '+name+r':.*(?:\n  -.*)*'
+            before = re.search(pattern, old[key], re.M)
+            after = re.search(pattern, new[key], re.M)
+            assert not before or (after and before.group() == after.group()), f'Font/material drift {p} {name}'
+    results.append(f'PASS {relative}: {len(changed)} scoped existing objects changed; '
+                   f'{len(new.keys()-old.keys())} new objects; all existing IDs and font/material references retained')
+for meta in BASE.rglob('*.meta'):
+    assert meta.read_bytes() == (ROOT / meta.relative_to(BASE)).read_bytes(), f'Existing meta changed: {meta}'
+results.append('PASS all snapshotted existing .meta files are byte-identical')
+report = '\n'.join(results)
+(ROOT / 'Library/CodexSettingsSkin/scope-validation.txt').write_text(report, encoding='utf-8')
+print(report)

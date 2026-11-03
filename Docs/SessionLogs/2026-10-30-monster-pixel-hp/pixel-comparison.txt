@@ -1,0 +1,8 @@
+mesh state1: 320 pixels, mismatches=0, max RGB delta=0
+mesh state2: 320 pixels, mismatches=0, max RGB delta=0
+mesh state3: 320 pixels, mismatches=0, max RGB delta=0
+mesh state4: 320 pixels, mismatches=0, max RGB delta=0
+images state1: 320 pixels, mismatches=0, max RGB delta=0
+images state2: 320 pixels, mismatches=0, max RGB delta=0
+images state3: 320 pixels, mismatches=0, max RGB delta=0
+images state4: 320 pixels, mismatches=0, max RGB delta=0

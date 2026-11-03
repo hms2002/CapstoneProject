@@ -1,0 +1,48 @@
+{
+  "radii": [
+    {
+      "charge": 0,
+      "inner": 0,
+      "outer": 0
+    },
+    {
+      "charge": 25,
+      "inner": 16,
+      "outer": 0
+    },
+    {
+      "charge": 50,
+      "inner": 32,
+      "outer": 0
+    },
+    {
+      "charge": 75,
+      "inner": 32,
+      "outer": 40
+    },
+    {
+      "charge": 100,
+      "inner": 32,
+      "outer": 48
+    }
+  ],
+  "nativePixelSizes": {
+    "inner": 64,
+    "outer": 96,
+    "ppu": 16,
+    "maximumDiameter": 6
+  },
+  "nativeSourcePixelMapping": "pass",
+  "palette": "FFC65A F16B32 FFF0BF from existing six-color palette; binary alpha",
+  "wholeInnerCompletedAt50": "pass",
+  "separateLayers": "pass",
+  "innerOpaquePixels": 809,
+  "outerOpaquePixels": 580,
+  "fullCircumferenceAtPartialCharge": "pass",
+  "scaledBoundary": "pass",
+  "oppositePlanarRotation": "pass",
+  "pauseResume": "pass",
+  "artwork": "Native Aseprite pixel geometry; complete inner sigil and independent outer ring",
+  "rendering": "offline same-JavaScript Canvas pixel adapter",
+  "limitations": "Browser DOM/layout and Unity Play Mode not run. Pixel density matches the 16 PPU Crimson family at nominal full size; scaled particles and rotation can vary on screen."
+}

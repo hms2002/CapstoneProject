@@ -1,0 +1,3 @@
+alcohol: ground opacity166/255; all12 cel pixel images/positions/opacities unchanged; upper layer opacity, timings, tag and pivot retained.
+fire: ground opacity166/255; all12 cel pixel images/positions/opacities unchanged; upper layer opacity, timings, tag and pivot retained.
+Aseprite 1.3.18.6

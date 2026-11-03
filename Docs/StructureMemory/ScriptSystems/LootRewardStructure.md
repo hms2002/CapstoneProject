@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-17
+last_reviewed: 2026-11-03
 ---
 
 # Loot Reward Structure
@@ -34,8 +34,9 @@ Map loot, boss rewards, drops, pickups, currency, and reward presentation bounda
 
 - `Assets/LeeJunMo/Script/Looting/LootManager.cs`
 - `Assets/LeeJunMo/Script/Looting/LootPoolService.cs`
-- `Assets/LeeJunMo/Script/SceneManagement/BossBattleEndHandler.cs`
-- `Assets/LeeJunMo/Script/Looting/BossRewardSpawnService.cs`
+- `Assets/_Project/Runtime/Features/Bosses/Common/FSM/Core/BossEncounterEndDirector.cs`
+- `Assets/_Project/Runtime/Features/Bosses/Common/Rewards/BossBattleEndHandler.cs`
+- `Assets/_Project/Runtime/Features/Loot/BossRewardSpawnService.cs`
 - `Assets/LeeJunMo/Script/Looting/BossSpecialRewardPresetSO.cs`
 - `Assets/LeeJunMo/Script/Looting/BossRewardModifierAggregate.cs`
 - `Assets/LeeJunMo/Script/Looting/StageLootTable.cs`
@@ -46,14 +47,14 @@ Map loot, boss rewards, drops, pickups, currency, and reward presentation bounda
 
 - Base boss chest rewards should come from the Boss Reward section of `StageLootTable` through `LootManager.GenerateBossChestLoot(...)`.
 - Route sets may reference an optional boss special reward preset, but must not own common prefabs, portal objects, spawn positions, offsets, magic stone bonuses, field-heal bonuses, or chest-count deltas.
-- A scene-authored `BossBattleEndHandler` references the boss plus authored inactive `TreasureChest` and `ScenePortal` objects; those objects own chest and portal positions through their transforms.
+- Current boss scenes use `BossEncounterEndDirector` with a clear condition and authored inactive chest/exit objects. `BossBattleEndHandler` remains the event-driven compatibility path. Authored transforms own chest and portal positions.
 - Affection, upgrades, and future modifiers should contribute additive reward modifiers rather than replace base tables.
 - Run reward modifiers are aggregated in the progression/run modifier layer, not under the Upgrade feature folder.
 - World drop visuals/pickups should present and deliver item state, not own progression reward policy.
 
 ## Runtime Boundary Review
 
-The reviewed issue is not primarily the boss reward split. Boss chest rewards come from `LootManager` and additive modifiers are carried by `BossRewardModifierAggregate`. Boss reward activation now flows through a scene `BossBattleEndHandler` and helper service, and the former `BossDrop` prefab-reference risk is resolved in `Docs/RefactorBacklog/BossDropResponsibilitySplit.md`.
+The reviewed issue is not primarily the boss reward split. Boss chest rewards come from `LootManager` and additive modifiers are carried by `BossRewardModifierAggregate`. Current encounter rewards flow through `BossEncounterEndDirector` and `BossRewardSpawnService`; `BossBattleEndHandler` retains the event-driven path. The former `BossDrop` prefab-reference risk is tracked in `Docs/RefactorBacklog/BossDropResponsibilitySplit.md`.
 
 The active boundary concern is the general loot/chest/world-pickup flow. Reward generation, current-world context, chest-specific modifiers, and final delivery are still coupled through runtime singletons and scene lookups.
 
@@ -64,7 +65,15 @@ The active boundary concern is the general loot/chest/world-pickup flow. Reward 
 | Chest Reward Policy | Own chest-only modifiers such as refresh count, relic level bonus, and chest reward deltas. | `ChestRewardPolicy` is now a helper file for refresh eligibility, refresh guard snapshots/comparison, and relic level bonus calculation. It reads chest modifiers through `RunRewardModifierSnapshot`. |
 | Reward Delivery | Deliver a chosen reward to an inventory, world object, currency store, or spawned pickup and return a success/failure result. | World pickup item delivery now goes through `WorldPickupDeliveryService`; overlapping inventory warning-code mapping is shared through `InventoryDeliveryWarningResolver`; currency is embedded in `CurrencyManager`/`MagicStonePickup`; spawned pickup delivery goes through `LootSpawnService`. |
 | World Pickup Presentation | Present dropped items and forward interaction requests. | `WorldItemPickup2D` keeps item state, highlight/detail presentation, warning display, failed-pickup speech, and success destruction while delegating grant attempts/failure-code mapping to the delivery helper. Shared `WorldItemHoverPlayback` owns Skill1/Skill2 press priority while any world item detail request is active. `FieldHealPickup2D` owns field-heal drop travel, idle heartbeat/floating, travel-time interaction lock, healing, optional consume particle playback, and player-attached heal particle playback when HP actually increases. |
-| Boss Reward Activation | Initialize and activate an authored boss chest when applicable, spawn variable-count physical pickups, and activate an authored boss exit portal. | `CorridorBossRouteSetSO` can reference an optional `BossSpecialRewardPresetSO`; `StageLootTable` supplies boss weapon/relic count and boss relic rarity for chest loot plus magic stone/field-heal pickup counts; scene `BossBattleEndHandler` owns event subscription, boss matching, authored chest/portal references, final-route chest suppression, boss death-position drop origin, and handled marking; `BossRewardSpawnService` owns chest initialization/activation, bonus loot application, and boss physical pickup spawning from that origin. Final routes suppress only chest activation, not physical drops. |
+| Boss Reward Activation | Start normal rewards together after the defeat presentation; grant final-route magic stones before the ending. | `BossEncounterEndDirector` owns clear-condition completion and same-frame gold/EXP spawn, chest activation, magic stone/field-heal spawn, and portal reveal start. `BossRewardSpawnService` uses `StageLootTable` and additive modifiers for normal loot/drops and final-route direct magic stone delivery. Final routes omit gold, EXP, chest, field heals, and portal. `BossBattleEndHandler` keeps the same final reward policy on its event-driven path. |
+
+### Boss Completion Timing
+
+- Normal boss rewards start in one synchronous block after the death presentation, camera return, and any custom finale finish. The block does not wait for pickup collection, chest opening, or portal reveal completion.
+- Slime Queen's two phase-two deaths are its encounter clear condition. Its completed encounter follows the normal reward timing.
+- Final-route Demon King uses `GrantFinalMagicStoneReward` before awaiting the terminal ending. It adds `max(0, current table bossStoneCount + MagicStoneBonus)` through `CurrencyManager.AddMagicStone`, so an active run records the amount in pending run currency before the victory result reads it.
+- Final magic stones are delivered directly, without a world pickup. Existing ending dialogue/outro/result behavior stays with `BossDeathPresentation` and `BossDefeatEndingSequence`.
+- `hasCompleted` prevents repeating the director's completion routine; reward context flags and the compatibility handler's local flags preserve handled state. Missing loot/currency/save dependencies log a warning and do not mark the reward delivered.
 
 ### Field-Heal Pickup Presentation
 
@@ -90,7 +99,7 @@ The active boundary concern is the general loot/chest/world-pickup flow. Reward 
 
 - Track the general loot boundary split in `Docs/RefactorBacklog/LootRewardPolicyBoundarySplit.md`.
 - First implemented slice: chest loot generation now has `ChestLootRequest` and `ChestLootResult` helpers, and `TreasureChest` self-generation/refresh consumes the result-returning path without behavior changes.
-- Second implemented slice: weapon exclusion source choices now flow through `LootPoolContext` presets; chest/monster rolls use player inventory, shop stock uses player/world/scene drops, and grave weapon rolls use player plus merchant stock.
+- Second implemented slice introduced source-specific `LootPoolContext` presets. The current chest/shop presets are described in the 2026-11-01 update below; monster and grave contexts retain their earlier behavior.
 - Third implemented slice: chest roll execution now lives in `ChestLootGenerationService`, and chest refresh/relic-level behavior now lives in `ChestRewardPolicy`/`ChestLootSnapshot` helpers.
 - Fourth implemented slice: world pickup grant attempts and failure-code mapping now live in `WorldPickupDeliveryService`/request/result helpers while `WorldItemPickup2D` remains the presentation and interaction owner.
 - Fifth implemented slice: chest, merchant, boss reward, loot fallback, and runtime debug consumers now read resolved run reward modifiers through `RunRewardModifierSnapshot` instead of directly reading individual `RunModifierService.Instance` modifier properties.
@@ -122,7 +131,7 @@ The active boundary concern is the general loot/chest/world-pickup flow. Reward 
 - Chest reward changes should check `LootManager`, `ChestLootGenerationService`, `TreasureChest`, `ChestRewardPolicy`, and `RunRewardModifierSnapshot` from the progression/run modifier layer.
 - Monster and grave drop changes should check `MonsterLootDropService`, `GraveLootDropService`, `LootRollService`, `LootSpawnService`, and `LootPoolService` together because roll choice, duplicate prevention, and world spawn execution are split across those helpers.
 - Boss reward activation changes should check `CorridorBossRouteSetSO`, `BossSpecialRewardPresetSO`, scene `BossBattleEndHandler`, authored `TreasureChest`/`ScenePortal` wiring, `BossRewardSpawnService`, `RunProgressCoordinator`, `BossRewardFallbackService`, and `RunRewardModifierSnapshot` so preset lookup, reward-handled dedupe, fallback warnings, and additive modifier semantics stay aligned.
-- Final-route boss contexts intentionally mark rewards handled without chest activation, but boss physical drops still spawn; do not reintroduce a final-boss chest fallback unless the route reward policy changes.
+- Final-route boss contexts grant only magic stones and mark the omitted portal handled. The grant precedes terminal ending/result capture; placing it after the presentation can miss it because the terminal branch exits the coroutine. Normal-boss pickup collection timing remains owned by the pickup components.
 - Loot pool exclusion changes should check `LootPoolContext`, `LootPoolLiveWeaponExclusionSourceProvider`, `LootPoolWeaponExclusionProvider`, `LootPoolItemSelectionService`, and current callers in `LootManager`/merchant code so source-specific duplicate-prevention rules stay intentional.
 - World pickup delivery changes should still be reviewed with inventory transfer policy because both paths decide inventory grant failures. Warning-code mapping for overlapping cases is now shared, but world pickup delivery is not a full shared delivery layer.
 
@@ -177,3 +186,12 @@ Chest UI now stages one or two rewards and transfers them only on confirmation. 
 - `TreasureChest.TryAddLootItem` checks `ChestRewardPolicy.CanOfferRelic` against owned levels plus actual levels already placed in this chest, including chest level bonuses. An exhausted candidate is replaced using the existing rarity fallback with the same eligibility filter. If no eligible alternative exists, the slot is omitted. At owned 4/5, only one copy is offered; at 3/5, two +1 copies or one +2 copy exhaust the budget.
 - Reservations are chest contents, not player upgrades or global history. Initialization and refresh clear contents before filling; separate chests have separate budgets. Existing generated/saved contents are not retroactively rewritten when player levels change, so confirmation-time validation remains necessary.
 - `ParcelRelicDefinition` retains its separate carry-count behavior rather than being treated as a leveled duplicate. Merchant stock uses its own selection path and is unchanged.
+
+## Chest/shop exclusion cooperation — 2026-11-01
+
+- `ChestLootRequest` defaults to `ChestStock`; TreasureChest uses `ForChest(this)` to exclude current player weapons, world pickups, active WeaponDrop2D, remaining weapons in other opened chests and unsold merchant stock. The source chest is omitted so reroll only reserves retained choices through the existing RetainedItems path.
+- `ShopStock` also excludes opened-chest leftovers. Loaded/inactive chest objects are inspected live; unloaded PreserveDuringRun dungeons use their existing saved chestLoot. Successfully generated dungeon IDs suppress their old snapshots so consumed loot and source reroll cannot be blocked by stale copies. No save schema or new registry is introduced.
+- Final TreasureChest insertion also validates boss bonus weapon lists, replacing conflicts with an eligible weapon or omitting them if exhausted. Selection completion clears residual loot; cancel/close without acquisition preserves it. Initialization/reroll emit the existing WorldStateChanged signal.
+- Shop relic rolls and stored-stock repair use the same CanGainRelicLevels rule as chests. The level helper preserves ParcelRelicDefinition's existing non-upgrade exception. Maximum-level offers are replaced after relic changes/restoration without replenishing SOLD slots or consuming refresh count.
+- Existing MerchantStock includes sold entries for its older grave callers; the new UnsoldMerchantStock source is specific to the chest policy. Existing enum values, monster/grave contexts, rarity/count settings and currency behavior are unchanged.
+- [Current shop map](ShopStructure.md), [changed files, evidence and unexecuted manual checks](../../SessionLogs/2026-11-01-chest-shop-policy/README.md). MSBuild Gameplay passed; automated tests/Editor import/Play Mode were not executed.

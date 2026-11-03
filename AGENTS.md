@@ -187,6 +187,7 @@ Create or update one when a task leaves a legacy adapter, temporary fallback, re
 
 ## Unity Project Rules
 
+- Charging skills must display their current charge progress through a charge gauge. Gameplay owns the charge value; the authored gauge only displays it and is hidden/cleaned up on release, cancellation, owner disable, weapon swap, and scene transition.
 - Runtime state ownership must stay explicit.
 - UI and tooltip code should project current state, not own gameplay state.
 - UI screens, popups, HUD, buttons, text, fade overlays, and authored presentation objects should normally be placed and reviewed in Unity scenes or prefabs, then driven through serialized references.
@@ -197,6 +198,7 @@ Create or update one when a task leaves a legacy adapter, temporary fallback, re
 
 ## Verification Rules
 
+- Run automated tests only when the user explicitly asks for tests. Implementation, cleanup, and review requests do not authorize EditMode/PlayMode/CLI test execution or automated Unity play-mode checks. Use source/reference/diff inspection by default and report tests as not executed. Do not add disposable tests or task-specific validation tools unless requested; keep reusable gameplay/save regressions separate from one-off acceptance work.
 - If Unity Editor or CLI tests cannot be run, explicitly say verification was not executed.
 - Do not claim compile success unless Unity compilation or an equivalent project build/test command was actually run.
 - For Unity script file splits or new `.cs` helper files, do not block source-only refactors solely because Unity-generated `.csproj` files have not refreshed, when the user has accepted Editor compile handoff. In that mode, verify source structure instead: duplicate type definitions, removed original helper blocks, call-site references, namespace/assembly risks, and whitespace. Report Unity compile/import as user-confirmed or not executed.

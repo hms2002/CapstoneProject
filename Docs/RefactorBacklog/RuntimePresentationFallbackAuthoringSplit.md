@@ -118,3 +118,13 @@ Status: proposed (runtime Canvas removal is resolved).
 - Risks: deleting legacy fields/objects without reviewing overrides can discard authored data. `SceneSetupValidatorWindow` now checks service presence without requiring or creating cursor UI.
 - Trigger: explicit approval for cursor prefab/scene cleanup after Windows player acceptance of the native API path.
 - Related: [current structure](../StructureMemory/ScriptSystems/LoadingPresentationStructure.md), [session](../SessionLogs/2026-09-28.md).
+
+## Independent key mapping copies (2026-10-31)
+
+Status: partially-refactored.
+
+- Problem/why: the main GlobalUIRoot and TitleScene now author all 19 key rows, but independent legacy copies remain outside the approved settings-skin slice. KeyBindingPanelUI retains its old dynamic-row branch for those copies.
+- Target: migrate any independently used copy to authored rows and a matching action order, then remove the dynamic branch after verifying every referenced panel.
+- Risks: removing compatibility early leaves older scenes without controls; adding an action without updating authored row counts produces a deliberate authoring error.
+- Trigger: reactivating an alternate UI prefab/legacy scene or adding/removing editable actions.
+- Related: [InputBindings](../StructureMemory/InputBindings.md), [SettingsPanelLayout](../StructureMemory/SettingsPanelLayout.md), [approved scope](../ActiveTasks/settings-keymapping-skin.md).

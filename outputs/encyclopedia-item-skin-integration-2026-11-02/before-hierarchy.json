@@ -1,0 +1,1972 @@
+[
+  {
+    "path": "EncyclopediaUI/Book/RightPage/TabButtonGroup/TabButton (1)/CreatureTabLabel",
+    "rt": "5142567658250510992",
+    "go": "211306963965458565",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 0.5}",
+      "m_AnchorMax": "{x: 0.5, y: 0.5}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 90, y: 44}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "1171589954367663686",
+        "222",
+        {}
+      ],
+      [
+        "2015852886262314440",
+        "f4688fdb",
+        {
+          "m_Enabled": "1",
+          "m_text": "\"\\uBAAC\\uC2A4\\uD130\"",
+          "m_fontColor": "{r: 0.23, g: 0.15, b: 0.1, a: 1}",
+          "m_fontSize": "20"
+        }
+      ],
+      [
+        "525279837512128395",
+        "LocalizeTmpFontEvent",
+        {
+          "m_Enabled": "1",
+          "authoredMaterial": "{fileID: 0}"
+        }
+      ],
+      [
+        "8990962539346184366",
+        "56eb0353",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/TitleGroup/Title",
+    "rt": "7695740681197823854",
+    "go": "371867221582318509",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 1}",
+      "m_AnchorMax": "{x: 0, y: 1}",
+      "m_AnchoredPosition": "{x: 167.045, y: -25}",
+      "m_SizeDelta": "{x: 194.09, y: 50}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "6831360853907385973",
+        "222",
+        {}
+      ],
+      [
+        "653269889989058169",
+        "f4688fdb",
+        {
+          "m_Enabled": "1",
+          "m_text": "New Text",
+          "m_fontColor": "{r: 1, g: 1, b: 1, a: 1}",
+          "m_fontSize": "40"
+        }
+      ],
+      [
+        "928082833162242748",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "2",
+          "m_VerticalFit": "0"
+        }
+      ],
+      [
+        "9056066013963881543",
+        "LocalizeTmpFontEvent",
+        {
+          "m_Enabled": "1",
+          "authoredMaterial": "{fileID: 1826925326976027445, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent",
+    "rt": "8152194327925949282",
+    "go": "604651463437422238",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 1, y: 1}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 0, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": []
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/TitleGroup/TitleIcon",
+    "rt": "4169706301762049203",
+    "go": "899745208083480761",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 70, y: 70}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "6809477381186139994",
+        "222",
+        {}
+      ],
+      [
+        "7813478807205369411",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/Scrollbar/Sliding Area",
+    "rt": "7730850818228723315",
+    "go": "913352258478947841",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 1, y: 1}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: -4, y: -4}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": []
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/PageButtonGroup",
+    "rt": "5636171701766641102",
+    "go": "1078837119135580722",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 0}",
+      "m_AnchorMax": "{x: 0.5, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 30}",
+      "m_SizeDelta": "{x: 550, y: 50}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "8709655432222618529",
+        "30649d3a",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "4",
+          "m_Spacing": "-300",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "1",
+          "m_ChildControlWidth": "0",
+          "m_ChildControlHeight": "0"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/TabButtonGroup/TabButton",
+    "rt": "1477797649649328672",
+    "go": "1146371529506105442",
+    "rect": {
+      "m_LocalScale": "{x: -1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 100, y: 80}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "2294055885455581550",
+        "222",
+        {}
+      ],
+      [
+        "5085708549326039304",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "8528108018603611097",
+        "4e29b1a8",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/LvPanel/NextPreview",
+    "rt": "4818851548396563861",
+    "go": "1289737759483615447",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 0, y: 32}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "3327541645825790063",
+        "222",
+        {}
+      ],
+      [
+        "3692351090392298837",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "1783098791877606997",
+        "225",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "1349176543217516230",
+        "306cc8c2",
+        {
+          "m_Enabled": "1",
+          "m_MinWidth": "32",
+          "m_MinHeight": "32",
+          "m_PreferredWidth": "32",
+          "m_PreferredHeight": "32"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/TabButtonGroup/TabButton (2)",
+    "rt": "2509583530058382484",
+    "go": "1372926058480431949",
+    "rect": {
+      "m_LocalScale": "{x: -1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 100, y: 80}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "4916275700405624320",
+        "222",
+        {}
+      ],
+      [
+        "2892515106761237892",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "2435429167609481065",
+        "4e29b1a8",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/StoryTextPanel",
+    "rt": "4355537021883896631",
+    "go": "1488354477352505212",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 1}",
+      "m_AnchorMax": "{x: 0, y: 1}",
+      "m_AnchoredPosition": "{x: 285, y: -189.84999}",
+      "m_SizeDelta": "{x: 570, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "5335082871111057002",
+        "222",
+        {}
+      ],
+      [
+        "4627357442962155307",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "7411588080226044650",
+        "59f81469",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "4",
+          "m_Spacing": "0",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "1",
+          "m_ChildControlWidth": "1",
+          "m_ChildControlHeight": "1"
+        }
+      ],
+      [
+        "7648706198499718513",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "0",
+          "m_VerticalFit": "2"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage",
+    "rt": "2303885753161862740",
+    "go": "1600577953579324491",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 1}",
+      "m_AnchoredPosition": "{x: 520, y: 335}",
+      "m_SizeDelta": "{x: 600, y: -735}",
+      "m_Pivot": "{x: 0, y: 0}"
+    },
+    "components": [
+      [
+        "4866017122537425227",
+        "EncyclopediaItemLeftPage",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "1102149885487376020",
+        "225",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/UndiscoveredItem/Message",
+    "rt": "2524474535222132397",
+    "go": "1640962469744833547",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 0.5}",
+      "m_AnchorMax": "{x: 0.5, y: 0.5}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 520, y: 100}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "6118049050235619465",
+        "222",
+        {}
+      ],
+      [
+        "2538382046438747545",
+        "f4688fdb",
+        {
+          "m_Enabled": "1",
+          "m_text": "\"\\uC544\\uC9C1 \\uD68D\\uB4DD\\uD558\\uC9C0 \\uBABB\\uD55C \\uC544\\uC774\\uD15C\\uC785\\uB2C8\\uB2E4.\"",
+          "m_fontColor": "{r: 0.25490198, g: 0.16862746, b: 0.13333334, a: 1}",
+          "m_fontSize": "26"
+        }
+      ],
+      [
+        "6904660688032506531",
+        "LocalizeTmpFontEvent",
+        {
+          "m_Enabled": "1",
+          "authoredMaterial": "{fileID: 1826925326976027445, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/TabButtonGroup/TabButton (1)/TabIcon",
+    "rt": "3729768691128170839",
+    "go": "1783779864715458241",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 0.5}",
+      "m_AnchorMax": "{x: 0.5, y: 0.5}",
+      "m_AnchoredPosition": "{x: 0, y: -1}",
+      "m_SizeDelta": "{x: 55, y: 55}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "2004200591809300884",
+        "222",
+        {}
+      ],
+      [
+        "7559943711848879947",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/StatTextPanel/StatText",
+    "rt": "945243799760409253",
+    "go": "1804413255233049261",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 1}",
+      "m_AnchorMax": "{x: 0, y: 1}",
+      "m_AnchoredPosition": "{x: 285, y: -35.3}",
+      "m_SizeDelta": "{x: 550, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0}"
+    },
+    "components": [
+      [
+        "223310801960867913",
+        "222",
+        {}
+      ],
+      [
+        "4427339292197942672",
+        "f4688fdb",
+        {
+          "m_Enabled": "1",
+          "m_text": "\"- \\uC804\\uAE30\\uC18D\\uC131 + 100 \\n\"",
+          "m_fontColor": "{r: 1, g: 1, b: 1, a: 1}",
+          "m_fontSize": "23"
+        }
+      ],
+      [
+        "6528252072875026790",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "0",
+          "m_VerticalFit": "2"
+        }
+      ],
+      [
+        "7310501959626733994",
+        "LocalizeTmpFontEvent",
+        {
+          "m_Enabled": "1",
+          "authoredMaterial": "{fileID: 1826925326976027445, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/PageButtonGroup/Previous",
+    "rt": "2505951582232326671",
+    "go": "1921696624766033850",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 50, y: 50}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "4081710895667281772",
+        "222",
+        {}
+      ],
+      [
+        "4164579748598827049",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "6620364823717931094",
+        "4e29b1a8",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/Header",
+    "rt": "8765020101877257718",
+    "go": "2392048894869900280",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 1}",
+      "m_AnchorMax": "{x: 0, y: 1}",
+      "m_AnchoredPosition": "{x: 285, y: -15}",
+      "m_SizeDelta": "{x: 0, y: 70.2}",
+      "m_Pivot": "{x: 0.5, y: 1}"
+    },
+    "components": [
+      [
+        "7417766635896078075",
+        "222",
+        {}
+      ],
+      [
+        "768816492628305826",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "2014458360597778037",
+        "59f81469",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "4",
+          "m_Spacing": "0",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "1",
+          "m_ChildControlWidth": "1",
+          "m_ChildControlHeight": "1"
+        }
+      ],
+      [
+        "5130368009166043604",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "0",
+          "m_VerticalFit": "0"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel",
+    "rt": "7990481634182577215",
+    "go": "2736158705729630427",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 1}",
+      "m_AnchorMax": "{x: 1, y: 1}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 0, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 1}"
+    },
+    "components": [
+      [
+        "4470618376947901034",
+        "222",
+        {}
+      ],
+      [
+        "7855651015205435331",
+        "fe87c0e1",
+        {
+          "m_Enabled": "0"
+        }
+      ],
+      [
+        "8709234358913308640",
+        "59f81469",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "1",
+          "m_Spacing": "10",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "0",
+          "m_ChildControlWidth": "1",
+          "m_ChildControlHeight": "1"
+        }
+      ],
+      [
+        "7930270898182682002",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "0",
+          "m_VerticalFit": "2"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/Content/'tooltipStatLines '",
+    "rt": "1407213172179301760",
+    "go": "3270447958540566070",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 0, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "4070334205462525617",
+        "222",
+        {}
+      ],
+      [
+        "8763032377784168736",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "2056770769379484386",
+        "306cc8c2",
+        {
+          "m_Enabled": "1",
+          "m_MinWidth": "-1",
+          "m_MinHeight": "0",
+          "m_PreferredWidth": "-1",
+          "m_PreferredHeight": "-1"
+        }
+      ],
+      [
+        "2917000526423287994",
+        "59f81469",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "0",
+          "m_Spacing": "0",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "1",
+          "m_ChildControlWidth": "0",
+          "m_ChildControlHeight": "0"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/TabButtonGroup/TabButton (1)",
+    "rt": "7087128392943122194",
+    "go": "3438242914094264192",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 100, y: 80}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "6164119190038070338",
+        "222",
+        {}
+      ],
+      [
+        "405692530687473366",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "2633857385785038259",
+        "4e29b1a8",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/TabButtonGroup",
+    "rt": "7784228223524498331",
+    "go": "3675305509070163650",
+    "rect": {
+      "m_LocalScale": "{x: -1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 1, y: 0}",
+      "m_AnchorMax": "{x: 1, y: 1}",
+      "m_AnchoredPosition": "{x: 67, y: 160}",
+      "m_SizeDelta": "{x: 100, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "4040591960816960902",
+        "59f81469",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "0",
+          "m_Spacing": "0",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "1",
+          "m_ChildControlWidth": "0",
+          "m_ChildControlHeight": "0"
+        }
+      ],
+      [
+        "3563277686744567716",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "0",
+          "m_VerticalFit": "2"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/StatTextPanel",
+    "rt": "8926220086750399126",
+    "go": "3763597673092536674",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 1}",
+      "m_AnchorMax": "{x: 0, y: 1}",
+      "m_AnchoredPosition": "{x: 285, y: -245.15}",
+      "m_SizeDelta": "{x: 570, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "5912886942455294386",
+        "222",
+        {}
+      ],
+      [
+        "6044180745478782157",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "8139386674610947291",
+        "59f81469",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "4",
+          "m_Spacing": "0",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "1",
+          "m_ChildControlWidth": "1",
+          "m_ChildControlHeight": "1"
+        }
+      ],
+      [
+        "4571731860985588752",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "0",
+          "m_VerticalFit": "2"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book",
+    "rt": "5501019934593851225",
+    "go": "3783640947135483920",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 0.5}",
+      "m_AnchorMax": "{x: 0.5, y: 0.5}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 2320, y: 1480}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "1909600183493403021",
+        "222",
+        {}
+      ],
+      [
+        "577073705051753878",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "8317086359111449962",
+        "EncyclopediaScreen",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "6952477449505745507",
+        "225",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "6142990401168452856",
+        "95",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "3572136692672288612",
+        "EncyclopediaItemTab",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "6906855235117759964",
+        "EncyclopediaBookPresentation",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "7421593401470162652",
+        "EncyclopediaCreatureTab",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel",
+    "rt": "8757153454739910614",
+    "go": "3864464956366859789",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 1}",
+      "m_AnchorMax": "{x: 0.5, y: 1}",
+      "m_AnchoredPosition": "{x: 0, y: -25}",
+      "m_SizeDelta": "{x: 550, y: 650}",
+      "m_Pivot": "{x: 0.5, y: 1}"
+    },
+    "components": [
+      [
+        "7932336577646332924",
+        "222",
+        {}
+      ],
+      [
+        "7608822679903982515",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "5193685712715791675",
+        "59f81469",
+        {
+          "m_Enabled": "0",
+          "m_ChildAlignment": "1",
+          "m_Spacing": "0",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "1",
+          "m_ChildControlWidth": "0",
+          "m_ChildControlHeight": "1"
+        }
+      ],
+      [
+        "3791403012329970838",
+        "1aa08ab6",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "6864092537286429568",
+        "3312d773",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/Scrollbar",
+    "rt": "4886243673356872090",
+    "go": "3907225298823594702",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 1, y: 0}",
+      "m_AnchorMax": "{x: 1, y: 1}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 20, y: -20}",
+      "m_Pivot": "{x: 1, y: 0.5}"
+    },
+    "components": [
+      [
+        "6398527283166810798",
+        "222",
+        {}
+      ],
+      [
+        "6826572595679353293",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "9178803543813378035",
+        "2a4db7a1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "5159918964392117859",
+        "306cc8c2",
+        {
+          "m_Enabled": "1",
+          "m_MinWidth": "-1",
+          "m_MinHeight": "-1",
+          "m_PreferredWidth": "-1",
+          "m_PreferredHeight": "-1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/LvPanel/LvTxt",
+    "rt": "924916345520773124",
+    "go": "4048868002158698709",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 1}",
+      "m_AnchorMax": "{x: 0, y: 1}",
+      "m_AnchoredPosition": "{x: 122.28, y: -31}",
+      "m_SizeDelta": "{x: 80.56, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "1612453736135234706",
+        "222",
+        {}
+      ],
+      [
+        "4338773769007280345",
+        "f4688fdb",
+        {
+          "m_Enabled": "1",
+          "m_text": "'LV 5 / 5",
+          "m_fontColor": "{r: 1, g: 1, b: 1, a: 1}",
+          "m_fontSize": "20"
+        }
+      ],
+      [
+        "8995440301051105829",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "2",
+          "m_VerticalFit": "2"
+        }
+      ],
+      [
+        "5721276810187838090",
+        "LocalizeTmpFontEvent",
+        {
+          "m_Enabled": "1",
+          "authoredMaterial": "{fileID: 1826925326976027445, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/TabButtonGroup/TabButton/TabIcon",
+    "rt": "2893749266152963621",
+    "go": "4332555132046209647",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 0.5}",
+      "m_AnchorMax": "{x: 0.5, y: 0.5}",
+      "m_AnchoredPosition": "{x: 0, y: -1}",
+      "m_SizeDelta": "{x: 55, y: 55}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "619619629901947955",
+        "222",
+        {}
+      ],
+      [
+        "3252408445763852968",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/TabButtonGroup/TabButton",
+    "rt": "6602240865324639889",
+    "go": "4400659188479383516",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 100, y: 80}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "3792538666638040655",
+        "222",
+        {}
+      ],
+      [
+        "5820202584123764268",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "4726290522517685129",
+        "4e29b1a8",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/TitleGroup",
+    "rt": "8365083889743291225",
+    "go": "4725170030973410980",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 1}",
+      "m_AnchorMax": "{x: 0.5, y: 1}",
+      "m_AnchoredPosition": "{x: 0, y: -25}",
+      "m_SizeDelta": "{x: 550, y: 62}",
+      "m_Pivot": "{x: 0.5, y: 1}"
+    },
+    "components": [
+      [
+        "2752927446786567112",
+        "30649d3a",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "4",
+          "m_Spacing": "0",
+          "m_ChildForceExpandWidth": "0",
+          "m_ChildForceExpandHeight": "1",
+          "m_ChildControlWidth": "1",
+          "m_ChildControlHeight": "0"
+        }
+      ],
+      [
+        "4176512178205340397",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "0",
+          "m_VerticalFit": "0"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/TabButtonGroup/TabButton (2)",
+    "rt": "6399312766960026827",
+    "go": "4861046574250484870",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 100, y: 80}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "3889994221412509741",
+        "222",
+        {}
+      ],
+      [
+        "7995877729735582213",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "1286707151817490466",
+        "4e29b1a8",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/PageButtonGroup/Next",
+    "rt": "4803187307026379902",
+    "go": "4974344807214488660",
+    "rect": {
+      "m_LocalScale": "{x: -1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 50, y: 50}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "7959073482067577709",
+        "222",
+        {}
+      ],
+      [
+        "1719996846485419751",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "3867580646116215618",
+        "4e29b1a8",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/Scrollbar/Sliding Area/Handle",
+    "rt": "3633219522933028530",
+    "go": "5414386864693950491",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 0, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "8852720080603045184",
+        "222",
+        {}
+      ],
+      [
+        "4099455759170554337",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/LvPanel/PrevPreview",
+    "rt": "215619693794320693",
+    "go": "5446865901517910159",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 0, y: 32}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "5011320916145108806",
+        "222",
+        {}
+      ],
+      [
+        "2627928859966795854",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "5398897916816906802",
+        "225",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "7361500534692876219",
+        "306cc8c2",
+        {
+          "m_Enabled": "1",
+          "m_MinWidth": "32",
+          "m_MinHeight": "32",
+          "m_PreferredWidth": "32",
+          "m_PreferredHeight": "32"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/TabButtonGroup/TabButton (2)/CreatureTabLabel",
+    "rt": "501251406216274615",
+    "go": "5500904218119806131",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 0.5}",
+      "m_AnchorMax": "{x: 0.5, y: 0.5}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 90, y: 44}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "9193032202707251793",
+        "222",
+        {}
+      ],
+      [
+        "4839122720373714097",
+        "f4688fdb",
+        {
+          "m_Enabled": "1",
+          "m_text": "\"\\uBCF4\\uC2A4\"",
+          "m_fontColor": "{r: 0.23, g: 0.15, b: 0.1, a: 1}",
+          "m_fontSize": "20"
+        }
+      ],
+      [
+        "7646840311762954903",
+        "LocalizeTmpFontEvent",
+        {
+          "m_Enabled": "1",
+          "authoredMaterial": "{fileID: 0}"
+        }
+      ],
+      [
+        "4020724606906485206",
+        "56eb0353",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/StoryTextPanel/StoryText",
+    "rt": "8757433052309478185",
+    "go": "5504264479573483711",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 1}",
+      "m_AnchorMax": "{x: 0, y: 1}",
+      "m_AnchoredPosition": "{x: 285, y: -35.3}",
+      "m_SizeDelta": "{x: 550, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0}"
+    },
+    "components": [
+      [
+        "2874560817041616940",
+        "222",
+        {}
+      ],
+      [
+        "6729888636979836795",
+        "f4688fdb",
+        {
+          "m_Enabled": "1",
+          "m_text": "\"\\\"\\uD55C \\uBC88 \\uC2DC\\uC791\\uB41C \\uAE30\\uC0AC\\uC758 \\uB0A0\\uAC1C\\uC9D3\\uC740",
+          "m_fontColor": "{r: 1, g: 1, b: 1, a: 1}",
+          "m_fontSize": "23"
+        }
+      ],
+      [
+        "3851533962717422731",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "0",
+          "m_VerticalFit": "2"
+        }
+      ],
+      [
+        "6208483006862754531",
+        "LocalizeTmpFontEvent",
+        {
+          "m_Enabled": "1",
+          "authoredMaterial": "{fileID: 1826925326976027445, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/Content",
+    "rt": "7370979070107103989",
+    "go": "5701006558152448919",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 570, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 1}"
+    },
+    "components": [
+      [
+        "6848473502935778474",
+        "59f81469",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "1",
+          "m_Spacing": "5",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "0",
+          "m_ChildControlWidth": "1",
+          "m_ChildControlHeight": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/Header/Name_Panel/Title",
+    "rt": "5869905338839307527",
+    "go": "6000256618363143992",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 1}",
+      "m_AnchorMax": "{x: 0, y: 1}",
+      "m_AnchoredPosition": "{x: 92.880005, y: -20.1}",
+      "m_SizeDelta": "{x: 185.76, y: 40.2}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "6989575396475190408",
+        "222",
+        {}
+      ],
+      [
+        "3241555391183142179",
+        "f4688fdb",
+        {
+          "m_Enabled": "1",
+          "m_text": "\"\\uC794\\uC601\\uC758 \\uB0A0\\uAC1C\\n\"",
+          "m_fontColor": "{r: 0.25490198, g: 0.16862746, b: 0.13333334, a: 1}",
+          "m_fontSize": "33"
+        }
+      ],
+      [
+        "1446926275529342044",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "0",
+          "m_VerticalFit": "0"
+        }
+      ],
+      [
+        "1877911210722272633",
+        "LocalizeTmpFontEvent",
+        {
+          "m_Enabled": "1",
+          "authoredMaterial": "{fileID: 1826925326976027445, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/TabButtonGroup",
+    "rt": "1386205096522505231",
+    "go": "6166194974865892543",
+    "rect": {
+      "m_LocalScale": "{x: -1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 1}",
+      "m_AnchoredPosition": "{x: -67, y: 160}",
+      "m_SizeDelta": "{x: 100, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "4392045636089359779",
+        "59f81469",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "0",
+          "m_Spacing": "0",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "1",
+          "m_ChildControlWidth": "0",
+          "m_ChildControlHeight": "0"
+        }
+      ],
+      [
+        "1215320634204172657",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "0",
+          "m_VerticalFit": "2"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/TabButtonGroup/TabButton (1)",
+    "rt": "1118778051862094437",
+    "go": "6418136208948153089",
+    "rect": {
+      "m_LocalScale": "{x: -1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 100, y: 80}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "2052668212523379826",
+        "222",
+        {}
+      ],
+      [
+        "4286140523527953722",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "4250067842432859356",
+        "4e29b1a8",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/Header/Name_Panel",
+    "rt": "2412869429527082358",
+    "go": "6678038092083563111",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 0, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "4712435836737711734",
+        "222",
+        {}
+      ],
+      [
+        "7715238569657689129",
+        "30649d3a",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "4",
+          "m_Spacing": "0",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "1",
+          "m_ChildControlWidth": "1",
+          "m_ChildControlHeight": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/UndiscoveredItem",
+    "rt": "7140839196001734356",
+    "go": "7077954245909670525",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 1, y: 1}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 0, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": []
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/LvPanel",
+    "rt": "5777995605230599492",
+    "go": "7151774041088859797",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 1}",
+      "m_AnchorMax": "{x: 0, y: 1}",
+      "m_AnchoredPosition": "{x: 285, y: -126.2}",
+      "m_SizeDelta": "{x: 0, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "679185597039543775",
+        "30649d3a",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "4",
+          "m_Spacing": "30",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "1",
+          "m_ChildControlWidth": "1",
+          "m_ChildControlHeight": "0"
+        }
+      ],
+      [
+        "3781328053013631712",
+        "222",
+        {}
+      ],
+      [
+        "4423671420143830228",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "3166090053811000252",
+        "3245ec92",
+        {
+          "m_Enabled": "1",
+          "m_HorizontalFit": "2",
+          "m_VerticalFit": "2"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/PageButtonGroup/PageNum",
+    "rt": "1208091888121735263",
+    "go": "7243519467383897288",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 200, y: 50}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "1297801273698674679",
+        "222",
+        {}
+      ],
+      [
+        "8342109195349600584",
+        "f4688fdb",
+        {
+          "m_Enabled": "1",
+          "m_text": "'1/1",
+          "m_fontColor": "{r: 1, g: 1, b: 1, a: 1}",
+          "m_fontSize": "36"
+        }
+      ],
+      [
+        "1704828008525928138",
+        "LocalizeTmpFontEvent",
+        {
+          "m_Enabled": "1",
+          "authoredMaterial": "{fileID: 1826925326976027445, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/SlotGrid",
+    "rt": "7522577667769019081",
+    "go": "7470108577543498440",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 1}",
+      "m_AnchorMax": "{x: 0.5, y: 1}",
+      "m_AnchoredPosition": "{x: 0, y: -100}",
+      "m_SizeDelta": "{x: 550, y: 560}",
+      "m_Pivot": "{x: 0.5, y: 1}"
+    },
+    "components": [
+      [
+        "5485187651302506328",
+        "8a869552",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "1",
+          "m_CellSize": "{x: 132.5, y: 132.5}",
+          "m_Spacing": "{x: 10, y: 10}",
+          "m_ConstraintCount": "4"
+        }
+      ],
+      [
+        "8831004345618572356",
+        "EncyclopediaEntryGridView",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI",
+    "rt": "8900448340547229916",
+    "go": "7645859819956929196",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 1, y: 1}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 0, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": []
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/TabButtonGroup/NpcTab/NpcLabel",
+    "rt": "417327510933588030",
+    "go": "8013483809701712739",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 0.5}",
+      "m_AnchorMax": "{x: 0.5, y: 0.5}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 85, y: 45}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "4588921437746709857",
+        "222",
+        {}
+      ],
+      [
+        "6278654835564745132",
+        "f4688fdb",
+        {
+          "m_Enabled": "1",
+          "m_text": "NPC",
+          "m_fontColor": "{r: 0.23, g: 0.15, b: 0.1, a: 1}",
+          "m_fontSize": "22"
+        }
+      ],
+      [
+        "7112776230587519793",
+        "LocalizeTmpFontEvent",
+        {
+          "m_Enabled": "1",
+          "authoredMaterial": "{fileID: 735385094186251184, guid: d6bdf7801fb0ca54290fd90d7bc5aecb, type: 2}"
+        }
+      ],
+      [
+        "3098412413594573870",
+        "56eb0353",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/LeftPage/TabButtonGroup/TabButton (2)/TabIcon",
+    "rt": "6509659718245410824",
+    "go": "8301423966556308870",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 0.5}",
+      "m_AnchorMax": "{x: 0.5, y: 0.5}",
+      "m_AnchoredPosition": "{x: 0, y: -1}",
+      "m_SizeDelta": "{x: 70, y: 70}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "9035360209009007330",
+        "222",
+        {}
+      ],
+      [
+        "8520074183567682355",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage",
+    "rt": "7655396100115582861",
+    "go": "8462708796356329205",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 1, y: 0}",
+      "m_AnchorMax": "{x: 1, y: 1}",
+      "m_AnchoredPosition": "{x: -520, y: -400}",
+      "m_SizeDelta": "{x: 600, y: -735}",
+      "m_Pivot": "{x: 1, y: 1}"
+    },
+    "components": [
+      [
+        "4296879548229141479",
+        "EncyclopediaItemRightPage",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "3280602987645394323",
+        "225",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/WeaponDescriptionHint",
+    "rt": "8709210000000000002",
+    "go": "8709210000000000001",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 0}",
+      "m_AnchorMax": "{x: 0.5, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 28}",
+      "m_SizeDelta": "{x: 340, y: 42}",
+      "m_Pivot": "{x: 0.5, y: 0}"
+    },
+    "components": [
+      [
+        "8709210000000000003",
+        "306cc8c2",
+        {
+          "m_Enabled": "1",
+          "m_MinWidth": "-1",
+          "m_MinHeight": "45",
+          "m_PreferredWidth": "-1",
+          "m_PreferredHeight": "45"
+        }
+      ],
+      [
+        "2777599051906156206",
+        "30649d3a",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "4",
+          "m_Spacing": "10",
+          "m_ChildForceExpandWidth": "0",
+          "m_ChildForceExpandHeight": "0",
+          "m_ChildControlWidth": "1",
+          "m_ChildControlHeight": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/WeaponDescriptionHint/DescriptionKeyGlyph",
+    "rt": "8709210000000000005",
+    "go": "8709210000000000004",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0.5}",
+      "m_AnchorMax": "{x: 0, y: 0.5}",
+      "m_AnchoredPosition": "{x: 12, y: 0}",
+      "m_SizeDelta": "{x: 36, y: 36}",
+      "m_Pivot": "{x: 0, y: 0.5}"
+    },
+    "components": [
+      [
+        "8709210000000000006",
+        "222",
+        {}
+      ],
+      [
+        "8709210000000000007",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "8347530768036105739",
+        "306cc8c2",
+        {
+          "m_Enabled": "1",
+          "m_MinWidth": "36",
+          "m_MinHeight": "36",
+          "m_PreferredWidth": "36",
+          "m_PreferredHeight": "36"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/WeaponDescriptionHint/DescriptionToggleLabel",
+    "rt": "8709210000000000009",
+    "go": "8709210000000000008",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 1, y: 1}",
+      "m_AnchoredPosition": "{x: -12, y: 0}",
+      "m_SizeDelta": "{x: -70, y: 0}",
+      "m_Pivot": "{x: 1, y: 1}"
+    },
+    "components": [
+      [
+        "8709210000000000010",
+        "222",
+        {}
+      ],
+      [
+        "8709210000000000011",
+        "f4688fdb",
+        {
+          "m_Enabled": "1",
+          "m_text": "\"\\uC790\\uC138\\uD788 \\uC124\\uBA85\"",
+          "m_fontColor": "{r: 0.25490198, g: 0.16862746, b: 0.13333334, a: 1}",
+          "m_fontSize": "27"
+        }
+      ],
+      [
+        "4254253195007397968",
+        "LocalizeTmpFontEvent",
+        {
+          "m_Enabled": "1",
+          "authoredMaterial": "{fileID: 1826925326976027445, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/TabButtonGroup/NpcTab",
+    "rt": "7463984658626437924",
+    "go": "8994725679503242385",
+    "rect": {
+      "m_LocalScale": "{x: -1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: -100}",
+      "m_SizeDelta": "{x: 100, y: 80}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "3146930194201847502",
+        "222",
+        {}
+      ],
+      [
+        "7689885246340683346",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ],
+      [
+        "5576402351309750096",
+        "4e29b1a8",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/TabButtonGroup/TabButton/TabIcon",
+    "rt": "755792776259002697",
+    "go": "9142252929805185769",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0.5, y: 0.5}",
+      "m_AnchorMax": "{x: 0.5, y: 0.5}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 55, y: 55}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "1194235492835665563",
+        "222",
+        {}
+      ],
+      [
+        "1896460901053697038",
+        "fe87c0e1",
+        {
+          "m_Enabled": "1"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "EncyclopediaUI/Book/RightPage/ItemPageContent/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer",
+    "rt": "5939185596576762872",
+    "go": "9208367873551130048",
+    "rect": {
+      "m_LocalScale": "{x: 1, y: 1, z: 1}",
+      "m_AnchorMin": "{x: 0, y: 0}",
+      "m_AnchorMax": "{x: 0, y: 0}",
+      "m_AnchoredPosition": "{x: 0, y: 0}",
+      "m_SizeDelta": "{x: 0, y: 0}",
+      "m_Pivot": "{x: 0.5, y: 0.5}"
+    },
+    "components": [
+      [
+        "3575557230445247127",
+        "222",
+        {}
+      ],
+      [
+        "8157930323378540575",
+        "fe87c0e1",
+        {
+          "m_Enabled": "0"
+        }
+      ],
+      [
+        "8472405573395531967",
+        "59f81469",
+        {
+          "m_Enabled": "1",
+          "m_ChildAlignment": "1",
+          "m_Spacing": "0",
+          "m_ChildForceExpandWidth": "1",
+          "m_ChildForceExpandHeight": "0",
+          "m_ChildControlWidth": "1",
+          "m_ChildControlHeight": "1"
+        }
+      ]
+    ]
+  }
+]

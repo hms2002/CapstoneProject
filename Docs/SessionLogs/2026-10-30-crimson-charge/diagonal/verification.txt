@@ -1,0 +1,10 @@
+Diagonal-flight revision: target-relative upper-right 45-degree approach, offscreen start.
+Runtime changes: ResolveFlightStart only; 0.5-second flight, damage, burn and cooldown unchanged.
+Preview uses the runtime start-point function; capture does not rewrite ability/localization assets.
+Native Unity compile + GPU capture: exit 0; 195 frames rendered.
+Play Mode CrimsonChargePlayModeTests: 8/8 passed, including center/corner/offscreen/45-degree/Z/fallback assertions.
+MSBuild Editor.csproj: exit 0.
+MSBuild ProceduralPlayModeTests.csproj: exit 0.
+Native flight image visually reviewed; diagonal flame and smoke trail confirmed.
+Manual whole-game play and standalone Player build: not executed.
+Doc impact: SessionLog, existing StructureMemory and DecisionLog updated. No new ErrorLog or Presentation HTML changes.

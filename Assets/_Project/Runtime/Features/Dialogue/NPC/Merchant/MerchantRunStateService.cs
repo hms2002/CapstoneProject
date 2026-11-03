@@ -43,6 +43,31 @@ public sealed class MerchantRunStateService
         runtimeState.slots[slotIndex].isSold = true;
     }
 
+    public bool ReconcileStock(
+        MerchantRuntimeState runtimeState,
+        Func<MerchantStockEntryState, bool> shouldReplace,
+        Func<int, IReadOnlyCollection<MerchantStockEntryState>, MerchantStockEntryState> replacementFactory)
+    {
+        if (runtimeState?.slots == null || shouldReplace == null || replacementFactory == null)
+            return false;
+
+        bool changed = false;
+        for (int i = 0; i < runtimeState.slots.Count; i++)
+        {
+            MerchantStockEntryState entry = runtimeState.slots[i];
+            if (entry == null || entry.isSold || !entry.HasItem || !shouldReplace(entry))
+                continue;
+
+            // Preserve every other slot, including sold entries and their prices.
+            var retainedEntries = new List<MerchantStockEntryState>(runtimeState.slots);
+            retainedEntries.RemoveAt(i);
+            runtimeState.slots[i] = replacementFactory(i, retainedEntries) ?? MerchantStockEntryState.Empty();
+            changed = true;
+        }
+
+        return changed;
+    }
+
     public bool TryRefreshState(
         MerchantRuntimeState runtimeState,
         int maxRefreshCount,

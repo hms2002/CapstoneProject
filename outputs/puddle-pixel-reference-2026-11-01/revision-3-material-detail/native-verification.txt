@@ -1,0 +1,37 @@
+PASS alcohol native 64x64
+PASS alcohol four frames
+PASS alcohol three editable layers
+PASS alcohol palette has exactly two added colors plus transparency
+PASS alcohol Idle tag
+PASS alcohol fixed ground-center pivot
+PASS alcohol duration 1
+PASS alcohol native source/export equality 1
+PASS alcohol static ground layer 1
+PASS alcohol duration 2
+PASS alcohol native source/export equality 2
+PASS alcohol static ground layer 2
+PASS alcohol duration 3
+PASS alcohol native source/export equality 3
+PASS alcohol static ground layer 3
+PASS alcohol duration 4
+PASS alcohol native source/export equality 4
+PASS alcohol static ground layer 4
+PASS fire native 64x64
+PASS fire four frames
+PASS fire three editable layers
+PASS fire palette has exactly two added colors plus transparency
+PASS fire Idle tag
+PASS fire fixed ground-center pivot
+PASS fire duration 1
+PASS fire native source/export equality 1
+PASS fire static ground layer 1
+PASS fire duration 2
+PASS fire native source/export equality 2
+PASS fire static ground layer 2
+PASS fire duration 3
+PASS fire native source/export equality 3
+PASS fire static ground layer 3
+PASS fire duration 4
+PASS fire native source/export equality 4
+PASS fire static ground layer 4
+Total passed: 36

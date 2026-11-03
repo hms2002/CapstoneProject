@@ -1,0 +1,20 @@
+--- before
++++ Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemRightPage.cs
+@@ -564,7 +564,16 @@
+     {
+         if (iconImage != null) iconImage.color = Color.white;
+         if (item != null)
+-            ItemDisplayIconUtility.Apply(iconImage, item, ItemDisplayIconContext.InventorySlot, iconDefaultState);
++        {
++            ItemDisplayIconUtility.Apply(iconImage, item, ItemDisplayIconContext.InventorySlot, iconDefaultState,
++                applyAnchoredPosition: false);
++            if (iconImage != null)
++            {
++                // The detail frame owns icon bounds; inventory offsets and zoom do not apply here.
++                iconImage.rectTransform.pivot = new Vector2(0.5f, 0.5f);
++                iconImage.rectTransform.localScale = Vector3.one;
++            }
++        }
+         else
+             ItemDisplayIconUtility.Clear(iconImage, iconDefaultState);
+ 

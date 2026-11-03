@@ -1,10 +1,13 @@
 # Settings panel responsive layout
 
+> Tool retention update (2026-11-01): completed task-specific skin/layout/migration authoring and acceptance tools named below are historical and have been moved outside Assets. See [current retained tools and archive](TestAndEditorToolRetention.md). Gameplay/save regressions and reusable profiling remain. Automated tests run only when explicitly requested.
+
+
 ## Language choices (2026-10-03)
 
 The existing language stepper now selects Korean, English, Japanese, Simplified Chinese and Traditional Chinese. Korean retains persisted value 0; Auto is not an enum or setting option. A missing/invalid saved choice is initialized once from the OS, with English fallback, then saved. Unity Localization owns runtime locale state; active value labels update on locale changes without resetting pending display choices. No scene/prefab layout or serialized bindings changed. See [LocalizationFlow](LocalizationFlow.md) for the current translation scope and remaining font/Play Mode checks.
 
-Current map: 2026-09-17. This document is context, not an Architecture/Contracts authority.
+Current map: 2026-11-02. This document is context, not an Architecture/Contracts authority.
 
 ## Purpose and key assets
 
@@ -14,17 +17,21 @@ Current map: 2026-09-17. This document is context, not an Architecture/Contracts
 
 ## Layout ownership and extension
 
-`SettingUI/Background/ContentsMask/Contents` stretches horizontally inside the existing mask with zero horizontal offsets. Its VerticalLayoutGroup controls child widths and expands them to the available width; authored row heights and vertical scrolling are retained.
+The main GlobalUIRoot and TitleScene use the approved clean settings skin. Settings (1240×764 reference units) and keys (1400×904) each occupy one page in the existing 1920×1080 Canvas space. The clean 320×76 title plaque overlaps the top center. The original two upper chains retain their presentation owner and endpoint references; lower chains are inactive and footer buttons are fixed inside the panel.
 
-Rows use RectTransform anchors for their interior. Existing HorizontalLayoutGroups on rows, steppers and slider groups are disabled so they cannot override these anchors. Labels occupy the left 30 percent with a 30-unit left inset; controls run from 35 percent to the right edge with a 30-unit inset. KeyMapping has one full-width inset label on its existing button row.
+`Background/ContentsMask/Contents` now contains anchored LeftColumn/RightColumn groups. The old ScrollRect, layout groups, fitters and masks are disabled, and the scrollbar is inactive. Settings uses display/environment on the left and audio/controls on the right. Labels sit above their controls in 114-unit rows. Key mapping has 19 authored shared KeyMapRow instances, 9 left and 10 right, with 56-unit rows and 6-unit gaps. See [InputBindings](InputBindings.md) for action binding and migration limits.
 
-Stepper arrows remain 60 units wide at opposite ends; the value spans between them with 20-unit gaps. Audio sliders stretch to reserve 100 units for the percentage and a 20-unit gap. Add new rows using the same authored structure. No runtime objects, new components or lifecycle ownership were introduced.
+The existing UiRenderLayerLayout slots/anchors continue to batch controls, icons and text. Render layers must follow both column roots in sibling order. Slider Fill Area is 12 units high; Handle Slide Area is 32 units high with zero handle height delta, because Slider drives its child anchors. Disabled lower-button UIChainDropPresentation components have their reach constraints cleared: disabled MonoBehaviours still receive Awake.
+
+Pixel art comes from [SettingsSkin](../../Assets/_Project/Art/Sprites/UI/SettingsSkin/README.md), including editable Aseprite source. [SettingsSkinAuthoring](../../Assets/_Project/Editor/Tools/UI/SettingsSkinAuthoring.cs) applies native, scoped changes while preserving unrelated serialized blocks and existing font/material references. New section/footer labels use `ui.settings_skin.*` in all five GameText tables and the source CSV. Settings persistence and presenter ownership are unchanged.
+
+Settings-to-keys navigation now replaces the page immediately. KeyBindingPanelUI opens with SnapOpen and closes through FinalizeClose in the same frame; initial settings opening/closing retains its chain animation. An authored CanvasGroup on the SettingsPanelUI root hides the complete page, including upper chains, while keeping its logical stack entry active. SettingsPanelUI stores/restores that group's alpha and input flags; returning does not reload bindings or reset unapplied display choices. UIManager retains global stack/lock ownership, while OpenFromSettings/FinalizeClose retain the existing title-local owner path. ApplyInPlaceNavigation in the authoring tool updates only the visibility group/reference and preserves geometry/art.
 
 ## Known pitfalls and verification limits
 
-- Scene prefab overrides can retain positions previously written by layout groups. The enabled build scenes had the obsolete interior geometry overrides removed in this change so the prefab anchors propagate. Preserve unrelated overrides.
+- Scene prefab overrides can retain positions previously written by layout groups. On 2026-11-02, user screenshots and source inspection found stale overrides still present in all 12 enabled scenes containing the main GlobalUIRoot: settings rows were bottom-anchored at Y=0, with misplaced footer/confirmation controls. Those conflicting geometry overrides now inherit the approved main prefab. This supersedes the earlier claim that scene overrides were already cleared. Inactive scrollbar geometry and unrelated overrides remain unchanged. See [repair evidence](../../outputs/ui-layout-normalization-2026-11-02/README.md); this repair was inspected at source level only, without tests or Unity visual execution.
 - Disabled/legacy scenes and alternate GlobalUIRoot prefabs were not migrated. If made active, inspect their settings layout and overrides first.
-- Static geometry checks covered row widths 800, 1025.45, 1200, 1413.33 and 1800. Unity import, actual text rendering, display transitions and player-build visual acceptance were not executed. Very narrow widths still need visual validation.
+- [SettingsSkinValidation](../../Assets/_Project/Editor/Tools/Validation/SettingsSkinValidation.cs) exercises actual presenters from both authored sources in disposable Play Mode fixtures, five locales, repeated opening, interaction unlock, hit targets, rebinding/conflict/discard and native captures. It does not apply display settings or save bindings. Full-scene manual acceptance, display transitions and player-build visuals remain separate checks. Historical pre-skin geometry measurements are superseded.
 - This local authoring map is not currently an Architecture/Contracts promotion candidate.
 
 ## UI size option removed (2026-09-17)
@@ -54,3 +61,14 @@ The isolated Unity regression checks both directions, the soft zone, unchanged s
 `UIChainDropPresentation` still owns panel fall/settle behavior; no additional chain sleep mode was introduced. Authored link lengths, gravity, damping, anchors and serialized schemas remain unchanged. The change reduces frame-time-induced resting motion; it does not claim to solve all low-resolution rasterization artifacts.
 
 `Tools/Validation/ChainFixedStepRegression.cs` runs with the production chain source in an isolated Unity project. Fixed and variable frame schedules, anchored/free ends, endpoint motion, fractional-time reset and long-frame backlog checks passed. The fixture reproduced old-driver resting variation of 0.1227722 local units, versus 0.00001525879 with fixed ticks. UI.csproj MSBuild passed. Actual small-resolution UI rendering and mouse interaction remain manual checks.
+
+## Settings control hit targets (2026-11-02)
+
+Main GlobalUIRoot and TitleScene each have eight stepper Buttons on full-rect TMP
+arrow objects. Their ButtonBackground Images are siblings under the render
+anchor, not children of the Button. The TMP arrow is now the raycast target;
+the background remains the Button targetGraphic for tinting but does not catch
+clicks. Three Slider Background Images accept track clicks under their existing
+Slider ancestor. Labels and decorative frames remain non-raycasting. Native
+interaction is still a manual acceptance item; source references and compilation
+are reviewed in the [change record](../../outputs/ui-gameplay-fixes-2026-11-02/README.md).

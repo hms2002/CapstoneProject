@@ -1,0 +1,153 @@
+{
+  "beer": {
+    "size": [
+      64,
+      64
+    ],
+    "frames": 4,
+    "opaque_colors": 8,
+    "ms": [
+      160,
+      160,
+      160,
+      160
+    ],
+    "binary_alpha": true,
+    "png_gif_equal": true,
+    "ground_alpha_preserved": true
+  },
+  "fire-surface": {
+    "size": [
+      64,
+      64
+    ],
+    "frames": 6,
+    "opaque_colors": 7,
+    "ms": [
+      80,
+      80,
+      80,
+      80,
+      80,
+      80
+    ],
+    "binary_alpha": true,
+    "png_gif_equal": true,
+    "ground_alpha_preserved": true
+  },
+  "beer-to-fire": {
+    "size": [
+      64,
+      64
+    ],
+    "frames": 8,
+    "opaque_colors": 15,
+    "ms": [
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80
+    ],
+    "binary_alpha": true,
+    "png_gif_equal": true,
+    "ground_alpha_preserved": true
+  },
+  "flame-particle": {
+    "size": [
+      16,
+      16
+    ],
+    "frames": 6,
+    "opaque_colors": 3,
+    "ms": [
+      80,
+      80,
+      80,
+      80,
+      80,
+      80
+    ],
+    "binary_alpha": true,
+    "png_gif_equal": true,
+    "ground_alpha_preserved": false
+  },
+  "puddle-cycle": {
+    "size": [
+      64,
+      64
+    ],
+    "frames": 18,
+    "opaque_colors": 15,
+    "ms": [
+      160,
+      160,
+      160,
+      160,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80
+    ],
+    "binary_alpha": true,
+    "png_gif_equal": true,
+    "ground_alpha_preserved": true
+  },
+  "transition": {
+    "burned_pixel_counts": [
+      0,
+      78,
+      266,
+      553,
+      949,
+      1359,
+      1602,
+      1625
+    ],
+    "strictly_advancing": true,
+    "endpoint_pixels_exact": true,
+    "no_duplicate_join_hold": true
+  },
+  "beer_brightness": {
+    "previous_mean_luma": 130.06,
+    "current_mean_luma": 188.96,
+    "measurement": "Rec.709 weights on sRGB bytes; comparative proxy only"
+  },
+  "comparison-preview": {
+    "size": [
+      960,
+      320
+    ],
+    "duration_ms": 3840,
+    "integer_4x": true
+  },
+  "ignition-preview": {
+    "size": [
+      320,
+      320
+    ],
+    "duration_ms": 3840,
+    "integer_4x": true
+  },
+  "surface-only-preview": {
+    "size": [
+      320,
+      320
+    ],
+    "duration_ms": 480,
+    "integer_4x": true
+  }
+}

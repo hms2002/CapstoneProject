@@ -1,0 +1,4 @@
+Normal: bounds 9,9 to 38,37; center 23.5,23.0; ink centroid 22.62,23.03; 341 pale pixels; outer frame unchanged.
+Hover: bounds 9,9 to 38,37; center 23.5,23.0; ink centroid 22.62,23.03; 341 pale pixels; outer frame unchanged.
+Pressed: bounds 9,9 to 38,37; center 23.5,23.0; ink centroid 22.62,23.03; 341 pale pixels; outer frame unchanged.
+PASS: 48px dimensions, opaque pixels, geometric centering, shared glyph mask, unchanged outer frame.

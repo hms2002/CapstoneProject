@@ -1003,7 +1003,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         {
             if (container.Get(i) == null) continue;
             ItemSlotUI slot = Instantiate(slotPrefab, gridRoot);
-            slot.Bind(container, i);
+            slot.Bind(container, i, useChestRarityBorder: true);
             slot.SetSelectionClickHandler(ToggleSelection);
             spawnedChestSlots.Add(slot);
         }
@@ -1261,7 +1261,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         {
             if (chestContainer.Get(index) == null || spawnedChestSlots.Exists(slot => slot.BoundIndex == index)) continue;
             ItemSlotUI slot = Instantiate(chestSlotPrefab, chestGridRoot);
-            slot.Bind(chestContainer, index);
+            slot.Bind(chestContainer, index, useChestRarityBorder: true);
             slot.SetSelectionClickHandler(ToggleSelection);
             spawnedChestSlots.Add(slot);
             revealSlots.Add(slot);
@@ -1545,7 +1545,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             ItemSlotUI copy = Instantiate(owner.chestSlotPrefab, canvasRoot);
             copies.Add(copy);
             copy.name = "ChestAcquisitionSlot";
-            copy.Bind(new Snapshot(item, level), 0);
+            copy.Bind(new Snapshot(item, level), 0, useChestRarityBorder: true);
             copy.SetChestSelectionOverlay(false);
             foreach (UnityEngine.UI.Graphic graphic in copy.GetComponentsInChildren<UnityEngine.UI.Graphic>(true))
                 graphic.raycastTarget = false;
@@ -1597,7 +1597,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
                 {
                     if (!step.ReplacesWeapon && standingCopies.TryGetValue(step.Target, out ItemSlotUI previous))
                         previous.gameObject.SetActive(false);
-                    step.Incoming.Bind(new Snapshot(step.Item, step.ResultLevel), 0);
+                    step.Incoming.Bind(new Snapshot(step.Item, step.ResultLevel), 0, useChestRarityBorder: true);
                     standingCopies[step.Target] = step.Incoming;
                 });
                 motion.AppendInterval(SettleDuration);

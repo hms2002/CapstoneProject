@@ -1,0 +1,102 @@
+[
+  {
+    "id": "21",
+    "name": "연속 기록",
+    "subtitle": "이름·능력치·스토리 아래 세로 기술",
+    "catalog": "rows",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "22",
+    "name": "분기 병렬",
+    "subtitle": "앞의 두 기술을 나란히 · 마지막 기술은 넓게",
+    "catalog": "grid",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "23",
+    "name": "삼단 기술",
+    "subtitle": "세 기술을 동일 너비의 세 열로",
+    "catalog": "cards",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "24",
+    "name": "사분면 기록",
+    "subtitle": "요약 한 칸 · 기술 세 칸",
+    "catalog": "focus",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "25",
+    "name": "능력치 옆기둥",
+    "subtitle": "좁은 능력치 열 · 넓은 설명 열",
+    "catalog": "gridnames",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "26",
+    "name": "입력 세로열",
+    "subtitle": "아이콘·입력과 본문을 행 안에서 분리",
+    "catalog": "reverse",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "27",
+    "name": "기술 우선",
+    "subtitle": "기술을 먼저 · 능력치와 스토리는 아래",
+    "catalog": "cards",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "28",
+    "name": "삽화 머리말",
+    "subtitle": "삽화·능력치를 위에 · 기술은 촘촘한 행으로",
+    "catalog": "indexed",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "29",
+    "name": "오른쪽 대조표",
+    "subtitle": "오른쪽 페이지 안에서 이름·입력과 설명 대조",
+    "catalog": "columns",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "30",
+    "name": "본문 우선",
+    "subtitle": "이름·설명 왼쪽 · 아이콘·입력 오른쪽",
+    "catalog": "focus",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  }
+]

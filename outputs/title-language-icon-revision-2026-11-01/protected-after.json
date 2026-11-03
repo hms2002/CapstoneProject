@@ -1,0 +1,30 @@
+[
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\TitleScene.unity",
+    "Unchanged": true
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Title\\TitleMenuController.cs",
+    "Unchanged": true
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Title\\TitleLanguageMenuUI.cs",
+    "Unchanged": true
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Title\\Language\\TitleLanguageButton.aseprite.meta",
+    "Unchanged": true
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Title\\Language\\TitleLanguageHover.png.meta",
+    "Unchanged": true
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Title\\Language\\TitleLanguageNormal.png.meta",
+    "Unchanged": true
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Title\\Language\\TitleLanguagePressed.png.meta",
+    "Unchanged": true
+  }
+]

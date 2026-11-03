@@ -1,0 +1,16 @@
+{
+  "asset.b093d5960df6454ea41e8d70aff17fb4.simpleDescription": [
+    "길게 눌러 운석을 조준하고 놓으면 발사합니다. 차징할수록 범위가 넓어지며, 착탄 시 피해와 [[화상]]을 줍니다.",
+    "Hold to aim and charge a meteor, then release to launch. Charging expands the impact area. The impact deals damage and applies [[화상]].",
+    "長押しで隕石をチャージして狙い、離すと発射します。チャージで着弾範囲が広がり、着弾時にダメージと[[화상]]を与えます。",
+    "长按蓄力并瞄准陨石，松开发射。蓄力扩大冲击范围，命中时造成伤害并施加[[화상]]。",
+    "長按蓄力並瞄準隕石，鬆開發射。蓄力擴大衝擊範圍，命中時造成傷害並施加[[화상]]。"
+  ],
+  "asset.b093d5960df6454ea41e8d70aff17fb4.description": [
+    "● {val:0.7초} 이상 차징 후 해제하면 발사 ({val:1.4초}에 최대 차징)\n● 폭발 지름 {val:4.03~6칸}, 비행 {val:0.5초}\n● 화염 최종 능력치의 {val:3배} 피해와 [[화상]] {val:10중첩}\n● 최대 차징: {val:4배} 피해와 [[화상]] {val:12중첩}\n● 발사 시 쿨다운 {val:8초}, 최소 차징 전 취소는 쿨다운 없음",
+    "● Release after {val:0.7s}; full charge at {val:1.4s}\n● Impact diameter {val:4.03–6 tiles}; flight {val:0.5s}\n● {val:3×} final Fire damage and {val:10} [[화상]] stacks\n● Full charge: {val:4×} damage and {val:12} [[화상]] stacks\n● Cooldown {val:8s} starts on launch; early cancellation costs no cooldown",
+    "● {val:0.7秒}以上で発射、{val:1.4秒}で最大チャージ\n● 爆発直径 {val:4.03～6マス}、飛行 {val:0.5秒}\n● 最終火炎能力値の{val:3倍}ダメージ、[[화상]]{val:10スタック}\n● 最大時：{val:4倍}ダメージ、[[화상]]{val:12スタック}\n● 発射時からクールダウン{val:8秒}。早期キャンセルは消費なし",
+    "● 蓄力{val:0.7秒}后可发射，{val:1.4秒}满蓄力\n● 爆炸直径{val:4.03～6格}，飞行{val:0.5秒}\n● 最终火焰属性{val:3倍}伤害与{val:10层}[[화상]]\n● 满蓄力：{val:4倍}伤害与{val:12层}[[화상]]\n● 发射时开始{val:8秒}冷却，提前取消不消耗冷却",
+    "● 蓄力{val:0.7秒}後可發射，{val:1.4秒}滿蓄力\n● 爆炸直徑{val:4.03～6格}，飛行{val:0.5秒}\n● 最終火焰屬性{val:3倍}傷害與{val:10層}[[화상]]\n● 滿蓄力：{val:4倍}傷害與{val:12層}[[화상]]\n● 發射時開始{val:8秒}冷卻，提前取消不消耗冷卻"
+  ]
+}

@@ -1,0 +1,6 @@
+Ground sources/exports are unchanged copies of revision12; no ground pixels, layers, opacity or timing are edited.
+Particle:8x8/8x80ms/3 opaque colors;5x6 peak flame silhouette; grow, bend, shrink, disappear. Native source/PNG equality; final frame empty. Pivot4,6.
+Flare:12x12/8x80ms/3 opaque colors;7x10 peak silhouette. Native source/PNG equality; final frame empty; pivot6,10.
+All160 ground/alcohol/background preview cels exactly match revision12; only the particle layer changes.
+Preview:32 distributed emitters including8 larger flares;800ms period,560ms visible life, cycle-dependent birth jitter, lateral spread and delayed16-20px rise.3200ms composition; ground/particles remain separate. No Unity ParticleSystem changed.
+Aseprite 1.3.18.6

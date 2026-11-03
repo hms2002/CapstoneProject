@@ -1824,7 +1824,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294734114826
-    m_Localized: Combat Stats
+    m_Localized: Other Stats
     m_Metadata:
       m_Items: []
   - m_Id: 46294734114827
@@ -4726,15 +4726,16 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 50606285688888
-    m_Localized: "Consumes some [[\uD654\uC0C1]] stacks on burning enemies in view
-      to trigger explosions. Nearby enemies also take damage."
+    m_Localized: "Hold to aim and charge a meteor, then release to launch. Charging
+      expands the impact area. The impact deals damage and applies [[\uD654\uC0C1]]."
     m_Metadata:
       m_Items: []
   - m_Id: 50606285688889
-    m_Localized: "\u25CF Trigger explosions on all enemies with [[\uD654\uC0C1]]
-      in view\n\u25CF Consume up to {val:5 stacks} of [[\uD654\uC0C1]] per target
-      for explosion damage\n\u25CF Nearby enemies take the same damage\n\u25CF Explosion
-      diameter: {val:5 tiles}"
+    m_Localized: "\u25CF Release after {val:0.7s}; full charge at {val:1.4s}\n\u25CF
+      Impact diameter {val:4.03\u20136 tiles}; flight {val:0.5s}\n\u25CF {val:3\xD7}
+      final Fire damage and {val:10} [[\uD654\uC0C1]] stacks\n\u25CF Full charge:
+      {val:4\xD7} damage and {val:12} [[\uD654\uC0C1]] stacks\n\u25CF Cooldown {val:8s}
+      starts on launch; early cancellation costs no cooldown"
     m_Metadata:
       m_Items: []
   - m_Id: 50606285688890
@@ -7859,10 +7860,84 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3397459331186688
-    m_Localized: Filling the mug for 3 seconds in an alcohol puddle grants +25% movement
+    m_Localized: Filling the mug for 1 second in an alcohol puddle grants +25% movement
       speed and +40% attack speed instead of confusion. The duration refreshes inside
       the puddle. After leaving, the mug drains for 1.5 seconds, then the buff lasts
       5 seconds.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090273300480
+    m_Localized: Display
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987200
+    m_Localized: Environment
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987201
+    m_Localized: Audio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987202
+    m_Localized: Controls
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987203
+    m_Localized: Movement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987204
+    m_Localized: Combat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987205
+    m_Localized: Consumables
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987206
+    m_Localized: Interaction / UI
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987207
+    m_Localized: Primary
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987208
+    m_Localized: Secondary
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987209
+    m_Localized: Apply display changes below. Audio, language and screen shake update
+      immediately.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987210
+    m_Localized: Dialogue advance uses Space. The circular arrow resets a single
+      action.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10548020289376256
+    m_Localized: You have not acquired this item yet.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10548020859801600
+    m_Localized: You have not encountered this monster yet.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10548020859801601
+    m_Localized: You have not encountered this boss yet.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10990827974070272
+    m_Localized: Stats
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11285825378488320
+    m_Localized: Close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11285827328839680
+    m_Localized: Reroll
     m_Metadata:
       m_Items: []
   references:

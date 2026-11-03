@@ -1,0 +1,30 @@
+[
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Scenes\\TitleScene.unity",
+    "Hash": "0A37FD126A594E8A65168E28B0ACE5EFE75978C0A9BAF7C3FDC5A45E1911EB1A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Title\\TitleMenuController.cs",
+    "Hash": "35FAFA3A6A214A3F8A2627AD6E4AFC36AFDA44637C598E173E5C25AD631BA5E6"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\UI\\Title\\TitleLanguageMenuUI.cs",
+    "Hash": "4507619DC56BA7A788CC8B585F8C9CAB449787C988352056078873FE9C205BD7"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Title\\Language\\TitleLanguageButton.aseprite.meta",
+    "Hash": "96CBF2EBCAF715878CA6E87F28D871113C6AF7AEBDB3083C44527F4AAEDAFB16"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Title\\Language\\TitleLanguageHover.png.meta",
+    "Hash": "88242480D0BBC4B44B37F40B88CA9AE16754B5365E7E0E198216BC26FF166680"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Title\\Language\\TitleLanguageNormal.png.meta",
+    "Hash": "69199AA9497A83E90A2FA455B874A8318B46C071D3D398A64F97DA0DE201A711"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\UI\\Title\\Language\\TitleLanguagePressed.png.meta",
+    "Hash": "E800AF7DEC7AFA46B187C0BF69D1BA252ED21166A4C4603590F9F7CD9D2F7310"
+  }
+]

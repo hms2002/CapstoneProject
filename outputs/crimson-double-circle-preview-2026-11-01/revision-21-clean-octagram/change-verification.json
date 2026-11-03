@@ -1,0 +1,28 @@
+{
+  "mode": "Micro-fix / preview only",
+  "dimensions": [
+    192,
+    192
+  ],
+  "unchangedLayers": [
+    "outer",
+    "outer-base",
+    "outer-rim",
+    "outer-star",
+    "outer-medallions",
+    "outer-runes",
+    "inner-rim",
+    "inner-medallions",
+    "medallion",
+    "glyph-directions"
+  ],
+  "removedCentralRunePixels": 57,
+  "addedMiddleCirclePixels": 204,
+  "changedCornerPixels": 68,
+  "activeColors": [
+    "f16b32",
+    "b63d28",
+    "ffc65a"
+  ],
+  "note": "Cream disappeared with corner accents; no palette colors added. Runtime art/code untouched."
+}

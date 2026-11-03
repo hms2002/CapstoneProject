@@ -11,6 +11,7 @@ public sealed class EncyclopediaCharacterEntryView : MonoBehaviour
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private GameObject selectedMarker;
     [SerializeField] private GameObject affectionRoot;
+    [SerializeField] private GameObject gradientRoot;
     [SerializeField] private UnityEngine.UI.Image[] affectionFillImages = Array.Empty<UnityEngine.UI.Image>();
 
     private int entryIndex = -1;
@@ -29,16 +30,22 @@ public sealed class EncyclopediaCharacterEntryView : MonoBehaviour
             button.onClick.RemoveListener(HandleClick);
     }
 
-    public void Bind(int index, string title, Sprite portrait, bool character, int affection, bool selected)
+    public void Bind(int index, string title, Sprite portrait, bool character, int affection, bool selected,
+        bool discovered = true, bool bossStyle = true)
     {
         entryIndex = index;
         gameObject.SetActive(true);
         if (titleText != null)
-            titleText.text = title ?? string.Empty;
+        {
+            titleText.text = discovered ? title ?? string.Empty : "???";
+            titleText.color = character && bossStyle ? new Color32(255, 240, 201, 255) : new Color32(65, 43, 34, 255);
+        }
         EncyclopediaPortraitUtility.SetSprite(portraitImage, portrait);
+        if (portraitImage != null) portraitImage.color = discovered ? Color.white : Color.black;
+        if (gradientRoot != null) gradientRoot.SetActive(character && bossStyle);
         SetSelected(selected);
         if (affectionRoot != null)
-            affectionRoot.SetActive(character);
+            affectionRoot.SetActive(character && discovered);
         for (int i = 0; i < affectionFillImages.Length; i++)
             if (affectionFillImages[i] != null)
                 affectionFillImages[i].fillAmount = i < Mathf.Max(0, affection) ? 1f : 0f;

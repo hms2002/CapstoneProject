@@ -206,7 +206,7 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
     {
         if (rerollCountText == null) return;
         int remaining = Mathf.Max(0, sessionController.MaxRerolls - sessionController.RerollsUsed);
-        string text = GameText.Format("ui.level_reward.rerolls", "[R] 리롤 {0}/{1}", remaining, sessionController.MaxRerolls);
+        string text = $"{remaining}/{sessionController.MaxRerolls}";
         if (rerollCountText.text != text) rerollCountText.text = text;
     }
 

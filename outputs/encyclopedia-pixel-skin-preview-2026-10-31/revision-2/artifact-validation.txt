@@ -1,0 +1,3 @@
+PASS 22 sprite exports including 16x16 four-arrow FullViewExpand.
+PASS previous 21 sprites and Monster composite remain byte-identical.
+PASS four protected project files and 20 original sprite references unchanged.

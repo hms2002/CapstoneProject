@@ -2,7 +2,7 @@
 status: active
 authority: task-router
 category: task-index
-last_reviewed: 2026-10-12
+last_reviewed: 2026-11-01
 ---
 
 # Task Index
@@ -22,7 +22,7 @@ Use this file to find a matching `Docs/ActiveTasks/<task-id>.md` or to decide th
 
 | Task ID | Mode | Risk | Target Type | Status | ActiveTask |
 | --- | --- | --- | --- | --- | --- |
-| full-game-localization | Implementation | Approved serialized UI/font edits | Runtime + UI assets + tables | Japanese Galmuri9 applied; 55 representative Play Mode captures, timer atlas repaired; encyclopedia hint overlap and full-flow review remain (SOLD excluded) | [Scope](ActiveTasks/full-game-localization.md) |
+| full-game-localization | Implementation | Approved serialized UI/font edits | Runtime + UI assets + tables | Japanese Galmuri9 applied; 55 representative Play Mode captures, timer atlas repaired; encyclopedia hint overlap resolved in the [layout follow-up](../outputs/encyclopedia-layout-2026-11-01/README.md); full-flow review remains (SOLD excluded) | [Scope](ActiveTasks/full-game-localization.md) |
 
 ## Proposed Tasks
 
@@ -33,6 +33,11 @@ Use this file to find a matching `Docs/ActiveTasks/<task-id>.md` or to decide th
 
 | Task ID | Closed Date | Replacement / Outcome |
 | --- | --- | --- |
+| puddle-pixel-integration | 2026-11-01 | [Completed scope](ActiveTasks/puddle-pixel-integration.md): revision16 beer color/revision17 foam applied to both existing puddle prefabs, with separate near/air flames and center ignition. Native101 frames, PlayMode57/57, MSBuild and protected source/save checks passed. Full manual combat/Player build remain unexecuted. |
+| encyclopedia-skin-discovery | 2026-11-01 | [Completed scope](ActiveTasks/encyclopedia-skin-discovery.md): approved pixel skin and black silhouettes/hidden details for unencountered Monsters/Bosses and unacquired Weapons/Relics. Additive profile/run discovery; Unity15 EditMode +29 unique PlayMode cases, MSBuild3/3, preservation10/10 and saves6/6 passed. Full manual flow/Player build and historical item acquisitions remain limited. |
+| settings-keymapping-skin | 2026-10-31 | [Completed scope](ActiveTasks/settings-keymapping-skin.md): Aseprite clean title/frames, upper chains and one-page two-column settings/19 authored key rows in main GlobalUIRoot and TitleScene. Follow-up: instant settings↔keys replacement preserves pending display choices; Unity1,548 checks, serialized scope preservation and MSBuild passed. Earlier skin integration:3/3 render-layer regressions. Full-scene manual acceptance/Player build and independent legacy copies remain. |
+| player-stats-potion-reward-skin | 2026-10-31 | [Completed scope](ActiveTasks/player-stats-potion-reward-skin.md): approved artwork in six prefabs; stats follow-up adds38px rows, Basic7/Other6 and attack-speed%. Follow-up Unity562 checks/11 captures,21/21 focused regressions and MSBuild passed. Original skin suite's two unrelated failures remain recorded. Full-scene manual acceptance/Player build remain. |
+| monster-pixel-hp | 2026-10-30 | [Completed scope](ActiveTasks/monster-pixel-hp.md): approved Aseprite sheet in shared mesh and overlap Images; native source comparison exact, Play Mode30/30 and MSBuild passed; gameplay/timing/status/groggy retained. Manual whole-combat/Player performance remain unmeasured. |
 | spiri-alcohol-exposure | 2026-10-12 | [Completed scope](ActiveTasks/spiri-alcohol-exposure.md): recipient3s charge/1.5s drain, confusion, Spiri level1 five-second speed reward and authored mug; initial38 native cases passed. Directional dash reversal follow-up compiled with15 direction cases; current open Editor PlayMode rerun/manual combat/Player build remain unexecuted. |
 | encyclopedia-tab-visibility-reveal | 2026-10-12 | [Completed scope](ActiveTasks/encyclopedia-tab-visibility-reveal.md): complete Item detail hiding with bookmarks/selection preserved; shared Reveal order and mask-top correction. Unity26/26, Editor/test MSBuild and preservation23/23 passed; native phases use real Item/font presenters. Full hub manual flow/Player build remain. |
 | electric-scaling-and-relics | 2026-10-12 | [Completed scope](ActiveTasks/electric-scaling-and-relics.md): active direct re-electrocution doubles the requirement, shock end resets to base; chain/Echo and game explanations excluded. Native96/96 and Editor/test MSBuild passed. Earlier ten-relic/29-level actual descriptions and exact150 locale values verified; manual combat balance/Player build remain. |

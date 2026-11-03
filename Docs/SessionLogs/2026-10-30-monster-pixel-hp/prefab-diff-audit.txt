@@ -1,0 +1,12 @@
+Existing semantic blocks changed: 9
+--- !u!114 &1835211123824175175   m_GameObject: {fileID: 4295233689472961361}   m_Name:   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &5595543730768964697   m_GameObject: {fileID: 7682883741539655214}   m_Name:   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &654924890921570761   m_GameObject: {fileID: 9129000617772403454}   m_Name:   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &6406631624429694001   m_GameObject: {fileID: 1793656443900534215}   m_Name:   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &1154329402590983466   m_GameObject: {fileID: 5998278944651128108}   m_Name:   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!224 &6969860908342679635   m_GameObject: {fileID: 5998278944651128108}
+--- !u!114 &2515976509137108747   m_GameObject: {fileID: 1944833426964544225}   m_Name:   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!224 &7056607814160551628   m_GameObject: {fileID: 4295233689472961361}
+--- !u!224 &3571959603515392176   m_GameObject: {fileID: 269457405209028558}
+Blocks removed: 0
+Blocks added: 0

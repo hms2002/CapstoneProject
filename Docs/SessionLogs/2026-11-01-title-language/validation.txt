@@ -1,0 +1,99 @@
+PASS real TitleScene components initialized
+PASS dropdown starts closed
+PASS five authored choices
+PASS toggle opens list 0
+PASS list owns keyboard focus 0
+PASS native label fits: 한국어
+PASS native label glyphs: 한국어
+PASS native label fits: English
+PASS native label glyphs: English
+PASS native label fits: 日本語
+PASS native label glyphs: 日本語
+PASS native label fits: 简体中文
+PASS native label glyphs: 简体中文
+PASS native label fits: 繁體中文
+PASS native label glyphs: 繁體中文
+PASS choice raycast unblocked 0
+PASS selection closes list 0
+PASS service and saved language 0
+PASS current language marker 0
+PASS escape close route 0
+PASS focus returns to toggle 0
+PASS toggle opens list 1
+PASS list owns keyboard focus 1
+PASS native label fits: 한국어
+PASS native label glyphs: 한국어
+PASS native label fits: English
+PASS native label glyphs: English
+PASS native label fits: 日本語
+PASS native label glyphs: 日本語
+PASS native label fits: 简体中文
+PASS native label glyphs: 简体中文
+PASS native label fits: 繁體中文
+PASS native label glyphs: 繁體中文
+PASS choice raycast unblocked 1
+PASS selection closes list 1
+PASS service and saved language 1
+PASS current language marker 1
+PASS escape close route 1
+PASS focus returns to toggle 1
+PASS toggle opens list 2
+PASS list owns keyboard focus 2
+PASS native label fits: 한국어
+PASS native label glyphs: 한국어
+PASS native label fits: English
+PASS native label glyphs: English
+PASS native label fits: 日本語
+PASS native label glyphs: 日本語
+PASS native label fits: 简体中文
+PASS native label glyphs: 简体中文
+PASS native label fits: 繁體中文
+PASS native label glyphs: 繁體中文
+PASS choice raycast unblocked 2
+PASS selection closes list 2
+PASS service and saved language 2
+PASS current language marker 2
+PASS escape close route 2
+PASS focus returns to toggle 2
+PASS toggle opens list 3
+PASS list owns keyboard focus 3
+PASS native label fits: 한국어
+PASS native label glyphs: 한국어
+PASS native label fits: English
+PASS native label glyphs: English
+PASS native label fits: 日本語
+PASS native label glyphs: 日本語
+PASS native label fits: 简体中文
+PASS native label glyphs: 简体中文
+PASS native label fits: 繁體中文
+PASS native label glyphs: 繁體中文
+PASS choice raycast unblocked 3
+PASS selection closes list 3
+PASS service and saved language 3
+PASS current language marker 3
+PASS escape close route 3
+PASS focus returns to toggle 3
+PASS toggle opens list 4
+PASS list owns keyboard focus 4
+PASS native label fits: 한국어
+PASS native label glyphs: 한국어
+PASS native label fits: English
+PASS native label glyphs: English
+PASS native label fits: 日本語
+PASS native label glyphs: 日本語
+PASS native label fits: 简体中文
+PASS native label glyphs: 简体中文
+PASS native label fits: 繁體中文
+PASS native label glyphs: 繁體中文
+PASS choice raycast unblocked 4
+PASS selection closes list 4
+PASS service and saved language 4
+PASS current language marker 4
+PASS escape close route 4
+PASS focus returns to toggle 4
+PASS outside click dismisses
+PASS reopen selects current language
+PASS settings hides language button and dropdown
+PASS language menu works after settings closes
+PASS original display language restored before exit
+TITLE_LANGUAGE_VALIDATION_PASS

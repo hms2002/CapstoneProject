@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// 책임: 적 사망 위치에서 잠시 대기한 뒤 플레이어를 추적하고, 도착 시 현재 런에 경험치를 지급한다.
+/// 책임: 전투 중 바닥에서 대기하고, 전투 종료 후 함께 떠올라 플레이어에게 이동한 뒤 런 경험치를 지급한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class ExperiencePickup2D : MonoBehaviour
@@ -10,53 +10,62 @@ public sealed class ExperiencePickup2D : MonoBehaviour
     [SerializeField] private LevelProgressionConfigSO progressionConfig;
 
     [Header("Homing")]
-    [SerializeField, Min(0f)] private float homingDelay = 1f;
-    [SerializeField, Min(0f)] private float homingSpeed = 8f;
+    [Tooltip("전투 종료 후 흡수 전 떠오르는 시간(초)")]
+    [SerializeField, Min(0f)] private float homingDelay = 0.15f;
+    [Tooltip("초당 흡수 진행률. 3.333333이면 거리에 관계없이 약 0.3초에 도착합니다.")]
+    [SerializeField, Min(0.01f)] private float homingSpeed = 3.333333f;
+
+    [Header("Combat Ground Presentation")]
+    [SerializeField] private SpriteRenderer pickupRenderer;
+    [SerializeField, Range(0f, 1f)] private float groundAlpha = 0.45f;
+    [SerializeField, Min(0f)] private float riseHeight = 0.25f;
 
     [Header("Acquisition Presentation")]
     [SerializeField] private ParticleSystem gainParticlePrefab;
 
     private int experienceAmount;
-    private float homingStartTime;
     private Transform target;
     private bool consumed;
-    private float trackingSeconds;
+    private readonly CombatRewardPickupMotion motion = new();
 
     public int ExperienceAmount => experienceAmount;
 
     public void Initialize(int amount)
     {
         experienceAmount = Mathf.Max(0, amount);
-        homingStartTime = Time.time + homingDelay;
         target = null;
-        trackingSeconds = 0f;
         consumed = false;
+        motion.Reset(transform, pickupRenderer, groundAlpha);
     }
 
-    private void Update()
+    private void OnEnable() => motion.Reset(transform, pickupRenderer, groundAlpha);
+
+    private void OnDisable()
     {
-        if (consumed || Time.time < homingStartTime)
+        motion.Cancel();
+        target = null;
+    }
+
+    private void LateUpdate()
+    {
+        if (consumed)
             return;
 
         if (target == null)
             target = PlayerRuntimeRegistry.GetPlayerTransform();
 
-        if (target == null)
-            return;
-
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            target.position,
-            HomingPickupTravel.Speed(homingSpeed, trackingSeconds) * Time.deltaTime);
-        trackingSeconds += Time.deltaTime;
-
-        if ((transform.position - target.position).sqrMagnitude <= 0.0001f)
+        if (motion.Tick(target, HomingPickupTravel.IsCombatActiveForPickupFrame,
+            groundAlpha, riseHeight, homingDelay, homingSpeed))
             TryCollect();
     }
 
     public bool TryCollectForTravel(Transform player)
     {
-        if (consumed || target == null || target != player) return true;
+        if (consumed || !isActiveAndEnabled || player == null) return true;
+        if (target == null) target = PlayerRuntimeRegistry.GetPlayerTransform();
+        if (target != player) return true;
+        // Grounded/rising rewards must not be lost to an immediate post-clear portal.
+        if (MonsterSpawnRoomGroup.IsPlayerInCombat) return false;
         TryCollect();
         return consumed;
     }

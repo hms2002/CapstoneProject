@@ -1,0 +1,4 @@
+Ground: only the Low flames layer removed; all8 remaining cel images/positions/opacities, layer opacities, timings, tag and pivot preserved. Exact equality to original with flame layer disabled.
+Particle:8x8/8x80ms/3 opaque colors; grow, flicker, shrink, disappear. Native source/PNG equality; final frame empty. Pivot4,6.
+Preview:16 staggered emitters,800ms period,560ms visible life, sideways drift and14px rise.3200ms composition; ground and particles remain distinct editable layers. No Unity ParticleSystem changed.
+Aseprite 1.3.18.6

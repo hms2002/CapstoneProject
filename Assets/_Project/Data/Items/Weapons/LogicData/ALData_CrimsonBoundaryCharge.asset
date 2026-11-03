@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bc250622d2deaa46870b65d03c5be01, type: 3}
+  m_Name: ALData_CrimsonBoundaryCharge
+  m_EditorClassIdentifier: Gameplay::CrimsonBoundaryChargeData
+  weaponData: {fileID: 11400000, guid: 49492591466c45ecb2245a229703c3ac, type: 2}
+  presentationPrefab: {fileID: 8496914479691240258, guid: fd88a6a0d9905f945947fc27fe52689e, type: 3}
+  minimumChargeSeconds: 0.7
+  fullChargeSeconds: 1.4
+  maximumDiameter: 6
+  flightSeconds: 0.5
+  partialDamageMultiplier: 3
+  fullDamageMultiplier: 4
+  partialBurnStacks: 10
+  fullBurnStacks: 12

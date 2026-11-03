@@ -1,0 +1,13 @@
+Edit Mode rendering of the current GlobalUIRoot ChestScreen subtree.
+No Play Mode, tests, gameplay acquisition, save writes, or AssetDatabase.SaveAssets.
+Player inventory is hidden in the temporary preview; the camera frames the chest.
+Remaining rerolls are display-only sample data (3), formatted by ChestScreen.
+Rows show Common / Rare / Epic / weapon-exclusive authored relics.
+RD_CurrentShard
+RD_ConductorRing
+RD_BurningFeather
+RD_OddIronMagazine
+RD_CombatGloves
+RD_CurrentJar
+RD_BrokenCrown
+RD_ApprenticeChargeLink

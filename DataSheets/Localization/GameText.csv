@@ -1,4 +1,4 @@
-﻿key,ko,en,ja,zh-Hans,zh-Hant
+key,ko,en,ja,zh-Hans,zh-Hant
 weapon.odd_iron.description,"<color=#96DCFA>재장전은 없다. 여섯 발이 끝나면, 이제 던질 일만 남은 기묘한 쇳덩이.</color>","<color=#96DCFA>No reloading. Once the six shots are spent, all that remains is to throw this odd lump of iron.</color>",<color=#96DCFA>リロードはできない。六発撃ち終えたら、あとは投げるしかない奇妙な鉄の塊。</color>,<color=#96DCFA>无法装填。六发打完，这块奇怪的铁疙瘩就只剩扔出去的份了。</color>,<color=#96DCFA>無法裝填。六發打完，這塊奇怪的鐵疙瘩就只剩扔出去的份了。</color>
 relic.last_stand.description,현재 체력이 {threshold} 이하일 경우 모든 공격이 반드시 치명타로 적중.,All attacks are guaranteed critical hits while current HP is {threshold} or lower.,現在のHPが{threshold}以下の場合、すべての攻撃が必ずクリティカルになる。,当前生命值不高于{threshold}时，所有攻击必定暴击。,目前生命值不高於{threshold}時，所有攻擊必定暴擊。
 dialogue.merchant.001,"어서 와, 용사님! 오늘도 반짝반짝한 마정석은 두둑하게 챙겨 왔지?","Welcome, hero! Got plenty of shiny magic stones with you today?",いらっしゃい、勇者さん！今日もキラキラの魔晶石をたっぷり持ってきたよね？,欢迎，勇者！今天也带了不少闪闪发亮的魔晶石吧？,歡迎，勇者！今天也帶了不少閃閃發亮的魔晶石吧？
@@ -558,7 +558,7 @@ asset.3decc28a7d924e86943f0125ab496e60.effectTemplate,현재 체력이 {threshol
 asset.17f28fd3af2d443e86388ce0fa8cca38.statModifiers.Array.data[0].labelOverride,전기 속성,Electric Element,電気属性,电属性,電屬性
 asset.86f606da826554b40b2d47660998aa30.statModifiers.Array.data[0].labelOverride,이동속도,Movement Speed,移動速度,移动速度,移動速度
 asset.ab12cd34ef56ab78cd90ef12ab34cd56.title,기본 능력치,Basic Stats,基本能力値,基础属性,基礎屬性
-asset.bc23de45f067bc89de01f234bc45de67.title,전투 능력치,Combat Stats,戦闘能力値,战斗属性,戰鬥屬性
+asset.bc23de45f067bc89de01f234bc45de67.title,기타 능력치,Other Stats,その他の能力値,其他属性,其他屬性
 asset.b1c2d3e4f5061728394a5b6c7d8e9f01.label,공격력,Attack Power,攻撃力,攻击力,攻擊力
 asset.8102c638485b45519f98568abd077a98.label,공격 속도,Attack Speed,攻撃速度,攻击速度,攻擊速度
 asset.a2b3c4d5e6f708192a3b4c5d6e7f8091.label,출혈 피해량,Bleed Damage,出血ダメージ,出血伤害,出血傷害
@@ -1305,23 +1305,28 @@ asset.5f97a6bb83ed4244b79bf0ba07eff5d9.description,"● 조준 방향으로 화�
 ● 對命中點周圍造成等同於[[화염 피해]]的範圍傷害並施加{val:3層}[[화상]]"
 asset.2e8d1d1431e940e8a5f013be8e8fcf92.simpleDescription,"지정한 위치에 잠시 후 큰 폭발을 일으킵니다. 적의 [[화상]]을 모두 소모하며, 중첩이 많을수록 강해집니다.",Creates a large explosion at the chosen location after a short delay. Consumes all enemy [[화상]] stacks; more stacks mean more power.,指定位置に少し遅れて大爆発を起こす。敵の[[화상]]をすべて消費し、スタックが多いほど強くなる。,短暂延迟后在指定位置引发大爆炸。消耗敌人的全部[[화상]]层数，层数越多威力越强。,短暫延遲後在指定位置引發大爆炸。消耗敵人的全部[[화상]]層數，層數越多威力越強。
 asset.2e8d1d1431e940e8a5f013be8e8fcf92.description,"커서 위치에서 0.6초 후 폭발합니다. 화염 공격력에 비례한 피해를 주고, 적의 화상을 모두 소모해 중첩당 추가 피해를 줍니다.",Explodes at the cursor after 0.6 seconds. Deals damage based on fire attack power and consumes all burn stacks for additional damage per stack.,カーソル位置で0.6秒後に爆発する。火炎攻撃力に応じたダメージを与え、火傷をすべて消費してスタックごとに追加ダメージを与える。,0.6秒后在光标位置爆炸。造成与火焰攻击力成比例的伤害，并消耗全部灼烧层数，每层造成额外伤害。,0.6秒後在游標位置爆炸。造成與火焰攻擊力成比例的傷害，並消耗全部灼燒層數，每層造成額外傷害。
-asset.b093d5960df6454ea41e8d70aff17fb4.simpleDescription,시야 안의 불타는 적들의 [[화상]]을 일부 소모해 폭발시킵니다. 폭발은 주변 적도 피해를 줍니다.,Consumes some [[화상]] stacks on burning enemies in view to trigger explosions. Nearby enemies also take damage.,視界内の火傷中の敵の[[화상]]を一部消費して爆発させる。周囲の敵にもダメージを与える。,消耗视野内燃烧敌人的部分[[화상]]层数引发爆炸。爆炸也会伤害周围敌人。,消耗視野內燃燒敵人的部分[[화상]]層數引發爆炸。爆炸也會傷害周圍敵人。
-asset.b093d5960df6454ea41e8d70aff17fb4.description,"● 시야 안의 [[화상]] 상태인 모든 적에게 폭발 발생
-● 대상마다 [[화상]] 최대 {val:5중첩}을 소모해 폭발 피해
-● 주변 적에게도 동일한 피해
-● 폭발 지름 {val:5칸}","● Trigger explosions on all enemies with [[화상]] in view
-● Consume up to {val:5 stacks} of [[화상]] per target for explosion damage
-● Nearby enemies take the same damage
-● Explosion diameter: {val:5 tiles}","● 視界内の[[화상]]状態の敵すべてを爆発させる
-● 対象ごとに[[화상]]を最大{val:5スタック}消費して爆発ダメージ
-● 周囲の敵にも同じダメージ
-● 爆発の直径：{val:5マス}","● 引爆视野内所有处于[[화상]]状态的敌人
-● 每个目标最多消耗{val:5层}[[화상]]造成爆炸伤害
-● 周围敌人受到相同伤害
-● 爆炸直径：{val:5格}","● 引爆視野內所有處於[[화상]]狀態的敵人
-● 每個目標最多消耗{val:5層}[[화상]]造成爆炸傷害
-● 周圍敵人受到相同傷害
-● 爆炸直徑：{val:5格}"
+asset.b093d5960df6454ea41e8d70aff17fb4.simpleDescription,"길게 눌러 운석을 조준하고 놓으면 발사합니다. 차징할수록 범위가 넓어지며, 착탄 시 피해와 [[화상]]을 줍니다.","Hold to aim and charge a meteor, then release to launch. Charging expands the impact area. The impact deals damage and applies [[화상]].",長押しで隕石をチャージして狙い、離すと発射します。チャージで着弾範囲が広がり、着弾時にダメージと[[화상]]を与えます。,长按蓄力并瞄准陨石，松开发射。蓄力扩大冲击范围，命中时造成伤害并施加[[화상]]。,長按蓄力並瞄準隕石，鬆開發射。蓄力擴大衝擊範圍，命中時造成傷害並施加[[화상]]。
+asset.b093d5960df6454ea41e8d70aff17fb4.description,"● {val:0.7초} 이상 차징 후 해제하면 발사 ({val:1.4초}에 최대 차징)
+● 폭발 지름 {val:4.03~6칸}, 비행 {val:0.5초}
+● 화염 최종 능력치의 {val:3배} 피해와 [[화상]] {val:10중첩}
+● 최대 차징: {val:4배} 피해와 [[화상]] {val:12중첩}
+● 발사 시 쿨다운 {val:8초}, 최소 차징 전 취소는 쿨다운 없음","● Release after {val:0.7s}; full charge at {val:1.4s}
+● Impact diameter {val:4.03–6 tiles}; flight {val:0.5s}
+● {val:3×} final Fire damage and {val:10} [[화상]] stacks
+● Full charge: {val:4×} damage and {val:12} [[화상]] stacks
+● Cooldown {val:8s} starts on launch; early cancellation costs no cooldown","● {val:0.7秒}以上で発射、{val:1.4秒}で最大チャージ
+● 爆発直径 {val:4.03～6マス}、飛行 {val:0.5秒}
+● 最終火炎能力値の{val:3倍}ダメージ、[[화상]]{val:10スタック}
+● 最大時：{val:4倍}ダメージ、[[화상]]{val:12スタック}
+● 発射時からクールダウン{val:8秒}。早期キャンセルは消費なし","● 蓄力{val:0.7秒}后可发射，{val:1.4秒}满蓄力
+● 爆炸直径{val:4.03～6格}，飞行{val:0.5秒}
+● 最终火焰属性{val:3倍}伤害与{val:10层}[[화상]]
+● 满蓄力：{val:4倍}伤害与{val:12层}[[화상]]
+● 发射时开始{val:8秒}冷却，提前取消不消耗冷却","● 蓄力{val:0.7秒}後可發射，{val:1.4秒}滿蓄力
+● 爆炸直徑{val:4.03～6格}，飛行{val:0.5秒}
+● 最終火焰屬性{val:3倍}傷害與{val:10層}[[화상]]
+● 滿蓄力：{val:4倍}傷害與{val:12層}[[화상]]
+● 發射時開始{val:8秒}冷卻，提前取消不消耗冷卻"
 asset.dadc84cd2fffcae45905741575af20c3.description,이동 방향으로 빠르게 대시합니다.,Dashes quickly in the movement direction.,移動方向へ素早くダッシュする。,朝移动方向快速冲刺。,朝移動方向快速衝刺。
 asset.e88ec91ea0494e0ba99bbdb7e6cf485f.simpleDescription,꽃잎을 흩뿌리며 연속으로 벱니다. 마지막 공격은 더 멀리 나아가며 강하게 베어냅니다.,Slashes repeatedly amid scattered petals. The final attack advances farther with a powerful slash.,花びらを散らしながら連続で斬る。最後の攻撃はさらに前進し、強く斬り払う。,挥洒花瓣连续斩击，最后一击前进更远并强力斩击。,揮灑花瓣連續斬擊，最後一擊前進更遠並強力斬擊。
 asset.e88ec91ea0494e0ba99bbdb7e6cf485f.description,"● 꽃잎을 흩뿌리며 {val:3연속} 베기
@@ -2704,4 +2709,22 @@ asset.875bf515b62c5bf44a0f67ab48330b66.description,연쇄될 때마다 연쇄 �
 asset.3a669323573b7c144be1d6c8d11798e1.nameText,혼란,Confusion,混乱,混乱,混亂
 asset.3a669323573b7c144be1d6c8d11798e1.storyText,술기운에 방향 감각이 흐려진다.,Alcohol clouds your sense of direction.,酔いで方向感覚が鈍る。,醉意让方向感变得模糊。,醉意讓方向感變得模糊。
 asset.3a669323573b7c144be1d6c8d11798e1.effectText,일반 걷기의 상하좌우 입력이 반전됩니다. 장판을 벗어나 맥주잔이 비워지면 해제됩니다.,Normal walking inputs are reversed in all four directions. Ends when the mug empties after leaving the puddle.,通常歩行の上下左右の入力が反転します。酒の床から離れ、ジョッキが空になると解除されます。,普通行走的上下左右输入反转。离开酒液区域后，啤酒杯清空时解除。,普通行走的上下左右輸入反轉。離開酒液區域後，啤酒杯清空時解除。
-asset.8d10d760988b81f4c826f2a3b4582465.rewardText,"술 장판에서 3초 동안 술을 채우면 혼란 대신 이동 속도 +25%, 공격 속도 +40% 버프를 얻습니다. 장판 안에서는 지속시간을 갱신하며, 장판을 벗어나 1.5초 동안 잔이 비워진 뒤 5초 동안 유지됩니다.","Filling the mug for 3 seconds in an alcohol puddle grants +25% movement speed and +40% attack speed instead of confusion. The duration refreshes inside the puddle. After leaving, the mug drains for 1.5 seconds, then the buff lasts 5 seconds.",酒の床で3秒かけてジョッキを満たすと、混乱の代わりに移動速度+25%、攻撃速度+40%のバフを得ます。床の上では持続時間が更新されます。離れてから1.5秒でジョッキが空になり、その後5秒間バフが続きます。,在酒液区域中用3秒填满酒杯后，获得移动速度+25%、攻击速度+40%的增益，替代混乱。区域内会刷新持续时间。离开后，酒杯用1.5秒清空，随后增益持续5秒。,在酒液區域中用3秒填滿酒杯後，獲得移動速度+25%、攻擊速度+40%的增益，替代混亂。區域內會刷新持續時間。離開後，酒杯用1.5秒清空，隨後增益持續5秒。
+asset.8d10d760988b81f4c826f2a3b4582465.rewardText,"술 장판에서 1초 동안 술을 채우면 혼란 대신 이동 속도 +25%, 공격 속도 +40% 버프를 얻습니다. 장판 안에서는 지속시간을 갱신하며, 장판을 벗어나 1.5초 동안 잔이 비워진 뒤 5초 동안 유지됩니다.","Filling the mug for 1 second in an alcohol puddle grants +25% movement speed and +40% attack speed instead of confusion. The duration refreshes inside the puddle. After leaving, the mug drains for 1.5 seconds, then the buff lasts 5 seconds.",酒の床で1秒かけてジョッキを満たすと、混乱の代わりに移動速度+25%、攻撃速度+40%のバフを得ます。床の上では持続時間が更新されます。離れてから1.5秒でジョッキが空になり、その後5秒間バフが続きます。,在酒液区域中用1秒填满酒杯后，获得移动速度+25%、攻击速度+40%的增益，替代混乱。区域内会刷新持续时间。离开后，酒杯用1.5秒清空，随后增益持续5秒。,在酒液區域中用1秒填滿酒杯後，獲得移動速度+25%、攻擊速度+40%的增益，替代混亂。區域內會刷新持續時間。離開後，酒杯用1.5秒清空，隨後增益持續5秒。
+ui.settings_skin.screen,"화면","Display","画面","画面","畫面"
+ui.settings_skin.environment,"환경","Environment","環境","环境","環境"
+ui.settings_skin.audio,"소리","Audio","サウンド","声音","聲音"
+ui.settings_skin.controls,"조작","Controls","操作","操作","操作"
+ui.settings_skin.movement,"이동","Movement","移動","移动","移動"
+ui.settings_skin.combat,"전투","Combat","戦闘","战斗","戰鬥"
+ui.settings_skin.consumables,"소모품","Consumables","消耗品","消耗品","消耗品"
+ui.settings_skin.utility,"상호작용 / UI","Interaction / UI","操作 / UI","交互 / UI","互動 / UI"
+ui.settings_skin.primary,"기본 키","Primary","メイン","主按键","主要鍵"
+ui.settings_skin.secondary,"보조 키","Secondary","サブ","副按键","輔助鍵"
+ui.settings_skin.settings_hint,"화면 설정은 적용 후, 소리·언어·화면 흔들림은 즉시 반영됩니다.","Apply display changes below. Audio, language and screen shake update immediately.","画面設定は適用後、音量・言語・画面振動はすぐに反映されます。","画面设置需点击应用；声音、语言和画面震动立即生效。","畫面設定需點擊套用；聲音、語言與畫面震動立即生效。"
+ui.settings_skin.keys_hint,"대화 넘기기는 Space로 고정됩니다. 원형 화살표로 해당 키를 초기화합니다.","Dialogue advance uses Space. The circular arrow resets a single action.","会話送りはSpace固定です。丸い矢印で各操作をリセットします。","对话推进固定为Space。圆形箭头可重置该操作。","對話推進固定為Space。圓形箭頭可重設該操作。"
+encyclopedia.item_not_acquired,아직 획득하지 못한 아이템입니다.,You have not acquired this item yet.,まだ獲得していないアイテムです。,尚未获得此物品。,尚未獲得此物品。
+encyclopedia.monster_not_encountered,아직 조우하지 못한 몬스터입니다.,You have not encountered this monster yet.,まだ遭遇していないモンスターです。,尚未遇见此怪物。,尚未遇見此怪物。
+encyclopedia.boss_not_encountered,아직 조우하지 못한 보스입니다.,You have not encountered this boss yet.,まだ遭遇していないボスです。,尚未遇见此首领。,尚未遇見此首領。
+encyclopedia.item_stats,능력치,Stats,能力値,属性,屬性
+ui.level_reward.close,닫기,Close,閉じる,关闭,關閉
+ui.level_reward.reroll,리롤,Reroll,再抽選,重抽,重抽

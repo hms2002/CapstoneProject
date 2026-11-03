@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="30" result="Passed" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-30 14:51:24Z" end-time="2026-10-30 14:51:29Z" duration="4.814867">
+  <test-suite type="TestSuite" id="2425" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="1192" result="Passed" start-time="2026-10-30 14:51:24Z" end-time="2026-10-30 14:51:29Z" duration="4.814867" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2421" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="1185" result="Passed" start-time="2026-10-30 14:51:25Z" end-time="2026-10-30 14:51:29Z" duration="4.737983" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="4660" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1889" name="MonsterHealthBarMeshPlayModeTests" fullname="MonsterHealthBarMeshPlayModeTests" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-10-30 14:51:25Z" end-time="2026-10-30 14:51:29Z" duration="4.073062" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1898" name="Actors_BorrowSameMeshAndMaterialButKeepIndependentInstanceData" fullname="MonsterHealthBarMeshPlayModeTests.Actors_BorrowSameMeshAndMaterialButKeepIndependentInstanceData" methodname="Actors_BorrowSameMeshAndMaterialButKeepIndependentInstanceData" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="1370252291" result="Passed" start-time="2026-10-30 14:51:26Z" end-time="2026-10-30 14:51:26Z" duration="0.267388" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1891" name="DamageDelayRepeatedHitsHealingAndMaxRescale_KeepLegacyRatios" fullname="MonsterHealthBarMeshPlayModeTests.DamageDelayRepeatedHitsHealingAndMaxRescale_KeepLegacyRatios" methodname="DamageDelayRepeatedHitsHealingAndMaxRescale_KeepLegacyRatios" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="846468072" result="Passed" start-time="2026-10-30 14:51:26Z" end-time="2026-10-30 14:51:26Z" duration="0.024334" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1897" name="FlippedScaledParent_HudStaysUpright_ShowHealthToggleAndDisableHideBothProjections" fullname="MonsterHealthBarMeshPlayModeTests.FlippedScaledParent_HudStaysUpright_ShowHealthToggleAndDisableHideBothProjections" methodname="FlippedScaledParent_HudStaysUpright_ShowHealthToggleAndDisableHideBothProjections" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="1706180700" result="Passed" start-time="2026-10-30 14:51:26Z" end-time="2026-10-30 14:51:26Z" duration="0.033733" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1900" name="GroggyMerge_RecoveryAdvancesWithoutFurtherGaugeEvents_AndDestroyUnsubscribes" fullname="MonsterHealthBarMeshPlayModeTests.GroggyMerge_RecoveryAdvancesWithoutFurtherGaugeEvents_AndDestroyUnsubscribes" methodname="GroggyMerge_RecoveryAdvancesWithoutFurtherGaugeEvents_AndDestroyUnsubscribes" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="1073062369" result="Passed" start-time="2026-10-30 14:51:26Z" end-time="2026-10-30 14:51:26Z" duration="0.088222" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1899" name="GroggyMerge_StaggerCanvasAndRows_RespectOptInAndDisableLifecycle" fullname="MonsterHealthBarMeshPlayModeTests.GroggyMerge_StaggerCanvasAndRows_RespectOptInAndDisableLifecycle" methodname="GroggyMerge_StaggerCanvasAndRows_RespectOptInAndDisableLifecycle" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="121707984" result="Passed" start-time="2026-10-30 14:51:26Z" end-time="2026-10-30 14:51:26Z" duration="0.058268" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1901" name="GroggyMerge_StaggerOnlyIntersection_PreservesLegacyRasterAndRestoresMesh" fullname="MonsterHealthBarMeshPlayModeTests.GroggyMerge_StaggerOnlyIntersection_PreservesLegacyRasterAndRestoresMesh" methodname="GroggyMerge_StaggerOnlyIntersection_PreservesLegacyRasterAndRestoresMesh" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="1962178061" result="Passed" start-time="2026-10-30 14:51:26Z" end-time="2026-10-30 14:51:28Z" duration="1.261086" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1902" name="GroggyMerge_ThreeAuthoredTankProfiles_UseHealthThirdAndReactToMaxHealthChanges" fullname="MonsterHealthBarMeshPlayModeTests.GroggyMerge_ThreeAuthoredTankProfiles_UseHealthThirdAndReactToMaxHealthChanges" methodname="GroggyMerge_ThreeAuthoredTankProfiles_UseHealthThirdAndReactToMaxHealthChanges" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="280100890" result="Passed" start-time="2026-10-30 14:51:28Z" end-time="2026-10-30 14:51:28Z" duration="0.055045" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1895" name="OverflowingStatusCountBounds_UsePreferredTextWidthBeforeMeshGeneration" fullname="MonsterHealthBarMeshPlayModeTests.OverflowingStatusCountBounds_UsePreferredTextWidthBeforeMeshGeneration" methodname="OverflowingStatusCountBounds_UsePreferredTextWidthBeforeMeshGeneration" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="1328078810" result="Passed" start-time="2026-10-30 14:51:28Z" end-time="2026-10-30 14:51:28Z" duration="0.036267" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1892" name="OverlappingActors_HpAndCountTimerRows_StrictRgbaMatchLegacySorting" fullname="MonsterHealthBarMeshPlayModeTests.OverlappingActors_HpAndCountTimerRows_StrictRgbaMatchLegacySorting" methodname="OverlappingActors_HpAndCountTimerRows_StrictRgbaMatchLegacySorting" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="1157422130" result="Passed" start-time="2026-10-30 14:51:28Z" end-time="2026-10-30 14:51:28Z" duration="0.246099" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1893" name="OverlappingHpOnlyActors_StrictRgbaMatchLegacy_ThenSeparatedActorsUseMesh" fullname="MonsterHealthBarMeshPlayModeTests.OverlappingHpOnlyActors_StrictRgbaMatchLegacy_ThenSeparatedActorsUseMesh" methodname="OverlappingHpOnlyActors_StrictRgbaMatchLegacy_ThenSeparatedActorsUseMesh" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="648963289" result="Passed" start-time="2026-10-30 14:51:28Z" end-time="2026-10-30 14:51:28Z" duration="0.142961" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1894" name="OverlapRouting_RestoresAfterDisableReenableSeparation_AndKeepsDistantActorInSameMode" fullname="MonsterHealthBarMeshPlayModeTests.OverlapRouting_RestoresAfterDisableReenableSeparation_AndKeepsDistantActorInSameMode" methodname="OverlapRouting_RestoresAfterDisableReenableSeparation_AndKeepsDistantActorInSameMode" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="947749894" result="Passed" start-time="2026-10-30 14:51:28Z" end-time="2026-10-30 14:51:28Z" duration="0.024669" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1890" name="PixelImagesAndInstancedQuad_StrictRgbaMatch_AllSizesHealthAndTrail" fullname="MonsterHealthBarMeshPlayModeTests.PixelImagesAndInstancedQuad_StrictRgbaMatch_AllSizesHealthAndTrail" methodname="PixelImagesAndInstancedQuad_StrictRgbaMatch_AllSizesHealthAndTrail" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="389306946" result="Passed" start-time="2026-10-30 14:51:28Z" end-time="2026-10-30 14:51:29Z" duration="0.590473" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1896" name="StatusCanvas_DisablesForHpOnlyAndReturnsForStacksAndTimers_WithoutMovingAnchors" fullname="MonsterHealthBarMeshPlayModeTests.StatusCanvas_DisablesForHpOnlyAndReturnsForStacksAndTimers_WithoutMovingAnchors" methodname="StatusCanvas_DisablesForHpOnlyAndReturnsForStacksAndTimers_WithoutMovingAnchors" classname="MonsterHealthBarMeshPlayModeTests" runstate="Runnable" seed="222484110" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.008625" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1989" name="MonsterWorldHudStatusTests" fullname="MonsterWorldHudStatusTests" classname="MonsterWorldHudStatusTests" runstate="Runnable" testcasecount="17" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.574298" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="1997" name="AuthoredHud_UsesApprovedSizeAndVisibility" fullname="MonsterWorldHudStatusTests.AuthoredHud_UsesApprovedSizeAndVisibility" classname="MonsterWorldHudStatusTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.017363" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1990" name="AuthoredHud_UsesApprovedSizeAndVisibility(&quot;SlimeCorridor/Pawn&quot;,Small,False)" fullname="MonsterWorldHudStatusTests.AuthoredHud_UsesApprovedSizeAndVisibility(&quot;SlimeCorridor/Pawn&quot;,Small,False)" methodname="AuthoredHud_UsesApprovedSizeAndVisibility" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="1352285198" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.002904" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1991" name="AuthoredHud_UsesApprovedSizeAndVisibility(&quot;SlimeCorridor/Knight&quot;,Small,True)" fullname="MonsterWorldHudStatusTests.AuthoredHud_UsesApprovedSizeAndVisibility(&quot;SlimeCorridor/Knight&quot;,Small,True)" methodname="AuthoredHud_UsesApprovedSizeAndVisibility" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="1805590558" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.000935" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1992" name="AuthoredHud_UsesApprovedSizeAndVisibility(&quot;SlimeCorridor/Wizard&quot;,Small,True)" fullname="MonsterWorldHudStatusTests.AuthoredHud_UsesApprovedSizeAndVisibility(&quot;SlimeCorridor/Wizard&quot;,Small,True)" methodname="AuthoredHud_UsesApprovedSizeAndVisibility" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="1138939636" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.000589" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1993" name="AuthoredHud_UsesApprovedSizeAndVisibility(&quot;ShadowCorridor/ShadowMonster&quot;,Small,True)" fullname="MonsterWorldHudStatusTests.AuthoredHud_UsesApprovedSizeAndVisibility(&quot;ShadowCorridor/ShadowMonster&quot;,Small,True)" methodname="AuthoredHud_UsesApprovedSizeAndVisibility" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="1438929824" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.000637" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1994" name="AuthoredHud_UsesApprovedSizeAndVisibility(&quot;BeerMonster&quot;,Small,True)" fullname="MonsterWorldHudStatusTests.AuthoredHud_UsesApprovedSizeAndVisibility(&quot;BeerMonster&quot;,Small,True)" methodname="AuthoredHud_UsesApprovedSizeAndVisibility" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="499968228" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.000654" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1995" name="AuthoredHud_UsesApprovedSizeAndVisibility(&quot;CommonCorridor/LizardWarrior&quot;,Medium,True)" fullname="MonsterWorldHudStatusTests.AuthoredHud_UsesApprovedSizeAndVisibility(&quot;CommonCorridor/LizardWarrior&quot;,Medium,True)" methodname="AuthoredHud_UsesApprovedSizeAndVisibility" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="1073690250" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.000833" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1996" name="AuthoredHud_UsesApprovedSizeAndVisibility(&quot;CommonCorridor/ArcaneTankGolem&quot;,Large,True)" fullname="MonsterWorldHudStatusTests.AuthoredHud_UsesApprovedSizeAndVisibility(&quot;CommonCorridor/ArcaneTankGolem&quot;,Large,True)" methodname="AuthoredHud_UsesApprovedSizeAndVisibility" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="1341080027" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.000729" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1998" name="Burn_ReapplicationKeepsTickProgress_AndCleanseDisableDeathClearStacks" fullname="MonsterWorldHudStatusTests.Burn_ReapplicationKeepsTickProgress_AndCleanseDisableDeathClearStacks" methodname="Burn_ReapplicationKeepsTickProgress_AndCleanseDisableDeathClearStacks" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="920171849" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.258232" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="2008" name="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit" fullname="MonsterWorldHudStatusTests.ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit" classname="MonsterWorldHudStatusTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.160701" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2000" name="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(False,False,0.0f,1.0f,0.5f,0.0f)" fullname="MonsterWorldHudStatusTests.ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(False,False,0.0f,1.0f,0.5f,0.0f)" methodname="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="1524497297" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.055283" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2001" name="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(True,False,0.0f,1.0f,0.5f,0.0f)" fullname="MonsterWorldHudStatusTests.ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(True,False,0.0f,1.0f,0.5f,0.0f)" methodname="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="1820395805" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.010524" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2002" name="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(False,True,0.0f,1.0f,0.5f,0.0f)" fullname="MonsterWorldHudStatusTests.ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(False,True,0.0f,1.0f,0.5f,0.0f)" methodname="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="2111457484" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.021099" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2003" name="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(True,True,0.0f,1.0f,0.5f,0.0f)" fullname="MonsterWorldHudStatusTests.ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(True,True,0.0f,1.0f,0.5f,0.0f)" methodname="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="998274528" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.009676" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2004" name="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(False,True,7.0f,1.0f,0.5f,0.0f)" fullname="MonsterWorldHudStatusTests.ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(False,True,7.0f,1.0f,0.5f,0.0f)" methodname="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="680477452" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.012843" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2005" name="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(True,True,7.0f,1.0f,0.5f,0.0f)" fullname="MonsterWorldHudStatusTests.ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(True,True,7.0f,1.0f,0.5f,0.0f)" methodname="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="102105130" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.013225" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2006" name="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(True,True,7.0f,0.5f,2.0f,0.0f)" fullname="MonsterWorldHudStatusTests.ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(True,True,7.0f,0.5f,2.0f,0.0f)" methodname="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="913766387" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.013072" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2007" name="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(True,True,7.0f,1.0f,0.5f,2.0f)" fullname="MonsterWorldHudStatusTests.ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit(True,True,7.0f,1.0f,0.5f,2.0f)" methodname="ElectricDischarge_RefreshesInitialTargetOnly_AndPreservesChainDamageAndLimit" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="671132274" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.013385" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1999" name="Electrocuted_ProjectsActualEffectLifetime_RefreshAndCleanse" fullname="MonsterWorldHudStatusTests.Electrocuted_ProjectsActualEffectLifetime_RefreshAndCleanse" methodname="Electrocuted_ProjectsActualEffectLifetime_RefreshAndCleanse" classname="MonsterWorldHudStatusTests" runstate="Runnable" seed="1953715182" result="Passed" start-time="2026-10-30 14:51:29Z" end-time="2026-10-30 14:51:29Z" duration="0.126083" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

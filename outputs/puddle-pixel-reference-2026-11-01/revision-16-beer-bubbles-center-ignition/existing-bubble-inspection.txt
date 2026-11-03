@@ -1,0 +1,6 @@
+size=32x32
+frames=1
+layers=1
+mode=0
+frame 1 duration=0.1
+layer Layer 1 opacity=255

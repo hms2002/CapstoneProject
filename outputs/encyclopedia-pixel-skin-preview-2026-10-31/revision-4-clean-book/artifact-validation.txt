@@ -1,0 +1,2 @@
+PASS 22 UI sprites, PNG sheet and slice metadata unchanged from revision3.
+PASS four protected project files and20 original sprite references unchanged.

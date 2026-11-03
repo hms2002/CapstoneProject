@@ -105,13 +105,13 @@ public sealed class AlcoholExposurePlayerVisualPlayModeTests
         TickView();
         Assert.That(mug.enabled, Is.False);
         exposure.EnterPuddle(puddle);
-        TickExposure(1.5f);
+        TickExposure(1f);
         TickView();
         Assert.That(mug.enabled, Is.True);
         Assert.That(DisplayedFill(), Is.EqualTo(0.5f).Within(0.0001f));
         foreach (SpriteRenderer drop in drops) Assert.That(drop.enabled, Is.False);
 
-        TickExposure(1.51f);
+        TickExposure(1.01f);
         TickView();
         Assert.That(DisplayedFill(), Is.EqualTo(1f));
         foreach (SpriteRenderer drop in drops) Assert.That(drop.enabled, Is.True);
@@ -123,7 +123,7 @@ public sealed class AlcoholExposurePlayerVisualPlayModeTests
         Assert.That(DisplayedFill(), Is.EqualTo(0.5f).Within(0.0001f));
         foreach (SpriteRenderer drop in drops) Assert.That(drop.enabled, Is.False);
         exposure.EnterPuddle(puddle);
-        TickExposure(0.3f);
+        TickExposure(0.2f);
         TickView();
         Assert.That(DisplayedFill(), Is.EqualTo(0.6f).Within(0.0001f));
         foreach (SpriteRenderer drop in drops) Assert.That(drop.enabled, Is.False);

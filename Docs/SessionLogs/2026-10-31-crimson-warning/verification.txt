@@ -1,0 +1,19 @@
+Crimson right-click landing warning — 2026-10-31
+
+PASS Unity6000.4.2f1 script compile and native GPU capture: exit0.
+PASS 195 native prefab frames: warning remains through flight and disappears at impact.
+PASS PlayMode CrimsonChargePlayModeTests:8 passed,0 failed,0 skipped; Unity exit0.
+PASS Release/mid-flight visibility, locked warning target/radius after cursor movement,
+     continuing dash rotation, release-time head-gauge hiding, impact-time warning hiding.
+PASS Existing damage/Burn/cooldown and cancellation/weapon-disable/scene cleanup behavior.
+PASS MSBuild Presentation.csproj: exit0.
+PASS MSBuild ProceduralPlayModeTests.csproj: exit0.
+PASS Changed-source whitespace and git diff --check.
+
+Implementation files: CrimsonBoundaryChargePresentation.cs and CrimsonChargePlayModeTests.cs.
+No prefab, serialized field, scene, Gameplay impact timing, or damage-rule change.
+Manual full-combat play and standalone Player build not executed.
+Existing project warnings remain. Preview is an isolated native prefab render.
+
+Documentation: SessionLog and existing Burn/Crimson StructureMemory updated.
+No ErrorLog/DecisionLog update in this slice; Presentation HTML unaffected.

@@ -23,17 +23,23 @@ internal readonly struct LootPoolWeaponExclusionSourceSet
     private readonly HashSet<string> worldPickupWeaponIds;
     private readonly HashSet<string> sceneWeaponDropIds;
     private readonly HashSet<string> merchantWeaponIds;
+    private readonly HashSet<string> openedChestWeaponIds;
+    private readonly HashSet<string> unsoldMerchantWeaponIds;
 
     public LootPoolWeaponExclusionSourceSet(
         HashSet<string> playerWeaponIds,
         HashSet<string> worldPickupWeaponIds,
         HashSet<string> sceneWeaponDropIds,
-        HashSet<string> merchantWeaponIds)
+        HashSet<string> merchantWeaponIds,
+        HashSet<string> openedChestWeaponIds = null,
+        HashSet<string> unsoldMerchantWeaponIds = null)
     {
         this.playerWeaponIds = Copy(playerWeaponIds);
         this.worldPickupWeaponIds = Copy(worldPickupWeaponIds);
         this.sceneWeaponDropIds = Copy(sceneWeaponDropIds);
         this.merchantWeaponIds = Copy(merchantWeaponIds);
+        this.openedChestWeaponIds = Copy(openedChestWeaponIds);
+        this.unsoldMerchantWeaponIds = Copy(unsoldMerchantWeaponIds);
     }
 
     public void AddPlayerWeaponIdsTo(HashSet<string> exclusionList)
@@ -54,6 +60,16 @@ internal readonly struct LootPoolWeaponExclusionSourceSet
     public void AddMerchantWeaponIdsTo(HashSet<string> exclusionList)
     {
         AddRange(exclusionList, merchantWeaponIds);
+    }
+
+    public void AddOpenedChestWeaponIdsTo(HashSet<string> exclusionList)
+    {
+        AddRange(exclusionList, openedChestWeaponIds);
+    }
+
+    public void AddUnsoldMerchantWeaponIdsTo(HashSet<string> exclusionList)
+    {
+        AddRange(exclusionList, unsoldMerchantWeaponIds);
     }
 
     private static HashSet<string> Copy(HashSet<string> weaponIds)
@@ -103,6 +119,10 @@ internal static class LootPoolWeaponExclusionProvider
             sourceSet.AddSceneWeaponDropIdsTo(exclusionList);
         if (context.Includes(LootPoolExclusionSource.MerchantStock))
             sourceSet.AddMerchantWeaponIdsTo(exclusionList);
+        if (context.Includes(LootPoolExclusionSource.OpenedChestStock))
+            sourceSet.AddOpenedChestWeaponIdsTo(exclusionList);
+        if (context.Includes(LootPoolExclusionSource.UnsoldMerchantStock))
+            sourceSet.AddUnsoldMerchantWeaponIdsTo(exclusionList);
 
         return new LootPoolWeaponExclusionResult(exclusionList);
     }
@@ -125,12 +145,20 @@ internal static class LootPoolLiveWeaponExclusionSourceProvider
         HashSet<string> merchantWeaponIds = context.Includes(LootPoolExclusionSource.MerchantStock)
             ? CollectMerchantWeaponIds()
             : null;
+        HashSet<string> openedChestWeaponIds = context.Includes(LootPoolExclusionSource.OpenedChestStock)
+            ? CollectOpenedChestWeaponIds(context.SourceChest)
+            : null;
+        HashSet<string> unsoldMerchantWeaponIds = context.Includes(LootPoolExclusionSource.UnsoldMerchantStock)
+            ? CollectMerchantWeaponIds(unsoldOnly: true)
+            : null;
 
         return new LootPoolWeaponExclusionSourceSet(
             playerWeaponIds,
             worldPickupWeaponIds,
             sceneWeaponDropIds,
-            merchantWeaponIds);
+            merchantWeaponIds,
+            openedChestWeaponIds,
+            unsoldMerchantWeaponIds);
     }
 
     private static HashSet<string> CollectPlayerWeaponIds()
@@ -151,7 +179,7 @@ internal static class LootPoolLiveWeaponExclusionSourceProvider
         return weaponIds;
     }
 
-    private static HashSet<string> CollectMerchantWeaponIds()
+    private static HashSet<string> CollectMerchantWeaponIds(bool unsoldOnly = false)
     {
         var weaponIds = new HashSet<string>();
 
@@ -169,6 +197,7 @@ internal static class LootPoolLiveWeaponExclusionSourceProvider
             {
                 MerchantStockEntryState entry = merchantState.slots[j];
                 if (entry == null ||
+                    (unsoldOnly && entry.isSold) ||
                     entry.kind != InventoryItemKind.Weapon ||
                     string.IsNullOrWhiteSpace(entry.itemId))
                 {
@@ -176,6 +205,56 @@ internal static class LootPoolLiveWeaponExclusionSourceProvider
                 }
 
                 weaponIds.Add(entry.itemId);
+            }
+        }
+
+        return weaponIds;
+    }
+
+    private static HashSet<string> CollectOpenedChestWeaponIds(TreasureChest sourceChest)
+    {
+        var weaponIds = new HashSet<string>();
+        TreasureChest[] chests = Object.FindObjectsByType<TreasureChest>(FindObjectsInactive.Include);
+        foreach (TreasureChest chest in chests)
+        {
+            if (chest == null || chest == sourceChest || !chest.IsOpened || chest.IsLootSelectionComplete)
+                continue;
+
+            ChestInventory inventory = chest.GetInventory();
+            if (inventory == null)
+                continue;
+
+            for (int i = 0; i < inventory.Capacity; i++)
+                if (inventory.Get(i) is WeaponDefinition weapon)
+                    AddWeaponId(weaponIds, weapon.weaponId);
+        }
+
+        // Loaded dungeons use live inventories; their old scene-exit snapshots
+        // must not reserve consumed loot or the source chest's previous roll.
+        var liveDungeonIds = new HashSet<string>();
+        DungeonGenerator[] generators = Object.FindObjectsByType<DungeonGenerator>(FindObjectsInactive.Include);
+        foreach (DungeonGenerator generator in generators)
+            if (generator != null && generator.LastGenerationSucceeded &&
+                generator.ReentryPolicy == DungeonReentryPolicy.PreserveDuringRun)
+                liveDungeonIds.Add(generator.DungeonStateId);
+
+        var savedDungeons = RunSessionStore.Data?.dungeonRunStates;
+        if (savedDungeons == null)
+            return weaponIds;
+
+        foreach (DungeonRunStateData dungeon in savedDungeons)
+        {
+            if (dungeon?.objectStates == null || liveDungeonIds.Contains(dungeon.dungeonId))
+                continue;
+
+            foreach (DungeonObjectRuntimeStateData state in dungeon.objectStates)
+            {
+                if (state == null || !state.isPresent || !state.isChestOpened || state.chestLoot == null)
+                    continue;
+
+                foreach (DungeonChestLootRuntimeStateData loot in state.chestLoot)
+                    if (loot?.item is WeaponDefinition weapon)
+                        AddWeaponId(weaponIds, weapon.weaponId);
             }
         }
 

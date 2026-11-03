@@ -170,8 +170,12 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
         LogDebug($"Clear condition completed. RewardBoss={(rewardBoss != null ? rewardBoss.name : "None")}.");
         BossRewardContext context = BuildRewardContext(rewardBoss);
         Vector3 rewardOrigin = clearCondition != null ? clearCondition.RewardOrigin : transform.position;
-        // The encounter completion guard pays once, including split bosses and terminal endings.
-        HandleGoldReward(rewardOrigin);
+        // Terminal endings snapshot run currency before returning to this routine.
+        if (context.IsFinalRouteSet)
+        {
+            HandleRewards(context, rewardOrigin);
+            context.MarkPortalHandled();
+        }
         bool usedCustomFinalePresentation = false;
 
         if (clearCondition is IBossEncounterFinalePresentationProvider finaleProvider &&
@@ -202,9 +206,14 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
 
         LogRewardContext(context);
 
-        HandleExperienceReward(context, rewardOrigin);
-        HandleRewards(context, rewardOrigin);
-        HandlePortal(context);
+        if (!context.IsFinalRouteSet)
+        {
+            // Start all normal-boss rewards and the portal reveal in the same frame.
+            HandleGoldReward(rewardOrigin);
+            HandleExperienceReward(context, rewardOrigin);
+            HandleRewards(context, rewardOrigin);
+            HandlePortal(context);
+        }
         LogDebug("Encounter completed.");
         completionRoutine = null;
     }
@@ -236,10 +245,7 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
 
         if (context.IsFinalRouteSet)
         {
-            LogDebug(
-                $"Skipping treasure chest because the current route is the final route set. " +
-                $"RouteSet={ResolveRouteSetName(context)}.");
-            if (BossRewardSpawnService.SpawnPhysicalDrops(context, rewardOrigin, this))
+            if (BossRewardSpawnService.GrantFinalMagicStoneReward(context, this))
                 context.MarkRewardsHandled();
 
             return;

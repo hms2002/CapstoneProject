@@ -12,6 +12,10 @@ public sealed class EncyclopediaCreatureDetailView : MonoBehaviour
     [SerializeField] private GameObject monsterRoot;
     [SerializeField] private GameObject characterRoot;
     [SerializeField] private GameObject emptyRoot;
+    [SerializeField] private GameObject undiscoveredRoot;
+    [SerializeField] private UnityEngine.UI.Image undiscoveredImage;
+    [SerializeField] private TMP_Text undiscoveredText;
+    [SerializeField] private GameObject[] bossOnlyDecorations = Array.Empty<GameObject>();
 
     [Header("Monster")]
     [SerializeField] private UnityEngine.UI.Image monsterImage;
@@ -46,6 +50,10 @@ public sealed class EncyclopediaCreatureDetailView : MonoBehaviour
     [SerializeField] private GameObject fullViewRoot;
     [SerializeField] private UnityEngine.UI.Image fullViewImage;
     [SerializeField] private UnityEngine.UI.Button fullViewCloseButton;
+    [SerializeField] private UnityEngine.UI.Button fullViewPreviousButton;
+    [SerializeField] private UnityEngine.UI.Button fullViewNextButton;
+    [SerializeField] private TMP_Text fullViewTitleText;
+    [SerializeField] private TMP_Text fullViewPageText;
 
     private readonly List<EncyclopediaPortrait> portraits = new();
     private UnityAction[] dotListeners;
@@ -73,6 +81,10 @@ public sealed class EncyclopediaCreatureDetailView : MonoBehaviour
             fullViewButton.onClick.AddListener(OpenFullView);
         if (fullViewCloseButton != null)
             fullViewCloseButton.onClick.AddListener(CloseFullView);
+        if (fullViewPreviousButton != null)
+            fullViewPreviousButton.onClick.AddListener(ShowPreviousPortrait);
+        if (fullViewNextButton != null)
+            fullViewNextButton.onClick.AddListener(ShowNextPortrait);
 
         dotListeners = new UnityAction[portraitDotButtons.Length];
         for (int i = 0; i < portraitDotButtons.Length; i++)
@@ -101,6 +113,10 @@ public sealed class EncyclopediaCreatureDetailView : MonoBehaviour
             fullViewButton.onClick.RemoveListener(OpenFullView);
         if (fullViewCloseButton != null)
             fullViewCloseButton.onClick.RemoveListener(CloseFullView);
+        if (fullViewPreviousButton != null)
+            fullViewPreviousButton.onClick.RemoveListener(ShowPreviousPortrait);
+        if (fullViewNextButton != null)
+            fullViewNextButton.onClick.RemoveListener(ShowNextPortrait);
         if (dotListeners != null)
             for (int i = 0; i < portraitDotButtons.Length; i++)
                 if (portraitDotButtons[i] != null)
@@ -133,6 +149,7 @@ public sealed class EncyclopediaCreatureDetailView : MonoBehaviour
         SetActive(monsterRoot, true);
         SetActive(characterRoot, false);
         SetActive(emptyRoot, false);
+        SetActive(undiscoveredRoot, false);
         portraits.Clear();
         portraitIndex = -1;
         previewFrames = entry.previewFrames ?? Array.Empty<Sprite>();
@@ -152,13 +169,17 @@ public sealed class EncyclopediaCreatureDetailView : MonoBehaviour
     }
 
     public void ShowCharacter(string title, string story, NPCData npc, IReadOnlyList<EncyclopediaPortrait> entries,
-        int affection, bool resetPortrait = true)
+        int affection, bool resetPortrait = true, bool bossStyle = true)
     {
         showingMonster = false;
         previewFrames = Array.Empty<Sprite>();
         SetActive(monsterRoot, false);
-        SetActive(characterRoot, true);
+        SetActive(characterRoot, !fullViewOpen);
         SetActive(emptyRoot, false);
+        SetActive(undiscoveredRoot, false);
+        foreach (GameObject decoration in bossOnlyDecorations) SetActive(decoration, bossStyle);
+        if (characterTitleText != null)
+            characterTitleText.color = bossStyle ? new Color32(255, 240, 201, 255) : new Color32(65, 43, 34, 255);
         int previousIndex = portraitIndex;
         portraits.Clear();
         if (entries != null)
@@ -170,6 +191,7 @@ public sealed class EncyclopediaCreatureDetailView : MonoBehaviour
         if (resetPortrait)
             CloseFullView();
         SetText(characterTitleText, title);
+        SetText(fullViewTitleText, title);
         SetText(portraitMissingText, GameText.Get("encyclopedia.portrait_pending", "일러스트 준비 중"));
         SetActive(portraitMissingText != null ? portraitMissingText.gameObject : null, portraits.Count == 0);
         SetText(affectionLabelText, GameText.Get("encyclopedia.current_affection", "현재 호감도"));
@@ -185,6 +207,16 @@ public sealed class EncyclopediaCreatureDetailView : MonoBehaviour
         SettleCharacterLayout(resetPortrait);
     }
 
+    public void ShowUndiscovered(bool boss)
+    {
+        Clear();
+        SetActive(emptyRoot, false);
+        SetActive(undiscoveredRoot, true);
+        SetText(undiscoveredText, boss
+            ? GameText.Get("encyclopedia.boss_not_encountered", "아직 조우하지 못한 보스입니다.")
+            : GameText.Get("encyclopedia.monster_not_encountered", "아직 조우하지 못한 몬스터입니다."));
+    }
+
     public void Clear()
     {
         showingMonster = false;
@@ -196,6 +228,8 @@ public sealed class EncyclopediaCreatureDetailView : MonoBehaviour
         SetActive(monsterRoot, false);
         SetActive(characterRoot, false);
         SetActive(emptyRoot, true);
+        SetActive(undiscoveredRoot, false);
+        EncyclopediaPortraitUtility.SetSprite(undiscoveredImage, null);
         EncyclopediaPortraitUtility.SetSprite(monsterImage, null);
         EncyclopediaPortraitUtility.SetSprite(characterImage, null);
     }
@@ -264,6 +298,9 @@ public sealed class EncyclopediaCreatureDetailView : MonoBehaviour
 
     private void RefreshPortraitControls()
     {
+        SetArrow(fullViewPreviousButton, interactionEnabled && portraitIndex > 0);
+        SetArrow(fullViewNextButton, interactionEnabled && portraitIndex >= 0 && portraitIndex < portraits.Count - 1);
+        SetText(fullViewPageText, portraits.Count > 0 ? $"{portraitIndex + 1} / {portraits.Count}" : string.Empty);
         if (previousPortraitButton != null)
         {
             bool canMovePrevious = interactionEnabled && portraitIndex > 0;
@@ -305,15 +342,32 @@ public sealed class EncyclopediaCreatureDetailView : MonoBehaviour
         if (!interactionEnabled || CurrentPortrait == null || fullViewRoot == null)
             return;
         fullViewOpen = true;
+        if (characterScrollRect != null)
+            characterScrollRect.StopMovement();
+        SetActive(characterRoot, false);
         EncyclopediaPortraitUtility.SetSprite(fullViewImage, CurrentPortrait);
         fullViewRoot.SetActive(true);
+        RefreshPortraitControls();
+    }
+
+    private static void SetArrow(UnityEngine.UI.Button button, bool available)
+    {
+        if (button == null) return;
+        button.interactable = available;
+        button.gameObject.SetActive(available);
     }
 
     private void CloseFullView()
     {
+        bool wasOpen = fullViewOpen;
         fullViewOpen = false;
         SetActive(fullViewRoot, false);
         EncyclopediaPortraitUtility.SetSprite(fullViewImage, null);
+        if (wasOpen)
+        {
+            SetActive(characterRoot, true);
+            SettleCharacterLayout(false);
+        }
     }
 
     private void SettleCharacterLayout(bool resetScroll)

@@ -1,0 +1,127 @@
+ M Assets/_Project/Art/Materials/MonsterHealthBarInstanced.mat
+ M Assets/_Project/Art/Shaders/MonsterHealthBarInstanced.shader
+ M "Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book SpriteSheet.png"
+ M Assets/_Project/Data/Abilities/Definitions/AD_CrimsonBoundaryIgnite.asset
+ M "Assets/_Project/Data/Localization/GameText Shared Data.asset"
+ M Assets/_Project/Data/Localization/GameText_en.asset
+ M Assets/_Project/Data/Localization/GameText_ja.asset
+ M Assets/_Project/Data/Localization/GameText_ko.asset
+ M Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+ M Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+ M Assets/_Project/Data/UI/StatDisplays/PS_Section_BasicStats.asset
+ M Assets/_Project/Data/UI/StatDisplays/PS_Section_CombatStats.asset
+ M Assets/_Project/Data/UI/StatDisplays/PS_StatInfo_AttackSpeed.asset
+ M Assets/_Project/Editor/Tools/Monsters/MonsterHealthBarMeshAuthoring.cs
+ M Assets/_Project/Prefabs/UI/EffectSlotUI.prefab
+ M Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab
+ M Assets/_Project/Prefabs/UI/KeyMapRow.prefab
+ M Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatRowView.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatSectionView.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatUI.prefab
+ M Assets/_Project/Prefabs/UI/UnlockSlotUI.prefab
+ M Assets/_Project/Runtime/Core/Abilities/AbilitySystem.cs
+ M Assets/_Project/Runtime/Core/Save/GameData.cs
+ M Assets/_Project/Runtime/Core/Save/GamePlayData.cs
+ M Assets/_Project/Runtime/Features/Encyclopedia/MonsterEncyclopediaIdentity.cs
+ M Assets/_Project/Runtime/Features/Encyclopedia/MonsterEncyclopediaProgress.cs
+ M Assets/_Project/Runtime/Features/Items/Relics/RelicInventory.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/CrimsonBoundaryRuntimeState.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/Inventory/WeaponInventory2D.cs
+ M Assets/_Project/Runtime/Features/Monsters/Spawning/MonsterSpawnRoomGroup.cs
+ M Assets/_Project/Runtime/Infrastructure/Save/GameDataManager.cs
+ M Assets/_Project/Runtime/Infrastructure/Save/GamePlayDataManager.cs
+ M Assets/_Project/Runtime/Infrastructure/Save/RunSessionProgressCommitPolicy.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCharacterEntryView.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCreatureDetailView.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCreatureTab.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaEntryButton.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemRightPage.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemTab.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaPortraitUtility.cs
+ M Assets/_Project/Runtime/UI/Settings/KeyBindingPanelUI.cs
+ M Assets/_Project/Runtime/UI/Settings/SettingsPanelUI.cs
+ M Assets/_Project/Scenes/TitleScene.unity
+ M Assets/_Project/Tests/PlayMode/Procedural/EncyclopediaCreaturePlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/MonsterHealthBarMeshPlayModeTests.cs
+ M DataSheets/Localization/GameText.csv
+ M Docs/DecisionLog.md
+ M Docs/ErrorLog.md
+ M Docs/RefactorBacklog/RuntimePresentationFallbackAuthoringSplit.md
+ M Docs/RefactorBacklog/UIBatchingStructuralCandidates.md
+ M Docs/StructureMemory/EncyclopediaCreatureTabs.md
+ M Docs/StructureMemory/InputBindings.md
+ M Docs/StructureMemory/MonsterWorldHudAndStatus.md
+ M Docs/StructureMemory/ScriptSystems/BurnStatusAndCrimsonBoundaryWeapon.md
+ M Docs/StructureMemory/ScriptSystems/EncyclopediaStructure.md
+ M Docs/StructureMemory/ScriptSystems/InventoryAndChestUIStructure.md
+ M Docs/StructureMemory/ScriptSystems/UpgradeUiStructure.md
+ M Docs/StructureMemory/SettingsPanelLayout.md
+ M Docs/StructureMemory/UIBatchingOptimization.md
+ M Docs/TaskIndex.md
+?? .codex-attachments/
+?? Assets/_Project/Art/Sprites/UI/ApprovedUiSkin.meta
+?? Assets/_Project/Art/Sprites/UI/ApprovedUiSkin/
+?? Assets/_Project/Art/Sprites/UI/Encyclopedia/PixelSkin.meta
+?? Assets/_Project/Art/Sprites/UI/Encyclopedia/PixelSkin/
+?? Assets/_Project/Art/Sprites/UI/MonsterHealthBar.meta
+?? Assets/_Project/Art/Sprites/UI/MonsterHealthBar/
+?? Assets/_Project/Art/Sprites/UI/SettingsSkin.meta
+?? Assets/_Project/Art/Sprites/UI/SettingsSkin/
+?? Assets/_Project/Art/Sprites/VFX/CrimsonBoundary.meta
+?? Assets/_Project/Art/Sprites/VFX/CrimsonBoundary/
+?? Assets/_Project/Data/Items/Weapons/LogicData/ALData_CrimsonBoundaryCharge.asset
+?? Assets/_Project/Data/Items/Weapons/LogicData/ALData_CrimsonBoundaryCharge.asset.meta
+?? Assets/_Project/Data/Items/Weapons/Strategies/AL_CrimsonBoundaryCharge.asset
+?? Assets/_Project/Data/Items/Weapons/Strategies/AL_CrimsonBoundaryCharge.asset.meta
+?? Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaSkinAuthoring.cs
+?? Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaSkinAuthoring.cs.meta
+?? Assets/_Project/Editor/Tools/UI/PlayerStatsAndRewardUiAuthoring.cs
+?? Assets/_Project/Editor/Tools/UI/PlayerStatsAndRewardUiAuthoring.cs.meta
+?? Assets/_Project/Editor/Tools/UI/SettingsSkinAuthoring.cs
+?? Assets/_Project/Editor/Tools/UI/SettingsSkinAuthoring.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/ApprovedUiSkinValidation.cs
+?? Assets/_Project/Editor/Tools/Validation/ApprovedUiSkinValidation.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/MonsterPixelHealthBarValidation.cs
+?? Assets/_Project/Editor/Tools/Validation/MonsterPixelHealthBarValidation.cs.meta
+?? Assets/_Project/Editor/Tools/Validation/SettingsSkinValidation.cs
+?? Assets/_Project/Editor/Tools/Validation/SettingsSkinValidation.cs.meta
+?? Assets/_Project/Editor/Tools/Weapons/CrimsonChargeAssetAuthoring.cs
+?? Assets/_Project/Editor/Tools/Weapons/CrimsonChargeAssetAuthoring.cs.meta
+?? Assets/_Project/Editor/Tools/Weapons/CrimsonChargeVisualValidation.cs
+?? Assets/_Project/Editor/Tools/Weapons/CrimsonChargeVisualValidation.cs.meta
+?? Assets/_Project/Prefabs/VFX/CrimsonBoundary/ChargeSixColor.meta
+?? Assets/_Project/Prefabs/VFX/CrimsonBoundary/ChargeSixColor/
+?? Assets/_Project/Runtime/Core/Save/EncyclopediaDiscoveryProgress.cs
+?? Assets/_Project/Runtime/Core/Save/EncyclopediaDiscoveryProgress.cs.meta
+?? Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/AbilityLogic_CrimsonBoundaryCharge.cs
+?? Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/AbilityLogic_CrimsonBoundaryCharge.cs.meta
+?? Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/CrimsonBoundaryChargeData.cs
+?? Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/CrimsonBoundaryChargeData.cs.meta
+?? Assets/_Project/Runtime/Presentation/VFX/Presentation/CrimsonBoundaryChargePresentation.cs
+?? Assets/_Project/Runtime/Presentation/VFX/Presentation/CrimsonBoundaryChargePresentation.cs.meta
+?? Assets/_Project/Tests/EditMode/EncyclopediaDiscoveryEditModeTests.cs
+?? Assets/_Project/Tests/EditMode/EncyclopediaDiscoveryEditModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/CrimsonChargePlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/CrimsonChargePlayModeTests.cs.meta
+?? Docs/ActiveTasks/encyclopedia-skin-discovery.md
+?? Docs/ActiveTasks/monster-pixel-hp.md
+?? Docs/ActiveTasks/player-stats-potion-reward-skin.md
+?? Docs/ActiveTasks/settings-keymapping-skin.md
+?? Docs/SessionLogs/2026-10-18.md
+?? Docs/SessionLogs/2026-10-22.md
+?? Docs/SessionLogs/2026-10-24.md
+?? Docs/SessionLogs/2026-10-30-crimson-charge/
+?? Docs/SessionLogs/2026-10-30-monster-pixel-hp/
+?? Docs/SessionLogs/2026-10-30.md
+?? Docs/SessionLogs/2026-10-31-approved-ui-skin/
+?? Docs/SessionLogs/2026-10-31-crimson-warning/
+?? Docs/SessionLogs/2026-10-31-settings-skin/
+?? Docs/SessionLogs/2026-10-31-stat-revision/
+?? Docs/SessionLogs/2026-10-31.md
+?? Docs/SessionLogs/2026-11-01.md
+?? Tools/Art/
+?? Tools/Validation/SettingsSkinScopeValidation.py
+?? outputs/encyclopedia-pixel-skin-preview-2026-10-31/
+?? outputs/encyclopedia-skin-discovery-2026-11-01/

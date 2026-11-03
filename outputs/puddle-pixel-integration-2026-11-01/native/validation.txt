@@ -1,0 +1,1 @@
+PASS: seven pixel imports, both native prefab bindings, shader compilation,80 steady native GPU frames,21 center ignition frames, consumed particle cleanup. Existing scene not saved.

@@ -42,6 +42,7 @@ public class TreasureChest : MonoBehaviour
     [SerializeField] private WorldObjectPresentationDefinition openPresentation = new();
 
     private ChestInventory inventory;
+    private readonly LootPoolService lootPoolService = new LootPoolService();
     private bool isOpened;
     private bool isLootSelectionComplete;
     private bool isGenerated;
@@ -119,6 +120,7 @@ public class TreasureChest : MonoBehaviour
         FillInventoryWithLoot(loots);
 
         isGenerated = true;
+        WorldStateChanged?.Invoke(this);
     }
 
     /// <summary>
@@ -346,6 +348,7 @@ public class TreasureChest : MonoBehaviour
         inventory.ClearExcept(preserved);
         FillInventoryWithLoot(result.Items);
         refreshCountUsed++;
+        WorldStateChanged?.Invoke(this);
         return true;
     }
 
@@ -354,11 +357,21 @@ public class TreasureChest : MonoBehaviour
         if (inventory == null || loots == null)
             return;
 
+        // Boss bonus lists also enter here without passing through the random
+        // chest generator. Apply the same exclusions and retained-choice rule.
+        HashSet<string> excludedWeapons = lootPoolService.BuildWeaponExclusionSet(LootPoolContext.ForChest(this));
+        for (int i = 0; i < inventory.Capacity; i++)
+            if (inventory.Get(i) is WeaponDefinition retainedWeapon)
+                excludedWeapons.Add(retainedWeapon.weaponId);
+
         for (int i = 0; i < loots.Count; i++)
         {
             ScriptableObject item = loots[i];
-            if (item != null)
-                TryAddLootItem(item);
+            if (item is WeaponDefinition weapon && excludedWeapons.Contains(weapon.weaponId))
+                item = lootPoolService.GetRandomTreasureChestWeapon(excludedWeapons);
+
+            if (item != null && TryAddLootItem(item) && item is WeaponDefinition addedWeapon)
+                excludedWeapons.Add(addedWeapon.weaponId);
         }
     }
 
@@ -383,7 +396,7 @@ public class TreasureChest : MonoBehaviour
     private ChestLootRequest BuildLootRequest(IReadOnlyList<ScriptableObject> retainedItems = null)
     {
         ChestLootOverrideProfile profile = lootMode == ChestLootMode.OverrideProfile ? lootOverrideProfile : null;
-        return new ChestLootRequest(default, LootPoolContext.PlayerInventory, profile, retainedItems);
+        return new ChestLootRequest(default, LootPoolContext.ForChest(this), profile, retainedItems);
     }
 
     private void PlayOpenPresentation(GameObject instigator)

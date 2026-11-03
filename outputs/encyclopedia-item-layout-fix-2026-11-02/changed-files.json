@@ -1,0 +1,67 @@
+[
+  {
+    "file": "Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab",
+    "addedLines": 165,
+    "removedLines": 13
+  },
+  {
+    "file": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemRightPage.cs",
+    "addedLines": 10,
+    "removedLines": 1
+  },
+  {
+    "file": "Assets/_Project/Art/Sprites/UI/EncyclopediaItemSkin/Materials/Galmuri9 SDF Opaque Outline.mat",
+    "addedLines": 2,
+    "removedLines": 2
+  },
+  {
+    "file": "Assets/_Project/Scenes/DragonCorridor.unity",
+    "addedLines": 0,
+    "removedLines": 424
+  },
+  {
+    "file": "Assets/_Project/Scenes/PixelLightTest.unity",
+    "addedLines": 0,
+    "removedLines": 356
+  },
+  {
+    "file": "Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity",
+    "addedLines": 0,
+    "removedLines": 420
+  },
+  {
+    "file": "Assets/_Project/Scenes/ProceduralDungeonV0Test.unity",
+    "addedLines": 0,
+    "removedLines": 420
+  },
+  {
+    "file": "Assets/_Project/Scenes/ProtoTypeCorridor.unity",
+    "addedLines": 0,
+    "removedLines": 416
+  },
+  {
+    "file": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+    "addedLines": 0,
+    "removedLines": 416
+  },
+  {
+    "file": "Assets/_Project/Scenes/SangHyup_Hallway.unity",
+    "addedLines": 0,
+    "removedLines": 348
+  },
+  {
+    "file": "Assets/_Project/Scenes/ShadowCorridor.unity",
+    "addedLines": 0,
+    "removedLines": 416
+  },
+  {
+    "file": "Assets/_Project/Scenes/SlimeCorridor.unity",
+    "addedLines": 0,
+    "removedLines": 416
+  },
+  {
+    "file": "Assets/_Project/Scenes/TutorialCorridor.unity",
+    "addedLines": 0,
+    "removedLines": 372
+  }
+]

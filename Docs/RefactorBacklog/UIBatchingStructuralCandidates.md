@@ -48,6 +48,12 @@ last_reviewed: 2026-10-08
 - **Related files/docs:** [MonsterWorldHud.prefab](../../Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab) World Space Canvas/sorting(1036–1049), [MonsterStackStatusWorldView](../../Assets/_Project/Runtime/UI/Combat/StackStatus/MonsterStackStatusWorldView.cs), [MonsterSizeProfile](../../Assets/_Project/Runtime/Features/Monsters/Common/MonsterSizeProfile.cs), [MonsterStatusRuntime](../../Assets/_Project/Runtime/Features/Combat/Status/MonsterStatusRuntime.cs); [world HUD 구조](../StructureMemory/MonsterWorldHudAndStatus.md), [Mob cleanup 계약](../Contracts/MobCleanupContract.md).
 - **Status:** partially-refactored. 2026-10-08 shared HP mesh와 전체 actor overlap fallback을 적용했다. 분산된 정상 actor 30/60의 native world UI batches는30/60→0/0, six-status cases는42/72→12/12; 동일 live actors의 calibrated total GameView draws는89→60 /149→90이었다. Total은 모든 camera/UI/world의 값이며 isolated HP GPU 시간이나 FPS가 아니다. 기존 Images/Canvas는 dense overlap 정렬을 위해 유지한다. [최종 조건/검증](../SessionLogs/2026-10-08-ui-batching-structural/README.md).
 
+### HP artwork follow-up: four-part fallback references (2026-10-30)
+
+- **Current problem / why:** The approved pixel art uses four visible parts, while `legacyGraphics` still requires six entries. The separate rim and Highlight Images are transparent because their pixels now live in the frame/fill sprites. They were retained to preserve prefab IDs, references and overlap switching during the art-only slice.
+- **Target / risks:** A later scoped migration can make the reference set match the four parts and remove only the two redundant Graphics. Update `IsConfigured`, authoring and raster/lifecycle tests together; deleting parent RectTransforms would break fill/layout paths. This is hierarchy cleanup, with no measured performance gain assumed.
+- **Trigger / status:** Revisit when the HP prefab or projection contract is next intentionally revised. **proposed**; no functional blocker. Related: [pixel HP scope](../ActiveTasks/monster-pixel-hp.md), [world HUD map](../StructureMemory/MonsterWorldHudAndStatus.md).
+
 ## 4. Idle Skill Shader Boundary
 
 - **Current problem:** 대표 HUD의 스킬 icon 4개는 이미 같은 immutable `UI_ReadyFlash_SharedIdle` material을 쓴다. 그래도 `UI/Icon Ready Flash`와 주변 Default UI frame/key/cooldown의 순서 및 icon texture 차이로 native batch가 분리된다. material 공유만으로 서로 떨어진 icon draw가 하나가 되지는 않는다.

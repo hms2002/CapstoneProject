@@ -1,0 +1,4 @@
+Aseprite 1.3.18.6
+Beer4 / Ignite8 / Fire6 / Particle6
+Native64x64 ground,16x16 particle; ground pivot32,32.
+Ignition burned pixel counts: 0,78,266,553,949,1359,1602,-1

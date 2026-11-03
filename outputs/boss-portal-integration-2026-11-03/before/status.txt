@@ -1,0 +1,351 @@
+ M AGENTS.md
+ D Assets/Scenes/MainMenu.unity
+ D Assets/Scenes/MainMenu.unity.meta
+ M "Assets/_Project/Art/Font/Galmuri9 SDF BlackOutline.asset"
+ M Assets/_Project/Art/Materials/MonsterHealthBarInstanced.mat
+ M Assets/_Project/Art/Shaders/MonsterHealthBarInstanced.shader
+ M Assets/_Project/Art/Shaders/PuddleShaderVisual.shader
+ M "Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory Book SpriteSheet.png"
+ M Assets/_Project/Data/Abilities/Definitions/AD_CrimsonBoundaryIgnite.asset
+ M Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase.meta
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Relics.meta
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Relics/RD_BloodBonusRelic.asset
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Relics/RD_BloodBonusRelic.asset.meta
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Relics/RD_LightningRelic.asset
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Relics/RD_LightningRelic.asset.meta
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons.meta
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_ChainSpear.asset
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_ChainSpear.asset.meta
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_EclipseSword.asset
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_EclipseSword.asset.meta
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_ExecutionGun.asset
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_ExecutionGun.asset.meta
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_ExecutionerGreatsword.asset
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_ExecutionerGreatsword.asset.meta
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_FragmentBlade.asset
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_FragmentBlade.asset.meta
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_MarkSword.asset
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_MarkSword.asset.meta
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_MoonBlade.asset
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_MoonBlade.asset.meta
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_SunBlade.asset
+ D Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_SunBlade.asset.meta
+ M Assets/_Project/Data/Items/ItemDatabase.asset
+ D Assets/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset
+ D Assets/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset.meta
+ D Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset
+ D Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset.meta
+ D Assets/_Project/Data/Items/Relics/Definitions/RD_OneDropOfSwiftness.asset
+ D Assets/_Project/Data/Items/Relics/Definitions/RD_OneDropOfSwiftness.asset.meta
+ D Assets/_Project/Data/Items/Relics/Definitions/RD_RunningLedger.asset
+ D Assets/_Project/Data/Items/Relics/Definitions/RD_RunningLedger.asset.meta
+ D Assets/_Project/Data/Items/Relics/Definitions/RD_Stenographer.asset
+ D Assets/_Project/Data/Items/Relics/Definitions/RD_Stenographer.asset.meta
+ D Assets/_Project/Data/Items/Weapons/Definitions/WD_WindWeapon.asset
+ D Assets/_Project/Data/Items/Weapons/Definitions/WD_WindWeapon.asset.meta
+ M Assets/_Project/Data/Items/Weapons/LogicData/ALData_ApprenticeHeroSwordChargeSpin.asset
+ M "Assets/_Project/Data/Localization/Fonts/FusionPixel/fusion-pixel-12px-proportional-zh_hans SDF.asset"
+ M "Assets/_Project/Data/Localization/GameText Shared Data.asset"
+ M Assets/_Project/Data/Localization/GameText_en.asset
+ M Assets/_Project/Data/Localization/GameText_ja.asset
+ M Assets/_Project/Data/Localization/GameText_ko.asset
+ M Assets/_Project/Data/Localization/GameText_zh-Hans.asset
+ M Assets/_Project/Data/Localization/GameText_zh-Hant.asset
+ M Assets/_Project/Data/SceneFlow/LoadingManifests/PrewarmTrace_nadom_DESKTOP-I2QAD8O.json
+ M Assets/_Project/Data/UI/StatDisplays/PS_Section_BasicStats.asset
+ M Assets/_Project/Data/UI/StatDisplays/PS_Section_CombatStats.asset
+ M Assets/_Project/Data/UI/StatDisplays/PS_StatInfo_AttackSpeed.asset
+ M Assets/_Project/Editor/Build/Loading/RouteSetLoadManifestBuilderWindow.cs
+ M Assets/_Project/Editor/Tools/Data/FixedAttackRelicAuthoring.cs
+ M Assets/_Project/Editor/Tools/Data/SpiriAlcoholRewardAuthoring.cs
+ D Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaCreatureLocalizationAuthoring.cs
+ D Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaCreatureLocalizationAuthoring.cs.meta
+ D Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaCreatureUIAuthoring.cs
+ D Assets/_Project/Editor/Tools/Encyclopedia/EncyclopediaCreatureUIAuthoring.cs.meta
+ D Assets/_Project/Editor/Tools/Monsters/MonsterHealthBarMeshAuthoring.cs
+ D Assets/_Project/Editor/Tools/Monsters/MonsterHealthBarMeshAuthoring.cs.meta
+ D Assets/_Project/Editor/Tools/UI/UiRenderLayerAuthoring.cs
+ D Assets/_Project/Editor/Tools/UI/UiRenderLayerAuthoring.cs.meta
+ M Assets/_Project/Prefabs/Loot/ExperiencePickup_Square.prefab
+ M Assets/_Project/Prefabs/Loot/GoldPickup.prefab
+ M Assets/_Project/Prefabs/Map/Puddles/AlcoholPuddle.prefab
+ M Assets/_Project/Prefabs/Map/Puddles/FirePuddle.prefab
+ M Assets/_Project/Prefabs/Monsters/BeerMonster.prefab
+ M Assets/_Project/Prefabs/Monsters/CommonCorridor/ArcaneTankGolem.prefab
+ M Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinTank.prefab
+ M Assets/_Project/Prefabs/Monsters/Frog.prefab
+ M Assets/_Project/Prefabs/Monsters/ShadowCorridor/CorridorCandlestickMonster.prefab
+ M Assets/_Project/Prefabs/Monsters/ShadowCorridor/Dead'sSkeleton.prefab
+ M Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowMonster.prefab
+ M Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/ShadowServant.prefab
+ M Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab
+ M Assets/_Project/Prefabs/Monsters/SlimeCorridor/Pawn.prefab
+ M Assets/_Project/Prefabs/Monsters/SlimeCorridor/Rook.prefab
+ M Assets/_Project/Prefabs/Monsters/TrainingDummy.prefab
+ M Assets/_Project/Prefabs/Monsters/TreasureMonster.prefab
+ M Assets/_Project/Prefabs/UI/EffectSlotUI.prefab
+ M Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab
+ M Assets/_Project/Prefabs/UI/KeyMapRow.prefab
+ M Assets/_Project/Prefabs/UI/MonsterWorldHud.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaEntrySlot.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/Panel_AbilityBlock_Encyclopedia.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatRowView.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatSectionView.prefab
+ M Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatUI.prefab
+ M Assets/_Project/Prefabs/UI/UnlockSlotUI.prefab
+ M Assets/_Project/Runtime/Core/Abilities/AbilitySystem.cs
+ M Assets/_Project/Runtime/Core/Save/GameData.cs
+ M Assets/_Project/Runtime/Core/Save/GamePlayData.cs
+ M Assets/_Project/Runtime/Features/Bosses/Common/FSM/Core/BossEncounterEndDirector.cs
+ M Assets/_Project/Runtime/Features/Bosses/Common/Rewards/BossBattleEndHandler.cs
+ M Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs
+ M Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRunStateService.cs
+ M Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopInventoryRoll.cs
+ M Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopSlot.cs
+ M Assets/_Project/Runtime/Features/Encyclopedia/MonsterEncyclopediaIdentity.cs
+ M Assets/_Project/Runtime/Features/Encyclopedia/MonsterEncyclopediaProgress.cs
+ M Assets/_Project/Runtime/Features/Items/Relics/RelicInventory.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/Abilities/LightningSpearMarkActor.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/ApprenticeHeroSword/AbilityLogic_ApprenticeHeroSwordChargeSpin.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/ApprenticeHeroSword/ApprenticeHeroSwordChargeSpinData.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/CrimsonBoundaryRuntimeState.cs
+ M Assets/_Project/Runtime/Features/Items/Weapons/Inventory/WeaponInventory2D.cs
+ M Assets/_Project/Runtime/Features/Loot/BossRewardSpawnService.cs
+ M Assets/_Project/Runtime/Features/Loot/ChestLootGenerationService.cs
+ M Assets/_Project/Runtime/Features/Loot/Chests/TreasureChest.cs
+ M Assets/_Project/Runtime/Features/Loot/GoldPickup2D.cs
+ M Assets/_Project/Runtime/Features/Loot/HomingPickupTravel.cs
+ M Assets/_Project/Runtime/Features/Loot/LootPoolContext.cs
+ M Assets/_Project/Runtime/Features/Loot/LootPoolItemSelectionService.cs
+ M Assets/_Project/Runtime/Features/Loot/LootPoolWeaponExclusionProvider.cs
+ M Assets/_Project/Runtime/Features/Map/Puddles/AlcoholPuddleArea.cs
+ M Assets/_Project/Runtime/Features/Map/Puddles/PuddlePresentationContracts.cs
+ M Assets/_Project/Runtime/Features/Monsters/Spawning/MonsterSpawnRoomGroup.cs
+ M Assets/_Project/Runtime/Features/Player/Input/PlayerCombatInput2D.cs
+ M Assets/_Project/Runtime/Features/Player/Status/PlayerAlcoholExposure.cs
+ M Assets/_Project/Runtime/Features/Progression/Leveling/ExperiencePickup2D.cs
+ M Assets/_Project/Runtime/Infrastructure/Save/GameDataManager.cs
+ M Assets/_Project/Runtime/Infrastructure/Save/GamePlayDataManager.cs
+ M Assets/_Project/Runtime/Infrastructure/Save/RunSessionProgressCommitPolicy.cs
+ M Assets/_Project/Runtime/Presentation/Map/Puddles/PuddleParticleVisual.cs
+ M Assets/_Project/Runtime/UI/Chest/ChestScreen.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCharacterEntryView.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCreatureDetailView.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaCreatureTab.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaEntryButton.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemLeftPage.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemRightPage.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemTab.cs
+ M Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaPortraitUtility.cs
+ M Assets/_Project/Runtime/UI/Inventory/Common/ItemSlotUI.cs
+ M Assets/_Project/Runtime/UI/Inventory/Common/ItemTypeBorderGraphic.cs
+ M Assets/_Project/Runtime/UI/Settings/KeyBindingPanelUI.cs
+ M Assets/_Project/Runtime/UI/Settings/SettingsPanelUI.cs
+ M Assets/_Project/Runtime/UI/Title/TitleMenuController.cs
+ M Assets/_Project/Scenes/DarkLord_Tutorial.unity
+ M Assets/_Project/Scenes/DemonkingCorridor.unity
+ D "Assets/_Project/Scenes/DragonCorridor 1.unity"
+ D "Assets/_Project/Scenes/DragonCorridor 1.unity.meta"
+ M Assets/_Project/Scenes/DragonCorridor.unity
+ M "Assets/_Project/Scenes/Grand Hall.unity"
+ D Assets/_Project/Scenes/HeoMinSeokScene.unity
+ D Assets/_Project/Scenes/HeoMinSeokScene.unity.meta
+ M Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity
+ M Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity
+ D "Assets/_Project/Scenes/LEeJunmo 1.unity"
+ D "Assets/_Project/Scenes/LEeJunmo 1.unity.meta"
+ D Assets/_Project/Scenes/LEeJunmo.unity
+ D Assets/_Project/Scenes/LEeJunmo.unity.meta
+ M Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity
+ M Assets/_Project/Scenes/PixelLightTest.unity
+ M Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity
+ M Assets/_Project/Scenes/ProceduralDragonCorridor.unity
+ M Assets/_Project/Scenes/ProceduralDungeonV0Test.unity
+ M Assets/_Project/Scenes/ProceduralShadowCorridor.unity
+ M Assets/_Project/Scenes/ProceduralSlimeCorridor.unity
+ D "Assets/_Project/Scenes/ProtoTypeBoss 2.unity"
+ D "Assets/_Project/Scenes/ProtoTypeBoss 2.unity.meta"
+ D "Assets/_Project/Scenes/ProtoTypeBoss 3.unity"
+ D "Assets/_Project/Scenes/ProtoTypeBoss 3.unity.meta"
+ D "Assets/_Project/Scenes/ProtoTypeBoss 4.unity"
+ D "Assets/_Project/Scenes/ProtoTypeBoss 4.unity.meta"
+ D Assets/_Project/Scenes/ProtoTypeBossLagacy.unity
+ D Assets/_Project/Scenes/ProtoTypeBossLagacy.unity.meta
+ D "Assets/_Project/Scenes/ProtoTypeCorridor 1.unity"
+ D "Assets/_Project/Scenes/ProtoTypeCorridor 1.unity.meta"
+ D "Assets/_Project/Scenes/ProtoTypeCorridor 2.unity"
+ D "Assets/_Project/Scenes/ProtoTypeCorridor 2.unity.meta"
+ D "Assets/_Project/Scenes/ProtoTypeCorridor 3.unity"
+ D "Assets/_Project/Scenes/ProtoTypeCorridor 3.unity.meta"
+ M Assets/_Project/Scenes/ProtoTypeCorridor.unity
+ M Assets/_Project/Scenes/ProtoTypeHub.unity
+ D Assets/_Project/Scenes/ProtoTypeHubasf.unity
+ D Assets/_Project/Scenes/ProtoTypeHubasf.unity.meta
+ M Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity
+ M Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity
+ M Assets/_Project/Scenes/SangHyup_Hallway.unity
+ M Assets/_Project/Scenes/ShadowCorridor.unity
+ D "Assets/_Project/Scenes/SlimeCorridor 1.unity"
+ D "Assets/_Project/Scenes/SlimeCorridor 1.unity.meta"
+ M Assets/_Project/Scenes/SlimeCorridor.unity
+ M Assets/_Project/Scenes/Tests/TestScene.unity
+ M Assets/_Project/Scenes/TitleScene.unity
+ M Assets/_Project/Scenes/TutorialCorridor.unity
+ M Assets/_Project/Tests/PlayMode/Procedural/AlcoholExposurePlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/AlcoholExposurePlayerVisualPlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/CombatFeelLootQuestPlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/EncyclopediaCreaturePlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/FixedAttackRelicPlayModeTests.cs
+ M Assets/_Project/Tests/PlayMode/Procedural/MonsterHealthAndWeaponSkillBalancePlayModeTests.cs
+ D Assets/_Project/Tests/PlayMode/Procedural/MonsterHealthBarMeshPlayModeTests.cs
+ D Assets/_Project/Tests/PlayMode/Procedural/MonsterHealthBarMeshPlayModeTests.cs.meta
+ M Assets/_Project/Tests/PlayMode/Procedural/PlayerControlAndChestRegressionPlayModeTests.cs
+ D Assets/_Project/Tests/PlayMode/Procedural/PuddleProjectileVisualPlayModeTests.cs
+ D Assets/_Project/Tests/PlayMode/Procedural/PuddleProjectileVisualPlayModeTests.cs.meta
+ D Assets/_Project/Tests/PlayMode/Procedural/UiAtlasPixelEquivalencePlayModeTests.cs
+ D Assets/_Project/Tests/PlayMode/Procedural/UiAtlasPixelEquivalencePlayModeTests.cs.meta
+ D Assets/_Project/Tests/PlayMode/Procedural/UiRectMaskRegressionPlayModeTests.cs
+ D Assets/_Project/Tests/PlayMode/Procedural/UiRectMaskRegressionPlayModeTests.cs.meta
+ D Assets/_Project/Tests/PlayMode/Procedural/UiRenderLayerAuthoredPlayModeTests.cs
+ D Assets/_Project/Tests/PlayMode/Procedural/UiRenderLayerAuthoredPlayModeTests.cs.meta
+ D Assets/_Project/Tests/PlayMode/Procedural/UiTextMeshRefreshRegressionPlayModeTests.cs
+ D Assets/_Project/Tests/PlayMode/Procedural/UiTextMeshRefreshRegressionPlayModeTests.cs.meta
+ M DataSheets/Localization/GameText.csv
+ M Docs/DecisionLog.md
+ M Docs/ErrorLog.md
+ M Docs/RefactorBacklog/RuntimePresentationFallbackAuthoringSplit.md
+ M Docs/RefactorBacklog/UIBatchingStructuralCandidates.md
+ M Docs/StructureMemory/AlcoholExposure.md
+ M Docs/StructureMemory/EncyclopediaCreatureTabs.md
+ M Docs/StructureMemory/InputBindings.md
+ M Docs/StructureMemory/ItemDefinitionArchive.md
+ M Docs/StructureMemory/LocalizationFlow.md
+ M Docs/StructureMemory/MonsterWorldHudAndStatus.md
+ M Docs/StructureMemory/RunGoldAndShop.md
+ M Docs/StructureMemory/ScriptSystems/BurnStatusAndCrimsonBoundaryWeapon.md
+ M Docs/StructureMemory/ScriptSystems/EncyclopediaStructure.md
+ M Docs/StructureMemory/ScriptSystems/InventoryAndChestUIStructure.md
+ M Docs/StructureMemory/ScriptSystems/LevelProgressionStructure.md
+ M Docs/StructureMemory/ScriptSystems/LootRewardStructure.md
+ M Docs/StructureMemory/ScriptSystems/ShopStructure.md
+ M Docs/StructureMemory/ScriptSystems/UpgradeUiStructure.md
+ M Docs/StructureMemory/ScriptSystems/WeaponAndGASStructure.md
+ M Docs/StructureMemory/SettingsPanelLayout.md
+ M Docs/StructureMemory/UIBatchingOptimization.md
+ M Docs/TaskIndex.md
+ M outputs/encyclopedia-implementation-2026-10-11/creature-localization-report.txt
+?? .codex-attachments/
+?? Assets/_Project/Art/Animations/VFX/ExperiencePickup.meta
+?? Assets/_Project/Art/Animations/VFX/ExperiencePickup/
+?? Assets/_Project/Art/Materials/PuddlePixel.meta
+?? Assets/_Project/Art/Materials/PuddlePixel/
+?? Assets/_Project/Art/Shaders/CrimsonMagicCircle.shader
+?? Assets/_Project/Art/Shaders/CrimsonMagicCircle.shader.meta
+?? Assets/_Project/Art/Shaders/PuddlePixelParticle.shader
+?? Assets/_Project/Art/Shaders/PuddlePixelParticle.shader.meta
+?? Assets/_Project/Art/Sprites/Items/ExperiencePickup.meta
+?? Assets/_Project/Art/Sprites/Items/ExperiencePickup/
+?? Assets/_Project/Art/Sprites/UI/ApprovedUiSkin.meta
+?? Assets/_Project/Art/Sprites/UI/ApprovedUiSkin/
+?? Assets/_Project/Art/Sprites/UI/Encyclopedia/PixelSkin.meta
+?? Assets/_Project/Art/Sprites/UI/Encyclopedia/PixelSkin/
+?? Assets/_Project/Art/Sprites/UI/EncyclopediaItemSkin.meta
+?? Assets/_Project/Art/Sprites/UI/EncyclopediaItemSkin/
+?? Assets/_Project/Art/Sprites/UI/MonsterHealthBar.meta
+?? Assets/_Project/Art/Sprites/UI/MonsterHealthBar/
+?? Assets/_Project/Art/Sprites/UI/SettingsSkin.meta
+?? Assets/_Project/Art/Sprites/UI/SettingsSkin/
+?? Assets/_Project/Art/Sprites/UI/Title/Language.meta
+?? Assets/_Project/Art/Sprites/UI/Title/Language/
+?? Assets/_Project/Art/Sprites/VFX/CrimsonBoundary.meta
+?? Assets/_Project/Art/Sprites/VFX/CrimsonBoundary/
+?? Assets/_Project/Art/Textures/Puddles/ApprovedPixel.meta
+?? Assets/_Project/Art/Textures/Puddles/ApprovedPixel/
+?? Assets/_Project/Data/Items/Weapons/LogicData/ALData_CrimsonBoundaryCharge.asset
+?? Assets/_Project/Data/Items/Weapons/LogicData/ALData_CrimsonBoundaryCharge.asset.meta
+?? Assets/_Project/Data/Items/Weapons/Strategies/AL_CrimsonBoundaryCharge.asset
+?? Assets/_Project/Data/Items/Weapons/Strategies/AL_CrimsonBoundaryCharge.asset.meta
+?? Assets/_Project/Prefabs/VFX/ChargeGauge.prefab
+?? Assets/_Project/Prefabs/VFX/ChargeGauge.prefab.meta
+?? Assets/_Project/Prefabs/VFX/CrimsonBoundary/ChargeSixColor.meta
+?? Assets/_Project/Prefabs/VFX/CrimsonBoundary/ChargeSixColor/
+?? Assets/_Project/Runtime/Core/Save/EncyclopediaDiscoveryProgress.cs
+?? Assets/_Project/Runtime/Core/Save/EncyclopediaDiscoveryProgress.cs.meta
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/IChargeGaugePresentation.cs
+?? Assets/_Project/Runtime/Features/Items/Weapons/Abilities/IChargeGaugePresentation.cs.meta
+?? Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/AbilityLogic_CrimsonBoundaryCharge.cs
+?? Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/AbilityLogic_CrimsonBoundaryCharge.cs.meta
+?? Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/CrimsonBoundaryChargeData.cs
+?? Assets/_Project/Runtime/Features/Items/Weapons/CrimsonBoundary/CrimsonBoundaryChargeData.cs.meta
+?? Assets/_Project/Runtime/Presentation/VFX/Presentation/ChargeGaugePresentation.cs
+?? Assets/_Project/Runtime/Presentation/VFX/Presentation/ChargeGaugePresentation.cs.meta
+?? Assets/_Project/Runtime/Presentation/VFX/Presentation/CrimsonBoundaryChargePresentation.cs
+?? Assets/_Project/Runtime/Presentation/VFX/Presentation/CrimsonBoundaryChargePresentation.cs.meta
+?? Assets/_Project/Runtime/UI/Title/TitleLanguageMenuUI.cs
+?? Assets/_Project/Runtime/UI/Title/TitleLanguageMenuUI.cs.meta
+?? Assets/_Project/Tests/EditMode/EncyclopediaDiscoveryEditModeTests.cs
+?? Assets/_Project/Tests/EditMode/EncyclopediaDiscoveryEditModeTests.cs.meta
+?? Assets/_Project/Tests/PlayMode/Procedural/CrimsonChargePlayModeTests.cs
+?? Assets/_Project/Tests/PlayMode/Procedural/CrimsonChargePlayModeTests.cs.meta
+?? Assets/_Project/Unused.meta
+?? Assets/_Project/Unused/
+?? Docs/ActiveTasks/encyclopedia-skin-discovery.md
+?? Docs/ActiveTasks/monster-pixel-hp.md
+?? Docs/ActiveTasks/player-stats-potion-reward-skin.md
+?? Docs/ActiveTasks/puddle-pixel-integration.md
+?? Docs/ActiveTasks/settings-keymapping-skin.md
+?? Docs/SessionLogs/2026-10-18.md
+?? Docs/SessionLogs/2026-10-22.md
+?? Docs/SessionLogs/2026-10-24.md
+?? Docs/SessionLogs/2026-10-30-crimson-charge/
+?? Docs/SessionLogs/2026-10-30-monster-pixel-hp/
+?? Docs/SessionLogs/2026-10-30.md
+?? Docs/SessionLogs/2026-10-31-approved-ui-skin/
+?? Docs/SessionLogs/2026-10-31-crimson-warning/
+?? Docs/SessionLogs/2026-10-31-settings-skin/
+?? Docs/SessionLogs/2026-10-31-stat-revision/
+?? Docs/SessionLogs/2026-10-31.md
+?? Docs/SessionLogs/2026-11-01-chest-shop-policy/
+?? Docs/SessionLogs/2026-11-01-crimson-charge-opacity/
+?? Docs/SessionLogs/2026-11-01-crimson-damped-aim/
+?? Docs/SessionLogs/2026-11-01-crimson-magic-circles-192/
+?? Docs/SessionLogs/2026-11-01-crimson-magic-circles/
+?? Docs/SessionLogs/2026-11-01-crimson-three-circles/
+?? Docs/SessionLogs/2026-11-01-merchant-owned-weapons/
+?? Docs/SessionLogs/2026-11-01-test-tool-cleanup/
+?? Docs/SessionLogs/2026-11-01-title-language/
+?? Docs/SessionLogs/2026-11-01-unused-assets/
+?? Docs/SessionLogs/2026-11-01.md
+?? Docs/SessionLogs/2026-11-02.md
+?? Docs/SessionLogs/2026-11-03.md
+?? Docs/StructureMemory/PuddlePixelPresentation.md
+?? Docs/StructureMemory/TestAndEditorToolRetention.md
+?? Tools/Archive/
+?? outputs/boss-portal-color-samples-2026-11-03/
+?? outputs/boss-portal-integration-2026-11-03/
+?? outputs/charge-gauge-2026-11-02/
+?? outputs/chest-rarity-border-2026-11-03/
+?? outputs/combat-reward-pickups-2026-11-03/
+?? outputs/crimson-double-circle-preview-2026-11-01/
+?? outputs/encyclopedia-item-layout-fix-2026-11-02/
+?? outputs/encyclopedia-item-redesign-preview-2026-11-02/
+?? outputs/encyclopedia-item-skin-integration-2026-11-02/
+?? outputs/encyclopedia-layout-2026-11-01/
+?? outputs/encyclopedia-live-ui-fix-2026-11-02/
+?? outputs/encyclopedia-pixel-skin-preview-2026-10-31/
+?? outputs/encyclopedia-scene-layout-followup-2026-11-02/
+?? outputs/encyclopedia-skin-discovery-2026-11-01/
+?? outputs/experience-pickup-integration-2026-11-03/
+?? outputs/experience-pickup-samples-2026-11-02/
+?? outputs/levelup-button-designs-2026-11-03/
+?? outputs/mimic-chest-aseprite-2026-11-01/
+?? outputs/puddle-pixel-integration-2026-11-01/
+?? outputs/puddle-pixel-reference-2026-11-01/
+?? outputs/title-language-icon-revision-2026-11-01/
+?? outputs/ui-gameplay-fixes-2026-11-02/
+?? outputs/ui-layout-normalization-2026-11-02/
+?? outputs/unity-search-crash-workaround-2026-11-01/
+?? tmp/pdfs/crimson-guide-read/
+?? tmp/pdfs/tools/

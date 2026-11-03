@@ -1,0 +1,82 @@
+{
+  "beer": {
+    "frames": 4,
+    "RGBA_colors": 8,
+    "ground_occupancy_unchanged": true,
+    "duration_ms": 640,
+    "beer_RGBA_palette_unchanged": true
+  },
+  "fire-surface": {
+    "frames": 6,
+    "RGBA_colors": 7,
+    "ground_occupancy_unchanged": true,
+    "duration_ms": 480,
+    "adjacent_frame_changed_pixels": [
+      170,
+      165,
+      158,
+      180,
+      172,
+      160
+    ]
+  },
+  "beer-to-fire": {
+    "frames": 8,
+    "RGBA_colors": 15,
+    "ground_occupancy_unchanged": true,
+    "duration_ms": 640
+  },
+  "puddle-cycle": {
+    "frames": 18,
+    "RGBA_colors": 15,
+    "ground_occupancy_unchanged": true,
+    "duration_ms": 1760
+  },
+  "foam_before": [
+    {
+      "foam_pixels": 104,
+      "within_3px_of_edge": 33
+    },
+    {
+      "foam_pixels": 99,
+      "within_3px_of_edge": 30
+    },
+    {
+      "foam_pixels": 98,
+      "within_3px_of_edge": 32
+    },
+    {
+      "foam_pixels": 102,
+      "within_3px_of_edge": 32
+    }
+  ],
+  "foam_after": [
+    {
+      "foam_pixels": 52,
+      "within_3px_of_edge": 0
+    },
+    {
+      "foam_pixels": 49,
+      "within_3px_of_edge": 0
+    },
+    {
+      "foam_pixels": 47,
+      "within_3px_of_edge": 0
+    },
+    {
+      "foam_pixels": 50,
+      "within_3px_of_edge": 0
+    }
+  ],
+  "comparison-preview": {
+    "duration_ms": 3840
+  },
+  "ignition-preview": {
+    "duration_ms": 3840
+  },
+  "surface-only-preview": {
+    "duration_ms": 480
+  },
+  "native_checks": 158,
+  "GIF_review_max_channel_delta": 1
+}

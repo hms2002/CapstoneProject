@@ -1,1 +1,1 @@
-Creature encyclopedia localization: 13 new keys, 65 localized values, 13 appended CSV rows; 65 translations/placeholder sets verified. Existing keys and CSV rows preserved.
+Creature encyclopedia localization: 3 new keys, 15 localized values, 3 appended CSV rows; 80 translations/placeholder sets verified. Existing keys and CSV rows preserved.

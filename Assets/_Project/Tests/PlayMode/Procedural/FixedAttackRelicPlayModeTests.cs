@@ -256,7 +256,9 @@ public sealed class FixedAttackRelicPlayModeTests
         Assert.That(tooltip, Does.Not.Contain("[[공격력]]"));
     }
 
-    private static RelicDefinition Definition(string name) => Load<RelicDefinition>(Definitions + "RD_" + name + ".asset");
+    private static RelicDefinition Definition(string name) => Load<RelicDefinition>(
+        (name == "FeatherOrbit" ? "Assets/_Project/Unused/Items/Relics/" : Definitions) +
+        "RD_" + name + ".asset");
 
     private static T Load<T>(string path) where T : Object
     {

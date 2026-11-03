@@ -1,0 +1,17 @@
+ExperiencePickup_Square: only 5 intended configuration entries changed = True
+ExperiencePickup_Square: renderer reference resolves = True
+GoldPickup: only 5 intended configuration entries changed = True
+GoldPickup: renderer reference resolves = True
+GoldPickup2D: source count = 1
+ExperiencePickup2D: source count = 1
+HomingPickupTravel: source count = 1
+Tracked diff sections changed since this task began:
+a/Assets/_Project/Prefabs/Loot/ExperiencePickup_Square.prefab b/Assets/_Project/Prefabs/Loot/ExperiencePickup_Square.prefab
+a/Assets/_Project/Prefabs/Loot/GoldPickup.prefab b/Assets/_Project/Prefabs/Loot/GoldPickup.prefab
+a/Assets/_Project/Runtime/Features/Loot/GoldPickup2D.cs b/Assets/_Project/Runtime/Features/Loot/GoldPickup2D.cs
+a/Assets/_Project/Runtime/Features/Loot/HomingPickupTravel.cs b/Assets/_Project/Runtime/Features/Loot/HomingPickupTravel.cs
+a/Assets/_Project/Runtime/Features/Progression/Leveling/ExperiencePickup2D.cs b/Assets/_Project/Runtime/Features/Progression/Leveling/ExperiencePickup2D.cs
+a/Assets/_Project/Tests/PlayMode/Procedural/CombatFeelLootQuestPlayModeTests.cs b/Assets/_Project/Tests/PlayMode/Procedural/CombatFeelLootQuestPlayModeTests.cs
+a/Docs/DecisionLog.md b/Docs/DecisionLog.md
+a/Docs/StructureMemory/RunGoldAndShop.md b/Docs/StructureMemory/RunGoldAndShop.md
+a/Docs/StructureMemory/ScriptSystems/LevelProgressionStructure.md b/Docs/StructureMemory/ScriptSystems/LevelProgressionStructure.md

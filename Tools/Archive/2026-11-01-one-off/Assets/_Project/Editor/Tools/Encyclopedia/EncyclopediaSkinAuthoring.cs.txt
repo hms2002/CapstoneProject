@@ -1,0 +1,261 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using TMPro;
+using UnityEditor;
+using UnityEngine;
+using Object = UnityEngine.Object;
+using Image = UnityEngine.UI.Image;
+using Button = UnityEngine.UI.Button;
+
+/// <summary>Applies the approved native pixel assets to the existing encyclopedia prefab only.</summary>
+public static class EncyclopediaSkinAuthoring
+{
+    public const string Art = "Assets/_Project/Art/Sprites/UI/Encyclopedia/PixelSkin/";
+    public const string Evidence = "outputs/encyclopedia-skin-discovery-2026-11-01/";
+    private static readonly Dictionary<string, Sprite> sprites = new();
+    [Serializable] private sealed class Manifest { public Slice[] sprites; }
+    [Serializable] private sealed class Slice { public string name; public int x, y, width, height, border; }
+
+    [MenuItem("Tools/Encyclopedia/Apply Approved Pixel Skin And Discovery")]
+    public static void Apply()
+    {
+        ImportArt();
+        string path = EncyclopediaCreatureUIAuthoring.PrefabPath;
+        string before = File.ReadAllText(path);
+        var source = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+        var tab = source.GetComponentInChildren<EncyclopediaCreatureTab>(true);
+        var detail = source.GetComponentInChildren<EncyclopediaCreatureDetailView>(true);
+        var ts = new SerializedObject(tab); var ds = new SerializedObject(detail);
+        var approvedRoots = new[] { Field<GameObject>(ts,"leftContentRoot"), Field<GameObject>(ts,"rightContentRoot"), Field<GameObject>(ds,"fullViewRoot") };
+        var allowed = new HashSet<ulong>();
+        foreach (var approved in approvedRoots)
+            foreach (Transform node in approved.GetComponentsInChildren<Transform>(true))
+                foreach (Object obj in node.GetComponents<Component>().Cast<Object>().Append(node.gameObject))
+                    if (obj != null) allowed.Add(GlobalObjectId.GetGlobalObjectIdSlow(obj).targetObjectId);
+        allowed.Add(GlobalObjectId.GetGlobalObjectIdSlow(tab).targetObjectId);
+        var preservation = UiPrefabPresentationPreservation.Capture(source,
+            approvedRoots.Select(r => AnimationUtility.CalculateTransformPath(r.transform, source.transform)).ToArray());
+        var root = PrefabUtility.LoadPrefabContents(path);
+        try
+        {
+            preservation.BindLoadedRoot(root);
+            Style(root);
+            preservation.RestoreBeforeSave();
+            var styledDetail = new SerializedObject(root.GetComponentInChildren<EncyclopediaCreatureDetailView>(true));
+            var title = Field<TMP_Text>(styledDetail, "characterTitleText");
+            title.fontSize = 24;
+            title.enableAutoSizing = false;
+            PrefabUtility.SaveAsPrefabAsset(root, path);
+        }
+        finally { PrefabUtility.UnloadPrefabContents(root); }
+        Preserve(path, before, allowed);
+        Unity.CodeEditor.CodeEditor.CurrentEditor.SyncAll();
+        Directory.CreateDirectory(Evidence);
+        File.WriteAllLines(Evidence+"authoring-allowed-ids.txt",allowed.OrderBy(id=>id).Select(id=>id.ToString()));
+        Debug.Log("ENCYCLOPEDIA_SKIN_AUTHOR_PASS");
+    }
+
+#pragma warning disable CS0618
+    private static void ImportArt()
+    {
+        sprites.Clear();
+        string path = Art + "EncyclopediaPixelSkin.png";
+        var manifest = JsonUtility.FromJson<Manifest>(File.ReadAllText(Art+"slices.json"));
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+        var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+        Configure(importer);
+        importer.spriteImportMode = SpriteImportMode.Multiple;
+        importer.spritesheet = manifest.sprites.Select(s => new SpriteMetaData
+        {
+            name=s.name, rect=new Rect(s.x,144-s.y-s.height,s.width,s.height),
+            pivot=Vector2.one*.5f, alignment=(int)SpriteAlignment.Center, border=Vector4.one*s.border
+        }).ToArray();
+        importer.SaveAndReimport();
+        foreach (Sprite sprite in AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>()) sprites[sprite.name]=sprite;
+        foreach (string name in new[] {"BlackFadeTop","BlackFadeBottom","DotEmptyLight","DotSelectedLight"})
+        {
+            string overlay=Art+name+".png";
+            AssetDatabase.ImportAsset(overlay,ImportAssetOptions.ForceSynchronousImport);
+            var single=(TextureImporter)AssetImporter.GetAtPath(overlay);
+            Configure(single);single.spriteImportMode=SpriteImportMode.Single;single.SaveAndReimport();
+            sprites[name]=AssetDatabase.LoadAssetAtPath<Sprite>(overlay);
+        }
+        if (sprites.Count!=27) throw new InvalidOperationException("Expected 23 skin slices and four overlays.");
+    }
+#pragma warning restore CS0618
+    private static void Configure(TextureImporter importer)
+    {
+        importer.textureType=TextureImporterType.Sprite;importer.spritePixelsPerUnit=100;
+        importer.filterMode=FilterMode.Point;importer.mipmapEnabled=false;importer.alphaIsTransparency=true;
+        importer.textureCompression=TextureImporterCompression.Uncompressed;
+        importer.npotScale=TextureImporterNPOTScale.None;importer.wrapMode=TextureWrapMode.Clamp;
+        var settings=new TextureImporterSettings();importer.ReadTextureSettings(settings);
+        settings.spriteMeshType=SpriteMeshType.FullRect;importer.SetTextureSettings(settings);
+    }
+
+    private static void Style(GameObject root)
+    {
+        var tab=new SerializedObject(root.GetComponentInChildren<EncyclopediaCreatureTab>(true));
+        var detail=new SerializedObject(root.GetComponentInChildren<EncyclopediaCreatureDetailView>(true));
+        Transform left=Field<GameObject>(tab,"leftContentRoot").transform;
+        Transform right=Field<GameObject>(tab,"rightContentRoot").transform;
+        foreach (var card in root.GetComponentsInChildren<EncyclopediaCharacterEntryView>(true))
+        {
+            var so=new SerializedObject(card);
+            card.GetComponent<Image>().color=new Color32(239,193,139,255);
+            Frame(card.transform,"CardFrame");
+            var selected=Field<GameObject>(so,"selectedMarker");
+            foreach(Transform child in selected.transform) child.gameObject.SetActive(false);
+            Skin(selected.GetComponent<Image>(),"SelectedFrame");selected.transform.SetAsLastSibling();
+            var fade=card.transform.Find("Fade");
+            Fade(fade,"BlackFadeBottom");Ref(so,"gradientRoot",fade.gameObject);
+            bool character=card.transform.parent.name=="CharacterGrid";
+            fade.gameObject.SetActive(character);
+            Field<TMP_Text>(so,"titleText").color=character ? new Color32(255,240,201,255) : new Color32(65,43,34,255);
+            if(!character)
+            {
+                var portrait=Field<Image>(so,"portraitImage");
+                var fit=portrait.GetComponent<UnityEngine.UI.AspectRatioFitter>();
+                if(fit!=null) fit.enabled=false;
+                portrait.preserveAspect=true;Stretch(portrait.rectTransform);
+                portrait.rectTransform.offsetMin=new Vector2(9,48);portrait.rectTransform.offsetMax=new Vector2(-9,-8);
+            }
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+        Frame(Field<Image>(detail,"monsterImage").transform.parent,"IllustrationFrame");
+        Transform hero=Field<GameObject>(detail,"characterRoot").transform.Find("Illustration");
+        var portraitInset=hero.Find("PortraitInset") as RectTransform;
+        if(portraitInset==null)
+        {
+            portraitInset=new GameObject("PortraitInset",typeof(RectTransform)).GetComponent<RectTransform>();
+            portraitInset.SetParent(hero,false);portraitInset.SetAsFirstSibling();
+        }
+        Stretch(portraitInset);portraitInset.offsetMin=new Vector2(10,12);portraitInset.offsetMax=new Vector2(-10,-60);
+        var characterPortrait=Field<Image>(detail,"characterImage");
+        characterPortrait.transform.SetParent(portraitInset,false);Stretch(characterPortrait.rectTransform);
+        var characterTitle=Field<TMP_Text>(detail,"characterTitleText").rectTransform;
+        characterTitle.anchorMin=characterTitle.anchorMax=new Vector2(.5f,1);
+        characterTitle.anchoredPosition=new Vector2(0,-27);characterTitle.sizeDelta=new Vector2(510,36);
+        Frame(hero,"BossIllustrationFrame");
+        Fade(hero.Find("TopFade"),"BlackFadeTop");Fade(hero.Find("BottomFade"),"BlackFadeBottom");
+        Refs(detail,"bossOnlyDecorations",new Object[]{hero.Find("TopFade").gameObject,hero.Find("BottomFade").gameObject});
+        IconButton(Field<Button>(tab,"previousPageButton"),"ArrowLeft");
+        IconButton(Field<Button>(tab,"nextPageButton"),"ArrowRight");
+        IconButton(Field<Button>(detail,"previousPortraitButton"),"ArrowLeft");
+        IconButton(Field<Button>(detail,"nextPortraitButton"),"ArrowRight");
+        var full=Field<Button>(detail,"fullViewButton");IconButton(full,"FullViewExpand");
+        var fullRect=(RectTransform)full.transform;fullRect.sizeDelta=new Vector2(54,54);
+        fullRect.anchorMin=fullRect.anchorMax=new Vector2(1,0);fullRect.pivot=new Vector2(1,0);fullRect.anchoredPosition=new Vector2(-3,3);
+        Skin(Field<Button>(detail,"fullViewCloseButton").GetComponent<Image>(),"ButtonNormal");
+        var dots=new List<Button>();var marks=new List<GameObject>();
+        var existing=detail.FindProperty("portraitDotButtons");
+        for(int i=0;i<existing.arraySize;i++) dots.Add((Button)existing.GetArrayElementAtIndex(i).objectReferenceValue);
+        while(dots.Count<5)
+        {
+            var clone=Object.Instantiate(dots[0].gameObject,dots[0].transform.parent,false);
+            clone.name="Dot"+dots.Count;dots.Add(clone.GetComponent<Button>());
+        }
+        foreach(var dot in dots)
+        {
+            dot.GetComponent<Image>().color=Color.clear;
+            Skin(dot.transform.Find("EmptyDot").GetComponent<Image>(),"DotEmptyLight",false);
+            var marker=dot.transform.Find("SelectedDot").GetComponent<Image>();Skin(marker,"DotSelectedLight",false);
+            foreach(string name in new[]{"EmptyDot","SelectedDot"})
+            { var rect=(RectTransform)dot.transform.Find(name);rect.anchorMin=rect.anchorMax=Vector2.one*.5f;rect.sizeDelta=new Vector2(20,20);rect.anchoredPosition=Vector2.zero; }
+            marks.Add(marker.gameObject);
+        }
+        Refs(detail,"portraitDotButtons",dots.Cast<Object>().ToArray());Refs(detail,"portraitDotSelectedMarkers",marks.Cast<Object>().ToArray());
+        detail.FindProperty("portraitDotSpacing").floatValue=28;
+        foreach(var image in left.GetComponentsInChildren<Image>(true).Concat(right.GetComponentsInChildren<Image>(true)))
+        {
+            if(new[]{"HeadingRule","KillRule","AffectionRule","RewardsRule","StoryRule"}.Contains(image.name))
+            {
+                Skin(image,"DividerLine",false);image.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,4);
+                var ornament=Decoration("PixelOrnament",image.transform);Skin(ornament,"DividerOrnament",false);
+                ornament.rectTransform.anchorMin=ornament.rectTransform.anchorMax=Vector2.one*.5f;
+                ornament.rectTransform.sizeDelta=new Vector2(28,22);ornament.rectTransform.anchoredPosition=Vector2.zero;
+            }
+        }
+        foreach(var reward in root.GetComponentsInChildren<EncyclopediaAffectionRewardView>(true))
+        {
+            Skin(reward.transform.Find("RewardBackground").GetComponent<Image>(),"RewardPanel");
+            reward.transform.Find("RewardRule").gameObject.SetActive(false);
+        }
+        var scroll=Field<UnityEngine.UI.ScrollRect>(detail,"characterScrollRect");
+        Skin(scroll.verticalScrollbar.GetComponent<Image>(),"ScrollTrack");
+        Skin(scroll.verticalScrollbar.handleRect.GetComponent<Image>(),"ScrollThumb");
+        var unknown=right.Find("UndiscoveredDetail") as RectTransform;
+        if(unknown==null) {unknown=new GameObject("UndiscoveredDetail",typeof(RectTransform)).GetComponent<RectTransform>();unknown.SetParent(right,false);Stretch(unknown);}
+        var icon=Decoration("Silhouette",unknown);icon.color=Color.black;icon.preserveAspect=true;
+        icon.rectTransform.anchorMin=icon.rectTransform.anchorMax=new Vector2(.5f,.64f);
+        icon.rectTransform.sizeDelta=new Vector2(400,350);icon.rectTransform.anchoredPosition=Vector2.zero;
+        var title=unknown.Find("UnknownName")?.GetComponent<TMP_Text>();
+        if(title==null) {title=Object.Instantiate(Field<TMP_Text>(detail,"monsterTitleText"),unknown,false);title.name="UnknownName";}
+        title.text="???";title.alignment=TextAlignmentOptions.Center;
+        Ref(detail,"undiscoveredRoot",unknown.gameObject);Ref(detail,"undiscoveredImage",icon);
+        unknown.gameObject.SetActive(false);detail.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private static void Frame(Transform parent,string sprite)
+    {
+        var frame=parent.Find("Frame");
+        if(frame==null) frame=Decoration("Frame",parent).transform;
+        foreach(Transform child in frame) child.gameObject.SetActive(false);
+        var image=frame.GetComponent<Image>() ?? frame.gameObject.AddComponent<Image>();
+        Stretch(image.rectTransform);Skin(image,sprite);frame.SetAsLastSibling();
+    }
+    private static void Fade(Transform node,string sprite)
+    {
+        var gradient=node.GetComponent<EncyclopediaGradientGraphic>();if(gradient!=null) gradient.enabled=false;
+        Skin(Decoration("PixelFade",node),sprite,false);
+    }
+    private static void IconButton(Button button,string icon)
+    {
+        Skin(button.GetComponent<Image>(),"ButtonNormal");
+        button.transition=UnityEngine.UI.Selectable.Transition.SpriteSwap;
+        button.spriteState=new UnityEngine.UI.SpriteState{highlightedSprite=sprites["ButtonHover"],pressedSprite=sprites["ButtonPressed"],selectedSprite=sprites["ButtonHover"],disabledSprite=sprites["ButtonNormal"]};
+        foreach(var text in button.GetComponentsInChildren<TMP_Text>(true)) text.gameObject.SetActive(false);
+        var image=Decoration("PixelIcon",button.transform);Skin(image,icon,false);image.preserveAspect=true;
+        image.rectTransform.anchorMin=image.rectTransform.anchorMax=Vector2.one*.5f;
+        image.rectTransform.sizeDelta=new Vector2(icon=="FullViewExpand"?40:30,icon=="FullViewExpand"?40:30);image.rectTransform.anchoredPosition=Vector2.zero;
+    }
+    private static Image Decoration(string name,Transform parent)
+    {
+        var found=parent.Find(name);if(found!=null) return found.GetComponent<Image>();
+        var go=new GameObject(name,typeof(RectTransform),typeof(UnityEngine.CanvasRenderer),typeof(Image));go.transform.SetParent(parent,false);
+        var image=go.GetComponent<Image>();Stretch(image.rectTransform);image.raycastTarget=false;return image;
+    }
+    private static void Stretch(RectTransform rect) {rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;rect.offsetMin=rect.offsetMax=Vector2.zero;}
+    private static void Skin(Image image,string sprite,bool sliced=true)
+    {image.sprite=sprites[sprite];image.color=Color.white;image.type=sliced?Image.Type.Sliced:Image.Type.Simple;image.pixelsPerUnitMultiplier=.4f;image.raycastTarget=image.GetComponent<Button>()!=null;}
+    private static T Field<T>(SerializedObject owner,string name) where T:Object => (T)owner.FindProperty(name).objectReferenceValue;
+    private static void Ref(SerializedObject owner,string name,Object value) => owner.FindProperty(name).objectReferenceValue=value;
+    private static void Refs(SerializedObject owner,string name,Object[] values)
+    {var p=owner.FindProperty(name);p.arraySize=values.Length;for(int i=0;i<values.Length;i++)p.GetArrayElementAtIndex(i).objectReferenceValue=values[i];}
+
+    private static void Preserve(string path,string original,HashSet<ulong> allowed)
+    {
+        string[] Blocks(string text)=>Regex.Split(text,@"(?=^--- !u!)",RegexOptions.Multiline);
+        ulong Id(string block)=>ulong.TryParse(Regex.Match(block,@"^--- !u!\d+ &(\d+)").Groups[1].Value,out var id)?id:0;
+        var before=Blocks(original).Where(b=>Id(b)!=0).ToDictionary(Id);var after=Blocks(File.ReadAllText(path));
+        for(int i=0;i<after.Length;i++)
+        {
+            ulong id=Id(after[i]);if(!before.TryGetValue(id,out string old))continue;
+            if(!allowed.Contains(id)){after[i]=old;continue;}
+            foreach(string field in new[]{"m_fontAsset","m_sharedMaterial","m_fontSharedMaterials"})
+            {string pattern=@"^  "+field+@":.*(?:\r?\n  -.*)*";var saved=Regex.Match(old,pattern,RegexOptions.Multiline);if(saved.Success)after[i]=Regex.Replace(after[i],pattern,_=>saved.Value,RegexOptions.Multiline);}
+        }
+        var remaining=after.Select(Id).ToHashSet();var missing=before.Keys.Where(id=>!remaining.Contains(id)).ToArray();
+        if(missing.Any(id=>!before[id].Split('\n')[0].Contains(" stripped")))throw new InvalidOperationException("Existing prefab object removed.");
+        string staged=path+".codex-writing";
+        try {File.WriteAllText(staged,string.Concat(after)+string.Concat(missing.Select(id=>before[id])),new UTF8Encoding(false));File.Replace(staged,path,null);}
+        finally {if(File.Exists(staged))File.Delete(staged);}
+        AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceSynchronousImport);
+    }
+}
+#endif

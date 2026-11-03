@@ -1,0 +1,42 @@
+[
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\\uc878\uc5c5\uc791\ud488\\CapstoneProject\\GameData_Slot1.json",
+    "unchanged_after_cleanup": true,
+    "restored_after_editor_tests": true,
+    "test_changed_keys": [
+      "encyclopediaDiscoveryData"
+    ]
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\\uc878\uc5c5\uc791\ud488\\CapstoneProject\\GameData_Slot2.json",
+    "unchanged_after_cleanup": true,
+    "restored_after_editor_tests": false,
+    "test_changed_keys": []
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\\uc878\uc5c5\uc791\ud488\\CapstoneProject\\GameData_Slot3.json",
+    "unchanged_after_cleanup": true,
+    "restored_after_editor_tests": false,
+    "test_changed_keys": []
+  },
+  {
+    "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot1.json",
+    "unchanged_after_cleanup": true,
+    "restored_after_editor_tests": true,
+    "test_changed_keys": [
+      "encyclopediaDiscoveryData"
+    ]
+  },
+  {
+    "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot2.json",
+    "unchanged_after_cleanup": true,
+    "restored_after_editor_tests": false,
+    "test_changed_keys": []
+  },
+  {
+    "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot3.json",
+    "unchanged_after_cleanup": true,
+    "restored_after_editor_tests": false,
+    "test_changed_keys": []
+  }
+]

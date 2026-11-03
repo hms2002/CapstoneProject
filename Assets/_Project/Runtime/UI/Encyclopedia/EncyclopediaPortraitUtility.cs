@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>Portrait selection and the authored three-dot window shared by creature views.</summary>
+/// <summary>Portrait selection and the authored five-dot window shared by creature views.</summary>
 public static class EncyclopediaPortraitUtility
 {
     public static int GetDefaultIndex(IReadOnlyList<EncyclopediaPortrait> portraits)
@@ -30,7 +30,7 @@ public static class EncyclopediaPortraitUtility
         return -1;
     }
 
-    public static int GetDotCount(int portraitCount) => Math.Min(3, Math.Max(0, portraitCount));
+    public static int GetDotCount(int portraitCount) => Math.Min(5, Math.Max(0, portraitCount));
 
     public static int GetDotPortraitIndex(int portraitCount, int selectedIndex, int dotIndex)
     {
@@ -39,19 +39,15 @@ public static class EncyclopediaPortraitUtility
             return -1;
 
         int selected = Math.Max(0, Math.Min(selectedIndex, portraitCount - 1));
-        int start = Math.Max(0, Math.Min(selected - 1, portraitCount - count));
+        int start = Math.Max(0, Math.Min(selected - count / 2, portraitCount - count));
         return start + dotIndex;
     }
 
-    public static int GetDotOffset(int portraitCount, int selectedIndex, int dotIndex)
+    public static float GetDotOffset(int portraitCount, int selectedIndex, int dotIndex)
     {
         if (GetDotPortraitIndex(portraitCount, selectedIndex, dotIndex) < 0)
             return 0;
-        if (portraitCount == 1)
-            return 0;
-        if (portraitCount == 2)
-            return dotIndex + (selectedIndex <= 0 ? -1 : 0);
-        return dotIndex - 1;
+        return dotIndex - (GetDotCount(portraitCount) - 1) * .5f;
     }
 
     public static void SetSprite(UnityEngine.UI.Image image, Sprite sprite)

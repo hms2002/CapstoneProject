@@ -1,0 +1,1 @@
+Creature encyclopedia localization: 0 new keys, 0 localized values, 0 appended CSV rows; 80 translations/placeholder sets verified. Existing keys and CSV rows preserved.

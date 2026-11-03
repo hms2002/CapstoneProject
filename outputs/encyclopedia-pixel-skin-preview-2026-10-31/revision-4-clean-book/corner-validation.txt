@@ -1,0 +1,2 @@
+PASS monster: 5095 pixels changed inside eight corner patches only; all other pixels unchanged.
+PASS boss: 5095 pixels changed inside eight corner patches only; all other pixels unchanged.
