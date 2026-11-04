@@ -1,0 +1,161 @@
+{
+  "date": "2026-11-05",
+  "mode": "Micro-fix",
+  "records": [
+    {
+      "number": 1,
+      "requested_name": "회복 펜던트",
+      "existing_name_preserved": "회복의 팬턴트",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RecoveryPendant.asset",
+      "definition_guid": "b7ac0f2e281a44768c35210163fd6aba",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RecoveryPendant.png",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-d50e0f27-0fa2-49f6-8c54-2740e834ddf8.png",
+      "sprite_guid": "6a831a2965e54648b6debba86dae2643",
+      "fileID": "21300000",
+      "old_sprite_guid": "b7ac0f2e281a44768c35210163fd6abc",
+      "old_fileID": "21300000",
+      "old_shared_png": "Assets/_Project/Art/Sprites/Items/RelicIcon/potion1.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        3,
+        29,
+        30
+      ]
+    },
+    {
+      "number": 2,
+      "requested_name": "쇳덩이의 예비 탄약",
+      "existing_name_preserved": "쇳덩이의 예비 탄창",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_OddIronMagazine.asset",
+      "definition_guid": "897b88fc1f3a40baa3b72a4269743a84",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_OddIronMagazine.png",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-d071a6a7-4613-49ab-b412-57ab9f334488.png",
+      "sprite_guid": "b7d96a815d254c908421a5e17f433138",
+      "fileID": "21300000",
+      "old_sprite_guid": "959fd486b4d99da4687a456b33eb4a27",
+      "old_fileID": "6943876887964716198",
+      "old_shared_png": "Assets/_Project/Art/Sprites/Items/Weapons/OddIron/OddIron.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        2,
+        29,
+        30
+      ]
+    },
+    {
+      "number": 3,
+      "requested_name": "뇌창의 세 번째 번개",
+      "existing_name_preserved": "뇌창의 세 번째 번개",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearThirdStrike.asset",
+      "definition_guid": "f36d5720370d475cb8ad55ee5b68c27c",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LightningSpearThirdStrike.png",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-ed8c0bc9-0841-4496-a6c5-7cd5c03f85f9.png",
+      "sprite_guid": "b4a9c66b0ca940b294a3c116869a0ce1",
+      "fileID": "21300000",
+      "old_sprite_guid": "10552735fdb1e6e42a67dd8f5e1ae667",
+      "old_fileID": "21300000",
+      "old_shared_png": "Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        2,
+        28,
+        30
+      ]
+    },
+    {
+      "number": 4,
+      "requested_name": "뇌창의 추적 낙뢰",
+      "existing_name_preserved": "뇌창의 추적 낙뢰",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearTargetedRain.asset",
+      "definition_guid": "b21a9cb41264495aadb828708bd905f7",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LightningSpearTargetedRain.png",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-d2625f41-c8e2-419c-834b-eb122d6aa58d.png",
+      "sprite_guid": "c56cc68da4014ca0a571f89252789579",
+      "fileID": "21300000",
+      "old_sprite_guid": "10552735fdb1e6e42a67dd8f5e1ae667",
+      "old_fileID": "21300000",
+      "old_shared_png": "Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        3,
+        29,
+        30
+      ]
+    },
+    {
+      "number": 5,
+      "requested_name": "견습 용사의 연계 증표",
+      "existing_name_preserved": "견습 용사의 연계 증표",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ApprenticeChargeLink.asset",
+      "definition_guid": "056770c65bd343ea8bf1553c842ff605",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ApprenticeChargeLink.png",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-c9d02208-1f04-4d70-b209-aaea0d774d03.png",
+      "sprite_guid": "8eb549c27f1b4498923cc5ffde2aa955",
+      "fileID": "21300000",
+      "old_sprite_guid": "748bd1286788d5f468f9857941b73367",
+      "old_fileID": "21300000",
+      "old_shared_png": "Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeapon.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        1,
+        2,
+        30,
+        30
+      ]
+    }
+  ],
+  "changed_existing": [
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_RecoveryPendant.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_OddIronMagazine.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearThirdStrike.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearTargetedRain.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_ApprenticeChargeLink.asset"
+  ],
+  "new_files": [
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RecoveryPendant.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RecoveryPendant.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_OddIronMagazine.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_OddIronMagazine.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LightningSpearThirdStrike.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LightningSpearThirdStrike.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LightningSpearTargetedRain.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LightningSpearTargetedRain.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ApprenticeChargeLink.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ApprenticeChargeLink.png"
+  ],
+  "png_source_bytes_exact": 5,
+  "definition_changes": "icon field only",
+  "new_guid_unique": 5,
+  "protected_files_unchanged": 4054,
+  "names_effects_ids_localization_shared_sprites": "preserved",
+  "git_diff_check": "passed",
+  "unity_import_compile_screen_playmode": "not executed",
+  "automated_tests": "not executed",
+  "doc_impact": "SessionLog",
+  "ErrorLog_DecisionLog_PresentationHTML": "unchanged; no new stale candidate",
+  "final_static_inspection": {
+    "sprite_metadata_and_references": 5,
+    "definition_icon_only": 5,
+    "README_links": 12,
+    "SessionLog_append_only": true
+  }
+}

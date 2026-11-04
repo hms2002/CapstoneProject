@@ -13,6 +13,9 @@ Map scene/run transition, title-to-game bootstrap, player runtime capture/restor
 
 ## Current Structure
 
+- Item unlock restoration after new affection content stays in `ItemManager`: once its item database is ready, initialization and unlock queries restore missing `UnlockItemAffectionEffect` weapon/relic IDs using committed profile affection and the current NPC reward data. Late NPC database adoption is handled by later query retries. It only adds to runtime sets; existing ready-source `GameDataManager.SaveData` collection owns persistence. Pending current-run gains still follow the normal reward/commit flow; no historical reward UI or unrelated effects are replayed. [Melta/Chloe scope](../../ActiveTasks/melta-chloe-tier-two-unlocks.md).
+- `RunTimeLimitSystem.ResolveInitialLimitSeconds` reads committed profile affection for Demon King NPC 1005. At affection >=1 it adds a single 120 seconds to the authored initial time (current config 900 → 1020); both new-run initialization and inactive HUD preview share this calculation. The positive-remaining-time restoration branch remains unchanged. The extension does not alter current-run remaining time when affection is earned, and existing run-end commit/save ownership remains intact. No saved fields or timer config schema were added. See [patience reward scope](../../ActiveTasks/demon-king-patience-reward.md).
+
 - Death/time-over return requests a one-shot destination-scoped fall through `PlayerHubSpawnPresentation2D.RequestDeathReturn` immediately before scene loading (game-over UI and no-UI fallback). PlayerSpawner's existing arrival call consumes it, independently of the tutorial intro gate. Death arrival does not emit the tutorial completion event. Requests reset on play initialization or a subsequent unrelated Single scene load; ordinary travel and victory do not request this presentation.
 
 | Area | Count | Responsibility |

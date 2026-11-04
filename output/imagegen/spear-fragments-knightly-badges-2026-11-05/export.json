@@ -1,0 +1,100 @@
+[
+  {
+    "key": "01-spear-tip-fragment",
+    "name": "창 파편 A — 부러진 창끝",
+    "native": "01-spear-tip-fragment-32x32.png",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knightly-badges-2026-11-05\\01-spear-tip-fragment-source.png",
+    "sourceMaterialBounds": [
+      205,
+      177,
+      1074,
+      1080
+    ],
+    "materialSize": [
+      23,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794"
+    ]
+  },
+  {
+    "key": "02-spear-collar-fragment",
+    "name": "창 파편 B — 갈라진 창날 밑동",
+    "native": "02-spear-collar-fragment-32x32.png",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knightly-badges-2026-11-05\\02-spear-collar-fragment-source.png",
+    "sourceMaterialBounds": [
+      193,
+      254,
+      1052,
+      1027
+    ],
+    "materialSize": [
+      24,
+      22
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794"
+    ]
+  },
+  {
+    "key": "03-knightly-shield-badge",
+    "name": "기사 휘장 A — 방패형 검 문장",
+    "native": "03-knightly-shield-badge-32x32.png",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knightly-badges-2026-11-05\\03-knightly-shield-badge-source.png",
+    "sourceMaterialBounds": [
+      289,
+      151,
+      965,
+      1100
+    ],
+    "materialSize": [
+      17,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#436794",
+      "#77BCD6",
+      "#F2F9F8"
+    ]
+  },
+  {
+    "key": "04-knightly-winged-badge",
+    "name": "기사 휘장 B — 날개형 검 훈장",
+    "native": "04-knightly-winged-badge-32x32.png",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knightly-badges-2026-11-05\\04-knightly-winged-badge-source.png",
+    "sourceMaterialBounds": [
+      124,
+      273,
+      1137,
+      1042
+    ],
+    "materialSize": [
+      24,
+      18
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#436794",
+      "#77BCD6",
+      "#F2F9F8"
+    ]
+  }
+]

@@ -5598,7 +5598,7 @@
         "type": "InfoOnlyAffectionEffect",
         "owner": "SpiriAlcoholPuddleReward",
         "field": "rewardText",
-        "text": "술 장판에서 3초 동안 술을 채우면 혼란 대신 이동 속도 +25%, 공격 속도 +40% 버프를 얻습니다. 장판 안에서는 지속시간을 갱신하며, 장판을 벗어나 1.5초 동안 잔이 비워진 뒤 5초 동안 유지됩니다."
+        "text": "더 이상 술 위에서 혼란에 빠지지 않으며, 발걸음은 가벼워지고 공격은 빨라집니다."
     },
     {
         "key": "asset.eaa51ebec24da574bae03bcedc6f3e3d.displayName",
@@ -6199,6 +6199,86 @@
     "owner": "SashaBetterRelics",
     "field": "rewardText",
     "text": "상점에서 희귀·영웅 등급 유물이 조금 더 자주 등장합니다."
-}
+},
+    {
+      "key": "asset.bbc1e85ba3984d0a955c674de8aaf6b5.rewardText",
+      "path": "Assets/_Project/Data/Dialogue/Affection/SpiriRelicUnlockReward.asset",
+      "type": "UnlockItemAffectionEffect",
+      "owner": "SpiriRelicUnlockReward",
+      "field": "rewardText",
+      "text": "화룡의 송곳니, 태양의 파편, 독한 한잔이 해금되었습니다.\n이제 상자와 상점에서 발견할 수 있습니다."
+    },
+    {
+      "key": "asset.3e6c202c0a464c3b93ade1aca60e7948.rewardText",
+      "path": "Assets/_Project/Data/Dialogue/Affection/DemonKingPatienceReward.asset",
+      "type": "InfoOnlyAffectionEffect",
+      "owner": "DemonKingPatienceReward",
+      "field": "rewardText",
+      "text": "마왕의 인내심이 2분 늘어납니다."
+    },
+    {
+      "key": "asset.ddf04bff7fe8b144580e25eb7b52a207.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ChloeLantern.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ChloeLantern",
+      "field": "displayName",
+      "text": "클로에의 등불"
+    },
+    {
+      "key": "asset.ddf04bff7fe8b144580e25eb7b52a207.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ChloeLantern.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ChloeLantern",
+      "field": "description",
+      "text": "주위를 공전하는 소환수가 적에게 강한 유도탄을 발사합니다."
+    },
+    {
+      "key": "asset.c6b658f2b5f61af438415d4d0fb6c848.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SlimeBottle.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_SlimeBottle",
+      "field": "displayName",
+      "text": "병 속의 슬라임"
+    },
+    {
+      "key": "asset.c6b658f2b5f61af438415d4d0fb6c848.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_SlimeBottle.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_SlimeBottle",
+      "field": "description",
+      "text": "작은 슬라임이 가끔 튀어나와 피해를 막아줍니다."
+    },
+    {
+      "key": "asset.1d1e3da61e754a4c927dee88e53855ab.rewardText",
+      "path": "Assets/_Project/Data/Dialogue/Affection/MeltaRegionalDiscountReward.asset",
+      "type": "InfoOnlyAffectionEffect",
+      "owner": "MeltaRegionalDiscountReward",
+      "field": "rewardText",
+      "text": "멜타의 영역 내 상점에서 모든 상품의 가격이 10% 할인됩니다."
+    },
+    {
+      "key": "asset.c0cba4733e4b45d193fd0b751f2491dc.rewardText",
+      "path": "Assets/_Project/Data/Dialogue/Affection/ChloeVisionReward.asset",
+      "type": "InfoOnlyAffectionEffect",
+      "owner": "ChloeVisionReward",
+      "field": "rewardText",
+      "text": "클로에의 영역에서 어둠 너머를 더 멀리 볼 수 있습니다."
+    },
+    {
+      "key": "asset.d1ec2d394ab443e0856cafd9cc93a61e.rewardText",
+      "path": "Assets/_Project/Data/Dialogue/Affection/MeltaRelicUnlockReward.asset",
+      "type": "UnlockItemAffectionEffect",
+      "owner": "MeltaRelicUnlockReward",
+      "field": "rewardText",
+      "text": "병 속의 슬라임이 해금되었습니다.\n이제 상자와 상점에서 발견할 수 있습니다."
+    },
+    {
+      "key": "asset.98bab4e87b4e423483f4b55d17eee8b5.rewardText",
+      "path": "Assets/_Project/Data/Dialogue/Affection/ChloeRelicUnlockReward.asset",
+      "type": "UnlockItemAffectionEffect",
+      "owner": "ChloeRelicUnlockReward",
+      "field": "rewardText",
+      "text": "클로에의 등불이 해금되었습니다.\n이제 상자와 상점에서 발견할 수 있습니다."
+    }
   ]
 }

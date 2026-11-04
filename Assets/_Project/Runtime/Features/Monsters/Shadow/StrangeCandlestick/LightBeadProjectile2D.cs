@@ -8,6 +8,10 @@ namespace UnityGAS
     {
         private Vector2 direction = Vector2.right;
         private float speed;
+        private Transform homingTarget;
+        private float homingRemaining;
+        private float homingTurnRate;
+        private float homingHalfAngle;
         private Witch rampageOwner;
         private GameObject presentationImpactTarget;
         private System.Action presentationImpact;
@@ -56,8 +60,19 @@ namespace UnityGAS
                 : Vector2.right;
 
             speed = Mathf.Max(0f, context.speed);
+            homingTarget = null;
+            homingRemaining = 0f;
 
             SetupBase(context);
+        }
+
+        /// <summary>Opt-in per launched instance; losing the forward cone or timer permanently releases tracking.</summary>
+        public void ConfigureLimitedHoming(Transform target, float seconds, float turnRate, float halfAngle)
+        {
+            homingTarget = target;
+            homingRemaining = Mathf.Max(0f, seconds);
+            homingTurnRate = Mathf.Max(0f, turnRate);
+            homingHalfAngle = Mathf.Clamp(halfAngle, 1f, 89f);
         }
 
         /// <summary>
@@ -72,6 +87,24 @@ namespace UnityGAS
 
         protected override void TickAttack(float deltaTime)
         {
+            if (homingTarget != null && homingRemaining > 0f)
+            {
+                Vector2 aim = CommonMonsterCombatUtility.ResolveAimPoint(homingTarget.gameObject) - (Vector2)transform.position;
+                float angle = Vector2.SignedAngle(direction, aim);
+                if (aim.sqrMagnitude <= 0.0001f || Mathf.Abs(angle) > homingHalfAngle ||
+                    !homingTarget.gameObject.activeInHierarchy || CombatTargetDeathUtility.IsPlayerDeathSequenceRunning(homingTarget))
+                {
+                    homingTarget = null;
+                    homingRemaining = 0f;
+                }
+                else
+                {
+                    float maxTurn = homingTurnRate * Mathf.Min(deltaTime, homingRemaining);
+                    direction = (Quaternion.Euler(0f, 0f, Mathf.Clamp(angle, -maxTurn, maxTurn)) * direction).normalized;
+                    homingRemaining = Mathf.Max(0f, homingRemaining - deltaTime);
+                    if (homingRemaining <= 0f) homingTarget = null;
+                }
+            }
             transform.position += (Vector3)(direction * speed * deltaTime);
         }
 

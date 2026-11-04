@@ -1,0 +1,700 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityGAS;
+
+/// <summary>
+/// 책임 : 상자 전리품 생성/보관과 오픈 프렐류드 상태를 관리하고 UI 열기 요청은 계약으로 위임한다.
+/// 실제 개봉/활성 상태 변경은 UI 열기 성공 여부와 독립적으로 외부 관찰자에게 알린다.
+/// </summary>
+public class TreasureChest : MonoBehaviour
+{
+    private static readonly Color RewardRevealDustGizmoColor = new Color(1f, 0.82f, 0.12f, 0.95f);
+    private const float RewardRevealDustGizmoRadius = 0.08f;
+
+    [Header("Inventory")]
+    [SerializeField] private int capacity = 16;
+
+    [Header("Loot Override")]
+    [SerializeField] private ChestLootMode lootMode = ChestLootMode.StageTable;
+    [SerializeField] private ChestLootOverrideProfile lootOverrideProfile = new();
+
+    [Header("Open Presentation")]
+    [SerializeField] private Animator chestAnimator;
+    [SerializeField] private string openStateName = "Open";
+    [SerializeField] private string openedStateName = "Opened";
+    [SerializeField] private float openPreludeFallbackDuration = 0.5f;
+    [SerializeField] private bool freezeTimeOnFirstOpen = true;
+    [SerializeField] private ParticleSystem[] openEffects;
+    [SerializeField] private SpriteRenderer chestSpriteRenderer;
+    [SerializeField] private Sprite openedSprite;
+
+    [Header("Reward Reveal")]
+    [SerializeField] private ParticleSystem rewardRevealDustParticle;
+    [SerializeField] private Transform rewardRevealDustAnchor;
+    [SerializeField] private Vector3 rewardRevealDustLocalOffset = new Vector3(0f, -0.35f, 0f);
+    [SerializeField] private bool clearRewardRevealDustBeforePlay = true;
+    [SerializeField, Min(0f)] private float spawnedRewardRevealDustDestroyDelay = 2f;
+
+    [Header("Interaction Presentation")]
+    [SerializeField] private Transform presentationAnchor;
+    [SerializeField] private WorldObjectPresentationDefinition openPresentation = new();
+
+    private ChestInventory inventory;
+    private readonly LootPoolService lootPoolService = new LootPoolService();
+    private bool isOpened;
+    private bool isLootSelectionComplete;
+    private bool isGenerated;
+    private bool isOpening;
+    private bool isPreludeTimeFrozen;
+    private GameFlowInputBlocker openingInputBlocker;
+    private WorldObjectPresentationRuntime openPresentationRuntime;
+    private readonly List<ParticleSystem> spawnedRewardRevealParticles = new List<ParticleSystem>();
+    private int refreshCountUsed;
+    private bool hasRaisedFirstOpenedUi;
+    public int Capacity => capacity;
+    public bool IsOpened => isOpened;
+    public bool IsLootSelectionComplete => isLootSelectionComplete;
+    // Read-only guidance: never roll loot merely to decide whether to highlight a chest.
+    public bool HasAvailableWeaponReward
+    {
+        get
+        {
+            if (isGenerated)
+            {
+                if (inventory == null || !inventory.CanAcquire) return false;
+                for (int i = 0; i < inventory.Capacity; i++)
+                    if (inventory.Get(i) is WeaponDefinition) return true;
+                return false;
+            }
+            return lootMode == ChestLootMode.OverrideProfile && lootOverrideProfile != null &&
+                lootOverrideProfile.WeaponCountProfile != null && lootOverrideProfile.WeaponCountProfile.minCount > 0;
+        }
+    }
+    public int RefreshCountLimit => ChestRewardPolicy.ResolveRefreshLimit();
+    public int RefreshCountUsed => refreshCountUsed;
+    public int RemainingRefreshCount => ChestRewardPolicy.ResolveRemainingRefreshCount(
+        isGenerated,
+        inventory,
+        LootManager.Instance != null,
+        refreshCountUsed);
+    public event Action<TreasureChest> OpenedUi;
+    public event Action<TreasureChest> FirstOpenedUi;
+    public static event Action<TreasureChest> WorldStateChanged;
+
+    private void OnEnable() => WorldStateChanged?.Invoke(this);
+
+    private void Awake()
+    {
+        inventory = new ChestInventory(capacity);
+
+        if (chestAnimator == null)
+            chestAnimator = GetComponentInChildren<Animator>();
+
+        if (chestAnimator != null)
+            chestAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+
+        if (chestSpriteRenderer == null)
+            chestSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        openPresentationRuntime = new WorldObjectPresentationRuntime(gameObject);
+        ConfigureOpenEffects();
+    }
+
+    private void OnDisable()
+    {
+        WorldStateChanged?.Invoke(this);
+        ReleaseOpeningUiInputBlockIfNeeded();
+        RestorePreludeTimeIfNeeded();
+        DestroySpawnedRewardRevealParticles(immediate: true);
+        isOpening = false;
+    }
+
+    public void InitializeWithLoot(List<ScriptableObject> loots)
+    {
+        if (inventory == null)
+            inventory = new ChestInventory(capacity);
+
+        inventory.Clear();
+        FillInventoryWithLoot(loots);
+
+        isGenerated = true;
+        WorldStateChanged?.Invoke(this);
+    }
+
+    /// <summary>
+    /// 책임 : PreserveDuringRun 절차 던전 복원 시 이미 연 상자를 빈 개봉 상태로 되돌려 보상을 중복 생성하지 않게 한다.
+    /// </summary>
+    public void RestoreOpenedStateForDungeon(
+        IReadOnlyList<DungeonChestLootRuntimeStateData> savedLoot = null, int acquiredCount = 0,
+        IReadOnlyList<ScriptableObject> outstandingAcquisitions = null)
+    {
+        inventory ??= new ChestInventory(capacity);
+        inventory.Clear();
+        inventory.RestoreAcquiredCount(acquiredCount, outstandingAcquisitions);
+        if (savedLoot != null)
+        {
+            for (int i = 0; i < savedLoot.Count; i++)
+            {
+                DungeonChestLootRuntimeStateData entry = savedLoot[i];
+                if (entry == null || entry.item == null)
+                    continue;
+
+                if (entry.item is RelicDefinition relic)
+                    inventory.SetRelicWithLevel(entry.slotIndex, relic, entry.relicLevel);
+                else
+                    inventory.Set(entry.slotIndex, entry.item);
+            }
+        }
+
+        isGenerated = true;
+        isOpened = true;
+        isOpening = false;
+        hasRaisedFirstOpenedUi = true;
+        HoldOpenedVisualState();
+        // A confirmed selection clears the remaining loot. Preserve completion even
+        // when this chest is a child of the dungeon's saved object root.
+        if (acquiredCount > 0 && CaptureDungeonLootState().Count == 0)
+            gameObject.SetActive(false);
+        WorldStateChanged?.Invoke(this);
+    }
+
+    public void CompleteLootSelection()
+    {
+        if (isLootSelectionComplete)
+            return;
+
+        isLootSelectionComplete = true;
+        inventory?.Clear();
+        isOpened = true;
+        HoldOpenedVisualState();
+        if (chestAnimator != null)
+            chestAnimator.enabled = false;
+        if (chestSpriteRenderer != null)
+        {
+            Color color = chestSpriteRenderer.color;
+            chestSpriteRenderer.color = new Color(color.r * 0.25f, color.g * 0.25f, color.b * 0.25f, color.a);
+        }
+
+        foreach (Collider2D chestCollider in GetComponentsInChildren<Collider2D>(true))
+            chestCollider.enabled = false;
+        if (TryGetComponent(out ChestInteractable interactable))
+            interactable.enabled = false;
+        WorldStateChanged?.Invoke(this);
+    }
+
+    /// <summary>
+    /// 책임 : PreserveDuringRun 저장을 위해 현재 상자 슬롯의 남은 보상과 유물 레벨을 복사한다.
+    /// </summary>
+    public List<DungeonChestLootRuntimeStateData> CaptureDungeonLootState()
+    {
+        var result = new List<DungeonChestLootRuntimeStateData>();
+        if (inventory == null)
+            return result;
+
+        for (int slotIndex = 0; slotIndex < inventory.Capacity; slotIndex++)
+        {
+            ScriptableObject item = inventory.Get(slotIndex);
+            if (item == null)
+                continue;
+
+            result.Add(new DungeonChestLootRuntimeStateData
+            {
+                slotIndex = slotIndex,
+                item = item,
+                relicLevel = item is RelicDefinition
+                    ? inventory.GetRelicLevelInSlot(slotIndex)
+                    : 0
+            });
+        }
+
+        return result;
+    }
+
+    public int AcquiredCount => inventory?.AcquiredCount ?? 0;
+    public List<ScriptableObject> CaptureOutstandingAcquisitions() => inventory != null
+        ? new List<ScriptableObject>(inventory.OutstandingAcquisitions)
+        : new List<ScriptableObject>();
+
+    public void PlayRewardReveal()
+    {
+        PlayRewardRevealDust();
+    }
+
+    public bool Open(IPlayerInteractor player = null)
+    {
+        if (isLootSelectionComplete)
+            return false;
+
+        if (!isGenerated)
+        {
+            GenerateSelfLoot();
+            isGenerated = true;
+        }
+
+        if (isOpening)
+            return true;
+
+        if (isOpened)
+        {
+            bool openedUi = TryOpenUi();
+            if (openedUi)
+                RaiseOpenedUiEvents();
+
+            return openedUi;
+        }
+
+        StartCoroutine(OpenRoutine(player != null ? player.Transform.gameObject : null));
+        return true;
+    }
+
+    private IEnumerator OpenRoutine(GameObject instigator)
+    {
+        bool opened = false;
+        isOpening = true;
+        try
+        {
+            AcquireOpeningUiInputBlockIfNeeded();
+            FreezePreludeTimeIfNeeded();
+            PlayOpenPresentation(instigator);
+
+            float duration = GetOpenPreludeDuration();
+            if (duration > 0f)
+                yield return new WaitForSecondsRealtime(duration);
+
+            isOpened = true;
+            HoldOpenedVisualState();
+            WorldStateChanged?.Invoke(this);
+            RestorePreludeTimeIfNeeded();
+
+            opened = TryOpenUi(playSlideFadePresentation: false, inputBlocker: openingInputBlocker);
+            if (opened)
+                RaiseOpenedUiEvents();
+        }
+        finally
+        {
+            ReleaseOpeningUiInputBlockIfNeeded();
+            RestorePreludeTimeIfNeeded();
+            isOpening = false;
+        }
+
+        if (!opened && PlayerInteractor2D.Instance != null)
+            PlayerInteractor2D.Instance.SetInteractState(InteractState.Idle);
+    }
+
+    private void RaiseOpenedUiEvents()
+    {
+        OpenedUi?.Invoke(this);
+
+        if (hasRaisedFirstOpenedUi)
+            return;
+
+        hasRaisedFirstOpenedUi = true;
+        FirstOpenedUi?.Invoke(this);
+    }
+
+    private bool TryOpenUi(
+        bool playSlideFadePresentation = true,
+        GameFlowInputBlocker inputBlocker = null)
+    {
+        return ChestUiOpenPlayback.OpenChest(this, playSlideFadePresentation, inputBlocker);
+    }
+
+    private void GenerateSelfLoot()
+    {
+        if (LootManager.Instance == null)
+            return;
+
+        ChestLootResult result = LootManager.Instance.GenerateChestLootResult(BuildLootRequest());
+        FillInventoryWithLoot(result.Items);
+    }
+
+    public ChestInventory GetInventory() => inventory;
+
+    public bool CanRefreshLoot()
+    {
+        return ChestRewardPolicy.CanRefreshLoot(
+            isGenerated,
+            inventory,
+            LootManager.Instance != null,
+            refreshCountUsed);
+    }
+
+    public bool TryRefreshLoot()
+        => TryRefreshLoot(null);
+
+    public bool TryRefreshLoot(IReadOnlyList<int> preservedIndices)
+    {
+        if (!CanRefreshLoot())
+            return false;
+
+        LootManager lootManager = LootManager.Instance;
+        if (lootManager == null)
+            return false;
+
+        var preserved = new HashSet<int>();
+        if (preservedIndices != null)
+            foreach (int index in preservedIndices)
+                if (inventory.Get(index) == null || !preserved.Add(index)) return false;
+        if (preserved.Count > ChestInventory.AcquisitionLimit) return false;
+
+        var retainedItems = new List<ScriptableObject>();
+        foreach (int index in preserved) retainedItems.Add(inventory.Get(index));
+        ChestLootResult result = lootManager.GenerateChestLootResult(BuildLootRequest(retainedItems));
+        if (result.Items.Count == 0) return false;
+
+        // Keep the original slot indices and relic levels; retained choices remain provisional.
+        inventory.ClearExcept(preserved);
+        FillInventoryWithLoot(result.Items);
+        refreshCountUsed++;
+        WorldStateChanged?.Invoke(this);
+        return true;
+    }
+
+    private void FillInventoryWithLoot(IReadOnlyList<ScriptableObject> loots)
+    {
+        if (inventory == null || loots == null)
+            return;
+
+        // Boss bonus lists also enter here without passing through the random
+        // chest generator. Apply the same exclusions and retained-choice rule.
+        HashSet<string> excludedWeapons = lootPoolService.BuildWeaponExclusionSet(LootPoolContext.ForChest(this));
+        for (int i = 0; i < inventory.Capacity; i++)
+            if (inventory.Get(i) is WeaponDefinition retainedWeapon)
+                excludedWeapons.Add(retainedWeapon.weaponId);
+
+        for (int i = 0; i < loots.Count; i++)
+        {
+            ScriptableObject item = loots[i];
+            if (item is WeaponDefinition weapon && excludedWeapons.Contains(weapon.weaponId))
+                item = lootPoolService.GetRandomTreasureChestWeapon(excludedWeapons);
+
+            if (item != null && TryAddLootItem(item) && item is WeaponDefinition addedWeapon)
+                excludedWeapons.Add(addedWeapon.weaponId);
+        }
+    }
+
+    private bool TryAddLootItem(ScriptableObject item)
+    {
+        if (item is RelicDefinition relic)
+        {
+            RelicInventory playerInventory = LootPoolItemSelectionService.GetPlayerRelicInventory();
+            if (!ChestRewardPolicy.CanOfferRelic(relic, playerInventory, inventory))
+                relic = LootPoolItemSelectionService.GetRandomRelicByRarity(
+                    relic.rarity, candidate => ChestRewardPolicy.CanOfferRelic(candidate, playerInventory, inventory));
+
+            if (relic == null)
+                return false;
+
+            return inventory.TryAddRelicWithLevel(relic, ChestRewardPolicy.ResolveChestRelicLevel(relic));
+        }
+
+        return inventory.TryAdd(item);
+    }
+
+    private ChestLootRequest BuildLootRequest(IReadOnlyList<ScriptableObject> retainedItems = null)
+    {
+        ChestLootOverrideProfile profile = lootMode == ChestLootMode.OverrideProfile ? lootOverrideProfile : null;
+        return new ChestLootRequest(default, LootPoolContext.ForChest(this), profile, retainedItems);
+    }
+
+    private void PlayOpenPresentation(GameObject instigator)
+    {
+        SetAnimatorSpeed(1f);
+
+        if (!string.IsNullOrWhiteSpace(openStateName))
+            PlayAnimatorState(openStateName, 0f);
+
+        openPresentationRuntime?.PlayExecuteOnly(
+            openPresentation,
+            instigator: instigator,
+            target: gameObject,
+            anchor: ResolvePresentationAnchor(),
+            sourceObject: this);
+
+        if (openEffects == null)
+            return;
+
+        for (int i = 0; i < openEffects.Length; i++)
+        {
+            var effect = openEffects[i];
+            if (effect == null)
+                continue;
+
+            effect.gameObject.SetActive(true);
+            effect.Play(true);
+        }
+    }
+
+    private void PlayRewardRevealDust()
+    {
+        ParticleSystem particle = ResolvePlayableRewardRevealDust();
+        if (particle == null)
+            return;
+
+        ParticleSystem.MainModule main = particle.main;
+        main.useUnscaledTime = true;
+        particle.gameObject.SetActive(true);
+        if (clearRewardRevealDustBeforePlay)
+            particle.Clear(withChildren: true);
+        particle.Play(withChildren: true);
+    }
+
+    private ParticleSystem ResolvePlayableRewardRevealDust()
+    {
+        if (rewardRevealDustParticle == null)
+            return null;
+
+        if (rewardRevealDustParticle.gameObject.scene.IsValid() &&
+            rewardRevealDustParticle.gameObject.scene.isLoaded)
+        {
+            return rewardRevealDustParticle;
+        }
+
+        ParticleSystem instance = Instantiate(
+            rewardRevealDustParticle,
+            ResolveRewardRevealDustSpawnPosition(),
+            ResolveRewardRevealDustSpawnRotation());
+        spawnedRewardRevealParticles.Add(instance);
+        Destroy(instance.gameObject, ResolveRewardRevealDustDestroyDelay(instance));
+        return instance;
+    }
+
+    private Vector3 ResolveRewardRevealDustSpawnPosition()
+    {
+        Transform anchor = ResolveRewardRevealDustAnchor();
+        return anchor.TransformPoint(rewardRevealDustLocalOffset);
+    }
+
+    private Quaternion ResolveRewardRevealDustSpawnRotation()
+    {
+        return ResolveRewardRevealDustAnchor().rotation;
+    }
+
+    private Transform ResolveRewardRevealDustAnchor()
+    {
+        return rewardRevealDustAnchor != null ? rewardRevealDustAnchor : transform;
+    }
+
+    private float ResolveRewardRevealDustDestroyDelay(ParticleSystem particle)
+    {
+        if (spawnedRewardRevealDustDestroyDelay > 0f)
+            return spawnedRewardRevealDustDestroyDelay;
+
+        if (particle == null)
+            return 0f;
+
+        ParticleSystem.MainModule main = particle.main;
+        return Mathf.Max(0.1f, main.duration + main.startLifetime.constantMax);
+    }
+
+    private void DestroySpawnedRewardRevealParticles(bool immediate)
+    {
+        for (int i = 0; i < spawnedRewardRevealParticles.Count; i++)
+        {
+            ParticleSystem particle = spawnedRewardRevealParticles[i];
+            if (particle == null)
+                continue;
+
+            if (immediate && !Application.isPlaying)
+                DestroyImmediate(particle.gameObject);
+            else
+                Destroy(particle.gameObject);
+        }
+
+        spawnedRewardRevealParticles.Clear();
+    }
+
+    private void HoldOpenedVisualState()
+    {
+        bool heldWithAnimator = false;
+
+        if (chestAnimator != null)
+        {
+            SetAnimatorSpeed(1f);
+
+            if (!string.IsNullOrWhiteSpace(openedStateName) && PlayAnimatorState(openedStateName, 0f))
+            {
+                heldWithAnimator = true;
+            }
+            else if (!string.IsNullOrWhiteSpace(openStateName) && PlayAnimatorState(openStateName, 1f))
+            {
+                chestAnimator.Update(0f);
+                SetAnimatorSpeed(0f);
+                heldWithAnimator = true;
+            }
+        }
+
+        if (!heldWithAnimator)
+            ApplyOpenedSpriteFallback();
+    }
+
+    private bool PlayAnimatorState(string stateName, float normalizedTime)
+    {
+        if (chestAnimator == null || string.IsNullOrWhiteSpace(stateName))
+            return false;
+
+        int stateHash = Animator.StringToHash(stateName);
+        if (!chestAnimator.HasState(0, stateHash))
+            return false;
+
+        chestAnimator.Play(stateHash, 0, normalizedTime);
+        chestAnimator.Update(0f);
+        return true;
+    }
+
+    private float GetOpenPreludeDuration()
+    {
+        AnimationClip clip = ResolveAnimatorClip(openStateName);
+        if (clip != null)
+            return clip.length;
+
+        return HasOpenEffects() ? Mathf.Max(0f, openPreludeFallbackDuration) : 0f;
+    }
+
+    private AnimationClip ResolveAnimatorClip(string stateOrClipName)
+    {
+        if (chestAnimator == null || string.IsNullOrWhiteSpace(stateOrClipName))
+            return null;
+
+        RuntimeAnimatorController controller = chestAnimator.runtimeAnimatorController;
+        if (controller == null || controller.animationClips == null)
+            return null;
+
+        AnimationClip bestMatch = null;
+        for (int i = 0; i < controller.animationClips.Length; i++)
+        {
+            AnimationClip clip = controller.animationClips[i];
+            if (clip == null)
+                continue;
+
+            if (string.Equals(clip.name, stateOrClipName, System.StringComparison.OrdinalIgnoreCase))
+                return clip;
+
+            if (bestMatch == null &&
+                clip.name.IndexOf(stateOrClipName, System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                bestMatch = clip;
+            }
+        }
+
+        return bestMatch;
+    }
+
+    private void FreezePreludeTimeIfNeeded()
+    {
+        if (!freezeTimeOnFirstOpen || isPreludeTimeFrozen)
+            return;
+
+        TimeScalePausePlayback.Acquire(this);
+        isPreludeTimeFrozen = true;
+    }
+
+    private void RestorePreludeTimeIfNeeded()
+    {
+        if (!isPreludeTimeFrozen)
+            return;
+
+        TimeScalePausePlayback.Release(this);
+        isPreludeTimeFrozen = false;
+    }
+
+    private void AcquireOpeningUiInputBlockIfNeeded()
+    {
+        if (openingInputBlocker != null && openingInputBlocker.IsBlocking)
+            return;
+
+        openingInputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        openingInputBlocker?.Acquire();
+    }
+
+    private void ReleaseOpeningUiInputBlockIfNeeded()
+    {
+        openingInputBlocker?.Release();
+    }
+
+    private void ConfigureOpenEffects()
+    {
+        if (openEffects == null)
+            return;
+
+        for (int i = 0; i < openEffects.Length; i++)
+        {
+            ParticleSystem effect = openEffects[i];
+            if (effect == null)
+                continue;
+
+            var main = effect.main;
+            main.useUnscaledTime = true;
+            effect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+    }
+
+    private bool HasOpenEffects()
+    {
+        if (openEffects == null)
+            return false;
+
+        for (int i = 0; i < openEffects.Length; i++)
+        {
+            if (openEffects[i] != null)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void SetAnimatorSpeed(float speed)
+    {
+        if (chestAnimator != null)
+            chestAnimator.speed = speed;
+    }
+
+    private void ApplyOpenedSpriteFallback()
+    {
+        if (chestSpriteRenderer == null || openedSprite == null)
+            return;
+
+        chestSpriteRenderer.sprite = openedSprite;
+    }
+
+    private Transform ResolvePresentationAnchor()
+    {
+        if (presentationAnchor != null)
+            return presentationAnchor;
+
+        if (chestSpriteRenderer != null)
+            return chestSpriteRenderer.transform;
+
+        return transform;
+    }
+
+    private void OnDrawGizmos()
+    {
+        DrawRewardRevealDustGizmo(drawUnconfigured: false);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        DrawRewardRevealDustGizmo(drawUnconfigured: true);
+    }
+
+    private void DrawRewardRevealDustGizmo(bool drawUnconfigured)
+    {
+        if (!drawUnconfigured &&
+            rewardRevealDustParticle == null &&
+            rewardRevealDustAnchor == null &&
+            rewardRevealDustLocalOffset == Vector3.zero)
+        {
+            return;
+        }
+
+        Transform anchor = rewardRevealDustAnchor != null ? rewardRevealDustAnchor : transform;
+        Vector3 spawnPosition = anchor.TransformPoint(rewardRevealDustLocalOffset);
+        Gizmos.color = RewardRevealDustGizmoColor;
+        Gizmos.DrawLine(anchor.position, spawnPosition);
+        Gizmos.DrawSphere(spawnPosition, RewardRevealDustGizmoRadius);
+    }
+
+}

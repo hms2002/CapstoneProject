@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6591e5c22257414ab0e679bbf7b06ba6, type: 3}
+  m_Name: MeltaRegionalDiscountReward
+  m_EditorClassIdentifier: Gameplay::InfoOnlyAffectionEffect
+  rewardText: "\uba5c\ud0c0\uc758 \uc601\uc5ed \ub0b4 \uc0c1\uc810\uc5d0\uc11c \ubaa8\ub4e0 \uc0c1\ud488\uc758 \uac00\uaca9\uc774 10% \ud560\uc778\ub429\ub2c8\ub2e4."
+  rewardIcon: {fileID: 21300000, guid: 9feeb36d639c45799a7d82e21b7a8d09, type: 3}

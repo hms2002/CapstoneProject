@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_BrokenCrown
   displayName: "\uBD80\uC11C\uC9C4 \uC655\uAD00"
-  icon: {fileID: 745922690225715111, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  icon: {fileID: 21300000, guid: e538c88794fd4ade81a8085bd4538781, type: 3}
   rarity: 2
   description: "\uCD5C\uB300 \uCCB4\uB825\uC774 \uAC10\uC18C\uD558\uC9C0\uB9CC \uCD5C\uC885
     \uD53C\uD574\uAC00 \uD06C\uAC8C \uC99D\uAC00\uD569\uB2C8\uB2E4."

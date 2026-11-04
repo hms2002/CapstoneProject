@@ -1,0 +1,330 @@
+{
+  "date": "2026-11-04",
+  "mode": "preview-only artwork",
+  "method": "four built-in image_gen generation calls plus one sakura petal silhouette correction; System.Drawing nearest-neighbor native export, exact palette quantization, rounded two-pixel outline and sheet assembly; no Python image editing",
+  "primary_style": "User-approved rift stone/broken crown/bandage/flag quartet",
+  "icons": [
+    {
+      "name": "회피의 깃",
+      "file": "01-evasion-plume-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        2,
+        28,
+        30
+      ],
+      "transparent_margins": [
+        3,
+        2,
+        4,
+        2
+      ],
+      "colors": [
+        "#363232",
+        "#8599B0",
+        "#D49C73",
+        "#F2F9F8"
+      ],
+      "color_count": 4,
+      "alpha": "0 or 255 only",
+      "preserved_alpha_holes": [],
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-5194448b-b9c6-48b6-a149-7b5ede114bd0.png"
+    },
+    {
+      "name": "무거운 팔찌",
+      "file": "02-heavy-bracelet-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        4,
+        30,
+        28
+      ],
+      "transparent_margins": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "colors": [
+        "#363232",
+        "#436794",
+        "#8599B0",
+        "#C2C2C2"
+      ],
+      "color_count": 4,
+      "alpha": "0 or 255 only",
+      "preserved_alpha_holes": [
+        [
+          13,
+          12
+        ],
+        [
+          14,
+          12
+        ],
+        [
+          15,
+          12
+        ],
+        [
+          16,
+          12
+        ],
+        [
+          17,
+          12
+        ],
+        [
+          18,
+          12
+        ],
+        [
+          11,
+          13
+        ],
+        [
+          12,
+          13
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          14,
+          13
+        ],
+        [
+          15,
+          13
+        ],
+        [
+          16,
+          13
+        ],
+        [
+          17,
+          13
+        ],
+        [
+          18,
+          13
+        ],
+        [
+          19,
+          13
+        ],
+        [
+          20,
+          13
+        ],
+        [
+          10,
+          14
+        ],
+        [
+          11,
+          14
+        ],
+        [
+          12,
+          14
+        ],
+        [
+          13,
+          14
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          15,
+          14
+        ],
+        [
+          16,
+          14
+        ],
+        [
+          17,
+          14
+        ],
+        [
+          18,
+          14
+        ],
+        [
+          19,
+          14
+        ],
+        [
+          20,
+          14
+        ],
+        [
+          21,
+          14
+        ],
+        [
+          11,
+          15
+        ],
+        [
+          12,
+          15
+        ],
+        [
+          13,
+          15
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          16,
+          15
+        ],
+        [
+          17,
+          15
+        ],
+        [
+          18,
+          15
+        ],
+        [
+          19,
+          15
+        ],
+        [
+          20,
+          15
+        ],
+        [
+          14,
+          16
+        ],
+        [
+          15,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          17,
+          16
+        ]
+      ],
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-744349e2-888b-4f06-afab-da7110103d10.png"
+    },
+    {
+      "name": "벚꽃잎 · 검흔 초안",
+      "file": "03-sakura-petal-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        4,
+        2,
+        27,
+        30
+      ],
+      "transparent_margins": [
+        4,
+        2,
+        5,
+        2
+      ],
+      "colors": [
+        "#363232",
+        "#BE8EC1",
+        "#EDBCCC",
+        "#F1E5F8"
+      ],
+      "color_count": 4,
+      "alpha": "0 or 255 only",
+      "preserved_alpha_holes": [],
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-739d2318-361a-4968-89ba-5266f55e461d.png"
+    },
+    {
+      "name": "네잎클로버 장식 단검",
+      "file": "04-clover-dagger-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        2,
+        29,
+        30
+      ],
+      "transparent_margins": [
+        2,
+        2,
+        3,
+        2
+      ],
+      "colors": [
+        "#363232",
+        "#5DA16E",
+        "#8599B0",
+        "#B1D368",
+        "#C2C2C2",
+        "#EECF5A"
+      ],
+      "color_count": 6,
+      "alpha": "0 or 255 only",
+      "preserved_alpha_holes": [],
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-450567eb-b438-415c-b705-48d9ed973fca.png"
+    }
+  ],
+  "sakura_revision": "Final elongated asymmetrical petal. First wider petal preserved for comparison.",
+  "sheet_dimensions": [
+    [
+      64,
+      64
+    ],
+    [
+      32,
+      128
+    ],
+    [
+      128,
+      32
+    ]
+  ],
+  "preview_dimensions": [
+    512,
+    512
+  ],
+  "minimum_margin": 2,
+  "outline_color": "#363232",
+  "outline_method": "rounded radius-two footprint excluding four diagonal corners; native and enlarged visual review",
+  "protected_project_files_unchanged": 4047,
+  "project_applied": false,
+  "project_names_or_effects_changed": false,
+  "unity_import_tests": "not executed; preview artwork only",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no new stale candidate"
+}

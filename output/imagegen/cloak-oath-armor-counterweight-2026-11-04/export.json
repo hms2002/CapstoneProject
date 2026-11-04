@@ -1,0 +1,96 @@
+[
+  {
+    "key": "01-agile-cloak",
+    "name": "날렵한 망토",
+    "native": "01-agile-cloak-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-201a0431-b390-4037-96f4-60285a646a66.png",
+    "sourceMaterialBounds": [
+      202,
+      184,
+      1092,
+      1113
+    ],
+    "materialSize": [
+      23,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#5DA16E",
+      "#56774A",
+      "#B1D368",
+      "#EECF5A"
+    ]
+  },
+  {
+    "key": "02-warriors-oath",
+    "name": "전사의 맹세",
+    "native": "02-warriors-oath-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-a09d92b2-271c-4579-a2db-0b20379891e2.png",
+    "sourceMaterialBounds": [
+      219,
+      227,
+      1013,
+      1068
+    ],
+    "materialSize": [
+      23,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#D49C73",
+      "#AB6E7C",
+      "#C2C2C2",
+      "#F2F9F8"
+    ]
+  },
+  {
+    "key": "03-thin-armor-shard",
+    "name": "얇은 갑옷 조각",
+    "native": "03-thin-armor-shard-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-da4465fd-b94b-49c3-81eb-c6751667a315.png",
+    "sourceMaterialBounds": [
+      236,
+      248,
+      1023,
+      977
+    ],
+    "materialSize": [
+      24,
+      22
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#C2C2C2",
+      "#8599B0",
+      "#F2F9F8"
+    ]
+  },
+  {
+    "key": "04-counterweight",
+    "name": "균형추",
+    "native": "04-counterweight-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-7828a86c-c8cd-4313-a4fc-f7bb0f8f82a0.png",
+    "sourceMaterialBounds": [
+      213,
+      214,
+      1029,
+      1051
+    ],
+    "materialSize": [
+      23,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#C2C2C2",
+      "#8599B0",
+      "#F2F9F8"
+    ]
+  }
+]

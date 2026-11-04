@@ -1,0 +1,113 @@
+[
+  {
+    "key": "01-spear-fragments-a",
+    "name": "창 파편 A — 맞물린 조각",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knight-seals-2026-11-05\\01-spear-fragments-a-source.png",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794"
+    ],
+    "material_bbox": [
+      207,
+      137,
+      1075,
+      1157
+    ],
+    "preserve_alpha_holes": [
+      [
+        17,
+        12
+      ],
+      [
+        18,
+        13
+      ],
+      [
+        20,
+        14
+      ],
+      [
+        11,
+        18
+      ],
+      [
+        11,
+        19
+      ],
+      [
+        12,
+        19
+      ],
+      [
+        15,
+        21
+      ],
+      [
+        15,
+        22
+      ]
+    ]
+  },
+  {
+    "key": "02-spear-fragments-b",
+    "name": "창 파편 B — 흩어진 조각",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knight-seals-2026-11-05\\02-spear-fragments-b-source.png",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794"
+    ],
+    "material_bbox": [
+      242,
+      128,
+      1042,
+      1165
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "03-knight-seal-a",
+    "name": "기사 휘장 A — 쌍띠 인장",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knight-seals-2026-11-05\\03-knight-seal-a-source.png",
+    "palette": [
+      "#363232",
+      "#E55C5C",
+      "#A75064",
+      "#F1E9D4",
+      "#E9CEA1",
+      "#EECF5A"
+    ],
+    "material_bbox": [
+      364,
+      74,
+      891,
+      1183
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "04-knight-seal-b",
+    "name": "기사 휘장 B — 접힌 서약지",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knight-seals-2026-11-05\\04-knight-seal-b-source.png",
+    "palette": [
+      "#363232",
+      "#E55C5C",
+      "#A75064",
+      "#F1E9D4",
+      "#E9CEA1",
+      "#EECF5A"
+    ],
+    "material_bbox": [
+      100,
+      138,
+      1104,
+      1160
+    ],
+    "preserve_alpha_holes": []
+  }
+]

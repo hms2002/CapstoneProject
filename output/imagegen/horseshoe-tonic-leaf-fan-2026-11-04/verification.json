@@ -1,0 +1,177 @@
+{
+  "date": "2026-11-04",
+  "mode": "preview-only artwork",
+  "method": "four built-in image_gen calls; System.Drawing nearest-neighbor native export, exact palette quantization, rounded two-pixel outline and sheet assembly; no Python image editing",
+  "primary_style": "User-approved rift stone/broken crown/bandage/flag quartet",
+  "icons": [
+    {
+      "name": "말 편자",
+      "proposed_replacement_for": "반격의 박차",
+      "file": "01-horseshoe-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        3,
+        30,
+        29
+      ],
+      "transparent_margins": [
+        2,
+        3,
+        2,
+        3
+      ],
+      "colors": [
+        "#363232",
+        "#8599B0",
+        "#C2C2C2",
+        "#F2F9F8"
+      ],
+      "color_count": 4,
+      "alpha": "0 or 255 only",
+      "preserved_alpha_holes": [],
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-bd66e3fa-f51e-4867-afb7-0bc63d8e966d.png"
+    },
+    {
+      "name": "각성의 약병",
+      "proposed_replacement_for": "보약 곰방대",
+      "file": "02-awakening-tonic-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        5,
+        2,
+        27,
+        30
+      ],
+      "transparent_margins": [
+        5,
+        2,
+        5,
+        2
+      ],
+      "colors": [
+        "#363232",
+        "#5DA16E",
+        "#AB6E7C",
+        "#B1D368",
+        "#B1DECF",
+        "#D49C73"
+      ],
+      "color_count": 6,
+      "alpha": "0 or 255 only",
+      "preserved_alpha_holes": [],
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-79d906b8-824a-443e-ae18-8788510c705e.png"
+    },
+    {
+      "name": "나뭇잎 펜던트",
+      "proposed_replacement_for": "생존자의 목걸이",
+      "file": "03-leaf-pendant-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        5,
+        2,
+        26,
+        30
+      ],
+      "transparent_margins": [
+        5,
+        2,
+        6,
+        2
+      ],
+      "colors": [
+        "#363232",
+        "#56774A",
+        "#5DA16E",
+        "#B1D368",
+        "#E09656",
+        "#EECF5A"
+      ],
+      "color_count": 6,
+      "alpha": "0 or 255 only",
+      "preserved_alpha_holes": [
+        [
+          15,
+          8
+        ],
+        [
+          16,
+          8
+        ]
+      ],
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-488becab-7ca2-426b-b7c9-fdece8d4c2fa.png"
+    },
+    {
+      "name": "바람의 부채",
+      "proposed_replacement_for": "가벼운 끈",
+      "file": "04-wind-fan-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        5,
+        30,
+        26
+      ],
+      "transparent_margins": [
+        2,
+        5,
+        2,
+        6
+      ],
+      "colors": [
+        "#363232",
+        "#77BCD6",
+        "#AB6E7C",
+        "#B1DECF",
+        "#D49C73",
+        "#EECF5A"
+      ],
+      "color_count": 6,
+      "alpha": "0 or 255 only",
+      "preserved_alpha_holes": [],
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-75632d3a-7e01-4502-874c-7e66543f5cb9.png"
+    }
+  ],
+  "sheet_dimensions": [
+    [
+      64,
+      64
+    ],
+    [
+      32,
+      128
+    ],
+    [
+      128,
+      32
+    ]
+  ],
+  "preview_dimensions": [
+    512,
+    512
+  ],
+  "minimum_margin": 2,
+  "outline_color": "#363232",
+  "outline_method": "rounded radius-two footprint excluding four diagonal corners; native and enlarged visual review",
+  "protected_project_files_unchanged": 4031,
+  "project_applied": false,
+  "project_names_or_effects_changed": false,
+  "unity_import_tests": "not executed; preview artwork only",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no new stale candidate"
+}

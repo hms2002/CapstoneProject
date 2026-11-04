@@ -1,0 +1,80 @@
+[
+  {
+    "key": "01-spear-tip-fragment",
+    "name": "창 파편 A — 부러진 창끝",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794"
+    ],
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/pendant-loader-spear-compass-insignia-2026-11-05/03-third-lightning-spearhead-preview.png"
+    ],
+    "subject": "A substantial broken-off TIP FRAGMENT of the gold-and-blue lightning spear in image 3. A wide tapered pointed golden blade fragment angled up-right, retaining the parent's gold outer metal and blue inset lightning channel. Its lower-left third is clearly BROKEN OFF: an irregular oblique jagged fracture edge with two large missing chunks, exposing a thick blue inner cross-section. No hilt, socket, guard, pole, full spear shape, medallion or compass. A simple single broad fissure splits one gold plane toward the fracture. Fracture and asymmetry are the core design, recognizable as salvaged lightning weapon metal rather than a crystal.",
+    "prompt": "Use case: stylized-concept. Asset type: one pixel-art fantasy game inventory icon, new design variant.\nReference roles: image 1 is the PRIMARY STYLE reference (user-approved perfect quartet); image 2 ONLY ALLOWED COLOR SWATCHES; image 3 identifies the weapon/relic family, not a template to replicate.\nONE isolated physical relic, genuinely transparent background. Draw on a logical 32x32 grid, crisp large pixel clusters. Two logical pixel charcoal #363232 exterior outline, rounded stair-step corners, minimum TWO transparent pixels on ALL FOUR sides including outline. Material bounding area about 24x24. Plump weighty forms, broad base plane plus one simple shadow per material, purposeful sparse detail. NO tiny noise, gradients, dithering, sparkles, filigree, text, numbers, background, grids, labels, UI. No realistic painted rendering, no smooth vector curves. Total colors 5–7 maximum including outline; use ONLY listed exact palette. The reference objects' subjects must not appear, only their hand-authored shape/flat shading style.\nSubject: A substantial broken-off TIP FRAGMENT of the gold-and-blue lightning spear in image 3. A wide tapered pointed golden blade fragment angled up-right, retaining the parent's gold outer metal and blue inset lightning channel. Its lower-left third is clearly BROKEN OFF: an irregular oblique jagged fracture edge with two large missing chunks, exposing a thick blue inner cross-section. No hilt, socket, guard, pole, full spear shape, medallion or compass. A simple single broad fissure splits one gold plane toward the fracture. Fracture and asymmetry are the core design, recognizable as salvaged lightning weapon metal rather than a crystal.\nExact selected colors: #363232, #EECF5A, #E09656, #77BCD6, #436794",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-27c8d7ea-2dee-4e3b-9b5b-25e463781cd0.png"
+  },
+  {
+    "key": "02-spear-collar-fragment",
+    "name": "창 파편 B — 갈라진 창날 밑동",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794"
+    ],
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/pendant-loader-spear-compass-insignia-2026-11-05/03-third-lightning-spearhead-preview.png"
+    ],
+    "subject": "A salvaged LOWER-BLADE FRAGMENT from the gold-and-blue lightning spear in image 3, distinctly different from a pointed tip fragment. Compact chunky asymmetric fork/crescent shape: two THICK short upward-hooked golden side prongs and the broken stump of the center blade. The long spear point is missing, leaving a broad jagged blue fracture surface at the top of the central stump. Gold metal wraps a blue conductive core; one right prong partly chipped. A very short dark blue socket anchors bottom. Tilt the object slightly left. Read as broken spearhead base, not whole trident, crown, anchor, lightning bolt, crystal or compass. No intact long blade, no shaft.",
+    "prompt": "Use case: stylized-concept. Asset type: one pixel-art fantasy game inventory icon, new design variant.\nReference roles: image 1 is the PRIMARY STYLE reference (user-approved perfect quartet); image 2 ONLY ALLOWED COLOR SWATCHES; image 3 identifies the weapon/relic family, not a template to replicate.\nONE isolated physical relic, genuinely transparent background. Draw on a logical 32x32 grid, crisp large pixel clusters. Two logical pixel charcoal #363232 exterior outline, rounded stair-step corners, minimum TWO transparent pixels on ALL FOUR sides including outline. Material bounding area about 24x24. Plump weighty forms, broad base plane plus one simple shadow per material, purposeful sparse detail. NO tiny noise, gradients, dithering, sparkles, filigree, text, numbers, background, grids, labels, UI. No realistic painted rendering, no smooth vector curves. Total colors 5–7 maximum including outline; use ONLY listed exact palette. The reference objects' subjects must not appear, only their hand-authored shape/flat shading style.\nSubject: A salvaged LOWER-BLADE FRAGMENT from the gold-and-blue lightning spear in image 3, distinctly different from a pointed tip fragment. Compact chunky asymmetric fork/crescent shape: two THICK short upward-hooked golden side prongs and the broken stump of the center blade. The long spear point is missing, leaving a broad jagged blue fracture surface at the top of the central stump. Gold metal wraps a blue conductive core; one right prong partly chipped. A very short dark blue socket anchors bottom. Tilt the object slightly left. Read as broken spearhead base, not whole trident, crown, anchor, lightning bolt, crystal or compass. No intact long blade, no shaft.\nExact selected colors: #363232, #EECF5A, #E09656, #77BCD6, #436794",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-65f60824-ce79-4e26-9a95-bdd2d185feba.png"
+  },
+  {
+    "key": "03-knightly-shield-badge",
+    "name": "기사 휘장 A — 방패형 검 문장",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#436794",
+      "#77BCD6",
+      "#F2F9F8"
+    ],
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeapon.png"
+    ],
+    "subject": "An actual KNIGHT'S BREAST INSIGNIA, a small solid shield-shaped pin fastened on a knight's cuirass. Isolated pin only, no chest/character. Rounded heraldic heater-shield silhouette with gold border, deep blue enamel field, one clear central pale upright SWORD device with gold crossguard and blue grip, specifically evoking the sword in image 3. Sword is a simple broad readable inlaid silhouette, not a freestanding hilt and not an oversized jewel. The pin has a tiny thick gold crown/fastening bar directly touching its top and a single muted orange thickness on lower-right rim. Stately compact physical heraldic badge; broad shapes with almost no ornament. No wings, ribbon tails, crossed swords, gemstones or compass.",
+    "prompt": "Use case: stylized-concept. Asset type: one pixel-art fantasy game inventory icon, new design variant.\nReference roles: image 1 is the PRIMARY STYLE reference (user-approved perfect quartet); image 2 ONLY ALLOWED COLOR SWATCHES; image 3 identifies the weapon/relic family, not a template to replicate.\nONE isolated physical relic, genuinely transparent background. Draw on a logical 32x32 grid, crisp large pixel clusters. Two logical pixel charcoal #363232 exterior outline, rounded stair-step corners, minimum TWO transparent pixels on ALL FOUR sides including outline. Material bounding area about 24x24. Plump weighty forms, broad base plane plus one simple shadow per material, purposeful sparse detail. NO tiny noise, gradients, dithering, sparkles, filigree, text, numbers, background, grids, labels, UI. No realistic painted rendering, no smooth vector curves. Total colors 5–7 maximum including outline; use ONLY listed exact palette. The reference objects' subjects must not appear, only their hand-authored shape/flat shading style.\nSubject: An actual KNIGHT'S BREAST INSIGNIA, a small solid shield-shaped pin fastened on a knight's cuirass. Isolated pin only, no chest/character. Rounded heraldic heater-shield silhouette with gold border, deep blue enamel field, one clear central pale upright SWORD device with gold crossguard and blue grip, specifically evoking the sword in image 3. Sword is a simple broad readable inlaid silhouette, not a freestanding hilt and not an oversized jewel. The pin has a tiny thick gold crown/fastening bar directly touching its top and a single muted orange thickness on lower-right rim. Stately compact physical heraldic badge; broad shapes with almost no ornament. No wings, ribbon tails, crossed swords, gemstones or compass.\nExact selected colors: #363232, #EECF5A, #E09656, #436794, #77BCD6, #F2F9F8",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-17626314-0522-4726-827f-44054e81bbb1.png"
+  },
+  {
+    "key": "04-knightly-winged-badge",
+    "name": "기사 휘장 B — 날개형 검 훈장",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#436794",
+      "#77BCD6",
+      "#F2F9F8"
+    ],
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeapon.png"
+    ],
+    "subject": "An actual KNIGHT'S BREAST MEDAL / order badge, suitable for pinning to armor, isolated object. Distinct WIDE WINGED heraldic silhouette: two short chunky gold stylized wings swept slightly upward, each with ONLY TWO broad feather lobes; a deep blue central upright oval shield bearing one broad ivory SWORD device with gold crossguard that recalls image 3. Wings connect flush to the central badge, not thin supports. Tiny solid gold teardrop finial directly attached below, no dangling chain. Slight orange shadow along lower edges adds metal thickness. This should read as a royal knight's wearable order insignia rather than a sword hilt, bird, bow, trophy or magical machinery. No jeweled central gem, ribbon tails, microfeathers, sparkles or filigree.",
+    "prompt": "Use case: stylized-concept. Asset type: one pixel-art fantasy game inventory icon, new design variant.\nReference roles: image 1 is the PRIMARY STYLE reference (user-approved perfect quartet); image 2 ONLY ALLOWED COLOR SWATCHES; image 3 identifies the weapon/relic family, not a template to replicate.\nONE isolated physical relic, genuinely transparent background. Draw on a logical 32x32 grid, crisp large pixel clusters. Two logical pixel charcoal #363232 exterior outline, rounded stair-step corners, minimum TWO transparent pixels on ALL FOUR sides including outline. Material bounding area about 24x24. Plump weighty forms, broad base plane plus one simple shadow per material, purposeful sparse detail. NO tiny noise, gradients, dithering, sparkles, filigree, text, numbers, background, grids, labels, UI. No realistic painted rendering, no smooth vector curves. Total colors 5–7 maximum including outline; use ONLY listed exact palette. The reference objects' subjects must not appear, only their hand-authored shape/flat shading style.\nSubject: An actual KNIGHT'S BREAST MEDAL / order badge, suitable for pinning to armor, isolated object. Distinct WIDE WINGED heraldic silhouette: two short chunky gold stylized wings swept slightly upward, each with ONLY TWO broad feather lobes; a deep blue central upright oval shield bearing one broad ivory SWORD device with gold crossguard that recalls image 3. Wings connect flush to the central badge, not thin supports. Tiny solid gold teardrop finial directly attached below, no dangling chain. Slight orange shadow along lower edges adds metal thickness. This should read as a royal knight's wearable order insignia rather than a sword hilt, bird, bow, trophy or magical machinery. No jeweled central gem, ribbon tails, microfeathers, sparkles or filigree.\nExact selected colors: #363232, #EECF5A, #E09656, #436794, #77BCD6, #F2F9F8",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-d35ba4e9-5be8-406e-828e-c1737a0325aa.png"
+  }
+]

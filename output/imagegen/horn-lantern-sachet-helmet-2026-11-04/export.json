@@ -1,0 +1,101 @@
+[
+  {
+    "key": "01-marching-horn",
+    "name": "진군의 뿔피리",
+    "native": "01-marching-horn-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-4635471f-fcb5-40a3-b83a-35a84318e584.png",
+    "sourceMaterialBounds": [
+      163,
+      239,
+      1102,
+      1076
+    ],
+    "materialSize": [
+      24,
+      21
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#F1E9D4",
+      "#E9CEA1",
+      "#D49C73",
+      "#EECF5A"
+    ]
+  },
+  {
+    "key": "02-arcane-lantern",
+    "name": "비전의 등불",
+    "native": "02-arcane-lantern-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-c65f6c7a-5f76-4798-8364-dfe24f6e0190.png",
+    "sourceMaterialBounds": [
+      287,
+      145,
+      964,
+      1133
+    ],
+    "materialSize": [
+      16,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#BE8EC1",
+      "#9D5789",
+      "#F1E5F8"
+    ]
+  },
+  {
+    "key": "03-tailwind-sachet",
+    "name": "순풍의 향낭",
+    "native": "03-tailwind-sachet-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-ea6770ab-53b0-4e03-8009-8a17ffa5f15f.png",
+    "sourceMaterialBounds": [
+      250,
+      212,
+      965,
+      1128
+    ],
+    "materialSize": [
+      19,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#5DA16E",
+      "#56774A",
+      "#B1D368",
+      "#E9CEA1",
+      "#D49C73"
+    ]
+  },
+  {
+    "key": "04-last-stand-helmet",
+    "name": "결사의 투구",
+    "native": "04-last-stand-helmet-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-33b5bfff-8a37-4f85-8f2c-2e7ff23ebb37.png",
+    "sourceMaterialBounds": [
+      290,
+      164,
+      971,
+      1106
+    ],
+    "materialSize": [
+      17,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#C2C2C2",
+      "#8599B0",
+      "#F2F9F8",
+      "#E55C5C",
+      "#A75064"
+    ]
+  }
+]

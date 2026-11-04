@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_SmallHeart
   m_EditorClassIdentifier: 
   relicId: RD_SmallHeart
-  displayName: "\uC791\uC740 \uC2EC\uC7A5"
-  icon: {fileID: 336388868, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  displayName: "\ubc15\ub3d9\ud558\ub294 \uc2ec\uc7a5"
+  icon: {fileID: 21300000, guid: 0f1087d9fd23419ab0c05e0b49a2584d, type: 3}
   rarity: 1
   description: "\uCD5C\uB300 \uCCB4\uB825\uC774 \uC99D\uAC00\uD558\uACE0, \uD53C\uD574\uB97C
     \uBC1B\uC73C\uBA74 \uC7A0\uC2DC \uC774\uB3D9\uC18D\uB3C4\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."

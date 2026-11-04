@@ -1,0 +1,21 @@
+{
+  "native": "32x32",
+  "colors": [
+    "#363232",
+    "#75656A",
+    "#77BCD6",
+    "#978C8E",
+    "#B1DECF"
+  ],
+  "margins_ltrb": [
+    3,
+    2,
+    4,
+    3
+  ],
+  "binary_alpha": true,
+  "preview_exact_8x": true,
+  "game_assets": "not modified",
+  "Unity_and_tests": "not executed",
+  "doc_impact": "no project document update needed; output draft only"
+}

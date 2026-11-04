@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_HeavyBracelet
   displayName: "\uBB34\uAC70\uC6B4 \uD314\uCC0C"
-  icon: {fileID: 6752461376909513456, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  icon: {fileID: 21300000, guid: 0febfb58e0354299b94679d5b15ed316, type: 3}
   rarity: 1
   description: "\uC774\uB3D9\uC18D\uB3C4\uAC00 \uBE44\uC728\uB85C \uAC10\uC18C\uD558\uACE0,
     \uACF5\uACA9\uB825\uC774 \uACE0\uC815 \uC218\uCE58\uB85C \uC99D\uAC00\uD569\uB2C8\uB2E4."

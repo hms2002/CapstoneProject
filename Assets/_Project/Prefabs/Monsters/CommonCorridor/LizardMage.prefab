@@ -664,7 +664,7 @@ MonoBehaviour:
   attackThinkInitialSpreadSeconds: 0.12
   attackThinkJitterSeconds: 0.04
   postAttackRecoveryBonusSeconds: 0.2
-  usePostAttackRecoveryRetreat: 1
+  usePostAttackRecoveryRetreat: 0
   recoveryRetreatMaxTargetDistance: 3
   recoveryRetreatMinTargetDistance: 1.1
   recoveryRetreatSpeedScale: 0.75

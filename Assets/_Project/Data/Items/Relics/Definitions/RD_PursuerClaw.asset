@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_PursuerClaw
   m_EditorClassIdentifier: 
   relicId: RD_PursuerClaw
-  displayName: "\uCD94\uACA9\uC790\uC758 \uBC1C\uD1B1"
-  icon: {fileID: 959958486, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  displayName: "\ucd94\uaca9 \uba85\ub839"
+  icon: {fileID: 21300000, guid: f2fb44ecb2b0432f88fbd7391a15d3cd, type: 3}
   rarity: 0
   description: "\uC801\uC744 \uCC98\uCE58\uD558\uBA74 \uC7A0\uC2DC \uC774\uB3D9\uC18D\uB3C4\uAC00
     \uC99D\uAC00\uD569\uB2C8\uB2E4."

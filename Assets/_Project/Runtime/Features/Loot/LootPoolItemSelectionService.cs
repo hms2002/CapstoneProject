@@ -23,7 +23,7 @@ internal static class LootPoolItemSelectionService
 
     internal static bool CanDropRelic(string relicId) =>
         !string.IsNullOrWhiteSpace(relicId) && !NonDroppableRelicIds.Contains(relicId) &&
-        !IsWindWeaponRelic(relicId);
+        !IsWindWeaponRelic(relicId) && !RelicDefinition.IsRetiredId(relicId);
 
     internal static bool IsWindWeaponRelic(string relicId) =>
         relicId is "RD_Stenographer" or "RD_OneDropOfSwiftness";

@@ -1,0 +1,22 @@
+[
+  {
+    "key": "lightning-spear-cradle",
+    "name": "낙뢰의 창받침",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\lightning-spear-cradle-2026-11-05\\lightning-spear-cradle-source.png",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794",
+      "#8599B0"
+    ],
+    "material_bbox": [
+      236,
+      302,
+      1018,
+      1078
+    ],
+    "preserve_alpha_holes": []
+  }
+]

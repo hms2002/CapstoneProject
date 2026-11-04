@@ -1,0 +1,82 @@
+﻿$ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.Drawing
+$taskOut = $PSScriptRoot
+$taskSources = Get-Content -LiteralPath (Join-Path $taskOut 'generation-sources.json') -Raw | ConvertFrom-Json
+$taskFrames = @()
+$taskStats = @()
+foreach ($taskSource in $taskSources) {
+    $taskPaletteHex = @($taskSource.palette)
+    $taskPalette = @($taskPaletteHex | ForEach-Object { [System.Drawing.ColorTranslator]::FromHtml($_) })
+    $taskRaw = [System.Drawing.Bitmap]::new($taskSource.source)
+    $taskBox = $taskSource.material_bbox
+    $taskSourceW = $taskBox[2] - $taskBox[0]
+    $taskSourceH = $taskBox[3] - $taskBox[1]
+    $taskLongest = [Math]::Max($taskSourceW,$taskSourceH)
+    $taskWidth = [int][Math]::Round(24 * $taskSourceW / $taskLongest)
+    $taskHeight = [int][Math]::Round(24 * $taskSourceH / $taskLongest)
+    $taskLeft = [int][Math]::Floor((32 - $taskWidth) / 2)
+    $taskTop = [int][Math]::Floor((32 - $taskHeight) / 2)
+    # Preserve material planes, then use rounded diagonal corners at native scale.
+    $taskSamplePhaseY = 0.5
+    $taskMaterial = New-Object 'int[,]' 32,32
+    for ($taskY=0; $taskY -lt $taskHeight; $taskY++) {
+        for ($taskX=0; $taskX -lt $taskWidth; $taskX++) {
+            $taskSampleX = [int][Math]::Floor($taskBox[0] + ($taskX + 0.5) * $taskSourceW / $taskWidth)
+            $taskSampleY = [int][Math]::Floor($taskBox[1] + ($taskY + $taskSamplePhaseY) * $taskSourceH / $taskHeight)
+            $taskColor = $taskRaw.GetPixel($taskSampleX,$taskSampleY)
+            if ($taskColor.A -lt 200) { continue }
+            $taskNearest = 0
+            $taskDistance = [double]::PositiveInfinity
+            for ($taskIndex=0; $taskIndex -lt $taskPalette.Count; $taskIndex++) {
+                $taskCandidate = $taskPalette[$taskIndex]
+                $taskDR = [int]$taskColor.R - [int]$taskCandidate.R
+                $taskDG = [int]$taskColor.G - [int]$taskCandidate.G
+                $taskDB = [int]$taskColor.B - [int]$taskCandidate.B
+                $taskD = $taskDR*$taskDR + $taskDG*$taskDG + $taskDB*$taskDB
+                if ($taskD -lt $taskDistance) { $taskDistance=$taskD; $taskNearest=$taskIndex }
+            }
+            $taskMaterial[($taskLeft+$taskX),($taskTop+$taskY)] = $taskNearest
+        }
+    }
+    $taskNative = [System.Drawing.Bitmap]::new(32,32,[System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+    for ($taskY=0; $taskY -lt 32; $taskY++) {
+        for ($taskX=0; $taskX -lt 32; $taskX++) {
+            if ($taskMaterial[$taskX,$taskY] -eq 0) { continue }
+            for ($taskDY=-2; $taskDY -le 2; $taskDY++) {
+                for ($taskDX=-2; $taskDX -le 2; $taskDX++) {
+                    if ([Math]::Abs($taskDX) -eq 2 -and [Math]::Abs($taskDY) -eq 2) { continue }
+                    $taskOutlineX=$taskX+$taskDX; $taskOutlineY=$taskY+$taskDY
+                    if ($taskOutlineX -ge 0 -and $taskOutlineX -lt 32 -and $taskOutlineY -ge 0 -and $taskOutlineY -lt 32) {
+                        $taskNative.SetPixel($taskOutlineX,$taskOutlineY,$taskPalette[0])
+                    }
+                }
+            }
+        }
+    }
+    for ($taskY=0; $taskY -lt 32; $taskY++) {
+        for ($taskX=0; $taskX -lt 32; $taskX++) {
+            if ($taskMaterial[$taskX,$taskY] -gt 0) { $taskNative.SetPixel($taskX,$taskY,$taskPalette[$taskMaterial[$taskX,$taskY]]) }
+        }
+    }
+    # Preserve the transparent openings authored by image_gen instead of closing them.
+    foreach ($taskHole in $taskSource.preserve_alpha_holes) {
+        $taskNative.SetPixel([int]$taskHole[0],[int]$taskHole[1],[Drawing.Color]::FromArgb(0,0,0,0))
+    }
+    $taskFilename = $taskSource.key + '-32x32.png'
+    $taskNative.Save((Join-Path $taskOut $taskFilename),[System.Drawing.Imaging.ImageFormat]::Png)
+    $taskFrames += $taskNative
+    $taskStats += [ordered]@{key=$taskSource.key;name=$taskSource.name;native=$taskFilename;source=$taskSource.source;sourceMaterialBounds=$taskBox;materialSize=@($taskWidth,$taskHeight);samplingPhaseY=$taskSamplePhaseY;palette=$taskPaletteHex}
+    $taskRaw.Dispose()
+}
+
+$taskNative = $taskFrames[0]
+$taskPreview = [System.Drawing.Bitmap]::new(256,256,[System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+for ($taskY=0; $taskY -lt 256; $taskY++) {
+    for ($taskX=0; $taskX -lt 256; $taskX++) {
+        $taskPreview.SetPixel($taskX,$taskY,$taskNative.GetPixel([int][Math]::Floor($taskX/8),[int][Math]::Floor($taskY/8)))
+    }
+}
+$taskPreview.Save((Join-Path $taskOut 'thundercloud-preview.png'),[System.Drawing.Imaging.ImageFormat]::Png)
+$taskStats | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $taskOut 'export.json') -Encoding utf8
+$taskPreview.Dispose(); $taskNative.Dispose()
+Write-Output 'Saved one 32x32 sprite and exact 8x preview.'

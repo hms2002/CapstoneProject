@@ -92,6 +92,7 @@ public class ItemManager : MonoBehaviour
 
         isInitialized = true;
         pendingSaveData = null;
+        RestoreEarnedAffectionUnlocks();
 
         CapstoneDiagnostics.EditorOnlyLog.Log($"[ItemManager] Initialized. unlockedWeapons={unlockedWeaponIDs.Count}, unlockedRelics={unlockedRelicIDs.Count}");
     }
@@ -120,11 +121,61 @@ public class ItemManager : MonoBehaviour
         }
     }
 
-    public bool IsWeaponUnlocked(string id) => unlockedWeaponIDs.Contains(id);
-    public bool IsRelicUnlocked(string id) => unlockedRelicIDs.Contains(id);
+    public bool IsWeaponUnlocked(string id)
+    {
+        RestoreEarnedAffectionUnlocks();
+        return unlockedWeaponIDs.Contains(id);
+    }
 
-    public List<string> GetUnlockedWeaponIDs() => new List<string>(unlockedWeaponIDs);
-    public List<string> GetUnlockedRelicIDs() => new List<string>(unlockedRelicIDs);
+    public bool IsRelicUnlocked(string id)
+    {
+        RestoreEarnedAffectionUnlocks();
+        return unlockedRelicIDs.Contains(id);
+    }
+
+    public List<string> GetUnlockedWeaponIDs()
+    {
+        RestoreEarnedAffectionUnlocks();
+        return new List<string>(unlockedWeaponIDs);
+    }
+
+    public List<string> GetUnlockedRelicIDs()
+    {
+        RestoreEarnedAffectionUnlocks();
+        return new List<string>(unlockedRelicIDs);
+    }
+
+    // Add missing permanent unlocks after reward content is added to an existing profile.
+    // Queries retry when the NPC database is adopted later; no other effects or popup are replayed.
+    private void RestoreEarnedAffectionUnlocks()
+    {
+        var records = GameDataStore.Data?.affectionData?.affectionRecords;
+        if (!IsReady || NPCManager.Instance == null || records == null)
+            return;
+
+        foreach (AffectionRecord record in records)
+        {
+            if (record == null)
+                continue;
+
+            NPCData npc = NPCManager.Instance.GetNPCData(record.npcId);
+            if (npc?.affectionRewards == null)
+                continue;
+
+            foreach (AffectionReward reward in npc.affectionRewards)
+            {
+                if (reward.targetLevel > record.amount || reward.effect is not UnlockItemAffectionEffect unlock)
+                    continue;
+
+                if (unlock.weapons != null)
+                    foreach (WeaponDefinition weapon in unlock.weapons)
+                        if (weapon != null) UnlockWeapon(weapon.weaponId);
+                if (unlock.relics != null)
+                    foreach (RelicDefinition relic in unlock.relics)
+                        if (relic != null) UnlockRelic(relic.relicId);
+            }
+        }
+    }
 
     public WeaponDefinition GetWeaponData(string id)
     {

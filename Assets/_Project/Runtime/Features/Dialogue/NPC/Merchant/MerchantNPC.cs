@@ -77,6 +77,7 @@ public sealed class MerchantNPC : MonoBehaviour
     private MerchantRuntimeState runtimeState;
     private MerchantRefreshInteractable[] refreshInteractables;
     private RunModifierService subscribedRunModifierService;
+    private AffectionManager subscribedAffectionManager;
     private WeaponInventory2D subscribedWeaponInventory;
     private RelicInventory subscribedRelicInventory;
     private bool stockValidationPending;
@@ -132,6 +133,7 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private void OnEnable()
     {
+        SubscribeToAffectionManager();
         SubscribeToRunModifierService();
         PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
         PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
@@ -144,6 +146,9 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private void OnDisable()
     {
+        if (subscribedAffectionManager != null)
+            subscribedAffectionManager.OnAffectionChanged -= HandleAffectionChanged;
+        subscribedAffectionManager = null;
         UnsubscribeFromRunModifierService();
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
@@ -162,6 +167,9 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private void Update()
     {
+        if (subscribedAffectionManager == null && SubscribeToAffectionManager())
+            InitializeStock();
+
         if (subscribedRunModifierService == null && SubscribeToRunModifierService())
             InitializeStock();
 
@@ -301,6 +309,22 @@ public sealed class MerchantNPC : MonoBehaviour
         return true;
     }
 
+    private bool SubscribeToAffectionManager()
+    {
+        if (subscribedAffectionManager != null || AffectionManager.Instance == null)
+            return false;
+
+        subscribedAffectionManager = AffectionManager.Instance;
+        subscribedAffectionManager.OnAffectionChanged += HandleAffectionChanged;
+        return true;
+    }
+
+    private void HandleAffectionChanged(int npcId, int amount)
+    {
+        if (npcId == 3001 && UsesRunGold)
+            InitializeStock();
+    }
+
     private void HandleRunModifiersChanged()
     {
         InitializeStock();
@@ -363,7 +387,8 @@ public sealed class MerchantNPC : MonoBehaviour
             runtimeState,
             entry => (entry.kind == InventoryItemKind.Weapon && excludedWeaponIds.Contains(entry.itemId)) ||
                      (entry.kind == InventoryItemKind.Relic && entry.ResolveDefinition() is RelicDefinition relic &&
-                      !LootPoolItemSelectionService.CanGainRelicLevels(relic, subscribedRelicInventory)),
+                      (RelicDefinition.IsRetiredId(relic.relicId) ||
+                       !LootPoolItemSelectionService.CanGainRelicLevels(relic, subscribedRelicInventory))),
             (slotIndex, retainedEntries) => RollStock(
                 1, policy.EffectivePriceSettings, retainedEntries, slotIndex, policy.Modifiers,
                 retainedEntries: retainedEntries, excludedWeaponIds: excludedWeaponIds)[0]);
@@ -455,7 +480,7 @@ public sealed class MerchantNPC : MonoBehaviour
     {
         ShopRunModifierDelta modifiers = RunModifierService.CurrentRewardSnapshot.ShopModifiers;
         // Gold shops keep their authored slots/availability and exclude legacy shop upgrades.
-        return UsesRunGold
+        ShopRunModifierDelta effective = UsesRunGold
             ? new ShopRunModifierDelta
             {
                 affectionDiscountRate = modifiers.affectionDiscountRate,
@@ -465,6 +490,14 @@ public sealed class MerchantNPC : MonoBehaviour
                 epicRelicWeightBonus = modifiers.epicRelicWeightBonus
             }
             : modifiers;
+
+        CorridorBossRouteSetSO stage = RunRoutePlayback.CurrentStageSet;
+        if (UsesRunGold && RunSessionStore.IsRunActive && RunRoutePlayback.HasActivePlan &&
+            stage != null && stage.StableThemeId == "slime" &&
+            stage.MatchesScene(gameObject.scene.name) && NpcAffectionDialogue.GetAffection(3001) >= 1)
+            effective.affectionDiscountRate += 0.1f;
+
+        return effective;
     }
 
     private MerchantShopPolicySnapshot ResolveShopPolicy()

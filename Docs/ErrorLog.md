@@ -2698,3 +2698,11 @@ Suggested Later: expanded validation found `CombatFeelLootQuestPlayModeTests.Imp
 - Correction: stage the complete JSON under Library/PrewarmTrace and replace/move it into the unchanged tester path. Record attempt time before I/O; retry failed saves at five-second intervals and warn once per failure episode. Preserve dirty measurements on I/O/access failure, clear failure state on success, and contain the same errors during the final Play Mode exit flush. Preserve the JSON schema, twenty-session retention, recommendation paths and trace-isolation callback names.
 - Verification: isolated Unity 6000.4.2f1 reproduced the old direct-write Windows 1224 and passed 40 production-recorder checks, including replacement while a mapped view remained alive, a replacement-denying lock, denied staging writes, previous JSON/meta preservation, 1,000 throttled updates, recovery/latest measurements, final flush, reader/import and retention. Generated-project Editor MSBuild passed. See [session evidence](SessionLogs/2026-11-02.md) and [regression entry point](../Tools/Validation/PrewarmTraceRecoveryRegression.cs).
 - Boundary: no global file-handle release, trace-path migration or Player trace service was added. Failed staging files are reused rather than accumulated, and successful moves remove them. Persistent replacement denial can still leave the latest measurements unsaved when Play Mode/Editor ends; existing history must not be deleted to suppress that warning. Confirm normal interactive Editor use separately.
+
+
+## 2026-11-05 — New affection unlock rewards can be missed by older profiles
+
+- Symptom/risk: 새 item-unlock 보상을 기존 호감도 단계에 연결해도 이미 그 단계를 넘긴 프로필은 유물/무기 해금을 받지 못할 수 있다.
+- Cause: AffectionRewardProcessor는 이번 상승 구간(fromLevel < targetLevel <= toLevel)의 보상만 실행한다. 기본 해금에 없던 신규 유물은 과거 저장 ID에도 없을 수 있으므로 NPCData 연결만으로 기존 프로필을 지원할 수 없다.
+- Current handling: ItemManager 초기화/해금 조회에서 준비된 item DB와 NPC 보상 데이터, committed profile affection을 사용해 획득된 UnlockItemAffectionEffect의 ID만 기존 set에 더한다. NPC DB가 아직 없으면 이후 조회에서 재시도한다. 다른 보상 효과/팝업/인벤토리 지급은 재실행하지 않고, 기존 SaveData ready guard와 commit 타이밍은 유지한다.
+- Prevention: 이후 단계별 해금 콘텐츠 추가 시 새 프로필뿐 아니라 이미 임계값을 넘긴 프로필의 소급 권한과 source readiness를 소스 검토에 포함한다. 이번 작업에서는 자동 테스트/Unity Play Mode를 실행하지 않았다. [작업 범위](ActiveTasks/melta-chloe-tier-two-unlocks.md).

@@ -56,7 +56,7 @@ public static class CommonMonsterAuthoringValidator
         AnimatorExpectation.Basic("GoblinWarrior", "PrepareAttack", "Attack", "RecoverAttack", "Die"),
         AnimatorExpectation.Basic("GoblinGunner", "ShotReady", "Shot", "ShotRecovery", "Die"),
         AnimatorExpectation.Basic("GoblinTank", "PrepareAttack", "Attack", "RecoveryAttack", "Die"),
-        AnimatorExpectation.Basic("LizardWarrior", "AttackPrepare", "Attack", null, "Die"),
+        AnimatorExpectation.LizardWarrior(),
         AnimatorExpectation.LizardMage(),
         AnimatorExpectation.Basic("ArcaneMeleeGolem", "PrepareDash", "Dash1", "Dash2", "Die"),
         AnimatorExpectation.ArcaneTank("ArcaneTankGolem")
@@ -956,6 +956,13 @@ public static class CommonMonsterAuthoringValidator
                 attackState,
                 recoverState,
                 holdAttackReadyUntilNextTrigger: monsterName == "GoblinTank");
+        }
+
+        public static AnimatorExpectation LizardWarrior()
+        {
+            return new AnimatorExpectation(
+                "LizardWarrior", "AttackPrepare", "Walk", null, "Die", null, null,
+                "AttackReady", "Attack", null, true, true);
         }
 
         public static AnimatorExpectation LizardMage()

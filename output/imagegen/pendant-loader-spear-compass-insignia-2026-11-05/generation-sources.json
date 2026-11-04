@@ -1,0 +1,125 @@
+[
+  {
+    "key": "01-recovery-pendant",
+    "name": "회복 펜던트",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\pendant-loader-spear-compass-insignia-2026-11-05\\01-recovery-pendant-source.png",
+    "palette": [
+      "#363232",
+      "#E55C5C",
+      "#A75064",
+      "#E9CEA1",
+      "#E09656",
+      "#F2F9F8"
+    ],
+    "material_bbox": [
+      175,
+      155,
+      1077,
+      1127
+    ],
+    "preserve_alpha_holes": [
+      [
+        15,
+        7
+      ],
+      [
+        16,
+        7
+      ]
+    ]
+  },
+  {
+    "key": "02-reserve-speedloader",
+    "name": "쇳덩이의 예비 탄약",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\pendant-loader-spear-compass-insignia-2026-11-05\\02-reserve-speedloader-source.png",
+    "palette": [
+      "#363232",
+      "#8599B0",
+      "#436794",
+      "#C2C2C2",
+      "#E9CEA1",
+      "#E09656"
+    ],
+    "material_bbox": [
+      250,
+      236,
+      1006,
+      1063
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "03-third-lightning-spearhead",
+    "name": "뇌창의 세 번째 번개",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\pendant-loader-spear-compass-insignia-2026-11-05\\03-third-lightning-spearhead-source.png",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794",
+      "#F2F9F8"
+    ],
+    "material_bbox": [
+      243,
+      211,
+      1017,
+      1102
+    ],
+    "preserve_alpha_holes": [
+      [
+        11,
+        16
+      ],
+      [
+        19,
+        19
+      ]
+    ]
+  },
+  {
+    "key": "04-tracking-thunder-compass",
+    "name": "뇌창의 추적 낙뢰",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\pendant-loader-spear-compass-insignia-2026-11-05\\04-tracking-thunder-compass-source.png",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794",
+      "#8599B0"
+    ],
+    "material_bbox": [
+      253,
+      180,
+      978,
+      1031
+    ],
+    "preserve_alpha_holes": [
+      [
+        22,
+        7
+      ]
+    ]
+  },
+  {
+    "key": "05-hero-link-insignia",
+    "name": "견습 용사의 연계 증표",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\pendant-loader-spear-compass-insignia-2026-11-05\\05-hero-link-insignia-source.png",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#436794",
+      "#77BCD6",
+      "#C2C2C2"
+    ],
+    "material_bbox": [
+      208,
+      197,
+      1046,
+      1066
+    ],
+    "preserve_alpha_holes": []
+  }
+]

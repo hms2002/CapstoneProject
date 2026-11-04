@@ -1,0 +1,431 @@
+{
+  "date": "2026-11-04",
+  "mode": "Micro-fix",
+  "records": [
+    {
+      "number": 1,
+      "name": "치명적인 도끼",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SharpAwl.asset",
+      "definition_guid": "350592c90a7f493b999f7b9f349dfe91",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DeadlyAxe.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-c7313212-f036-41de-a481-205ade109d9d.png",
+      "sprite_guid": "e56377b11f0a4e6e915d3bef07b6efd9",
+      "fileID": "21300000",
+      "new_sprite": true,
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        2,
+        28,
+        30
+      ],
+      "translations": {
+        "ko": "치명적인 도끼",
+        "en": "Deadly Axe",
+        "ja": "致命の斧",
+        "zh-Hans": "致命之斧",
+        "zh-Hant": "致命之斧"
+      }
+    },
+    {
+      "number": 2,
+      "name": "광란의 열매",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BerserkerCord.asset",
+      "definition_guid": "c3f65c9408584fc09145a782d74839bc",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FrenzyFruit.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-6b52a62d-629e-4418-93ad-519f808f35af.png",
+      "sprite_guid": "ee7e361823a64480bea4e85787e616a7",
+      "fileID": "21300000",
+      "new_sprite": true,
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        4,
+        2,
+        27,
+        30
+      ],
+      "translations": {
+        "ko": "광란의 열매",
+        "en": "Fruit of Frenzy",
+        "ja": "狂乱の果実",
+        "zh-Hans": "狂乱之果",
+        "zh-Hant": "狂亂之果"
+      }
+    },
+    {
+      "number": 3,
+      "name": "전사의 완갑",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenClock.asset",
+      "definition_guid": "7d20d2a7cdf74a0bb83fccd22ed1c5a6",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WarriorBracer.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-890a23f6-88ef-4496-aa92-759ec8a20992.png",
+      "sprite_guid": "3a8a59522ce646b8b2c1abd6bb640243",
+      "fileID": "21300000",
+      "new_sprite": true,
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        2,
+        30,
+        30
+      ],
+      "translations": {
+        "ko": "전사의 완갑",
+        "en": "Warrior's Bracer",
+        "ja": "戦士の腕甲",
+        "zh-Hans": "战士护臂",
+        "zh-Hant": "戰士護臂"
+      }
+    },
+    {
+      "number": 4,
+      "name": "주술사 가면",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BlackIncense.asset",
+      "definition_guid": "3127d39f416e4d56849df4e7835f709b",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ShamanMask.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-95f121ff-53ab-4bc3-ad83-ce45c92ddc37.png",
+      "sprite_guid": "de42057eee5c4388b1f7ff5c81055767",
+      "fileID": "21300000",
+      "new_sprite": true,
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        4,
+        2,
+        28,
+        30
+      ],
+      "translations": {
+        "ko": "주술사 가면",
+        "en": "Shaman's Mask",
+        "ja": "呪術師の仮面",
+        "zh-Hans": "巫师面具",
+        "zh-Hant": "巫師面具"
+      }
+    },
+    {
+      "number": 5,
+      "name": "순풍의 소라",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CalmHeart.asset",
+      "definition_guid": "11d7fc46673146558d7d95385305a393",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FairwindConch.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-3daffbe8-8d03-4615-be63-71e1bd16835d.png",
+      "sprite_guid": "62d9d5e5f12d4e8db4ab7b8a7c7cd1fc",
+      "fileID": "21300000",
+      "new_sprite": true,
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        3,
+        30,
+        30
+      ],
+      "translations": {
+        "ko": "순풍의 소라",
+        "en": "Tailwind Conch",
+        "ja": "追い風の巻き貝",
+        "zh-Hans": "顺风海螺",
+        "zh-Hant": "順風海螺"
+      }
+    },
+    {
+      "number": 6,
+      "name": "깨진 투구",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LastBreath.asset",
+      "definition_guid": "4a278341ae1b4ef4b8886c04f3517f71",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BrokenHelm.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-d78e77d5-faa6-42db-8cd6-daf2c21eb6ae.png",
+      "sprite_guid": "2c34e93d0fa24b959427dfcf2fb073d1",
+      "fileID": "21300000",
+      "new_sprite": true,
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        5,
+        2,
+        26,
+        30
+      ],
+      "translations": {
+        "ko": "깨진 투구",
+        "en": "Broken Helm",
+        "ja": "壊れた兜",
+        "zh-Hans": "破损头盔",
+        "zh-Hant": "破損頭盔"
+      }
+    },
+    {
+      "number": 7,
+      "name": "반격의 박차",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CounterKick.asset",
+      "definition_guid": "0bd69b2b4237473ead517a6bb31f0ab1",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CounterKick.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-8125cfb8-3398-49ce-8df3-8359f00d11e7.png",
+      "sprite_guid": "fe26a83a4ededf64ba867c2d5e1863f8",
+      "fileID": "21300000",
+      "new_sprite": false,
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        3,
+        30,
+        29
+      ],
+      "translations": null
+    },
+    {
+      "number": 8,
+      "name": "나뭇잎 펜던트",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SurvivorNecklace.asset",
+      "definition_guid": "c3f1d032e5184fc9ac7fc75cf5632436",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LeafPendant.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-b74234e1-8a3a-4f2a-b4b9-f83b04d1f107.png",
+      "sprite_guid": "4c49bb522d4944dabee1fcbdfe07e1bb",
+      "fileID": "21300000",
+      "new_sprite": true,
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        6,
+        2,
+        27,
+        30
+      ],
+      "translations": {
+        "ko": "나뭇잎 펜던트",
+        "en": "Leaf Pendant",
+        "ja": "木の葉のペンダント",
+        "zh-Hans": "叶形吊坠",
+        "zh-Hant": "葉形吊墜"
+      }
+    },
+    {
+      "number": 9,
+      "name": "바람의 부채",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightCord.asset",
+      "definition_guid": "211ffa758fea44fd94388e8bd6e4eb4a",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindFan.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-bfd55bca-113a-48fd-93f0-36a6f08cf343.png",
+      "sprite_guid": "f4af749dc0cf46e0873b7af681fcfe52",
+      "fileID": "21300000",
+      "new_sprite": true,
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        6,
+        30,
+        27
+      ],
+      "translations": {
+        "ko": "바람의 부채",
+        "en": "Wind Fan",
+        "ja": "風の扇",
+        "zh-Hans": "风之扇",
+        "zh-Hant": "風之扇"
+      }
+    }
+  ],
+  "old_localized_names": {
+    "asset.350592c90a7f493b999f7b9f349dfe91.displayName": [
+      "예리한 송곳",
+      "Sharp Awl",
+      "鋭い錐",
+      "锋利尖锥",
+      "鋒利尖錐"
+    ],
+    "asset.c3f65c9408584fc09145a782d74839bc.displayName": [
+      "광전사의 끈",
+      "Berserker's Strap",
+      "狂戦士の紐",
+      "狂战士束带",
+      "狂戰士束帶"
+    ],
+    "asset.7d20d2a7cdf74a0bb83fccd22ed1c5a6.displayName": [
+      "깨진 시계",
+      "Broken Clock",
+      "壊れた時計",
+      "破损时钟",
+      "破損時鐘"
+    ],
+    "asset.3127d39f416e4d56849df4e7835f709b.displayName": [
+      "검은 향로",
+      "Black Censer",
+      "黒い香炉",
+      "黑色香炉",
+      "黑色香爐"
+    ],
+    "asset.11d7fc46673146558d7d95385305a393.displayName": [
+      "여유로운 심장",
+      "Carefree Heart",
+      "余裕のある心臓",
+      "从容之心",
+      "從容之心"
+    ],
+    "asset.4a278341ae1b4ef4b8886c04f3517f71.displayName": [
+      "마지막 숨",
+      "Last Breath",
+      "最後の息",
+      "最后一息",
+      "最後一息"
+    ],
+    "asset.c3f1d032e5184fc9ac7fc75cf5632436.displayName": [
+      "생존자의 목걸이",
+      "Survivor's Necklace",
+      "生存者の首飾り",
+      "幸存者项链",
+      "倖存者項鏈"
+    ],
+    "asset.211ffa758fea44fd94388e8bd6e4eb4a.displayName": [
+      "가벼운 끈",
+      "Light Strap",
+      "軽い紐",
+      "轻巧束带",
+      "輕巧束帶"
+    ]
+  },
+  "new_localized_names": {
+    "asset.350592c90a7f493b999f7b9f349dfe91.displayName": {
+      "ko": "치명적인 도끼",
+      "en": "Deadly Axe",
+      "ja": "致命の斧",
+      "zh-Hans": "致命之斧",
+      "zh-Hant": "致命之斧"
+    },
+    "asset.c3f65c9408584fc09145a782d74839bc.displayName": {
+      "ko": "광란의 열매",
+      "en": "Fruit of Frenzy",
+      "ja": "狂乱の果実",
+      "zh-Hans": "狂乱之果",
+      "zh-Hant": "狂亂之果"
+    },
+    "asset.7d20d2a7cdf74a0bb83fccd22ed1c5a6.displayName": {
+      "ko": "전사의 완갑",
+      "en": "Warrior's Bracer",
+      "ja": "戦士の腕甲",
+      "zh-Hans": "战士护臂",
+      "zh-Hant": "戰士護臂"
+    },
+    "asset.3127d39f416e4d56849df4e7835f709b.displayName": {
+      "ko": "주술사 가면",
+      "en": "Shaman's Mask",
+      "ja": "呪術師の仮面",
+      "zh-Hans": "巫师面具",
+      "zh-Hant": "巫師面具"
+    },
+    "asset.11d7fc46673146558d7d95385305a393.displayName": {
+      "ko": "순풍의 소라",
+      "en": "Tailwind Conch",
+      "ja": "追い風の巻き貝",
+      "zh-Hans": "顺风海螺",
+      "zh-Hant": "順風海螺"
+    },
+    "asset.4a278341ae1b4ef4b8886c04f3517f71.displayName": {
+      "ko": "깨진 투구",
+      "en": "Broken Helm",
+      "ja": "壊れた兜",
+      "zh-Hans": "破损头盔",
+      "zh-Hant": "破損頭盔"
+    },
+    "asset.c3f1d032e5184fc9ac7fc75cf5632436.displayName": {
+      "ko": "나뭇잎 펜던트",
+      "en": "Leaf Pendant",
+      "ja": "木の葉のペンダント",
+      "zh-Hans": "叶形吊坠",
+      "zh-Hant": "葉形吊墜"
+    },
+    "asset.211ffa758fea44fd94388e8bd6e4eb4a.displayName": {
+      "ko": "바람의 부채",
+      "en": "Wind Fan",
+      "ja": "風の扇",
+      "zh-Hans": "风之扇",
+      "zh-Hant": "風之扇"
+    }
+  },
+  "entry_ids": {
+    "asset.350592c90a7f493b999f7b9f349dfe91.displayName": "46294721531912",
+    "asset.c3f65c9408584fc09145a782d74839bc.displayName": "46294708949008",
+    "asset.7d20d2a7cdf74a0bb83fccd22ed1c5a6.displayName": "46294708949014",
+    "asset.3127d39f416e4d56849df4e7835f709b.displayName": "46294708949010",
+    "asset.11d7fc46673146558d7d95385305a393.displayName": "46294713143303",
+    "asset.4a278341ae1b4ef4b8886c04f3517f71.displayName": "46294717337623",
+    "asset.c3f1d032e5184fc9ac7fc75cf5632436.displayName": "46294721531924",
+    "asset.211ffa758fea44fd94388e8bd6e4eb4a.displayName": "46294717337627"
+  },
+  "existing_changed": [
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_SharpAwl.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_BerserkerCord.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenClock.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_BlackIncense.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_CalmHeart.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_LastBreath.asset",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CounterKick.png",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_SurvivorNecklace.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_LightCord.asset",
+    "DataSheets/Localization/GameText.csv",
+    "Assets/_Project/Data/Localization/GameText_ko.asset",
+    "Assets/_Project/Data/Localization/GameText_en.asset",
+    "Assets/_Project/Data/Localization/GameText_ja.asset",
+    "Assets/_Project/Data/Localization/GameText_zh-Hans.asset",
+    "Assets/_Project/Data/Localization/GameText_zh-Hant.asset"
+  ],
+  "new_files": [
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DeadlyAxe.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DeadlyAxe.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FrenzyFruit.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FrenzyFruit.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WarriorBracer.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WarriorBracer.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ShamanMask.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ShamanMask.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FairwindConch.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FairwindConch.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BrokenHelm.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BrokenHelm.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LeafPendant.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LeafPendant.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindFan.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindFan.png"
+  ],
+  "source_png_exact": 9,
+  "locale_name_values_exact": 40,
+  "full_localized_scalar_replacement": true,
+  "expected_file_bytes_exact": 31,
+  "new_guids_unique": 8,
+  "other_protected_files_unchanged": 4015,
+  "effects_stable_ids_original_metadata_and_shared_atlas": "preserved",
+  "counterkick_existing_metadata_definition_and_localized_name": "preserved",
+  "tonic_pipe": "definition, image, name, effects and localization preserved",
+  "CSharp_scenes_prefabs_schemas_and_asmdefs": "unchanged",
+  "unity_import_compile_playmode": "not executed",
+  "automated_tests": "not executed",
+  "doc_impact": "SessionLog",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no new stale candidate",
+  "definition_diff_whitespace": "passed",
+  "sprite_reference_and_metadata_inspection": "passed"
+}

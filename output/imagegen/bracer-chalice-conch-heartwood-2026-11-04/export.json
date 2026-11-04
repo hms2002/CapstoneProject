@@ -1,0 +1,100 @@
+[
+  {
+    "key": "01-gladiators-bracer",
+    "name": "검투사의 완갑",
+    "native": "01-gladiators-bracer-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-63e7a402-14ae-4058-bcb9-c9473120aa03.png",
+    "sourceMaterialBounds": [
+      234,
+      227,
+      1040,
+      1049
+    ],
+    "materialSize": [
+      24,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#8599B0",
+      "#C2C2C2",
+      "#F2F9F8",
+      "#A75064"
+    ]
+  },
+  {
+    "key": "02-arcane-chalice",
+    "name": "마력의 성배",
+    "native": "02-arcane-chalice-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-d6e273e8-0e62-4b6b-82b4-0290823e44c3.png",
+    "sourceMaterialBounds": [
+      259,
+      205,
+      996,
+      1107
+    ],
+    "materialSize": [
+      20,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#AB6E7C",
+      "#9D5789",
+      "#BE8EC1"
+    ]
+  },
+  {
+    "key": "03-fair-wind-conch",
+    "name": "순풍의 소라",
+    "native": "03-fair-wind-conch-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-b4d6812d-909a-46ea-9e05-a494dc55c38d.png",
+    "sourceMaterialBounds": [
+      206,
+      248,
+      1047,
+      1053
+    ],
+    "materialSize": [
+      24,
+      23
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#F1E9D4",
+      "#E9CEA1",
+      "#D49C73",
+      "#77BCD6",
+      "#B1DECF"
+    ]
+  },
+  {
+    "key": "04-unyielding-heartwood",
+    "name": "불굴의 심재",
+    "native": "04-unyielding-heartwood-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-2045abc9-2e25-4ee3-98c5-1a1f9f8c1025.png",
+    "sourceMaterialBounds": [
+      197,
+      237,
+      1060,
+      1047
+    ],
+    "materialSize": [
+      24,
+      23
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#8A5E40",
+      "#62494C",
+      "#D49C73",
+      "#E9CEA1"
+    ]
+  }
+]

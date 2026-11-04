@@ -1,0 +1,97 @@
+[
+  {
+    "key": "01-rift-stone",
+    "name": "균열석",
+    "native": "01-rift-stone-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-17bf11c5-aeb2-48f5-9276-c7fd1a2206e8.png",
+    "sourceMaterialBounds": [
+      271,
+      249,
+      986,
+      1035
+    ],
+    "materialSize": [
+      22,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#BE8EC1",
+      "#9D5789",
+      "#75656A",
+      "#F1E5F8"
+    ]
+  },
+  {
+    "key": "02-broken-crown",
+    "name": "부서진 왕관",
+    "native": "02-broken-crown-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-0d1488fa-ef85-42a0-b65e-1ccbcff7f508.png",
+    "sourceMaterialBounds": [
+      158,
+      297,
+      1059,
+      1040
+    ],
+    "materialSize": [
+      24,
+      20
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#AB6E7C"
+    ]
+  },
+  {
+    "key": "03-tough-bandage",
+    "name": "질긴 붕대",
+    "native": "03-tough-bandage-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-86089c36-087e-416d-a605-4da4f49714f4.png",
+    "sourceMaterialBounds": [
+      212,
+      274,
+      1068,
+      1014
+    ],
+    "materialSize": [
+      24,
+      21
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#F1E9D4",
+      "#E9CEA1",
+      "#D49C73"
+    ]
+  },
+  {
+    "key": "04-victory-flag",
+    "name": "승리의 깃발",
+    "native": "04-victory-flag-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-1c5b1daf-4bd7-4884-9d6a-73eb7a81c15d.png",
+    "sourceMaterialBounds": [
+      175,
+      185,
+      1083,
+      1074
+    ],
+    "materialSize": [
+      24,
+      23
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#E55C5C",
+      "#A75064",
+      "#D49C73",
+      "#AB6E7C",
+      "#EECF5A"
+    ]
+  }
+]

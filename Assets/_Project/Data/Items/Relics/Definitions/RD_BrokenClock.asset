@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_BrokenClock
   m_EditorClassIdentifier: 
   relicId: RD_BrokenClock
-  displayName: "\uAE68\uC9C4 \uC2DC\uACC4"
-  icon: {fileID: 8375218632860420053, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  displayName: "\uc804\uc0ac\uc758 \uc644\uac11"
+  icon: {fileID: 21300000, guid: 3a8a59522ce646b8b2c1abd6bb640243, type: 3}
   rarity: 1
   description: "\uACF5\uACA9\uC18D\uB3C4\uAC00 \uC99D\uAC00\uD558\uC9C0\uB9CC \uC2A4\uD0AC
     \uD53C\uD574\uAC00 \uAC10\uC18C\uD569\uB2C8\uB2E4."

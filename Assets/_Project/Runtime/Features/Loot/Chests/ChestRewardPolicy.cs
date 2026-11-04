@@ -4,7 +4,7 @@ internal static class ChestRewardPolicy
 {
     internal static bool CanOfferRelic(RelicDefinition relic, RelicInventory playerInventory, ChestInventory chest)
     {
-        if (relic == null)
+        if (relic == null || RelicDefinition.IsRetiredId(relic.relicId))
             return false;
 
         int ownedLevel = 0;

@@ -1,0 +1,80 @@
+[
+  {
+    "key": "01-spear-tip-fragment",
+    "name": "창 파편 A — 부러진 창끝",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knightly-badges-2026-11-05\\01-spear-tip-fragment-source.png",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794"
+    ],
+    "material_bbox": [
+      205,
+      177,
+      1074,
+      1080
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "02-spear-collar-fragment",
+    "name": "창 파편 B — 갈라진 창날 밑동",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knightly-badges-2026-11-05\\02-spear-collar-fragment-source.png",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794"
+    ],
+    "material_bbox": [
+      193,
+      254,
+      1052,
+      1027
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "03-knightly-shield-badge",
+    "name": "기사 휘장 A — 방패형 검 문장",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knightly-badges-2026-11-05\\03-knightly-shield-badge-source.png",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#436794",
+      "#77BCD6",
+      "#F2F9F8"
+    ],
+    "material_bbox": [
+      289,
+      151,
+      965,
+      1100
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "04-knightly-winged-badge",
+    "name": "기사 휘장 B — 날개형 검 훈장",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knightly-badges-2026-11-05\\04-knightly-winged-badge-source.png",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#436794",
+      "#77BCD6",
+      "#F2F9F8"
+    ],
+    "material_bbox": [
+      124,
+      273,
+      1137,
+      1042
+    ],
+    "preserve_alpha_holes": []
+  }
+]

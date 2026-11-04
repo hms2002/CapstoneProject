@@ -1,0 +1,30 @@
+{
+  "date": "2026-11-04",
+  "registered_relics": 75,
+  "excluded_fire": 10,
+  "excluded_electric": 10,
+  "report_total": 55,
+  "approved_replacements": 18,
+  "existing_images": 37,
+  "card_pages": 6,
+  "icon_reference_and_rects_inspected": 55,
+  "native_alpha_and_visible_rgba_exact": 55,
+  "opaque_integer_scaled_pixels_exact": 55,
+  "single_sprite_png_bytes_exact": 34,
+  "protected_source_hashes_unchanged": 182,
+  "name_and_description_csv_ko_table_matches": 110,
+  "changed_project_files": [
+    "Assets/_Project/Data/Localization/GameText_ko.asset",
+    "Assets/_Project/Data/Localization/GameText_en.asset",
+    "Docs/SessionLogs/2026-11-04.md"
+  ],
+  "project_change_reason": "Corrected leftover multiline YAML continuation from previous Mandragora description replacement; existing key/ID and other entries preserved.",
+  "correction_record": "description-correction/verification.json",
+  "automated_tests": "not executed",
+  "unity_import_compile_playmode": "not executed",
+  "doc_impact": "SessionLog",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no new stale candidate",
+  "markdown_links_valid": 120
+}

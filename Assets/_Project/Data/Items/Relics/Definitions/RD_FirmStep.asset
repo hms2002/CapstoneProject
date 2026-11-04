@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_FirmStep
   m_EditorClassIdentifier: 
   relicId: RD_FirmStep
-  displayName: "\uAD73\uC13C \uBC1C\uAC78\uC74C"
-  icon: {fileID: -8815494589321632592, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  displayName: "\ud589\uc6b4\uc758 \uc99d\ud45c"
+  icon: {fileID: 21300000, guid: 2e4f520a25af4ef3a3e2d00ec4972efb, type: 3}
   rarity: 0
   description: "치명타가 아닌 공격 적중 시 치명타 확률이 2/3/4% 증가합니다. 최대 8회 중첩되며, 치명타 발생 시 초기화됩니다."
   maxLevel: 3

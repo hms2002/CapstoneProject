@@ -1,0 +1,14 @@
+{
+  "key": "thundercloud",
+  "name": "먹구름과 번개",
+  "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-3f102d2d-9961-495f-b59c-c78fd3ffddc6.png",
+  "palette": [
+    "#363232",
+    "#75656A",
+    "#978C8E",
+    "#77BCD6",
+    "#B1DECF"
+  ],
+  "prompt": "Use case: stylized-concept. Create ONE simple hand-authored pixel art inventory sprite of a THUNDERCLOUD with ONE lightning bolt, the immediately recognizable conventional storm-cloud silhouette.\nReferences: image 1 is ONLY approved art-style reference (plump chunky fantasy roguelike objects, broad flat color shapes); image 2 is the ONLY allowed palette.\nSubject: a dark gray storm cloud in the upper half, 3 or 4 large rounded puffy lobes with a large central mound and gently flattened bottom, and ONE substantial bright BLUE angular zigzag lightning bolt emerging downwards from the cloud's lower center. The bolt is broad and short, with two clear direction changes and a pointed bottom. Cloud overlaps the bolt's top, so they read as one compact sprite. Dark cloud body with one broad lower shadow plane, NOT many internal outlines or separate little puffs. A simple slight lighter upper plane only if necessary. No rain, extra bolts, sparks, face, pedestal, border badge or decorative frame. No objects or weapon parts. Clearly an ordinary dark thundercloud striking a single blue bolt, not a magical device.\nStyle: same soft chunky pixel illustration as reference 1. Logical 32x32 grid, crisp uniform square pixels, broad base and shadow clusters. Rounded charcoal #363232 outline TWO logical pixels thick. At least TWO fully transparent logical pixel margins on each of the four canvas edges INCLUDING the outline. Overall material width/height about 24 logical pixels. Binary alpha, genuinely transparent background. No gradients, antialiasing, texture, dithering, small scattered pixels, white glints, realistic cloud rendering, text or grid. One sprite, no sheet.\nExact palette ONLY: #363232 charcoal outline; #75656A dark gray cloud shadow; #978C8E muted gray cloud base; #77BCD6 blue lightning body; #B1DECF pale blue lightning highlight. Five colors total maximum. Keep lightning blue with a broad main fill and at most ONE simple side highlight.",
+  "generation": "built-in image_gen"
+}

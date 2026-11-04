@@ -14,9 +14,9 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
     private const string LogicData = "Assets/_Project/Data/Items/Weapons/LogicData/";
     private const string Formulas = "Assets/_Project/Data/Attributes/Formulas/";
 
-    [TestCase("CommonCorridor/LizardWarrior.prefab", 45f, 100f, 189f)]
-    [TestCase("SlimeCorridor/Knight.prefab", 45f, 100f, 189f)]
-    [TestCase("ShadowCorridor/ShadowMonster.prefab", 45f, 100f, 189f)]
+    [TestCase("CommonCorridor/LizardWarrior.prefab", 45f, 170f, 189f)]
+    [TestCase("SlimeCorridor/Knight.prefab", 45f, 170f, 189f)]
+    [TestCase("ShadowCorridor/ShadowMonster.prefab", 45f, 170f, 189f)]
     [TestCase("CommonCorridor/LizardMage.prefab", 30f, 60f, 126f)]
     [TestCase("SlimeCorridor/Bishop.prefab", 30f, 60f, 126f)]
     [TestCase("SlimeCorridor/Wizard.prefab", 30f, 60f, 126f)]
@@ -25,7 +25,7 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
     [TestCase("SlimeCorridor/Pawn.prefab", 15f, 23.25f, 63f)]
     [TestCase("ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab", 55f, 85.25f, 231f)]
     [TestCase("ShadowCorridor/ShadowServant/ShadowServant.prefab", 45f, 69.75f, 189f)]
-    [TestCase("CommonMeleeStageMonsterSet", 45f, 100f, 283.5f)]
+    [TestCase("CommonMeleeStageMonsterSet", 45f, 170f, 283.5f)]
     [TestCase("CommonRangedStageMonsterSet", 25f, 60f, 157.5f)]
     [TestCase("CommonTankStageMonsterSet", 180f, 279f, 567f)]
     public void StageTwoHpRepair_SpawnAndReapplyPreserveOtherStagesAndRoles(

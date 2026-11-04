@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-10-12
+last_reviewed: 2026-11-04
 ---
 
 # Relic Runtime Structure
@@ -15,8 +15,65 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 
 - `RelicDefinition` assets hold player-facing relic identity: `relicId`, display name, icon, rarity, short description, level/drop settings, and a `RelicLogic` reference.
 - `RelicLogic` assets own runtime behavior and tooltip body generation through `BuildTooltip(...)`.
-- `ItemDatabase.asset` lists available relic definitions in both `allRelics` and `defaultUnlockedRelics` for default drop/unlock availability.
+- `ItemDatabase.asset.allRelics` retains registered definitions for ID lookup, including retired content. `defaultUnlockedRelics` supplies initial unlocks; loot eligibility is filtered separately.
+- `RD_SlimeBottle` and `RD_ChloeLantern` are unlocked by Melta/Chloe affection level 2 through their one-relic UnlockItemAffectionEffect assets. They were already absent from defaults; this slice did not change ItemDatabase or relic definitions. `ItemManager.RestoreEarnedAffectionUnlocks` adds missing item-unlock entitlements from committed profile affection on initialization and unlock-state/list queries. It waits for item/NPC database readiness, retries on later queries, adds through existing validated UnlockWeapon/UnlockRelic methods, and never clears old unlocks, calls other reward effects or opens UI. Existing ready-manager SaveData collection persists the resulting sets without a new save schema or forced save. [Scope](../../ActiveTasks/melta-chloe-tier-two-unlocks.md).
+- Spiri affection level 2 unlocks `RD_ScorchingSong` (Fire Dragon's Fang), `RD_SunFragment`, and `RD_DrunkenRush` through `SpiriRelicUnlockReward`, an existing `UnlockItemAffectionEffect` instance. These three remain registered in `allRelics` but are absent from `defaultUnlockedRelics`. `ItemManager` merges saved unlock IDs with defaults, so old saved unlocks remain valid; fresh profiles earn them at the threshold. Unlocks affect subsequent eligible chest/shop rolls, not already generated rewards. See [scope and compatibility](../../ActiveTasks/spiri-tier-two-relic-unlocks.md).
+- `RelicDefinition.IsRetiredId` is the shared, nonserialized predicate for the seven relics excluded from acquisition and the encyclopedia on 2026-11-04. Inventory restore and existing effects do not consult it, so previously owned relics retain their identity/level/behavior. Source boundaries and the seven IDs are mapped in [LootRewardStructure](LootRewardStructure.md#retired-relics-2026-11-04).
 - Common always-on stat relics use `RelicLogic_StatModifiers`.
+- `병 속의 슬라임` (`RD_SlimeBottle`, 전설/maximum level 1) uses
+  `RelicLogic_SlimeBottle` and the existing `RelicProcManager`. Its token-owned
+  proc registers a player-filtered callback in Core `CombatHitPrevention` and
+  disposes it on unequip/reapply/restore-detach/manager destruction. Restore
+  reconnects once without replaying a block. Disabled/destroyed/dead owners and
+  missing tokens cannot block; no chance/counter is saved.
+  `CombatDamageAction` checks prevention after invulnerability/evasion and before
+  damage effects, shield consumption, knockback, stagger, elemental build-up and
+  hit events. `HazardDamageAction` checks the same gate independently of
+  `ignoreEvasion`, so player pit-fall damage is eligible. The proc rolls 10%
+  independently for each eligible positive-damage application; it does not modify
+  EvasionFinal or create a temporary invulnerability window.
+  Ground fire/poison-cloud hazard applications remain eligible even when they
+  repeat while the player stays inside. Status damage-over-time is excluded via
+  the optional `isDamageOverTime` argument; `BurnStatus2D` marks its tick explicitly.
+  Future status tick callers using either entry point must carry that meaning
+  rather than classifying all repeated ground hazards as status DoT. Existing
+  status effects that apply damage outside these entry points do not use the gate.
+  A blocked fall retains its existing fall animation/safe-position recovery.
+  Successful prevention sends literal `Slime!` through the existing popup backend.
+  UI resolves the player's text color to #74DBAF and projects an `ElasticPop`
+  runtime view flag into a damped squash/stretch. Pooled text resets that flag;
+  ordinary damage and Evade/EVADE keep their existing style. No new popup prefab,
+  hierarchy, serialized schema or persistent enum value is needed.
+  `SlimeBottleAuthoring.Apply` authors the definition/strategy/icon and registers
+  `Assets/_Project/Data/Items/Relics/Definitions/RD_SlimeBottle.asset` in
+  `ItemDatabase.allRelics` only. Melta affection unlock wiring is a separate task
+  and should reference this exact ID. `Localize` imports its three-key CSV subset;
+  the requested `Slime!` combat label is intentionally literal across locales.
+- `클로에의 등불` (`RD_ChloeLantern`, 전설/maximum level 1) uses
+  `RelicLogic_ChloeLantern`, `ChloeLanternOrbitController`, and
+  `ChloeLanternProjectile2D` under `Assets/_Project/Runtime/Features/Items/Relics/`.
+  The definition is registered in `ItemDatabase.allRelics` only. Chloe affection
+  level 1 unlock/reward wiring belongs to a separate task; use this exact ID and
+  `Assets/_Project/Data/Items/Relics/Definitions/RD_ChloeLantern.asset` there.
+  The controller instantiates authored summon/projectile prefabs, orbits one
+  summon at the Sun Fragment radius/center/angular speed, and scans camera-visible
+  living Enemy hurtboxes every two game-time seconds. It selects by distance from
+  the player, requiring clear wall rays from the player and the summon. A summon
+  separated from its owner by a wall cannot fire.
+  Launch snapshots AttackFinal directly into CombatHitPayload with critical=false
+  and explicit empty element damage/build-up arrays; the shared combat application
+  still owns protection, shields, outgoing modifiers and hit events. No weapon
+  damage-category scaling or critical formula is invoked by this relic.
+  The dedicated projectile steers up to 1080 degrees/second without a forward-cone
+  limit and sweeps its collider radius before moving. Its first living enemy or
+  wall contact consumes it once, including protected enemies. A lost/dead target
+  leaves it flying straight until contact or its five-second lifetime expires.
+  The attachment token owns the summon and outstanding shots: unequip/reapply,
+  owner disable/death/destruction and scene teardown clear both. Restore attaches
+  a fresh controller state; angle, cooldown and in-flight shots are not saved.
+  `ChloeLanternAuthoring.Apply` is the Unity authoring entry point; its `Localize`
+  method imports the prepared three-key CSV subset. Source PNGs remain unchanged;
+  the projectile sheet is eight 32x32 frames with a looping 12 fps authored clip.
 - Authored Attack bonuses use `ModifierType.Flat` on `AttackAddAttribute`, which
   enters `(AttackBase + AttackAdd) * AttackMul`. Worn/Master Whetstone use 1/2/3;
   Heavy Bracelet uses 2/3/4; Last Breath grants 3 at Health <= 50%; Red Contract

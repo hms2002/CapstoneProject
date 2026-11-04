@@ -1,0 +1,160 @@
+{
+  "date": "2026-11-04",
+  "mode": "preview-only artwork",
+  "method": "built-in image_gen per asset; System.Drawing nearest-neighbor native export, exact palette quantization, rounded 2-pixel outline and sheet assembly; no Python image editing",
+  "icons": [
+    {
+      "name": "날렵한 망토",
+      "file": "01-agile-cloak-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        2,
+        29,
+        30
+      ],
+      "transparent_margins": [
+        2,
+        2,
+        3,
+        2
+      ],
+      "colors": [
+        "#363232",
+        "#56774A",
+        "#5DA16E",
+        "#B1D368",
+        "#EECF5A"
+      ],
+      "color_count": 5,
+      "preserved_alpha_hole_pixels": 0,
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-201a0431-b390-4037-96f4-60285a646a66.png"
+    },
+    {
+      "name": "전사의 맹세",
+      "file": "02-warriors-oath-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        2,
+        29,
+        30
+      ],
+      "transparent_margins": [
+        2,
+        2,
+        3,
+        2
+      ],
+      "colors": [
+        "#363232",
+        "#AB6E7C",
+        "#C2C2C2",
+        "#D49C73",
+        "#F2F9F8"
+      ],
+      "color_count": 5,
+      "preserved_alpha_hole_pixels": 0,
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-a09d92b2-271c-4579-a2db-0b20379891e2.png"
+    },
+    {
+      "name": "얇은 갑옷 조각",
+      "file": "03-thin-armor-shard-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        3,
+        30,
+        29
+      ],
+      "transparent_margins": [
+        2,
+        3,
+        2,
+        3
+      ],
+      "colors": [
+        "#363232",
+        "#8599B0",
+        "#C2C2C2",
+        "#F2F9F8"
+      ],
+      "color_count": 4,
+      "preserved_alpha_hole_pixels": 0,
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-da4465fd-b94b-49c3-81eb-c6751667a315.png"
+    },
+    {
+      "name": "균형추",
+      "file": "04-counterweight-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        2,
+        29,
+        30
+      ],
+      "transparent_margins": [
+        3,
+        2,
+        3,
+        2
+      ],
+      "colors": [
+        "#363232",
+        "#8599B0",
+        "#C2C2C2",
+        "#F2F9F8"
+      ],
+      "color_count": 4,
+      "preserved_alpha_hole_pixels": 13,
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-7828a86c-c8cd-4313-a4fc-f7bb0f8f82a0.png"
+    }
+  ],
+  "sheet_dimensions": [
+    [
+      64,
+      64
+    ],
+    [
+      32,
+      128
+    ],
+    [
+      128,
+      32
+    ]
+  ],
+  "preview_dimensions": [
+    512,
+    512
+  ],
+  "minimum_margin": 2,
+  "outline_color": "#363232",
+  "generation_attempts": {
+    "01-agile-cloak": 1,
+    "02-warriors-oath": 1,
+    "03-thin-armor-shard": 2,
+    "04-counterweight": 1
+  },
+  "protected_project_files_unchanged": 4015,
+  "project_applied": false,
+  "approved_style_memory": "output/style-review-2026-11-04/approved-followup-style.md",
+  "unity_import_tests": "not executed; preview assets only",
+  "doc_impact": "no project doc update needed; requested style preference recorded in output style guide",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no new stale candidate"
+}

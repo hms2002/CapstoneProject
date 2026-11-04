@@ -22,7 +22,8 @@ namespace UnityGAS
             Object sourceObject = null,
             bool ignoreInvulnerability = false,
             bool ignoreEvasion = false,
-            bool logDebug = false)
+            bool logDebug = false,
+            bool isDamageOverTime = false)
         {
             if (targetSystem == null || target == null || damageEffect == null)
             {
@@ -56,6 +57,10 @@ namespace UnityGAS
                 LogDebug(logDebug, $"blocked: non-positive damage. target={target.name}, damage={finalHpDamage:0.###}", target);
                 return;
             }
+
+            // Independent of ignoreEvasion: pit-fall damage deliberately skips ordinary evasion.
+            if (!isDamageOverTime && CombatHitPrevention.TryPrevent(target))
+                return;
 
             var hpCheck = CaptureHpCheck(target, damageEffect);
             var shieldCheck = CaptureShieldCheck(target, damageEffect);

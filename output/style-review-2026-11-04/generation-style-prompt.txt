@@ -8,3 +8,5 @@ Design the actual subject from its name unless the user explicitly asks to prese
 Output: one true 32x32 transparent icon, at least two transparent pixels of margin on all sides including the outline. Integer nearest-neighbor enlargements are previews. Evaluate the silhouette and material at native scale and enlarged scale before delivery.
 Subject/name and any object-specific instruction: supplied separately.
 
+
+Most recently approved quartet (2026-11-04): output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png. The user explicitly praised these four as perfect and requested that this feel be retained. Use this quartet as the primary recent style reference alongside the original eight: rounded chunky silhouette, sparse structural details, broad base/shadow planes, palette restraint, physical object readability. Approval of the style does not authorize applying draft sprites to the project.

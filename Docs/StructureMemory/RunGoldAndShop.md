@@ -2,6 +2,12 @@
 
 Current structure map; implementation reference, not a contract.
 
+## Melta regional shop discount
+
+- Melta affection >=1 adds 10 percentage points to `MerchantNPC`'s effective affection discount only for active-run gold shops whose scene matches the current `slime` route. The global RunModifierService snapshot is not changed by this local benefit, so other-area and Hub shops keep their own discounts.
+- Current Sasha-wide 5% + Melta 10% becomes 15% off the original price; a later Sasha 10% would combine to 20%. `MerchantShopPolicy` clamps the combined rate, and `MerchantOfferPricing` retains the separate special-offer multiplier and final rounding. Item price tags and purchases continue reading the same `entry.price`.
+- The merchant subscribes to affection changes and reprices its existing stock when Melta changes. It retries late manager binding and removes the subscription on disable. Original prices, offer identity and sold state are preserved by the existing stock path; no new regional field is saved. [Approved scope](../ActiveTasks/chloe-melta-affection-rewards.md).
+
 ## Ownership and lifecycle
 
 GamePlayData.runGold owns the current run balance. Existing CurrencyManager exposes GetGold/AddGold/SpendGold and OnGoldChanged. RunSessionLifecycleService resets gold at start, end and development reset; inactive runs expose zero. Sasha's second permanent reward adds a profile-owned `GameData.retainedRunGold` credit: run-end commit captures min(held gold, 500) on Defeat/TimeOver, then GamePlayDataManager.StartRun consumes and flushes that credit before assigning the new run balance and firing OnRunStarted. Repeated active StartRun calls do not consume/reset again. Victory/Abort produce no new credit. Old profile JSON defaults the additive credit to zero. Gold remains separate from persistent magic stones. No new singleton or bootstrap object was introduced.

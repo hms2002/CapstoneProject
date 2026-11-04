@@ -1,0 +1,24 @@
+{
+  "native": "32x32",
+  "colors": [
+    "#363232",
+    "#9D5789",
+    "#BE8EC1",
+    "#E09656",
+    "#EDBCCC",
+    "#EECF5A"
+  ],
+  "margins_ltrb": [
+    4,
+    2,
+    5,
+    2
+  ],
+  "binary_alpha": true,
+  "preview_exact_8x": true,
+  "handle_opening": "generated alpha preserved",
+  "game_assets": "not modified",
+  "Unity_and_tests": "not executed",
+  "doc_impact": "No project document update needed; output draft only",
+  "SessionLogs_ErrorLog_DecisionLog_PresentationHTML": "unchanged; no new stale candidate"
+}

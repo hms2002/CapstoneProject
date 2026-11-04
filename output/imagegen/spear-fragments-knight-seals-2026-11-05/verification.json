@@ -1,0 +1,82 @@
+{
+  "records": [
+    {
+      "name": "창 파편 A — 맞물린 조각",
+      "png": "01-spear-fragments-a-32x32.png",
+      "colors": [
+        "#363232",
+        "#77BCD6",
+        "#E09656",
+        "#EECF5A"
+      ],
+      "margins_ltrb": [
+        4,
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "name": "창 파편 B — 흩어진 조각",
+      "png": "02-spear-fragments-b-32x32.png",
+      "colors": [
+        "#363232",
+        "#436794",
+        "#77BCD6",
+        "#E09656",
+        "#EECF5A"
+      ],
+      "margins_ltrb": [
+        4,
+        2,
+        5,
+        2
+      ]
+    },
+    {
+      "name": "기사 휘장 A — 쌍띠 인장",
+      "png": "03-knight-seal-a-32x32.png",
+      "colors": [
+        "#363232",
+        "#A75064",
+        "#E55C5C",
+        "#E9CEA1",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "margins_ltrb": [
+        8,
+        2,
+        9,
+        2
+      ]
+    },
+    {
+      "name": "기사 휘장 B — 접힌 서약지",
+      "png": "04-knight-seal-b-32x32.png",
+      "colors": [
+        "#363232",
+        "#A75064",
+        "#E55C5C",
+        "#E9CEA1",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "margins_ltrb": [
+        2,
+        2,
+        2,
+        2
+      ]
+    }
+  ],
+  "native_and_sheets_match": true,
+  "preview_exact_8x": true,
+  "binary_alpha": true,
+  "allowed_palette_only": true,
+  "min_margin": 2,
+  "game_assets": "not modified",
+  "automated_tests": "not executed",
+  "doc_impact": "No project document update needed; draft outputs only",
+  "SessionLogs_ErrorLog_DecisionLog_PresentationHTML": "unchanged; no new stale candidate"
+}

@@ -24,6 +24,17 @@ public class RelicDefinition : ScriptableObject, IInventoryItemDefinition
     public RelicLogic logic;
     public ScriptableObject param; // 필요하면 데이터(SO) 연결
 
+    // Keep retired definitions resolvable for existing inventories and saves.
+    // Only acquisition sources and the encyclopedia use this exclusion.
+    public static bool IsRetiredId(string id) => id is
+        "RD_FeatherOrbit" or
+        "RD_Stenographer" or
+        "RD_OneDropOfSwiftness" or
+        "RD_HunterMark" or
+        "RD_RunawayShoes" or
+        "RD_ChainCharm" or
+        "RD_RunningLedger";
+
     public int ClampLevel(int level)
     {
         if (maxLevel < 1) maxLevel = 1;

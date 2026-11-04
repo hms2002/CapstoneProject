@@ -1,0 +1,204 @@
+{
+  "date": "2026-11-04",
+  "mode": "Implementation",
+  "records": [
+    {
+      "name": "무딘 방패",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BluntShield.asset",
+      "definition_guid": "f06c064d63ee47f4854cef0c2fc19a01",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BluntShield.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-1e35dd97-219f-49ea-b489-c279b89f9028.png",
+      "sprite_guid": "e5bc7a8d97e841229796fdb6d8bd516e",
+      "new_sprite": true,
+      "translations": null
+    },
+    {
+      "name": "박동하는 심장",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SmallHeart.asset",
+      "definition_guid": "ef617ca72b6f4423b7e133a909367516",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BeatingHeart.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-5f1e66ba-b813-493c-a34b-2bc59c74e99d.png",
+      "sprite_guid": "0f1087d9fd23419ab0c05e0b49a2584d",
+      "new_sprite": true,
+      "translations": {
+        "ko": "박동하는 심장",
+        "en": "Beating Heart",
+        "ja": "鼓動する心臓",
+        "zh-Hans": "跳动的心脏",
+        "zh-Hant": "跳動的心臟"
+      }
+    },
+    {
+      "name": "광전사의 보석",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RedContract.asset",
+      "definition_guid": "6e61f67002664297a735902776929cf5",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BerserkerGem.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-65ffd7b1-967b-467c-a659-d0dc2effb7f8.png",
+      "sprite_guid": "52aad4bfdb8f4b65a49b9d43566781d0",
+      "new_sprite": true,
+      "translations": {
+        "ko": "광전사의 보석",
+        "en": "Berserker's Gem",
+        "ja": "狂戦士の宝石",
+        "zh-Hans": "狂战士宝石",
+        "zh-Hant": "狂戰士寶石"
+      }
+    },
+    {
+      "name": "추격 명령",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_PursuerClaw.asset",
+      "definition_guid": "ddead4c1dd0048d8a332a78cd84cc690",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_PursuitOrder.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-a44d6633-608f-41dd-bd23-ba7b958f2884.png",
+      "sprite_guid": "f2fb44ecb2b0432f88fbd7391a15d3cd",
+      "new_sprite": true,
+      "translations": {
+        "ko": "추격 명령",
+        "en": "Pursuit Order",
+        "ja": "追撃命令",
+        "zh-Hans": "追击命令",
+        "zh-Hant": "追擊命令"
+      }
+    },
+    {
+      "name": "만드라고라",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedMedal.asset",
+      "definition_guid": "2a2133b4854b68e4eb9a420c0bb3e215",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedMedal.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-3add26ea-8347-4007-a364-4ed9d030d589.png",
+      "sprite_guid": "cc05db3731cb2e447b06a5902cb16b6c",
+      "new_sprite": false,
+      "translations": {
+        "ko": "만드라고라",
+        "en": "Mandragora",
+        "ja": "マンドラゴラ",
+        "zh-Hans": "曼德拉草",
+        "zh-Hant": "曼德拉草"
+      }
+    },
+    {
+      "name": "행운의 증표",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FirmStep.asset",
+      "definition_guid": "6657f14bf85d4440b1a6353e784e9c3e",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LuckyToken.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-2108598a-7463-4d2e-9b23-a9e2e0c9f4e3.png",
+      "sprite_guid": "2e4f520a25af4ef3a3e2d00ec4972efb",
+      "new_sprite": true,
+      "translations": {
+        "ko": "행운의 증표",
+        "en": "Token of Luck",
+        "ja": "幸運の証",
+        "zh-Hans": "幸运信物",
+        "zh-Hant": "幸運信物"
+      }
+    }
+  ],
+  "localization_changes": {
+    "asset.ef617ca72b6f4423b7e133a909367516.displayName": {
+      "ko": "박동하는 심장",
+      "en": "Beating Heart",
+      "ja": "鼓動する心臓",
+      "zh-Hans": "跳动的心脏",
+      "zh-Hant": "跳動的心臟"
+    },
+    "asset.6e61f67002664297a735902776929cf5.displayName": {
+      "ko": "광전사의 보석",
+      "en": "Berserker's Gem",
+      "ja": "狂戦士の宝石",
+      "zh-Hans": "狂战士宝石",
+      "zh-Hant": "狂戰士寶石"
+    },
+    "asset.ddead4c1dd0048d8a332a78cd84cc690.displayName": {
+      "ko": "추격 명령",
+      "en": "Pursuit Order",
+      "ja": "追撃命令",
+      "zh-Hans": "追击命令",
+      "zh-Hant": "追擊命令"
+    },
+    "asset.2a2133b4854b68e4eb9a420c0bb3e215.displayName": {
+      "ko": "만드라고라",
+      "en": "Mandragora",
+      "ja": "マンドラゴラ",
+      "zh-Hans": "曼德拉草",
+      "zh-Hant": "曼德拉草"
+    },
+    "asset.2a2133b4854b68e4eb9a420c0bb3e215.description": {
+      "ko": "레벨에 따라 치명타 확률이 2/4/6/8/10% 증가합니다.",
+      "en": "Increases critical chance by 2/4/6/8/10%, depending on level.",
+      "ja": "レベルに応じてクリティカル率が2/4/6/8/10%増加する。",
+      "zh-Hans": "根据等级，暴击率提高2/4/6/8/10%。",
+      "zh-Hant": "根據等級，暴擊率提高2/4/6/8/10%。"
+    },
+    "asset.6657f14bf85d4440b1a6353e784e9c3e.displayName": {
+      "ko": "행운의 증표",
+      "en": "Token of Luck",
+      "ja": "幸運の証",
+      "zh-Hans": "幸运信物",
+      "zh-Hant": "幸運信物"
+    },
+    "asset.3dbb80240a8ddb744a0525322aad2b6f.entries.Array.data[0].displayNameOverride": {
+      "ko": "치명타 확률",
+      "en": "Critical Chance",
+      "ja": "クリティカル率",
+      "zh-Hans": "暴击率",
+      "zh-Hant": "暴擊率"
+    }
+  },
+  "entry_ids": {
+    "asset.ef617ca72b6f4423b7e133a909367516.displayName": "46294721531914",
+    "asset.6e61f67002664297a735902776929cf5.displayName": "46294717337644",
+    "asset.ddead4c1dd0048d8a332a78cd84cc690.displayName": "46294717337641",
+    "asset.2a2133b4854b68e4eb9a420c0bb3e215.displayName": "46294721531919",
+    "asset.2a2133b4854b68e4eb9a420c0bb3e215.description": "46294721531920",
+    "asset.6657f14bf85d4440b1a6353e784e9c3e.displayName": "46294717337607",
+    "asset.3dbb80240a8ddb744a0525322aad2b6f.entries.Array.data[0].displayNameOverride": "46294729920533"
+  },
+  "strategy": "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_SpeedMedalBonus.asset",
+  "crit_values_preserved": [
+    0.02,
+    0.04,
+    0.06,
+    0.08,
+    0.1
+  ],
+  "movement_speed_entry_removed": true,
+  "remaining_crit_entry_byte_exact": true,
+  "existing_changed": [
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_BluntShield.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_SmallHeart.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_RedContract.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_PursuerClaw.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedMedal.asset",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedMedal.png",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_FirmStep.asset",
+    "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_SpeedMedalBonus.asset",
+    "DataSheets/Localization/GameText.csv",
+    "Assets/_Project/Data/Localization/GameText_ko.asset",
+    "Assets/_Project/Data/Localization/GameText_en.asset",
+    "Assets/_Project/Data/Localization/GameText_ja.asset",
+    "Assets/_Project/Data/Localization/GameText_zh-Hans.asset",
+    "Assets/_Project/Data/Localization/GameText_zh-Hant.asset"
+  ],
+  "new_files": [
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BluntShield.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BluntShield.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BeatingHeart.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BeatingHeart.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BerserkerGem.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BerserkerGem.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_PursuitOrder.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_PursuitOrder.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LuckyToken.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LuckyToken.png"
+  ],
+  "source_png_exact": 6,
+  "locale_values_exact": 35,
+  "expected_file_bytes_exact": 24,
+  "other_protected_files_unchanged": 578,
+  "automated_tests": "not executed",
+  "unity_import_compile_playmode": "not executed",
+  "markdown_links_valid": 15,
+  "new_guids_unique": 5,
+  "final_protected_hash_inspection": "passed",
+  "definition_reference_inspection": "passed"
+}

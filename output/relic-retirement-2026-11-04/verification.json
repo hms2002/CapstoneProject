@@ -1,0 +1,101 @@
+{
+  "date": "2026-11-04",
+  "mode": "Implementation",
+  "retired": [
+    {
+      "name": "하얀 깃털",
+      "relic_id": "RD_FeatherOrbit",
+      "definition": "Assets/_Project/Unused/Items/Relics/RD_FeatherOrbit.asset",
+      "guid": "eb057c0a7b239b742a001ee568ef4027"
+    },
+    {
+      "name": "속기사",
+      "relic_id": "RD_Stenographer",
+      "definition": "Assets/_Project/Unused/Items/Relics/RD_Stenographer.asset",
+      "guid": "f2a47c8de19b4d8d9e67a31f5b2c4e90"
+    },
+    {
+      "name": "한방울의 신속",
+      "relic_id": "RD_OneDropOfSwiftness",
+      "definition": "Assets/_Project/Unused/Items/Relics/RD_OneDropOfSwiftness.asset",
+      "guid": "7c21e56d0f854d95b4ac9ef71d603f28"
+    },
+    {
+      "name": "사냥꾼의 표식",
+      "relic_id": "RD_HunterMark",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_HunterMark.asset",
+      "guid": "81eca7800b7446598237331ab25b00c8"
+    },
+    {
+      "name": "도망자의 신발",
+      "relic_id": "RD_RunawayShoes",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RunawayShoes.asset",
+      "guid": "3f678aae4cb94331bd3caeb317c659ce"
+    },
+    {
+      "name": "연쇄의 부적",
+      "relic_id": "RD_ChainCharm",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ChainCharm.asset",
+      "guid": "bd3599e0184c43cc83826652107c5e89"
+    },
+    {
+      "name": "달리는 장부",
+      "relic_id": "RD_RunningLedger",
+      "definition": "Assets/_Project/Unused/Items/Relics/RD_RunningLedger.asset",
+      "guid": "c0e9e82eb0ce4caa9efb337cb57764ff"
+    }
+  ],
+  "registered_definitions_preserved": 75,
+  "encyclopedia_count_before": 74,
+  "encyclopedia_count_after_expected": 67,
+  "encyclopedia_count_basis": "Static catalog inspection: 75 unique registered definitions, minus one ParcelRelicDefinition, minus seven retired IDs; not an executed UI check.",
+  "changed_cs": [
+    "Assets/_Project/Runtime/Features/Items/Relics/RelicDefinition.cs",
+    "Assets/_Project/Runtime/Features/Loot/LootPoolItemSelectionService.cs",
+    "Assets/_Project/Runtime/Features/Loot/Chests/ChestRewardPolicy.cs",
+    "Assets/_Project/Runtime/Features/Loot/Chests/TreasureChest.cs",
+    "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs",
+    "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemTab.cs"
+  ],
+  "protected_source_hashes_unchanged": 2637,
+  "relic_schema_unchanged": true,
+  "existing_owned_restore_unchanged": true,
+  "serialized_assets_guids_and_asmdefs": "unchanged",
+  "namespace_and_assembly": "No new types/namespaces/assembly dependencies. UI already references Gameplay; static predicate is public.",
+  "source_review": [
+    "Single seven-ID list shared by loot, chest policies, merchant stock repair, encyclopedia count and lookup.",
+    "All seven original relic IDs and definitions retained in ItemDatabase.",
+    "Merchant repair skips SOLD entries and retains existing refresh/discount rules.",
+    "Saved chest retirement filter omits unclaimed offers only; other slots/levels/acquired counts preserved.",
+    "No filtering added to player RelicInventory restore or its effects."
+  ],
+  "msbuild": {
+    "status": "attempted; not passed",
+    "initial": "Parallel build stalled and was cancelled.",
+    "full_build": "Core.csproj omits existing EncyclopediaDiscoveryProgress.cs, yielding CS0246 EncyclopediaDiscoverySaveData in existing GameData/GamePlayData.",
+    "isolated_build": "With existing Unity dependency DLLs in isolated output, Gameplay.csproj fails CS0246 IChargeGaugePresentation because its existing source file Assets/_Project/Runtime/Features/Items/Weapons/Abilities/IChargeGaugePresentation.cs is also omitted from the generated Gameplay.csproj.",
+    "generated_projects_modified": false,
+    "logs": [
+      "msbuild-final-console.log",
+      "msbuild-core-console.log",
+      "msbuild-isolated-gameplay.log"
+    ]
+  },
+  "automated_tests": "not executed (not requested)",
+  "unity_import_playmode_ui_save_restore": "not executed",
+  "remaining_limits": [
+    "Existing already-placed world pickups are not swept or deleted. Existing owned retired relics, their effects, inventory movement, and owned-relic upgrade behavior remain.",
+    "No current authored chest/shop/reward/scene reference to these seven definitions was found beyond ItemDatabase, loading manifests, and localization. Explicit future grant/debug code is not globally blocked at the inventory boundary.",
+    "Full MSBuild requires refreshed generated project source lists for Core and Gameplay; actual gameplay/UI/manual save acceptance remains."
+  ],
+  "doc_impact": [
+    "SessionLog",
+    "StructureMemory",
+    "DecisionLog"
+  ],
+  "ErrorLog": "unchanged",
+  "ArchitectureContracts": "unchanged; no promotion candidate",
+  "PresentationHTML": "unchanged; no new stale candidate",
+  "changed_markdown_links_valid": 24,
+  "diff_whitespace": "passed"
+}

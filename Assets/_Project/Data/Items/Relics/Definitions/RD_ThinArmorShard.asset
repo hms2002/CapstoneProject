@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_ThinArmorShard
   displayName: "\uC587\uC740 \uAC11\uC637 \uC870\uAC01"
-  icon: {fileID: -9195065147404484278, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  icon: {fileID: 21300000, guid: 31a4f02378ca4d7a82397c11564fad7a, type: 3}
   rarity: 0
   description: "\uCD5C\uB300 \uCCB4\uB825\uACFC \uD68C\uD53C\uC728\uC774 \uC870\uAE08
     \uC99D\uAC00\uD569\uB2C8\uB2E4."

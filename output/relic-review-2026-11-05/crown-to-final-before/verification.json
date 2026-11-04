@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-05",
+  "relic_count": 26,
+  "scope": "same 26 as crown-to-final-current, per-item pre-remake artwork and names",
+  "same_order_and_definition_guids": 26,
+  "backed_up_original_PNG_byte_exact": 3,
+  "retained_source_sprite_pixel_matches": 23,
+  "prior_definition_icon_references_matched": 26,
+  "unchanged_definitions_used_for_PNG_only_replacements": 2,
+  "historic_icon_copies_byte_exact": 26,
+  "effect_full_descriptions_equal_to_after": 26,
+  "protected_files_unchanged": 163,
+  "overview_dimensions": [
+    1560,
+    1334
+  ],
+  "detail_pages": 3,
+  "visual_review": "overview and three detail pages inspected",
+  "game_assets": "unchanged",
+  "unity_and_automated_tests": "not executed",
+  "doc_impact": "SessionLog",
+  "ErrorLog_DecisionLog_PresentationHTML": "unchanged; no new stale candidate"
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "key": "01-evasion-plume",
+    "name": "회피의 깃",
+    "native": "01-evasion-plume-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-8d7c2f26-395d-48b4-b37c-a393fe60d94e.png",
+    "sourceMaterialBounds": [
+      285,
+      261,
+      1006,
+      1048
+    ],
+    "materialSize": [
+      22,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#F2F9F8",
+      "#C2C2C2",
+      "#D49C73"
+    ]
+  },
+  {
+    "key": "02-heavy-bracelet",
+    "name": "무거운 팔찌",
+    "native": "02-heavy-bracelet-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-96e694b2-b1e7-4fcf-a182-99a237f43bb5.png",
+    "sourceMaterialBounds": [
+      198,
+      296,
+      1054,
+      989
+    ],
+    "materialSize": [
+      24,
+      19
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#978C8E",
+      "#C2C2C2",
+      "#E09656"
+    ]
+  },
+  {
+    "key": "03-cherry-blossom",
+    "name": "귀인의 검흔 — 벚꽃 초안",
+    "native": "03-cherry-blossom-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-75dd2c62-b0fd-4363-8994-14612c6864a1.png",
+    "sourceMaterialBounds": [
+      146,
+      177,
+      1108,
+      1114
+    ],
+    "materialSize": [
+      24,
+      23
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#EDBCCC",
+      "#F1E5F8",
+      "#BE8EC1",
+      "#EECF5A"
+    ]
+  },
+  {
+    "key": "04-clover-dagger",
+    "name": "네잎클로버 장식 단검",
+    "native": "04-clover-dagger-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-1f74fa13-d086-4017-896e-8a6ff817776b.png",
+    "sourceMaterialBounds": [
+      229,
+      213,
+      997,
+      1079
+    ],
+    "materialSize": [
+      21,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#F2F9F8",
+      "#8599B0",
+      "#B1D368",
+      "#5DA16E",
+      "#EECF5A"
+    ]
+  }
+]

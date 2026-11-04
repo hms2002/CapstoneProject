@@ -282,7 +282,7 @@ public class Mob : Enemy
     }
 
     // Checks the owned body across the entire timed retreat, not just a fixed wall lookahead.
-    private bool IsRecoveryRetreatDirectionBlocked(Vector2 direction, float probeDistance)
+    protected bool IsRecoveryRetreatDirectionBlocked(Vector2 direction, float probeDistance)
     {
         if (direction.sqrMagnitude <= 0.0001f ||
             collision == null ||

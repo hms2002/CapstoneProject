@@ -1,0 +1,100 @@
+[
+  {
+    "key": "01-spear-fragments-a",
+    "name": "창 파편 A — 맞물린 조각",
+    "native": "01-spear-fragments-a-32x32.png",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knight-seals-2026-11-05\\01-spear-fragments-a-source.png",
+    "sourceMaterialBounds": [
+      207,
+      137,
+      1075,
+      1157
+    ],
+    "materialSize": [
+      20,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794"
+    ]
+  },
+  {
+    "key": "02-spear-fragments-b",
+    "name": "창 파편 B — 흩어진 조각",
+    "native": "02-spear-fragments-b-32x32.png",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knight-seals-2026-11-05\\02-spear-fragments-b-source.png",
+    "sourceMaterialBounds": [
+      242,
+      128,
+      1042,
+      1165
+    ],
+    "materialSize": [
+      19,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794"
+    ]
+  },
+  {
+    "key": "03-knight-seal-a",
+    "name": "기사 휘장 A — 쌍띠 인장",
+    "native": "03-knight-seal-a-32x32.png",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knight-seals-2026-11-05\\03-knight-seal-a-source.png",
+    "sourceMaterialBounds": [
+      364,
+      74,
+      891,
+      1183
+    ],
+    "materialSize": [
+      11,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#E55C5C",
+      "#A75064",
+      "#F1E9D4",
+      "#E9CEA1",
+      "#EECF5A"
+    ]
+  },
+  {
+    "key": "04-knight-seal-b",
+    "name": "기사 휘장 B — 접힌 서약지",
+    "native": "04-knight-seal-b-32x32.png",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\spear-fragments-knight-seals-2026-11-05\\04-knight-seal-b-source.png",
+    "sourceMaterialBounds": [
+      100,
+      138,
+      1104,
+      1160
+    ],
+    "materialSize": [
+      24,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#E55C5C",
+      "#A75064",
+      "#F1E9D4",
+      "#E9CEA1",
+      "#EECF5A"
+    ]
+  }
+]

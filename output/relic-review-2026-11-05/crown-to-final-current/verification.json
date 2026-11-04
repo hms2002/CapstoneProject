@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-05",
+  "scope": "eight-approved + nine-approved + four-dart-blossom + final-five",
+  "relic_count": 26,
+  "overview": {
+    "file": "overview-26.png",
+    "dimensions": [
+      1560,
+      1334
+    ]
+  },
+  "detail_pages": 3,
+  "native_png_copies_exact": 26,
+  "definition_guid_and_current_sprite_reference_matched": 26,
+  "CSV_KO_full_StringTable_values_matched": 52,
+  "protected_source_files_unchanged": 126,
+  "visual_review": "overview and all three detail pages inspected",
+  "game_assets": "unchanged",
+  "unity_and_automated_tests": "not executed",
+  "doc_impact": "SessionLog",
+  "ErrorLog_DecisionLog_PresentationHTML": "unchanged; no new stale candidate"
+}

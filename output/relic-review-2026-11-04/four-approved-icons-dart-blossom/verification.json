@@ -1,0 +1,172 @@
+{
+  "date": "2026-11-04",
+  "mode": "Micro-fix",
+  "records": [
+    {
+      "number": 1,
+      "name": "행운의 다트",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_TonicGombangdae.asset",
+      "definition_guid": "d808a1e0c7ccc7e48abc50b9a9884b61",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_TonicGombangdae.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-b80e8bfc-4ce0-4637-a480-38a9b493f7b0.png",
+      "sprite_guid": "b21ecde7f4efbae44b88a07fc7a7610e",
+      "fileID": "21300000",
+      "new_sprite": false,
+      "previous_dimensions": [
+        25,
+        25
+      ],
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        2,
+        29,
+        30
+      ],
+      "translations": {
+        "ko": "행운의 다트",
+        "en": "Lucky Dart",
+        "ja": "幸運のダーツ",
+        "zh-Hans": "幸运飞镖",
+        "zh-Hant": "幸運飛鏢"
+      }
+    },
+    {
+      "number": 2,
+      "name": "귀인의 검흔",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FloweringBloomExtension.asset",
+      "definition_guid": "6f66b76c2399491ab2b555651f017664",
+      "png": "Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_Artifact.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-d75535ff-2a06-48b7-b4e6-01466870ace5.png",
+      "sprite_guid": "bd99ece40b3e73841bdc7fb710c6d066",
+      "fileID": "21300000",
+      "new_sprite": false,
+      "previous_dimensions": [
+        16,
+        16
+      ],
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        3,
+        30,
+        30
+      ],
+      "translations": null
+    },
+    {
+      "number": 3,
+      "name": "회피의 깃",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_EvasionFeather.asset",
+      "definition_guid": "7c8c681dbbe24cb68c36637db0844b0c",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EvasionFeather.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-f3600dd3-8012-48d8-ae46-5fa5010b0073.png",
+      "sprite_guid": "db4ec1acd27a4e18855afa5b3473fd6c",
+      "fileID": "21300000",
+      "new_sprite": true,
+      "previous_dimensions": null,
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        1,
+        29,
+        29
+      ],
+      "translations": null
+    },
+    {
+      "number": 4,
+      "name": "무거운 팔찌",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_HeavyBracelet.asset",
+      "definition_guid": "16ad7526693d4a44a3183bcc3df90f61",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_HeavyBracelet.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-60ab9404-7523-45c0-87c8-119c3f777fbf.png",
+      "sprite_guid": "0febfb58e0354299b94679d5b15ed316",
+      "fileID": "21300000",
+      "new_sprite": true,
+      "previous_dimensions": null,
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        4,
+        30,
+        28
+      ],
+      "translations": null
+    }
+  ],
+  "old_localized_names": {
+    "asset.d808a1e0c7ccc7e48abc50b9a9884b61.displayName": [
+      "보약 곰방대",
+      "Tonic Pipe",
+      "滋養の煙管",
+      "滋补烟斗",
+      "滋補煙斗"
+    ]
+  },
+  "new_localized_names": {
+    "asset.d808a1e0c7ccc7e48abc50b9a9884b61.displayName": {
+      "ko": "행운의 다트",
+      "en": "Lucky Dart",
+      "ja": "幸運のダーツ",
+      "zh-Hans": "幸运飞镖",
+      "zh-Hant": "幸運飛鏢"
+    }
+  },
+  "entry_ids": {
+    "asset.d808a1e0c7ccc7e48abc50b9a9884b61.displayName": "46294721531928"
+  },
+  "existing_changed": [
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_TonicGombangdae.asset",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_TonicGombangdae.png",
+    "Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_Artifact.png",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_EvasionFeather.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_HeavyBracelet.asset",
+    "DataSheets/Localization/GameText.csv",
+    "Assets/_Project/Data/Localization/GameText_ko.asset",
+    "Assets/_Project/Data/Localization/GameText_en.asset",
+    "Assets/_Project/Data/Localization/GameText_ja.asset",
+    "Assets/_Project/Data/Localization/GameText_zh-Hans.asset",
+    "Assets/_Project/Data/Localization/GameText_zh-Hant.asset"
+  ],
+  "new_files": [
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EvasionFeather.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EvasionFeather.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_HeavyBracelet.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_HeavyBracelet.png"
+  ],
+  "source_png_exact": 4,
+  "locale_name_values_exact": 5,
+  "full_localized_scalar_replacement": true,
+  "expected_file_bytes_exact": 15,
+  "new_guids_unique": 2,
+  "other_protected_files_unchanged": 4039,
+  "effects_stable_ids_original_metadata_and_shared_atlas": "preserved",
+  "existing_tonic_and_flowering_sprite_guids": "preserved; consuming prefab and test scene references retain the updated sprites",
+  "CSharp_scenes_prefabs_schemas_and_asmdefs": "unchanged",
+  "unity_import_compile_playmode": "not executed",
+  "automated_tests": "not executed",
+  "doc_impact": "SessionLog",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no new stale candidate",
+  "final_static_inspection": {
+    "png_and_references": 4,
+    "README_links": 10,
+    "SessionLog_append_only": true,
+    "definition_diff_check": "passed",
+    "protected_hashes": 4039
+  }
+}

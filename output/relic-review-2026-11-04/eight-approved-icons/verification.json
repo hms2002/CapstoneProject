@@ -1,0 +1,272 @@
+{
+  "date": "2026-11-04",
+  "mode": "Micro-fix",
+  "records": [
+    {
+      "number": 1,
+      "name": "부서진 왕관",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenCrown.asset",
+      "definition_guid": "35caaa840c424d98b8c5095a4383348e",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BrokenCrown.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-6a3f0241-1c3e-4034-bdb4-c31e7ad8926a.png",
+      "sprite_guid": "e538c88794fd4ade81a8085bd4538781",
+      "fileID": "21300000",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        4,
+        30,
+        28
+      ],
+      "translations": null
+    },
+    {
+      "number": 2,
+      "name": "균열석",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RiftStone.asset",
+      "definition_guid": "1a3c46c0c9914eea8cdcba66be7916eb",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RiftStone.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-7f8b3d13-e4db-40d9-ac86-9697ce998a56.png",
+      "sprite_guid": "c092b2ab78224a38a317bfc954e9cc03",
+      "fileID": "21300000",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        2,
+        29,
+        30
+      ],
+      "translations": null
+    },
+    {
+      "number": 3,
+      "name": "질긴 붕대",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ToughBandage.asset",
+      "definition_guid": "acf93562c8b943abaf5d216c50f859b8",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ToughBandage.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-5953aaba-17fc-41af-8c3b-49098f124f9c.png",
+      "sprite_guid": "80ce03aa79914500b73d42e8f68accee",
+      "fileID": "21300000",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        3,
+        30,
+        28
+      ],
+      "translations": null
+    },
+    {
+      "number": 4,
+      "name": "광전사의 깃발",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_VictoryFlag.asset",
+      "definition_guid": "1215f1b7fec1495dab3f473078c1e13c",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BerserkerFlag.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-3ca76b15-7e39-4ffb-a06d-59dc63a187d6.png",
+      "sprite_guid": "550414ab433d42e9bef22840494f9032",
+      "fileID": "21300000",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        3,
+        30,
+        30
+      ],
+      "translations": {
+        "ko": "광전사의 깃발",
+        "en": "Berserker's Banner",
+        "ja": "狂戦士の旗",
+        "zh-Hans": "狂战士旗帜",
+        "zh-Hant": "狂戰士旗幟"
+      }
+    },
+    {
+      "number": 5,
+      "name": "날렵한 망토",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_NimbleCloak.asset",
+      "definition_guid": "fcd257e9b1924b26bd998dd2bfae2bca",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_NimbleCloak.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-f63b2703-2505-4791-9bbf-620b1b8f2168.png",
+      "sprite_guid": "e8af5304c1bd4704a71aad2411f324fe",
+      "fileID": "21300000",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        4,
+        30,
+        28
+      ],
+      "translations": null
+    },
+    {
+      "number": 6,
+      "name": "전사의 메달",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WarriorOath.asset",
+      "definition_guid": "66fe60611ced4fefbcf921ed07eaf47c",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WarriorMedal.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-dd743eb0-18f6-4194-b748-0b3a729cbd5e.png",
+      "sprite_guid": "59c02d65aa6f46bd9db150b93eb82fe7",
+      "fileID": "21300000",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        2,
+        29,
+        30
+      ],
+      "translations": {
+        "ko": "전사의 메달",
+        "en": "Warrior's Medal",
+        "ja": "戦士のメダル",
+        "zh-Hans": "战士勋章",
+        "zh-Hant": "戰士勳章"
+      }
+    },
+    {
+      "number": 7,
+      "name": "얇은 갑옷 조각",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThinArmorShard.asset",
+      "definition_guid": "884462a2ad3d4a1e81d32a56a1597d51",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ThinArmorShard.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-7b754c63-9f7a-49f4-9296-01e05a23f932.png",
+      "sprite_guid": "31a4f02378ca4d7a82397c11564fad7a",
+      "fileID": "21300000",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        3,
+        31,
+        29
+      ],
+      "translations": null
+    },
+    {
+      "number": 8,
+      "name": "균형추",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BalanceWeight.asset",
+      "definition_guid": "a491ffe08c1246b7b39b04fdca100c95",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BalanceWeight.png",
+      "source": "C:/Users/user/AppData/Local/Temp/codex-clipboard-3ab998bf-2fbb-4499-a98b-8ba418d50d18.png",
+      "sprite_guid": "a09370eaddad4b559708e5314e31ceac",
+      "fileID": "21300000",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        2,
+        28,
+        30
+      ],
+      "translations": null
+    }
+  ],
+  "old_localized_names": {
+    "asset.1215f1b7fec1495dab3f473078c1e13c.displayName": [
+      "승리의 깃발",
+      "Victory Flag",
+      "勝利の旗",
+      "胜利旗帜",
+      "勝利旗幟"
+    ],
+    "asset.66fe60611ced4fefbcf921ed07eaf47c.displayName": [
+      "전사의 맹세",
+      "Warrior's Oath",
+      "戦士の誓い",
+      "战士誓言",
+      "戰士誓言"
+    ]
+  },
+  "new_localized_names": {
+    "asset.1215f1b7fec1495dab3f473078c1e13c.displayName": {
+      "ko": "광전사의 깃발",
+      "en": "Berserker's Banner",
+      "ja": "狂戦士の旗",
+      "zh-Hans": "狂战士旗帜",
+      "zh-Hant": "狂戰士旗幟"
+    },
+    "asset.66fe60611ced4fefbcf921ed07eaf47c.displayName": {
+      "ko": "전사의 메달",
+      "en": "Warrior's Medal",
+      "ja": "戦士のメダル",
+      "zh-Hans": "战士勋章",
+      "zh-Hant": "戰士勳章"
+    }
+  },
+  "entry_ids": {
+    "asset.1215f1b7fec1495dab3f473078c1e13c.displayName": "46294721531931",
+    "asset.66fe60611ced4fefbcf921ed07eaf47c.displayName": "46294721531933"
+  },
+  "existing_changed": [
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenCrown.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_RiftStone.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_ToughBandage.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_VictoryFlag.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_NimbleCloak.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_WarriorOath.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_ThinArmorShard.asset",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_BalanceWeight.asset",
+    "DataSheets/Localization/GameText.csv",
+    "Assets/_Project/Data/Localization/GameText_ko.asset",
+    "Assets/_Project/Data/Localization/GameText_en.asset",
+    "Assets/_Project/Data/Localization/GameText_ja.asset",
+    "Assets/_Project/Data/Localization/GameText_zh-Hans.asset",
+    "Assets/_Project/Data/Localization/GameText_zh-Hant.asset"
+  ],
+  "new_files": [
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BrokenCrown.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BrokenCrown.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RiftStone.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RiftStone.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ToughBandage.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ToughBandage.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BerserkerFlag.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BerserkerFlag.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_NimbleCloak.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_NimbleCloak.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WarriorMedal.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WarriorMedal.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ThinArmorShard.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ThinArmorShard.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BalanceWeight.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BalanceWeight.png"
+  ],
+  "source_png_exact": 8,
+  "locale_name_values_exact": 10,
+  "full_localized_scalar_replacement": true,
+  "expected_file_bytes_exact": 30,
+  "new_guids_unique": 8,
+  "other_protected_files_unchanged": 4000,
+  "effects_stable_ids_original_metadata_and_shared_atlas": "preserved",
+  "CSharp_scenes_prefabs_schemas_and_asmdefs": "unchanged",
+  "unity_import_compile_playmode": "not executed",
+  "automated_tests": "not executed",
+  "doc_impact": "SessionLog",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no new stale candidate",
+  "definition_diff_whitespace": "passed",
+  "sprite_reference_and_metadata_inspection": "passed"
+}

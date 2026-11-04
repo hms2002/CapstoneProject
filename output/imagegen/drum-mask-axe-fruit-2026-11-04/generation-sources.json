@@ -1,0 +1,145 @@
+[
+  {
+    "key": "01-charge-drum",
+    "name": "돌격의 북",
+    "replaces": "깨진 시계",
+    "palette": [
+      "#363232",
+      "#D49C73",
+      "#E9CEA1",
+      "#E55C5C",
+      "#A75064"
+    ],
+    "subject": "A compact squat medieval WAR DRUM in three-quarter view, a wide warm-tan LEATHER membrane clearly visible as an oval top, a thick rolled leather rim, and a short broad RED wooden cylinder below. Two sturdy tan binding bands at the sides are enough to show drum structure; NO narrow lacing, rope webbing, studs, hanging strap or drumsticks. Broad pale-tan top plane, one tan crease/shadow, red body and one dusty burgundy side/underside shadow. Make this a solid friendly physical drum with a slightly bulging body, NOT a cooking pot, cup, coil or bucket. Its drumming rhythm suggests charging into battle.",
+    "prompt": "Use case: stylized-concept. Asset: ONE new fantasy roguelike relic inventory sprite.\nReference roles: Image 1 is the user's explicitly APPROVED four-icon sheet (cracked violet rock, broken crown, rolled bandage, victory flag), the PRIMARY style target. Match that successful compact silhouette, sparse inner detail, few large flat color planes and rounded thick charcoal border. Image 2 is the original eight favorite icons, secondary material/style reference. Image 3 is the user's ONLY allowed color palette. These are style references, not objects to copy.\nOne isolated object on actually transparent background, no labels, letters, numerals, grid, scenery, drop shadow, extra objects or floating particles. Intended TRUE 32x32 logical-pixel icon: extremely coarse clean pixel clusters, not high-resolution pixel art. Any large output should look like a nearest-neighbor enlargement of a tiny 32x32 asset. TWO logical-pixel #363232 charcoal outer outline, softened diagonal corner steps, careful concave edges, and at least TWO logical transparent pixels on every canvas edge, including outline. Rounded plump physical object with readable structure and slight dimensional flat shading.\nUse base + one shadow per material, broad uninterrupted flat fills, and only necessary seams/cracks/shape details. No smooth gradients, antialiasing, texture, dirt, noise, dithering, detailed engraving, automatic central sparkle or pale border on everything. No accidental alpha holes or dark blurred stains inside solid materials. A genuinely open physical gap can remain transparent only if the subject requires it. Use ONLY the subject's permitted palette swatches; do not add intermediate shades or force any color-count quota. Keep the approved sheet's calm, restrained detail density.\nSUBJECT: A compact squat medieval WAR DRUM in three-quarter view, a wide warm-tan LEATHER membrane clearly visible as an oval top, a thick rolled leather rim, and a short broad RED wooden cylinder below. Two sturdy tan binding bands at the sides are enough to show drum structure; NO narrow lacing, rope webbing, studs, hanging strap or drumsticks. Broad pale-tan top plane, one tan crease/shadow, red body and one dusty burgundy side/underside shadow. Make this a solid friendly physical drum with a slightly bulging body, NOT a cooking pot, cup, coil or bucket. Its drumming rhythm suggests charging into battle.\nExact permitted colors including outline: #363232, #D49C73, #E9CEA1, #E55C5C, #A75064",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-5a4dff6a-b9d0-4a44-b0dc-8a2721e7ffa9.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "visible_bbox": [
+      2,
+      132,
+      1236,
+      1198
+    ],
+    "material_bbox": [
+      217,
+      245,
+      1017,
+      1072
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "02-shamans-mask",
+    "name": "주술사의 가면",
+    "replaces": "검은 향로",
+    "palette": [
+      "#363232",
+      "#BE8EC1",
+      "#9D5789",
+      "#75656A",
+      "#EECF5A"
+    ],
+    "subject": "A compact mysterious PURPLE shaman's MASK without a wearer. Broad rounded forehead, full curved cheeks, and a slightly tapered rounded chin. Two bold slanted CHARCOAL eye sockets (solid dark pixels, not transparent holes) identify it as a face mask. A single small chunky GOLD forehead mark gives the magical character; NO elaborate runes, horns, feathers, dangling decorations or straps. One light muted purple main face plane and one dark mauve side plane imply a carved physical mask. A small nose ridge can be shown by the shadow shape; no scary teeth, no grotesque face, no many tiny lines. It should read as a magical relic mask rather than a smiling emoji, flat icon logo or helmet.",
+    "prompt": "Use case: stylized-concept. Asset: ONE new fantasy roguelike relic inventory sprite.\nReference roles: Image 1 is the user's explicitly APPROVED four-icon sheet (cracked violet rock, broken crown, rolled bandage, victory flag), the PRIMARY style target. Match that successful compact silhouette, sparse inner detail, few large flat color planes and rounded thick charcoal border. Image 2 is the original eight favorite icons, secondary material/style reference. Image 3 is the user's ONLY allowed color palette. These are style references, not objects to copy.\nOne isolated object on actually transparent background, no labels, letters, numerals, grid, scenery, drop shadow, extra objects or floating particles. Intended TRUE 32x32 logical-pixel icon: extremely coarse clean pixel clusters, not high-resolution pixel art. Any large output should look like a nearest-neighbor enlargement of a tiny 32x32 asset. TWO logical-pixel #363232 charcoal outer outline, softened diagonal corner steps, careful concave edges, and at least TWO logical transparent pixels on every canvas edge, including outline. Rounded plump physical object with readable structure and slight dimensional flat shading.\nUse base + one shadow per material, broad uninterrupted flat fills, and only necessary seams/cracks/shape details. No smooth gradients, antialiasing, texture, dirt, noise, dithering, detailed engraving, automatic central sparkle or pale border on everything. No accidental alpha holes or dark blurred stains inside solid materials. A genuinely open physical gap can remain transparent only if the subject requires it. Use ONLY the subject's permitted palette swatches; do not add intermediate shades or force any color-count quota. Keep the approved sheet's calm, restrained detail density.\nSUBJECT: A compact mysterious PURPLE shaman's MASK without a wearer. Broad rounded forehead, full curved cheeks, and a slightly tapered rounded chin. Two bold slanted CHARCOAL eye sockets (solid dark pixels, not transparent holes) identify it as a face mask. A single small chunky GOLD forehead mark gives the magical character; NO elaborate runes, horns, feathers, dangling decorations or straps. One light muted purple main face plane and one dark mauve side plane imply a carved physical mask. A small nose ridge can be shown by the shadow shape; no scary teeth, no grotesque face, no many tiny lines. It should read as a magical relic mask rather than a smiling emoji, flat icon logo or helmet.\nExact permitted colors including outline: #363232, #BE8EC1, #9D5789, #75656A, #EECF5A",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-fe907d2d-a84c-4182-8115-499d936dbf91.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "visible_bbox": [
+      121,
+      116,
+      1172,
+      1206
+    ],
+    "material_bbox": [
+      253,
+      195,
+      1002,
+      1099
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "03-executioners-axe",
+    "name": "처형자의 도끼",
+    "replaces": "예리한 송곳",
+    "palette": [
+      "#363232",
+      "#C2C2C2",
+      "#8599B0",
+      "#F2F9F8",
+      "#D49C73",
+      "#AB6E7C"
+    ],
+    "subject": "One stout compact ceremonial EXECUTIONER'S AXE, with a very broad single crescent/bearded SILVER blade and a SHORT THICK wooden handle arranged diagonally. The blade occupies most of the upper area; the short handle provides a balanced lower extension. Silver base face plus one blue-gray side/underside plane, and only a modest pale sharpened edge segment. Tan wooden grip with muted rose-brown shaded side. NO blood, no skulls, no filigree, no runes, no wrapping stripes or long narrow shaft. The broad curved cutting edge and shoulder should identify an axe instantly, distinct from the reference hammer. Chunky rounded silhouette with purposeful pixel corners, slight physical thickness, very few structural details.",
+    "prompt": "Use case: stylized-concept. Asset: ONE new fantasy roguelike relic inventory sprite.\nReference roles: Image 1 is the user's explicitly APPROVED four-icon sheet (cracked violet rock, broken crown, rolled bandage, victory flag), the PRIMARY style target. Match that successful compact silhouette, sparse inner detail, few large flat color planes and rounded thick charcoal border. Image 2 is the original eight favorite icons, secondary material/style reference. Image 3 is the user's ONLY allowed color palette. These are style references, not objects to copy.\nOne isolated object on actually transparent background, no labels, letters, numerals, grid, scenery, drop shadow, extra objects or floating particles. Intended TRUE 32x32 logical-pixel icon: extremely coarse clean pixel clusters, not high-resolution pixel art. Any large output should look like a nearest-neighbor enlargement of a tiny 32x32 asset. TWO logical-pixel #363232 charcoal outer outline, softened diagonal corner steps, careful concave edges, and at least TWO logical transparent pixels on every canvas edge, including outline. Rounded plump physical object with readable structure and slight dimensional flat shading.\nUse base + one shadow per material, broad uninterrupted flat fills, and only necessary seams/cracks/shape details. No smooth gradients, antialiasing, texture, dirt, noise, dithering, detailed engraving, automatic central sparkle or pale border on everything. No accidental alpha holes or dark blurred stains inside solid materials. A genuinely open physical gap can remain transparent only if the subject requires it. Use ONLY the subject's permitted palette swatches; do not add intermediate shades or force any color-count quota. Keep the approved sheet's calm, restrained detail density.\nSUBJECT: One stout compact ceremonial EXECUTIONER'S AXE, with a very broad single crescent/bearded SILVER blade and a SHORT THICK wooden handle arranged diagonally. The blade occupies most of the upper area; the short handle provides a balanced lower extension. Silver base face plus one blue-gray side/underside plane, and only a modest pale sharpened edge segment. Tan wooden grip with muted rose-brown shaded side. NO blood, no skulls, no filigree, no runes, no wrapping stripes or long narrow shaft. The broad curved cutting edge and shoulder should identify an axe instantly, distinct from the reference hammer. Chunky rounded silhouette with purposeful pixel corners, slight physical thickness, very few structural details.\nExact permitted colors including outline: #363232, #C2C2C2, #8599B0, #F2F9F8, #D49C73, #AB6E7C",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-eb51e06f-defc-493d-8e83-679ad7c5b681.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "visible_bbox": [
+      0,
+      23,
+      1160,
+      1230
+    ],
+    "material_bbox": [
+      161,
+      167,
+      1037,
+      1114
+    ],
+    "preserve_alpha_holes": [
+      [
+        17,
+        20
+      ],
+      [
+        17,
+        21
+      ],
+      [
+        17,
+        22
+      ]
+    ]
+  },
+  {
+    "key": "04-madness-fruit",
+    "name": "광기의 열매",
+    "replaces": "광전사의 끈",
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#7F4A50",
+      "#56774A",
+      "#B1D368"
+    ],
+    "subject": "One plump dark CRIMSON magical FRUIT, slightly uneven round silhouette with two broad lobes and a short stout stem plus one or two substantial green leaves at the top. Dusty wine-red skin base, one dark reddish-purple side shadow. A SINGLE CURVING split in the skin exposes bright coral-red flesh, making the fruit feel potent and slightly dangerous. The split is organic and softly stepped, NOT a lightning bolt, flame, mouth, eye, smiling face or jagged gemstone fracture. Leaves use dark muted green plus a little light-green folded plane. No glow, aura, tendrils, long thin stem, loose seeds, droplets, sparkles or extra decorations. It should feel like a cursed fantasy fruit, friendly readable pixel-art object rather than horror.",
+    "prompt": "Use case: stylized-concept. Asset: ONE new fantasy roguelike relic inventory sprite.\nReference roles: Image 1 is the user's explicitly APPROVED four-icon sheet (cracked violet rock, broken crown, rolled bandage, victory flag), the PRIMARY style target. Match that successful compact silhouette, sparse inner detail, few large flat color planes and rounded thick charcoal border. Image 2 is the original eight favorite icons, secondary material/style reference. Image 3 is the user's ONLY allowed color palette. These are style references, not objects to copy.\nOne isolated object on actually transparent background, no labels, letters, numerals, grid, scenery, drop shadow, extra objects or floating particles. Intended TRUE 32x32 logical-pixel icon: extremely coarse clean pixel clusters, not high-resolution pixel art. Any large output should look like a nearest-neighbor enlargement of a tiny 32x32 asset. TWO logical-pixel #363232 charcoal outer outline, softened diagonal corner steps, careful concave edges, and at least TWO logical transparent pixels on every canvas edge, including outline. Rounded plump physical object with readable structure and slight dimensional flat shading.\nUse base + one shadow per material, broad uninterrupted flat fills, and only necessary seams/cracks/shape details. No smooth gradients, antialiasing, texture, dirt, noise, dithering, detailed engraving, automatic central sparkle or pale border on everything. No accidental alpha holes or dark blurred stains inside solid materials. A genuinely open physical gap can remain transparent only if the subject requires it. Use ONLY the subject's permitted palette swatches; do not add intermediate shades or force any color-count quota. Keep the approved sheet's calm, restrained detail density.\nSUBJECT: One plump dark CRIMSON magical FRUIT, slightly uneven round silhouette with two broad lobes and a short stout stem plus one or two substantial green leaves at the top. Dusty wine-red skin base, one dark reddish-purple side shadow. A SINGLE CURVING split in the skin exposes bright coral-red flesh, making the fruit feel potent and slightly dangerous. The split is organic and softly stepped, NOT a lightning bolt, flame, mouth, eye, smiling face or jagged gemstone fracture. Leaves use dark muted green plus a little light-green folded plane. No glow, aura, tendrils, long thin stem, loose seeds, droplets, sparkles or extra decorations. It should feel like a cursed fantasy fruit, friendly readable pixel-art object rather than horror.\nExact permitted colors including outline: #363232, #A75064, #E55C5C, #7F4A50, #56774A, #B1D368",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-02e512b3-6b18-495a-9115-f55f2da89680.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "visible_bbox": [
+      73,
+      45,
+      1103,
+      1227
+    ],
+    "material_bbox": [
+      228,
+      146,
+      1022,
+      1126
+    ],
+    "preserve_alpha_holes": []
+  }
+]

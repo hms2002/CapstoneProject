@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gameplay::RelicDefinition
   relicId: RD_RecoveryPendant
   displayName: 회복의 팬턴트
-  icon: {fileID: 21300000, guid: b7ac0f2e281a44768c35210163fd6abc, type: 3}
+  icon: {fileID: 21300000, guid: 6a831a2965e54648b6debba86dae2643, type: 3}
   rarity: 1
   description: "포션의 회복량이 1에서 2로 증가"
   maxLevel: 1

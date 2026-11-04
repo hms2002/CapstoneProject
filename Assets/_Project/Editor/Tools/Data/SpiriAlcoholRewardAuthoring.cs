@@ -17,6 +17,7 @@ public static class SpiriAlcoholRewardAuthoring
     private const string PlayerPath = "Assets/_Project/Prefabs/Player/PF Player.prefab";
     private const string TagPath = "Assets/_Project/Resources/Tags/State.Confusion.asset";
     private const string RewardPath = "Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset";
+    private const string RewardIconPath = "Assets/_Project/Art/Sprites/UI/ApprovedUiSkin/Icon_SpiriAlcoholReward.png";
     private const string SpritePath = "Assets/_Project/Art/Sprites/Monsters/DragonLevel_BeerMonster/Drink.png";
     private const string CsvPath = "DataSheets/Localization/GameText.csv";
     private const string InventoryPath = "DataSheets/Localization/AssetInventory.json";
@@ -37,11 +38,11 @@ public static class SpiriAlcoholRewardAuthoring
         },
         new[]
         {
-            "술 장판에서 1초 동안 술을 채우면 혼란 대신 이동 속도 +25%, 공격 속도 +40% 버프를 얻습니다. 장판 안에서는 지속시간을 갱신하며, 장판을 벗어나 1.5초 동안 잔이 비워진 뒤 5초 동안 유지됩니다.",
-            "Filling the mug for 1 second in an alcohol puddle grants +25% movement speed and +40% attack speed instead of confusion. The duration refreshes inside the puddle. After leaving, the mug drains for 1.5 seconds, then the buff lasts 5 seconds.",
-            "酒の床で1秒かけてジョッキを満たすと、混乱の代わりに移動速度+25%、攻撃速度+40%のバフを得ます。床の上では持続時間が更新されます。離れてから1.5秒でジョッキが空になり、その後5秒間バフが続きます。",
-            "在酒液区域中用1秒填满酒杯后，获得移动速度+25%、攻击速度+40%的增益，替代混乱。区域内会刷新持续时间。离开后，酒杯用1.5秒清空，随后增益持续5秒。",
-            "在酒液區域中用1秒填滿酒杯後，獲得移動速度+25%、攻擊速度+40%的增益，替代混亂。區域內會刷新持續時間。離開後，酒杯用1.5秒清空，隨後增益持續5秒。"
+            "더 이상 술 위에서 혼란에 빠지지 않으며, 발걸음은 가벼워지고 공격은 빨라집니다.",
+            "Alcohol puddles no longer confuse you. Your steps grow lighter and your attacks faster.",
+            "酒の上でも混乱しなくなり、足取りは軽く、攻撃は速くなります。",
+            "不再因脚下的酒液而陷入混乱，步伐更加轻盈，攻击更加迅捷。",
+            "不再因腳下的酒液而陷入混亂，步伐更加輕盈，攻擊更加迅捷。"
         }
     };
 
@@ -56,6 +57,7 @@ public static class SpiriAlcoholRewardAuthoring
         Require(alcoholDefinition.GameplayEffect == alcoholEffect, "Alcohol definition references an unexpected GameplayEffect.");
         Load<GameObject>(PlayerPath);
         var mugSprite = AssetDatabase.LoadAllAssetsAtPath(SpritePath).OfType<Sprite>().Single(sprite => sprite.name == "Drink_0");
+        var rewardIcon = Load<Sprite>(RewardIconPath);
         var shader = Load<Shader>("Assets/_Project/Art/Shaders/AlcoholMugFill.shader");
         var collection = Load<StringTableCollection>("Assets/_Project/Data/Localization/GameText.asset");
         Require(LocaleCodes.All(code => collection.StringTables.Any(table => table.LocaleIdentifier.Code == code)), "All five existing GameText locales are required.");
@@ -100,7 +102,7 @@ public static class SpiriAlcoholRewardAuthoring
         var reward = Ensure<InfoOnlyAffectionEffect>(RewardPath);
         Undo.RecordObject(reward, "Author Spiri alcohol affection reward");
         reward.rewardText = Translations[3][0];
-        reward.rewardIcon = mugSprite;
+        reward.rewardIcon = rewardIcon;
         EditorUtility.SetDirty(reward);
         Undo.RecordObject(npc, "Register Spiri affection level 1 reward");
         npc.affectionRewards ??= new List<AffectionReward>();

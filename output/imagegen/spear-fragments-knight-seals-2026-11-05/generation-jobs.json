@@ -1,0 +1,82 @@
+[
+  {
+    "key": "01-spear-fragments-a",
+    "name": "창 파편 A — 맞물린 조각",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794"
+    ],
+    "subject": "The lightning SPEARHEAD shown in image 4 is BROKEN INTO THREE large angular chunks, near each other as a compact broken relic, pointing from bottom-left to top-right. A recognizable gold pointed tip, separate thick middle blade fragment, and a large lower fragment carrying the distinctive two hooked side prongs. Dark jagged fractures fully cross the blade and interrupt the broad blue inset lightning groove. Offset the three chunks slightly, visible separation, but retain a coherent overall pronged spearhead silhouette. GOLD outer metal with one orange shadow plane, broad BLUE interior groove, thick charcoal outline. No full shaft, no unbroken sword, no floating tiny chips or sparks. Fracture design and large three chunks dominate.",
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/style-review-2026-11-04/reference-eight-8x.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/pendant-loader-spear-compass-insignia-2026-11-05/03-third-lightning-spearhead-preview.png"
+    ],
+    "prompt": "Use case: stylized-concept. One NEW fantasy roguelike inventory pixel art sprite, genuine transparent background.\nInput roles: image 1 primary STYLE ONLY (approved chunky stone/crown/bandage/flag); image 2 material STYLE ONLY; image 3 ONLY allowed palette; image 4 if present SHAPE/IDENTITY reference.\nA hand-authored logical 32x32 pixel icon, crisp square pixel clusters, 2 logical pixel rounded charcoal #363232 exterior outline. Minimum TWO transparent logical pixels of margin on ALL sides including outline. Broad simple material planes, base plus one shadow per material; chunky recognizable silhouette; very sparse details. Uniform logical pixel size, no tiny detailing, gradients, realistic lighting, dithering, texture, glints, stars, typography, letters, background or sheet. A single icon only. Match the soft physical illustrated style of image 1. Avoid geometric flat logos, generic shiny medallions and excessive decorative trim.\nSubject: The lightning SPEARHEAD shown in image 4 is BROKEN INTO THREE large angular chunks, near each other as a compact broken relic, pointing from bottom-left to top-right. A recognizable gold pointed tip, separate thick middle blade fragment, and a large lower fragment carrying the distinctive two hooked side prongs. Dark jagged fractures fully cross the blade and interrupt the broad blue inset lightning groove. Offset the three chunks slightly, visible separation, but retain a coherent overall pronged spearhead silhouette. GOLD outer metal with one orange shadow plane, broad BLUE interior groove, thick charcoal outline. No full shaft, no unbroken sword, no floating tiny chips or sparks. Fracture design and large three chunks dominate.\nAllowed colors ONLY: #363232, #EECF5A, #E09656, #77BCD6, #436794",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-78528a26-fd78-4cf6-95c5-42d9887a4dc3.png"
+  },
+  {
+    "key": "02-spear-fragments-b",
+    "name": "창 파편 B — 흩어진 조각",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794"
+    ],
+    "subject": "A compact GROUP OF THREE separated chunky broken fragments of the golden lightning spearhead in image 4. Central/right large pointed triangular upper blade fragment tilted up-right, smaller but substantial curved hook fragment to its lower-left, and a squat socket/base fragment below right. Each piece gold outside and blue inset with orange metal shadow. Keep big triangular shapes and recognizable hooked spear anatomy. Pieces visibly APART with a generous transparent gap between their charcoal outlines, designed to survive 32x32; no tiny debris. More scattered, irregular, asymmetric cluster than an assembled spearhead, but still a cohesive relic icon. No shaft, no round backing, no effects/sparks.",
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/style-review-2026-11-04/reference-eight-8x.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/pendant-loader-spear-compass-insignia-2026-11-05/03-third-lightning-spearhead-preview.png"
+    ],
+    "prompt": "Use case: stylized-concept. One NEW fantasy roguelike inventory pixel art sprite, genuine transparent background.\nInput roles: image 1 primary STYLE ONLY (approved chunky stone/crown/bandage/flag); image 2 material STYLE ONLY; image 3 ONLY allowed palette; image 4 if present SHAPE/IDENTITY reference.\nA hand-authored logical 32x32 pixel icon, crisp square pixel clusters, 2 logical pixel rounded charcoal #363232 exterior outline. Minimum TWO transparent logical pixels of margin on ALL sides including outline. Broad simple material planes, base plus one shadow per material; chunky recognizable silhouette; very sparse details. Uniform logical pixel size, no tiny detailing, gradients, realistic lighting, dithering, texture, glints, stars, typography, letters, background or sheet. A single icon only. Match the soft physical illustrated style of image 1. Avoid geometric flat logos, generic shiny medallions and excessive decorative trim.\nSubject: A compact GROUP OF THREE separated chunky broken fragments of the golden lightning spearhead in image 4. Central/right large pointed triangular upper blade fragment tilted up-right, smaller but substantial curved hook fragment to its lower-left, and a squat socket/base fragment below right. Each piece gold outside and blue inset with orange metal shadow. Keep big triangular shapes and recognizable hooked spear anatomy. Pieces visibly APART with a generous transparent gap between their charcoal outlines, designed to survive 32x32; no tiny debris. More scattered, irregular, asymmetric cluster than an assembled spearhead, but still a cohesive relic icon. No shaft, no round backing, no effects/sparks.\nAllowed colors ONLY: #363232, #EECF5A, #E09656, #77BCD6, #436794",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-8ba2cb1e-f67f-41ab-a927-175b23ad2a0f.png"
+  },
+  {
+    "key": "03-knight-seal-a",
+    "name": "기사 휘장 A — 쌍띠 인장",
+    "palette": [
+      "#363232",
+      "#E55C5C",
+      "#A75064",
+      "#F1E9D4",
+      "#E9CEA1",
+      "#EECF5A"
+    ],
+    "subject": "A KNIGHT'S CHEST PURITY SEAL: large red round WAX SEAL in the upper third, TWO LONG broad cream PARCHMENT STRIPS hanging vertically below from behind it. The two parchment tails are adjacent but slightly splayed at the bottom, different lengths with gently cut/notched tips; each paper strip is at least 5 logical pixels wide, not thin ribbons. The red wax seal is thick with a slightly scalloped handmade perimeter and one muted rose shadow. On the seal a VERY SIMPLE chunky gold sword stamp with broad crossguard referencing a knight's sword, no tiny engraving or lettering. Cream papers broad flat faces with a single tan fold/shadow near attachment, NO writing. Chest-worn physical wax-and-parchment oath badge, not a necklace, medal or trophy. Upright simple silhouette, parchment length visible and dominant, calm frontal view.",
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/style-review-2026-11-04/reference-eight-8x.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png"
+    ],
+    "prompt": "Use case: stylized-concept. One NEW fantasy roguelike inventory pixel art sprite, genuine transparent background.\nInput roles: image 1 primary STYLE ONLY (approved chunky stone/crown/bandage/flag); image 2 material STYLE ONLY; image 3 ONLY allowed palette; image 4 if present SHAPE/IDENTITY reference.\nA hand-authored logical 32x32 pixel icon, crisp square pixel clusters, 2 logical pixel rounded charcoal #363232 exterior outline. Minimum TWO transparent logical pixels of margin on ALL sides including outline. Broad simple material planes, base plus one shadow per material; chunky recognizable silhouette; very sparse details. Uniform logical pixel size, no tiny detailing, gradients, realistic lighting, dithering, texture, glints, stars, typography, letters, background or sheet. A single icon only. Match the soft physical illustrated style of image 1. Avoid geometric flat logos, generic shiny medallions and excessive decorative trim.\nSubject: A KNIGHT'S CHEST PURITY SEAL: large red round WAX SEAL in the upper third, TWO LONG broad cream PARCHMENT STRIPS hanging vertically below from behind it. The two parchment tails are adjacent but slightly splayed at the bottom, different lengths with gently cut/notched tips; each paper strip is at least 5 logical pixels wide, not thin ribbons. The red wax seal is thick with a slightly scalloped handmade perimeter and one muted rose shadow. On the seal a VERY SIMPLE chunky gold sword stamp with broad crossguard referencing a knight's sword, no tiny engraving or lettering. Cream papers broad flat faces with a single tan fold/shadow near attachment, NO writing. Chest-worn physical wax-and-parchment oath badge, not a necklace, medal or trophy. Upright simple silhouette, parchment length visible and dominant, calm frontal view.\nAllowed colors ONLY: #363232, #E55C5C, #A75064, #F1E9D4, #E9CEA1, #EECF5A",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-6e85fe01-5347-470e-ac05-17b2f7f41a78.png"
+  },
+  {
+    "key": "04-knight-seal-b",
+    "name": "기사 휘장 B — 접힌 서약지",
+    "palette": [
+      "#363232",
+      "#E55C5C",
+      "#A75064",
+      "#F1E9D4",
+      "#E9CEA1",
+      "#EECF5A"
+    ],
+    "subject": "A KNIGHT'S CHEST WAX OATH SEAL in slight three-quarter view, with a large RED irregular round wax rosette at upper-left and ONE LONG WIDE CREAM PARCHMENT BANNER coming from behind the wax, falling diagonally down-right. The parchment folds once to reveal a single tan underside plane, and ends in a broad forked/swallowtail cut. Substantial paper area, not a thin chain or cord; length about twice wax diameter. Wax seal thick with ONE rose shadow, simple broad gold SWORD STAMP on center, no letters, no small engravings. Emphasize a physical red wax seal pinned onto a knight's breastplate with a flowing oath paper, but do not depict the breastplate itself. Different asymmetric compact silhouette from two straight paper strips; no metallic medal rim, no shield background, no sparkles.",
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/style-review-2026-11-04/reference-eight-8x.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png"
+    ],
+    "prompt": "Use case: stylized-concept. One NEW fantasy roguelike inventory pixel art sprite, genuine transparent background.\nInput roles: image 1 primary STYLE ONLY (approved chunky stone/crown/bandage/flag); image 2 material STYLE ONLY; image 3 ONLY allowed palette; image 4 if present SHAPE/IDENTITY reference.\nA hand-authored logical 32x32 pixel icon, crisp square pixel clusters, 2 logical pixel rounded charcoal #363232 exterior outline. Minimum TWO transparent logical pixels of margin on ALL sides including outline. Broad simple material planes, base plus one shadow per material; chunky recognizable silhouette; very sparse details. Uniform logical pixel size, no tiny detailing, gradients, realistic lighting, dithering, texture, glints, stars, typography, letters, background or sheet. A single icon only. Match the soft physical illustrated style of image 1. Avoid geometric flat logos, generic shiny medallions and excessive decorative trim.\nSubject: A KNIGHT'S CHEST WAX OATH SEAL in slight three-quarter view, with a large RED irregular round wax rosette at upper-left and ONE LONG WIDE CREAM PARCHMENT BANNER coming from behind the wax, falling diagonally down-right. The parchment folds once to reveal a single tan underside plane, and ends in a broad forked/swallowtail cut. Substantial paper area, not a thin chain or cord; length about twice wax diameter. Wax seal thick with ONE rose shadow, simple broad gold SWORD STAMP on center, no letters, no small engravings. Emphasize a physical red wax seal pinned onto a knight's breastplate with a flowing oath paper, but do not depict the breastplate itself. Different asymmetric compact silhouette from two straight paper strips; no metallic medal rim, no shield background, no sparkles.\nAllowed colors ONLY: #363232, #E55C5C, #A75064, #F1E9D4, #E9CEA1, #EECF5A",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-f585d7ac-eee8-4177-9739-a96ecf56a156.png"
+  }
+]

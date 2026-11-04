@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_VictoryFlag
   m_EditorClassIdentifier: 
   relicId: RD_VictoryFlag
-  displayName: "\uC2B9\uB9AC\uC758 \uAE43\uBC1C"
-  icon: {fileID: -7409323811495052916, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  displayName: "\uad11\uc804\uc0ac\uc758 \uae43\ubc1c"
+  icon: {fileID: 21300000, guid: 550414ab433d42e9bef22840494f9032, type: 3}
   rarity: 1
   description: "\uC801\uC744 \uCC98\uCE58\uD558\uBA74 \uC7A0\uC2DC \uACF5\uACA9\uC18D\uB3C4\uAC00
     \uC99D\uAC00\uD569\uB2C8\uB2E4."
