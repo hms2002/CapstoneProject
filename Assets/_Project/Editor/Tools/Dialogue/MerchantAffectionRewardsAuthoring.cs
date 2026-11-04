@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using TMPro;
 using UnityEditor;
 using UnityEditor.Localization;
 using UnityEngine;
@@ -27,9 +26,8 @@ public static class MerchantAffectionRewardsAuthoring
         Directory.CreateDirectory(Output);
         var merchant = AssetDatabase.LoadAssetAtPath<NPCData>(NpcAffectionDialogueAuthoring.MerchantPath);
         ConfigureMerchant(merchant);
-        foreach (string path in SlotPaths) AuthorPriceTag(path);
         AssetDatabase.SaveAssets();
-        Debug.Log("[MerchantRewards] Four permanent tiers and authored two-line price tags applied.");
+        Debug.Log("[MerchantRewards] Four permanent tiers applied.");
     }
 
     public static void ConfigureMerchant(NPCData merchant)
@@ -72,81 +70,6 @@ public static class MerchantAffectionRewardsAuthoring
             new NpcAffectionDialogueEntry { affectionLevel = 1, startPath = "affection_1_c", requiredThemeId = string.Empty }
         }.ToList();
         EditorUtility.SetDirty(merchant);
-    }
-
-    private static void AuthorPriceTag(string path)
-    {
-        var asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-        var assetSlot = asset.GetComponent<ShopSlot>();
-        var assetData = new SerializedObject(assetSlot);
-        var assetText = (TMP_Text)assetData.FindProperty("priceText").objectReferenceValue;
-        var originalFont = assetText.font;
-        var originalMaterial = assetText.fontSharedMaterial;
-        GameObject root = PrefabUtility.LoadPrefabContents(path);
-        try
-        {
-            var slot = root.GetComponent<ShopSlot>();
-            var data = new SerializedObject(slot);
-            var current = (TMP_Text)data.FindProperty("priceText").objectReferenceValue;
-            TMP_Text original = CloneText(root, current, "OriginalPriceText");
-            original.rectTransform.localPosition = new Vector3(0, -0.16f, current.rectTransform.localPosition.z);
-            original.fontSize = current.fontSize * 0.65f;
-            original.color = new Color(0.83f, 0.73f, 0.65f, 1f);
-            original.text = "<s>1,200</s>";
-            TMP_Text special = CloneText(root, current, "SpecialOfferTag");
-            special.rectTransform.localPosition = new Vector3(0, 1.55f, current.rectTransform.localPosition.z);
-            special.fontSize = current.fontSize * 0.7f;
-            special.text = "<color=#2C2016>특가 -20%</color>";
-            AuthorSpecialBackground(special);
-            foreach (TMP_Text label in new[] { current, original, special })
-            {
-                label.font = originalFont;
-                label.fontSharedMaterial = originalMaterial;
-                label.richText = true;
-                label.textWrappingMode = TextWrappingModes.NoWrap;
-                label.alignment = TextAlignmentOptions.Center;
-            }
-            data.FindProperty("originalPriceText").objectReferenceValue = original;
-            data.FindProperty("specialOfferRoot").objectReferenceValue = special.gameObject;
-            data.FindProperty("specialOfferText").objectReferenceValue = special;
-            data.FindProperty("priceIconPositionMode").enumValueIndex = 1; // Actual rendered price width, including comma separators.
-            data.ApplyModifiedPropertiesWithoutUndo();
-            original.gameObject.SetActive(false);
-            special.gameObject.SetActive(false);
-            PrefabUtility.SaveAsPrefabAsset(root, path);
-        }
-        finally { PrefabUtility.UnloadPrefabContents(root); }
-    }
-
-    private static TMP_Text CloneText(GameObject root, TMP_Text source, string name)
-    {
-        Transform existing = root.transform.Find(name);
-        TMP_Text text;
-        if (existing != null) text = existing.GetComponent<TMP_Text>();
-        else { var clone = UnityEngine.Object.Instantiate(source.gameObject, root.transform); clone.name = name; text = clone.GetComponent<TMP_Text>(); }
-        if (text == null) throw new InvalidOperationException("Expected authored TMP text: " + name);
-        return text;
-    }
-
-    private static void AuthorSpecialBackground(TMP_Text label)
-    {
-        Transform child = label.transform.Find("Background");
-        if (child == null)
-        {
-            child = new GameObject("Background", typeof(SpriteRenderer)).transform;
-            child.SetParent(label.transform, false);
-        }
-        var background = child.GetComponent<SpriteRenderer>();
-        background.sprite = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
-        if (background.sprite == null) throw new InvalidOperationException("Built-in UI badge sprite is unavailable.");
-        background.sharedMaterial = AssetDatabase.LoadAssetAtPath<Material>("Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Unlit-Default.mat");
-        if (background.sharedMaterial == null) throw new InvalidOperationException("Project URP sprite material is unavailable.");
-        background.drawMode = SpriteDrawMode.Sliced;
-        background.size = new Vector2(1.8f, .45f);
-        background.color = new Color32(230, 178, 81, 255);
-        background.sortingLayerID = label.GetComponent<Renderer>().sortingLayerID;
-        background.sortingOrder = label.GetComponent<Renderer>().sortingOrder - 1;
-        child.localPosition = new Vector3(0f, 0f, .01f);
     }
 
     private static void ImportTexts(TextRow[] rows)

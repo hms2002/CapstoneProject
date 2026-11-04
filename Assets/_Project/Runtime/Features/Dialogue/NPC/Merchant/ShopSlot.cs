@@ -52,6 +52,11 @@ public sealed class ShopSlot : InteractableBase
     [SerializeField] private Component originalPriceText;
     [SerializeField] private GameObject specialOfferRoot;
     [SerializeField] private Component specialOfferText;
+    [SerializeField] private SpriteRenderer pricePaper;
+    [SerializeField] private Sprite regularPaper;
+    [SerializeField] private Sprite discountPaper;
+    [SerializeField] private Sprite specialPaper;
+    [SerializeField] private Vector2 payableOffset;
 
     [Header("Legacy Item Sprite Normalization")]
     [SerializeField, HideInInspector] private bool normalizeItemSprite = true;
@@ -223,32 +228,44 @@ public sealed class ShopSlot : InteractableBase
             ApplyItemSprite(hasActiveItem ? currentDefinition : null);
         }
 
-        if (priceText != null)
+        RefreshPriceTag(hasActiveItem);
+    }
+
+    private void RefreshPriceTag(bool hasActiveItem)
+    {
+        bool sold = currentState != null && currentState.HasItem && currentState.isSold;
+        bool discounted = hasActiveItem && currentState.undiscountedPrice > currentState.price;
+        if (pricePaper != null)
         {
-            if (currentState == null || !currentState.HasItem)
-                TextPresentationBinding.TrySetText(priceText, string.Empty);
-            else
-            {
-                string amount = currentState.price.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
-                TextPresentationBinding.TrySetText(priceText, currentState.isSold ? soldLabel :
-                    currentState.specialDiscountPercent > 0 ? $"<color=#FFE181>{amount}</color>" : amount);
-            }
+            pricePaper.enabled = hasActiveItem || sold;
+            pricePaper.sprite = discounted
+                ? (currentState.specialDiscountPercent > 0 ? specialPaper : discountPaper)
+                : regularPaper;
+            if (priceText != null)
+                priceText.transform.localPosition = new Vector3(
+                    pricePaper.transform.localPosition.x + (hasActiveItem ? payableOffset.x : 0f),
+                    pricePaper.transform.localPosition.y + (discounted ? payableOffset.y : 0f),
+                    priceText.transform.localPosition.z);
         }
 
-        bool hasDiscount = hasActiveItem && currentState.undiscountedPrice > currentState.price;
+        var format = System.Globalization.CultureInfo.InvariantCulture;
+        string amount = hasActiveItem ? currentState.price.ToString("N0", format) : sold ? soldLabel : string.Empty;
+        TextPresentationBinding.TrySetText(priceText, amount);
         if (originalPriceText != null)
         {
-            originalPriceText.gameObject.SetActive(hasDiscount);
-            if (hasDiscount)
+            originalPriceText.gameObject.SetActive(discounted);
+            if (discounted)
                 TextPresentationBinding.TrySetText(originalPriceText, "<s>" +
-                    currentState.undiscountedPrice.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) + "</s>");
+                    currentState.undiscountedPrice.ToString("N0", format) + "</s>");
         }
-        bool showSpecial = hasActiveItem && currentState.specialDiscountPercent > 0;
-        if (specialOfferRoot != null) specialOfferRoot.SetActive(showSpecial);
-        if (showSpecial && specialOfferText != null)
-            TextPresentationBinding.TrySetText(specialOfferText, "<color=#2C2016>" +
-                GameText.Format("shop.special_offer", "특가 -{0}%", currentState.specialDiscountPercent) + "</color>");
-        RefreshPriceIcon(hasActiveItem && currentState != null && !currentState.isSold);
+        if (specialOfferRoot != null) specialOfferRoot.SetActive(discounted);
+        if (discounted && specialOfferText != null)
+        {
+            int original = currentState.undiscountedPrice;
+            int totalPercent = Mathf.RoundToInt(100f * (original - currentState.price) / original);
+            TextPresentationBinding.TrySetText(specialOfferText, $"-{totalPercent}%");
+        }
+        RefreshPriceIcon(hasActiveItem);
     }
 
     private void ApplyItemSprite(ScriptableObject item)
