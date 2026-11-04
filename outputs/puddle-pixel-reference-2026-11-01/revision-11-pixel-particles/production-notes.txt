@@ -1,0 +1,41 @@
+Revision11 — remove painted flames; use separate pixel particles
+
+Source: user-selected revision2 artwork, with revision10's65% ground opacity.
+Scope: native Aseprite sample Implementation; no Unity integration.
+
+fire-ground.aseprite:
+- Removed only "03 Low flames". Both remaining layers and all8 cel images,
+  positions/opacities, layer opacities, timings, Idle tag and pivot are retained.
+- Exact match to revision10 fire with its flame layer disabled.
+-64x64, four100ms frames, pivot32,32; ground alpha166, surface heat retained.
+
+pixel-particle.aseprite:
+-8x8 canvas, eight80ms frames, pivot4,6, three original fire colors.
+- Small1-3 pixel square fragments grow, flicker, shrink and disappear. No flame
+  silhouette is drawn. Last frame is empty; PNG/GIF retain transparency.
+- pixel-particle-sheet.png is64x8; native per-frame PNGs also provided.
+
+Previews:
+- comparison-preview.gif: unchanged alcohol / flame-free ground plus particles,
+  608x320,3200ms, same floor and layout as the selected reference.
+- fire-with-particles-preview.gif: isolated320x320 composition,3200ms.
+- Corresponding preview Aseprite files keep ground and particles in separate
+  editable layers. These compositions use a neutral floor, not a Unity capture.
+-16 staggered emitters,800ms repeat period,560ms visible life;11-12 active
+  instances. Particles drift sideways and rise approximately14 native pixels.
+  Motion is preview composition data, not baked into fire-ground.aseprite.
+- fire-ground GIF bakes the review floor; ground PNG/Aseprite retain partial alpha.
+
+Verification:
+Aseprite authoring/reopen exit0. Remaining ground cels and properties match the
+selected source exactly; particle source/PNG equality and empty final frame
+passed. Alcohol preview is unchanged at all160 time samples. PNG alpha0/166/255,
+preview dimensions/durations, particle GIF lifetime/disappearance,16 independent
+motion tracks and lateral/rising displacement verified. Visual preview inspected.
+Evidence: verification.txt, export-verification.json and particle-motion.csv.
+author-particles.lua reproduces the assets and composition.
+
+Actual Unity ParticleSystem, emission rate/world scale, import/compilation and
+Play Mode were not configured or run. No Unity files changed.
+Doc Impact Check: SessionLog only; ErrorLog/DecisionLog unchanged; no identified
+Presentation HTML stale candidate.

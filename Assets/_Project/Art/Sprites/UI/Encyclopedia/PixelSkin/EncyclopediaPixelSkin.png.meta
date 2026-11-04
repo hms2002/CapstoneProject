@@ -1,0 +1,819 @@
+fileFormatVersion: 2
+guid: 4c6307e40530eeb4ba25cf2a536d2c80
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -631416256082198936
+    second: EncyclopediaPixelSkin_0
+  - first:
+      213: 8967170295454918043
+    second: EncyclopediaPixelSkin_1
+  - first:
+      213: 6687103710428095425
+    second: EncyclopediaPixelSkin_2
+  - first:
+      213: -892315812822910358
+    second: EncyclopediaPixelSkin_3
+  - first:
+      213: -7535758113089344909
+    second: EncyclopediaPixelSkin_4
+  - first:
+      213: 7866789622073572557
+    second: EncyclopediaPixelSkin_5
+  - first:
+      213: -1987100292655875588
+    second: EncyclopediaPixelSkin_6
+  - first:
+      213: -6074272024017218239
+    second: EncyclopediaPixelSkin_7
+  - first:
+      213: -2952068649529569497
+    second: EncyclopediaPixelSkin_8
+  - first:
+      213: -2929464608819229077
+    second: EncyclopediaPixelSkin_9
+  - first:
+      213: -6207057019894044802
+    second: EncyclopediaPixelSkin_10
+  - first:
+      213: -5819186892417764873
+    second: EncyclopediaPixelSkin_11
+  - first:
+      213: -8018747732660522998
+    second: EncyclopediaPixelSkin_12
+  - first:
+      213: -1573014987716230971
+    second: EncyclopediaPixelSkin_13
+  - first:
+      213: -4147355011915650503
+    second: EncyclopediaPixelSkin_14
+  - first:
+      213: 3675758984514102681
+    second: EncyclopediaPixelSkin_15
+  - first:
+      213: -8628480042728421997
+    second: EncyclopediaPixelSkin_16
+  - first:
+      213: 4602227647429394079
+    second: EncyclopediaPixelSkin_17
+  - first:
+      213: 304827937251591796
+    second: EncyclopediaPixelSkin_18
+  - first:
+      213: -701304524127270266
+    second: EncyclopediaPixelSkin_19
+  - first:
+      213: 4867702540215099426
+    second: EncyclopediaPixelSkin_20
+  - first:
+      213: 1673054388620477687
+    second: EncyclopediaPixelSkin_21
+  - first:
+      213: -3047867056989755761
+    second: EncyclopediaPixelSkin_22
+  - first:
+      213: -3586022485858789873
+    second: EncyclopediaPixelSkin_23
+  - first:
+      213: 2843792872540295704
+    second: EncyclopediaPixelSkin_24
+  - first:
+      213: -5987466613525004678
+    second: EncyclopediaPixelSkin_25
+  - first:
+      213: -682121526067018421
+    second: CardFrame
+  - first:
+      213: 5924215419931288572
+    second: SelectedFrame
+  - first:
+      213: -4057958751027641617
+    second: LockedCard
+  - first:
+      213: 1828814309342822243
+    second: IllustrationFrame
+  - first:
+      213: -2883996305649676985
+    second: Nameplate
+  - first:
+      213: 6765977879934004427
+    second: RewardPanel
+  - first:
+      213: 2408806029901297322
+    second: ButtonNormal
+  - first:
+      213: -70665152407710137
+    second: ButtonHover
+  - first:
+      213: 5980516700474185858
+    second: ButtonPressed
+  - first:
+      213: -2562313769797862513
+    second: Divider
+  - first:
+      213: -1819579390153755118
+    second: ArrowLeft
+  - first:
+      213: 5562104707216915601
+    second: ArrowRight
+  - first:
+      213: -6274340428680002269
+    second: DotEmpty
+  - first:
+      213: -7441860029844115085
+    second: DotSelected
+  - first:
+      213: -1577421550651535591
+    second: ScrollTrack
+  - first:
+      213: 6988775425609774336
+    second: ScrollThumb
+  - first:
+      213: 2917987647164500819
+    second: UnknownQuestion
+  - first:
+      213: -2986816763823978008
+    second: UnknownMedallion
+  - first:
+      213: 1625645116549671572
+    second: DividerLine
+  - first:
+      213: 8380031477139277027
+    second: DividerOrnament
+  - first:
+      213: -5463440894083992841
+    second: FullViewExpand
+  - first:
+      213: 2692699139072111465
+    second: SectionLabel
+  - first:
+      213: 3789797700906671328
+    second: BossIllustrationFrame
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: CardFrame
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 112
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 7, y: 7, z: 7, w: 7}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b45c029061e9886f0800000000000000
+      internalID: -682121526067018421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SelectedFrame
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 112
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 7, y: 7, z: 7, w: 7}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf365ed598a073250800000000000000
+      internalID: 5924215419931288572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockedCard
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 112
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 7, y: 7, z: 7, w: 7}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe24fc3140c3fa7c0800000000000000
+      internalID: -4057958751027641617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IllustrationFrame
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 112
+        width: 48
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 9, y: 9, z: 9, w: 9}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36fb784cce0416910800000000000000
+      internalID: 1828814309342822243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Nameplate
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 128
+        width: 48
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 4, y: 4, z: 4, w: 4}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74d463cd3acf9f7d0800000000000000
+      internalID: -2883996305649676985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RewardPanel
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 80
+        width: 48
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 5, y: 5, z: 5, w: 5}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcced9bb80595ed50800000000000000
+      internalID: 6765977879934004427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ButtonNormal
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 88
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 5, y: 5, z: 5, w: 5}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa6f511625ccd6120800000000000000
+      internalID: 2408806029901297322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ButtonHover
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 88
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 7, y: 7, z: 7, w: 7}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7465db41b62f40ff0800000000000000
+      internalID: -70665152407710137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ButtonPressed
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 88
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 5, y: 5, z: 5, w: 5}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2881e01c0401ff250800000000000000
+      internalID: 5980516700474185858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Divider
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 95
+        width: 48
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8b3b1cb335d07cd0800000000000000
+      internalID: -2562313769797862513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ArrowLeft
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 52
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21673496f2e8fb6e0800000000000000
+      internalID: -1819579390153755118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ArrowRight
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 52
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19c313d03c0903d40800000000000000
+      internalID: 5562104707216915601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DotEmpty
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 56
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32508ac7f901de8a0800000000000000
+      internalID: -6274340428680002269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DotSelected
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 56
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 371b6f44bb339b890800000000000000
+      internalID: -7441860029844115085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ScrollTrack
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 32
+        width: 8
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 2, y: 2, z: 2, w: 2}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91f8e5c057fdb1ae0800000000000000
+      internalID: -1577421550651535591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ScrollThumb
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 48
+        width: 8
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 3, y: 3, z: 3, w: 3}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0053372b83e1df060800000000000000
+      internalID: 6988775425609774336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UnknownQuestion
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 40
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35bc7301e46ce7820800000000000000
+      internalID: 2917987647164500819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UnknownMedallion
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e907176af1bc86d0800000000000000
+      internalID: -2986816763823978008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DividerLine
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 62
+        width: 8
+        height: 2
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49aaac6de937f8610800000000000000
+      internalID: 1625645116549671572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DividerOrnament
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 55
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e48a79aa3adb4470800000000000000
+      internalID: 8380031477139277027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FullViewExpand
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f2f7c01475fd24b0800000000000000
+      internalID: -5463440894083992841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SectionLabel
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 6
+        width: 80
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 5, y: 5, z: 5, w: 5}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 963b467b9936e5520800000000000000
+      internalID: 2692699139072111465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BossIllustrationFrame
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 48
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 4, y: 4, z: 4, w: 4}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ec52250ee0189430800000000000000
+      internalID: 3789797700906671328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ArrowLeft: -1819579390153755118
+      ArrowRight: 5562104707216915601
+      BossIllustrationFrame: 3789797700906671328
+      ButtonHover: -70665152407710137
+      ButtonNormal: 2408806029901297322
+      ButtonPressed: 5980516700474185858
+      CardFrame: -682121526067018421
+      Divider: -2562313769797862513
+      DividerLine: 1625645116549671572
+      DividerOrnament: 8380031477139277027
+      DotEmpty: -6274340428680002269
+      DotSelected: -7441860029844115085
+      EncyclopediaPixelSkin_0: -631416256082198936
+      EncyclopediaPixelSkin_1: 8967170295454918043
+      EncyclopediaPixelSkin_10: -6207057019894044802
+      EncyclopediaPixelSkin_11: -5819186892417764873
+      EncyclopediaPixelSkin_12: -8018747732660522998
+      EncyclopediaPixelSkin_13: -1573014987716230971
+      EncyclopediaPixelSkin_14: -4147355011915650503
+      EncyclopediaPixelSkin_15: 3675758984514102681
+      EncyclopediaPixelSkin_16: -8628480042728421997
+      EncyclopediaPixelSkin_17: 4602227647429394079
+      EncyclopediaPixelSkin_18: 304827937251591796
+      EncyclopediaPixelSkin_19: -701304524127270266
+      EncyclopediaPixelSkin_2: 6687103710428095425
+      EncyclopediaPixelSkin_20: 4867702540215099426
+      EncyclopediaPixelSkin_21: 1673054388620477687
+      EncyclopediaPixelSkin_22: -3047867056989755761
+      EncyclopediaPixelSkin_23: -3586022485858789873
+      EncyclopediaPixelSkin_24: 2843792872540295704
+      EncyclopediaPixelSkin_25: -5987466613525004678
+      EncyclopediaPixelSkin_3: -892315812822910358
+      EncyclopediaPixelSkin_4: -7535758113089344909
+      EncyclopediaPixelSkin_5: 7866789622073572557
+      EncyclopediaPixelSkin_6: -1987100292655875588
+      EncyclopediaPixelSkin_7: -6074272024017218239
+      EncyclopediaPixelSkin_8: -2952068649529569497
+      EncyclopediaPixelSkin_9: -2929464608819229077
+      FullViewExpand: -5463440894083992841
+      IllustrationFrame: 1828814309342822243
+      LockedCard: -4057958751027641617
+      Nameplate: -2883996305649676985
+      RewardPanel: 6765977879934004427
+      ScrollThumb: 6988775425609774336
+      ScrollTrack: -1577421550651535591
+      SectionLabel: 2692699139072111465
+      SelectedFrame: 5924215419931288572
+      UnknownMedallion: -2986816763823978008
+      UnknownQuestion: 2917987647164500819
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

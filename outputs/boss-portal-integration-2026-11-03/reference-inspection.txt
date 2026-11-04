@@ -1,0 +1,12 @@
+New asset GUID uniqueness: all 8 GUIDs occurred once in Assets/*.meta (full scan).
+Shadow variant: inherits shared base=True; room binds matching GUID=True; native root fileID=4112881737353449117; no component/object add/remove=True
+Dragon variant: inherits shared base=True; room binds matching GUID=True; native root fileID=636469992954245997; no component/object add/remove=True
+Slime variant: inherits shared base=True; room binds matching GUID=True; native root fileID=8437103112594923084; no component/object add/remove=True
+Portal_DemonKing.png.meta: native import settings retained=True
+Portal_Dragon.png.meta: native import settings retained=True
+Portal_Shadow.png.meta: native import settings retained=True
+Portal_Slime.png.meta: native import settings retained=True
+After final Unity import: protected hashes mismatches=0
+Existing changed-file metas byte-identical=True
+Temporary Editor authoring source and meta removed=True
+Generated Editor.csproj contains installer and excludes temporary source=True

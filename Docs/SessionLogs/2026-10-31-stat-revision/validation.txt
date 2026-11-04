@@ -1,0 +1,563 @@
+PASS Fixture multiplier AttackMul
+PASS Fixture multiplier NormalMul
+PASS Fixture multiplier SkillMul
+PASS Fixture multiplier CritMultiplier
+PASS Fixture multiplier CritChanceMul
+PASS Fixture multiplier StaggerMul
+PASS Fixture multiplier FinalMul
+PASS Fixture multiplier KnockbackPowerMul
+PASS Fixture multiplier FireMul
+PASS Fixture multiplier BleedMul
+PASS Fixture multiplier PoisonMul
+PASS Fixture multiplier ElectricMul
+PASS Fixture multiplier MoveSpeedMul
+PASS Fixture multiplier EvasionMul
+PASS Fixture base MaxHealth
+PASS Fixture base Health
+PASS Fixture base AttackBase
+PASS Fixture base AttackAdd
+PASS Fixture base MoveSpeedBase
+PASS Fixture base MoveSpeedAdd
+PASS Fixture base MoveSpeedMul
+PASS Fixture base NormalMul
+PASS Fixture base AttackSpeedBase
+PASS Fixture base AttackSpeedAdd
+PASS Fixture base CritChanceBase
+PASS Fixture base CritChanceAdd
+PASS Fixture base CritMultiplier
+PASS Fixture base EvasionBase
+PASS Fixture base EvasionAdd
+PASS Fixture base FireBase
+PASS Fixture base FireAdd
+PASS Fixture base BleedBase
+PASS Fixture base BleedAdd
+PASS Fixture base PoisonBase
+PASS Fixture base PoisonAdd
+PASS Fixture base ElectricBase
+PASS Fixture base ElectricAdd
+PASS Valid relic transfer plan
+PASS Basic7 / Other6
+PASS Thirteen rows follow approved order, critical damage immediately after chance
+PASS Locale exists ko
+PASS Selected locale stable ko
+PASS Other title localized ko
+PASS Attack speed x1 shown as 100% ko
+PASS Panel 390x742 ko
+PASS Row height38 ko
+PASS Row height38 ko
+PASS Row height38 ko
+PASS Row height38 ko
+PASS Row height38 ko
+PASS Row height38 ko
+PASS Row height38 ko
+PASS Row height38 ko
+PASS Row height38 ko
+PASS Row height38 ko
+PASS Row height38 ko
+PASS Row height38 ko
+PASS Row height38 ko
+PASS stats-base-ko text fits Text_Title: 기본 능력치
+PASS stats-base-ko text fits Text_Label: 체력
+PASS stats-base-ko text fits Text_Value: 6 / 6
+PASS stats-base-ko text fits Text_Label: 공격력
+PASS stats-base-ko text fits Text_Value: 10
+PASS stats-base-ko text fits Text_Label: 이동 속도
+PASS stats-base-ko text fits Text_Value: 120.00%
+PASS stats-base-ko text fits Text_Label: 공격 속도
+PASS stats-base-ko text fits Text_Value: 100%
+PASS stats-base-ko text fits Text_Label: 치명타 확률
+PASS stats-base-ko text fits Text_Value: 10%
+PASS stats-base-ko text fits Text_Label: 치명타 피해
+PASS stats-base-ko text fits Text_Value: 150%
+PASS stats-base-ko text fits Text_Label: 회피율
+PASS stats-base-ko text fits Text_Value: 5%
+PASS stats-base-ko text fits Text_Title: 기타 능력치
+PASS stats-base-ko text fits Text_Label: 화염 피해량
+PASS stats-base-ko text fits Text_Value: 0
+PASS stats-base-ko text fits Text_Label: 출혈 피해량
+PASS stats-base-ko text fits Text_Value: 0
+PASS stats-base-ko text fits Text_Label: 중독 피해량
+PASS stats-base-ko text fits Text_Value: 0
+PASS stats-base-ko text fits Text_Label: 전기 피해량
+PASS stats-base-ko text fits Text_Value: 5
+PASS stats-base-ko text fits Text_Label: 스킬 피해
+PASS stats-base-ko text fits Text_Value: 100%
+PASS stats-base-ko text fits Text_Label: 기본 공격 피해
+PASS stats-base-ko text fits Text_Value: 120%
+PASS stats-base-ko capture bounds 430x782
+PASS stats-base-ko nonblank render
+PASS Positive relic delta ko
+PASS Negative movement delta ko: 120.00% <color=#FF6666>(-10.00%)</color>
+PASS Attack speed percentage delta ko
+PASS Negative damage delta ko: 120% <color=#FF6666>(-10%)</color>
+PASS Selection does not grant or mutate actual stats ko
+PASS stats-delta-ko text fits Text_Title: 기본 능력치
+PASS stats-delta-ko text fits Text_Label: 체력
+PASS stats-delta-ko text fits Text_Value: 6 / 6
+PASS stats-delta-ko text fits Text_Label: 공격력
+PASS stats-delta-ko text fits Text_Value: 10 <color=#66DD88>(+3)</color>
+PASS stats-delta-ko text fits Text_Label: 이동 속도
+PASS stats-delta-ko text fits Text_Value: 120.00% <color=#FF6666>(-10.00%)</color>
+PASS stats-delta-ko text fits Text_Label: 공격 속도
+PASS stats-delta-ko text fits Text_Value: 100% <color=#66DD88>(+20%)</color>
+PASS stats-delta-ko text fits Text_Label: 치명타 확률
+PASS stats-delta-ko text fits Text_Value: 10% <color=#66DD88>(+5%)</color>
+PASS stats-delta-ko text fits Text_Label: 치명타 피해
+PASS stats-delta-ko text fits Text_Value: 150%
+PASS stats-delta-ko text fits Text_Label: 회피율
+PASS stats-delta-ko text fits Text_Value: 5%
+PASS stats-delta-ko text fits Text_Title: 기타 능력치
+PASS stats-delta-ko text fits Text_Label: 화염 피해량
+PASS stats-delta-ko text fits Text_Value: 0 <color=#66DD88>(+5)</color>
+PASS stats-delta-ko text fits Text_Label: 출혈 피해량
+PASS stats-delta-ko text fits Text_Value: 0
+PASS stats-delta-ko text fits Text_Label: 중독 피해량
+PASS stats-delta-ko text fits Text_Value: 0
+PASS stats-delta-ko text fits Text_Label: 전기 피해량
+PASS stats-delta-ko text fits Text_Value: 5
+PASS stats-delta-ko text fits Text_Label: 스킬 피해
+PASS stats-delta-ko text fits Text_Value: 100% <color=#66DD88>(+15%)</color>
+PASS stats-delta-ko text fits Text_Label: 기본 공격 피해
+PASS stats-delta-ko text fits Text_Value: 120% <color=#FF6666>(-10%)</color>
+PASS Value column and font fit ko / 체력
+PASS Value column and font fit ko / 공격력
+PASS Value column and font fit ko / 이동 속도
+PASS Value column and font fit ko / 공격 속도
+PASS Value column and font fit ko / 치명타 확률
+PASS Value column and font fit ko / 치명타 피해
+PASS Value column and font fit ko / 회피율
+PASS Value column and font fit ko / 화염 피해량
+PASS Value column and font fit ko / 출혈 피해량
+PASS Value column and font fit ko / 중독 피해량
+PASS Value column and font fit ko / 전기 피해량
+PASS Value column and font fit ko / 스킬 피해
+PASS Value column and font fit ko / 기본 공격 피해
+PASS stats-delta-ko capture bounds 430x782
+PASS stats-delta-ko nonblank render
+PASS Cancel clears every delta ko
+PASS Locale exists en
+PASS Selected locale stable en
+PASS Other title localized en
+PASS Attack speed x1 shown as 100% en
+PASS Panel 390x742 en
+PASS Row height38 en
+PASS Row height38 en
+PASS Row height38 en
+PASS Row height38 en
+PASS Row height38 en
+PASS Row height38 en
+PASS Row height38 en
+PASS Row height38 en
+PASS Row height38 en
+PASS Row height38 en
+PASS Row height38 en
+PASS Row height38 en
+PASS Row height38 en
+PASS stats-base-en text fits Text_Title: Basic Stats
+PASS stats-base-en text fits Text_Label: HP
+PASS stats-base-en text fits Text_Value: 6 / 6
+PASS stats-base-en text fits Text_Label: Attack Power
+PASS stats-base-en text fits Text_Value: 10
+PASS stats-base-en text fits Text_Label: Movement Speed
+PASS stats-base-en text fits Text_Value: 120.00%
+PASS stats-base-en text fits Text_Label: Attack Speed
+PASS stats-base-en text fits Text_Value: 100%
+PASS stats-base-en text fits Text_Label: Critical Chance
+PASS stats-base-en text fits Text_Value: 10%
+PASS stats-base-en text fits Text_Label: Critical Damage
+PASS stats-base-en text fits Text_Value: 150%
+PASS stats-base-en text fits Text_Label: Evasion
+PASS stats-base-en text fits Text_Value: 5%
+PASS stats-base-en text fits Text_Title: Other Stats
+PASS stats-base-en text fits Text_Label: Fire Damage
+PASS stats-base-en text fits Text_Value: 0
+PASS stats-base-en text fits Text_Label: Bleed Damage
+PASS stats-base-en text fits Text_Value: 0
+PASS stats-base-en text fits Text_Label: Poison Damage
+PASS stats-base-en text fits Text_Value: 0
+PASS stats-base-en text fits Text_Label: Electric Damage
+PASS stats-base-en text fits Text_Value: 5
+PASS stats-base-en text fits Text_Label: Skill Damage
+PASS stats-base-en text fits Text_Value: 100%
+PASS stats-base-en text fits Text_Label: Basic Attack Damage
+PASS stats-base-en text fits Text_Value: 120%
+PASS stats-base-en capture bounds 430x782
+PASS stats-base-en nonblank render
+PASS Positive relic delta en
+PASS Negative movement delta en: 120.00% <color=#FF6666>(-10.00%)</color>
+PASS Attack speed percentage delta en
+PASS Negative damage delta en: 120% <color=#FF6666>(-10%)</color>
+PASS Selection does not grant or mutate actual stats en
+PASS stats-delta-en text fits Text_Title: Basic Stats
+PASS stats-delta-en text fits Text_Label: HP
+PASS stats-delta-en text fits Text_Value: 6 / 6
+PASS stats-delta-en text fits Text_Label: Attack Power
+PASS stats-delta-en text fits Text_Value: 10 <color=#66DD88>(+3)</color>
+PASS stats-delta-en text fits Text_Label: Movement Speed
+PASS stats-delta-en text fits Text_Value: 120.00% <color=#FF6666>(-10.00%)</color>
+PASS stats-delta-en text fits Text_Label: Attack Speed
+PASS stats-delta-en text fits Text_Value: 100% <color=#66DD88>(+20%)</color>
+PASS stats-delta-en text fits Text_Label: Critical Chance
+PASS stats-delta-en text fits Text_Value: 10% <color=#66DD88>(+5%)</color>
+PASS stats-delta-en text fits Text_Label: Critical Damage
+PASS stats-delta-en text fits Text_Value: 150%
+PASS stats-delta-en text fits Text_Label: Evasion
+PASS stats-delta-en text fits Text_Value: 5%
+PASS stats-delta-en text fits Text_Title: Other Stats
+PASS stats-delta-en text fits Text_Label: Fire Damage
+PASS stats-delta-en text fits Text_Value: 0 <color=#66DD88>(+5)</color>
+PASS stats-delta-en text fits Text_Label: Bleed Damage
+PASS stats-delta-en text fits Text_Value: 0
+PASS stats-delta-en text fits Text_Label: Poison Damage
+PASS stats-delta-en text fits Text_Value: 0
+PASS stats-delta-en text fits Text_Label: Electric Damage
+PASS stats-delta-en text fits Text_Value: 5
+PASS stats-delta-en text fits Text_Label: Skill Damage
+PASS stats-delta-en text fits Text_Value: 100% <color=#66DD88>(+15%)</color>
+PASS stats-delta-en text fits Text_Label: Basic Attack Damage
+PASS stats-delta-en text fits Text_Value: 120% <color=#FF6666>(-10%)</color>
+PASS Value column and font fit en / HP
+PASS Value column and font fit en / Attack Power
+PASS Value column and font fit en / Movement Speed
+PASS Value column and font fit en / Attack Speed
+PASS Value column and font fit en / Critical Chance
+PASS Value column and font fit en / Critical Damage
+PASS Value column and font fit en / Evasion
+PASS Value column and font fit en / Fire Damage
+PASS Value column and font fit en / Bleed Damage
+PASS Value column and font fit en / Poison Damage
+PASS Value column and font fit en / Electric Damage
+PASS Value column and font fit en / Skill Damage
+PASS Value column and font fit en / Basic Attack Damage
+PASS stats-delta-en capture bounds 430x782
+PASS stats-delta-en nonblank render
+PASS Cancel clears every delta en
+PASS Locale exists ja
+PASS Selected locale stable ja
+PASS Other title localized ja
+PASS Attack speed x1 shown as 100% ja
+PASS Panel 390x742 ja
+PASS Row height38 ja
+PASS Row height38 ja
+PASS Row height38 ja
+PASS Row height38 ja
+PASS Row height38 ja
+PASS Row height38 ja
+PASS Row height38 ja
+PASS Row height38 ja
+PASS Row height38 ja
+PASS Row height38 ja
+PASS Row height38 ja
+PASS Row height38 ja
+PASS Row height38 ja
+PASS stats-base-ja text fits Text_Title: 基本能力値
+PASS stats-base-ja text fits Text_Label: HP
+PASS stats-base-ja text fits Text_Value: 6 / 6
+PASS stats-base-ja text fits Text_Label: 攻撃力
+PASS stats-base-ja text fits Text_Value: 10
+PASS stats-base-ja text fits Text_Label: 移動速度
+PASS stats-base-ja text fits Text_Value: 120.00%
+PASS stats-base-ja text fits Text_Label: 攻撃速度
+PASS stats-base-ja text fits Text_Value: 100%
+PASS stats-base-ja text fits Text_Label: クリティカル率
+PASS stats-base-ja text fits Text_Value: 10%
+PASS stats-base-ja text fits Text_Label: クリティカルダメージ
+PASS stats-base-ja text fits Text_Value: 150%
+PASS stats-base-ja text fits Text_Label: 回避率
+PASS stats-base-ja text fits Text_Value: 5%
+PASS stats-base-ja text fits Text_Title: その他の能力値
+PASS stats-base-ja text fits Text_Label: 火炎ダメージ
+PASS stats-base-ja text fits Text_Value: 0
+PASS stats-base-ja text fits Text_Label: 出血ダメージ
+PASS stats-base-ja text fits Text_Value: 0
+PASS stats-base-ja text fits Text_Label: 毒ダメージ
+PASS stats-base-ja text fits Text_Value: 0
+PASS stats-base-ja text fits Text_Label: 電気ダメージ
+PASS stats-base-ja text fits Text_Value: 5
+PASS stats-base-ja text fits Text_Label: スキルダメージ
+PASS stats-base-ja text fits Text_Value: 100%
+PASS stats-base-ja text fits Text_Label: 通常攻撃ダメージ
+PASS stats-base-ja text fits Text_Value: 120%
+PASS stats-base-ja capture bounds 430x782
+PASS stats-base-ja nonblank render
+PASS Positive relic delta ja
+PASS Negative movement delta ja: 120.00% <color=#FF6666>(-10.00%)</color>
+PASS Attack speed percentage delta ja
+PASS Negative damage delta ja: 120% <color=#FF6666>(-10%)</color>
+PASS Selection does not grant or mutate actual stats ja
+PASS stats-delta-ja text fits Text_Title: 基本能力値
+PASS stats-delta-ja text fits Text_Label: HP
+PASS stats-delta-ja text fits Text_Value: 6 / 6
+PASS stats-delta-ja text fits Text_Label: 攻撃力
+PASS stats-delta-ja text fits Text_Value: 10 <color=#66DD88>(+3)</color>
+PASS stats-delta-ja text fits Text_Label: 移動速度
+PASS stats-delta-ja text fits Text_Value: 120.00% <color=#FF6666>(-10.00%)</color>
+PASS stats-delta-ja text fits Text_Label: 攻撃速度
+PASS stats-delta-ja text fits Text_Value: 100% <color=#66DD88>(+20%)</color>
+PASS stats-delta-ja text fits Text_Label: クリティカル率
+PASS stats-delta-ja text fits Text_Value: 10% <color=#66DD88>(+5%)</color>
+PASS stats-delta-ja text fits Text_Label: クリティカルダメージ
+PASS stats-delta-ja text fits Text_Value: 150%
+PASS stats-delta-ja text fits Text_Label: 回避率
+PASS stats-delta-ja text fits Text_Value: 5%
+PASS stats-delta-ja text fits Text_Title: その他の能力値
+PASS stats-delta-ja text fits Text_Label: 火炎ダメージ
+PASS stats-delta-ja text fits Text_Value: 0 <color=#66DD88>(+5)</color>
+PASS stats-delta-ja text fits Text_Label: 出血ダメージ
+PASS stats-delta-ja text fits Text_Value: 0
+PASS stats-delta-ja text fits Text_Label: 毒ダメージ
+PASS stats-delta-ja text fits Text_Value: 0
+PASS stats-delta-ja text fits Text_Label: 電気ダメージ
+PASS stats-delta-ja text fits Text_Value: 5
+PASS stats-delta-ja text fits Text_Label: スキルダメージ
+PASS stats-delta-ja text fits Text_Value: 100% <color=#66DD88>(+15%)</color>
+PASS stats-delta-ja text fits Text_Label: 通常攻撃ダメージ
+PASS stats-delta-ja text fits Text_Value: 120% <color=#FF6666>(-10%)</color>
+PASS Value column and font fit ja / HP
+PASS Value column and font fit ja / 攻撃力
+PASS Value column and font fit ja / 移動速度
+PASS Value column and font fit ja / 攻撃速度
+PASS Value column and font fit ja / クリティカル率
+PASS Value column and font fit ja / クリティカルダメージ
+PASS Value column and font fit ja / 回避率
+PASS Value column and font fit ja / 火炎ダメージ
+PASS Value column and font fit ja / 出血ダメージ
+PASS Value column and font fit ja / 毒ダメージ
+PASS Value column and font fit ja / 電気ダメージ
+PASS Value column and font fit ja / スキルダメージ
+PASS Value column and font fit ja / 通常攻撃ダメージ
+PASS stats-delta-ja capture bounds 430x782
+PASS stats-delta-ja nonblank render
+PASS Cancel clears every delta ja
+PASS Locale exists zh-Hans
+PASS Selected locale stable zh-Hans
+PASS Other title localized zh-Hans
+PASS Attack speed x1 shown as 100% zh-Hans
+PASS Panel 390x742 zh-Hans
+PASS Row height38 zh-Hans
+PASS Row height38 zh-Hans
+PASS Row height38 zh-Hans
+PASS Row height38 zh-Hans
+PASS Row height38 zh-Hans
+PASS Row height38 zh-Hans
+PASS Row height38 zh-Hans
+PASS Row height38 zh-Hans
+PASS Row height38 zh-Hans
+PASS Row height38 zh-Hans
+PASS Row height38 zh-Hans
+PASS Row height38 zh-Hans
+PASS Row height38 zh-Hans
+PASS stats-base-zh-Hans text fits Text_Title: 基础属性
+PASS stats-base-zh-Hans text fits Text_Label: 生命值
+PASS stats-base-zh-Hans text fits Text_Value: 6 / 6
+PASS stats-base-zh-Hans text fits Text_Label: 攻击力
+PASS stats-base-zh-Hans text fits Text_Value: 10
+PASS stats-base-zh-Hans text fits Text_Label: 移动速度
+PASS stats-base-zh-Hans text fits Text_Value: 120.00%
+PASS stats-base-zh-Hans text fits Text_Label: 攻击速度
+PASS stats-base-zh-Hans text fits Text_Value: 100%
+PASS stats-base-zh-Hans text fits Text_Label: 暴击率
+PASS stats-base-zh-Hans text fits Text_Value: 10%
+PASS stats-base-zh-Hans text fits Text_Label: 暴击伤害
+PASS stats-base-zh-Hans text fits Text_Value: 150%
+PASS stats-base-zh-Hans text fits Text_Label: 闪避率
+PASS stats-base-zh-Hans text fits Text_Value: 5%
+PASS stats-base-zh-Hans text fits Text_Title: 其他属性
+PASS stats-base-zh-Hans text fits Text_Label: 火焰伤害
+PASS stats-base-zh-Hans text fits Text_Value: 0
+PASS stats-base-zh-Hans text fits Text_Label: 出血伤害
+PASS stats-base-zh-Hans text fits Text_Value: 0
+PASS stats-base-zh-Hans text fits Text_Label: 中毒伤害
+PASS stats-base-zh-Hans text fits Text_Value: 0
+PASS stats-base-zh-Hans text fits Text_Label: 电伤害
+PASS stats-base-zh-Hans text fits Text_Value: 5
+PASS stats-base-zh-Hans text fits Text_Label: 技能伤害
+PASS stats-base-zh-Hans text fits Text_Value: 100%
+PASS stats-base-zh-Hans text fits Text_Label: 普通攻击伤害
+PASS stats-base-zh-Hans text fits Text_Value: 120%
+PASS stats-base-zh-Hans capture bounds 430x782
+PASS stats-base-zh-Hans nonblank render
+PASS Positive relic delta zh-Hans
+PASS Negative movement delta zh-Hans: 120.00% <color=#FF6666>(-10.00%)</color>
+PASS Attack speed percentage delta zh-Hans
+PASS Negative damage delta zh-Hans: 120% <color=#FF6666>(-10%)</color>
+PASS Selection does not grant or mutate actual stats zh-Hans
+PASS stats-delta-zh-Hans text fits Text_Title: 基础属性
+PASS stats-delta-zh-Hans text fits Text_Label: 生命值
+PASS stats-delta-zh-Hans text fits Text_Value: 6 / 6
+PASS stats-delta-zh-Hans text fits Text_Label: 攻击力
+PASS stats-delta-zh-Hans text fits Text_Value: 10 <color=#66DD88>(+3)</color>
+PASS stats-delta-zh-Hans text fits Text_Label: 移动速度
+PASS stats-delta-zh-Hans text fits Text_Value: 120.00% <color=#FF6666>(-10.00%)</color>
+PASS stats-delta-zh-Hans text fits Text_Label: 攻击速度
+PASS stats-delta-zh-Hans text fits Text_Value: 100% <color=#66DD88>(+20%)</color>
+PASS stats-delta-zh-Hans text fits Text_Label: 暴击率
+PASS stats-delta-zh-Hans text fits Text_Value: 10% <color=#66DD88>(+5%)</color>
+PASS stats-delta-zh-Hans text fits Text_Label: 暴击伤害
+PASS stats-delta-zh-Hans text fits Text_Value: 150%
+PASS stats-delta-zh-Hans text fits Text_Label: 闪避率
+PASS stats-delta-zh-Hans text fits Text_Value: 5%
+PASS stats-delta-zh-Hans text fits Text_Title: 其他属性
+PASS stats-delta-zh-Hans text fits Text_Label: 火焰伤害
+PASS stats-delta-zh-Hans text fits Text_Value: 0 <color=#66DD88>(+5)</color>
+PASS stats-delta-zh-Hans text fits Text_Label: 出血伤害
+PASS stats-delta-zh-Hans text fits Text_Value: 0
+PASS stats-delta-zh-Hans text fits Text_Label: 中毒伤害
+PASS stats-delta-zh-Hans text fits Text_Value: 0
+PASS stats-delta-zh-Hans text fits Text_Label: 电伤害
+PASS stats-delta-zh-Hans text fits Text_Value: 5
+PASS stats-delta-zh-Hans text fits Text_Label: 技能伤害
+PASS stats-delta-zh-Hans text fits Text_Value: 100% <color=#66DD88>(+15%)</color>
+PASS stats-delta-zh-Hans text fits Text_Label: 普通攻击伤害
+PASS stats-delta-zh-Hans text fits Text_Value: 120% <color=#FF6666>(-10%)</color>
+PASS Value column and font fit zh-Hans / 生命值
+PASS Value column and font fit zh-Hans / 攻击力
+PASS Value column and font fit zh-Hans / 移动速度
+PASS Value column and font fit zh-Hans / 攻击速度
+PASS Value column and font fit zh-Hans / 暴击率
+PASS Value column and font fit zh-Hans / 暴击伤害
+PASS Value column and font fit zh-Hans / 闪避率
+PASS Value column and font fit zh-Hans / 火焰伤害
+PASS Value column and font fit zh-Hans / 出血伤害
+PASS Value column and font fit zh-Hans / 中毒伤害
+PASS Value column and font fit zh-Hans / 电伤害
+PASS Value column and font fit zh-Hans / 技能伤害
+PASS Value column and font fit zh-Hans / 普通攻击伤害
+PASS stats-delta-zh-Hans capture bounds 430x782
+PASS stats-delta-zh-Hans nonblank render
+PASS Cancel clears every delta zh-Hans
+PASS Locale exists zh-Hant
+PASS Selected locale stable zh-Hant
+PASS Other title localized zh-Hant
+PASS Attack speed x1 shown as 100% zh-Hant
+PASS Panel 390x742 zh-Hant
+PASS Row height38 zh-Hant
+PASS Row height38 zh-Hant
+PASS Row height38 zh-Hant
+PASS Row height38 zh-Hant
+PASS Row height38 zh-Hant
+PASS Row height38 zh-Hant
+PASS Row height38 zh-Hant
+PASS Row height38 zh-Hant
+PASS Row height38 zh-Hant
+PASS Row height38 zh-Hant
+PASS Row height38 zh-Hant
+PASS Row height38 zh-Hant
+PASS Row height38 zh-Hant
+PASS stats-base-zh-Hant text fits Text_Title: 基礎屬性
+PASS stats-base-zh-Hant text fits Text_Label: 生命值
+PASS stats-base-zh-Hant text fits Text_Value: 6 / 6
+PASS stats-base-zh-Hant text fits Text_Label: 攻擊力
+PASS stats-base-zh-Hant text fits Text_Value: 10
+PASS stats-base-zh-Hant text fits Text_Label: 移動速度
+PASS stats-base-zh-Hant text fits Text_Value: 120.00%
+PASS stats-base-zh-Hant text fits Text_Label: 攻擊速度
+PASS stats-base-zh-Hant text fits Text_Value: 100%
+PASS stats-base-zh-Hant text fits Text_Label: 暴擊率
+PASS stats-base-zh-Hant text fits Text_Value: 10%
+PASS stats-base-zh-Hant text fits Text_Label: 暴擊傷害
+PASS stats-base-zh-Hant text fits Text_Value: 150%
+PASS stats-base-zh-Hant text fits Text_Label: 閃避率
+PASS stats-base-zh-Hant text fits Text_Value: 5%
+PASS stats-base-zh-Hant text fits Text_Title: 其他屬性
+PASS stats-base-zh-Hant text fits Text_Label: 火焰傷害
+PASS stats-base-zh-Hant text fits Text_Value: 0
+PASS stats-base-zh-Hant text fits Text_Label: 出血傷害
+PASS stats-base-zh-Hant text fits Text_Value: 0
+PASS stats-base-zh-Hant text fits Text_Label: 中毒傷害
+PASS stats-base-zh-Hant text fits Text_Value: 0
+PASS stats-base-zh-Hant text fits Text_Label: 電傷害
+PASS stats-base-zh-Hant text fits Text_Value: 5
+PASS stats-base-zh-Hant text fits Text_Label: 技能傷害
+PASS stats-base-zh-Hant text fits Text_Value: 100%
+PASS stats-base-zh-Hant text fits Text_Label: 普通攻擊傷害
+PASS stats-base-zh-Hant text fits Text_Value: 120%
+PASS stats-base-zh-Hant capture bounds 430x782
+PASS stats-base-zh-Hant nonblank render
+PASS Positive relic delta zh-Hant
+PASS Negative movement delta zh-Hant: 120.00% <color=#FF6666>(-10.00%)</color>
+PASS Attack speed percentage delta zh-Hant
+PASS Negative damage delta zh-Hant: 120% <color=#FF6666>(-10%)</color>
+PASS Selection does not grant or mutate actual stats zh-Hant
+PASS stats-delta-zh-Hant text fits Text_Title: 基礎屬性
+PASS stats-delta-zh-Hant text fits Text_Label: 生命值
+PASS stats-delta-zh-Hant text fits Text_Value: 6 / 6
+PASS stats-delta-zh-Hant text fits Text_Label: 攻擊力
+PASS stats-delta-zh-Hant text fits Text_Value: 10 <color=#66DD88>(+3)</color>
+PASS stats-delta-zh-Hant text fits Text_Label: 移動速度
+PASS stats-delta-zh-Hant text fits Text_Value: 120.00% <color=#FF6666>(-10.00%)</color>
+PASS stats-delta-zh-Hant text fits Text_Label: 攻擊速度
+PASS stats-delta-zh-Hant text fits Text_Value: 100% <color=#66DD88>(+20%)</color>
+PASS stats-delta-zh-Hant text fits Text_Label: 暴擊率
+PASS stats-delta-zh-Hant text fits Text_Value: 10% <color=#66DD88>(+5%)</color>
+PASS stats-delta-zh-Hant text fits Text_Label: 暴擊傷害
+PASS stats-delta-zh-Hant text fits Text_Value: 150%
+PASS stats-delta-zh-Hant text fits Text_Label: 閃避率
+PASS stats-delta-zh-Hant text fits Text_Value: 5%
+PASS stats-delta-zh-Hant text fits Text_Title: 其他屬性
+PASS stats-delta-zh-Hant text fits Text_Label: 火焰傷害
+PASS stats-delta-zh-Hant text fits Text_Value: 0 <color=#66DD88>(+5)</color>
+PASS stats-delta-zh-Hant text fits Text_Label: 出血傷害
+PASS stats-delta-zh-Hant text fits Text_Value: 0
+PASS stats-delta-zh-Hant text fits Text_Label: 中毒傷害
+PASS stats-delta-zh-Hant text fits Text_Value: 0
+PASS stats-delta-zh-Hant text fits Text_Label: 電傷害
+PASS stats-delta-zh-Hant text fits Text_Value: 5
+PASS stats-delta-zh-Hant text fits Text_Label: 技能傷害
+PASS stats-delta-zh-Hant text fits Text_Value: 100% <color=#66DD88>(+15%)</color>
+PASS stats-delta-zh-Hant text fits Text_Label: 普通攻擊傷害
+PASS stats-delta-zh-Hant text fits Text_Value: 120% <color=#FF6666>(-10%)</color>
+PASS Value column and font fit zh-Hant / 生命值
+PASS Value column and font fit zh-Hant / 攻擊力
+PASS Value column and font fit zh-Hant / 移動速度
+PASS Value column and font fit zh-Hant / 攻擊速度
+PASS Value column and font fit zh-Hant / 暴擊率
+PASS Value column and font fit zh-Hant / 暴擊傷害
+PASS Value column and font fit zh-Hant / 閃避率
+PASS Value column and font fit zh-Hant / 火焰傷害
+PASS Value column and font fit zh-Hant / 出血傷害
+PASS Value column and font fit zh-Hant / 中毒傷害
+PASS Value column and font fit zh-Hant / 電傷害
+PASS Value column and font fit zh-Hant / 技能傷害
+PASS Value column and font fit zh-Hant / 普通攻擊傷害
+PASS stats-delta-zh-Hant capture bounds 430x782
+PASS stats-delta-zh-Hant nonblank render
+PASS Cancel clears every delta zh-Hant
+PASS Real transfer commits relic acquisition
+PASS Locale exists ko
+PASS Selected locale stable ko
+PASS Relic moved from chest to inventory
+PASS Acquired values match positive/negative previews without suffixes
+PASS stats-acquired-ko text fits Text_Title: 기본 능력치
+PASS stats-acquired-ko text fits Text_Label: 체력
+PASS stats-acquired-ko text fits Text_Value: 6 / 6
+PASS stats-acquired-ko text fits Text_Label: 공격력
+PASS stats-acquired-ko text fits Text_Value: 13
+PASS stats-acquired-ko text fits Text_Label: 이동 속도
+PASS stats-acquired-ko text fits Text_Value: 110.00%
+PASS stats-acquired-ko text fits Text_Label: 공격 속도
+PASS stats-acquired-ko text fits Text_Value: 120%
+PASS stats-acquired-ko text fits Text_Label: 치명타 확률
+PASS stats-acquired-ko text fits Text_Value: 15%
+PASS stats-acquired-ko text fits Text_Label: 치명타 피해
+PASS stats-acquired-ko text fits Text_Value: 150%
+PASS stats-acquired-ko text fits Text_Label: 회피율
+PASS stats-acquired-ko text fits Text_Value: 5%
+PASS stats-acquired-ko text fits Text_Title: 기타 능력치
+PASS stats-acquired-ko text fits Text_Label: 화염 피해량
+PASS stats-acquired-ko text fits Text_Value: 5
+PASS stats-acquired-ko text fits Text_Label: 출혈 피해량
+PASS stats-acquired-ko text fits Text_Value: 0
+PASS stats-acquired-ko text fits Text_Label: 중독 피해량
+PASS stats-acquired-ko text fits Text_Value: 0
+PASS stats-acquired-ko text fits Text_Label: 전기 피해량
+PASS stats-acquired-ko text fits Text_Value: 5
+PASS stats-acquired-ko text fits Text_Label: 스킬 피해
+PASS stats-acquired-ko text fits Text_Value: 115%
+PASS stats-acquired-ko text fits Text_Label: 기본 공격 피해
+PASS stats-acquired-ko text fits Text_Value: 110%
+PASS stats-acquired-ko capture bounds 430x782
+PASS stats-acquired-ko nonblank render
+PASS Relic removal succeeds
+PASS Removing relic restores current stats through events
+APPROVED_UI_SKIN_VALIDATION_PASS

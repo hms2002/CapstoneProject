@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="21" result="Passed" total="21" passed="21" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-31 05:52:25Z" end-time="2026-10-31 05:52:28Z" duration="3.0663964">
+  <test-suite type="TestSuite" id="2428" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="1194" result="Passed" start-time="2026-10-31 05:52:25Z" end-time="2026-10-31 05:52:28Z" duration="3.066396" total="21" passed="21" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2424" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="1187" result="Passed" start-time="2026-10-31 05:52:25Z" end-time="2026-10-31 05:52:28Z" duration="3.004831" total="21" passed="21" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="8720" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1111" name="ChestRevealWidthRegressionPlayModeTests" fullname="ChestRevealWidthRegressionPlayModeTests" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-31 05:52:25Z" end-time="2026-10-31 05:52:27Z" duration="1.440926" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="1115" name="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" fullname="ChestRevealWidthRegressionPlayModeTests.AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-31 05:52:26Z" end-time="2026-10-31 05:52:27Z" duration="0.342510" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1112" name="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(4)" fullname="ChestRevealWidthRegressionPlayModeTests.AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(4)" methodname="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1320603942" result="Passed" start-time="2026-10-31 05:52:26Z" end-time="2026-10-31 05:52:27Z" duration="0.195144" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1113" name="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(5)" fullname="ChestRevealWidthRegressionPlayModeTests.AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(5)" methodname="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1479779270" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.056237" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1114" name="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(8)" fullname="ChestRevealWidthRegressionPlayModeTests.AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(8)" methodname="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="187433129" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.058732" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1121" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.048795" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1117" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(False,56.0f,100.0f,13.0f)" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(False,56.0f,100.0f,13.0f)" methodname="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1307336308" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.002768" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1118" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,-1.0f,56.0f)" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,-1.0f,56.0f)" methodname="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="290347898" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.000704" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1119" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,80.0f,80.0f)" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,80.0f,80.0f)" methodname="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1217947949" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.000687" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1120" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,40.0f,56.0f)" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,40.0f,56.0f)" methodname="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1230469409" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.000606" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1116" name="SelectionRerollAndReopen_KeepTheCapturedFrameUntilExplicitRelease" fullname="ChestRevealWidthRegressionPlayModeTests.SelectionRerollAndReopen_KeepTheCapturedFrameUntilExplicitRelease" methodname="SelectionRerollAndReopen_KeepTheCapturedFrameUntilExplicitRelease" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1727173613" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.082049" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1635" name="ElectricRelicPlayModeTests" fullname="ElectricRelicPlayModeTests" classname="ElectricRelicPlayModeTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.305199" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1649" name="ActiveDashBonus_SurvivesDetachedAcquisitionPreview_AndInventoryUpgradeReplacesItsLevel" fullname="ElectricRelicPlayModeTests.ActiveDashBonus_SurvivesDetachedAcquisitionPreview_AndInventoryUpgradeReplacesItsLevel" methodname="ActiveDashBonus_SurvivesDetachedAcquisitionPreview_AndInventoryUpgradeReplacesItsLevel" classname="ElectricRelicPlayModeTests" runstate="Runnable" seed="921139746" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.195613" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1641" name="MaxHealthBonus_CountsFullCellsWithoutCap_AndPreservesRuntimePreviewRestoreAndUnequip" fullname="ElectricRelicPlayModeTests.MaxHealthBonus_CountsFullCellsWithoutCap_AndPreservesRuntimePreviewRestoreAndUnequip" methodname="MaxHealthBonus_CountsFullCellsWithoutCap_AndPreservesRuntimePreviewRestoreAndUnequip" classname="ElectricRelicPlayModeTests" runstate="Runnable" seed="1551988512" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.013698" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1701" name="FixedAttackRelicPlayModeTests" fullname="FixedAttackRelicPlayModeTests" classname="FixedAttackRelicPlayModeTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.119535" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1707" name="LastBreath_GrantsFixedThreeAtHalfHealth_AndPreservesDetachedPreviewAndRestoreCleanup" fullname="FixedAttackRelicPlayModeTests.LastBreath_GrantsFixedThreeAtHalfHealth_AndPreservesDetachedPreviewAndRestoreCleanup" methodname="LastBreath_GrantsFixedThreeAtHalfHealth_AndPreservesDetachedPreviewAndRestoreCleanup" classname="FixedAttackRelicPlayModeTests" runstate="Runnable" seed="2137011385" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.057614" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1706" name="PassiveAttackBonus_RemainsFlatAcrossAttackChanges_UpgradePreviewAndUnequip" fullname="FixedAttackRelicPlayModeTests.PassiveAttackBonus_RemainsFlatAcrossAttackChanges_UpgradePreviewAndUnequip" classname="FixedAttackRelicPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.044803" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1703" name="PassiveAttackBonus_RemainsFlatAcrossAttackChanges_UpgradePreviewAndUnequip(&quot;WornWhetstone&quot;,1.0f,2.0f,3.0f)" fullname="FixedAttackRelicPlayModeTests.PassiveAttackBonus_RemainsFlatAcrossAttackChanges_UpgradePreviewAndUnequip(&quot;WornWhetstone&quot;,1.0f,2.0f,3.0f)" methodname="PassiveAttackBonus_RemainsFlatAcrossAttackChanges_UpgradePreviewAndUnequip" classname="FixedAttackRelicPlayModeTests" runstate="Runnable" seed="489013307" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.019030" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1704" name="PassiveAttackBonus_RemainsFlatAcrossAttackChanges_UpgradePreviewAndUnequip(&quot;MasterWhetstone&quot;,1.0f,2.0f,3.0f)" fullname="FixedAttackRelicPlayModeTests.PassiveAttackBonus_RemainsFlatAcrossAttackChanges_UpgradePreviewAndUnequip(&quot;MasterWhetstone&quot;,1.0f,2.0f,3.0f)" methodname="PassiveAttackBonus_RemainsFlatAcrossAttackChanges_UpgradePreviewAndUnequip" classname="FixedAttackRelicPlayModeTests" runstate="Runnable" seed="50445814" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.006727" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1705" name="PassiveAttackBonus_RemainsFlatAcrossAttackChanges_UpgradePreviewAndUnequip(&quot;HeavyBracelet&quot;,2.0f,3.0f,4.0f)" fullname="FixedAttackRelicPlayModeTests.PassiveAttackBonus_RemainsFlatAcrossAttackChanges_UpgradePreviewAndUnequip(&quot;HeavyBracelet&quot;,2.0f,3.0f,4.0f)" methodname="PassiveAttackBonus_RemainsFlatAcrossAttackChanges_UpgradePreviewAndUnequip" classname="FixedAttackRelicPlayModeTests" runstate="Runnable" seed="1545251411" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:27Z" duration="0.007594" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+      </test-suite>
+      <test-suite type="TestFixture" id="2099" name="PlayerInventorySlotReusePlayModeTests" fullname="PlayerInventorySlotReusePlayModeTests" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:28Z" duration="0.903424" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="2106" name="ActiveOwnerDestroy_ReleasesAdaptersAndRetainedViews_ConfigureRemainsFillOnly" fullname="PlayerInventorySlotReusePlayModeTests.ActiveOwnerDestroy_ReleasesAdaptersAndRetainedViews_ConfigureRemainsFillOnly" methodname="ActiveOwnerDestroy_ReleasesAdaptersAndRetainedViews_ConfigureRemainsFillOnly" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="750198963" result="Passed" start-time="2026-10-31 05:52:27Z" end-time="2026-10-31 05:52:28Z" duration="0.333036" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2103" name="ClearBinding_ResetsPanelInteractionState_WithoutChangingGenericChestDisableMeaning" fullname="PlayerInventorySlotReusePlayModeTests.ClearBinding_ResetsPanelInteractionState_WithoutChangingGenericChestDisableMeaning" methodname="ClearBinding_ResetsPanelInteractionState_WithoutChangingGenericChestDisableMeaning" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="596338231" result="Passed" start-time="2026-10-31 05:52:28Z" end-time="2026-10-31 05:52:28Z" duration="0.054737" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2102" name="ConfigurationCountAndExternalParentChanges_DiscardOnlyAffectedGroupWithoutDormantExtras" fullname="PlayerInventorySlotReusePlayModeTests.ConfigurationCountAndExternalParentChanges_DiscardOnlyAffectedGroupWithoutDormantExtras" methodname="ConfigurationCountAndExternalParentChanges_DiscardOnlyAffectedGroupWithoutDormantExtras" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="1982774455" result="Passed" start-time="2026-10-31 05:52:28Z" end-time="2026-10-31 05:52:28Z" duration="0.157613" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2101" name="InactivePreparedBind_ClearAndRebind_DetachesSubscriptionsBeforeFirstEnable" fullname="PlayerInventorySlotReusePlayModeTests.InactivePreparedBind_ClearAndRebind_DetachesSubscriptionsBeforeFirstEnable" methodname="InactivePreparedBind_ClearAndRebind_DetachesSubscriptionsBeforeFirstEnable" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="181204850" result="Passed" start-time="2026-10-31 05:52:28Z" end-time="2026-10-31 05:52:28Z" duration="0.036925" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2105" name="MatchingHoverAndOwnedDrag_ClearBeforeAdapterDisposal" fullname="PlayerInventorySlotReusePlayModeTests.MatchingHoverAndOwnedDrag_ClearBeforeAdapterDisposal" methodname="MatchingHoverAndOwnedDrag_ClearBeforeAdapterDisposal" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="1390618194" result="Passed" start-time="2026-10-31 05:52:28Z" end-time="2026-10-31 05:52:28Z" duration="0.073155" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2100" name="RepeatedPlayerRebind_ReusesInstancesAndDisposesOldAdaptersWithSingleSubscriptions" fullname="PlayerInventorySlotReusePlayModeTests.RepeatedPlayerRebind_ReusesInstancesAndDisposesOldAdaptersWithSingleSubscriptions" methodname="RepeatedPlayerRebind_ReusesInstancesAndDisposesOldAdaptersWithSingleSubscriptions" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="644277743" result="Passed" start-time="2026-10-31 05:52:28Z" end-time="2026-10-31 05:52:28Z" duration="0.062473" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2104" name="ReusedSlots_ActualDropTransfer_UsesNewAdaptersAndPreservesItems" fullname="PlayerInventorySlotReusePlayModeTests.ReusedSlots_ActualDropTransfer_UsesNewAdaptersAndPreservesItems" methodname="ReusedSlots_ActualDropTransfer_UsesNewAdaptersAndPreservesItems" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="277176294" result="Passed" start-time="2026-10-31 05:52:28Z" end-time="2026-10-31 05:52:28Z" duration="0.100264" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

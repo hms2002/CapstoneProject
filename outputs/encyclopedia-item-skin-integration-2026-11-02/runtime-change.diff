@@ -1,0 +1,106 @@
+--- before
++++ Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemRightPage.cs
+@@ -77,6 +77,7 @@
+     private bool showDetailedDescription;
+     private readonly StringBuilder builder = new();
+     private ItemDisplayIconDefaultState iconDefaultState;
++    private Image initializedIconImage;
+     private ItemDetailContext detailContext;
+     private Action<string> glossaryClickHandler;
+     private int abilityBlockCursor;
+@@ -169,8 +170,7 @@
+         else if (currentConsumable != null)
+         {
+             ApplyItemHeader(currentConsumable);
+-            SetDescriptionSection(GameText.Get("code.encyclopediaitemrightpage.ce49decb68", "효과"),
+-                GameText.Asset(currentConsumable, "description", currentConsumable.description));
++            SetConsumableEffectSection(currentConsumable);
+         }
+         RebuildDetailLayout();
+     }
+@@ -354,16 +354,17 @@
+                 detailScrollRect.content = contentRect;
+         }
+ 
+-        if (iconImage != null)
++        initializedIconImage = null;
++        InitializeRuntimeState();
++    }
++
++    private void InitializeRuntimeState()
++    {
++        if (iconImage != null && initializedIconImage != iconImage)
++        {
+             iconDefaultState = new ItemDisplayIconDefaultState(iconImage);
+-
+-        InitializeRuntimeState();
+-    }
+-
+-    private void InitializeRuntimeState()
+-    {
+-        if (iconImage != null)
+-            iconDefaultState = new ItemDisplayIconDefaultState(iconImage);
++            initializedIconImage = iconImage;
++        }
+ 
+         detailContext ??= new ItemDetailContext();
+         glossaryClickHandler ??= ShowGlossaryPopup;
+@@ -546,8 +547,17 @@
+         HideTypeSections();
+         HideAbilityBlocks();
+         ApplyItemHeader(consumable);
+-        SetDescriptionSection(GameText.Get("code.encyclopediaitemrightpage.ce49decb68", "효과"), GameText.Asset(consumable, "description", consumable.description));
++        SetConsumableEffectSection(consumable);
+         QueueScrollReset();
++    }
++
++    private void SetConsumableEffectSection(ConsumableDefinition consumable)
++    {
++        SetStorySectionVisible(false);
++        SetActive(consumableDetailRoot, true);
++        SetText(consumableDescriptionText, FormatTextOrFallback(
++            GameText.Asset(consumable, "description", consumable.description),
++            GameText.Get("encyclopedia.description_pending", EmptyDescriptionText)));
+     }
+ 
+     private void ApplyItemHeader(ScriptableObject item)
+@@ -567,7 +577,7 @@
+     {
+         string description = FormatTextOrFallback(rawDescription, GameText.Get("encyclopedia.description_pending", EmptyDescriptionText));
+         SetActive(descriptionRoot, true);
+-        SetActive(descriptionTitleText != null ? descriptionTitleText.gameObject : null, true);
++        SetActive(descriptionTitleText != null ? descriptionTitleText.gameObject : null, currentWeapon == null);
+         SetActive(storyText != null ? storyText.gameObject : null, true);
+         SetText(descriptionTitleText, title);
+         SetText(storyText, description);
+@@ -786,7 +796,7 @@
+         int maxLevel = Mathf.Max(1, currentRelic.maxLevel);
+         relicPreviewLevel = Mathf.Clamp(relicPreviewLevel, 1, maxLevel);
+         string effectText = FormatText(BuildRelicEffectText(currentRelic, relicPreviewLevel));
+-        SetText(relicLevelText, $"Lv {relicPreviewLevel} / {maxLevel}");
++        SetText(relicLevelText, $"Lv. {relicPreviewLevel} / {maxLevel}");
+         SetRelicEffectSection(effectText);
+ 
+         RefreshRelicPreviewGuides(maxLevel);
+@@ -878,11 +888,13 @@
+         SetActive(weaponAbilityRoot, false);
+         SetActive(relicPreviewRoot, false);
+         SetActive(relicEffectRoot, false);
++        SetActive(consumableDetailRoot, false);
+         SetActive(relicEffectText != null ? relicEffectText.gameObject : null, false);
+         SetRelicPreviewGuidesVisible(false);
+         SetText(weaponStatsText, string.Empty);
+         SetText(relicLevelText, string.Empty);
+         SetText(relicEffectText, string.Empty);
++        SetText(consumableDescriptionText, string.Empty);
+     }
+ 
+     private void SetRelicPreviewGuidesVisible(bool visible)
+@@ -983,6 +995,7 @@
+         ForceTextMeshUpdate(weaponStatsText);
+         ForceTextMeshUpdate(relicLevelText);
+         ForceTextMeshUpdate(relicEffectText);
++        ForceTextMeshUpdate(consumableDescriptionText);
+     }
+ 
+     private void RebuildHeaderLayout()

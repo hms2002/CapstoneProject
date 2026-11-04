@@ -2,12 +2,13 @@ Shader "Project/Monster HP Instanced"
 {
     Properties
     {
-        _BorderColor ("Border", Color) = (0,0,0,1)
-        _FrameColor ("Frame", Color) = (0.56,0.55,0.57,1)
-        _TrackColor ("Track", Color) = (0.025,0.02,0.03,1)
-        _TrailColor ("Damage Trail", Color) = (1,1,1,1)
-        _FillColor ("Health", Color) = (0.8,0.025,0.08,1)
-        _ShineColor ("Health Highlight", Color) = (1,0.17,0.23,1)
+        _MainTex ("Aseprite HP Sheet", 2D) = "white" {}
+        _FrameRect ("Frame UV Rect", Vector) = (0,0,1,1)
+        _TrackRect ("Track UV Rect", Vector) = (0,0,1,1)
+        _FillRect ("Health UV Rect", Vector) = (0,0,1,1)
+        _TrailRect ("Damage Trail UV Rect", Vector) = (0,0,1,1)
+        _FrameSize ("Frame Source Pixels", Vector) = (40,8,0,0)
+        _FrameBorder ("Frame Border Pixels", Vector) = (2,2,2,2)
     }
     SubShader
     {
@@ -19,7 +20,8 @@ Shader "Project/Monster HP Instanced"
 
         HLSLINCLUDE
         #include "UnityCG.cginc"
-        float4 _BorderColor, _FrameColor, _TrackColor, _TrailColor, _FillColor, _ShineColor;
+        sampler2D _MainTex;
+        float4 _FrameRect, _TrackRect, _FillRect, _TrailRect, _FrameSize, _FrameBorder;
         UNITY_INSTANCING_BUFFER_START(ActorHealth)
             UNITY_DEFINE_INSTANCED_PROP(float4, _HealthData)
         UNITY_INSTANCING_BUFFER_END(ActorHealth)
@@ -49,16 +51,26 @@ Shader "Project/Monster HP Instanced"
             UNITY_SETUP_INSTANCE_ID(input);
             float4 data = UNITY_ACCESS_INSTANCED_PROP(ActorHealth, _HealthData);
             float2 p = input.uv * data.xy;
-            float4 color = _BorderColor;
-            if (p.x >= 1 && p.y >= 1 && p.x < data.x - 1 && p.y < data.y - 1) color = _FrameColor;
-            if (p.x >= 2 && p.y >= 2 && p.x < data.x - 2 && p.y < data.y - 2) color = _TrackColor;
-            float innerWidth = max(0, data.x - 6);
-            float innerHeight = max(0, data.y - 6);
-            if (p.y >= 3 && p.y < data.y - 3 && p.x >= 3)
+            // Match the authored sliced Image: pixel scale comes from bar height;
+            // the two end caps retain their proportions while only the center widens.
+            float pixelScale = data.y / _FrameSize.y;
+            float4 border = _FrameBorder * pixelScale;
+            float sourceX;
+            if (p.x < border.x) sourceX = p.x / pixelScale;
+            else if (p.x >= data.x - border.z) sourceX = _FrameSize.x - (data.x - p.x) / pixelScale;
+            else sourceX = _FrameBorder.x + (p.x - border.x) / (data.x - border.x - border.z)
+                * (_FrameSize.x - _FrameBorder.x - _FrameBorder.z);
+            float4 color = tex2D(_MainTex, _FrameRect.xy + float2(sourceX / _FrameSize.x, input.uv.y) * _FrameRect.zw);
+            float2 innerSize = data.xy - border.xy - border.zw;
+            float2 inner = p - border.xy;
+            if (inner.x >= 0 && inner.y >= 0 && inner.x < innerSize.x && inner.y < innerSize.y)
             {
-                if (data.w > 0 && p.x < 3 + innerWidth * data.w) color = _TrailColor;
-                if (data.z > 0 && p.x < 3 + innerWidth * data.z)
-                    color = p.y >= 3 + innerHeight * 0.65 ? _ShineColor : _FillColor;
+                float2 uv = inner / innerSize;
+                color = tex2D(_MainTex, _TrackRect.xy + uv * _TrackRect.zw);
+                if (data.w > 0 && uv.x < data.w)
+                    color = tex2D(_MainTex, _TrailRect.xy + float2(uv.x / data.w, uv.y) * _TrailRect.zw);
+                if (data.z > 0 && uv.x < data.z)
+                    color = tex2D(_MainTex, _FillRect.xy + float2(uv.x / data.z, uv.y) * _FillRect.zw);
             }
             return color;
         }

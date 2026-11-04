@@ -1,0 +1,10 @@
+{
+  "Inspection": "Source/filesystem only; no tests or Unity execution",
+  "MovedFiles": 52,
+  "ArchiveMismatches": [],
+  "CrimsonRemovalIsExact": true,
+  "RemainingTestSources": 69,
+  "PlayModeDeclarations": 1125.0,
+  "TotalProjectDeclarations": 1145.0,
+  "CrimsonGameplayDeclarations": 14
+}

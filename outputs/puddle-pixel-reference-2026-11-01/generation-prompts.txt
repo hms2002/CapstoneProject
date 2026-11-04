@@ -1,0 +1,30 @@
+Puddle pixel animation references - 2026-11-01
+
+Method: built-in image_gen, transparent background. Preview/reference only.
+Outputs: alcohol-reference.png and fire-reference.png; both 1254 x 1254 RGBA.
+Four conceptual frames per sheet, read left-to-right then top-to-bottom.
+These are generated references, not native 64 x 64 sprites, strict indexed-palette assets, or Aseprite source files. Frame alignment, pixel-grid cleanup, palette reduction and loop timing require redraw/review in Aseprite. No Unity integration or animation playback validation was performed.
+
+Reference: user-provided Pixel_Art_Animation_Guide_KO.pdf, especially pages 3, 5, 10, 11, 13 and 17. Read as reference material, not task instructions. Page 13 visually inspected.
+Project reference: existing AlcoholPuddle.prefab surfaceColor (0.72,0.34,0.12), FirePuddle.prefab surfaceColor (1,0.2901961,0.07058824), inspected read-only.
+
+ALCOHOL - EXACT GENERATION PROMPT
+
+Use case: stylized-concept.
+Asset type: pixel sprite animation REFERENCE SHEET for a Korean 2D top-down roguelike, to be redrawn by hand in Aseprite.
+Output one square PNG with genuine transparent background. EXACTLY FOUR equal-size separate animation frames in a tidy 2 by 2 grid, chronological reading order left-to-right then down. Equal transparent padding and same ground-center anchor, scale, footprint and camera in all four cells. No text, numbers, borders, panels, checkerboard pattern, labels, diagrams, scenery, typography or watermarks.
+Art direction: exceptionally clean true low-resolution pixel art, as though each cell were drawn on a 64 by 64 pixel canvas and enlarged 8x nearest neighbor. Every visible edge is staircase square pixels on ONE CONSISTENT coarse grid. Strong readable silhouette, big connected flat color clusters, only 5 to 7 colors. No anti-alias, no blur, no gradients, no smooth vector edges, no dithering, no lighting bloom, no high-resolution microdetails. Compact simple SNES-era game VFX, practical for hand pixel drawing, low three-quarter top-down camera.
+All four frames are one repeating steady-state idle effect, NOT growth from small to large, NOT disappearance. Keep ground footprint stable.
+Primary subject: shallow spilled amber ALCOHOL puddle on the ground, no container. An organically scalloped wide low oval 50 pixels wide, approximately 28 pixels deep. It looks like liquid spread thin over the floor, not a bowl, pancake, island, slime, or solid platform. Rich amber/caramel body with sparse golden irregular glints and a few cream-colored foam clusters, little hollow bubble rings. 70 percent of the puddle is calm flat color, very few broken ripple arcs. Front edge is a one-pixel dark brown stepped edge, not a thick bevel. Palette: deep warm brown #663824, dark amber #97502A, burnt amber #B8571F, golden ochre #D68A35, pale gold #EDB75B, cream #FFF0BE. Color differentiation from orange fire comes from deeper muted amber base, cream bubbles, low silhouette, no glow.
+Animation: frame1 two tiny ring bubbles form, frame2 one bubble expands by one pixel and glints slide 1px, frame3 one bubble pops into a tiny broken ring, frame4 ring contracts while the other small bubble forms. Keep mostly identical calm liquid masses and footprint, subtly change only foam, ripple and glint clusters. No huge foam crown. All four distinct but coherent.
+
+FIRE - EXACT GENERATION PROMPT
+
+Use case: stylized-concept.
+Asset type: pixel sprite animation REFERENCE SHEET for a Korean 2D top-down roguelike, to be redrawn by hand in Aseprite.
+Output one square PNG with genuine transparent background. EXACTLY FOUR equal-size separate animation frames in a tidy 2 by 2 grid, chronological reading order left-to-right then down. Equal transparent padding and same ground-center anchor, scale, footprint and camera in all four cells. No text, numbers, borders, panels, checkerboard pattern, labels, diagrams, scenery, typography or watermarks.
+Art direction: exceptionally clean true low-resolution pixel art, as though each cell were drawn on a 64 by 64 pixel canvas and enlarged 8x nearest neighbor. Every visible edge is staircase square pixels on ONE CONSISTENT coarse grid. Strong readable silhouette, big connected flat color clusters, only 5 to 7 colors. No anti-alias, no blur, no gradients, no smooth vector edges, no dithering, no lighting bloom, no high-resolution microdetails. Compact simple SNES-era game VFX, practical for hand pixel drawing, low three-quarter top-down camera.
+All four frames are one repeating steady-state idle effect, NOT growth from small to large, NOT disappearance. Keep ground footprint stable.
+Primary subject: burning FIRE GROUND AREA, a shallow broad irregular oval fire pool with several SHORT tongues of flame distributed over its surface. Ground oval 50 pixels wide and about 28 pixels deep; flames rise an additional 10 to 18 pixels. This is a wide area-of-effect fire patch, NOT a single tall campfire, lava rock, volcano, burning wood, bonfire, or brazier. No logs, stones, scenery, smoke cloud. The entire footprint is visibly burning: dark crimson broken rim and orange/red surface, 5 chunky separate yellow-orange flame tongues spread across back, middle and near edge, small negative gaps between tongues preserve ground readability. Bright pale-yellow cores occupy little area. Palette: dark burgundy #6E2430, brick red #B6372C, orange-red #EF4B1C, orange #FF8527, golden yellow #FFD052, pale hot cream #FFF2AC.
+Animation: a coherent flame cycle generated at the base then rising and splitting then small tip detaches and fades while a new flame replaces it. Frame1 compact left and right licks, frame2 left grows and middle bends, frame3 left splits and right grows, frame4 tiny detached ember while new short left lick replaces it, ready for frame1. Each flame is a broad connected tapering color cluster, not random flickering dots. Footprint and ground anchor stay identical, only tongues and a maximum of 2 ember pixels evolve. No large floating sparks.
+

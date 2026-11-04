@@ -1,0 +1,246 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using TMPro;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Localization.Settings;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
+
+/// <summary>Real presenters in disposable scenes. Does not apply display changes or save player preferences.</summary>
+[InitializeOnLoad]
+public static class SettingsSkinValidation
+{
+    const string Pending="Capstone.SettingsSkinValidation";
+    const string Output="Library/CodexSettingsSkin/Captures";
+    const BindingFlags Private=BindingFlags.Instance|BindingFlags.NonPublic;
+    static readonly Stack<IEnumerator> routines=new();
+    static readonly List<string> checks=new();
+    static int frame=-1;
+    static double deadline;
+    static Canvas canvas;
+    static Camera camera;
+    static UnityEngine.Localization.Locale originalLocale;
+    static GameLanguageOption originalDisplayedLanguage;
+    static SettingsSkinValidation()=>EditorApplication.update+=Tick;
+    public static void AuthorAndRun(){SettingsSkinAuthoring.Apply();Run();}
+    public static void AuthorNavigationAndRun(){SettingsSkinAuthoring.ApplyInPlaceNavigation();Run();}
+
+    public static void Run()
+    {
+        if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Stop play mode before validation.");
+        if(!Application.isBatchMode && SceneManager.GetActiveScene().isDirty)throw new InvalidOperationException("Save the current scene before validation.");
+        var title=EditorSceneManager.OpenScene(SettingsSkinAuthoring.TitlePath,OpenSceneMode.Single);
+        var templates=title.GetRootGameObjects().SelectMany(r=>r.GetComponentsInChildren<SettingsPanelUI>(true).Select(p=>p.gameObject)
+            .Concat(r.GetComponentsInChildren<KeyBindingPanelUI>(true).Select(p=>p.gameObject))).ToArray();
+        var temporary=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Additive);
+        SceneManager.SetActiveScene(temporary);
+        foreach(var source in templates)
+        {var copy=Object.Instantiate(source);copy.SetActive(false);copy.name="TitleTemplate_"+source.name;SceneManager.MoveGameObjectToScene(copy,temporary);}
+        EditorSceneManager.CloseScene(title,true);
+        SessionState.SetBool(Pending,true);EditorApplication.isPlaying=true;
+    }
+    static void Tick()
+    {
+        if(!SessionState.GetBool(Pending,false)||!EditorApplication.isPlaying||frame==Time.frameCount)return;
+        frame=Time.frameCount;
+        try
+        {
+            if(deadline==0){deadline=EditorApplication.timeSinceStartup+240;routines.Push(Suite());}
+            if(EditorApplication.timeSinceStartup>deadline)throw new TimeoutException("Settings validation timed out.");
+            while(routines.Count>0){var routine=routines.Peek();if(!routine.MoveNext()){routines.Pop();continue;}if(routine.Current is IEnumerator nested){routines.Push(nested);continue;}return;}
+            Finish(null);
+        }
+        catch(Exception e){Finish(e.ToString());}
+    }
+    static IEnumerator Suite()
+    {
+        Directory.CreateDirectory(Output);
+        while(!LocalizationSettings.InitializationOperation.IsDone)yield return null;
+        GameSettingsService.EnsureInstance();InputBindingService.EnsureInstance();
+        while(GameSettingsService.Instance!=null&&Get<object>(GameSettingsService.Instance,"localeInitialization")!=null)yield return null;
+        originalLocale=LocalizationSettings.SelectedLocale;
+        originalDisplayedLanguage=GameSettingsService.Instance.DisplayedLanguage;
+        canvas=new GameObject("SettingsSkinValidationCanvas",typeof(RectTransform),typeof(Canvas),typeof(GraphicRaycaster)).GetComponent<Canvas>();
+        canvas.renderMode=RenderMode.WorldSpace;((RectTransform)canvas.transform).sizeDelta=new Vector2(1920,1080);canvas.transform.localScale=Vector3.one*.01f;
+        camera=new GameObject("SettingsSkinValidationCamera",typeof(Camera)).GetComponent<Camera>();
+        camera.orthographic=true;camera.orthographicSize=5.4f;camera.transform.position=Vector3.back*10;
+        camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color32(20,25,34,255);camera.nearClipPlane=.01f;camera.farClipPlane=100;canvas.worldCamera=camera;
+        if(EventSystem.current==null)new GameObject("SettingsSkinValidationEvents",typeof(EventSystem));
+        var global=AssetDatabase.LoadAssetAtPath<GameObject>(SettingsSkinAuthoring.GlobalPath);
+        yield return PagePair(global.GetComponentInChildren<SettingsPanelUI>(true).gameObject,global.GetComponentInChildren<KeyBindingPanelUI>(true).gameObject,"global");
+        var temporary=SceneManager.GetActiveScene();temporary.name="TitleScene";
+        var roots=SceneManager.GetActiveScene().GetRootGameObjects();
+        yield return PagePair(roots.Single(r=>r.name=="TitleTemplate_SettingUI"),roots.Single(r=>r.name=="TitleTemplate_KeyMappingUI"),"title");
+    }
+    static IEnumerator PagePair(GameObject settingsSource,GameObject keysSource,string prefix)
+    {
+        var settings=Object.Instantiate(settingsSource,canvas.transform).GetComponent<SettingsPanelUI>();
+        var keys=Object.Instantiate(keysSource,canvas.transform).GetComponent<KeyBindingPanelUI>();
+        settings.gameObject.SetActive(true);keys.gameObject.SetActive(true);yield return null;
+        keys.gameObject.SetActive(false);
+        settings.OpenUI();yield return Settle(settings.gameObject);
+        Check(Get<CanvasGroup>(settings,"temporaryHiddenCanvasGroup").transform==settings.transform,prefix+" visibility covers panel and upper chains");
+        int pendingWindow=(Get<int>(settings,"pendingWindowModeIndex")+1)%3;
+        int pendingResolution=Math.Max(0,GameSettingsService.Instance.GetResolutionOptions().Count-1);
+        Set(settings,"pendingWindowModeIndex",pendingWindow);Set(settings,"pendingResolutionIndex",pendingResolution);
+        Call(settings,"RefreshDisplayStepperState",GameSettingsService.Instance);Call(settings,"UpdateApplyDisplayButton",GameSettingsService.Instance);
+        Check(Get<UIChainDropPresentation>(settings,"dropPresentation").enabled,prefix+" upper panel motion retained");
+        Check(settings.GetComponentsInChildren<ScrollRect>(true).All(s=>!s.enabled),prefix+" settings has no scroll");
+        Check(keys.GetComponentsInChildren<ScrollRect>(true).All(s=>!s.enabled),prefix+" key page has no scroll");
+        Check(settings.GetComponentsInChildren<Slider>().All(s=>s.handleRect.rect.height<=34),prefix+" slider handles retain authored height");
+        foreach(var code in new[]{"ko","en","ja","zh-Hans","zh-Hant"})
+        {
+            yield return Locale(code,settings.gameObject);Canvas.ForceUpdateCanvases();
+            CheckText(settings.gameObject,prefix+" settings "+code);
+            if(code=="ko")CheckHit(Get<Button>(settings,"keyMappingButton"),prefix+" key launcher hit target");
+            if(prefix=="global"||code=="ko")Capture(prefix+"-settings-"+code,1920,1080);
+            keys.OpenFromSettings(settings);CheckInPlaceOpen(settings,keys,prefix+" "+code);
+            yield return Settle(keys.gameObject);yield return Locale(code,keys.gameObject);
+            var rows=Get<List<KeyBindingRowUI>>(keys,"spawnedRows");
+            Check(rows.Count==19,prefix+" binds 19 authored rows "+code);
+            Check(keys.GetComponentsInChildren<KeyBindingRowUI>(true).Length==19,prefix+" no duplicate row creation "+code);
+            Check(rows.Select(r=>r.Action).Distinct().Count()==19,prefix+" distinct action binding "+code);
+            Check(rows.Take(9).All(r=>r.transform.parent.name=="LeftColumn")&&rows.Skip(9).All(r=>r.transform.parent.name=="RightColumn"),prefix+" 9/10 column hierarchy "+code);
+            CheckText(keys.gameObject,prefix+" keys "+code);CheckControlsInside(keys,prefix+" "+code);
+            if(prefix=="global"||code=="ko")Capture(prefix+"-keys-"+code,1920,1080);
+            if(prefix=="global"&&code=="ko")
+            {
+                Capture("global-keys-ko-1280",1280,720);Capture("global-keys-ko-2560",2560,1440);
+                yield return InputFlows(settings,keys,rows);
+            }
+            keys.CloseUI();Check(!keys.gameObject.activeSelf,prefix+" key page closes in same frame "+code);yield return WaitInactive(keys.gameObject);
+            Check(settings.gameObject.activeInHierarchy&&Get<CanvasGroup>(settings,"temporaryHiddenCanvasGroup").interactable,prefix+" settings restored after keys "+code);
+            Check(Get<CanvasGroup>(settings,"temporaryHiddenCanvasGroup").alpha==1,prefix+" settings visible immediately on return "+code);
+            Check(Get<int>(settings,"pendingWindowModeIndex")==pendingWindow&&Get<int>(settings,"pendingResolutionIndex")==pendingResolution,prefix+" unapplied display choices retained "+code);
+            yield return null;
+        }
+        settings.CloseUI();yield return WaitInactive(settings.gameObject);
+        if(prefix=="global")yield return ManagerNavigation(settings,keys);
+        Object.Destroy(settings.gameObject);Object.Destroy(keys.gameObject);yield return null;yield return null;
+    }
+    static IEnumerator InputFlows(SettingsPanelUI settings,KeyBindingPanelUI keys,List<KeyBindingRowUI> rows)
+    {
+        var before=InputBindingService.EnsureInstance().GetBinding(rows[0].Action);
+        var primary=Get<Button>(rows[0],"primaryBindingButton");primary.onClick.Invoke();yield return null;
+        Check(Get<KeyBindingRowUI>(keys,"listeningRow")==rows[0],"Authored primary button starts rebinding");
+        Check(Get<GameObject>(keys,"guideRoot").activeInHierarchy,"Listening guide visible");
+        Capture("global-key-listening",1920,1080);Call(keys,"CancelRebind");
+        var working=Get<Dictionary<InputActionId,InputBinding>>(keys,"workingBindings");
+        var preview=new Dictionary<InputActionId,InputBinding>(working);
+        Call(keys,"BeginConflictConfirmation",preview,new HashSet<InputActionId>{rows[1].Action},false,false);yield return null;
+        Check(Get<bool>(keys,"awaitingSwapConfirmation"),"Conflict confirmation preserved");
+        Check(Get<Button>(keys,"confirmSwapButton").gameObject.activeInHierarchy,"Conflict confirmation buttons visible");
+        Capture("global-key-conflict",1920,1080);Get<Button>(keys,"cancelSwapButton").onClick.Invoke();
+        Check(!Get<bool>(keys,"awaitingSwapConfirmation"),"Conflict cancellation preserved");
+        Call(keys,"SetWorkingKey",rows[0].Action,false,before.primary==KeyCode.F12?KeyCode.F11:KeyCode.F12);Call(keys,"RefreshRows");
+        Get<Button>(keys,"closeButton").onClick.Invoke();yield return null;
+        Check(Get<bool>(keys,"awaitingCloseConfirmation"),"Dirty close asks before discard");
+        Capture("global-key-dirty-close",1920,1080);Get<Button>(keys,"cancelSwapButton").onClick.Invoke();yield return WaitInactive(keys.gameObject);
+        Check(InputBindingService.EnsureInstance().GetBinding(rows[0].Action).primary==before.primary,"Discard leaves saved binding untouched");
+        keys.OpenFromSettings(settings);CheckInPlaceOpen(settings,keys,"Reopen after discard");yield return Settle(keys.gameObject);
+        Check(Get<List<KeyBindingRowUI>>(keys,"spawnedRows").Count==19,"Reopen retains authored rows");
+    }
+    static void CheckInPlaceOpen(SettingsPanelUI settings,KeyBindingPanelUI keys,string label)
+    {
+        var drop=Get<UIChainDropPresentation>(keys,"dropPresentation");
+        Check(keys.IsActive&&!Get<bool>(drop,"isAnimatingOpen"),label+" key page opens without drop");
+        Check(((RectTransform)drop.transform).anchoredPosition==Get<Vector2>(drop,"openAnchoredPosition"),label+" key page already at resting position");
+        Check(drop.GetComponent<CanvasGroup>().interactable,label+" key controls immediately interactable");
+        Check(settings.IsActive&&Get<CanvasGroup>(settings,"temporaryHiddenCanvasGroup").alpha==0,label+" settings retained but visually hidden");
+    }
+    static IEnumerator ManagerNavigation(SettingsPanelUI settings,KeyBindingPanelUI keys)
+    {
+        Check(UIManager.Instance==null,"Disposable fixture has no preexisting UIManager");
+        var manager=new GameObject("NavigationValidationManager").AddComponent<UIManager>();
+        Set(manager,"settingsPanel",settings);Set(manager,"keyBindingPanel",keys);
+        Check(manager.OpenSettingsPanel(),"UIManager opens settings on stack");
+        Check(Get<bool>(Get<UIChainDropPresentation>(settings,"dropPresentation"),"isAnimatingOpen"),"Initial settings opening still plays drop");
+        yield return Settle(settings.gameObject);
+        int pending=(Get<int>(settings,"pendingWindowModeIndex")+1)%3;Set(settings,"pendingWindowModeIndex",pending);
+        for(int i=0;i<2;i++)
+        {
+            Check(manager.OpenKeyBindingPanel(),"UIManager opens key page on stack");CheckInPlaceOpen(settings,keys,"UIManager round trip "+i);
+            manager.CloseTopUI();
+            Check(!keys.IsActive&&settings.IsActive&&Get<CanvasGroup>(settings,"temporaryHiddenCanvasGroup").alpha==1,"UIManager returns to visible settings in same frame");
+            Check(Get<int>(settings,"pendingWindowModeIndex")==pending,"UIManager preserves pending display choice");
+            Check(manager.CanProcessNavigationInput(settings),"UIManager restores top page navigation ownership");
+            yield return null;
+        }
+        manager.PopUI(settings);yield return WaitInactive(settings.gameObject);
+        Check(!Get<bool>(manager,"isTimeFrozenByUi"),"Closing settings releases stack time lock");
+        Object.Destroy(manager.gameObject);yield return null;
+    }
+    static IEnumerator Settle(GameObject root)
+    {
+        var drop=root.GetComponentsInChildren<UIChainDropPresentation>(true).First(d=>d.enabled);
+        var group=drop.GetComponent<CanvasGroup>();double until=EditorApplication.timeSinceStartup+3.5;
+        while(!group.interactable&&EditorApplication.timeSinceStartup<until)yield return null;
+        Check(group.interactable,"Upper chain opening releases interaction: "+root.name);
+        drop.SnapOpen();Canvas.ForceUpdateCanvases();yield return null;yield return null;
+    }
+    static IEnumerator WaitInactive(GameObject root)
+    {double until=EditorApplication.timeSinceStartup+6;while(root.activeSelf){if(EditorApplication.timeSinceStartup>until)throw new TimeoutException("Panel did not close: "+root.name);yield return null;}}
+    static IEnumerator Locale(string code,GameObject root)
+    {
+        // Match the displayed language selector without saving the user's preference.
+        var service=GameSettingsService.EnsureInstance();
+        var language=(GameLanguageOption)Array.IndexOf(new[]{"ko","en","ja","zh-Hans","zh-Hant"},code);
+        typeof(GameSettingsService).GetProperty("DisplayedLanguage").SetValue(service,language);
+        var locale=LocalizationSettings.AvailableLocales.GetLocale(code);LocalizationSettings.SelectedLocale=locale;
+        var strings=LocalizationSettings.StringDatabase.GetTableAsync(GameText.TableName,locale);var fonts=LocalizationSettings.AssetDatabase.GetTableAsync("GameFonts",locale);
+        while(!strings.IsDone||!fonts.IsDone)yield return null;
+        foreach(var binding in root.GetComponentsInChildren<LocalizeTmpFontEvent>(true))
+        {var op=binding.AssetReference.LoadAssetAsync();while(!op.IsDone)yield return null;binding.ApplyLocalizedFont(op.Result);binding.FlushPendingLayout();}
+        yield return null;yield return null;Canvas.ForceUpdateCanvases();
+    }
+    static void CheckText(GameObject root,string label)
+    {
+        foreach(var text in root.GetComponentsInChildren<TMP_Text>())
+        {text.ForceMeshUpdate();Check(!text.isTextOverflowing&&text.rectTransform.rect.width>0&&text.rectTransform.rect.height>0,label+" text fits "+text.name+": "+text.text+" rect="+text.rectTransform.rect.size+" preferred="+text.preferredWidth+"/"+text.preferredHeight);}
+    }
+    static void CheckControlsInside(KeyBindingPanelUI panel,string label)
+    {
+        var bg=(RectTransform)panel.transform.Find("Background");
+        foreach(var button in panel.GetComponentsInChildren<Button>())
+        {
+            var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);
+            Check(corners.All(c=>bg.rect.Contains(bg.InverseTransformPoint(c))),label+" button contained "+button.name);
+        }
+        Check(panel.GetComponentsInChildren<UIChainDropPresentation>().Count(d=>d.enabled)==1,label+" only upper drop motion active");
+        CheckHit(Get<List<KeyBindingRowUI>>(panel,"spawnedRows").Select(r=>Get<Button>(r,"primaryBindingButton")).First(),label+" key control hit target");
+    }
+    static void CheckHit(Button button,string label)
+    {
+        var screen=RectTransformUtility.WorldToScreenPoint(camera,button.transform.position);
+        var hits=new List<RaycastResult>();canvas.GetComponent<GraphicRaycaster>().Raycast(new PointerEventData(EventSystem.current){position=screen},hits);
+        Check(hits.Any(h=>h.gameObject==button.gameObject||h.gameObject.transform.IsChildOf(button.transform)),label);
+    }
+    static void Capture(string name,int width,int height)
+    {
+        var rt=new RenderTexture(width,height,24);var previous=RenderTexture.active;var texture=new Texture2D(width,height,TextureFormat.RGBA32,false);
+        try{camera.targetTexture=rt;camera.Render();RenderTexture.active=rt;texture.ReadPixels(new Rect(0,0,width,height),0,0);texture.Apply();File.WriteAllBytes(Output+"/"+name+".png",texture.EncodeToPNG());}
+        finally{camera.targetTexture=null;RenderTexture.active=previous;Object.DestroyImmediate(texture);Object.DestroyImmediate(rt);}
+    }
+    static T Get<T>(object owner,string field)=>(T)owner.GetType().GetField(field,Private).GetValue(owner);
+    static void Set(object owner,string field,object value)=>owner.GetType().GetField(field,Private).SetValue(owner,value);
+    static object Call(object owner,string method,params object[] args)=>owner.GetType().GetMethod(method,Private).Invoke(owner,args);
+    static void Check(bool result,string label){if(!result)throw new InvalidOperationException(label);checks.Add("PASS "+label);}
+    static void Finish(string error)
+    {
+        SessionState.SetBool(Pending,false);if(originalLocale!=null)LocalizationSettings.SelectedLocale=originalLocale;
+        if(GameSettingsService.Instance!=null)typeof(GameSettingsService).GetProperty("DisplayedLanguage").SetValue(GameSettingsService.Instance,originalDisplayedLanguage);
+        Directory.CreateDirectory(Output);File.WriteAllLines(Output+"/validation.txt",checks.Concat(new[]{error??"SETTINGS_SKIN_VALIDATION_PASS"}));
+        if(error==null)Debug.Log("SETTINGS_SKIN_VALIDATION_PASS "+checks.Count);else Debug.LogError(error);
+        routines.Clear();deadline=0;if(Application.isBatchMode)EditorApplication.Exit(error==null?0:1);else EditorApplication.isPlaying=false;
+    }
+}
+#endif

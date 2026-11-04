@@ -1,0 +1,294 @@
+{
+  "weapon": [
+    {
+      "text": "몬스터",
+      "x": 1524,
+      "y": 395,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 84
+    },
+    {
+      "text": "보스",
+      "x": 1524,
+      "y": 460,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 84
+    },
+    {
+      "text": "NPC",
+      "x": 1524,
+      "y": 523,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 84
+    },
+    {
+      "text": "무기",
+      "x": 480,
+      "y": 292,
+      "size": 36,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "수집한 무기를 살펴보세요",
+      "x": 482,
+      "y": 340,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "5 / 6 획득",
+      "x": 482,
+      "y": 823,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "1 / 1",
+      "x": 850,
+      "y": 822,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 430
+    },
+    {
+      "text": "용사의 검",
+      "x": 582,
+      "y": 480,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 196
+    },
+    {
+      "text": "뇌창 갈라론",
+      "x": 802,
+      "y": 480,
+      "size": 18,
+      "color": "FFF0D4",
+      "align": "Center",
+      "maxWidth": 196
+    },
+    {
+      "text": "개화",
+      "x": 582,
+      "y": 618,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 196
+    },
+    {
+      "text": "기묘한 쇠덩이",
+      "x": 802,
+      "y": 618,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 196
+    },
+    {
+      "text": "홍련의 한계선",
+      "x": 582,
+      "y": 756,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 196
+    },
+    {
+      "text": "???",
+      "x": 802,
+      "y": 756,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 196
+    },
+    {
+      "text": "자세히 설명",
+      "x": 1084,
+      "y": 835,
+      "size": 18,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 424
+    }
+  ],
+  "relic": [
+    {
+      "text": "몬스터",
+      "x": 1524,
+      "y": 395,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 84
+    },
+    {
+      "text": "보스",
+      "x": 1524,
+      "y": 460,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 84
+    },
+    {
+      "text": "NPC",
+      "x": 1524,
+      "y": 523,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 84
+    },
+    {
+      "text": "유물",
+      "x": 480,
+      "y": 292,
+      "size": 36,
+      "color": "39291F",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "효과와 레벨을 확인하세요",
+      "x": 482,
+      "y": 340,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "7 / 9 획득",
+      "x": 482,
+      "y": 823,
+      "size": 18,
+      "color": "6B4934",
+      "align": "Left",
+      "maxWidth": 430
+    },
+    {
+      "text": "1 / 5",
+      "x": 850,
+      "y": 822,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 430
+    },
+    {
+      "text": "신속의 부츠",
+      "x": 692,
+      "y": 480,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "질풍의 석판",
+      "x": 838,
+      "y": 480,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "송골매의 증표",
+      "x": 546,
+      "y": 618,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "스피드 메달",
+      "x": 692,
+      "y": 618,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "보약 곰방대",
+      "x": 838,
+      "y": 618,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "회전하는 철구",
+      "x": 546,
+      "y": 756,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "???",
+      "x": 692,
+      "y": 756,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "???",
+      "x": 838,
+      "y": 756,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 136
+    },
+    {
+      "text": "쇳덩이의",
+      "x": 546,
+      "y": 468,
+      "size": 18,
+      "color": "FFF0D4",
+      "align": "Center",
+      "maxWidth": 132
+    },
+    {
+      "text": "예비 탄창",
+      "x": 546,
+      "y": 489,
+      "size": 18,
+      "color": "FFF0D4",
+      "align": "Center",
+      "maxWidth": 132
+    },
+    {
+      "text": "레벨에 따라 효과를 확인하세요",
+      "x": 1230,
+      "y": 835,
+      "size": 18,
+      "color": "39291F",
+      "align": "Center",
+      "maxWidth": 424
+    }
+  ]
+}

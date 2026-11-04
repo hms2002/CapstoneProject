@@ -1,0 +1,24 @@
+{
+  "sourceDimensions": [
+    128,
+    128
+  ],
+  "colors": [
+    "241,107,50",
+    "182,61,40",
+    "255,198,90",
+    "255,240,191"
+  ],
+  "alpha": "binary",
+  "glyphSize": [
+    5,
+    9
+  ],
+  "glyphColor": "FFC65A",
+  "connectedDirectionSamples": 128,
+  "outerRunes": 16,
+  "outerDividers": "absent",
+  "medallions": "original 10x10 outline, empty interiors verified natively",
+  "animation": "120 frames / 80ms / outer clockwise and inner counterclockwise",
+  "limitations": "Preview-only. Rotation redraws connected strokes at each angle; standard Unity bitmap rotation is not validated. No Unity import, compilation or Play Mode executed."
+}

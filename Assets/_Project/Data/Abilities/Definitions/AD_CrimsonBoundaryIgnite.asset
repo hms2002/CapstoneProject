@@ -12,26 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_CrimsonBoundaryIgnite
   m_EditorClassIdentifier: 
-  simpleDescription: "시야 안의 불타는 적들의 [[화상]]을 일부 소모해 폭발시킵니다. 폭발은 주변 적도 피해를 줍니다."
+  simpleDescription: "\uAE38\uAC8C \uB20C\uB7EC \uC6B4\uC11D\uC744 \uC870\uC900\uD558\uACE0
+    \uB193\uC73C\uBA74 \uBC1C\uC0AC\uD569\uB2C8\uB2E4. \uCC28\uC9D5\uD560\uC218\uB85D
+    \uBC94\uC704\uAC00 \uB113\uC5B4\uC9C0\uBA70, \uCC29\uD0C4 \uC2DC \uD53C\uD574\uC640
+    [[\uD654\uC0C1]]\uC744 \uC90D\uB2C8\uB2E4."
   abilityName: "점화!"
   icon: {fileID: 21300000, guid: bc1ac4dd5d704964980142f9f0e52242, type: 3}
-  description: "● 시야 안의 [[화상]] 상태인 모든 적에게 폭발 발생\n● 대상마다 [[화상]] 최대 {val:5중첩}을 소모해 폭발 피해\n● 주변 적에게도 동일한 피해\n● 폭발 지름 {val:5칸}"
+  description: "\u25CF {val:0.7\uCD08} \uC774\uC0C1 \uCC28\uC9D5 \uD6C4 \uD574\uC81C\uD558\uBA74
+    \uBC1C\uC0AC ({val:1.4\uCD08}\uC5D0 \uCD5C\uB300 \uCC28\uC9D5)\n\u25CF \uD3ED\uBC1C
+    \uC9C0\uB984 {val:4.03~6\uCE78}, \uBE44\uD589 {val:0.5\uCD08}\n\u25CF \uD654\uC5FC
+    \uCD5C\uC885 \uB2A5\uB825\uCE58\uC758 {val:3\uBC30} \uD53C\uD574\uC640 [[\uD654\uC0C1]]
+    {val:10\uC911\uCCA9}\n\u25CF \uCD5C\uB300 \uCC28\uC9D5: {val:4\uBC30} \uD53C\uD574\uC640
+    [[\uD654\uC0C1]] {val:12\uC911\uCCA9}\n\u25CF \uBC1C\uC0AC \uC2DC \uCFE8\uB2E4\uC6B4
+    {val:8\uCD08}, \uCD5C\uC18C \uCC28\uC9D5 \uC804 \uCDE8\uC18C\uB294 \uCFE8\uB2E4\uC6B4
+    \uC5C6\uC74C"
   hitFeel:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0.06
   hitFeelByAttack: []
-  cooldown: 5
+  cooldown: 8
   executionPolicy: 0
   useCharges: 0
   maxCharges: 1
-  startCooldownOnEnd: 0
+  startCooldownOnEnd: 1
   castTime: 0
   recoveryTime: 0
   canCastWhileMoving: 1
   interruptible: 1
   requireTargetObject: 0
   cost: 0
-  logic: {fileID: 11400000, guid: 5b9ce4d981874f36a4603b95292f11b8, type: 2}
-  sourceObject: {fileID: 11400000, guid: 49492591466c45ecb2245a229703c3ac, type: 2}
+  logic: {fileID: 11400000, guid: a1bf3290dab850940b752615f4f9ebed, type: 2}
+  sourceObject: {fileID: 11400000, guid: 459d2d32e2b808646865a5b557b30459, type: 2}
   hitCueMagnitude: 1
   criticalHitCueMagnitudeMultiplier: 2

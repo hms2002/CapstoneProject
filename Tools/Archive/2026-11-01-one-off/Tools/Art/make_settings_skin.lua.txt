@@ -1,0 +1,51 @@
+-- Reproducible Aseprite source for the approved settings/key mapping skin.
+-- Aseprite -b --script-param outputDir=... --script Tools/Art/make_settings_skin.lua
+local out = app.params.outputDir
+assert(out and #out > 0, 'outputDir is required')
+local pc = app.pixelColor
+local function color(h)
+  return pc.rgba(tonumber(h:sub(1,2),16), tonumber(h:sub(3,4),16), tonumber(h:sub(5,6),16),255)
+end
+local function rect(im,x,y,w,h,c)
+  for j=y,y+h-1 do for i=x,x+w-1 do im:drawPixel(i,j,color(c)) end end
+end
+local function frame(size,outer,edge,inner,fill)
+  local im=Image(size,size,ColorMode.RGB)
+  rect(im,0,0,size,size,outer)
+  rect(im,1,1,size-2,size-3,edge)
+  rect(im,3,3,size-6,size-7,inner)
+  rect(im,4,4,size-8,size-9,fill)
+  return im
+end
+local sheet=Sprite(256,64,ColorMode.RGB)
+local function add(name,im,x,y)
+  local layer=sheet:newLayer(); layer.name=name
+  sheet:newCel(layer,1,im,Point(x,y))
+end
+add('Panel',frame(32,'100d19','88759f','413354','211b30'),0,0)
+add('Row',frame(32,'211b30','615577','393047','2c253d'),40,0)
+local button=frame(32,'100d19','615577','403353','403353')
+rect(button,1,1,30,2,'9280ac');rect(button,1,1,2,28,'9280ac')
+add('Button',button,80,0)
+local key=frame(32,'100d19','79658d','1d182a','1d182a')
+rect(key,1,1,30,2,'a38abc')
+add('Key',key,120,0)
+local handle=Image(16,24,ColorMode.RGB)
+rect(handle,1,1,15,23,'100d19');rect(handle,0,0,14,22,'69567d')
+rect(handle,0,0,14,2,'d5c1f2');rect(handle,0,0,2,22,'d5c1f2')
+rect(handle,2,2,10,18,'af96cf')
+add('Handle',handle,160,0)
+local track=Image(16,12,ColorMode.RGB);rect(track,0,0,16,12,'130f20')
+add('Track',track,184,0)
+local fill=Image(16,12,ColorMode.RGB);rect(fill,0,0,16,12,'615577')
+add('Fill',fill,208,0)
+local divider=Image(8,2,ColorMode.RGB);rect(divider,0,0,8,2,'59466e')
+add('Divider',divider,232,0)
+local reset=Image(12,12,ColorMode.RGB)
+rect(reset,4,1,5,2,'b9afce');rect(reset,8,3,3,5,'b9afce')
+rect(reset,4,8,5,2,'b9afce');rect(reset,2,5,2,3,'b9afce')
+rect(reset,0,3,6,2,'b9afce');rect(reset,2,1,2,6,'b9afce')
+add('Reset',reset,232,16)
+sheet:saveAs(out..'/SettingsSkin.aseprite')
+sheet:saveCopyAs(out..'/SettingsSkin.png')
+sheet:close()

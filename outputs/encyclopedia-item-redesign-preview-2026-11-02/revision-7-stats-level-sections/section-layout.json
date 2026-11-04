@@ -1,0 +1,57 @@
+{
+  "pageGeometry": {
+    "left": {
+      "x": 464,
+      "y": 286,
+      "width": 460,
+      "height": 576
+    },
+    "right": {
+      "x": 996,
+      "y": 286,
+      "width": 460,
+      "height": 576
+    },
+    "gutter": {
+      "x": 924,
+      "y": 286,
+      "width": 72,
+      "height": 576
+    },
+    "footerShiftY": -6,
+    "scope": "All newly authored paper, icons and typography are clipped to equal page rectangles; existing external bookmarks remain."
+  },
+  "title": {
+    "x": 1008,
+    "y": 296,
+    "width": 436,
+    "height": 41
+  },
+  "weaponStats": {
+    "x": 1018,
+    "y": 346,
+    "width": 416,
+    "height": 32,
+    "label": "능력치",
+    "textY": 352
+  },
+  "storyShiftY": 10,
+  "weaponSkillsShiftY": 5,
+  "relicLevel": {
+    "x": 1018,
+    "y": 356,
+    "width": 416,
+    "height": 46,
+    "label": "레벨",
+    "textY": 368,
+    "qX": 1154,
+    "levelX": 1272,
+    "eX": 1390
+  },
+  "relicEffect": {
+    "label": "효과",
+    "labelY": 418,
+    "bodyShiftY": 46
+  },
+  "preference": "Keep weapon stats and relic level in distinct labeled sections where feasible; retain a continuous right-page reading surface."
+}

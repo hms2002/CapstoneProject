@@ -1,0 +1,168 @@
+--- before/Assets\_Project\Scenes\Grand Hall.unity
+
++++ Assets\_Project\Scenes\Grand Hall.unity
+
+@@ -167,6 +167,30 @@
+
+       propertyPath: m_LocalEulerAnglesHint.z
+       value: 0
+       objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.b
++      value: 0.65882355
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.g
++      value: 0.9019608
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.r
++      value: 1
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.b
++      value: 0.3019608
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.g
++      value: 0.6862745
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.r
++      value: 1
++      objectReference: {fileID: 0}
+     - target: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+       propertyPath: m_Name
+       value: Portal_To_DragonCorridor
+@@ -187,6 +211,10 @@
+
+       propertyPath: startRunRouteCatalog
+       value: 
+       objectReference: {fileID: 11400000, guid: e2de6fd04aec09443a7b3f80c3d10058, type: 2}
++    - target: {fileID: 6050417876131653467, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: m_Sprite
++      value:
++      objectReference: {fileID: 21300000, guid: 0246d76b9e3f9074daf05736fdfd6679, type: 3}
+     m_RemovedComponents: []
+     m_RemovedGameObjects: []
+     m_AddedGameObjects: []
+@@ -21995,6 +22023,18 @@
+
+       propertyPath: m_LocalEulerAnglesHint.z
+       value: 0
+       objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.g
++      value: 0.7607843
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.r
++      value: 0.92156863
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.g
++      value: 0.41568628
++      objectReference: {fileID: 0}
+     - target: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+       propertyPath: m_Name
+       value: Portal_To_DemonkingCorridor
+@@ -22015,6 +22055,10 @@
+
+       propertyPath: startRunRouteCatalog
+       value: 
+       objectReference: {fileID: 11400000, guid: e00f5ae390a21034c9399e7bfc22075f, type: 2}
++    - target: {fileID: 6050417876131653467, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: m_Sprite
++      value:
++      objectReference: {fileID: 21300000, guid: 1048a4c6d46cdcb42b2ae7e7ff81c164, type: 3}
+     m_RemovedComponents: []
+     m_RemovedGameObjects: []
+     m_AddedGameObjects: []
+@@ -42157,6 +42201,30 @@
+
+       propertyPath: m_LocalEulerAnglesHint.z
+       value: 0
+       objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.b
++      value: 0.9098039
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.g
++      value: 0.8156863
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.r
++      value: 0.85490197
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.b
++      value: 0.7137255
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.g
++      value: 0.54901963
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.r
++      value: 0.6
++      objectReference: {fileID: 0}
+     - target: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+       propertyPath: m_Name
+       value: Portal_To_ShadowCorridor
+@@ -42177,6 +42245,10 @@
+
+       propertyPath: startRunRouteCatalog
+       value: 
+       objectReference: {fileID: 11400000, guid: f305f976230b0ab4b89f80addd77cf1e, type: 2}
++    - target: {fileID: 6050417876131653467, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: m_Sprite
++      value:
++      objectReference: {fileID: 21300000, guid: 033c280b094fcc34ea68769555d83df5, type: 3}
+     m_RemovedComponents: []
+     m_RemovedGameObjects: []
+     m_AddedGameObjects: []
+@@ -42496,6 +42568,30 @@
+
+       propertyPath: m_LocalEulerAnglesHint.z
+       value: 0
+       objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.b
++      value: 0.9098039
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.g
++      value: 1
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.maxColor.r
++      value: 0.7254902
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.b
++      value: 0.69411767
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.g
++      value: 0.85882354
++      objectReference: {fileID: 0}
++    - target: {fileID: 2645951965658401351, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: InitialModule.startColor.minColor.r
++      value: 0.2627451
++      objectReference: {fileID: 0}
+     - target: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+       propertyPath: m_Name
+       value: Portal_To_SlimeCorridor
+@@ -42516,6 +42612,10 @@
+
+       propertyPath: startRunRouteCatalog
+       value: 
+       objectReference: {fileID: 11400000, guid: 398b7c91b21962b4f91574296153473c, type: 2}
++    - target: {fileID: 6050417876131653467, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
++      propertyPath: m_Sprite
++      value:
++      objectReference: {fileID: 21300000, guid: cac574630774f044cabe07bdd9b895e1, type: 3}
+     m_RemovedComponents: []
+     m_RemovedGameObjects: []
+     m_AddedGameObjects: []

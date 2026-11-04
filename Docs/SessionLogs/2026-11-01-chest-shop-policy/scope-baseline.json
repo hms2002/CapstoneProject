@@ -1,0 +1,230 @@
+{
+  "changedSourceBaseline": [
+    {
+      "path": "Assets/_Project/Runtime/Features/Loot/LootPoolContext.cs",
+      "sha256": "6353865d834157daf15ba6d22efa3b5720e79747d272e858d5536f36b6fb2e91"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Loot/LootPoolWeaponExclusionProvider.cs",
+      "sha256": "bb665964903211e16db78b045e7974ff2279ef74e6a8056896b9df8de828a5e8"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Loot/ChestLootGenerationService.cs",
+      "sha256": "72f2b6a6e4121da96eaeadcab1b5c2926711bb0d635e1b6cc27c791ecbd4416c"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Loot/Chests/TreasureChest.cs",
+      "sha256": "7ace2b9530c390ea5f1d52f01b7be1a6f8d9313436a30c205e071aa1f429d3d7"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Loot/LootPoolItemSelectionService.cs",
+      "sha256": "8c3c7212115d246423a0327123430096d2f4fd789eb2c5f6a0cc543712c18786"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopInventoryRoll.cs",
+      "sha256": "ac7bca145baa77390303f544d79db71a988a5e3bebf586416b9c385b980a329b"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRunStateService.cs",
+      "sha256": "ac61d33689452410fce6b2e621221bb4293ebbb5d6d0a05bc9b5ff9af03cdd01"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs",
+      "sha256": "310c5d0c37b0fa3788f67b73be2b5196b9fa68cbdcba74c438b9bdff2d255586"
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": "Assets/AddressableAssetsData/AssetGroups/BootCommon.asset",
+      "sha256": "03ef6c39ba30ec124ecd70a1d94a8abde9f6425d7700733c5a5986e90682dfc5"
+    },
+    {
+      "path": "Assets/_Project/Data/Dialogue/Merchant/ShopDefinition_RunGold.asset",
+      "sha256": "5bf6a3be978dc8d1db8016cd1846d6b198db757293de49180d96f47e41976507"
+    },
+    {
+      "path": "Assets/_Project/Data/Items/ItemDatabase.asset",
+      "sha256": "9c9969effffc05ffd85469a1e57e7c48ef4db61ffc3dc979499fc88e3faad35e"
+    },
+    {
+      "path": "Assets/_Project/Data/SceneFlow/LoadingManifests/LoadingAddressableRegistry.asset",
+      "sha256": "aac80c6d7d5409f3111b4820db63af6053fe542f87bb1ec050604c0950dc3426"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Core/Save/GamePlayData.cs",
+      "sha256": "36a0a15c75ecc9f09c9334a353460aa2477dc3a2678ed02f95a97cb528fa919a"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Core/Save/MerchantRuntimeState.cs",
+      "sha256": "ee32ee359ce8ba131bada1163c3574c5fd05a1c258d61b687536edcaba9f870e"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs.meta",
+      "sha256": "e39c8c95da67b8f396fb66692136a7c0dfa94d9acd1151bbafb0c3c2f88a0155"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantPurchaseService.cs",
+      "sha256": "92c55873f68743a0f8ab0aef21cc7d21aa9f9ed5921f625f206da7b375fd33f6"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRefreshInteractable.cs",
+      "sha256": "09fb77ab73fa592e41d4ebded03d9f339c14da0d77dcc9d28e58351de6dc2d94"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRunStateService.cs.meta",
+      "sha256": "961f946449e1cd5845bc54be07092c108c031e587c12c97e3807223b548535f2"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantShopPolicy.cs",
+      "sha256": "710a40badee078aaf3ba0a880849bc4ffb1a1817300d88477844866c29788361"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantStockEntryStateDefinitionExtensions.cs",
+      "sha256": "e4e18fcad57b90e1d779647acf7de492ae770bd0b70f492de71ffd0f9ef4d99c"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopDefinitionSO.cs",
+      "sha256": "9418967097b37ddfe57853c0b223c925e61aa18eefb3e9e5fb8156c61c2f4a1b"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopInventoryRoll.cs.meta",
+      "sha256": "53f231066985f24f84c0437c5981a49e700cd8104340fce679ed0a15958ebf0b"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopSlot.cs",
+      "sha256": "20e9bd7c8d52732beee34d9377beeaf84a4f3700d45e0d9fd2164683302d7ec3"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Items/Weapons/Inventory/WeaponInventory2D.cs",
+      "sha256": "4a8326bbee5aab603d29eb6430a13673dc2d3402858446e4a401c8106351ff05"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Loot/ChestLootGenerationService.cs.meta",
+      "sha256": "ad6e4ecba29fbca1f8d6cb6c60bd2f4c39c7dfac80c56f6bf2081f5c361fce98"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Loot/Chests/TreasureChest.cs.meta",
+      "sha256": "4136154a9e035f6b98517da13faa5ad53cd4b5811f2f526f0479156b0f75da4b"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Loot/LootPoolContext.cs.meta",
+      "sha256": "70701b49ad2c44ad7afdd89e5380d9444d215151a20f834475e4bed36db3cd6f"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Loot/LootPoolItemSelectionService.cs.meta",
+      "sha256": "50274c3d4797f01e5251ef5a42665ac2366ec120559443f0112d32f3191230e5"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Loot/LootPoolWeaponExclusionProvider.cs.meta",
+      "sha256": "a60f8118bfba6296b25a34674e02fc66ee4d32292c7286fe48b51c8d919a2fbd"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Map/Procedural/DungeonGenerator.cs",
+      "sha256": "91fb90ff0ab32c9f575a23ee6290ed24701045e90609ca0cd90397d170597ca7"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Map/Procedural/DungeonRoomBuilder.cs",
+      "sha256": "71035f9f094f3445389728d0f839ff70d8ffaa6d51adeb93a634a17276ccac37"
+    },
+    {
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "sha256": "fc77e2020bf2c4b8754727dce7664fbe0726cd86cb2edb5158d0b257c2b1f577"
+    },
+    {
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "sha256": "dfa2fef43b1b167dc51a52647a6fa463f53c54a44cb4b6a08d41b05983c677f3"
+    },
+    {
+      "path": "Assets/_Project/Scenes/DragonCorridor.unity",
+      "sha256": "b241fdce4e29eec1918e86fe2602c42a69ed3c312aa85fb8b2024f9cf38b21ce"
+    },
+    {
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "sha256": "d26f6fa50cdfad7acfc25664dff2f4c4f15584a9298aeeb302168bc6eec2fe59"
+    },
+    {
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "sha256": "f8b2ec3939b74b19cb9ca6a6ac423abeb42951c1d50d37906ac373fe2d4507d6"
+    },
+    {
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "sha256": "6bd5321a95f92a6d9fbd462829f57285c8a4d7bb640e0de732b38c96913298df"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "sha256": "36ad208e2bef5112f37fc7357b9cc5a7b9dcaa06b0f9bb49de5c47d2bc30c6df"
+    },
+    {
+      "path": "Assets/_Project/Scenes/PixelLightTest.unity",
+      "sha256": "f224068a41723ab978e6b401603f82e46d57d1cb7cce58f431e6fe85edb3619f"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity",
+      "sha256": "0686fcf10ce318687ad91ac9ff46d09476bfe03ce3bba6a967bbb20f00844c87"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "sha256": "fde591b5844739e3bc32f23cd80fe2a58134d6a163b57e1d15acce260606929f"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProceduralDungeonV0Test.unity",
+      "sha256": "0967a0d9a7619b572ecd84564d74da32b4a7ed0c5c4cf0e671ed55aeb72bb690"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "sha256": "7a9e386403c746d101c25359a5b37fd47b9e6d6dfaa1fa4e1ed06401e28a5490"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "sha256": "602a6bbb58518216f32384c42c0f783906505d5b6ed632a1a5a660d52b89bf9d"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProtoTypeBoss 1.unity",
+      "sha256": "c7c695cb9ba8194f754173821ea7680bc47390635aeb9ba0cc4dbdd04651974e"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProtoTypeCorridor.unity",
+      "sha256": "a616b568673fd2be499c465728210945afcbedc41eafae4264fbe6ce1b7f9b88"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "sha256": "72988dd1791d03b7eb95bd8bdfe41066af89f595d6e86e04d2645f3f5a62bb7c"
+    },
+    {
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "sha256": "585be80a7bcc88dfc2ca4c354cb7c7260b9e5db76342a7b17cfb6815d334845f"
+    },
+    {
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "sha256": "2d926758016ed5fa186e0772d62786862dc96a789a330ab85102b540eba8944b"
+    },
+    {
+      "path": "Assets/_Project/Scenes/SangHyup_Hallway.unity",
+      "sha256": "56bf85e630dacbcc57f348cc083cbdce1a99340614d49f7a54575725b17a0f32"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ShadowCorridor.unity",
+      "sha256": "dc0ec6b0c62143d495d6502bca245191af590bbb408715dc993e37d6e4734869"
+    },
+    {
+      "path": "Assets/_Project/Scenes/SlimeCorridor.unity",
+      "sha256": "1e9adb30c32b1ab34a01e0750b9772785588b58d3abb9970645e12e3cc537fc8"
+    },
+    {
+      "path": "Assets/_Project/Scenes/Tests/TestScene.unity",
+      "sha256": "90b6c4db142246075d37ce8839c929b350c008ef606c620324248d67fdeea850"
+    },
+    {
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "sha256": "0a37fd126a594e8a65168e28b0ace5efe75978c0a9baf7c3fdc5a45e1911eb1a"
+    },
+    {
+      "path": "Assets/_Project/Scenes/TutorialCorridor.unity",
+      "sha256": "929d164ddd722eb62863a6cc6e44df052a69b22b21c52cffd8bce25bb2a15ab9"
+    },
+    {
+      "path": "ProjectSettings/EditorBuildSettings.asset",
+      "sha256": "8436f0c2ed5b429205ad47ab76073fef555ef0fdd3015ec149fcb2d17a64f5be"
+    }
+  ]
+}

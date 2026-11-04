@@ -1,0 +1,13 @@
+Unity 6000.4.2f1 baseline compile: exit 0
+Unity final source compile + asset authoring + GPU capture: exit 0
+Play Mode CrimsonChargePlayModeTests: 8 passed / 8, 0 failed
+Post-cleanup native AD import/binding check: 1 passed / 1, 0 failed
+MSBuild Editor.csproj (including Core/Gameplay/Presentation/UI/Infrastructure dependencies): exit 0
+MSBuild ProceduralPlayModeTests.csproj: exit 0
+Source art: 47 PNGs, six exact opaque colors; Point/no mipmaps/uncompressed
+Native GPU review: 195 frames at 400x225; GIF 2x nearest-neighbor, 3.9 seconds
+Gauge threshold colors/fill and constant dash thickness verified at half/full size
+VFX prefab: no Collider2D, Rigidbody2D, IAttackCollisionSource2D, particle collision or trigger modules
+Default GE cooldown and fallback cooldown both tested with scoped duration modifiers
+Git diff --check: passed
+Manual whole-game playthrough, audio balance and standalone Player build: not executed

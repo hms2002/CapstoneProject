@@ -117,7 +117,7 @@ public static class ProceduralCorridorTravelInstaller
             CreateOrUpdateDefaultPresentationProfile();
         SceneTravelPresentationProfileSO lobbyToCorridorPresentationProfile =
             CreateOrUpdateLobbyToCorridorPresentationProfile();
-        GameObject travelPortalPrefab = CreateOrUpdateTravelPortalPrefab();
+        CreateOrUpdateTravelPortalPrefab();
 
         CorridorTravelSpec[] specs = CreateSpecs();
         CorridorLinkSpec[] corridorLinks = CreateCorridorLinkSpecs(specs);
@@ -125,6 +125,12 @@ public static class ProceduralCorridorTravelInstaller
 
         for (int i = 0; i < specs.Length; i++)
         {
+            string portalPath = "Assets/_Project/Prefabs/Map/Procedural/" +
+                                $"ProceduralSceneTravelPortal_{specs[i].ThemeName}.prefab";
+            GameObject travelPortalPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(portalPath);
+            if (travelPortalPrefab == null)
+                throw new InvalidOperationException($"Missing themed boss portal prefab: {portalPath}");
+
             InstallTheme(
                 specs[i],
                 lobbyToCorridorPresentationProfile,

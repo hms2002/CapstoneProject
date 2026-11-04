@@ -85,9 +85,6 @@ public sealed class LightningSpearMarkActor : MonoBehaviour
         if (validRushVisual != null)
             validRushVisual.SetActive(false);
 
-        if (selectedVisual != null)
-            selectedVisual.SetActive(rushFeedbackVisible);
-
         if (rushOutlineRenderer != null)
         {
             feedbackProperties ??= new MaterialPropertyBlock();
@@ -148,6 +145,15 @@ public sealed class LightningSpearMarkActor : MonoBehaviour
 
         if (activeVisual != null)
             activeVisual.SetActive(active);
+
+        RefreshIdleVisual();
+    }
+
+    private void RefreshIdleVisual()
+    {
+        // SelectedVisual is the authored Idle loop; its serialized binding stays intact.
+        if (selectedVisual != null)
+            selectedVisual.SetActive(IsActive && !isDestroying && isActiveAndEnabled);
     }
 
     private void SetSpawnState()
@@ -179,6 +185,7 @@ public sealed class LightningSpearMarkActor : MonoBehaviour
             return;
 
         isDestroying = true;
+        RefreshIdleVisual();
         SetFeedback(false, false);
         owner?.UnregisterMark(this);
         Destroy(gameObject);
@@ -189,5 +196,11 @@ public sealed class LightningSpearMarkActor : MonoBehaviour
         owner?.UnregisterMark(this);
     }
 
-    private void OnDisable() => SetFeedback(false, false);
+    private void OnEnable() => RefreshIdleVisual();
+
+    private void OnDisable()
+    {
+        RefreshIdleVisual();
+        SetFeedback(false, false);
+    }
 }

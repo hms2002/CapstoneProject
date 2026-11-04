@@ -1,0 +1,69 @@
+{
+  "unchanged_file_count": 18,
+  "unchanged_files": [
+    "airborne-flame-particle-frame-1.png",
+    "airborne-flame-particle-frame-2.png",
+    "airborne-flame-particle-frame-3.png",
+    "airborne-flame-particle-frame-4.png",
+    "airborne-flame-particle-frame-5.png",
+    "airborne-flame-particle-frame-6.png",
+    "airborne-flame-particle-frame-7.png",
+    "airborne-flame-particle-frame-8.png",
+    "airborne-flame-particle-sheet.png",
+    "airborne-flame-particle.aseprite",
+    "airborne-flame-particle.gif",
+    "fire-ground-frame-1.png",
+    "fire-ground-frame-2.png",
+    "fire-ground-frame-3.png",
+    "fire-ground-frame-4.png",
+    "fire-ground-sheet.png",
+    "fire-ground.aseprite",
+    "fire-ground.gif"
+  ],
+  "near_active_before": 56,
+  "near_active_after": 35,
+  "near_shape_alpha_timing_preserved": true,
+  "near_palette_before": [
+    [
+      240,
+      93,
+      26,
+      255
+    ],
+    [
+      255,
+      174,
+      41,
+      255
+    ],
+    [
+      255,
+      240,
+      156,
+      255
+    ]
+  ],
+  "near_palette_after": [
+    [
+      219,
+      74,
+      22,
+      255
+    ],
+    [
+      245,
+      139,
+      30,
+      255
+    ],
+    [
+      255,
+      203,
+      88,
+      255
+    ]
+  ],
+  "all_air_trajectories_identical": true,
+  "all160_background_and_air_layer_cels_identical": "Verified natively in Aseprite",
+  "GIF_dimensions_and_times_verified": true
+}

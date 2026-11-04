@@ -110,6 +110,13 @@ public sealed class EncyclopediaEntryButton : MonoBehaviour,
         SetTextObjectActive(indexText, false);
         SetTextObjectActive(titleText, false);
         SetIcon(iconItem, fallbackIcon);
+        bool discovered = iconItem switch
+        {
+            WeaponDefinition weapon => EncyclopediaDiscoveryProgress.Has(EncyclopediaDiscoveryKind.Weapon, weapon.weaponId),
+            RelicDefinition relic => EncyclopediaDiscoveryProgress.Has(EncyclopediaDiscoveryKind.Relic, relic.relicId),
+            _ => true
+        };
+        if (iconImage != null) iconImage.color = discovered ? Color.white : Color.black;
         SetSelected(selected);
         SetLocked(locked);
     }

@@ -1,0 +1,70 @@
+{
+  "radii": [
+    {
+      "charge": 0,
+      "inner": 0,
+      "outer": 0
+    },
+    {
+      "charge": 25,
+      "inner": 20,
+      "outer": 0
+    },
+    {
+      "charge": 50,
+      "inner": 40,
+      "outer": 0
+    },
+    {
+      "charge": 75,
+      "inner": 40,
+      "outer": 50
+    },
+    {
+      "charge": 100,
+      "inner": 40,
+      "outer": 60
+    }
+  ],
+  "nativePixelSizes": {
+    "inner": 80,
+    "outer": 120,
+    "proposedPpu": 20,
+    "existingCrimsonPpu": 16,
+    "maximumDiameter": 6
+  },
+  "worldDiameterPreservation": "120 / 20 = 96 / 16 = 6; proposed import, not applied to Unity",
+  "nativeSourcePixelMapping": "pass",
+  "palette": "FFC65A gold, FFF0BF cream, F16B32 ember; binary alpha",
+  "paletteCounts": {
+    "outer": {
+      "255,198,90": 1839,
+      "255,240,191": 82,
+      "241,107,50": 62
+    },
+    "inner": {
+      "255,198,90": 1930,
+      "255,240,191": 78,
+      "241,107,50": 87
+    }
+  },
+  "allBorderPixels": "Uniform gold verified",
+  "originalArt": "Every opaque v10 pixel retains its RGBA; only gold border detail added",
+  "addedGoldPixels": {
+    "outer": 344,
+    "inner": 144
+  },
+  "cardinalBorderThickness": "2px verified",
+  "regularRunes": "7x7 bold; inner 12 plus 4 center marks; outer 16, separated sectors verified",
+  "wholeInnerCompletedAt50": "pass",
+  "separateLayers": "pass",
+  "innerOpaquePixels": 2095,
+  "outerOpaquePixels": 1983,
+  "fullCircumferenceAtPartialCharge": "pass",
+  "scaledBoundary": "pass",
+  "oppositePlanarRotation": "pass",
+  "pauseResume": "pass",
+  "artwork": "Segmented parallel arcs and short radial joins between runes; editable border-engraving layer",
+  "rendering": "offline same-JavaScript Canvas pixel adapter",
+  "limitations": "Browser DOM/layout and Unity Play Mode not run. The 20 PPU proposal is denser than existing 16 PPU effects. Point filtering alone does not guarantee stable lines at every rotation/scale or under the actual camera."
+}

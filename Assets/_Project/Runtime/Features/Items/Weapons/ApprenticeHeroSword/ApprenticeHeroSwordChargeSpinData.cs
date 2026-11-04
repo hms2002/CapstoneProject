@@ -29,6 +29,7 @@ public sealed class ApprenticeHeroSwordChargeSpinData : ScriptableObject
     [SerializeField] private ApprenticeHeroSwordDamageConfig damage = new();
 
     [Header("Charge Presentation")]
+    [SerializeField] private GameObject chargeGaugePrefab;
     [SerializeField] private ParticleSystem chargeParticlePrefab;
     [SerializeField] private Vector3 chargeParticleLocalPosition;
     [SerializeField] private Vector3 chargeParticleLocalEulerAngles;
@@ -105,6 +106,7 @@ public sealed class ApprenticeHeroSwordChargeSpinData : ScriptableObject
     public ApprenticeHeroSwordHitboxConfig Hitbox => hitbox;
     public ApprenticeHeroSwordDamageConfig Damage => damage;
     public ParticleSystem ChargeParticlePrefab => chargeParticlePrefab;
+    public GameObject ChargeGaugePrefab => chargeGaugePrefab;
     public Vector3 ChargeParticleLocalPosition => chargeParticleLocalPosition;
     public Vector3 ChargeParticleLocalEulerAngles => chargeParticleLocalEulerAngles;
     public Vector3 ChargeParticleLocalScale => SanitizeScale(chargeParticleLocalScale);

@@ -1,0 +1,36 @@
+{
+  "radii": [
+    {
+      "charge": 0,
+      "inner": 0,
+      "outer": 0
+    },
+    {
+      "charge": 25,
+      "inner": 20.68,
+      "outer": 0
+    },
+    {
+      "charge": 50,
+      "inner": 41.36,
+      "outer": 0
+    },
+    {
+      "charge": 75,
+      "inner": 41.36,
+      "outer": 64.68
+    },
+    {
+      "charge": 100,
+      "inner": 41.36,
+      "outer": 88
+    }
+  ],
+  "fullCircumferenceAtPartialCharge": "pass",
+  "scaledBoundary": "pass",
+  "oppositePlanarRotation": "pass",
+  "pauseResume": "pass",
+  "artwork": "reference layout: outer runes and large octagram surround 47%-diameter inner rune band",
+  "rendering": "offline same-JavaScript Canvas pixel adapter",
+  "limitations": "Browser DOM/layout and Unity Play Mode not run. Preview only."
+}

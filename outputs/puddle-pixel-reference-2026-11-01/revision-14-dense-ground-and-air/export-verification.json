@@ -1,0 +1,122 @@
+{
+  "ground_files_byte_identical": [
+    "fire-ground-frame-1.png",
+    "fire-ground-frame-2.png",
+    "fire-ground-frame-3.png",
+    "fire-ground-frame-4.png",
+    "fire-ground-sheet.png",
+    "fire-ground.aseprite",
+    "fire-ground.gif"
+  ],
+  "before": {
+    "active_particles": [
+      22,
+      23
+    ],
+    "instant_ground_coverage_percent": {
+      "min": 9.5,
+      "mean": 13.3,
+      "max": 17.1
+    },
+    "groups": {
+      "mixed": {
+        "emitters": 32,
+        "active": [
+          22,
+          23
+        ],
+        "rise_pixels": [
+          0,
+          20
+        ],
+        "instant_ground_coverage_percent": {
+          "min": 9.5,
+          "mean": 13.3,
+          "max": 17.1
+        }
+      }
+    }
+  },
+  "after": {
+    "active_particles": [
+      64,
+      65
+    ],
+    "instant_ground_coverage_percent": {
+      "min": 52.6,
+      "mean": 56.8,
+      "max": 60.6
+    },
+    "groups": {
+      "near": {
+        "emitters": 64,
+        "active": [
+          56,
+          56
+        ],
+        "rise_pixels": [
+          0,
+          2
+        ],
+        "instant_ground_coverage_percent": {
+          "min": 49.5,
+          "mean": 53.4,
+          "max": 56.7
+        }
+      },
+      "air": {
+        "emitters": 12,
+        "active": [
+          8,
+          9
+        ],
+        "rise_pixels": [
+          0,
+          25
+        ],
+        "instant_ground_coverage_percent": {
+          "min": 4.1,
+          "mean": 8.1,
+          "max": 11.4
+        }
+      }
+    }
+  },
+  "ground-flame-particle": {
+    "dimensions": [
+      8,
+      8
+    ],
+    "duration_ms": 640
+  },
+  "airborne-flame-particle": {
+    "dimensions": [
+      12,
+      12
+    ],
+    "duration_ms": 640
+  },
+  "comparison-preview": {
+    "dimensions": [
+      608,
+      320
+    ],
+    "duration_ms": 3200
+  },
+  "fire-with-particles-preview": {
+    "dimensions": [
+      320,
+      320
+    ],
+    "duration_ms": 3200
+  },
+  "particle-groups-preview": {
+    "dimensions": [
+      960,
+      320
+    ],
+    "duration_ms": 3200
+  },
+  "all_160_underlying_preview_frames_unchanged": "Verified natively in Aseprite",
+  "no_particle_pixels_clipped": true
+}

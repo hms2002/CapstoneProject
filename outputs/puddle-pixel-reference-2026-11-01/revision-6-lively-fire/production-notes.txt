@@ -1,0 +1,66 @@
+Puddle revision 6 — lively surface fire, drifting embers, thin beer
+
+Mode and scope: preview Implementation requested by the user. Native Aseprite
+art and standalone exports only. Previous revisions are preserved.
+
+Artwork changes:
+- Beer liquid opacity is approximately 60% (main fill alpha154/255). Whole
+  visible-image mean alpha drops from231.76 to153.19. Original gold RGB palette
+  and64x64 ground footprint are retained. Foam is scattered into1-4 pixel
+  islands, with two small bubbles. Largest four-connected foam island drops
+  from53 pixels to4; foam coverage drops from285-291 to53-57 pixels per frame.
+- Fire uses broad orange/yellow flame sheets with torn branching tips, sweeping
+  in different directions across the plane. Rounded boiling patches and dark
+  crater-like pools are removed. Yellow/pale pixels increase from9-13 to181-192
+  per frame. Ground still has no tall standing flame silhouettes baked in.
+- Independent particles are smaller glowing embers. The preview has12 staggered
+  emission points instead of4, with11 active instances at each time step. Each
+  travels along a lateral S-curve while rising. Half the paths are mirrored.
+  The baked flight changes horizontal direction twice and rises21 pixels by
+  visible centroid, then disappears. Its loop period is960ms.
+- Beer-to-fire transition is regenerated from the revised art. Original ground
+  occupancy, center pivot, frame counts and timings remain unchanged.
+
+Files:
+beer.aseprite:64x64,4 frames x160ms,8 visible RGBA colors.
+fire-surface.aseprite:64x64,6 frames x80ms,7 visible RGBA colors.
+beer-to-fire.aseprite:64x64,8 frames x80ms,15 visible RGBA colors.
+puddle-cycle.aseprite:64x64,18 frames,4 layers, ground pivot32,32.
+  Tags: BeerIdle1-4, Ignite5-12, FireLoop13-18. FireLoop is phase-rotated so the
+  ignition endpoint does not introduce a duplicate-frame hold.
+flame-particle.aseprite:16x16,6 frames x80ms,3 visible colors, pivot8,14.
+  This source animates the ember shape, without a full world-space trajectory.
+ember-flight.aseprite:32x32,12 frames x80ms,3 colors, pivot16,30.
+  An editable baked flight example with horizontal drift and rise; use either
+  this baked trajectory or a future particle-system trajectory, not both.
+  Both particle sources end with a fully transparent frame.
+*-frame-N.png and *-sheet.png: native transparent RGBA exports.
+comparison-preview.gif: beer / ignition / fire with particles,960x320,3840ms.
+surface-only-preview.gif: ground fire without particles,320x320,480ms.
+particles-only-preview.gif:12 emitters on neutral floor,320x320,960ms.
+ember-flight-preview.gif: single ember trajectory,288x288,960ms.
+ignition-preview.gif: standalone ignition demonstration,320x320,3840ms.
+all-frames-2x.png and particle-frames-6x.png: static contact sheets.
+author-puddles.lua and verify-native.lua: reproducible Aseprite authoring/checks.
+
+Transparency and editing:
+PNG/Aseprite preserve partial alpha. Ground GIFs bake the neutral review floor
+because GIF cannot preserve partial alpha; particle GIFs remain transparent.
+Ground layers have disjoint pixel coverage to preserve the limited RGBA palette;
+hiding an upper layer can expose a hole rather than an underpainted lower layer.
+All previews use a neutral floor and are not Unity captures.
+
+Verification:
+Native source reopen/PNG/GIF/timing/tag/pivot/transition checks passed228 checks.
+Source PNG pixels match native flattened frames exactly; review GIF max RGB
+channel difference is1/255. Palette, ground occupancy, opacity reduction, foam
+component reduction, yellow coverage, particle trajectory and disappearance
+are recorded in export-verification.json. Contact sheets and previews were
+visually inspected; timing and trajectory were also checked from saved frames.
+
+Not executed: Unity import, compilation, Play Mode and actual game-camera
+acceptance. World size/PPU, real floor readability, contact-directed ignition
+and actual ParticleSystem settings remain integration decisions. No Unity
+source, scene, prefab, existing asset, metadata or settings were modified.
+Doc Impact Check: SessionLog only; ErrorLog/DecisionLog/StructureMemory unchanged;
+no identified Presentation HTML stale candidate.

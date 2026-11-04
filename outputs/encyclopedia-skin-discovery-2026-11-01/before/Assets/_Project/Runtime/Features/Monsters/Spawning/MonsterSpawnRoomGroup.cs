@@ -1,0 +1,722 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using CapstoneAudio;
+using UnityEngine;
+
+/// <summary>
+/// 책임:
+/// - 하나의 방에 속한 MonsterSpawnContainer들을 묶어 관리한다.
+/// - 플레이어가 방에 처음 들어왔을 때 연결된 MonsterSpawnContainer들을 VFX와 함께 생성한다.
+/// - 플레이어의 방 encounter 진입/이탈을 연결된 문 잠금 장치에 전파한다.
+/// </summary>
+[DisallowMultipleComponent]
+public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
+{
+    private const string DefaultRoomEntrySpawnSettingsResourcePath = "MonsterRoomEntrySpawnSettings";
+    internal const int NormalCombatRunGoldBudget = BalanceGoldValues.NormalRoomGold;
+    internal const int LargeCombatRunGoldBudget = BalanceGoldValues.LargeRoomGold;
+
+    public static MonsterSpawnRoomGroup ActiveRoom { get; private set; }
+
+    // Cleared rooms take precedence over leftover enemy recognition; there is no combat grace timer.
+    public static bool IsPlayerInCombat =>
+        ActiveRoom != null && ActiveRoom.isActiveAndEnabled && ActiveRoom.PlayerEncounterEntered
+            ? !ActiveRoom.RoomWavesCompleted || ActiveRoom.RemainingRegisteredOrPendingCount > 0
+            : Enemy.IsAnyEnemyRecognizingPlayer();
+
+    public static event Action<MonsterSpawnRoomGroup> ActiveRoomEntered;
+    public static event Action<MonsterSpawnRoomGroup> ActiveRoomExited;
+
+    [SerializeField] private MonsterRoomSpawnProfileSO spawnProfile;
+    [SerializeField] private bool autoCollectChildContainers = true;
+    [SerializeField] private List<MonsterSpawnContainer> spawnContainers = new();
+
+    [Header("Entry Spawn Presentation")]
+    [SerializeField] private GameObject spawnVfxPrefab;
+    [SerializeField, Min(0f)] private float spawnVfxDelaySeconds = 0.35f;
+    [SerializeField] private Vector3 spawnVfxOffset;
+    [SerializeField] private SoundRef spawnSound;
+    [Tooltip("-1이면 Resources/MonsterRoomEntrySpawnSettings 기본값을 사용합니다. 0이면 이 방에서는 스폰 후 대기를 끕니다.")]
+    [SerializeField, Min(-1f)] private float postSpawnIdleSeconds = -1f;
+
+    [Header("Debug")]
+    [SerializeField] private bool logRoomEntrySpawnDebug;
+
+    private readonly List<MonsterSpawnContainer> reusableContainers = new();
+    private readonly List<MonsterRoomSpawnProfileSO.ResolvedMonsterEntry> reusableSpawnPlan = new();
+    private readonly List<MonsterSpawnRequest> reusableSpawnRequests = new();
+    private readonly List<RoomDoorMonsterKillLock> runtimeDoorLocks = new();
+    private readonly List<MonsterLockTrackingUnit> runtimeSpawnedMonsterUnits = new();
+    private readonly List<Coroutine> activeSpawnRoutines = new();
+    private readonly List<ChestMonsterKillLock> pendingChestLocks = new();
+    private readonly List<GameObject> activeSpawnVfx = new();
+    private MonsterRoomEntrySpawnSettingsSO cachedDefaultSpawnSettings;
+    private bool playerEncounterEntered;
+    private bool roomEntrySpawnStarted;
+    private int pendingRoomEntrySpawnCount;
+    private int encounterHoldCount;
+    private bool hasConfiguredRunGoldBudget;
+    private int configuredRunGoldBudget;
+
+    public MonsterRoomSpawnProfileSO SpawnProfile => spawnProfile;
+    public bool PlayerEncounterEntered => playerEncounterEntered;
+    public bool RoomEntrySpawnStarted => roomEntrySpawnStarted;
+    public int PendingRoomEntrySpawnCount => pendingRoomEntrySpawnCount;
+    public int EncounterHoldCount => encounterHoldCount;
+    public int RemainingRegisteredOrPendingCount =>
+        CountAliveRegisteredMonsters() + pendingRoomEntrySpawnCount + encounterHoldCount;
+
+    /// <summary>
+    /// 책임:
+    /// - 절차 생성 방이 가진 진행도 기반 스폰 프로필을 런타임 encounter 그룹에 주입한다.
+    /// - 프로필이 없으면 각 스폰 컨테이너의 고정/단계형 설정을 사용하는 기존 동작을 유지한다.
+    /// </summary>
+    public void ConfigureSpawnProfile(MonsterRoomSpawnProfileSO configuredSpawnProfile)
+    {
+        spawnProfile = configuredSpawnProfile;
+    }
+
+    /// <summary>
+    /// 절차 전투방이 생성될 때 이 encounter에서 지급할 전체 런 골드 예산을 주입한다.
+    /// 씬에 직접 배치된 기존 encounter는 호출되지 않으므로 기존 몬스터별 계산을 유지한다.
+    /// </summary>
+    public void ConfigureRunGoldBudget(int totalGold)
+    {
+        if (roomEntrySpawnStarted)
+            throw new InvalidOperationException("Cannot change the room gold budget after encounter entry.");
+
+        hasConfiguredRunGoldBudget = true;
+        configuredRunGoldBudget = Mathf.Max(0, totalGold);
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStaticEvents()
+    {
+        ActiveRoom = null;
+        ActiveRoomEntered = null;
+        ActiveRoomExited = null;
+    }
+
+    /// <summary>현재 방 그룹이 관리하는 스폰 포인트들을 반환합니다.</summary>
+    public IReadOnlyList<MonsterSpawnContainer> GetSpawnContainers()
+    {
+        RefreshContainersIfNeeded();
+        return reusableContainers;
+    }
+
+    /// <summary>방 프로파일 기준으로 실제 스폰 요청 목록을 채웁니다.</summary>
+    public void BuildSpawnRequests(List<MonsterSpawnRequest> requests)
+    {
+        if (requests == null || spawnProfile == null)
+            return;
+
+        int stageIndex = ResolveCurrentStageIndex();
+        if (!spawnProfile.TryGetRandomSpawnTable(out MonsterRoomSpawnProfileSO.SpawnTable table, stageIndex))
+            return;
+
+        RefreshContainersIfNeeded();
+        if (reusableContainers.Count == 0)
+            return;
+
+        if (!table.TryBuildSpawnPlan(reusableSpawnPlan, stageIndex) || reusableSpawnPlan.Count == 0)
+            return;
+
+        List<MonsterSpawnContainer> candidates = new List<MonsterSpawnContainer>();
+        for (int i = 0; i < reusableContainers.Count; i++)
+        {
+            MonsterSpawnContainer container = reusableContainers[i];
+            if (container != null && container.SpawnByDefault)
+                candidates.Add(container);
+        }
+
+        if (candidates.Count == 0)
+            return;
+
+        Shuffle(candidates);
+
+        int spawnCount = Mathf.Min(reusableSpawnPlan.Count, candidates.Count);
+        for (int i = 0; i < spawnCount; i++)
+        {
+            MonsterRoomSpawnProfileSO.ResolvedMonsterEntry spawnEntry = reusableSpawnPlan[i];
+            GameObject monsterPrefab = spawnEntry.MonsterPrefab;
+            if (monsterPrefab == null)
+                continue;
+
+            requests.Add(candidates[i].CreateRequest(monsterPrefab, spawnEntry.HpMultiplier));
+        }
+    }
+
+    /// <summary>자식 스폰 포인트 자동 수집 설정에 맞춰 캐시를 갱신합니다.</summary>
+    public void RegisterDoorLock(RoomDoorMonsterKillLock doorLock)
+    {
+        if (doorLock == null || runtimeDoorLocks.Contains(doorLock))
+            return;
+
+        runtimeDoorLocks.Add(doorLock);
+        CompactRuntimeLists();
+
+        for (int i = 0; i < runtimeSpawnedMonsterUnits.Count; i++)
+        {
+            MonsterLockTrackingUnit unit = runtimeSpawnedMonsterUnits[i];
+            if (unit != null && unit.HasAliveMember())
+                doorLock.RegisterMonsterUnit(unit);
+        }
+
+        if (playerEncounterEntered)
+            doorLock.NotifyRoomEncounterEntered();
+    }
+
+    public void UnregisterDoorLock(RoomDoorMonsterKillLock doorLock)
+    {
+        if (doorLock == null)
+            return;
+
+        runtimeDoorLocks.Remove(doorLock);
+    }
+
+    public void NotifyMonsterSpawned(GameObject monster)
+    {
+        if (monster == null)
+            return;
+
+        CompactRuntimeLists();
+
+        MonsterLockTrackingUnit unit = Mob.ResolveOrCreateLockTrackingUnit(monster);
+        if (!runtimeSpawnedMonsterUnits.Contains(unit))
+            runtimeSpawnedMonsterUnits.Add(unit);
+
+        for (int i = runtimeDoorLocks.Count - 1; i >= 0; i--)
+        {
+            RoomDoorMonsterKillLock doorLock = runtimeDoorLocks[i];
+            if (doorLock == null)
+            {
+                runtimeDoorLocks.RemoveAt(i);
+                continue;
+            }
+
+            doorLock.RegisterMonsterUnit(unit);
+        }
+    }
+
+    public int GetAliveRegisteredMonstersNonAlloc(List<GameObject> results)
+    {
+        if (results == null)
+            return 0;
+
+        results.Clear();
+        CompactRuntimeLists();
+
+        for (int i = 0; i < runtimeSpawnedMonsterUnits.Count; i++)
+        {
+            MonsterLockTrackingUnit unit = runtimeSpawnedMonsterUnits[i];
+            if (unit != null && unit.TryGetAliveRepresentative(out GameObject monster))
+                results.Add(monster);
+        }
+
+        return results.Count;
+    }
+
+    public bool HasPendingRoomEntrySpawns()
+    {
+        return pendingRoomEntrySpawnCount > 0;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 경보 종처럼 웨이브 사이에 살아 있는 몬스터가 잠시 0명이 되어도 방 봉쇄를 유지한다.
+    /// - 실제 몬스터 추적과 별개의 수동 encounter 점유 카운트를 제공한다.
+    /// </summary>
+    public void PushEncounterHold()
+    {
+        encounterHoldCount++;
+        RefreshDoorLocksAfterEncounterCountChanged();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 수동 encounter 점유를 안전하게 해제하고, 카운트가 음수가 되지 않게 보호한다.
+    /// - 마지막 홀드가 풀리면 기존 문 잠금 규칙이 즉시 재평가되게 한다.
+    /// </summary>
+    public void PopEncounterHold()
+    {
+        if (encounterHoldCount <= 0)
+            return;
+
+        encounterHoldCount--;
+        RefreshDoorLocksAfterEncounterCountChanged();
+    }
+
+    public void NotifyPlayerEnteredEncounter()
+    {
+        if (playerEncounterEntered)
+            return;
+
+        playerEncounterEntered = true;
+        CompactRuntimeLists();
+        StartRoomEntrySpawnIfNeeded();
+
+        for (int i = runtimeDoorLocks.Count - 1; i >= 0; i--)
+        {
+            RoomDoorMonsterKillLock doorLock = runtimeDoorLocks[i];
+            if (doorLock == null)
+            {
+                runtimeDoorLocks.RemoveAt(i);
+                continue;
+            }
+
+            doorLock.NotifyRoomEncounterEntered();
+        }
+
+        ActiveRoom = this;
+        ActiveRoomEntered?.Invoke(this);
+    }
+
+    public void NotifyPlayerExitedEncounter()
+    {
+        if (!playerEncounterEntered)
+            return;
+
+        playerEncounterEntered = false;
+        CompactRuntimeLists();
+
+        for (int i = runtimeDoorLocks.Count - 1; i >= 0; i--)
+        {
+            RoomDoorMonsterKillLock doorLock = runtimeDoorLocks[i];
+            if (doorLock == null)
+            {
+                runtimeDoorLocks.RemoveAt(i);
+                continue;
+            }
+
+            doorLock.NotifyRoomEncounterExited();
+        }
+
+        if (ActiveRoom == this) ActiveRoom = null;
+        ActiveRoomExited?.Invoke(this);
+    }
+
+    private void OnDisable()
+    {
+        if (ActiveRoom == this) ActiveRoom = null;
+        PauseRoomWaves();
+        encounterHoldCount = 0;
+        CancelActiveSpawnRoutines();
+        ReleaseAllPendingSpawns();
+    }
+
+    private void OnEnable()
+    {
+        if (playerEncounterEntered) ActiveRoom = this;
+        ResumeRoomWavesIfNeeded();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 몬스터 등록/해제가 아닌 수동 encounter 점유 변화도 연결된 문 잠금 장치에 전파한다.
+    /// - 웨이브 이벤트가 문을 한 프레임 이상 늦게 닫거나 열지 않도록 한다.
+    /// </summary>
+    private void RefreshDoorLocksAfterEncounterCountChanged()
+    {
+        CompactRuntimeLists();
+
+        for (int i = runtimeDoorLocks.Count - 1; i >= 0; i--)
+        {
+            RoomDoorMonsterKillLock doorLock = runtimeDoorLocks[i];
+            if (doorLock == null)
+            {
+                runtimeDoorLocks.RemoveAt(i);
+                continue;
+            }
+
+            doorLock.NotifyRoomEncounterCountChanged();
+        }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 방 첫 입장 시 기존 authoring으로 배치된 spawnByDefault 컨테이너들을 지연 스폰한다.
+    /// - 맵 툴 세팅을 바꾸지 않고도 기존 방 몬스터 배치가 입장 스폰으로 동작하게 한다.
+    /// </summary>
+    private void StartRoomEntrySpawnIfNeeded()
+    {
+        if (roomEntrySpawnStarted)
+        {
+            LogRoomEntrySpawn("skip: room entry spawn already started.");
+            return;
+        }
+
+        if (RoomWavesCompleted)
+            return;
+
+        roomEntrySpawnStarted = true;
+        RefreshContainersIfNeeded();
+        LogRoomEntrySpawn($"start: containers={reusableContainers.Count}");
+
+        reusableSpawnRequests.Clear();
+        BuildSpawnRequests(reusableSpawnRequests);
+        if (reusableSpawnRequests.Count > 0)
+        {
+            LogRoomEntrySpawn(
+                $"profile plan: profile={FormatObject(spawnProfile)}, requests={reusableSpawnRequests.Count}");
+            PrepareRoomWaves(reusableSpawnRequests);
+            return;
+        }
+
+        int stageIndex = ResolveCurrentStageIndex();
+        for (int i = 0; i < reusableContainers.Count; i++)
+        {
+            MonsterSpawnContainer container = reusableContainers[i];
+            if (container == null || !container.SpawnByDefault)
+            {
+                LogRoomEntrySpawn($"skip container[{i}]: nullOrSpawnByDefaultFalse container={FormatContainer(container)}");
+                continue;
+            }
+
+            if (!container.TryCreateRequest(stageIndex, out MonsterSpawnRequest request))
+            {
+                LogRoomEntrySpawn($"skip container[{i}]: failed request. container={FormatContainer(container)}, stage={stageIndex}");
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[RoomWaves] {name}: cannot resolve '{container.name}' at stage {stageIndex}; skipping spawn.", this);
+                container.NotifyRuntimeSpawned(null);
+                continue;
+            }
+
+            reusableSpawnRequests.Add(request);
+        }
+        PrepareRoomWaves(reusableSpawnRequests);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 프로필 또는 개별 컨테이너가 만든 스폰 요청을 동일한 pending-lock/VFX 코루틴 흐름에 등록한다.
+    /// - 요청 생성 경로에 따라 문과 상자의 kill lock 처리 순서가 달라지지 않게 한다.
+    /// </summary>
+    private void ScheduleRoomEntrySpawn(WaveSpawnTicket ticket)
+    {
+        MonsterSpawnRequest request = ticket.Request;
+        if (!request.IsValid)
+        {
+            CompleteWaveTicket(ticket, null);
+            return;
+        }
+
+        LogRoomEntrySpawn(
+            $"scheduled wave: prefab={FormatObject(request.MonsterPrefab)}, pos={request.Position}, " +
+            $"pending={pendingRoomEntrySpawnCount}, chestLock={FormatObject(request.LinkedChestKillLock)}");
+        Coroutine routine = StartCoroutine(SpawnRoomEntryMonsterRoutine(ticket));
+        activeSpawnRoutines.Add(routine);
+    }
+
+    private IEnumerator SpawnRoomEntryMonsterRoutine(WaveSpawnTicket ticket)
+    {
+        MonsterSpawnRequest request = ticket.Request;
+        GameObject vfx = null;
+        try
+        {
+            GameObject resolvedVfxPrefab = ResolveSpawnVfxPrefab();
+            float resolvedDelaySeconds = ResolveSpawnVfxDelaySeconds(resolvedVfxPrefab);
+            Vector3 resolvedOffset = ResolveSpawnVfxOffset();
+            SoundRef resolvedSound = ResolveSpawnSound();
+
+            if (resolvedVfxPrefab != null)
+            {
+                vfx = Instantiate(resolvedVfxPrefab, request.Position + resolvedOffset, request.Rotation);
+                activeSpawnVfx.Add(vfx);
+            }
+            PlaySpawnSound(resolvedSound, request.Position + resolvedOffset);
+
+            if (resolvedVfxPrefab != null && resolvedDelaySeconds > 0f)
+                yield return new WaitForSeconds(resolvedDelaySeconds);
+
+            MonsterSpawner spawner = MonsterSpawner.Instance;
+            GameObject spawnedMonster = spawner != null ? spawner.SpawnOne(request) : null;
+            if (spawnedMonster == null)
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[RoomWaves] {name}: spawn failed for {FormatObject(request.MonsterPrefab)}; releasing reservation.", this);
+            CompleteWaveTicket(ticket, spawnedMonster);
+            ApplyPostSpawnIdlePause(spawnedMonster);
+        }
+        finally
+        {
+            // Interrupted VFX waits stay resumable; a spawn exception must not leave a permanent lock.
+            if (!ticket.Completed && isActiveAndEnabled && !waveSequencePausing)
+                CompleteWaveTicket(ticket, null);
+            activeSpawnVfx.Remove(vfx);
+            if (vfx != null)
+                Destroy(vfx);
+        }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - VFX 대기 중인 아직 생성되지 않은 몬스터를 문/상자 kill lock 카운트에 포함한다.
+    /// - 실제 몬스터가 생성되기 전 클리어로 오판되는 것을 막는다.
+    /// </summary>
+    private void ReservePendingSpawn(MonsterSpawnRequest request)
+    {
+        pendingRoomEntrySpawnCount++;
+        LogRoomEntrySpawn($"pending++: pending={pendingRoomEntrySpawnCount}, prefab={FormatObject(request.MonsterPrefab)}");
+        if (request.LinkedChestKillLock == null)
+            return;
+
+        request.LinkedChestKillLock.ReservePendingMonster();
+        pendingChestLocks.Add(request.LinkedChestKillLock);
+        LogRoomEntrySpawn($"chest pending++: chestLock={FormatObject(request.LinkedChestKillLock)}");
+    }
+
+    private void ReleasePendingSpawn(MonsterSpawnRequest request, bool releaseChestPending)
+    {
+        pendingRoomEntrySpawnCount = Mathf.Max(0, pendingRoomEntrySpawnCount - 1);
+        LogRoomEntrySpawn($"pending--: pending={pendingRoomEntrySpawnCount}, prefab={FormatObject(request.MonsterPrefab)}, releaseChestPending={releaseChestPending}");
+        if (request.LinkedChestKillLock == null)
+            return;
+
+        if (releaseChestPending)
+        {
+            request.LinkedChestKillLock.ReleasePendingMonster();
+            LogRoomEntrySpawn($"chest pending--: chestLock={FormatObject(request.LinkedChestKillLock)}");
+        }
+
+        pendingChestLocks.Remove(request.LinkedChestKillLock);
+    }
+
+    private void CancelActiveSpawnRoutines()
+    {
+        for (int i = 0; i < activeSpawnRoutines.Count; i++)
+        {
+            Coroutine routine = activeSpawnRoutines[i];
+            if (routine != null)
+                StopCoroutine(routine);
+        }
+
+        activeSpawnRoutines.Clear();
+
+        for (int i = activeSpawnVfx.Count - 1; i >= 0; i--)
+        {
+            GameObject vfx = activeSpawnVfx[i];
+            if (vfx != null)
+                Destroy(vfx);
+        }
+
+        activeSpawnVfx.Clear();
+    }
+
+    private void ReleaseAllPendingSpawns()
+    {
+        pendingRoomEntrySpawnCount = 0;
+        for (int i = 0; i < pendingChestLocks.Count; i++)
+        {
+            ChestMonsterKillLock chestLock = pendingChestLocks[i];
+            if (chestLock != null)
+                chestLock.ReleasePendingMonster();
+        }
+
+        pendingChestLocks.Clear();
+    }
+
+    private void PlaySpawnSound(SoundRef soundRef, Vector3 position)
+    {
+        if (!soundRef.IsSet)
+            return;
+
+        SoundPlaybackUtility.Play(soundRef, causer: gameObject, position: position, sourceObject: this);
+        LogRoomEntrySpawn($"sound played: key={soundRef.key}, pos={position}");
+    }
+
+    private GameObject ResolveSpawnVfxPrefab()
+    {
+        if (spawnVfxPrefab != null)
+            return spawnVfxPrefab;
+
+        MonsterRoomEntrySpawnSettingsSO settings = ResolveDefaultSpawnSettings();
+        return settings != null ? settings.DefaultSpawnVfxPrefab : null;
+    }
+
+    private float ResolveSpawnVfxDelaySeconds(GameObject resolvedVfxPrefab)
+    {
+        if (spawnVfxPrefab != null)
+            return spawnVfxDelaySeconds;
+
+        MonsterRoomEntrySpawnSettingsSO settings = ResolveDefaultSpawnSettings();
+        return settings != null ? settings.DefaultSpawnVfxDelaySeconds : spawnVfxDelaySeconds;
+    }
+
+    private Vector3 ResolveSpawnVfxOffset()
+    {
+        if (spawnVfxPrefab != null || spawnVfxOffset != Vector3.zero)
+            return spawnVfxOffset;
+
+        MonsterRoomEntrySpawnSettingsSO settings = ResolveDefaultSpawnSettings();
+        return settings != null ? settings.DefaultSpawnVfxOffset : spawnVfxOffset;
+    }
+
+    private SoundRef ResolveSpawnSound()
+    {
+        if (spawnSound.IsSet)
+            return spawnSound;
+
+        MonsterRoomEntrySpawnSettingsSO settings = ResolveDefaultSpawnSettings();
+        return settings != null ? settings.DefaultSpawnSound : spawnSound;
+    }
+
+    private float ResolvePostSpawnIdleSeconds()
+    {
+        if (postSpawnIdleSeconds >= 0f)
+            return postSpawnIdleSeconds;
+
+        MonsterRoomEntrySpawnSettingsSO settings = ResolveDefaultSpawnSettings();
+        return settings != null ? settings.DefaultPostSpawnIdleSeconds : 0f;
+    }
+
+    private void ApplyPostSpawnIdlePause(GameObject spawnedMonster)
+    {
+        if (spawnedMonster == null)
+            return;
+
+        float idleSeconds = ResolvePostSpawnIdleSeconds();
+        if (idleSeconds <= 0f)
+            return;
+
+        Mob mob = spawnedMonster.GetComponent<Mob>();
+        if (mob == null)
+            mob = spawnedMonster.GetComponentInChildren<Mob>(includeInactive: true);
+
+        if (mob == null)
+            return;
+
+        mob.ApplySpawnIdlePause(idleSeconds);
+        LogRoomEntrySpawn($"post spawn idle applied: monster={FormatObject(spawnedMonster)}, seconds={idleSeconds:0.###}");
+    }
+
+    private MonsterRoomEntrySpawnSettingsSO ResolveDefaultSpawnSettings()
+    {
+        if (cachedDefaultSpawnSettings != null)
+            return cachedDefaultSpawnSettings;
+
+        cachedDefaultSpawnSettings = Resources.Load<MonsterRoomEntrySpawnSettingsSO>(DefaultRoomEntrySpawnSettingsResourcePath);
+        return cachedDefaultSpawnSettings;
+    }
+
+    private void RefreshContainersIfNeeded()
+    {
+        reusableContainers.Clear();
+
+        if (autoCollectChildContainers)
+        {
+            MonsterSpawnContainer[] children = GetComponentsInChildren<MonsterSpawnContainer>(includeInactive: false);
+            for (int i = 0; i < children.Length; i++)
+            {
+                MonsterSpawnContainer child = children[i];
+                if (child == null)
+                    continue;
+
+                AddReusableContainerIfNeeded(child);
+            }
+
+            CollectSceneContainersLinkedToThisRoom();
+            return;
+        }
+
+        for (int i = 0; i < spawnContainers.Count; i++)
+        {
+            MonsterSpawnContainer container = spawnContainers[i];
+            if (container == null)
+                continue;
+
+            AddReusableContainerIfNeeded(container);
+        }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 맵 툴이 MonsterSpawnContainer.roomGroup 참조로 연결한 스폰 포인트를 방 그룹 authoring 데이터로 수집한다.
+    /// - 스폰 포인트가 방 그룹 Transform의 자식이 아니어도 기존 맵 툴 세팅 그대로 방 입장 스폰에 참여하게 한다.
+    /// </summary>
+    private void CollectSceneContainersLinkedToThisRoom()
+    {
+#if UNITY_2023_1_OR_NEWER
+        MonsterSpawnContainer[] sceneContainers = FindObjectsByType<MonsterSpawnContainer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+#else
+        MonsterSpawnContainer[] sceneContainers = FindObjectsOfType<MonsterSpawnContainer>();
+#endif
+
+        for (int i = 0; i < sceneContainers.Length; i++)
+        {
+            MonsterSpawnContainer container = sceneContainers[i];
+            if (container == null || container.gameObject.scene != gameObject.scene)
+                continue;
+
+            if (container.RoomGroup != this)
+                continue;
+
+            AddReusableContainerIfNeeded(container);
+        }
+
+        LogRoomEntrySpawn($"collect linked containers: total={reusableContainers.Count}");
+    }
+
+    private void AddReusableContainerIfNeeded(MonsterSpawnContainer container)
+    {
+        if (container == null || reusableContainers.Contains(container))
+            return;
+
+        reusableContainers.Add(container);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 이번 런에서 처치한 보스 수를 스폰 프로파일과 역할형 몬스터 세트의 진행 단계로 제공한다.
+    /// - 복도 테마용 route index와 전투 진행도를 분리하고, 런 밖의 개발/테스트 씬은 첫 단계로 취급한다.
+    /// </summary>
+    private static int ResolveCurrentStageIndex()
+    {
+        return MonsterRunProgression.CurrentStageIndex;
+    }
+
+    /// <summary>간단한 셔플로 방 안 스폰 포인트 순서를 무작위화합니다.</summary>
+    private static void Shuffle<T>(List<T> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            int j = UnityEngine.Random.Range(i, list.Count);
+            (list[i], list[j]) = (list[j], list[i]);
+        }
+    }
+
+    private void CompactRuntimeLists()
+    {
+        runtimeDoorLocks.RemoveAll(doorLock => doorLock == null);
+        runtimeSpawnedMonsterUnits.RemoveAll(unit => unit == null || !unit.HasAliveMember());
+    }
+
+    private int CountAliveRegisteredMonsters()
+    {
+        CompactRuntimeLists();
+        return runtimeSpawnedMonsterUnits.Count;
+    }
+
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
+    private void LogRoomEntrySpawn(string message)
+    {
+        if (!logRoomEntrySpawnDebug)
+            return;
+
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[RoomEntrySpawn] {name}: {message}", this);
+    }
+
+    private static string FormatContainer(MonsterSpawnContainer container)
+    {
+        return container != null ? container.name : "null";
+    }
+
+    private static string FormatObject(UnityEngine.Object target)
+    {
+        return target != null ? target.name : "null";
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        spawnContainers.RemoveAll(container => container == null);
+    }
+#endif
+}

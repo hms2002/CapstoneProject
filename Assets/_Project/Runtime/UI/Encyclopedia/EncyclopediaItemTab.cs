@@ -80,6 +80,25 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        EncyclopediaDiscoveryProgress.Changed += RefreshDiscovery;
+        GameDataStore.OnDataLoaded += HandleProfileLoaded;
+    }
+
+    private void OnDisable()
+    {
+        EncyclopediaDiscoveryProgress.Changed -= RefreshDiscovery;
+        GameDataStore.OnDataLoaded -= HandleProfileLoaded;
+    }
+
+    private void HandleProfileLoaded(GameData data, int slot) => RefreshDiscovery();
+    private void RefreshDiscovery()
+    {
+        selectedItem = null; // Force a fresh projection even when the selected index is unchanged.
+        if (contentVisible) Rebuild(false);
+    }
+
 #if UNITY_EDITOR
     private void Reset()
     {
@@ -602,6 +621,19 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
         selectedCategory = category;
         selectedItem = item;
         leftPage?.RefreshSelection(selectedIndex);
+
+        bool discovered = item switch
+        {
+            WeaponDefinition weapon => EncyclopediaDiscoveryProgress.Has(EncyclopediaDiscoveryKind.Weapon, weapon.weaponId),
+            RelicDefinition relic => EncyclopediaDiscoveryProgress.Has(EncyclopediaDiscoveryKind.Relic, relic.relicId),
+            _ => true
+        };
+        if (!discovered)
+        {
+            rightPage?.ShowUndiscovered(item);
+            SettleCurrentLayout();
+            return;
+        }
 
         if (isSameSelection)
         {

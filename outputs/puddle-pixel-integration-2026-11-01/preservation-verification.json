@@ -1,0 +1,258 @@
+{
+  "protected_file_count": 36,
+  "protected_files": [
+    "Assets/_Project/Runtime/Features/Map/Puddles/PuddleAreaBase.cs",
+    "Assets/_Project/Runtime/Features/Map/Puddles/PuddleConversionService.cs",
+    "Assets/_Project/Runtime/Features/Map/Puddles/FirePuddleArea.cs",
+    "Assets/_Project/Runtime/Presentation/Map/Puddles/PuddleShaderVisual.cs",
+    "Assets/_Project/Runtime/Presentation/Map/Puddles/PuddleBlobVisual.cs",
+    "Assets/_Project/Art/Materials/M_PuddleShaderVisual.mat",
+    "Assets/_Project/Prefabs/Map/Puddles/AlcoholPuddle.prefab.meta",
+    "Assets/_Project/Prefabs/Map/Puddles/FirePuddle.prefab.meta",
+    "Packages/manifest.json",
+    "Packages/packages-lock.json",
+    "ProjectSettings/AudioManager.asset",
+    "ProjectSettings/BehaviorSettings.asset",
+    "ProjectSettings/ClusterInputManager.asset",
+    "ProjectSettings/DynamicsManager.asset",
+    "ProjectSettings/EditorBuildSettings.asset",
+    "ProjectSettings/EditorSettings.asset",
+    "ProjectSettings/GraphicsSettings.asset",
+    "ProjectSettings/InkSettings.asset",
+    "ProjectSettings/InputManager.asset",
+    "ProjectSettings/MemorySettings.asset",
+    "ProjectSettings/MultiplayerManager.asset",
+    "ProjectSettings/NavMeshAreas.asset",
+    "ProjectSettings/NetworkManager.asset",
+    "ProjectSettings/PackageManagerSettings.asset",
+    "ProjectSettings/Physics2DSettings.asset",
+    "ProjectSettings/PresetManager.asset",
+    "ProjectSettings/ProjectSettings.asset",
+    "ProjectSettings/QualitySettings.asset",
+    "ProjectSettings/ShaderGraphSettings.asset",
+    "ProjectSettings/TagManager.asset",
+    "ProjectSettings/TimeManager.asset",
+    "ProjectSettings/UnityConnectSettings.asset",
+    "ProjectSettings/URPProjectSettings.asset",
+    "ProjectSettings/VersionControlSettings.asset",
+    "ProjectSettings/VFXManager.asset",
+    "ProjectSettings/XRSettings.asset"
+  ],
+  "native_export_textures_exact": [
+    "AlcoholGround.png",
+    "FireGround.png",
+    "CenterIgnition.png",
+    "EmissionShape.png",
+    "BubbleVariants.png",
+    "NearFlames.png",
+    "AirborneFlames.png"
+  ],
+  "beer_alpha_unchanged_from_revision17": true,
+  "center_ignition_endpoints_exact": true,
+  "prefab_semantic_checks": {
+    "AlcoholPuddle.prefab": {
+      "unchanged_existing_records": 16,
+      "changed_existing_records": [
+        {
+          "id": "2291001931328513163",
+          "class_id": 4,
+          "fields": [
+            "m_Children"
+          ]
+        },
+        {
+          "id": "8433937442171079421",
+          "class_id": 199,
+          "fields": [
+            "m_Enabled"
+          ]
+        },
+        {
+          "id": "1348404635531816602",
+          "class_id": 114,
+          "fields": [
+            "flameLayerRadiusScale",
+            "flameParticleSystems",
+            "pixelFlameEmissionRates",
+            "usePixelArtwork"
+          ]
+        },
+        {
+          "id": "637947228213995559",
+          "class_id": 4,
+          "fields": [
+            "m_Father",
+            "m_LocalRotation"
+          ]
+        },
+        {
+          "id": "6688930636496344388",
+          "class_id": 198,
+          "fields": [
+            "InitialModule",
+            "NoiseModule",
+            "ShapeModule",
+            "UVModule",
+            "VelocityModule",
+            "lengthInSec"
+          ]
+        },
+        {
+          "id": "2889697017098200020",
+          "class_id": 199,
+          "fields": [
+            "m_Flip",
+            "m_Materials",
+            "m_MaxParticleSize",
+            "m_RenderAlignment"
+          ]
+        },
+        {
+          "id": "5284741336372566075",
+          "class_id": 4,
+          "fields": [
+            "m_Children"
+          ]
+        },
+        {
+          "id": "1537022764841360360",
+          "class_id": 23,
+          "fields": [
+            "m_Materials"
+          ]
+        },
+        {
+          "id": "7208741445836019001",
+          "class_id": 114,
+          "fields": [
+            "materialTemplate"
+          ]
+        }
+      ],
+      "added_records": 8
+    },
+    "FirePuddle.prefab": {
+      "unchanged_existing_records": 25,
+      "changed_existing_records": [
+        {
+          "id": "3577987620554277702",
+          "class_id": 23,
+          "fields": [
+            "m_Materials"
+          ]
+        },
+        {
+          "id": "7391206401447703001",
+          "class_id": 114,
+          "fields": [
+            "materialTemplate"
+          ]
+        },
+        {
+          "id": "3262031018862801006",
+          "class_id": 198,
+          "fields": [
+            "EmissionModule"
+          ]
+        },
+        {
+          "id": "345390920311736381",
+          "class_id": 199,
+          "fields": [
+            "m_Enabled"
+          ]
+        },
+        {
+          "id": "965281068236920910",
+          "class_id": 198,
+          "fields": [
+            "EmissionModule"
+          ]
+        },
+        {
+          "id": "6525733605812685515",
+          "class_id": 199,
+          "fields": [
+            "m_Enabled"
+          ]
+        },
+        {
+          "id": "6174101106317586852",
+          "class_id": 198,
+          "fields": [
+            "EmissionModule"
+          ]
+        },
+        {
+          "id": "2682048798319614358",
+          "class_id": 199,
+          "fields": [
+            "m_Enabled"
+          ]
+        },
+        {
+          "id": "7691129517303485990",
+          "class_id": 198,
+          "fields": [
+            "playOnAwake"
+          ]
+        },
+        {
+          "id": "7801367632151375473",
+          "class_id": 199,
+          "fields": [
+            "m_Enabled"
+          ]
+        },
+        {
+          "id": "2712682448439461028",
+          "class_id": 114,
+          "fields": [
+            "flameLayerRadiusScale",
+            "flameParticleSystems",
+            "pixelFlameEmissionRates",
+            "usePixelArtwork"
+          ]
+        },
+        {
+          "id": "5643962915152914117",
+          "class_id": 198,
+          "fields": [
+            "EmissionModule"
+          ]
+        },
+        {
+          "id": "4785309947548907710",
+          "class_id": 199,
+          "fields": [
+            "m_Enabled"
+          ]
+        },
+        {
+          "id": "7758999620489367426",
+          "class_id": 4,
+          "fields": [
+            "m_Children"
+          ]
+        }
+      ],
+      "added_records": 8
+    }
+  },
+  "playmode": {
+    "id": "2",
+    "testcasecount": "57",
+    "result": "Passed",
+    "total": "57",
+    "passed": "57",
+    "failed": "0",
+    "inconclusive": "0",
+    "skipped": "0",
+    "asserts": "0",
+    "engine-version": "3.5.0.0",
+    "clr-version": "4.0.30319.42000",
+    "start-time": "2026-11-01 05:36:59Z",
+    "end-time": "2026-11-01 05:37:03Z",
+    "duration": "4.6146652"
+  }
+}

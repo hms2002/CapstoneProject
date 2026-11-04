@@ -20,6 +20,7 @@ public sealed class TitleMenuController : MonoBehaviour
     [SerializeField] private Button quitButton;
     [SerializeField] private CanvasGroup mainMenuCanvasGroup;
     [SerializeField] private UIChainDropPresentation mainMenuPresentation;
+    [SerializeField] private TitleLanguageMenuUI languageMenu;
 
     [Header("Panels")]
     [SerializeField] private TitleProfileSlotPanelUI profileSlotPanel;
@@ -52,7 +53,7 @@ public sealed class TitleMenuController : MonoBehaviour
         EnsurePresentationCanvasAdapter();
         EnsureUiInputReady();
         BindListeners();
-        keyboardNavigation = new ButtonNavigationGroup(false, newGameButton, settingsButton, quitButton);
+        keyboardNavigation = new ButtonNavigationGroup(false, newGameButton, settingsButton, quitButton, languageMenu != null ? languageMenu.ToggleButton : null);
         TitleProfileSlotService.EnsureInstance();
     }
 
@@ -95,7 +96,8 @@ public sealed class TitleMenuController : MonoBehaviour
                             (keyBindingPanel == null || !keyBindingPanel.gameObject.activeSelf) &&
                             (SceneTransitionCoordinator.Instance == null || !SceneTransitionCoordinator.Instance.IsTransitionActive) &&
                             (LoadingOverlayController.Instance == null || !LoadingOverlayController.Instance.IsActiveLoadingPresentation);
-        keyboardNavigation?.Refresh(inputAllowed);
+        keyboardNavigation?.Refresh(inputAllowed && (languageMenu == null || !languageMenu.IsOpen));
+        languageMenu?.RefreshInput(inputAllowed);
     }
 
     private void Update()
@@ -106,6 +108,9 @@ public sealed class TitleMenuController : MonoBehaviour
             return;
 
         ResolveReferences();
+
+        if (languageMenu != null && languageMenu.TryHandleCloseRequest())
+            return;
 
         if (profileSlotPanel != null && profileSlotPanel.TryHandleCloseRequest())
             return;

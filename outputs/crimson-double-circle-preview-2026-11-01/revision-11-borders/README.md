@@ -1,0 +1,11 @@
+# Detailed gold borders
+
+- Scope/mode: preview Implementation. User requested more border detail. Keep existing art, the three-color palette, native sizes, rune counts and charge/rotation behavior. No Unity integration.
+- [Inner PNG](inner-preview.png) / [Aseprite](inner.aseprite): 80 × 80. Added short parallel arcs and radial joins between the twelve main symbols, along the rune band's two edges.
+- [Outer PNG](outer-preview.png) / [Aseprite](outer.aseprite): 120 × 120. Added sixteen sets of segmented arcs and short joins between the sixteen runes; the lower edging extends into the empty gap toward the inner sigil without changing the outer diameter.
+- Every border remains `FFC65A` gold. Existing `FFF0BF` cream and `F16B32` ember accents stay on the original glyphs/octagram. Every previously opaque pixel retains its exact RGBA; the only additions are 144 inner and 344 outer gold pixels. Existing center, characters and line weight remain intact.
+- [Native authoring source](author-native.lua) adds an editable `Gold border engravings` layer to each Aseprite file. Decorative joins are short perimeter details, with no long crosshair spokes, new diamond motifs or perspective rotation.
+- [Full composite at 3×](charge-100-3x.png), [rotated](charge-rotated.png), [lighter floor](charge-light.png). Inspected all three. The initial interactive preview remains full charge and paused.
+- [Verification report](preview-check.json): three colors/binary alpha, every border pixel gold, exact preservation of previous opaque artwork, sixteen separated outer rune sectors, native mapping, charge stages, complete inner at 50%, layer isolation, full circumference, scaled bounds, opposite rotation and pause/resume passed. [Harness](check-preview.cjs) runs the actual preview JavaScript with an offline Canvas pixel adapter; [capture exporter](export-checks.lua) uses Aseprite.
+- No Unity source/assets/import settings changed. Browser DOM/layout and Unity compilation/import/Play Mode were not run. The proposed 20 PPU remains unapplied; actual-camera sampling and small-scale/rotating-line appearance remain integration acceptance items.
+- Doc Impact Check: SessionLog only. ErrorLog, DecisionLog and StructureMemory unchanged; no Presentation HTML stale candidate.

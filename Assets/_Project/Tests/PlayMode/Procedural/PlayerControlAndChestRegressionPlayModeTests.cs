@@ -156,6 +156,69 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
     }
 
     [Test]
+    public void WeaponFeedback_MarkIdleFollowsActivationAndCleanup()
+    {
+        var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+            "Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMark.prefab");
+        var mark = Own(Object.Instantiate(prefab)).GetComponent<LightningSpearMarkActor>();
+        var idle = mark.transform.Find("SelectedVisual").gameObject;
+        mark.Initialize(null, null, 10f, 1f, null, null, null);
+        mark.SetFeedback(true, true);
+        Assert.That(idle.activeSelf, Is.False, "Idle must stay hidden while the mark is spawning.");
+
+        mark.ActivateFromSpawnEffect();
+        Assert.That(idle.activeInHierarchy, Is.True, "Landing must start Idle without waiting for a feedback refresh.");
+        foreach (var flags in new[] { (false, false), (true, false), (false, true), (true, true) })
+        {
+            mark.SetFeedback(flags.Item1, flags.Item2);
+            Assert.That(idle.activeInHierarchy, Is.True, "Rush readiness and hover must not hide an active mark's Idle.");
+        }
+
+        mark.enabled = false;
+        Assert.That(idle.activeSelf, Is.False);
+        mark.enabled = true;
+        Assert.That(idle.activeInHierarchy, Is.True);
+        mark.gameObject.SetActive(false);
+        Assert.That(idle.activeSelf, Is.False);
+        mark.gameObject.SetActive(true);
+        Assert.That(idle.activeInHierarchy, Is.True);
+
+        mark.Initialize(null, null, 10f, 1f, null, null, null);
+        Assert.That(idle.activeSelf, Is.False, "Reinitialization must clear the previous active presentation.");
+        mark.ActivateFromSpawnEffect();
+        Assert.That(idle.activeInHierarchy, Is.True);
+        mark.Consume();
+        Assert.That(idle.activeSelf, Is.False, "Consumption must stop Idle before deferred destruction.");
+        mark.ActivateFromSpawnEffect();
+        mark.SetFeedback(true, true);
+        Assert.That(idle.activeSelf, Is.False, "A consumed mark must not restart Idle.");
+    }
+
+    [UnityTest]
+    public IEnumerator WeaponFeedback_MarkIdleExpiresWithItsMark()
+    {
+        var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+            "Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMark.prefab");
+        var mark = Own(Object.Instantiate(prefab)).GetComponent<LightningSpearMarkActor>();
+        var idle = mark.transform.Find("SelectedVisual").gameObject;
+        float previousTimeScale = Time.timeScale;
+        try
+        {
+            Time.timeScale = 1f;
+            mark.Initialize(null, null, 0.01f, 1f, null, null, null);
+            mark.ActivateFromSpawnEffect();
+            mark.SetFeedback(false, false);
+            Assert.That(idle.activeInHierarchy, Is.True);
+            float deadline = Time.realtimeSinceStartup + 2f;
+            while (mark != null && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            Assert.That(mark == null, Is.True, "The active mark must expire through its normal Update lifecycle.");
+            Assert.That(idle == null, Is.True, "Expiry must remove the authored Idle with its owner.");
+        }
+        finally { Time.timeScale = previousTimeScale; }
+    }
+
+    [Test]
     public void WeaponFeedback_FirstMarkRushGuidanceCompletionIsPerSaveSlot()
     {
         const string tutorialId = "lightning-spear:first-mark-rush";

@@ -1,0 +1,449 @@
+PASS Fixture max health
+PASS Fixture health
+PASS Thirteen authored stat rows
+PASS Locale exists ko
+PASS Selected locale stable ko
+PASS stats-ko text fits Text_Title: 기본 능력치
+PASS stats-ko text fits Text_Label: 체력
+PASS stats-ko text fits Text_Value: 4 / 6
+PASS stats-ko text fits Text_Label: 공격력
+PASS stats-ko text fits Text_Value: 0
+PASS stats-ko text fits Text_Label: 이동 속도
+PASS stats-ko text fits Text_Value: 0.00%
+PASS stats-ko text fits Text_Title: 전투 능력치
+PASS stats-ko text fits Text_Label: 화염 피해량
+PASS stats-ko text fits Text_Value: 0
+PASS stats-ko text fits Text_Label: 출혈 피해량
+PASS stats-ko text fits Text_Value: 0
+PASS stats-ko text fits Text_Label: 중독 피해량
+PASS stats-ko text fits Text_Value: 0
+PASS stats-ko text fits Text_Label: 전기 피해량
+PASS stats-ko text fits Text_Value: 0
+PASS stats-ko text fits Text_Label: 치명타 확률
+PASS stats-ko text fits Text_Value: 0%
+PASS stats-ko text fits Text_Label: 회피율
+PASS stats-ko text fits Text_Value: 0%
+PASS stats-ko text fits Text_Label: 공격 속도
+PASS stats-ko text fits Text_Value: 0.00
+PASS stats-ko text fits Text_Label: 치명타 피해
+PASS stats-ko text fits Text_Value: 0%
+PASS stats-ko text fits Text_Label: 기본 공격 피해
+PASS stats-ko text fits Text_Value: 0%
+PASS stats-ko text fits Text_Label: 스킬 피해
+PASS stats-ko text fits Text_Value: 0%
+PASS stats-ko capture bounds 430x652
+PASS stats-ko nonblank render
+PASS Locale exists en
+PASS Selected locale stable en
+PASS stats-en text fits Text_Title: Basic Stats
+PASS stats-en text fits Text_Label: HP
+PASS stats-en text fits Text_Value: 4 / 6
+PASS stats-en text fits Text_Label: Attack Power
+PASS stats-en text fits Text_Value: 0
+PASS stats-en text fits Text_Label: Movement Speed
+PASS stats-en text fits Text_Value: 0.00%
+PASS stats-en text fits Text_Title: Combat Stats
+PASS stats-en text fits Text_Label: Fire Damage
+PASS stats-en text fits Text_Value: 0
+PASS stats-en text fits Text_Label: Bleed Damage
+PASS stats-en text fits Text_Value: 0
+PASS stats-en text fits Text_Label: Poison Damage
+PASS stats-en text fits Text_Value: 0
+PASS stats-en text fits Text_Label: Electric Damage
+PASS stats-en text fits Text_Value: 0
+PASS stats-en text fits Text_Label: Critical Chance
+PASS stats-en text fits Text_Value: 0%
+PASS stats-en text fits Text_Label: Evasion
+PASS stats-en text fits Text_Value: 0%
+PASS stats-en text fits Text_Label: Attack Speed
+PASS stats-en text fits Text_Value: 0.00
+PASS stats-en text fits Text_Label: Critical Damage
+PASS stats-en text fits Text_Value: 0%
+PASS stats-en text fits Text_Label: Basic Attack Damage
+PASS stats-en text fits Text_Value: 0%
+PASS stats-en text fits Text_Label: Skill Damage
+PASS stats-en text fits Text_Value: 0%
+PASS stats-en capture bounds 430x652
+PASS stats-en nonblank render
+PASS Locale exists ja
+PASS Selected locale stable ja
+PASS stats-ja text fits Text_Title: 基本能力値
+PASS stats-ja text fits Text_Label: HP
+PASS stats-ja text fits Text_Value: 4 / 6
+PASS stats-ja text fits Text_Label: 攻撃力
+PASS stats-ja text fits Text_Value: 0
+PASS stats-ja text fits Text_Label: 移動速度
+PASS stats-ja text fits Text_Value: 0.00%
+PASS stats-ja text fits Text_Title: 戦闘能力値
+PASS stats-ja text fits Text_Label: 火炎ダメージ
+PASS stats-ja text fits Text_Value: 0
+PASS stats-ja text fits Text_Label: 出血ダメージ
+PASS stats-ja text fits Text_Value: 0
+PASS stats-ja text fits Text_Label: 毒ダメージ
+PASS stats-ja text fits Text_Value: 0
+PASS stats-ja text fits Text_Label: 電気ダメージ
+PASS stats-ja text fits Text_Value: 0
+PASS stats-ja text fits Text_Label: クリティカル率
+PASS stats-ja text fits Text_Value: 0%
+PASS stats-ja text fits Text_Label: 回避率
+PASS stats-ja text fits Text_Value: 0%
+PASS stats-ja text fits Text_Label: 攻撃速度
+PASS stats-ja text fits Text_Value: 0.00
+PASS stats-ja text fits Text_Label: クリティカルダメージ
+PASS stats-ja text fits Text_Value: 0%
+PASS stats-ja text fits Text_Label: 通常攻撃ダメージ
+PASS stats-ja text fits Text_Value: 0%
+PASS stats-ja text fits Text_Label: スキルダメージ
+PASS stats-ja text fits Text_Value: 0%
+PASS stats-ja capture bounds 430x652
+PASS stats-ja nonblank render
+PASS Locale exists zh-Hans
+PASS Selected locale stable zh-Hans
+PASS stats-zh-Hans text fits Text_Title: 基础属性
+PASS stats-zh-Hans text fits Text_Label: 生命值
+PASS stats-zh-Hans text fits Text_Value: 4 / 6
+PASS stats-zh-Hans text fits Text_Label: 攻击力
+PASS stats-zh-Hans text fits Text_Value: 0
+PASS stats-zh-Hans text fits Text_Label: 移动速度
+PASS stats-zh-Hans text fits Text_Value: 0.00%
+PASS stats-zh-Hans text fits Text_Title: 战斗属性
+PASS stats-zh-Hans text fits Text_Label: 火焰伤害
+PASS stats-zh-Hans text fits Text_Value: 0
+PASS stats-zh-Hans text fits Text_Label: 出血伤害
+PASS stats-zh-Hans text fits Text_Value: 0
+PASS stats-zh-Hans text fits Text_Label: 中毒伤害
+PASS stats-zh-Hans text fits Text_Value: 0
+PASS stats-zh-Hans text fits Text_Label: 电伤害
+PASS stats-zh-Hans text fits Text_Value: 0
+PASS stats-zh-Hans text fits Text_Label: 暴击率
+PASS stats-zh-Hans text fits Text_Value: 0%
+PASS stats-zh-Hans text fits Text_Label: 闪避率
+PASS stats-zh-Hans text fits Text_Value: 0%
+PASS stats-zh-Hans text fits Text_Label: 攻击速度
+PASS stats-zh-Hans text fits Text_Value: 0.00
+PASS stats-zh-Hans text fits Text_Label: 暴击伤害
+PASS stats-zh-Hans text fits Text_Value: 0%
+PASS stats-zh-Hans text fits Text_Label: 普通攻击伤害
+PASS stats-zh-Hans text fits Text_Value: 0%
+PASS stats-zh-Hans text fits Text_Label: 技能伤害
+PASS stats-zh-Hans text fits Text_Value: 0%
+PASS stats-zh-Hans capture bounds 430x652
+PASS stats-zh-Hans nonblank render
+PASS Locale exists zh-Hant
+PASS Selected locale stable zh-Hant
+PASS stats-zh-Hant text fits Text_Title: 基礎屬性
+PASS stats-zh-Hant text fits Text_Label: 生命值
+PASS stats-zh-Hant text fits Text_Value: 4 / 6
+PASS stats-zh-Hant text fits Text_Label: 攻擊力
+PASS stats-zh-Hant text fits Text_Value: 0
+PASS stats-zh-Hant text fits Text_Label: 移動速度
+PASS stats-zh-Hant text fits Text_Value: 0.00%
+PASS stats-zh-Hant text fits Text_Title: 戰鬥屬性
+PASS stats-zh-Hant text fits Text_Label: 火焰傷害
+PASS stats-zh-Hant text fits Text_Value: 0
+PASS stats-zh-Hant text fits Text_Label: 出血傷害
+PASS stats-zh-Hant text fits Text_Value: 0
+PASS stats-zh-Hant text fits Text_Label: 中毒傷害
+PASS stats-zh-Hant text fits Text_Value: 0
+PASS stats-zh-Hant text fits Text_Label: 電傷害
+PASS stats-zh-Hant text fits Text_Value: 0
+PASS stats-zh-Hant text fits Text_Label: 暴擊率
+PASS stats-zh-Hant text fits Text_Value: 0%
+PASS stats-zh-Hant text fits Text_Label: 閃避率
+PASS stats-zh-Hant text fits Text_Value: 0%
+PASS stats-zh-Hant text fits Text_Label: 攻擊速度
+PASS stats-zh-Hant text fits Text_Value: 0.00
+PASS stats-zh-Hant text fits Text_Label: 暴擊傷害
+PASS stats-zh-Hant text fits Text_Value: 0%
+PASS stats-zh-Hant text fits Text_Label: 普通攻擊傷害
+PASS stats-zh-Hant text fits Text_Value: 0%
+PASS stats-zh-Hant text fits Text_Label: 技能傷害
+PASS stats-zh-Hant text fits Text_Value: 0%
+PASS stats-zh-Hant capture bounds 430x652
+PASS stats-zh-Hant nonblank render
+PASS Stats refresh after attribute event
+PASS Potion acquisition updates HUD
+PASS Locale exists ko
+PASS Selected locale stable ko
+PASS Potion slot 0 centered 36px icon / visible frame
+PASS Potion slot 0 inventory visibility
+PASS Potion key overlays icon 0
+PASS Potion slot 1 centered 36px icon / visible frame
+PASS Potion slot 1 inventory visibility
+PASS Potion key overlays icon 1
+PASS Potion slot 2 centered 36px icon / visible frame
+PASS Potion slot 2 inventory visibility
+PASS Potion key overlays icon 2
+PASS Potion slot 3 centered 36px icon / visible frame
+PASS Potion slot 3 inventory visibility
+PASS Potion key overlays icon 3
+PASS potion-ko capture bounds 271x90
+PASS potion-ko nonblank render
+PASS Potion use succeeds
+PASS Consumed potion clears icon and preserves slot
+PASS Locale exists ko
+PASS Selected locale stable ko
+PASS Open upgrade ko
+PASS Locale exists ko
+PASS Selected locale stable ko
+PASS upgrade-ko text fits TitleText: 업그레이드 완료!
+PASS upgrade-ko text fits ContextText: - 최대 체력 1 증가
+PASS upgrade-ko text fits Text (TMP): 닫기
+PASS Body and confirm do not overlap upgrade ko
+PASS Reward slot contained upgrade ko
+PASS upgrade-ko capture bounds 604x460
+PASS upgrade-ko nonblank render
+PASS Close callback once upgrade ko
+PASS Open affection ko
+PASS Locale exists ko
+PASS Selected locale stable ko
+PASS affection-ko text fits TitleText: 호감도 보상!
+PASS affection-ko text fits ContextText: - 상점 판매 가격 20% 할인
+PASS affection-ko text fits Text (TMP): 닫기
+PASS Body and confirm do not overlap affection ko
+PASS Reward slot contained affection ko
+PASS affection-ko capture bounds 604x460
+PASS affection-ko nonblank render
+PASS Close callback once affection ko
+PASS Open multiple ko
+PASS Locale exists ko
+PASS Selected locale stable ko
+PASS multiple-ko text fits TitleText: 호감도 보상!
+PASS multiple-ko text fits ContextText: - 상점 판매 가격 20% 할인
+- 상점 판매 가격 20% 할인
+- 상점 판매 가격 20% 할인
+- 상점 판매 가격 20% 할인
+PASS multiple-ko text fits Text (TMP): 닫기
+PASS Body and confirm do not overlap multiple ko
+PASS Reward slot contained multiple ko
+PASS Reward slot contained multiple ko
+PASS Reward slot contained multiple ko
+PASS Reward slot contained multiple ko
+PASS multiple-ko capture bounds 604x503
+PASS multiple-ko nonblank render
+PASS Close callback once multiple ko
+PASS Open unlock ko
+PASS Locale exists ko
+PASS Selected locale stable ko
+PASS unlock-ko text fits TitleText: 호감도 보상!
+PASS unlock-ko text fits ContextText: - 무기와 유물 해금
+PASS unlock-ko text fits Text (TMP): 닫기
+PASS Body and confirm do not overlap unlock ko
+PASS Reward slot contained unlock ko
+PASS Reward slot contained unlock ko
+PASS unlock-ko capture bounds 604x460
+PASS unlock-ko nonblank render
+PASS Close callback once unlock ko
+PASS Locale exists en
+PASS Selected locale stable en
+PASS Open upgrade en
+PASS Locale exists en
+PASS Selected locale stable en
+PASS upgrade-en text fits TitleText: Upgrade complete!
+PASS upgrade-en text fits ContextText: - Increases max HP by 1.
+PASS upgrade-en text fits Text (TMP): Close
+PASS Body and confirm do not overlap upgrade en
+PASS Reward slot contained upgrade en
+PASS upgrade-en capture bounds 604x460
+PASS upgrade-en nonblank render
+PASS Close callback once upgrade en
+PASS Open affection en
+PASS Locale exists en
+PASS Selected locale stable en
+PASS affection-en text fits TitleText: Affection reward!
+PASS affection-en text fits ContextText: - 20% discount on shop prices
+PASS affection-en text fits Text (TMP): Close
+PASS Body and confirm do not overlap affection en
+PASS Reward slot contained affection en
+PASS affection-en capture bounds 604x460
+PASS affection-en nonblank render
+PASS Close callback once affection en
+PASS Open multiple en
+PASS Locale exists en
+PASS Selected locale stable en
+PASS multiple-en text fits TitleText: Affection reward!
+PASS multiple-en text fits ContextText: - 20% discount on shop prices
+- 20% discount on shop prices
+- 20% discount on shop prices
+- 20% discount on shop prices
+PASS multiple-en text fits Text (TMP): Close
+PASS Body and confirm do not overlap multiple en
+PASS Reward slot contained multiple en
+PASS Reward slot contained multiple en
+PASS Reward slot contained multiple en
+PASS Reward slot contained multiple en
+PASS multiple-en capture bounds 604x503
+PASS multiple-en nonblank render
+PASS Close callback once multiple en
+PASS Open unlock en
+PASS Locale exists en
+PASS Selected locale stable en
+PASS unlock-en text fits TitleText: Affection reward!
+PASS unlock-en text fits ContextText: - Unlock weapons and relics
+PASS unlock-en text fits Text (TMP): Close
+PASS Body and confirm do not overlap unlock en
+PASS Reward slot contained unlock en
+PASS Reward slot contained unlock en
+PASS unlock-en capture bounds 604x460
+PASS unlock-en nonblank render
+PASS Close callback once unlock en
+PASS Locale exists ja
+PASS Selected locale stable ja
+PASS Open upgrade ja
+PASS Locale exists ja
+PASS Selected locale stable ja
+PASS upgrade-ja text fits TitleText: 強化完了！
+PASS upgrade-ja text fits ContextText: - 最大HPが1増加する。
+PASS upgrade-ja text fits Text (TMP): 閉じる
+PASS Body and confirm do not overlap upgrade ja
+PASS Reward slot contained upgrade ja
+PASS upgrade-ja capture bounds 604x460
+PASS upgrade-ja nonblank render
+PASS Close callback once upgrade ja
+PASS Open affection ja
+PASS Locale exists ja
+PASS Selected locale stable ja
+PASS affection-ja text fits TitleText: 好感度報酬！
+PASS affection-ja text fits ContextText: - 店の販売価格が20%割引
+PASS affection-ja text fits Text (TMP): 閉じる
+PASS Body and confirm do not overlap affection ja
+PASS Reward slot contained affection ja
+PASS affection-ja capture bounds 604x460
+PASS affection-ja nonblank render
+PASS Close callback once affection ja
+PASS Open multiple ja
+PASS Locale exists ja
+PASS Selected locale stable ja
+PASS multiple-ja text fits TitleText: 好感度報酬！
+PASS multiple-ja text fits ContextText: - 店の販売価格が20%割引
+- 店の販売価格が20%割引
+- 店の販売価格が20%割引
+- 店の販売価格が20%割引
+PASS multiple-ja text fits Text (TMP): 閉じる
+PASS Body and confirm do not overlap multiple ja
+PASS Reward slot contained multiple ja
+PASS Reward slot contained multiple ja
+PASS Reward slot contained multiple ja
+PASS Reward slot contained multiple ja
+PASS multiple-ja capture bounds 604x503
+PASS multiple-ja nonblank render
+PASS Close callback once multiple ja
+PASS Open unlock ja
+PASS Locale exists ja
+PASS Selected locale stable ja
+PASS unlock-ja text fits TitleText: 好感度報酬！
+PASS unlock-ja text fits ContextText: - 武器と遺物を解放
+PASS unlock-ja text fits Text (TMP): 閉じる
+PASS Body and confirm do not overlap unlock ja
+PASS Reward slot contained unlock ja
+PASS Reward slot contained unlock ja
+PASS unlock-ja capture bounds 604x460
+PASS unlock-ja nonblank render
+PASS Close callback once unlock ja
+PASS Locale exists zh-Hans
+PASS Selected locale stable zh-Hans
+PASS Open upgrade zh-Hans
+PASS Locale exists zh-Hans
+PASS Selected locale stable zh-Hans
+PASS upgrade-zh-Hans text fits TitleText: 升级完成！
+PASS upgrade-zh-Hans text fits ContextText: - 生命值上限增加1。
+PASS upgrade-zh-Hans text fits Text (TMP): 关闭
+PASS Body and confirm do not overlap upgrade zh-Hans
+PASS Reward slot contained upgrade zh-Hans
+PASS upgrade-zh-Hans capture bounds 604x460
+PASS upgrade-zh-Hans nonblank render
+PASS Close callback once upgrade zh-Hans
+PASS Open affection zh-Hans
+PASS Locale exists zh-Hans
+PASS Selected locale stable zh-Hans
+PASS affection-zh-Hans text fits TitleText: 好感度奖励！
+PASS affection-zh-Hans text fits ContextText: - 商店售价优惠20%
+PASS affection-zh-Hans text fits Text (TMP): 关闭
+PASS Body and confirm do not overlap affection zh-Hans
+PASS Reward slot contained affection zh-Hans
+PASS affection-zh-Hans capture bounds 604x460
+PASS affection-zh-Hans nonblank render
+PASS Close callback once affection zh-Hans
+PASS Open multiple zh-Hans
+PASS Locale exists zh-Hans
+PASS Selected locale stable zh-Hans
+PASS multiple-zh-Hans text fits TitleText: 好感度奖励！
+PASS multiple-zh-Hans text fits ContextText: - 商店售价优惠20%
+- 商店售价优惠20%
+- 商店售价优惠20%
+- 商店售价优惠20%
+PASS multiple-zh-Hans text fits Text (TMP): 关闭
+PASS Body and confirm do not overlap multiple zh-Hans
+PASS Reward slot contained multiple zh-Hans
+PASS Reward slot contained multiple zh-Hans
+PASS Reward slot contained multiple zh-Hans
+PASS Reward slot contained multiple zh-Hans
+PASS multiple-zh-Hans capture bounds 604x509
+PASS multiple-zh-Hans nonblank render
+PASS Close callback once multiple zh-Hans
+PASS Open unlock zh-Hans
+PASS Locale exists zh-Hans
+PASS Selected locale stable zh-Hans
+PASS unlock-zh-Hans text fits TitleText: 好感度奖励！
+PASS unlock-zh-Hans text fits ContextText: - 解锁武器与遗物
+PASS unlock-zh-Hans text fits Text (TMP): 关闭
+PASS Body and confirm do not overlap unlock zh-Hans
+PASS Reward slot contained unlock zh-Hans
+PASS Reward slot contained unlock zh-Hans
+PASS unlock-zh-Hans capture bounds 604x460
+PASS unlock-zh-Hans nonblank render
+PASS Close callback once unlock zh-Hans
+PASS Locale exists zh-Hant
+PASS Selected locale stable zh-Hant
+PASS Open upgrade zh-Hant
+PASS Locale exists zh-Hant
+PASS Selected locale stable zh-Hant
+PASS upgrade-zh-Hant text fits TitleText: 升級完成！
+PASS upgrade-zh-Hant text fits ContextText: - 生命值上限增加1。
+PASS upgrade-zh-Hant text fits Text (TMP): 關閉
+PASS Body and confirm do not overlap upgrade zh-Hant
+PASS Reward slot contained upgrade zh-Hant
+PASS upgrade-zh-Hant capture bounds 604x460
+PASS upgrade-zh-Hant nonblank render
+PASS Close callback once upgrade zh-Hant
+PASS Open affection zh-Hant
+PASS Locale exists zh-Hant
+PASS Selected locale stable zh-Hant
+PASS affection-zh-Hant text fits TitleText: 好感度獎勵！
+PASS affection-zh-Hant text fits ContextText: - 商店售價優惠20%
+PASS affection-zh-Hant text fits Text (TMP): 關閉
+PASS Body and confirm do not overlap affection zh-Hant
+PASS Reward slot contained affection zh-Hant
+PASS affection-zh-Hant capture bounds 604x460
+PASS affection-zh-Hant nonblank render
+PASS Close callback once affection zh-Hant
+PASS Open multiple zh-Hant
+PASS Locale exists zh-Hant
+PASS Selected locale stable zh-Hant
+PASS multiple-zh-Hant text fits TitleText: 好感度獎勵！
+PASS multiple-zh-Hant text fits ContextText: - 商店售價優惠20%
+- 商店售價優惠20%
+- 商店售價優惠20%
+- 商店售價優惠20%
+PASS multiple-zh-Hant text fits Text (TMP): 關閉
+PASS Body and confirm do not overlap multiple zh-Hant
+PASS Reward slot contained multiple zh-Hant
+PASS Reward slot contained multiple zh-Hant
+PASS Reward slot contained multiple zh-Hant
+PASS Reward slot contained multiple zh-Hant
+PASS multiple-zh-Hant capture bounds 604x509
+PASS multiple-zh-Hant nonblank render
+PASS Close callback once multiple zh-Hant
+PASS Open unlock zh-Hant
+PASS Locale exists zh-Hant
+PASS Selected locale stable zh-Hant
+PASS unlock-zh-Hant text fits TitleText: 好感度獎勵！
+PASS unlock-zh-Hant text fits ContextText: - 解鎖武器與遺物
+PASS unlock-zh-Hant text fits Text (TMP): 關閉
+PASS Body and confirm do not overlap unlock zh-Hant
+PASS Reward slot contained unlock zh-Hant
+PASS Reward slot contained unlock zh-Hant
+PASS unlock-zh-Hant capture bounds 604x460
+PASS unlock-zh-Hant nonblank render
+PASS Close callback once unlock zh-Hant
+APPROVED_UI_SKIN_VALIDATION_PASS

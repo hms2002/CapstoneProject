@@ -1,0 +1,105 @@
+{
+  "beer": {
+    "frames": 4,
+    "RGBA_colors": 8,
+    "ground_occupancy_unchanged": true,
+    "duration_ms": 640,
+    "exact_pixel_match_to_revision8": true
+  },
+  "fire-surface": {
+    "frames": 12,
+    "RGBA_colors": 7,
+    "ground_occupancy_unchanged": true,
+    "duration_ms": 960,
+    "adjacent_frame_changed_pixels": [
+      933,
+      891,
+      886,
+      867,
+      889,
+      761,
+      771,
+      863,
+      935,
+      978,
+      854,
+      876
+    ],
+    "warm_regions": [
+      {
+        "warm_pixels": 1260,
+        "largest_connected_warm_region": 1255
+      },
+      {
+        "warm_pixels": 908,
+        "largest_connected_warm_region": 854
+      },
+      {
+        "warm_pixels": 1146,
+        "largest_connected_warm_region": 1146
+      },
+      {
+        "warm_pixels": 1133,
+        "largest_connected_warm_region": 971
+      },
+      {
+        "warm_pixels": 1276,
+        "largest_connected_warm_region": 1276
+      },
+      {
+        "warm_pixels": 1022,
+        "largest_connected_warm_region": 964
+      },
+      {
+        "warm_pixels": 1131,
+        "largest_connected_warm_region": 1126
+      },
+      {
+        "warm_pixels": 1100,
+        "largest_connected_warm_region": 1056
+      },
+      {
+        "warm_pixels": 989,
+        "largest_connected_warm_region": 946
+      },
+      {
+        "warm_pixels": 816,
+        "largest_connected_warm_region": 715
+      },
+      {
+        "warm_pixels": 1204,
+        "largest_connected_warm_region": 1203
+      },
+      {
+        "warm_pixels": 1325,
+        "largest_connected_warm_region": 1322
+      }
+    ]
+  },
+  "beer-to-fire": {
+    "frames": 8,
+    "RGBA_colors": 15,
+    "ground_occupancy_unchanged": true,
+    "duration_ms": 640
+  },
+  "puddle-cycle": {
+    "frames": 24,
+    "RGBA_colors": 15,
+    "ground_occupancy_unchanged": true,
+    "duration_ms": 2240
+  },
+  "comparison-preview": {
+    "duration_ms": 3840,
+    "integer_scale": 4
+  },
+  "ignition-preview": {
+    "duration_ms": 3840,
+    "integer_scale": 4
+  },
+  "surface-only-preview": {
+    "duration_ms": 960,
+    "integer_scale": 6
+  },
+  "native_checks": 200,
+  "GIF_review_max_channel_delta": 0
+}

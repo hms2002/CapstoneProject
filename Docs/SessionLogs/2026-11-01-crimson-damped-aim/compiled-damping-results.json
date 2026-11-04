@@ -1,0 +1,23 @@
+{
+  "Passed": true,
+  "Checks": 510,
+  "Execution": "Compiled Gameplay.DampChargeTarget using real Unity managed math outside Editor",
+  "Cases": [
+    {
+      "FPS": 30,
+      "PositionAtPointTwoSeconds": 0.482163,
+      "MaximumObservedLag": 0.7500043440639584
+    },
+    {
+      "FPS": 60,
+      "PositionAtPointTwoSeconds": 0.482163,
+      "MaximumObservedLag": 0.7500047576850871
+    },
+    {
+      "FPS": 120,
+      "PositionAtPointTwoSeconds": 0.482163,
+      "MaximumObservedLag": 0.7500037424328186
+    }
+  ],
+  "Limit": "No scene, coroutine, physics, native rendering or Play Mode coverage"
+}

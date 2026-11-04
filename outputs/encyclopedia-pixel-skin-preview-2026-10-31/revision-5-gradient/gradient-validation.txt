@@ -1,0 +1,3 @@
+PASS BlackFadeBottom: 8x64, black RGB, 64 monotonic alpha levels.
+PASS BlackFadeTop: 8x64, black RGB, 64 monotonic alpha levels.
+PASS nameplates removed from all card/portrait compositions; generic unused sheet asset preserved.

@@ -1,0 +1,298 @@
+[
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\inner.aseprite",
+    "Hash": "1902B966C009078DB10D954AD1C545A10C832C3631F89EBD7C58A9BB6A825E21"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\inner.aseprite.meta",
+    "Hash": "315F0646CABDF571395CB6C0CD6547BC5B45680F4C4CEADB0A101077F991AEB3"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\inner.png",
+    "Hash": "7C61641A861D1F789342EBDC5125850A6CF112F4925BF3A436560DDE2DEA413E"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\inner.png.meta",
+    "Hash": "1F7B9743D84E3C579C9420BBAB131F86D26DEA30913500517D2A7A27EA3BA4DB"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\outer.aseprite",
+    "Hash": "A5AE677D1B23F8ED4FBDD677A41A794F53E407BA0D30D004DCCD5EE943956593"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\outer.aseprite.meta",
+    "Hash": "B02E9A43E95093754AF4D10475D444B87D3665D4C08A72BFEAD9BB2C78107113"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\outer.png",
+    "Hash": "887E1D2DE296F731D980F06C3848AE9DFB11B98928DAC3D2B1AF0D8AF871E55A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\VFX\\CrimsonBoundary\\MagicCircle\\outer.png.meta",
+    "Hash": "2241CA2CF3DF8FE09DF8B00EAC0075BD3C68F7890A86DE1FF534D09CB56BDCB7"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Presentation\\VFX\\Presentation\\CrimsonBoundaryChargePresentation.cs",
+    "Hash": "C8ADAC9800FD4B01DAB4DDAF45E4C7A2D1898A12440FA80C50C74E3F7C357948"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\author-native.lua",
+    "Hash": "765305D85F83B5B2AF881E41B3DB249A80DF42CDF5BAFD6224CF8A40AFE6C9A4"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\change-verification.json",
+    "Hash": "96B33F41CE08B994DF8528116A7E07AD91B89907E72CE17FA3029691EAC29CCC"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\combined-192.png",
+    "Hash": "E1CA6D5E17C202E4B6EE52F7598EF304F1EC5748DBC1A79D5057DFFCADF4C2C2"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\combined-192.rgba",
+    "Hash": "01AFC58242D30DE5D8789CC2BCC536507AA33875273DBA0D0DC5ABB3514D3CDE"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\combined-3x.png",
+    "Hash": "63F90C173EC9EFEDF26908C1A70B03C860B1CE82C0DA22569EC4D8F133D377F1"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\combined-3x.rgba",
+    "Hash": "D89C6A430F32E5AD4AE95B06CC54C03490CC68F0CB87A4C756CF9F288FB0CBC7"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\comparison-before-after.png",
+    "Hash": "DB08662B66874ECA9458E5F51CE595E381974E8F859C0BB2DC70E2DD28C14E68"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\comparison-before-after.rgba",
+    "Hash": "31E0046FD84E84A660BCE314A88AB0AB5B61E22C9173384AD219E1C5EBC5F2B9"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\glyph-directions.png",
+    "Hash": "517828B500C801AAB8A8ABABEF71F5BD4B0A9EA7E3B046578D7CDCF012795388"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\glyph-directions.rgba",
+    "Hash": "53E9E14B59F3DE2B67AD0AE76DECE0D9FA849D2A249882172978BC9DA74BFE5F"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner-base.png",
+    "Hash": "92AD18C3F26948ECFB78E59FDC06EEFA7C31B78E5A78384ED1E07B849FB4C28D"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner-base.rgba",
+    "Hash": "C6C402D573739F147276ADBFA8AD36E8CF708956EED43B9AAF5915403A6AB0B4"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner-inset-star.png",
+    "Hash": "23EEB8513DB0A07D33CDB2C0263DE840D487653EA2F9CF2CF8EAC0070222EF33"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner-inset-star.rgba",
+    "Hash": "FD2893EB2A12B49F6C8908756BCBBCD1F0203CC7434CD72C4AF8050100F78D94"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner-medallions.png",
+    "Hash": "F23872F89F1BC343DD35B85C4C366941AE5FA82196A900057EAD41D79B97B85F"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner-medallions.rgba",
+    "Hash": "30D9846814C77926F71A7ED7DBE65F0F241463A182CCC81EDA20535B368C3912"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner-rim.png",
+    "Hash": "9B08E5EC2D677A30151CA3B6163F6D5E524760F225B2318BC94E27C7690BD683"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner-rim.rgba",
+    "Hash": "A3B283861CD5754283E116BDD1FC4BB3DC7A3B27FF046B06A736F8F0C5791CD3"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner-runes.png",
+    "Hash": "DD7829D1AA406A6CFBCAE10DF48DD2E4A56D4D5F4B4B1DF080B3E7549725EAAB"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner-runes.rgba",
+    "Hash": "AF0B13D29A7FB934D814E473CD33025F2187685F93E317BD351789C9645F6B96"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner-star.png",
+    "Hash": "EB28523AEFF2496ADDF6FDAC05C9B05F900D1E84B50E9EC1779B0234B7C1EAA5"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner-star.rgba",
+    "Hash": "5646D6266B1FB2268304B968128C5C97E3C8C08CF00720572FC91ECC30693AB6"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner.aseprite",
+    "Hash": "5B8593555D6BE93F09EAB286BCF8BB306E1743792D05FF3B39CECC203340EF1C"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner.png",
+    "Hash": "0DA4A38DE26076FA0D1DFD6FD415235CB89B2AE9F8DC84971576FA9B670234A4"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\inner.rgba",
+    "Hash": "6E4427997AE443FDFD5571C35D9AACC3F03D3AA909A060E7ECF33DFDE15187C4"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\medallion.png",
+    "Hash": "496E1C6EDD140EB7630BABBCFACBD9DC6B0DFEB821D356F2DBEC79C5AE388AB0"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\medallion.rgba",
+    "Hash": "924E5FD152A05527E5A446877987D11BFBE88175A0720D38F95FDF6B4F035FEC"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\media-verification.json",
+    "Hash": "F5F811A5BCF61DCB741E567E4E96CC8FCEF852B8714E3459D01F1B2BA3D30E71"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\opposing-rotation.gif",
+    "Hash": "5B1EFD82C7409E6772F63E46A0038A7FEC0CE3787A8D9A6F5AD77AF50696BF8C"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer-base.png",
+    "Hash": "BBCBF60575E38A30697542A2682CD3BDEFF13F47E2FBA1289A2B5FD7D19B000C"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer-base.rgba",
+    "Hash": "4E7371FF86F18F32EE043B3B3166DA6C73A00F0392860A97BABB27858FE991B6"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer-inset-star.png",
+    "Hash": "943211FB969179A1ADA9792D98AA6EA5C3D9E8C72E35FE202B24641D774836DF"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer-inset-star.rgba",
+    "Hash": "8123C216413F82BBAA0339C27A43D9822C2A043E20662B27C97874429B996E9A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer-medallions.png",
+    "Hash": "943211FB969179A1ADA9792D98AA6EA5C3D9E8C72E35FE202B24641D774836DF"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer-medallions.rgba",
+    "Hash": "8123C216413F82BBAA0339C27A43D9822C2A043E20662B27C97874429B996E9A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer-rim.png",
+    "Hash": "BADDE137FD6D41B53F0C478A058574C962BBB543767ABB27EB46C7ED1C04FBE0"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer-rim.rgba",
+    "Hash": "38DA8B12DB48648D6BE190FFDECEFF71F28DA34D30287A2DEB387968E457D9CB"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer-runes.png",
+    "Hash": "AF1C3E42AC091625B704463A280776E5D5AE9E9A5D502DDB4BA0A59CA44AF117"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer-runes.rgba",
+    "Hash": "8A68750A5DC5AA8684BDC0452F23640ADB54ED56D0E7D15A493D30D74BB7954C"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer-star.png",
+    "Hash": "943211FB969179A1ADA9792D98AA6EA5C3D9E8C72E35FE202B24641D774836DF"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer-star.rgba",
+    "Hash": "8123C216413F82BBAA0339C27A43D9822C2A043E20662B27C97874429B996E9A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer.aseprite",
+    "Hash": "0AC1C540DC6691C203FCC480101F5FEF658071ADAB49A96DEC3925465C165FC8"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer.png",
+    "Hash": "F63F8EF114AED436DD6DDE19B3E9FE5BD9FAD7A5FD78DF848ABD266AB1A77DA7"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\outer.rgba",
+    "Hash": "25AAFB2B44D78CBD9A6E119EAEDFDDB0D1AEF0EA878F79484C3005BB1B37B78E"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\protected-before.json",
+    "Hash": "BC1A1E6277243B8C6481AE0CBE4C74B96C2B74E7E16A30C083537C8EE1000522"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\protected-verification.json",
+    "Hash": "50AC39937230FC4E6C37284ADE068A55051B56943952738A32645070BDDC9342"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\README.md",
+    "Hash": "1C339139EAA95D3519F201288FE9DD16F025905335A3903A6428725F79E61D2F"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-0.png",
+    "Hash": "8A608B3ED4E86389AA939583626E732180C9BFA5F459EE2C8CC3B7857A0D13F0"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-0.rgba",
+    "Hash": "9E87764D8248D5D992DAAB354014733D0C7B23BFFE2CF5B5C15F511B0C93486D"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-105.png",
+    "Hash": "D7618BC9424C876AA3B01F9555558C477361A4C51D261BA01E07E942F95A77FF"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-105.rgba",
+    "Hash": "9EA49FFEE6A94A71CBE9F014B54C5F1AEA3BE5134BE4C62F768063AC5FDDB139"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-15.png",
+    "Hash": "6280DCA859133BE4130A1AC5496C7299CEBC05B8548311DA43923A464CC94ACD"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-15.rgba",
+    "Hash": "E23D311BF78D41E466A814E50553660641CC8DDB64BF0DEE782605D417762BFA"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-30.png",
+    "Hash": "1319D719926124C5C66142B38DFAF02ADB856EC28198C46BA211AA929F43CF04"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-30.rgba",
+    "Hash": "887DA4836B49E42716A9FDED1EB6BE73A6E1BBB89839B48E55B8BE393C798A4A"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-45.png",
+    "Hash": "3F14E02E92D44B1E01D7528AE334E0B255C2F02C79F1CEF5843DBE724E2B9CED"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-45.rgba",
+    "Hash": "4B8BCED70A3D26B1659EB8FCC4C3D755D379E9C0EF55C0FD231E1278680D4A94"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-60.png",
+    "Hash": "50F429AE2DD4D887FBDE72707313644035A27C4E72E95CEB42A38E3E731AC0A8"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-60.rgba",
+    "Hash": "255993FC6194A5D591BBEA3AF0CA936CB454900E5B5CE07213263B860A1B7649"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-75.png",
+    "Hash": "39CBCA6F971EDD68825514711294E1CD1E978B9F8F22AD0FAC4B5C4948224F73"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-75.rgba",
+    "Hash": "A96A75A3AB9D2C757750459A5F79E79A4759483B7C907885CB64557ACA868B1E"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-90.png",
+    "Hash": "00C28D0B82E89CC3530DD9204BD49CC7353A3A0B22A1C3DB808F847128EA47A6"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-90.rgba",
+    "Hash": "B573D663F56E19633EEE8FFCAF527F8D51D4E0FD2677B49BF7402171832634AC"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\rotation-native.aseprite",
+    "Hash": "268A8B4D504AE060F472EE882C92E96796719E76E919CA4F04E499594580BFDC"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\outputs\\crimson-double-circle-preview-2026-11-01\\revision-22-offset-inner-octagram\\verify-native.lua",
+    "Hash": "1CBCEF607E150FFFBFB4B49550A31EBF28EBF8283AA97557DBCEED2B7DCD6F23"
+  }
+]

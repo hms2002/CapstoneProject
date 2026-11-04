@@ -1,0 +1,4263 @@
+{
+  "11-weapon": {
+    "id": "11",
+    "kind": "weapon",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "무기",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "뇌창 갈라론",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 100,
+        "y": 96,
+        "w": 260,
+        "h": 190,
+        "item": "lightning"
+      },
+      {
+        "type": "stat",
+        "p": 0,
+        "x": 20,
+        "y": 300,
+        "w": 420,
+        "h": 40
+      },
+      {
+        "type": "rich",
+        "p": 0,
+        "x": 20,
+        "y": 362,
+        "w": 420,
+        "h": 0,
+        "text": "번뜩이는 섬광이 시야를 스치기 전, 적의 전열은 이미 꿰뚫려 있다.",
+        "role": "story",
+        "id": "story"
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 52,
+        "y": 448,
+        "w": 60,
+        "h": 60,
+        "item": "gun",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 126,
+        "y": 448,
+        "w": 60,
+        "h": 60,
+        "item": "lightning",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 200,
+        "y": 448,
+        "w": 60,
+        "h": 60,
+        "item": "flower",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 274,
+        "y": 448,
+        "w": 60,
+        "h": 60,
+        "item": "sword",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 348,
+        "y": 448,
+        "w": 60,
+        "h": 60,
+        "item": "staff",
+        "selected": false
+      },
+      {
+        "type": "rule",
+        "p": 0,
+        "x": 20,
+        "y": 429,
+        "w": 420,
+        "h": 1
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 24,
+        "w": 420,
+        "h": 0,
+        "text": "스킬",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 88,
+        "w": 420,
+        "h": 0,
+        "index": 0,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 232,
+        "w": 420,
+        "h": 0,
+        "index": 1,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 389,
+        "w": 420,
+        "h": 0,
+        "index": 2,
+        "mode": "normal"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 1",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 0,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": false
+      },
+      {
+        "type": "detail",
+        "p": 1,
+        "x": 152,
+        "y": 546,
+        "w": 196,
+        "h": 26
+      }
+    ],
+    "navPage": 0,
+    "detailPage": 1
+  },
+  "11-relic": {
+    "id": "11",
+    "kind": "relic",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "유물",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "쇳덩이의 예비 탄창",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 100,
+        "y": 96,
+        "w": 260,
+        "h": 190,
+        "item": "gun"
+      },
+      {
+        "type": "level",
+        "p": 0,
+        "x": 20,
+        "y": 300,
+        "w": 420,
+        "h": 48
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 28,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "pendant",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 79,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "boots",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 130,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "wind",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 181,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "gun",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 232,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "hawk",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 283,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "medal",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 334,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "pipe",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 385,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "iron",
+        "selected": false
+      },
+      {
+        "type": "rule",
+        "p": 0,
+        "x": 20,
+        "y": 429,
+        "w": 420,
+        "h": 1
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 24,
+        "w": 420,
+        "h": 0,
+        "text": "유물 효과",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 32,
+        "y": 94,
+        "w": 396,
+        "h": 0,
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "gap": 20
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 9",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 0,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": true
+      }
+    ],
+    "navPage": 0,
+    "detailPage": 1
+  },
+  "12-weapon": {
+    "id": "12",
+    "kind": "weapon",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "무기",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "뇌창 갈라론",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 1,
+        "x": 100,
+        "y": 96,
+        "w": 260,
+        "h": 190,
+        "item": "lightning"
+      },
+      {
+        "type": "stat",
+        "p": 1,
+        "x": 20,
+        "y": 300,
+        "w": 420,
+        "h": 40
+      },
+      {
+        "type": "rich",
+        "p": 1,
+        "x": 20,
+        "y": 362,
+        "w": 420,
+        "h": 0,
+        "text": "번뜩이는 섬광이 시야를 스치기 전, 적의 전열은 이미 꿰뚫려 있다.",
+        "role": "story",
+        "id": "story"
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 52,
+        "y": 448,
+        "w": 60,
+        "h": 60,
+        "item": "gun",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 126,
+        "y": 448,
+        "w": 60,
+        "h": 60,
+        "item": "lightning",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 200,
+        "y": 448,
+        "w": 60,
+        "h": 60,
+        "item": "flower",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 274,
+        "y": 448,
+        "w": 60,
+        "h": 60,
+        "item": "sword",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 348,
+        "y": 448,
+        "w": 60,
+        "h": 60,
+        "item": "staff",
+        "selected": false
+      },
+      {
+        "type": "rule",
+        "p": 1,
+        "x": 20,
+        "y": 429,
+        "w": 420,
+        "h": 1
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 24,
+        "w": 420,
+        "h": 0,
+        "text": "스킬",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "skill",
+        "p": 0,
+        "x": 20,
+        "y": 88,
+        "w": 420,
+        "h": 0,
+        "index": 0,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 0,
+        "x": 20,
+        "y": 232,
+        "w": 420,
+        "h": 0,
+        "index": 1,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 0,
+        "x": 20,
+        "y": 389,
+        "w": 420,
+        "h": 0,
+        "index": 2,
+        "mode": "normal"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 1",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 1,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": false
+      },
+      {
+        "type": "detail",
+        "p": 0,
+        "x": 152,
+        "y": 546,
+        "w": 196,
+        "h": 26
+      }
+    ],
+    "navPage": 1,
+    "detailPage": 0
+  },
+  "12-relic": {
+    "id": "12",
+    "kind": "relic",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "유물",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "쇳덩이의 예비 탄창",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 1,
+        "x": 100,
+        "y": 96,
+        "w": 260,
+        "h": 190,
+        "item": "gun"
+      },
+      {
+        "type": "level",
+        "p": 1,
+        "x": 20,
+        "y": 300,
+        "w": 420,
+        "h": 48
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 28,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "pendant",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 79,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "boots",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 130,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "wind",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 181,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "gun",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 232,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "hawk",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 283,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "medal",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 334,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "pipe",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 385,
+        "y": 448,
+        "w": 44,
+        "h": 44,
+        "item": "iron",
+        "selected": false
+      },
+      {
+        "type": "rule",
+        "p": 1,
+        "x": 20,
+        "y": 429,
+        "w": 420,
+        "h": 1
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 24,
+        "w": 420,
+        "h": 0,
+        "text": "유물 효과",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "effects",
+        "p": 0,
+        "x": 32,
+        "y": 94,
+        "w": 396,
+        "h": 0,
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "gap": 20
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 9",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 1,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": true
+      }
+    ],
+    "navPage": 1,
+    "detailPage": 0
+  },
+  "13-weapon": {
+    "id": "13",
+    "kind": "weapon",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "무기",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "뇌창 갈라론",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 20,
+        "y": 90,
+        "w": 110,
+        "h": 100,
+        "item": "lightning"
+      },
+      {
+        "type": "stat",
+        "p": 0,
+        "x": 154,
+        "y": 108,
+        "w": 286,
+        "h": 64
+      },
+      {
+        "type": "rich",
+        "p": 0,
+        "x": 20,
+        "y": 213,
+        "w": 420,
+        "h": 0,
+        "text": "번뜩이는 섬광이 시야를 스치기 전, 적의 전열은 이미 꿰뚫려 있다.",
+        "role": "story",
+        "id": "story"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 30,
+        "w": 420,
+        "h": 0,
+        "text": "스킬 · 이어서",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "skill",
+        "p": 0,
+        "x": 20,
+        "y": 299,
+        "w": 420,
+        "h": 0,
+        "index": 0,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 90,
+        "w": 420,
+        "h": 0,
+        "index": 1,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 262,
+        "w": 420,
+        "h": 0,
+        "index": 2,
+        "mode": "normal"
+      },
+      {
+        "type": "band",
+        "p": 0,
+        "x": 12,
+        "y": 430,
+        "w": 436,
+        "h": 92
+      },
+      {
+        "type": "band",
+        "p": 1,
+        "x": 12,
+        "y": 430,
+        "w": 436,
+        "h": 92
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 119,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "gun",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 201,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "lightning",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 283,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "flower",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 160,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "sword",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 242,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "staff",
+        "selected": false
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 1",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 0,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": false
+      },
+      {
+        "type": "detail",
+        "p": 1,
+        "x": 152,
+        "y": 546,
+        "w": 196,
+        "h": 26
+      }
+    ],
+    "navPage": 0,
+    "detailPage": 1
+  },
+  "13-relic": {
+    "id": "13",
+    "kind": "relic",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "유물",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "쇳덩이의 예비 탄창",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 20,
+        "y": 90,
+        "w": 110,
+        "h": 100,
+        "item": "gun"
+      },
+      {
+        "type": "level",
+        "p": 0,
+        "x": 154,
+        "y": 108,
+        "w": 286,
+        "h": 64
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 30,
+        "w": 420,
+        "h": 0,
+        "text": "장전과 소모",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "effects",
+        "p": 0,
+        "x": 20,
+        "y": 220,
+        "w": 420,
+        "h": 0,
+        "indices": [
+          0,
+          1
+        ],
+        "gap": 18
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 24,
+        "y": 104,
+        "w": 412,
+        "h": 0,
+        "indices": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "gap": 20
+      },
+      {
+        "type": "band",
+        "p": 0,
+        "x": 12,
+        "y": 430,
+        "w": 436,
+        "h": 92
+      },
+      {
+        "type": "band",
+        "p": 1,
+        "x": 12,
+        "y": 430,
+        "w": 436,
+        "h": 92
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 78,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "pendant",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 160,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "boots",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 242,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "wind",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 324,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "gun",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 78,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "hawk",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 160,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "medal",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 242,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "pipe",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 324,
+        "y": 451,
+        "w": 58,
+        "h": 58,
+        "item": "iron",
+        "selected": false
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 9",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 0,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": true
+      }
+    ],
+    "navPage": 0,
+    "detailPage": 1
+  },
+  "14-weapon": {
+    "id": "14",
+    "kind": "weapon",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "무기",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "스킬",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 119,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "gun",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 201,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "lightning",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 283,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "flower",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 160,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "sword",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 242,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "staff",
+        "selected": false
+      },
+      {
+        "type": "rule",
+        "p": 0,
+        "x": 20,
+        "y": 146,
+        "w": 420,
+        "h": 1
+      },
+      {
+        "type": "rule",
+        "p": 1,
+        "x": 20,
+        "y": 146,
+        "w": 420,
+        "h": 1
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 166,
+        "w": 420,
+        "h": 0,
+        "text": "뇌창 갈라론",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 20,
+        "y": 218,
+        "w": 140,
+        "h": 128,
+        "item": "lightning"
+      },
+      {
+        "type": "stat",
+        "p": 0,
+        "x": 180,
+        "y": 224,
+        "w": 260,
+        "h": 64
+      },
+      {
+        "type": "rich",
+        "p": 0,
+        "x": 180,
+        "y": 306,
+        "w": 260,
+        "h": 0,
+        "text": "번뜩이는 섬광이 시야를 스치기 전, 적의 전열은 이미 꿰뚫려 있다.",
+        "role": "story",
+        "id": "story"
+      },
+      {
+        "type": "skill",
+        "p": 0,
+        "x": 20,
+        "y": 407,
+        "w": 420,
+        "h": 0,
+        "index": 0,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 177,
+        "w": 196,
+        "h": 0,
+        "index": 1,
+        "mode": "column"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 244,
+        "y": 177,
+        "w": 196,
+        "h": 0,
+        "index": 2,
+        "mode": "column"
+      },
+      {
+        "type": "vertical",
+        "p": 1,
+        "x": 230,
+        "y": 169,
+        "w": 1,
+        "h": 350
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 1",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 0,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": false
+      },
+      {
+        "type": "detail",
+        "p": 1,
+        "x": 152,
+        "y": 546,
+        "w": 196,
+        "h": 26
+      }
+    ],
+    "navPage": 0,
+    "detailPage": 1
+  },
+  "14-relic": {
+    "id": "14",
+    "kind": "relic",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "유물",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "효과 기록",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 78,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "pendant",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 160,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "boots",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 242,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "wind",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 324,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "gun",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 78,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "hawk",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 160,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "medal",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 242,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "pipe",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 324,
+        "y": 66,
+        "w": 58,
+        "h": 58,
+        "item": "iron",
+        "selected": false
+      },
+      {
+        "type": "rule",
+        "p": 0,
+        "x": 20,
+        "y": 146,
+        "w": 420,
+        "h": 1
+      },
+      {
+        "type": "rule",
+        "p": 1,
+        "x": 20,
+        "y": 146,
+        "w": 420,
+        "h": 1
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 166,
+        "w": 420,
+        "h": 0,
+        "text": "쇳덩이의 예비 탄창",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 20,
+        "y": 218,
+        "w": 140,
+        "h": 128,
+        "item": "gun"
+      },
+      {
+        "type": "level",
+        "p": 0,
+        "x": 180,
+        "y": 224,
+        "w": 260,
+        "h": 64
+      },
+      {
+        "type": "effects",
+        "p": 0,
+        "x": 20,
+        "y": 405,
+        "w": 420,
+        "h": 0,
+        "indices": [
+          0
+        ],
+        "gap": 12
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 20,
+        "y": 185,
+        "w": 196,
+        "h": 0,
+        "indices": [
+          1,
+          2,
+          3
+        ],
+        "gap": 18
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 244,
+        "y": 185,
+        "w": 196,
+        "h": 0,
+        "indices": [
+          4,
+          5,
+          6
+        ],
+        "gap": 18
+      },
+      {
+        "type": "vertical",
+        "p": 1,
+        "x": 230,
+        "y": 169,
+        "w": 1,
+        "h": 350
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 9",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 0,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": true
+      }
+    ],
+    "navPage": 0,
+    "detailPage": 1
+  },
+  "15-weapon": {
+    "id": "15",
+    "kind": "weapon",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "무기",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 46,
+        "w": 350,
+        "h": 0,
+        "text": "뇌창 갈라론",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 20,
+        "y": 102,
+        "w": 350,
+        "h": 122,
+        "item": "lightning"
+      },
+      {
+        "type": "stat",
+        "p": 0,
+        "x": 20,
+        "y": 244,
+        "w": 350,
+        "h": 40
+      },
+      {
+        "type": "rich",
+        "p": 0,
+        "x": 20,
+        "y": 310,
+        "w": 350,
+        "h": 0,
+        "text": "번뜩이는 섬광이 시야를 스치기 전, 적의 전열은 이미 꿰뚫려 있다.",
+        "role": "story",
+        "id": "story"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 90,
+        "y": 44,
+        "w": 350,
+        "h": 0,
+        "text": "기술 기록",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 394,
+        "y": 112,
+        "w": 46,
+        "h": 46,
+        "item": "gun",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 394,
+        "y": 164,
+        "w": 46,
+        "h": 46,
+        "item": "lightning",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 394,
+        "y": 216,
+        "w": 46,
+        "h": 46,
+        "item": "flower",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 20,
+        "y": 112,
+        "w": 46,
+        "h": 46,
+        "item": "sword",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 20,
+        "y": 164,
+        "w": 46,
+        "h": 46,
+        "item": "staff",
+        "selected": false
+      },
+      {
+        "type": "vertical",
+        "p": 0,
+        "x": 383,
+        "y": 96,
+        "w": 1,
+        "h": 424
+      },
+      {
+        "type": "vertical",
+        "p": 1,
+        "x": 78,
+        "y": 96,
+        "w": 1,
+        "h": 424
+      },
+      {
+        "type": "skill",
+        "p": 0,
+        "x": 20,
+        "y": 405,
+        "w": 350,
+        "h": 0,
+        "index": 0,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 90,
+        "y": 118,
+        "w": 350,
+        "h": 0,
+        "index": 1,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 90,
+        "y": 330,
+        "w": 350,
+        "h": 0,
+        "index": 2,
+        "mode": "normal"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 1",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 0,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": false
+      },
+      {
+        "type": "detail",
+        "p": 1,
+        "x": 152,
+        "y": 546,
+        "w": 196,
+        "h": 26
+      }
+    ],
+    "navPage": 0,
+    "detailPage": 1
+  },
+  "15-relic": {
+    "id": "15",
+    "kind": "relic",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "유물",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 46,
+        "w": 350,
+        "h": 0,
+        "text": "쇳덩이의 예비 탄창",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 20,
+        "y": 102,
+        "w": 350,
+        "h": 122,
+        "item": "gun"
+      },
+      {
+        "type": "level",
+        "p": 0,
+        "x": 20,
+        "y": 244,
+        "w": 350,
+        "h": 50
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 90,
+        "y": 44,
+        "w": 350,
+        "h": 0,
+        "text": "장전과 소모",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 394,
+        "y": 112,
+        "w": 46,
+        "h": 46,
+        "item": "pendant",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 394,
+        "y": 164,
+        "w": 46,
+        "h": 46,
+        "item": "boots",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 394,
+        "y": 216,
+        "w": 46,
+        "h": 46,
+        "item": "wind",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 394,
+        "y": 268,
+        "w": 46,
+        "h": 46,
+        "item": "gun",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 20,
+        "y": 112,
+        "w": 46,
+        "h": 46,
+        "item": "hawk",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 20,
+        "y": 164,
+        "w": 46,
+        "h": 46,
+        "item": "medal",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 20,
+        "y": 216,
+        "w": 46,
+        "h": 46,
+        "item": "pipe",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 20,
+        "y": 268,
+        "w": 46,
+        "h": 46,
+        "item": "iron",
+        "selected": false
+      },
+      {
+        "type": "vertical",
+        "p": 0,
+        "x": 383,
+        "y": 96,
+        "w": 1,
+        "h": 424
+      },
+      {
+        "type": "vertical",
+        "p": 1,
+        "x": 78,
+        "y": 96,
+        "w": 1,
+        "h": 424
+      },
+      {
+        "type": "effects",
+        "p": 0,
+        "x": 20,
+        "y": 326,
+        "w": 350,
+        "h": 0,
+        "indices": [
+          0,
+          1
+        ],
+        "gap": 16
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 98,
+        "y": 118,
+        "w": 334,
+        "h": 0,
+        "indices": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "gap": 18
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 9",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 0,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": true
+      }
+    ],
+    "navPage": 0,
+    "detailPage": 1
+  },
+  "16-weapon": {
+    "id": "16",
+    "kind": "weapon",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "무기",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "뇌창 갈라론",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 20,
+        "y": 94,
+        "w": 116,
+        "h": 108,
+        "item": "lightning"
+      },
+      {
+        "type": "stat",
+        "p": 0,
+        "x": 158,
+        "y": 128,
+        "w": 282,
+        "h": 66
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 20,
+        "w": 420,
+        "h": 0,
+        "text": "기술 대조",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "rich",
+        "p": 1,
+        "x": 20,
+        "y": 65,
+        "w": 420,
+        "h": 0,
+        "text": "번뜩이는 섬광이 시야를 스치기 전, 적의 전열은 이미 꿰뚫려 있다.",
+        "role": "story",
+        "id": "story"
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 35,
+        "y": 151,
+        "w": 54,
+        "h": 54,
+        "item": "gun",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 115,
+        "y": 151,
+        "w": 54,
+        "h": 54,
+        "item": "lightning",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 195,
+        "y": 151,
+        "w": 54,
+        "h": 54,
+        "item": "flower",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 275,
+        "y": 151,
+        "w": 54,
+        "h": 54,
+        "item": "sword",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 355,
+        "y": 151,
+        "w": 54,
+        "h": 54,
+        "item": "staff",
+        "selected": false
+      },
+      {
+        "type": "band",
+        "p": 0,
+        "x": 12,
+        "y": 232,
+        "w": 436,
+        "h": 3
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 15,
+        "y": 249,
+        "w": 28,
+        "h": 0,
+        "text": "01",
+        "size": 18,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "band",
+        "p": 1,
+        "x": 12,
+        "y": 232,
+        "w": 436,
+        "h": 3
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 15,
+        "y": 249,
+        "w": 28,
+        "h": 0,
+        "text": "01",
+        "size": 18,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "band",
+        "p": 0,
+        "x": 12,
+        "y": 337,
+        "w": 436,
+        "h": 3
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 15,
+        "y": 354,
+        "w": 28,
+        "h": 0,
+        "text": "02",
+        "size": 18,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "band",
+        "p": 1,
+        "x": 12,
+        "y": 337,
+        "w": 436,
+        "h": 3
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 15,
+        "y": 354,
+        "w": 28,
+        "h": 0,
+        "text": "02",
+        "size": 18,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "band",
+        "p": 0,
+        "x": 12,
+        "y": 442,
+        "w": 436,
+        "h": 3
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 15,
+        "y": 459,
+        "w": 28,
+        "h": 0,
+        "text": "03",
+        "size": 18,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "band",
+        "p": 1,
+        "x": 12,
+        "y": 442,
+        "w": 436,
+        "h": 3
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 15,
+        "y": 459,
+        "w": 28,
+        "h": 0,
+        "text": "03",
+        "size": 18,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "skill",
+        "p": 0,
+        "x": 55,
+        "y": 243,
+        "w": 385,
+        "h": 0,
+        "index": 0,
+        "mode": "heading"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 55,
+        "y": 243,
+        "w": 385,
+        "h": 0,
+        "index": 0,
+        "mode": "body"
+      },
+      {
+        "type": "skill",
+        "p": 0,
+        "x": 55,
+        "y": 348,
+        "w": 385,
+        "h": 0,
+        "index": 1,
+        "mode": "heading"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 55,
+        "y": 348,
+        "w": 385,
+        "h": 0,
+        "index": 1,
+        "mode": "body"
+      },
+      {
+        "type": "skill",
+        "p": 0,
+        "x": 55,
+        "y": 453,
+        "w": 385,
+        "h": 0,
+        "index": 2,
+        "mode": "heading"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 55,
+        "y": 453,
+        "w": 385,
+        "h": 0,
+        "index": 2,
+        "mode": "body"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 1",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 1,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": false
+      },
+      {
+        "type": "detail",
+        "p": 0,
+        "x": 152,
+        "y": 546,
+        "w": 196,
+        "h": 26
+      }
+    ],
+    "navPage": 1,
+    "detailPage": 0
+  },
+  "16-relic": {
+    "id": "16",
+    "kind": "relic",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "유물",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "쇳덩이의 예비 탄창",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 20,
+        "y": 94,
+        "w": 116,
+        "h": 108,
+        "item": "gun"
+      },
+      {
+        "type": "level",
+        "p": 0,
+        "x": 158,
+        "y": 128,
+        "w": 282,
+        "h": 66
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 20,
+        "w": 420,
+        "h": 0,
+        "text": "사용 흐름",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 20,
+        "y": 68,
+        "w": 420,
+        "h": 0,
+        "indices": [
+          0
+        ],
+        "gap": 12
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 28,
+        "y": 151,
+        "w": 38,
+        "h": 38,
+        "item": "pendant",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 79,
+        "y": 151,
+        "w": 38,
+        "h": 38,
+        "item": "boots",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 130,
+        "y": 151,
+        "w": 38,
+        "h": 38,
+        "item": "wind",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 181,
+        "y": 151,
+        "w": 38,
+        "h": 38,
+        "item": "gun",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 232,
+        "y": 151,
+        "w": 38,
+        "h": 38,
+        "item": "hawk",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 283,
+        "y": 151,
+        "w": 38,
+        "h": 38,
+        "item": "medal",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 334,
+        "y": 151,
+        "w": 38,
+        "h": 38,
+        "item": "pipe",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 385,
+        "y": 151,
+        "w": 38,
+        "h": 38,
+        "item": "iron",
+        "selected": false
+      },
+      {
+        "type": "band",
+        "p": 0,
+        "x": 12,
+        "y": 232,
+        "w": 436,
+        "h": 3
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 15,
+        "y": 249,
+        "w": 28,
+        "h": 0,
+        "text": "01",
+        "size": 18,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "band",
+        "p": 1,
+        "x": 12,
+        "y": 232,
+        "w": 436,
+        "h": 3
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 15,
+        "y": 249,
+        "w": 28,
+        "h": 0,
+        "text": "01",
+        "size": 18,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "band",
+        "p": 0,
+        "x": 12,
+        "y": 337,
+        "w": 436,
+        "h": 3
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 15,
+        "y": 354,
+        "w": 28,
+        "h": 0,
+        "text": "02",
+        "size": 18,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "band",
+        "p": 1,
+        "x": 12,
+        "y": 337,
+        "w": 436,
+        "h": 3
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 15,
+        "y": 354,
+        "w": 28,
+        "h": 0,
+        "text": "02",
+        "size": 18,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "band",
+        "p": 0,
+        "x": 12,
+        "y": 442,
+        "w": 436,
+        "h": 3
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 15,
+        "y": 459,
+        "w": 28,
+        "h": 0,
+        "text": "03",
+        "size": 18,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "band",
+        "p": 1,
+        "x": 12,
+        "y": 442,
+        "w": 436,
+        "h": 3
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 15,
+        "y": 459,
+        "w": 28,
+        "h": 0,
+        "text": "03",
+        "size": 18,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 60,
+        "y": 259,
+        "w": 360,
+        "h": 0,
+        "text": "공격 / 난사",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 60,
+        "y": 364,
+        "w": 360,
+        "h": 0,
+        "text": "장전 완료",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 60,
+        "y": 469,
+        "w": 360,
+        "h": 0,
+        "text": "횟수와 소멸",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 55,
+        "y": 243,
+        "w": 385,
+        "h": 0,
+        "indices": [
+          1
+        ],
+        "gap": 7
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 55,
+        "y": 348,
+        "w": 385,
+        "h": 0,
+        "indices": [
+          2,
+          3
+        ],
+        "gap": 7
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 55,
+        "y": 453,
+        "w": 385,
+        "h": 0,
+        "indices": [
+          4,
+          5,
+          6
+        ],
+        "gap": 7
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 9",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 1,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": true
+      }
+    ],
+    "navPage": 1,
+    "detailPage": 0
+  },
+  "17-weapon": {
+    "id": "17",
+    "kind": "weapon",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "무기",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "뇌창 갈라론",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 20,
+        "y": 104,
+        "w": 64,
+        "h": 64,
+        "item": "gun",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 198,
+        "y": 104,
+        "w": 64,
+        "h": 64,
+        "item": "lightning",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 376,
+        "y": 104,
+        "w": 64,
+        "h": 64,
+        "item": "flower",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 376,
+        "y": 360,
+        "w": 64,
+        "h": 64,
+        "item": "sword",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 20,
+        "y": 360,
+        "w": 64,
+        "h": 64,
+        "item": "staff",
+        "selected": false
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 106,
+        "y": 194,
+        "w": 248,
+        "h": 136,
+        "item": "lightning"
+      },
+      {
+        "type": "stat",
+        "p": 0,
+        "x": 20,
+        "y": 454,
+        "w": 420,
+        "h": 40
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 20,
+        "w": 420,
+        "h": 0,
+        "text": "스킬",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "rich",
+        "p": 1,
+        "x": 20,
+        "y": 65,
+        "w": 420,
+        "h": 0,
+        "text": "번뜩이는 섬광이 시야를 스치기 전, 적의 전열은 이미 꿰뚫려 있다.",
+        "role": "story",
+        "id": "story"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 148,
+        "w": 420,
+        "h": 0,
+        "index": 0,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 279,
+        "w": 420,
+        "h": 0,
+        "index": 1,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 420,
+        "w": 420,
+        "h": 0,
+        "index": 2,
+        "mode": "normal"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 1",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 0,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": false
+      },
+      {
+        "type": "detail",
+        "p": 1,
+        "x": 152,
+        "y": 546,
+        "w": 196,
+        "h": 26
+      }
+    ],
+    "navPage": 0,
+    "detailPage": 1
+  },
+  "17-relic": {
+    "id": "17",
+    "kind": "relic",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "유물",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "쇳덩이의 예비 탄창",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 20,
+        "y": 104,
+        "w": 64,
+        "h": 64,
+        "item": "pendant",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 198,
+        "y": 104,
+        "w": 64,
+        "h": 64,
+        "item": "boots",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 376,
+        "y": 104,
+        "w": 64,
+        "h": 64,
+        "item": "wind",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 376,
+        "y": 232,
+        "w": 64,
+        "h": 64,
+        "item": "gun",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 376,
+        "y": 360,
+        "w": 64,
+        "h": 64,
+        "item": "hawk",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 198,
+        "y": 360,
+        "w": 64,
+        "h": 64,
+        "item": "medal",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 20,
+        "y": 360,
+        "w": 64,
+        "h": 64,
+        "item": "pipe",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 20,
+        "y": 232,
+        "w": 64,
+        "h": 64,
+        "item": "iron",
+        "selected": false
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 106,
+        "y": 194,
+        "w": 248,
+        "h": 136,
+        "item": "gun"
+      },
+      {
+        "type": "level",
+        "p": 0,
+        "x": 20,
+        "y": 454,
+        "w": 420,
+        "h": 48
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 20,
+        "w": 420,
+        "h": 0,
+        "text": "효과 기록",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 30,
+        "y": 94,
+        "w": 400,
+        "h": 0,
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "gap": 20
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 9",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 0,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": true
+      }
+    ],
+    "navPage": 0,
+    "detailPage": 1
+  },
+  "18-weapon": {
+    "id": "18",
+    "kind": "weapon",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "무기",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "뇌창 갈라론",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 20,
+        "y": 100,
+        "w": 150,
+        "h": 124,
+        "item": "lightning"
+      },
+      {
+        "type": "stat",
+        "p": 0,
+        "x": 194,
+        "y": 116,
+        "w": 246,
+        "h": 64
+      },
+      {
+        "type": "rich",
+        "p": 0,
+        "x": 20,
+        "y": 257,
+        "w": 420,
+        "h": 0,
+        "text": "번뜩이는 섬광이 시야를 스치기 전, 적의 전열은 이미 꿰뚫려 있다.",
+        "role": "story",
+        "id": "story"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 20,
+        "w": 420,
+        "h": 0,
+        "text": "목록",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 35,
+        "y": 78,
+        "w": 54,
+        "h": 54,
+        "item": "gun",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 115,
+        "y": 78,
+        "w": 54,
+        "h": 54,
+        "item": "lightning",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 195,
+        "y": 78,
+        "w": 54,
+        "h": 54,
+        "item": "flower",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 275,
+        "y": 78,
+        "w": 54,
+        "h": 54,
+        "item": "sword",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 355,
+        "y": 78,
+        "w": 54,
+        "h": 54,
+        "item": "staff",
+        "selected": false
+      },
+      {
+        "type": "rule",
+        "p": 1,
+        "x": 20,
+        "y": 213,
+        "w": 420,
+        "h": 1
+      },
+      {
+        "type": "skill",
+        "p": 0,
+        "x": 20,
+        "y": 372,
+        "w": 420,
+        "h": 0,
+        "index": 0,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 238,
+        "w": 420,
+        "h": 0,
+        "index": 1,
+        "mode": "normal"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 398,
+        "w": 420,
+        "h": 0,
+        "index": 2,
+        "mode": "normal"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 1",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 1,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": false
+      },
+      {
+        "type": "detail",
+        "p": 0,
+        "x": 152,
+        "y": 546,
+        "w": 196,
+        "h": 26
+      }
+    ],
+    "navPage": 1,
+    "detailPage": 0
+  },
+  "18-relic": {
+    "id": "18",
+    "kind": "relic",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "유물",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "쇳덩이의 예비 탄창",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 20,
+        "y": 100,
+        "w": 150,
+        "h": 124,
+        "item": "gun"
+      },
+      {
+        "type": "level",
+        "p": 0,
+        "x": 194,
+        "y": 116,
+        "w": 246,
+        "h": 64
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 20,
+        "w": 420,
+        "h": 0,
+        "text": "목록",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 70,
+        "y": 78,
+        "w": 52,
+        "h": 52,
+        "item": "pendant",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 158,
+        "y": 78,
+        "w": 52,
+        "h": 52,
+        "item": "boots",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 246,
+        "y": 78,
+        "w": 52,
+        "h": 52,
+        "item": "wind",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 334,
+        "y": 78,
+        "w": 52,
+        "h": 52,
+        "item": "gun",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 70,
+        "y": 148,
+        "w": 52,
+        "h": 52,
+        "item": "hawk",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 158,
+        "y": 148,
+        "w": 52,
+        "h": 52,
+        "item": "medal",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 246,
+        "y": 148,
+        "w": 52,
+        "h": 52,
+        "item": "pipe",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 334,
+        "y": 148,
+        "w": 52,
+        "h": 52,
+        "item": "iron",
+        "selected": false
+      },
+      {
+        "type": "rule",
+        "p": 1,
+        "x": 20,
+        "y": 213,
+        "w": 420,
+        "h": 1
+      },
+      {
+        "type": "effects",
+        "p": 0,
+        "x": 20,
+        "y": 284,
+        "w": 420,
+        "h": 0,
+        "indices": [
+          0,
+          1
+        ],
+        "gap": 20
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 24,
+        "y": 240,
+        "w": 412,
+        "h": 0,
+        "indices": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "gap": 14
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 9",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 1,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": true
+      }
+    ],
+    "navPage": 1,
+    "detailPage": 0
+  },
+  "19-weapon": {
+    "id": "19",
+    "kind": "weapon",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 20,
+        "w": 420,
+        "h": 0,
+        "text": "전투 기술",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "무기",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 46,
+        "w": 350,
+        "h": 0,
+        "text": "뇌창 갈라론",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 1,
+        "x": 20,
+        "y": 104,
+        "w": 350,
+        "h": 148,
+        "item": "lightning"
+      },
+      {
+        "type": "stat",
+        "p": 1,
+        "x": 20,
+        "y": 280,
+        "w": 350,
+        "h": 40
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 104,
+        "w": 46,
+        "h": 46,
+        "item": "gun",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 156,
+        "w": 46,
+        "h": 46,
+        "item": "lightning",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 208,
+        "w": 46,
+        "h": 46,
+        "item": "flower",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 260,
+        "w": 46,
+        "h": 46,
+        "item": "sword",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 312,
+        "w": 46,
+        "h": 46,
+        "item": "staff",
+        "selected": false
+      },
+      {
+        "type": "vertical",
+        "p": 1,
+        "x": 383,
+        "y": 94,
+        "w": 1,
+        "h": 426
+      },
+      {
+        "type": "vertical",
+        "p": 0,
+        "x": 230,
+        "y": 76,
+        "w": 1,
+        "h": 338
+      },
+      {
+        "type": "skill",
+        "p": 0,
+        "x": 20,
+        "y": 86,
+        "w": 196,
+        "h": 0,
+        "index": 0,
+        "mode": "column"
+      },
+      {
+        "type": "skill",
+        "p": 0,
+        "x": 244,
+        "y": 86,
+        "w": 196,
+        "h": 0,
+        "index": 1,
+        "mode": "column"
+      },
+      {
+        "type": "rich",
+        "p": 0,
+        "x": 20,
+        "y": 456,
+        "w": 420,
+        "h": 0,
+        "text": "번뜩이는 섬광이 시야를 스치기 전, 적의 전열은 이미 꿰뚫려 있다.",
+        "role": "story",
+        "id": "story"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 372,
+        "w": 350,
+        "h": 0,
+        "index": 2,
+        "mode": "normal"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 1",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 1,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": false
+      },
+      {
+        "type": "detail",
+        "p": 0,
+        "x": 152,
+        "y": 546,
+        "w": 196,
+        "h": 26
+      }
+    ],
+    "navPage": 1,
+    "detailPage": 0
+  },
+  "19-relic": {
+    "id": "19",
+    "kind": "relic",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 20,
+        "w": 420,
+        "h": 0,
+        "text": "효과 기록",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "유물",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 46,
+        "w": 350,
+        "h": 0,
+        "text": "쇳덩이의 예비 탄창",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "hero",
+        "p": 1,
+        "x": 20,
+        "y": 104,
+        "w": 350,
+        "h": 148,
+        "item": "gun"
+      },
+      {
+        "type": "level",
+        "p": 1,
+        "x": 20,
+        "y": 280,
+        "w": 350,
+        "h": 52
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 104,
+        "w": 46,
+        "h": 46,
+        "item": "pendant",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 156,
+        "w": 46,
+        "h": 46,
+        "item": "boots",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 208,
+        "w": 46,
+        "h": 46,
+        "item": "wind",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 260,
+        "w": 46,
+        "h": 46,
+        "item": "gun",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 312,
+        "w": 46,
+        "h": 46,
+        "item": "hawk",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 364,
+        "w": 46,
+        "h": 46,
+        "item": "medal",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 416,
+        "w": 46,
+        "h": 46,
+        "item": "pipe",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 1,
+        "x": 394,
+        "y": 468,
+        "w": 46,
+        "h": 46,
+        "item": "iron",
+        "selected": false
+      },
+      {
+        "type": "vertical",
+        "p": 1,
+        "x": 383,
+        "y": 94,
+        "w": 1,
+        "h": 426
+      },
+      {
+        "type": "vertical",
+        "p": 0,
+        "x": 230,
+        "y": 76,
+        "w": 1,
+        "h": 338
+      },
+      {
+        "type": "effects",
+        "p": 0,
+        "x": 20,
+        "y": 94,
+        "w": 196,
+        "h": 0,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "gap": 18
+      },
+      {
+        "type": "effects",
+        "p": 0,
+        "x": 244,
+        "y": 94,
+        "w": 196,
+        "h": 0,
+        "indices": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "gap": 18
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 9",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 1,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": true
+      }
+    ],
+    "navPage": 1,
+    "detailPage": 0
+  },
+  "20-weapon": {
+    "id": "20",
+    "kind": "weapon",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "무기",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "뇌창 갈라론",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 20,
+        "y": 100,
+        "w": 52,
+        "h": 52,
+        "item": "gun",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 104,
+        "y": 100,
+        "w": 52,
+        "h": 52,
+        "item": "lightning",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 188,
+        "y": 100,
+        "w": 52,
+        "h": 52,
+        "item": "flower",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 272,
+        "y": 100,
+        "w": 52,
+        "h": 52,
+        "item": "sword",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 356,
+        "y": 100,
+        "w": 52,
+        "h": 52,
+        "item": "staff",
+        "selected": false
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 110,
+        "y": 196,
+        "w": 300,
+        "h": 180,
+        "item": "lightning"
+      },
+      {
+        "type": "stat",
+        "p": 0,
+        "x": 20,
+        "y": 412,
+        "w": 420,
+        "h": 40
+      },
+      {
+        "type": "rich",
+        "p": 0,
+        "x": 20,
+        "y": 476,
+        "w": 420,
+        "h": 0,
+        "text": "번뜩이는 섬광이 시야를 스치기 전, 적의 전열은 이미 꿰뚫려 있다.",
+        "role": "story",
+        "id": "story"
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 20,
+        "w": 420,
+        "h": 0,
+        "text": "스킬",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "vertical",
+        "p": 1,
+        "x": 230,
+        "y": 76,
+        "w": 1,
+        "h": 288
+      },
+      {
+        "type": "rule",
+        "p": 1,
+        "x": 20,
+        "y": 382,
+        "w": 420,
+        "h": 1
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 86,
+        "w": 196,
+        "h": 0,
+        "index": 0,
+        "mode": "column"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 244,
+        "y": 86,
+        "w": 196,
+        "h": 0,
+        "index": 1,
+        "mode": "column"
+      },
+      {
+        "type": "skill",
+        "p": 1,
+        "x": 20,
+        "y": 402,
+        "w": 420,
+        "h": 0,
+        "index": 2,
+        "mode": "normal"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 1",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 0,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": false
+      },
+      {
+        "type": "detail",
+        "p": 1,
+        "x": 152,
+        "y": 546,
+        "w": 196,
+        "h": 26
+      }
+    ],
+    "navPage": 0,
+    "detailPage": 1
+  },
+  "20-relic": {
+    "id": "20",
+    "kind": "relic",
+    "nodes": [
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 14,
+        "w": 420,
+        "h": 0,
+        "text": "유물",
+        "size": 18,
+        "role": "white",
+        "align": "left"
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 20,
+        "y": 44,
+        "w": 420,
+        "h": 0,
+        "text": "쇳덩이의 예비 탄창",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 20,
+        "y": 100,
+        "w": 52,
+        "h": 52,
+        "item": "pendant",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 104,
+        "y": 100,
+        "w": 52,
+        "h": 52,
+        "item": "boots",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 188,
+        "y": 100,
+        "w": 52,
+        "h": 52,
+        "item": "wind",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 272,
+        "y": 100,
+        "w": 52,
+        "h": 52,
+        "item": "gun",
+        "selected": true
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 356,
+        "y": 100,
+        "w": 52,
+        "h": 52,
+        "item": "hawk",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 20,
+        "y": 184,
+        "w": 52,
+        "h": 52,
+        "item": "medal",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 20,
+        "y": 264,
+        "w": 52,
+        "h": 52,
+        "item": "pipe",
+        "selected": false
+      },
+      {
+        "type": "slot",
+        "p": 0,
+        "x": 20,
+        "y": 344,
+        "w": 52,
+        "h": 52,
+        "item": "iron",
+        "selected": false
+      },
+      {
+        "type": "hero",
+        "p": 0,
+        "x": 110,
+        "y": 196,
+        "w": 300,
+        "h": 180,
+        "item": "gun"
+      },
+      {
+        "type": "level",
+        "p": 0,
+        "x": 20,
+        "y": 412,
+        "w": 420,
+        "h": 48
+      },
+      {
+        "type": "label",
+        "p": 1,
+        "x": 20,
+        "y": 20,
+        "w": 420,
+        "h": 0,
+        "text": "효과 기록",
+        "size": 27,
+        "role": "ink",
+        "align": "left"
+      },
+      {
+        "type": "vertical",
+        "p": 1,
+        "x": 230,
+        "y": 76,
+        "w": 1,
+        "h": 288
+      },
+      {
+        "type": "rule",
+        "p": 1,
+        "x": 20,
+        "y": 382,
+        "w": 420,
+        "h": 1
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 20,
+        "y": 90,
+        "w": 196,
+        "h": 0,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "gap": 16
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 244,
+        "y": 90,
+        "w": 196,
+        "h": 0,
+        "indices": [
+          3,
+          4
+        ],
+        "gap": 16
+      },
+      {
+        "type": "effects",
+        "p": 1,
+        "x": 24,
+        "y": 424,
+        "w": 412,
+        "h": 0,
+        "indices": [
+          5,
+          6
+        ],
+        "gap": 18
+      },
+      {
+        "type": "label",
+        "p": 0,
+        "x": 158,
+        "y": 548,
+        "w": 144,
+        "h": 0,
+        "text": "1 / 9",
+        "size": 18,
+        "role": "white",
+        "align": "center"
+      },
+      {
+        "type": "arrows",
+        "p": 0,
+        "x": 136,
+        "y": 553,
+        "w": 188,
+        "h": 12,
+        "enabled": true
+      }
+    ],
+    "navPage": 0,
+    "detailPage": 1
+  }
+}

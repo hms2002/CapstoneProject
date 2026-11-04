@@ -1,0 +1,27 @@
+Unity version: 6000.4.2f1
+Authoring: PlayerStatsAndRewardUiAuthoring.ApplyStatRevision; completed natively.
+Final validation: ApprovedUiSkinValidation.RunStatRevision
+Flags: -batchmode -uiBatchValidationTests (no -quit, native GPU rendering)
+Result: process exit0; APPROVED_UI_SKIN_VALIDATION_PASS: 562 checks; 11 PNG captures.
+Capture views: five locales x base/delta, plus Korean acquisition result.
+Final captures visually inspected: Korean/English/Japanese/Simplified Chinese/Traditional Chinese deltas, Korean base and acquired views.
+
+Existing Play Mode regressions: -runTests -testPlatform PlayMode -uiBatchValidationTests
+Filter:
+ChestRevealWidthRegressionPlayModeTests;
+PlayerInventorySlotReusePlayModeTests;
+FixedAttackRelicPlayModeTests.PassiveAttackBonus_RemainsFlatAcrossAttackChanges_UpgradePreviewAndUnequip;
+FixedAttackRelicPlayModeTests.LastBreath_GrantsFixedThreeAtHalfHealth_AndPreservesDetachedPreviewAndRestoreCleanup;
+ElectricRelicPlayModeTests.MaxHealthBonus_CountsFullCellsWithoutCap_AndPreservesRuntimePreviewRestoreAndUnequip;
+ElectricRelicPlayModeTests.ActiveDashBonus_SurvivesDetachedAcquisitionPreview_AndInventoryUpgradeReplacesItsLevel
+Result: process exit0; Passed total21 passed21 failed0 skipped0.
+
+MSBuild: Editor.csproj /t:Build /p:Configuration=Debug /p:Platform=AnyCPU
+Result: exit0; both modified Editor sources included in generated project.
+Existing compiler/package warnings remain.
+
+Serialization: 49 before-snapshotted files audited, PASS.
+Only row height fields, two section entries/title, attack speed display fields and the existing title translations/source row changed.
+Existing sampled metadata, panel/section/global/reward prefabs unchanged.
+Final scoped whitespace and document link checks: PASS.
+Full game manual interaction/resolution sweep and standalone Player build: not executed.

@@ -74,6 +74,7 @@ public sealed class GamePlayDataManager : MonoBehaviour, IRunSessionStoreBackend
     {
         // Pending kills belong to the previous profile, including when that slot was reset/reloaded.
         MonsterEncyclopediaRunProgress.Clear(Data);
+        EncyclopediaDiscoveryProgress.Clear(Data);
     }
 
     private void OnDestroy()

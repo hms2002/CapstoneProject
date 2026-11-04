@@ -1,0 +1,2 @@
+Aseprite 1.3.18.6
+2 sources; 64x64; 4 frames; 3 layers; binary alpha; fixed ground pivot (32,32).

@@ -1,0 +1,40 @@
+{
+  "dimensions": [
+    192,
+    192
+  ],
+  "linearResolutionIncrease": "50%",
+  "canvasPixelIncrease": "125%",
+  "palette": [
+    "241,107,50",
+    "182,61,40",
+    "255,198,90",
+    "255,240,191"
+  ],
+  "sourceAlpha": "binary",
+  "bounds": {
+    "inner": {
+      "left": 32,
+      "top": 32,
+      "width": 128,
+      "height": 128
+    },
+    "outer": {
+      "left": 0,
+      "top": 0,
+      "width": 192,
+      "height": 192
+    },
+    "combined-192": {
+      "left": 0,
+      "top": 0,
+      "width": 192,
+      "height": 192
+    }
+  },
+  "connectedDirectionSamples": 128,
+  "outerRuneCount": 16,
+  "medallion": "15px empty outline; same relative size",
+  "comparison": "128px x3 left, 192px x2 right; both 384px display diameter",
+  "animation": "Preview redraws strokes per angle; not a Unity capture. Existing in-game sprites stay 128px."
+}

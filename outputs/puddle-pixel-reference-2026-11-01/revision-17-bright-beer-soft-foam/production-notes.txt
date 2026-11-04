@@ -1,0 +1,65 @@
+Revision17 - brighter golden beer and softer natural foam
+
+Mode: Micro-fix of the existing standalone Aseprite sample, per user request.
+No Unity assets, prefabs, scripts, materials or metadata were edited.
+
+Changed files and purpose:
+- alcohol.aseprite / alcohol-frame-1..4.png / alcohol-sheet.png:
+  Brightened the six-color palette again, relative to revision16:
+  B77B35 -> CF9E43, D79B46 -> F5C55B, EAB45C -> FFDB7F,
+  F5CD7B -> FFE7A3, F9E1A0 -> FFF1C7, FFF3CE -> FFFCEC.
+  Body/ripple shapes, per-pixel alpha, cel/layer opacity and timing are unchanged.
+  Ground layer opacity remains166/255. The overall footprint stays unchanged.
+  Only the foam layer is repainted: irregular cream patches, open surface arcs,
+  isolated glints and faint warm edges instead of complete bright white rings.
+  Foam pixel alpha is deliberately softer; this is separate from ground opacity.
+- bubble-particle.aseprite, bubble-particle-small.aseprite,
+  bubble-particle-soft.aseprite, their5-frame PNG exports and sheets:
+  Three8x8 variants with4x4,3x3 and5x5 peak bodies. Each has at most two bright
+  highlight pixels, an uneven open cream rim, translucent lower edges and pop
+  fragments. Particle alpha110/125/190/235. All retain400ms life.
+  Existing positions, upward motion, birth phases and2-3 active count are unchanged;
+  variants are mixed across emitters. The original game ring is kept as provenance,
+  but these natural-foam silhouettes are newly hand-authored with Aseprite Lua.
+- alcohol-to-fire-center.aseprite /16 PNG frames/sheet:
+  Refreshed with the new beer/foam artwork. The exact revision16 center-out mask,
+  pivot32,32 and16x80ms timing remain unchanged. Endpoints match the new beer and
+  original fire ground exactly. Fire particle art/motion are unchanged.
+- beer-before-after-preview.aseprite/.gif/.png:
+  Left revision16; right revision17; same tiled floor, integer scale and time.
+  640x320,3.2seconds. This is the primary color/foam review.
+- comparison-preview.aseprite/.gif/.png, alcohol-with-bubbles-preview.*,
+  center-ignition-preview.*, center-ignition-stages*.png:
+  Refreshed samples and six ignition stages. The fire half of all160 comparison
+  frames remains pixel-identical to the accepted revision15/16 fire.
+-29 fire-ground/near-flame/airborne files: byte-identical copies from revision16.
+- existing-game-bubble.aseprite: byte-identical copy of the existing game source.
+- author-beer-ignition.lua: native Aseprite authoring, exports and preservation checks.
+- verify-exports.py, verification.txt, export-verification.json,
+  ignition-coverage.csv, bubble-motion.csv, check-*-layer-*.png and logs:
+  Read-only export validation and native layer/trajectory evidence.
+
+Verification completed:
+- Aseprite1.3.18.6 batch exit0; no native errors. Native beer reopen equals PNGs.
+- Body/ripple alpha masks and opacity unchanged; RGB brighter; footprint unchanged.
+-29 fire files and copied game bubble SHA256-identical to their sources.
+- Every steady-fire comparison pixel unchanged over160 frames.
+- Exact center ignition coverage/timing and endpoints preserved.
+- Bubble trajectory columns identical to revision16; three variant sizes and
+  sparse white glints/softer alpha checked. Same2-3 active bubbles and rise.
+- GIF sizes/durations passed. First-frame RGB palette quantization is at most1/255;
+  RGBA native sources/PNG exports remain exact. GIFs cannot store partial alpha.
+- Before/after and six ignition stages visually inspected.
+
+Reproduction:
+Copy the29 fire files and existing-game-bubble.aseprite from revision16 first.
+Run native Lua with sourceDir=revision-15-darker-ground-flames (fire motion CSV),
+alcoholDir=revision-16-beer-bubbles-center-ignition,
+priorDir=revision-16-beer-bubbles-center-ignition, outputDir=this directory.
+
+Limits: sample artwork only. No Unity import, compilation, Play Mode or in-game
+rendering was executed. GIFs contain a review background; use the64x64/8x8 native
+sources or RGBA sheets for engine integration.
+
+Doc Impact Check: SessionLog only. ErrorLog/DecisionLog not edited in this task.
+No StructureMemory/RefactorBacklog/Architecture/Contracts or Presentation HTML impact.

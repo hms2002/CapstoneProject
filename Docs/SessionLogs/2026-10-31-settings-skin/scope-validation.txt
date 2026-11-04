@@ -1,0 +1,4 @@
+PASS Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab: 214 scoped existing objects changed; 206 new objects; all existing IDs and font/material references retained
+PASS Assets/_Project/Scenes/TitleScene.unity: 331 scoped existing objects changed; 206 new objects; all existing IDs and font/material references retained
+PASS Assets/_Project/Prefabs/UI/KeyMapRow.prefab: 33 scoped existing objects changed; 4 new objects; all existing IDs and font/material references retained
+PASS all snapshotted existing .meta files are byte-identical

@@ -1,0 +1,409 @@
+{
+  "A-weapon": {
+    "blocks": [
+      {
+        "y": 438,
+        "keyX": 1360,
+        "width": 408,
+        "height": 99,
+        "input": "Mouse1",
+        "x": 1028,
+        "icon": "skill1",
+        "lines": 2,
+        "bodyY": 479,
+        "keyY": 446
+      },
+      {
+        "y": 547,
+        "keyX": 1360,
+        "width": 408,
+        "height": 122,
+        "input": "Mouse1",
+        "x": 1028,
+        "icon": "rush",
+        "lines": 3,
+        "bodyY": 588,
+        "keyY": 555
+      },
+      {
+        "y": 679,
+        "keyX": 1360,
+        "width": 408,
+        "height": 122,
+        "input": "Q",
+        "x": 1028,
+        "icon": "skill2",
+        "lines": 3,
+        "bodyY": 720,
+        "keyY": 687
+      }
+    ],
+    "bullets": [],
+    "option": "A",
+    "kind": "weapon",
+    "storyLines": 2,
+    "end": 801
+  },
+  "A-relic": {
+    "blocks": [],
+    "bullets": [
+      {
+        "y": 414,
+        "x": 1058,
+        "lines": 1,
+        "width": 378
+      },
+      {
+        "y": 449,
+        "x": 1058,
+        "lines": 2,
+        "width": 378
+      },
+      {
+        "y": 507,
+        "x": 1058,
+        "lines": 2,
+        "width": 378
+      },
+      {
+        "y": 565,
+        "x": 1058,
+        "lines": 1,
+        "width": 378
+      },
+      {
+        "y": 600,
+        "x": 1058,
+        "lines": 1,
+        "width": 378
+      },
+      {
+        "y": 635,
+        "x": 1058,
+        "lines": 1,
+        "width": 378
+      },
+      {
+        "y": 670,
+        "x": 1058,
+        "lines": 1,
+        "width": 378
+      }
+    ],
+    "option": "A",
+    "kind": "relic",
+    "level": {
+      "y": 350,
+      "x": 1232,
+      "eX": 1354,
+      "qX": 1110
+    },
+    "end": 693
+  },
+  "B-weapon": {
+    "blocks": [
+      {
+        "y": 438,
+        "keyX": 1360,
+        "width": 408,
+        "height": 99,
+        "input": "Mouse1",
+        "x": 1028,
+        "icon": "skill1",
+        "lines": 2,
+        "bodyY": 479,
+        "keyY": 446
+      },
+      {
+        "y": 547,
+        "keyX": 1360,
+        "width": 408,
+        "height": 122,
+        "input": "Mouse1",
+        "x": 1028,
+        "icon": "rush",
+        "lines": 3,
+        "bodyY": 588,
+        "keyY": 555
+      },
+      {
+        "y": 679,
+        "keyX": 1360,
+        "width": 408,
+        "height": 122,
+        "input": "Q",
+        "x": 1028,
+        "icon": "skill2",
+        "lines": 3,
+        "bodyY": 720,
+        "keyY": 687
+      }
+    ],
+    "bullets": [],
+    "option": "B",
+    "kind": "weapon",
+    "storyLines": 2,
+    "end": 801
+  },
+  "B-relic": {
+    "blocks": [],
+    "bullets": [
+      {
+        "y": 414,
+        "x": 1058,
+        "lines": 1,
+        "width": 378
+      },
+      {
+        "y": 449,
+        "x": 1058,
+        "lines": 2,
+        "width": 378
+      },
+      {
+        "y": 507,
+        "x": 1058,
+        "lines": 2,
+        "width": 378
+      },
+      {
+        "y": 565,
+        "x": 1058,
+        "lines": 1,
+        "width": 378
+      },
+      {
+        "y": 600,
+        "x": 1058,
+        "lines": 1,
+        "width": 378
+      },
+      {
+        "y": 635,
+        "x": 1058,
+        "lines": 1,
+        "width": 378
+      },
+      {
+        "y": 670,
+        "x": 1058,
+        "lines": 1,
+        "width": 378
+      }
+    ],
+    "option": "B",
+    "kind": "relic",
+    "level": {
+      "y": 350,
+      "x": 1232,
+      "eX": 1354,
+      "qX": 1110
+    },
+    "end": 693
+  },
+  "C-weapon": {
+    "blocks": [
+      {
+        "y": 416,
+        "keyX": 500,
+        "width": 284,
+        "height": 163,
+        "coolX": 538,
+        "input": "Mouse1",
+        "x": 486,
+        "icon": "skill1",
+        "lines": 3,
+        "bodyY": 504,
+        "keyY": 467
+      },
+      {
+        "y": 416,
+        "keyX": 820,
+        "width": 284,
+        "height": 188,
+        "coolX": 858,
+        "input": "Mouse1",
+        "x": 806,
+        "icon": "rush",
+        "lines": 4,
+        "bodyY": 504,
+        "keyY": 467
+      },
+      {
+        "y": 416,
+        "keyX": 1140,
+        "width": 284,
+        "height": 188,
+        "coolX": 1178,
+        "input": "Q",
+        "x": 1126,
+        "icon": "skill2",
+        "lines": 4,
+        "bodyY": 504,
+        "keyY": 467
+      }
+    ],
+    "bullets": [],
+    "option": "C",
+    "kind": "weapon",
+    "storyLines": 1,
+    "end": 604.0
+  },
+  "C-relic": {
+    "blocks": [],
+    "bullets": [
+      {
+        "y": 394,
+        "x": 520,
+        "lines": 1,
+        "width": 904
+      },
+      {
+        "y": 430,
+        "x": 520,
+        "lines": 1,
+        "width": 904
+      },
+      {
+        "y": 466,
+        "x": 520,
+        "lines": 1,
+        "width": 904
+      },
+      {
+        "y": 502,
+        "x": 520,
+        "lines": 1,
+        "width": 904
+      },
+      {
+        "y": 538,
+        "x": 520,
+        "lines": 1,
+        "width": 904
+      },
+      {
+        "y": 574,
+        "x": 520,
+        "lines": 1,
+        "width": 904
+      },
+      {
+        "y": 610,
+        "x": 520,
+        "lines": 1,
+        "width": 904
+      }
+    ],
+    "option": "C",
+    "kind": "relic",
+    "level": {
+      "y": 337,
+      "x": 1280,
+      "eX": 1410,
+      "qX": 1150
+    },
+    "end": 635
+  },
+  "D-weapon": {
+    "blocks": [
+      {
+        "y": 408,
+        "keyX": 1356,
+        "width": 664,
+        "height": 80,
+        "input": "Mouse1",
+        "x": 768,
+        "icon": "skill1",
+        "lines": 1,
+        "bodyY": 449,
+        "keyY": 416
+      },
+      {
+        "y": 498,
+        "keyX": 1356,
+        "width": 664,
+        "height": 107,
+        "input": "Mouse1",
+        "x": 768,
+        "icon": "rush",
+        "lines": 2,
+        "bodyY": 539,
+        "keyY": 506
+      },
+      {
+        "y": 615,
+        "keyX": 1356,
+        "width": 664,
+        "height": 107,
+        "input": "Q",
+        "x": 768,
+        "icon": "skill2",
+        "lines": 2,
+        "bodyY": 656,
+        "keyY": 623
+      }
+    ],
+    "bullets": [],
+    "option": "D",
+    "kind": "weapon",
+    "storyLines": 1,
+    "end": 722
+  },
+  "D-relic": {
+    "blocks": [],
+    "bullets": [
+      {
+        "y": 423,
+        "x": 798,
+        "lines": 1,
+        "width": 632
+      },
+      {
+        "y": 463,
+        "x": 798,
+        "lines": 1,
+        "width": 632
+      },
+      {
+        "y": 503,
+        "x": 798,
+        "lines": 1,
+        "width": 632
+      },
+      {
+        "y": 543,
+        "x": 798,
+        "lines": 1,
+        "width": 632
+      },
+      {
+        "y": 583,
+        "x": 798,
+        "lines": 1,
+        "width": 632
+      },
+      {
+        "y": 623,
+        "x": 798,
+        "lines": 1,
+        "width": 632
+      },
+      {
+        "y": 663,
+        "x": 798,
+        "lines": 1,
+        "width": 632
+      }
+    ],
+    "option": "D",
+    "kind": "relic",
+    "level": {
+      "y": 366,
+      "x": 1100,
+      "eX": 1248,
+      "qX": 952
+    },
+    "end": 690
+  }
+}

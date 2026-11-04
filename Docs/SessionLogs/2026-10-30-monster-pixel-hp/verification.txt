@@ -1,0 +1,24 @@
+Monster HP pixel artwork integration — 2026-10-30
+
+PASS Unity6000.4.2f1 script/shader compile, import, native authoring and capture: exit0.
+PASS Approved layered Aseprite source SHA256 unchanged:
+83379E7789E55AC999D69D6C7E7D1EE2CFA47AC86AFF433605A4795D021B2629
+PASS Four source parts in one64x32 texture, Point/no mipmaps/uncompressed.
+PASS Four states x two native rendering paths x320 pixels:2560 matches, maximum RGB difference0.
+PASS Persistent material texture reference resolves to the same source PNG as the four sprites.
+PASS Graphics-enabled PlayMode:30 passed,0 failed,0 skipped; Unity exit0.
+PASS Existing widths/heights, damage-trail timing, status/groggy, overlap sorting,
+     parent transforms, clipping, actor-specific values, disable/re-enable/destroy.
+PASS Editor.csproj MSBuild: exit0.
+PASS ProceduralPlayModeTests.csproj MSBuild: exit0.
+PASS Shared prefab audit:9 semantic HP-only component blocks changed;
+     existing block additions/deletions0. Fonts/status/groggy references unchanged.
+PASS git diff --check; no gameplay/scenes/ProjectSettings/asmdef changes in this slice.
+
+Native comparison image is5x source-pixel-scale detail, not live gameplay camera scale.
+Raw native PNGs retain the cyan diagnostic background; the review board removes only that background.
+Manual whole-combat play, standalone Player build and target Player performance were not executed.
+Existing project warnings remain. No FPS or GPU-time improvement claim is made.
+
+SessionLog, two existing StructureMemory maps, DecisionLog, ErrorLog and existing
+RefactorBacklog updated; ActiveTask/TaskIndex completed. Presentation HTML unaffected.

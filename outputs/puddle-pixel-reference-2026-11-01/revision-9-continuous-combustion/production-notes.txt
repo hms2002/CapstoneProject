@@ -1,0 +1,46 @@
+Puddle revision 9 — continuous whole-surface combustion
+
+Scope: preview Implementation. User explicitly rejected placing separate flame
+shapes and requested irregular combustion attached to the entire ground plane.
+Prior revisions remain available; this revision changes the fire drawing method.
+
+Changed assets:
+fire-surface.aseprite:64x64,12 frames x80ms/960ms,7 visible RGBA colors.
+  Removed the flame-site coordinate list and flame silhouette polygons entirely.
+  One continuous field covers the footprint. Locally changing intensity creates
+  irregular joined orange/yellow regions which split and reconnect; no placed
+  flames, vertical tongues, particle emitters or translating texture offsets.
+  The field blends six cyclic states at several spatial scales. This is native
+  authored pixel animation, not a shader or a runtime procedural effect.
+beer.aseprite:4 frames x160ms; exported pixels exactly match revision8.
+beer-to-fire.aseprite:8 frames x80ms; regenerated with the new combustion source.
+puddle-cycle.aseprite:24 frames,4 layers; BeerIdle1-4, Ignite5-12, FireLoop13-24.
+  FireLoop starts at standalone fire frame2 after ignition ends at frame1.
+  Ground footprint and pivot32,32 remain fixed; all native sources are64x64.
+
+Exports:
+*-frame-N.png and *-sheet.png preserve native RGBA transparency.
+surface-only-preview.gif:480x480,6x integer scale,960ms; final fire-only preview.
+comparison-preview.gif: beer / ignition / combustion,960x320,3840ms.
+ignition-preview.gif:320x320,3840ms. all-frames-2x.png: complete contact sheet.
+surface-draft.* and surface-draft-frames.png: earlier internal drawing review;
+  final outputs are the files listed above.
+author-puddles.lua / verify-native.lua: reproducible Aseprite1.3.18.6 workflow.
+GIFs bake a neutral floor because GIF cannot retain partial alpha. These are not
+Unity captures. Layer coverage is disjoint; hiding a layer can expose a hole.
+
+Verification:
+Aseprite authoring/reopen exit0;200 native checks passed for dimensions, frames,
+layers, tags, pivots, timing, source-PNG/GIF pixels and transition endpoints.
+Final GIF review pixels match exactly. Export checks verify12-frame loop timing,
+original footprint,8/7/15 palettes, integer preview scaling and exact preservation
+of beer pixels. The largest connected warm region accounts for at least85% of
+warm pixels in every fire frame. This measures continuity, not artistic approval.
+Final surface/comparison and draft frame sequence visually inspected.
+Evidence: native-verification.txt and export-verification.json.
+
+No Unity source/assets/scenes/prefabs/metadata/settings changed. Unity import,
+compilation, Play Mode and actual camera/floor acceptance were not executed.
+World scale/PPU and contact-dependent ignition remain integration work.
+Doc Impact Check: SessionLog only; ErrorLog/DecisionLog/StructureMemory unchanged;
+no identified Presentation HTML stale candidate.

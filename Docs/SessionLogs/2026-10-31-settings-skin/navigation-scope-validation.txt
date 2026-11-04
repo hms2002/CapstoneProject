@@ -1,0 +1,2 @@
+PASS Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab: only settings root component list + visibility reference changed; one authored CanvasGroup added. All geometry, art, other objects and IDs unchanged.
+PASS Assets/_Project/Scenes/TitleScene.unity: only settings root component list + visibility reference changed; one authored CanvasGroup added. All geometry, art, other objects and IDs unchanged.

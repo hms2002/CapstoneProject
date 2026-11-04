@@ -22,7 +22,7 @@ Use this file to find a matching `Docs/ActiveTasks/<task-id>.md` or to decide th
 
 | Task ID | Mode | Risk | Target Type | Status | ActiveTask |
 | --- | --- | --- | --- | --- | --- |
-| full-game-localization | Implementation | Approved serialized UI/font edits | Runtime + UI assets + tables | Japanese Galmuri9 applied; 55 representative Play Mode captures, timer atlas repaired; encyclopedia hint overlap and full-flow review remain (SOLD excluded) | [Scope](ActiveTasks/full-game-localization.md) |
+| full-game-localization | Implementation | Approved serialized UI/font edits | Runtime + UI assets + tables | Japanese Galmuri9 applied; 55 representative Play Mode captures, timer atlas repaired; encyclopedia hint overlap resolved in the [layout follow-up](../outputs/encyclopedia-layout-2026-11-01/README.md); full-flow review remains (SOLD excluded) | [Scope](ActiveTasks/full-game-localization.md) |
 
 ## Proposed Tasks
 
@@ -33,6 +33,12 @@ Use this file to find a matching `Docs/ActiveTasks/<task-id>.md` or to decide th
 
 | Task ID | Closed Date | Replacement / Outcome |
 | --- | --- | --- |
+| puddle-pixel-integration | 2026-11-01 | [Completed scope](ActiveTasks/puddle-pixel-integration.md): revision16 beer color/revision17 foam applied to both existing puddle prefabs, with separate near/air flames and center ignition. Native101 frames, PlayMode57/57, MSBuild and protected source/save checks passed. Full manual combat/Player build remain unexecuted. |
+| encyclopedia-skin-discovery | 2026-11-01 | [Completed scope](ActiveTasks/encyclopedia-skin-discovery.md): approved pixel skin and black silhouettes/hidden details for unencountered Monsters/Bosses and unacquired Weapons/Relics. Additive profile/run discovery; Unity15 EditMode +29 unique PlayMode cases, MSBuild3/3, preservation10/10 and saves6/6 passed. Full manual flow/Player build and historical item acquisitions remain limited. |
+| settings-keymapping-skin | 2026-10-31 | [Completed scope](ActiveTasks/settings-keymapping-skin.md): Aseprite clean title/frames, upper chains and one-page two-column settings/19 authored key rows in main GlobalUIRoot and TitleScene. Follow-up: instant settings↔keys replacement preserves pending display choices; Unity1,548 checks, serialized scope preservation and MSBuild passed. Earlier skin integration:3/3 render-layer regressions. Full-scene manual acceptance/Player build and independent legacy copies remain. |
+| player-stats-potion-reward-skin | 2026-10-31 | [Completed scope](ActiveTasks/player-stats-potion-reward-skin.md): approved artwork in six prefabs; stats follow-up adds38px rows, Basic7/Other6 and attack-speed%. Follow-up Unity562 checks/11 captures,21/21 focused regressions and MSBuild passed. Original skin suite's two unrelated failures remain recorded. Full-scene manual acceptance/Player build remain. |
+| monster-pixel-hp | 2026-10-30 | [Completed scope](ActiveTasks/monster-pixel-hp.md): approved Aseprite sheet in shared mesh and overlap Images; native source comparison exact, Play Mode30/30 and MSBuild passed; gameplay/timing/status/groggy retained. Manual whole-combat/Player performance remain unmeasured. |
+
 | sasha-spiri-dialogue | 2026-11-02 | [Completed scope](ActiveTasks/sasha-spiri-dialogue.md): replaced affection_0_b with two-window Spiri-goods conversation and Happy/Surprised replies; optional required-theme eligibility, dragon-only uniform candidate with unchanged run allowance. Unity359/359, preservation989/989 and MSBuild passed; full manual gameplay/Player build and translation review remain. |
 | sasha-discount-portraits | 2026-11-02 | [Completed scope](ActiveTasks/sasha-discount-portraits.md): supplied Normal/Surprised portraits, all eight no-gain branches and two-window discount conversation; pools 3/6/8/8/8. Unity430/430, preservation232/232 and MSBuild passed; Notion text updated. Full manual gameplay/Player build and optional Notion image-sharing approval remain. |
 | npc-dialogue-cumulative-pool | 2026-11-02 | [Completed scope](ActiveTasks/npc-dialogue-cumulative-pool.md): cumulative distinct candidate pools, one capped choice conversation per run without gain/indicator, Sasha partnership dialogue and five-language text. Unity337/337, preservation216/216 and MSBuild passed; Notion reference updated; full manual gameplay/Player build remain. |

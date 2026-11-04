@@ -1,0 +1,73 @@
+{
+  "mode": "Preview artwork only; no Unity integration",
+  "category": "소모품",
+  "name": "회복 물약",
+  "effectRaw": "● [[체력]] {pos:[+1]} 회복",
+  "effect": "● {gloss:체력} {pos:[+1]} 회복",
+  "catalogEntries": 1,
+  "page": "1 / 1",
+  "sources": {
+    "definition": "Assets/_Project/Data/Items/Consumables/CD_HealPotion.asset",
+    "database": "Assets/_Project/Data/Items/ItemDatabase.asset",
+    "presenter": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemRightPage.cs",
+    "icon": "Assets/_Project/Art/Sprites/Items/ConsumablePotions_3x3.png",
+    "sprite": "ConsumablePotion_01",
+    "fileID": -660001001,
+    "iconRectTopLeft": [
+      0,
+      0,
+      32,
+      32
+    ]
+  },
+  "layout": {
+    "canvas": [
+      1260,
+      760
+    ],
+    "left": [
+      124,
+      81,
+      460,
+      576
+    ],
+    "right": [
+      656,
+      81,
+      460,
+      576
+    ],
+    "gridColumns": 4,
+    "cell": [
+      88,
+      88
+    ],
+    "gap": 16,
+    "firstCellPageOffset": [
+      30,
+      96
+    ],
+    "rightTitle": [
+      20,
+      20
+    ],
+    "rightHero": [
+      20,
+      70,
+      90,
+      82
+    ],
+    "rightEffect": [
+      130,
+      70,
+      310,
+      82
+    ]
+  },
+  "font": "Galmuri9",
+  "outline": "Opaque 1px #503B2C; original semantic color roles retained",
+  "notes": [
+    "Only the one registered consumable is shown; other eight sheet sprites are not invented entries.",
+    "Potion has no weapon stat, relic preview level or weapon detail-toggle controls."
+  ]
+}

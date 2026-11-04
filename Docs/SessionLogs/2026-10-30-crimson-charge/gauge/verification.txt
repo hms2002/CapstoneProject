@@ -1,0 +1,35 @@
+Crimson Boundary — original Aseprite gauge restoration, 2026-10-30
+
+PASS Unity 6000.4.2f1 compile and native prefab authoring/capture: exit 0.
+PASS Original reference vs native render: five states, 236 opaque pixels/state,
+     all within 1/255 RGB error; 32x10 source geometry preserved.
+PASS Three synchronized horizontal Filled Images, red/orange/full palette,
+     full-only highlighted border, full -> partial state restoration.
+PASS Existing 47 VFX PNGs retain six opaque colors and point/uncompressed imports.
+PASS 195 native GPU frames, diagonal flight and actual player sprite scale reference.
+PASS Play Mode CrimsonChargePlayModeTests: 8 passed, 0 failed, Unity exit 0.
+     Used existing -uiBatchValidationTests trace-isolation gate.
+PASS MSBuild Editor.csproj: exit 0.
+PASS MSBuild ProceduralPlayModeTests.csproj: exit 0.
+     Builds executed after Unity shutdown. The initial overlapping MSBuild run
+     lost Temp/bin/Debug/Ink-Libraries.dll during Unity cleanup and is superseded.
+PASS Existing prefab blocks removed: 0. Eight existing blocks changed, all gauge
+     objects/components or the presenter's gauge references/colors/offset.
+PASS git diff --check, changed C# whitespace, and SessionLog relative links.
+
+Changed implementation:
+- CrimsonBoundaryChargePresentation.cs: fill bands, palettes, full frame, head offset.
+- CrimsonChargeAssetAuthoring.cs: reference rectangles, color precision, targeted repair.
+- CrimsonChargeVisualValidation.cs: gauge checks and native detail captures.
+- CrimsonChargePresentation.prefab: saved authored gauge; existing references retained.
+
+Evidence: gauge-comparison.png/txt, reference and native state PNGs,
+charge-gauge-reference-v2.aseprite, compare-gauge.lua, playmode.xml,
+unity-charge-preview.gif, unity-contact-sheet.png.
+
+Limitations: isolated prefab preview, not a full gameplay scene capture.
+Manual whole-combat playtest and standalone Player build were not executed.
+Existing project warnings remain. No new production errors observed in these checks.
+
+Documentation: SessionLog, existing StructureMemory, DecisionLog updated.
+ErrorLog not updated for this gauge correction. Presentation HTML not affected.

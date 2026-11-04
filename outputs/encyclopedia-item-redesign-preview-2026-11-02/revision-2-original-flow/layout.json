@@ -1,0 +1,77 @@
+{
+  "weapon": {
+    "titleHeight": 54,
+    "blocks": [
+      {
+        "input": "Mouse1",
+        "title": "뇌창 휩쓸기",
+        "bodyHeight": 132,
+        "y": 212,
+        "icon": "skill1",
+        "bodyY": 278
+      },
+      {
+        "input": "Mouse1",
+        "title": "뇌창 돌격",
+        "bodyHeight": 168,
+        "y": 432,
+        "icon": "rush",
+        "bodyY": 498
+      },
+      {
+        "input": "Q",
+        "title": "낙뢰 표식",
+        "bodyHeight": 168,
+        "y": 688,
+        "icon": "skill2",
+        "bodyY": 754
+      }
+    ],
+    "bullets": [],
+    "storyY": 112,
+    "storyHeight": 78,
+    "height": 938
+  },
+  "relic": {
+    "titleHeight": 54,
+    "blocks": [],
+    "bullets": [
+      {
+        "y": 148,
+        "color": "39291F",
+        "lineCount": 1
+      },
+      {
+        "y": 202,
+        "color": "39291F",
+        "lineCount": 2
+      },
+      {
+        "y": 292,
+        "color": "39291F",
+        "lineCount": 2
+      },
+      {
+        "y": 382,
+        "color": "39291F",
+        "lineCount": 1
+      },
+      {
+        "y": 436,
+        "color": "39291F",
+        "lineCount": 2
+      },
+      {
+        "y": 526,
+        "color": "873F32",
+        "lineCount": 1
+      },
+      {
+        "y": 580,
+        "color": "39291F",
+        "lineCount": 1
+      }
+    ],
+    "height": 636
+  }
+}

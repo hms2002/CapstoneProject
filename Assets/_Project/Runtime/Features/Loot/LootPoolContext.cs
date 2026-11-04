@@ -5,7 +5,9 @@ public enum LootPoolExclusionSource
     PlayerInventory = 1 << 0,
     WorldPickups = 1 << 1,
     SceneWeaponDrops = 1 << 2,
-    MerchantStock = 1 << 3
+    MerchantStock = 1 << 3,
+    OpenedChestStock = 1 << 4,
+    UnsoldMerchantStock = 1 << 5
 }
 
 public readonly struct LootPoolContext
@@ -15,17 +17,28 @@ public readonly struct LootPoolContext
     public static LootPoolContext ShopStock => new LootPoolContext(
         LootPoolExclusionSource.PlayerInventory |
         LootPoolExclusionSource.WorldPickups |
-        LootPoolExclusionSource.SceneWeaponDrops);
+        LootPoolExclusionSource.SceneWeaponDrops |
+        LootPoolExclusionSource.OpenedChestStock);
+    public static LootPoolContext ChestStock => ForChest(null);
+    public static LootPoolContext ForChest(TreasureChest sourceChest) => new LootPoolContext(
+        LootPoolExclusionSource.PlayerInventory |
+        LootPoolExclusionSource.WorldPickups |
+        LootPoolExclusionSource.SceneWeaponDrops |
+        LootPoolExclusionSource.OpenedChestStock |
+        LootPoolExclusionSource.UnsoldMerchantStock,
+        sourceChest);
     public static LootPoolContext MerchantStockOnly => new LootPoolContext(LootPoolExclusionSource.MerchantStock);
     public static LootPoolContext PlayerInventoryAndMerchantStock => new LootPoolContext(
         LootPoolExclusionSource.PlayerInventory |
         LootPoolExclusionSource.MerchantStock);
 
     public LootPoolExclusionSource WeaponExclusionSources { get; }
+    public TreasureChest SourceChest { get; }
 
-    public LootPoolContext(LootPoolExclusionSource weaponExclusionSources)
+    public LootPoolContext(LootPoolExclusionSource weaponExclusionSources, TreasureChest sourceChest = null)
     {
         WeaponExclusionSources = weaponExclusionSources;
+        SourceChest = sourceChest;
     }
 
     public bool Includes(LootPoolExclusionSource source)

@@ -65,6 +65,15 @@ public class RelicInventory : MonoBehaviour
     private readonly List<AttributeModifier> compensationPreviewModifiers = new();
 
     public event Action OnChanged;
+
+    private void NotifyInventoryChanged()
+    {
+        foreach (var slot in slots)
+            if (slot.def != null)
+                EncyclopediaDiscoveryProgress.Record(EncyclopediaDiscoveryKind.Relic, slot.def.relicId, gameObject.scene.name);
+        OnChanged?.Invoke();
+    }
+
     public AcquireResult LastFailureResult { get; private set; } = AcquireResult.Success;
 
     private void Awake()
@@ -329,7 +338,7 @@ public class RelicInventory : MonoBehaviour
         CompleteLinkedValueCompensation();
 
         RefreshDebugView();
-        OnChanged?.Invoke();
+        NotifyInventoryChanged();
         LastFailureResult = AcquireResult.Success;
         return true;
     }
@@ -405,7 +414,7 @@ public class RelicInventory : MonoBehaviour
         CompleteLinkedValueCompensation();
 
         RefreshDebugView();
-        OnChanged?.Invoke();
+        NotifyInventoryChanged();
         LastFailureResult = AcquireResult.Success;
         return true;
     }
@@ -418,7 +427,7 @@ public class RelicInventory : MonoBehaviour
         (slots[a], slots[b]) = (slots[b], slots[a]);
 
         RefreshDebugView();
-        OnChanged?.Invoke();
+        NotifyInventoryChanged();
         return true;
     }
 
@@ -599,7 +608,7 @@ public class RelicInventory : MonoBehaviour
         }
 
         RefreshDebugView();
-        OnChanged?.Invoke();
+        NotifyInventoryChanged();
     }
 
     /// <summary>
@@ -631,7 +640,7 @@ public class RelicInventory : MonoBehaviour
         }
 
         RefreshDebugView();
-        OnChanged?.Invoke();
+        NotifyInventoryChanged();
     }
 
     /// <summary>
@@ -902,7 +911,7 @@ public class RelicInventory : MonoBehaviour
         slots[slotIndex] = e;
         CompleteLinkedValueCompensation();
         RefreshDebugView();
-        OnChanged?.Invoke();
+        NotifyInventoryChanged();
         LastFailureResult = AcquireResult.Success;
         return true;
     }
@@ -954,7 +963,7 @@ public class RelicInventory : MonoBehaviour
         if (newLevel > oldLevel)
             PlayRelicLevelUpSound();
         RefreshDebugView();
-        OnChanged?.Invoke();
+        NotifyInventoryChanged();
         LastFailureResult = AcquireResult.Success;
         return true;
     }
@@ -1047,7 +1056,7 @@ public class RelicInventory : MonoBehaviour
 
             RefreshDebugView();
             if (notify)
-                OnChanged?.Invoke();
+                NotifyInventoryChanged();
             return;
         }
 
@@ -1069,7 +1078,7 @@ public class RelicInventory : MonoBehaviour
 
         RefreshDebugView();
         if (notify)
-            OnChanged?.Invoke();
+            NotifyInventoryChanged();
     }
 
     private void RefreshDebugView()

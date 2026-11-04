@@ -1,0 +1,12 @@
+{
+  "renderer": "Same inline JavaScript, offline Canvas pixel buffer adapter",
+  "resolution": [
+    320,
+    220
+  ],
+  "sourceColors": 4,
+  "checkedAnimationFrames": 161,
+  "pauseResume": "pass",
+  "ready": "true",
+  "limitations": "Browser DOM/layout was not executed; local-file browser preview was blocked by URL policy. Unity integration not performed."
+}

@@ -1,0 +1,58 @@
+{
+  "approvedAssets": {
+    "inner.png": "8a8ab1a9f3e82173e17bb5947900c9f29ed3a65f73f2a25d5ed9650830ccbd08",
+    "inner.aseprite": "bc1e136fc6bbe3610fae2e0e6b815fea22057ae78397d4c13cfd3d8d4788ae5e",
+    "outer.png": "3849687311ace3e59dd107f2689824e73dda0e3701dcd9330f65e9f2c27c6b61",
+    "outer.aseprite": "8041f9618813d962a21f1fdb95bdf14c585257731127357d87606b23b6464158"
+  },
+  "dimensions": [
+    192,
+    192
+  ],
+  "visibleDiametersPixels": {
+    "inner": 128,
+    "outer": 192
+  },
+  "sourceMetricChangeOnly": true,
+  "chargeAndOpacityCode": "identical to pre-task except presentation artwork calibration",
+  "scaleCases": [
+    {
+      "ratio": 0,
+      "innerDiameter": 0,
+      "outerDiameter": 0,
+      "innerScale": 0,
+      "outerScale": 0
+    },
+    {
+      "ratio": 0.25,
+      "innerDiameter": 2.015625,
+      "outerDiameter": 0,
+      "innerScale": 0.251953125,
+      "outerScale": 0
+    },
+    {
+      "ratio": 0.5,
+      "innerDiameter": 4.03125,
+      "outerDiameter": 0,
+      "innerScale": 0.50390625,
+      "outerScale": 0
+    },
+    {
+      "ratio": 0.75,
+      "innerDiameter": 4.03125,
+      "outerDiameter": 5.015625,
+      "innerScale": 0.50390625,
+      "outerScale": 0.41796875
+    },
+    {
+      "ratio": 1,
+      "innerDiameter": 4.03125,
+      "outerDiameter": 6,
+      "innerScale": 0.50390625,
+      "outerScale": 0.5
+    }
+  ],
+  "existingPrefabSpriteBindings": "GUID/fileID retained",
+  "unityImportAndPlayMode": "All four art imports confirmed by Editor.log; native capture and PlayMode not executed",
+  "msbuild": "Editor and test assembly exit0"
+}

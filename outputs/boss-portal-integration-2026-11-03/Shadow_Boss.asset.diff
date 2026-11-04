@@ -1,0 +1,14 @@
+--- before/Assets\_Project\Data\Dungeon\Rooms\BossThemes\Shadow\Shadow_Boss.asset
+
++++ Assets\_Project\Data\Dungeon\Rooms\BossThemes\Shadow\Shadow_Boss.asset
+
+@@ -504,7 +504,7 @@
+
+     travelEndpointPlacements:
+     - slotId: BossGate
+       kind: 0
+-      mediumPrefab: {fileID: 4531407902860154786, guid: 635bbce2ba03a1e4787909e774bd3dac, type: 3}
++      mediumPrefab: {fileID: 4112881737353449117, guid: 4e2855c1d2a068a4bad71ecaf190c73e, type: 3}
+       localCell: {x: 13, y: 8}
+       localOffset: {x: 0, y: -0.17000008}
+       localRotationDegrees: 0

@@ -1,0 +1,46 @@
+Puddle revision 7 — medium foam and planar heat shimmer
+
+Mode/scope: preview Implementation, continuing the user's native Aseprite
+sample task. User rejected the ember-like fire shapes and asked for simple
+shimmering heat; beer foam may be larger. Previous revisions are preserved.
+
+Changed sources:
+beer.aseprite: medium separated foam islands replace the tiny flecks. Original
+  revision6 liquid colors/transparency remain, including main-fill alpha154.
+fire-surface.aseprite: broad orange/yellow heat regions slowly brighten and
+  subside in place. Removed all flame stamps, detached tips and particle flight
+  overlays. The fire loop is now960ms (six frames at160ms), twice its prior
+  duration. This is authored pixel color animation, not a refraction shader.
+beer-to-fire.aseprite: regenerated eight80ms ignition frames from revised art.
+puddle-cycle.aseprite: combined18 frames; BeerIdle1-4, Ignite5-12, FireLoop13-18.
+  Ground64x64, pivot32,32 and original nonzero footprint remain unchanged.
+  Four editable layers. FireLoop starts at standalone fire frame2 to avoid
+  holding the first frame twice after ignition finishes.
+All source sprites use8 beer /7 fire /15 transition RGBA colors.
+
+Exports:
+*-frame-N.png and *-sheet.png preserve native transparency.
+comparison-preview.gif: left beer / middle ignition / right surface heat only.
+  960x320,4x integer scale,3840ms; there are no particle overlays in this version.
+surface-only-preview.gif:320x320,960ms.
+ignition-preview.gif:320x320,3840ms.
+all-frames-2x.png: all ground frames for inspection.
+Ground GIFs bake a neutral review floor because GIF does not support partial
+alpha. These are not Unity captures. Aseprite/PNG retain source partial alpha.
+No particle sources are authored/exported in revision7; earlier files remain.
+
+Reproducibility and verification:
+author-puddles.lua authors all pixels in Aseprite1.3.18.6.
+verify-native.lua reopens native files and checks layers, tags, pivots, timing,
+source-PNG equality, review GIFs and transition endpoints;158 checks passed.
+export-verification.json records occupancy, preserved beer RGBA palette, larger
+foam components, GIF durations and all96 comparison frames matching the pure
+surface preview without extra particles. Static previews/contact sheet inspected.
+
+Editing: source layers have disjoint coverage to preserve palette values;
+hiding an upper layer can expose transparency instead of underlying paint.
+Remaining: actual game-camera/floor readability, world scale/PPU and directional
+ignition await integration. Unity import/compilation/Play Mode were not run.
+No Unity source, existing assets, scenes, prefabs, metadata or settings changed.
+Doc Impact Check: SessionLog only; ErrorLog/DecisionLog/StructureMemory unchanged;
+no identified Presentation HTML stale candidate.

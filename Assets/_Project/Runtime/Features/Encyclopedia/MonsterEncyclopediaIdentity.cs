@@ -6,6 +6,23 @@ public sealed class MonsterEncyclopediaIdentity : MonoBehaviour
 {
     [SerializeField] private string monsterId;
     public string MonsterId => monsterId;
+    private Mob mob;
+    private bool encountered;
+
+    private void Awake() => mob = GetComponent<Mob>();
+    private void OnEnable() => encountered = false;
+
+    private void Update()
+    {
+        if (encountered || mob == null || !RunSessionStore.IsRunActive) return;
+        if (EncyclopediaDiscoveryProgress.Has(EncyclopediaDiscoveryKind.Monster, monsterId))
+        {
+            encountered = true;
+            return;
+        }
+        // Covers preplaced monsters and boss summons outside a registered combat room.
+        if (mob.IsRecognizingPlayer) MonsterEncyclopediaProgress.RecordEncounter(gameObject);
+    }
 
     public void Configure(string id)
     {

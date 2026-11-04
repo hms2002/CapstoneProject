@@ -1,0 +1,62 @@
+[
+  {
+    "scene": "Assets/_Project/Scenes/DragonCorridor.unity",
+    "onlyRecordedRemovals": true,
+    "keptCRLF": true,
+    "remainingItemOverrides": []
+  },
+  {
+    "scene": "Assets/_Project/Scenes/PixelLightTest.unity",
+    "onlyRecordedRemovals": true,
+    "keptCRLF": true,
+    "remainingItemOverrides": []
+  },
+  {
+    "scene": "Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity",
+    "onlyRecordedRemovals": true,
+    "keptCRLF": true,
+    "remainingItemOverrides": []
+  },
+  {
+    "scene": "Assets/_Project/Scenes/ProceduralDungeonV0Test.unity",
+    "onlyRecordedRemovals": true,
+    "keptCRLF": true,
+    "remainingItemOverrides": []
+  },
+  {
+    "scene": "Assets/_Project/Scenes/ProtoTypeCorridor.unity",
+    "onlyRecordedRemovals": true,
+    "keptCRLF": true,
+    "remainingItemOverrides": []
+  },
+  {
+    "scene": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+    "onlyRecordedRemovals": true,
+    "keptCRLF": true,
+    "remainingItemOverrides": []
+  },
+  {
+    "scene": "Assets/_Project/Scenes/SangHyup_Hallway.unity",
+    "onlyRecordedRemovals": true,
+    "keptCRLF": true,
+    "remainingItemOverrides": []
+  },
+  {
+    "scene": "Assets/_Project/Scenes/ShadowCorridor.unity",
+    "onlyRecordedRemovals": true,
+    "keptCRLF": true,
+    "remainingItemOverrides": []
+  },
+  {
+    "scene": "Assets/_Project/Scenes/SlimeCorridor.unity",
+    "onlyRecordedRemovals": true,
+    "keptCRLF": true,
+    "remainingItemOverrides": []
+  },
+  {
+    "scene": "Assets/_Project/Scenes/TutorialCorridor.unity",
+    "onlyRecordedRemovals": true,
+    "keptCRLF": true,
+    "remainingItemOverrides": []
+  }
+]

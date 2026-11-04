@@ -2,10 +2,31 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-10-11
+last_reviewed: 2026-11-02
 ---
 
 # Encyclopedia Structure
+
+## Approved Item Skin (2026-11-02)
+
+The current item view applies weapon preview revision 11, consumable revision 13 and relic revision 14. [Integration record](../../../outputs/encyclopedia-item-skin-integration-2026-11-02/README.md) includes the exact changed files, source inspection and compile/import logs. Actual ProtoTypeHub visuals were inspected through Computer Use at the user's request; [the screen-guided follow-up](../../../outputs/encyclopedia-live-ui-fix-2026-11-02/README.md) includes final weapon/relic/consumable captures and remaining coverage limits.
+
+- Source assets are `Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab`, `EncyclopediaEntrySlot.prefab` and `Panel_AbilityBlock_Encyclopedia.prefab`. `Assets/_Project/Art/Sprites/UI/EncyclopediaItemSkin/` contains the point-filtered sheet, native Aseprite source and dedicated plain/opaque-outline Galmuri9 materials. LocalizeTmpFontEvent retains these styles while the localization package chooses the active font.
+- `Book/LeftPage/ItemPaper` and `Book/RightPage/ItemPageContent/ItemPaper` are equally sized 460×576 authored surfaces at 1.25 local scale inside the existing book pages. Book, main/item tabs and creature records are retained. ItemPaper owns the left title, 4-column icon-only grid and pager.
+- The right paper contains a ScrollRect and authored `ItemViewport` mask. Its `ContentPanel` is the presenter's `contentRoot`, a top-aligned vertical flow: name, Header/HeaderRow, weapon stats, relic preview, weapon story, relic effect, consumable effect and pooled weapon ability container. Hidden type sections contribute no layout space. The scrollbar remains inside ScrollRect so hiding undiscovered detail also hides it. The detail shortcut and undiscovered message are siblings on the right paper.
+- HeaderRow contains only the centered illustration. The user's follow-up moved WeaponStatsRoot to a full-width section below it. Relic preview sits under the icon with Q/E and `Lv. current / max`, without a level title; its effects follow. Consumables use `consumableDetailRoot`/`consumableDescriptionText` for the effect section. These are existing serialized fields, not new gameplay state.
+- `EncyclopediaItemRightPage` captures the authored icon transform once per Image reference. Its centered 64×64 detail box owns position, pivot and scale; inventory-only offsets/zoom are ignored, while sprite override and rotation remain available. Rebinding an item must not capture a previous weapon's transform as the new default. The slot's 8-pixel inset belongs to its mask parent because EncyclopediaEntryButton intentionally restores its child icon to Stretch defaults. Pagination has a 10×12 child Graphic inside each existing 34×30 Button; the transparent root Image remains the raycast surface.
+- Item-only source overrides were removed from GlobalUIRoot and 22 scene consumers, including ten CRLF files missed by the initial LF-only pass. New placement, style and presenter references come from the source prefab. Reveal opacity/interactivity and whole-page visibility remain with the existing book lifecycle. [Follow-up source findings and remaining visual review](../../../outputs/encyclopedia-item-layout-fix-2026-11-02/README.md). No runtime hierarchy fallback or additional manager was introduced; slots/abilities still use the existing authored prefab pools.
+- Slot input is received by the root Image on the same object as Button (`m_RaycastTarget: 1`); decorative children remain non-raycasting. Disabling raycasts on every skinned Image makes the entire slot unclickable even when Button is interactable. Category/item headings use Regular; pagination uses spaced separators. The dedicated body style balances OutlineWidth/FaceDilate at 0.18, with opaque brown outline and preserved white/semantic face colors. A width of 0.5 visibly covered thin pixel glyph faces; source-only material values do not establish readability.
+- New fixed text uses `encyclopedia.item_stats` in the CSV and five GameText tables. Dynamic descriptions, skill variants, input glyphs, discovery masking and relic preview values keep their existing owners. Long/localized descriptions use the existing vertical scroll path.
+- The one-off installation/export scripts were removed after authoring. Change the source prefab/Aseprite for future visual revisions; historical layout tools below describe earlier arrangements and are not the installation path for this skin.
+
+## Earlier Inheritance Repair Context
+
+The item detail's centered X=0 is inherited through EncyclopediaUI.prefab → the nested instance in GlobalUIRoot → gameplay scenes. On 2026-11-02, stale X=285 overrides were removed at both the intermediate prefab level and all 12 enabled scene instances. The first repair missed the scene layer, and the user confirmed settings were fixed while item details remained clipped; the follow-up removes that remaining layer. ContentPanel's source fileID is 7990481634182577215, while scene overrides address inherited fileID 3812683333260759081 through GlobalUIRoot. The latter is not a standalone record in GlobalUIRoot's YAML; absence from a direct record map does not imply a stale or irrelevant target. The nested-instance correspondence was checked against all 35 explicitly serialized source pairs. [Follow-up repair and source-only inspection](../../../outputs/encyclopedia-scene-layout-followup-2026-11-02/README.md). Runtime visuals after this follow-up are not yet user-confirmed.
+
+> Tool retention update (2026-11-01): completed task-specific skin/layout/migration authoring and acceptance tools named below are historical and have been moved outside Assets. See [current retained tools and archive](../TestAndEditorToolRetention.md). Gameplay/save regressions and reusable profiling remain. Automated tests run only when explicitly requested.
+
 
 ## Purpose
 
@@ -30,6 +51,8 @@ This is a fast structure map, not a final Architecture or Contract document.
 - `EncyclopediaInteractable` opens the screen from a hub/world interactable.
 - `EncyclopediaBookAssetPostprocessor` keeps encyclopedia book PNG imports on point-filtered Sprite settings. `EncyclopediaV1AssetBuilder` applies EarthTome 48x40 slicing before it wires generated prefabs.
 - `EncyclopediaV1AssetBuilder` is editor-only support for generating the temporary catalog, popup prefab, and stand prefab. It is not the current `GlobalUIRoot` repair path and should not add legacy `EncyclopediaLeftPageView` or `EncyclopediaDetailPanel` presenters to new generated item UI.
+
+The current authored Item visibility boundary is `ItemPageContent`: the existing scroll panel, fixed bottom description shortcut and centered unknown-item message. `SetContentVisible` toggles this wrapper without changing the current detail/unknown state. `descriptionRoot` points to the whole `StoryTextPanel`, so hidden relic stories leave no empty border. `EncyclopediaLayoutAuthoring.Apply` runs after the legacy creature/skin authoring. [Current layout evidence](../../../outputs/encyclopedia-layout-2026-11-01/README.md).
 
 ## Key Files
 
@@ -83,7 +106,7 @@ This is a fast structure map, not a final Architecture or Contract document.
 - Monster entries own encyclopedia-facing `id`, `displayName`, `image`, `type`, `attackStyle`, `stageText`, `storyText`, and connected source prefab.
 - Boss entries own the same encyclopedia-facing fields plus optional `NPCData`.
 - Boss affection display reads current state from `AffectionManager.GetAffection(npcId)` and reward rows from `NPCData.affectionRewards`.
-- All registered entries remain visible; discovery gating is deferred. Species kill totals now belong to the selected profile with run deltas committed at run end. See the creature extension below.
+- Entries remain selectable, but unacquired Weapons/Relics and unencountered Monsters/Bosses show black silhouettes and `???` in the left list; the right page shows only a centered localized not-acquired/not-encountered sentence. NPC/Consumable policy is unchanged. Additive profile/run discovery is separate from loot spawn unlocks. See [current discovery ownership](../EncyclopediaCreatureTabs.md#approved-skin-and-discovery-ownership-2026-11-01).
 
 ## Authoring And Editor Support
 
@@ -120,7 +143,7 @@ This is a fast structure map, not a final Architecture or Contract document.
 - When adding non-item sub-tabs, extend the page-title preset selection so each sub-tab can change both title text and title icon without changing the `TitleGroup` hierarchy.
 - Add final book visuals by replacing the generated screen prefab art/sprite arrays/materials while keeping serialized screen references.
 - Adjust final left-page grid layout in Unity by editing `EntryGridRoot` and `EncyclopediaEntrySlot.prefab`; do not reintroduce fixed serialized slot rows for new layout work.
-- Add release discovery by adding a save-owned discovered ID set and recording IDs from weapon acquisition, monster encounter, and boss encounter/defeat events.
+- Discovery is implemented through `EncyclopediaDiscoveryProgress`, successful inventory mutations and monster encounters; Bosses reuse their existing dialogue encounter/outcome records. Extend these producers for new acquisition paths, not the catalog or UI.
 - If discovery becomes source-of-truth behavior, promote the visibility rule to `Docs/Contracts/` or `Docs/Architecture/` before broad content work.
 
 ## Known Pitfalls
@@ -159,7 +182,7 @@ This is a fast structure map, not a final Architecture or Contract document.
 
 ## Promotion Candidate
 
-Not yet. Promote after the release discovery/save path is implemented and the authored prefab has been validated in play mode.
+Candidate after the 2026-11-01 discovery/save integration: acquisition versus spawn-unlock semantics, legacy-save evidence and profile/run commit ownership. Promotion requires separate approval; Architecture/Contracts are unchanged.
 
 ## Creature Extension Ownership (2026-10-11)
 

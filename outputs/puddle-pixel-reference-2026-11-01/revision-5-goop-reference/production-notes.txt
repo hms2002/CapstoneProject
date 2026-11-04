@@ -1,0 +1,71 @@
+Puddle references revision 5 — Goop visual reference
+
+Scope: standalone visual samples, authored through Aseprite 1.3.18.6 Lua.
+No Unity source, asset, scene, prefab, material or settings were changed.
+Prior revisions are preserved.
+
+Reference supplied by the user:
+https://enterthegungeon.wiki.gg/wiki/Goop
+Static examples inspected in the browser:
+https://enterthegungeon.wiki.gg/wiki/File:Water.png
+https://enterthegungeon.wiki.gg/wiki/File:Fire_State.png
+https://enterthegungeon.wiki.gg/wiki/File:Napalm.png
+The reference suggests a thin liquid surface, visible floor beneath it, and
+scattered combustion accents. These are original sample pixels; reference
+images were not copied into the assets. Reference animation was not observed.
+Timings, ignition spread and particle motion below are proposals for this game.
+
+Changes from revision 4:
+- Beer retains bright gold and cream foam, with subtle translucency in liquid.
+- Removed thick yellow combustion ribbons. Fire uses a thin red-brown liquid
+  substrate, seven small flat combustion patches and intermittent hot pixels.
+- Upright flames remain a separate particle sprite. The preview staggers four
+  emitters, with proposed upward motion and drift; it is not a ParticleSystem.
+- All ground frames retain the same nonzero footprint and pivot. Alpha values
+  intentionally changed; neither binary nor unchanged alpha is claimed.
+
+Native sources and timing:
+beer.aseprite: 64x64, 4 frames x 160 ms, 8 visible RGBA colors.
+fire-surface.aseprite: 64x64, 6 frames x 80 ms, 7 visible RGBA colors.
+beer-to-fire.aseprite: 64x64, 8 frames x 80 ms, 15 visible RGBA colors.
+flame-particle.aseprite: 16x16, 6 frames x 80 ms, 3 visible opaque colors;
+  last frame fully transparent, pivot (8,14).
+puddle-cycle.aseprite: 64x64, 18 frames, four editable layers;
+  BeerIdle 1-4, Ignite 5-12, FireLoop 13-18, ground pivot (32,32).
+The final ignition frame equals the first standalone fire frame. The combined
+FireLoop starts with standalone fire frame 2 to avoid a duplicate-frame hold.
+Ignition currently spreads from the left; contact-dependent direction remains
+an integration decision.
+
+Exports:
+*-frame-N.png and *-sheet.png preserve source RGBA, including partial alpha.
+Ground GIFs are composited onto a neutral review floor because GIF cannot
+preserve partial alpha. The particle GIF retains binary transparency.
+comparison-preview.gif: left beer / middle ignition / right fire + particles;
+  960x320, exact 4x pixel scale, 3840 ms demonstration cycle.
+ignition-preview.gif: enlarged transition demonstration, 3840 ms.
+surface-only-preview.gif: ground combustion without rising particles, 480 ms.
+all-frames-2x.png and particle-frames-6x.png: static frame contact sheets.
+The review floor and compositions are not Unity captures.
+
+Layer editing:
+Source layers have disjoint pixel coverage to preserve the intended RGBA
+palette without repeated partial-alpha blending. Hiding an upper layer can
+expose a hole, rather than an underpainted lower layer.
+
+Reproducibility and verification:
+author-puddles.lua produces the native sources and exports in Aseprite.
+verify-native.lua reopens saved assets and verifies native structure/exports.
+native-verification.txt: 184 checks passed; Aseprite process exit code 0.
+export-verification.json: dimensions, palette/alpha, GIF durations, fixed
+  ground occupancy and integer scaling passed. Source-to-PNG pixels are exact.
+GIF review color conversion has maximum channel difference 1/255.
+Ignition coverage increases: 0,78,266,553,949,1359,1602,1625 pixels.
+Preview and frame contact sheets visually inspected.
+
+Remaining acceptance:
+Unity import, compilation, Play Mode and actual game-camera acceptance were
+not executed. Actual floor readability, world size/PPU, particle emission and
+contact-directed ignition remain integration work.
+Doc Impact Check: SessionLog only; ErrorLog/DecisionLog/StructureMemory unchanged;
+no identified Presentation HTML stale candidate.

@@ -1,0 +1,17 @@
+{
+  "native-comparison": {
+    "frames": 80,
+    "duration_ms": 3200,
+    "max_channel_error": 1
+  },
+  "native-center-ignition": {
+    "frames": 21,
+    "duration_ms": 2160,
+    "max_channel_error": 1
+  },
+  "saves_unchanged": {
+    "GameSave_Slot1.json": true,
+    "GameSave_Slot2.json": true,
+    "GameSave_Slot3.json": true
+  }
+}

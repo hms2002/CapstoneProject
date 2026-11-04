@@ -1,0 +1,24 @@
+687: Reloading assemblies for play mode.
+740: SearchTask 'Update' thread did not stop within 5 seconds.
+747: UnityEditor.Search.SearchTask`1<UnityEditor.Search.TaskData>:WaitForAllThreads ()
+748: UnityEditor.Search.SearchTask`1<UnityEditor.Search.TaskData>:CancelImmediate ()
+749: UnityEditor.Search.SearchTask`1<UnityEditor.Search.TaskData>:OnBeforeAssemblyReload ()
+750: UnityEditor.AssemblyReloadEvents:OnBeforeAssemblyReload ()
+765: 	  at UnityEditor.Search.LMDBIndexStorage:Internal_MergeArtifacts_Injected <0x00094>
+766: 	  at UnityEditor.Search.LMDBIndexStorage:Internal_MergeArtifacts <0x0006a>
+767: 	  at UnityEditor.Search.LMDBIndexStorage:MergeArtifacts <0x00102>
+768: 	  at UnityEditor.Search.SearchDatabase:MergeArtifacts <0x0024a>
+971: 0x00007FF9529DC18D (Unity) mdb_cursor_sibling
+972: 0x00007FF9529DB94C (Unity) mdb_cursor_prev
+973: 0x00007FF9529DB11E (Unity) mdb_cursor_get
+974: 0x00007FF9526E5822 (Unity) LMDB_Enumerator::Next
+975: 0x00007FF9528B7EE7 (Unity) LMDBIndexStorage::RemoveDocuments
+977: 0x00007FF9526E679A (Unity) LMDB_Transaction::Run
+978: 0x00007FF9528B7544 (Unity) LMDBIndexStorage::MergeArtifactsBatch
+979: 0x00007FF9528B70FF (Unity) LMDBIndexStorageBindings::MergeArtifacts
+980: 0x00007FF9528A0914 (Unity) LMDBIndexStorage_CUSTOM_Internal_MergeArtifacts
+981: 0x0000022BD8255AB5 (Mono JIT Code) (wrapper managed-to-native) UnityEditor.Search.LMDBIndexStorage:Internal_MergeArtifacts_Injected (intptr,string[],string[],int,int,intptr)
+982: 0x0000022BD82559BB (Mono JIT Code) UnityEditor.Search.LMDBIndexStorage:Internal_MergeArtifacts (intptr,string[],string[],int,int,UnityEditor.Search.SearchCancellationToken)
+983: 0x0000022BD82541D3 (Mono JIT Code) UnityEditor.Search.LMDBIndexStorage:MergeArtifacts (string[],string[],int,UnityEditor.Search.SearchTask`1<UnityEditor.Search.TaskData>)
+984: 0x0000022BD8253D5B (Mono JIT Code) UnityEditor.Search.SearchDatabase:MergeArtifacts (UnityEditor.Search.SearchDatabase/IndexArtifact[],UnityEditor.Search.SearchTask`1<UnityEditor.Search.TaskData>,UnityEditor.Search.AssetIndexChangeSet)
+986: 0x0000022B6DAB8196 (Mono JIT Code) UnityEditor.Search.SearchTask`1/<>c__DisplayClass54_0<T_REF>:<RunThread>b__0 (object)

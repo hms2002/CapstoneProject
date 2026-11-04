@@ -1,0 +1,21 @@
+{
+  "documentation_links_checked": 149,
+  "missing_links": [],
+  "native_png_count": 31,
+  "tests": {
+    "playmode-final-results.xml": {
+      "result": "Passed",
+      "total": "30",
+      "passed": "30",
+      "failed": "0",
+      "duration": "73.3208612"
+    },
+    "playmode-handoff-results.xml": {
+      "result": "Passed",
+      "total": "1",
+      "passed": "1",
+      "failed": "0",
+      "duration": "26.9202619"
+    }
+  }
+}

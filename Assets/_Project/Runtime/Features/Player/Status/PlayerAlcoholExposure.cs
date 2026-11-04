@@ -12,7 +12,7 @@ namespace UnityGAS
     {
         private const int SpiriNpcId = 2001;
         private const string AlcoholOwnerKey = "Puddle.Alcohol";
-        private const float ChargeSeconds = 3f;
+        private const float ChargeSeconds = 2f;
         private const float DrainSeconds = 1.5f;
         private const float EffectSeconds = 5f;
         private const float RefreshSeconds = 0.2f;
@@ -29,7 +29,9 @@ namespace UnityGAS
         private float drainElapsed;
         private float refreshElapsed;
 
-        public float FillAmount => Mathf.Clamp01(chargedSeconds / ChargeSeconds);
+        private float RequiredChargeSeconds => HasSpiriReward() ? ChargeSeconds * 0.5f : ChargeSeconds;
+
+        public float FillAmount => Mathf.Clamp01(chargedSeconds / RequiredChargeSeconds);
         public bool IsOverflowing { get; private set; }
         public bool IsDraining { get; private set; }
         public bool HasAlcoholContact => contactingPuddles.Count > 0;
@@ -72,11 +74,12 @@ namespace UnityGAS
 
             if (HasAlcoholContact)
             {
-                float timeToOverflow = ChargeSeconds - chargedSeconds;
-                chargedSeconds = Mathf.Min(ChargeSeconds, chargedSeconds + deltaTime);
+                float requiredChargeSeconds = RequiredChargeSeconds;
+                float timeToOverflow = Mathf.Max(0f, requiredChargeSeconds - chargedSeconds);
+                chargedSeconds = Mathf.Min(requiredChargeSeconds, chargedSeconds + deltaTime);
                 if (!IsOverflowing && deltaTime > timeToOverflow)
                 {
-                    chargedSeconds = ChargeSeconds;
+                    chargedSeconds = requiredChargeSeconds;
                     IsOverflowing = true;
                     RefreshOverflowEffect();
                     deltaTime = Mathf.Max(0f, deltaTime - timeToOverflow);

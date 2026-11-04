@@ -77,6 +77,9 @@ public sealed class MerchantNPC : MonoBehaviour
     private MerchantRuntimeState runtimeState;
     private MerchantRefreshInteractable[] refreshInteractables;
     private RunModifierService subscribedRunModifierService;
+    private WeaponInventory2D subscribedWeaponInventory;
+    private RelicInventory subscribedRelicInventory;
+    private bool stockValidationPending;
     private bool hasLoggedMissingDefinition;
     private int nextPurchaseSuccessSpeechIndex;
 
@@ -130,17 +133,30 @@ public sealed class MerchantNPC : MonoBehaviour
     private void OnEnable()
     {
         SubscribeToRunModifierService();
+        PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
+        PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
+        TreasureChest.WorldStateChanged += HandleChestWorldStateChanged;
+        BindPlayerInventories(
+            PlayerRuntimeRegistry.GetPlayerComponent<WeaponInventory2D>(),
+            PlayerRuntimeRegistry.GetPlayerComponent<RelicInventory>());
         RefreshRefreshInteractables();
     }
 
     private void OnDisable()
     {
         UnsubscribeFromRunModifierService();
+        PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
+        PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
+        TreasureChest.WorldStateChanged -= HandleChestWorldStateChanged;
+        BindPlayerInventories(null, null);
     }
 
     private void Start()
     {
         SubscribeToRunModifierService();
+        BindPlayerInventories(
+            PlayerRuntimeRegistry.GetPlayerComponent<WeaponInventory2D>(),
+            PlayerRuntimeRegistry.GetPlayerComponent<RelicInventory>());
         InitializeStock();
     }
 
@@ -148,6 +164,9 @@ public sealed class MerchantNPC : MonoBehaviour
     {
         if (subscribedRunModifierService == null && SubscribeToRunModifierService())
             InitializeStock();
+
+        if (stockValidationPending)
+            ReconcileStock();
     }
 
     public void TryPurchase(int slotIndex, IPlayerInteractor player)
@@ -157,6 +176,12 @@ public sealed class MerchantNPC : MonoBehaviour
             return;
 
         if (!TryGetSlotEntry(slotIndex, out MerchantStockEntryState slotEntry, out ScriptableObject itemDefinition))
+            return;
+
+        // An inventory change may arrive before this frame's stock update. Never
+        // buy a replacement item using the click intended for the old display.
+        ReconcileStock();
+        if (!ReferenceEquals(slotEntry, runtimeState.slots[slotIndex]))
             return;
 
         MerchantPurchaseResult result = purchaseService.TryPurchase(player, slotEntry, itemDefinition, UsesRunGold);
@@ -196,7 +221,10 @@ public sealed class MerchantNPC : MonoBehaviour
         runtimeState = runStateService.GetOrCreateState(
             StockStateId,
             policy.VisibleSlotCount,
-            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries, excludedEntries?.Count ?? 0, policy.Modifiers));
+            (slotCount, excludedEntries) => RollStock(
+                slotCount, policy.EffectivePriceSettings, excludedEntries,
+                excludedEntries?.Count ?? 0, policy.Modifiers, retainedEntries: excludedEntries));
+        ReconcileStock();
         ApplyEffectivePrices(runtimeState, policy);
 
         BindSlots();
@@ -276,6 +304,74 @@ public sealed class MerchantNPC : MonoBehaviour
     private void HandleRunModifiersChanged()
     {
         InitializeStock();
+    }
+
+    private void HandlePlayerRegistered(PlayerInteractor2D player)
+    {
+        BindPlayerInventories(player.GetComponent<WeaponInventory2D>(), player.GetComponent<RelicInventory>());
+    }
+
+    private void HandlePlayerUnregistered(PlayerInteractor2D player)
+    {
+        if ((subscribedWeaponInventory != null && subscribedWeaponInventory.gameObject == player.gameObject) ||
+            (subscribedRelicInventory != null && subscribedRelicInventory.gameObject == player.gameObject))
+            BindPlayerInventories(null, null);
+    }
+
+    private void BindPlayerInventories(WeaponInventory2D weapons, RelicInventory relics)
+    {
+        if (subscribedWeaponInventory != null)
+            subscribedWeaponInventory.OnInventoryChanged -= HandlePlayerInventoryChanged;
+        if (subscribedRelicInventory != null)
+            subscribedRelicInventory.OnChanged -= HandlePlayerInventoryChanged;
+
+        subscribedWeaponInventory = weapons;
+        subscribedRelicInventory = relics;
+        if (subscribedWeaponInventory != null)
+            subscribedWeaponInventory.OnInventoryChanged += HandlePlayerInventoryChanged;
+        if (subscribedRelicInventory != null)
+            subscribedRelicInventory.OnChanged += HandlePlayerInventoryChanged;
+
+        stockValidationPending = true;
+    }
+
+    private void HandlePlayerInventoryChanged()
+    {
+        // Acquisition emits this event before TryPurchase marks the slot sold.
+        // Defer reconciliation until the purchase has finished committing.
+        stockValidationPending = true;
+    }
+
+    private void HandleChestWorldStateChanged(TreasureChest chest)
+    {
+        stockValidationPending = true;
+    }
+
+    private void ReconcileStock()
+    {
+        stockValidationPending = false;
+        if (runtimeState == null ||
+            (subscribedWeaponInventory == null && subscribedRelicInventory == null) || ItemManager.Instance == null)
+            return;
+
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        if (!policy.IsAvailable)
+            return;
+
+        HashSet<string> excludedWeaponIds = lootPoolService.BuildWeaponExclusionSet(LootPoolContext.ShopStock);
+        bool changed = runStateService.ReconcileStock(
+            runtimeState,
+            entry => (entry.kind == InventoryItemKind.Weapon && excludedWeaponIds.Contains(entry.itemId)) ||
+                     (entry.kind == InventoryItemKind.Relic && entry.ResolveDefinition() is RelicDefinition relic &&
+                      !LootPoolItemSelectionService.CanGainRelicLevels(relic, subscribedRelicInventory)),
+            (slotIndex, retainedEntries) => RollStock(
+                1, policy.EffectivePriceSettings, retainedEntries, slotIndex, policy.Modifiers,
+                retainedEntries: retainedEntries, excludedWeaponIds: excludedWeaponIds)[0]);
+        if (!changed)
+            return;
+
+        ApplyEffectivePrices(runtimeState, policy);
+        RefreshAllSlots();
     }
 
     private bool SubscribeToRunModifierService()
@@ -383,7 +479,9 @@ public sealed class MerchantNPC : MonoBehaviour
         MerchantPriceSettings effectivePriceSettings,
         IReadOnlyCollection<MerchantStockEntryState> excludedEntries,
         int startSlotIndex,
-        ShopRunModifierDelta modifiers)
+        ShopRunModifierDelta modifiers,
+        IReadOnlyCollection<MerchantStockEntryState> retainedEntries = null,
+        IReadOnlyCollection<string> excludedWeaponIds = null)
     {
         var entries = shopDefinition != null
             ? inventoryRoll.RollStock(
@@ -392,12 +490,13 @@ public sealed class MerchantNPC : MonoBehaviour
                 shopDefinition.MaxWeaponSlots,
                 shopDefinition.MaxConsumableSlots,
                 effectivePriceSettings,
-                lootPoolService.BuildWeaponExclusionSet(LootPoolContext.ShopStock),
+                excludedWeaponIds ?? lootPoolService.BuildWeaponExclusionSet(LootPoolContext.ShopStock),
                 excludedEntries,
                 BuildSlotFilters(slotCount, startSlotIndex),
                 consumablesOnlyInDedicatedSlots: UsesRunGold,
                 rareRelicWeightBonus: modifiers.rareRelicWeightBonus,
-                epicRelicWeightBonus: modifiers.epicRelicWeightBonus)
+                epicRelicWeightBonus: modifiers.epicRelicWeightBonus,
+                retainedEntries: retainedEntries)
             : new List<MerchantStockEntryState>();
         if (UsesRunGold)
             foreach (var entry in entries)

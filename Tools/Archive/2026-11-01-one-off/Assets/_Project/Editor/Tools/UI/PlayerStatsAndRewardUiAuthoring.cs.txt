@@ -1,0 +1,429 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using TMPro;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
+
+/// <summary>Applies only the user-approved stats, potion and shared reward skins.</summary>
+public static class PlayerStatsAndRewardUiAuthoring
+{
+    public const string Art = "Assets/_Project/Art/Sprites/UI/ApprovedUiSkin/";
+    public const string Global = "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab";
+    public const string Stats = "Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/";
+    public const string PotionPath = "GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD";
+    public const string RewardPath = "RewardCanvas/RewardPanel";
+    static readonly Color Gold = new Color32(255, 190, 0, 255);
+    static readonly Dictionary<string, Sprite> sprites = new();
+    static readonly List<Action> textStyles = new();
+
+    public static void Apply()
+    {
+        if (EditorApplication.isPlayingOrWillChangePlaymode)
+            throw new InvalidOperationException("Author in Edit Mode.");
+        ImportSheet("PlayerStatsPotionSkin.png", 96, new[]
+        {
+            Slice("stat_panel", 0, 0, 32, 32, 2, 96),
+            Slice("stat_row", 36, 0, 16, 16, 0, 96),
+            Slice("stat_divider", 36, 20, 16, 2, 0, 96),
+            Slice("potion_slot", 0, 40, 50, 50, 2, 96),
+            Slice("key_badge", 56, 40, 16, 14, 1, 96)
+        });
+        ImportSheet("RewardPopupSkin.png", 128, new[]
+        {
+            Slice("reward_panel", 0, 0, 128, 128, 32, 128),
+            Slice("reward_crest", 136, 0, 48, 20, 0, 128),
+            Slice("reward_icon", 136, 28, 48, 48, 12, 128),
+            Slice("reward_button", 192, 28, 48, 32, 6, 128),
+            Slice("reward_divider", 136, 84, 32, 2, 0, 128)
+        });
+        Edit(Stats + "PlayerStatRowView.prefab", StyleStatRow);
+        Edit(Stats + "PlayerStatSectionView.prefab", StyleStatSection);
+        Edit(Stats + "PlayerStatUI.prefab", StyleStatPanel);
+        Edit("Assets/_Project/Prefabs/UI/EffectSlotUI.prefab", root => StyleRewardSlot(root, "GameObject"));
+        Edit("Assets/_Project/Prefabs/UI/UnlockSlotUI.prefab", root => StyleRewardSlot(root, "ItemImage"));
+        Edit(Global, root =>
+        {
+            StylePotion(Required<RectTransform>(root.transform, PotionPath));
+            StyleReward(Required<RectTransform>(root.transform, RewardPath));
+        }, PotionPath, RewardPath);
+        ApplyStatDefinitions();
+        Unity.CodeEditor.CodeEditor.CurrentEditor.SyncAll();
+        Debug.Log("APPROVED_UI_SKIN_AUTHORING_PASS: two sheets, six scoped prefabs.");
+    }
+
+    /// <summary>Apply the approved stats revision without reauthoring potion/reward/global UI.</summary>
+    public static void ApplyStatRevision()
+    {
+        if (EditorApplication.isPlayingOrWillChangePlaymode)
+            throw new InvalidOperationException("Author in Edit Mode.");
+        foreach (Sprite sprite in AssetDatabase.LoadAllAssetsAtPath(Art + "PlayerStatsPotionSkin.png").OfType<Sprite>())
+            sprites[sprite.name] = sprite;
+        ApplyStatDefinitions();
+        Edit(Stats + "PlayerStatRowView.prefab", StyleStatRow);
+        Debug.Log("APPROVED_STATS_REVISION_AUTHORING_PASS: Basic7 / Other6, percent attack speed, 38px rows.");
+    }
+
+    static void ApplyStatDefinitions()
+    {
+        const string definitions = "Assets/_Project/Data/UI/StatDisplays/";
+        SetSection("PS_Section_BasicStats", new[] { "HP", "Attack", "MoveSpeed", "AttackSpeed", "CritChance", "CritDamage", "Evasion" });
+        SetSection("PS_Section_CombatStats", new[] { "ElementDamage", "BleedDamage", "PoisonDamage", "ElectricDamage", "SkillDamage", "NormalDamage" }, "기타 능력치");
+        var speed = new SerializedObject(AssetDatabase.LoadAssetAtPath<StatInfoUIDefinition>(definitions + "PS_StatInfo_AttackSpeed.asset"));
+        speed.FindProperty("displayFormat").intValue = (int)PlayerStatDisplayFormat.Percent;
+        speed.FindProperty("valueMultiplier").floatValue = 100;
+        speed.FindProperty("decimalPlaces").intValue = 0;
+        speed.ApplyModifiedPropertiesWithoutUndo();
+        AssetDatabase.SaveAssetIfDirty(speed.targetObject);
+
+        var section = AssetDatabase.LoadAssetAtPath<StatSectionDefinition>(definitions + "PS_Section_CombatStats.asset");
+        string key = GameText.AssetKey(section, "title");
+        foreach (var translation in new[] { ("ko", "기타 능력치"), ("en", "Other Stats"), ("ja", "その他の能力値"),
+                     ("zh-Hans", "其他属性"), ("zh-Hant", "其他屬性") })
+        {
+            var table = AssetDatabase.LoadAssetAtPath<UnityEngine.Localization.Tables.StringTable>(
+                "Assets/_Project/Data/Localization/GameText_" + translation.Item1 + ".asset");
+            var entry = table.GetEntry(key) ?? throw new InvalidOperationException("Missing section title: " + key);
+            entry.Value = translation.Item2;
+            EditorUtility.SetDirty(table);
+            AssetDatabase.SaveAssetIfDirty(table);
+        }
+
+        void SetSection(string name, string[] stats, string title = null)
+        {
+            var serialized = new SerializedObject(AssetDatabase.LoadAssetAtPath<StatSectionDefinition>(definitions + name + ".asset"));
+            var entries = serialized.FindProperty("entries");
+            entries.arraySize = stats.Length;
+            for (int i = 0; i < stats.Length; i++)
+                entries.GetArrayElementAtIndex(i).objectReferenceValue = AssetDatabase.LoadAssetAtPath<StatInfoUIDefinition>(definitions + "PS_StatInfo_" + stats[i] + ".asset")
+                    ?? throw new InvalidOperationException("Missing stat definition: " + stats[i]);
+            if (title != null) serialized.FindProperty("title").stringValue = title;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            AssetDatabase.SaveAssetIfDirty(serialized.targetObject);
+        }
+    }
+
+#pragma warning disable CS0618
+    static SpriteMetaData Slice(string name, int x, int y, int w, int h, int border, int sheetHeight)
+        => new() { name = name, rect = new Rect(x, sheetHeight - y - h, w, h),
+            pivot = Vector2.one * .5f, alignment = (int)SpriteAlignment.Center,
+            border = Vector4.one * border };
+
+    static void ImportSheet(string name, int height, SpriteMetaData[] definitions)
+    {
+        string path = Art + name;
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+        var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+        importer.textureType = TextureImporterType.Sprite;
+        importer.spriteImportMode = SpriteImportMode.Multiple;
+        importer.spritePixelsPerUnit = 100;
+        importer.filterMode = FilterMode.Point;
+        importer.mipmapEnabled = false;
+        importer.textureCompression = TextureImporterCompression.Uncompressed;
+        importer.alphaIsTransparency = true;
+        importer.npotScale = TextureImporterNPOTScale.None;
+        importer.wrapMode = TextureWrapMode.Clamp;
+        importer.sRGBTexture = true;
+        var settings = new TextureImporterSettings();
+        importer.ReadTextureSettings(settings);
+        settings.spriteMeshType = SpriteMeshType.FullRect;
+        importer.SetTextureSettings(settings);
+        importer.spritesheet = definitions;
+        importer.SaveAndReimport();
+        var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        if (texture == null || texture.height != height) throw new InvalidDataException(path);
+        foreach (Sprite sprite in AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>())
+            sprites[sprite.name] = sprite;
+        foreach (SpriteMetaData definition in definitions)
+            if (!sprites.TryGetValue(definition.name, out Sprite sprite) || sprite.rect != definition.rect ||
+                sprite.border != definition.border) throw new InvalidDataException("Slice mismatch: " + definition.name);
+    }
+#pragma warning restore CS0618
+
+    static void Edit(string path, Action<GameObject> apply, params string[] subtrees)
+    {
+        // Neither approved GlobalUIRoot subtree is a nested prefab instance.
+        // Snapshot the disk form before OnEnable can fill missing localization
+        // material overrides on unrelated nested screens during native loading.
+        string original = path == Global ? File.ReadAllText(path) : null;
+        GameObject persistent = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+        var preservation = UiPrefabPresentationPreservation.Capture(persistent, subtrees);
+        GameObject root = PrefabUtility.LoadPrefabContents(path);
+        textStyles.Clear();
+        try
+        {
+            preservation.BindLoadedRoot(root);
+            apply(root);
+            preservation.RestoreBeforeSave();
+            // Preserve authored font/material references, then restore only approved sizes.
+            foreach (Action style in textStyles) style();
+            PrefabUtility.SaveAsPrefabAsset(root, path);
+        }
+        finally
+        {
+            textStyles.Clear();
+            PrefabUtility.UnloadPrefabContents(root);
+        }
+        if (original != null)
+        {
+            var nested = Regex.Split(original, @"(?=^--- !u!)", RegexOptions.Multiline)
+                .Where(block => block.StartsWith("--- !u!1001 "))
+                .ToDictionary(block => block.Split('\n')[0].TrimEnd('\r'));
+            string[] blocks = Regex.Split(File.ReadAllText(path), @"(?=^--- !u!)", RegexOptions.Multiline);
+            for (int i = 0; i < blocks.Length; i++)
+                if (nested.TryGetValue(blocks[i].Split('\n')[0].TrimEnd('\r'), out string saved)) blocks[i] = saved;
+            File.WriteAllText(path, string.Concat(blocks), new System.Text.UTF8Encoding(false));
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+        }
+    }
+
+    static void StyleStatPanel(GameObject root)
+    {
+        Skin(root.GetComponent<Image>(), "stat_panel");
+        var layout = root.GetComponent<VerticalLayoutGroup>();
+        layout.padding = new RectOffset(24, 24, 24, 48);
+        layout.spacing = 26;
+        layout.childAlignment = TextAnchor.UpperCenter;
+        layout.childControlWidth = layout.childControlHeight = true;
+        layout.childForceExpandWidth = layout.childForceExpandHeight = false;
+        var fitter = root.GetComponent<ContentSizeFitter>();
+        fitter.horizontalFit = fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+    }
+
+    static void StyleStatSection(GameObject root)
+    {
+        root.GetComponent<Image>().enabled = false;
+        root.transform.Find("backgroundPanel").GetComponent<Image>().enabled = false;
+        var layout = root.GetComponent<VerticalLayoutGroup>();
+        layout.padding = new RectOffset();
+        layout.spacing = 6;
+        layout.childAlignment = TextAnchor.UpperCenter;
+        layout.childControlWidth = layout.childControlHeight = true;
+        layout.childForceExpandWidth = layout.childForceExpandHeight = false;
+        root.GetComponent<ContentSizeFitter>().enabled = false;
+        var size = Ensure<LayoutElement>(root);
+        size.preferredWidth = 342;
+        size.flexibleWidth = 1;
+        TMP_Text title = Required<TMP_Text>(root.transform, "Text_Title");
+        Text(title, 18, TextAlignmentOptions.MidlineLeft, Gold);
+        Layout(title.gameObject, 342, 28, 1);
+        RectTransform divider = Child(root.transform, "SectionDivider");
+        Skin(Ensure<Image>(divider.gameObject), "stat_divider", false);
+        Layout(divider.gameObject, 342, 2, 1);
+        divider.SetAsLastSibling();
+    }
+
+    static void StyleStatRow(GameObject root)
+    {
+        Skin(root.GetComponent<Image>(), "stat_row", false);
+        ((RectTransform)root.transform).sizeDelta = new Vector2(342, 38);
+        Layout(root, 342, 38, 1);
+        var layout = root.GetComponent<HorizontalLayoutGroup>();
+        layout.padding = new RectOffset(8, 8, 0, 0);
+        layout.spacing = 0;
+        layout.childAlignment = TextAnchor.MiddleLeft;
+        layout.childControlWidth = layout.childControlHeight = true;
+        layout.childForceExpandWidth = layout.childForceExpandHeight = false;
+        root.GetComponent<ContentSizeFitter>().enabled = false;
+        // All thirteen authored definitions have no icon. Keep the binding/object,
+        // but remove the old empty icon column from this approved text-only skin.
+        root.transform.Find("Image_Icon").gameObject.SetActive(false);
+        TMP_Text label = Required<TMP_Text>(root.transform, "Text_Label");
+        TMP_Text value = Required<TMP_Text>(root.transform, "Text_Value");
+        Text(label, 18, TextAlignmentOptions.MidlineLeft, Color.white, 12);
+        Text(value, 18, TextAlignmentOptions.MidlineRight, Color.white, 12);
+        Layout(label.gameObject, 0, 38, 1);
+        Layout(value.gameObject, 136, 38, 0);
+    }
+
+    static void StyleRewardSlot(GameObject root, string iconName)
+    {
+        Skin(Ensure<Image>(root), "reward_icon");
+        root.GetComponent<Image>().raycastTarget = root.GetComponent<UnlockSlotUI>() != null;
+        ((RectTransform)root.transform).sizeDelta = Vector2.one * 96;
+        Layout(root, 96, 96, 0);
+        Image icon = Required<Image>(root.transform, iconName);
+        Center(icon.rectTransform, new Vector2(80, 80));
+        icon.type = Image.Type.Simple;
+        icon.preserveAspect = true;
+        icon.color = Color.white;
+        icon.raycastTarget = false;
+    }
+
+    static void StylePotion(RectTransform hud)
+    {
+        hud.GetComponent<Image>().enabled = false;
+        for (int i = 1; i <= 4; i++)
+        {
+            RectTransform slot = Required<RectTransform>(hud, "ConsumableUI (" + i + ")");
+            Skin(slot.GetComponent<Image>(), "potion_slot");
+            Image icon = Required<Image>(slot, "Icon");
+            Center(icon.rectTransform, Vector2.one * 36);
+            icon.type = Image.Type.Simple;
+            icon.preserveAspect = true;
+            icon.raycastTarget = false;
+            icon.transform.SetAsFirstSibling();
+            RectTransform badge = Child(slot, "KeyGuideFrame");
+            BottomRight(badge, new Vector2(16, 14));
+            Skin(Ensure<Image>(badge.gameObject), "key_badge");
+            badge.SetAsLastSibling();
+            TMP_Text key = Required<TMP_Text>(slot, "KeyGuideText");
+            BottomRight(key.rectTransform, new Vector2(16, 14));
+            Text(key, 9, TextAlignmentOptions.Center, Color.white);
+            key.transform.SetAsLastSibling();
+        }
+    }
+
+    static void StyleReward(RectTransform panel)
+    {
+        panel.GetComponent<VerticalLayoutGroup>().enabled = false;
+        RectTransform card = Required<RectTransform>(panel, "RewardUI");
+        RectTransform title = (RectTransform)(card.Find("TitleText") ?? panel.Find("TitleText"));
+        RectTransform description = (RectTransform)(card.Find("ContextText") ?? panel.Find("ContextText"));
+        RectTransform button = (RectTransform)(card.Find("Button") ?? panel.Find("Button"));
+        RectTransform slots = Required<RectTransform>(card, "SlotParent");
+        Skin(card.GetComponent<Image>(), "reward_panel");
+        Center(card, new Vector2(564, 420));
+        // Replace this one obsolete horizontal layout, preserving all existing
+        // content objects and their serialized presenter/button references.
+        var oldLayout = card.GetComponent<HorizontalLayoutGroup>();
+        if (oldLayout != null) Object.DestroyImmediate(oldLayout);
+        var layout = Ensure<VerticalLayoutGroup>(card.gameObject);
+        layout.padding = new RectOffset(56, 56, 38, 38);
+        layout.spacing = 0;
+        layout.childAlignment = TextAnchor.UpperCenter;
+        layout.childControlWidth = layout.childControlHeight = true;
+        layout.childForceExpandWidth = layout.childForceExpandHeight = false;
+        var fitter = card.GetComponent<ContentSizeFitter>();
+        fitter.horizontalFit = fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        title.SetParent(card, false);
+        description.SetParent(card, false);
+        button.SetParent(card, false);
+        Text(title.GetComponent<TMP_Text>(), 27, TextAlignmentOptions.Top, Gold, 18);
+        Layout(title.gameObject, 452, 60, 1);
+        RectTransform divider = Child(card, "HeaderDivider");
+        Skin(Ensure<Image>(divider.gameObject), "reward_divider", false);
+        Layout(divider.gameObject, 452, 2, 1);
+        RectTransform beforeSlots = Space(card, "BeforeRewards", 32);
+        var slotLayout = slots.GetComponent<HorizontalLayoutGroup>();
+        slotLayout.padding = new RectOffset();
+        slotLayout.spacing = 18;
+        slotLayout.childAlignment = TextAnchor.MiddleCenter;
+        slotLayout.childControlWidth = slotLayout.childControlHeight = true;
+        slotLayout.childForceExpandWidth = slotLayout.childForceExpandHeight = false;
+        slots.GetComponent<ContentSizeFitter>().enabled = false;
+        var slotSize = Ensure<LayoutElement>(slots.gameObject);
+        slotSize.minHeight = slotSize.preferredHeight = 96;
+        slotSize.minWidth = 96; slotSize.preferredWidth = -1; slotSize.flexibleWidth = 1;
+        RectTransform afterSlots = Space(card, "AfterRewards", 24);
+        description.GetComponent<ContentSizeFitter>().enabled = false;
+        Text(description.GetComponent<TMP_Text>(), 18, TextAlignmentOptions.Top, Color.white);
+        description.GetComponent<TMP_Text>().textWrappingMode = TextWrappingModes.Normal;
+        LayoutElement bodySize = Layout(description.gameObject, 452, -1, 1);
+        bodySize.minHeight = 48;
+        RectTransform beforeButton = Space(card, "BeforeConfirm", 36);
+        Skin(button.GetComponent<Image>(), "reward_button");
+        button.GetComponent<Image>().raycastTarget = true;
+        Layout(button.gameObject, 188, 46, 0);
+        Text(button.GetComponentInChildren<TMP_Text>(true), 18, TextAlignmentOptions.Center, Color.white);
+        RectTransform crest = Child(card, "TopCrest");
+        crest.anchorMin = crest.anchorMax = new Vector2(.5f, 1);
+        crest.pivot = new Vector2(.5f, .5f); crest.anchoredPosition = new Vector2(0, 0);
+        crest.sizeDelta = new Vector2(48, 20);
+        Skin(Ensure<Image>(crest.gameObject), "reward_crest", false);
+        Ensure<LayoutElement>(crest.gameObject).ignoreLayout = true;
+        Transform[] order = { title, divider, beforeSlots, slots, afterSlots, description, beforeButton, button, crest };
+        for (int i = 0; i < order.Length; i++) order[i].SetSiblingIndex(i);
+        // The existing RewardUI slide/fade now owns the whole composed card.
+        // Keep the other existing completion callbacks without double motion/fade.
+        foreach (RectTransform child in new[] { title, description, button })
+        {
+            var serialized = new SerializedObject(child.GetComponent<UISlideFadePresentation>());
+            serialized.FindProperty("openOffset").vector2Value = Vector2.zero;
+            serialized.FindProperty("closedAlpha").floatValue = 1;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+    }
+
+    static void Text(TMP_Text text, float size, TextAlignmentOptions align, Color color, float minimum = 0)
+    {
+        text.alignment = align;
+        text.color = color;
+        text.margin = Vector4.zero;
+        text.raycastTarget = false;
+        text.textWrappingMode = TextWrappingModes.NoWrap;
+        Action apply = () =>
+        {
+            text.enableAutoSizing = minimum > 0;
+            text.fontSize = size;
+            text.fontSizeMin = minimum > 0 ? minimum : size;
+            text.fontSizeMax = size;
+            EditorUtility.SetDirty(text);
+        };
+        apply();
+        textStyles.Add(apply);
+    }
+
+    static void Skin(Image image, string name, bool sliced = true)
+    {
+        image.enabled = true;
+        image.sprite = sprites[name];
+        image.type = sliced ? Image.Type.Sliced : Image.Type.Simple;
+        image.pixelsPerUnitMultiplier = 1;
+        image.color = Color.white;
+        image.raycastTarget = false;
+    }
+
+    static LayoutElement Layout(GameObject go, float w, float h, float flexibleWidth)
+    {
+        var size = Ensure<LayoutElement>(go);
+        size.ignoreLayout = false;
+        size.minWidth = 0; size.minHeight = 0;
+        size.preferredWidth = w; size.preferredHeight = h;
+        size.flexibleWidth = flexibleWidth; size.flexibleHeight = 0;
+        return size;
+    }
+
+    static RectTransform Space(Transform parent, string name, float height)
+    {
+        RectTransform result = Child(parent, name);
+        Layout(result.gameObject, 0, height, 0);
+        return result;
+    }
+
+    static RectTransform Child(Transform parent, string name)
+    {
+        RectTransform child = parent.Find(name) as RectTransform;
+        if (child != null) return child;
+        var go = new GameObject(name, typeof(RectTransform));
+        go.layer = parent.gameObject.layer;
+        go.transform.SetParent(parent, false);
+        return (RectTransform)go.transform;
+    }
+
+    static void Center(RectTransform rect, Vector2 size)
+    {
+        rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.one * .5f;
+        rect.anchoredPosition = Vector2.zero; rect.sizeDelta = size;
+        rect.localScale = Vector3.one;
+    }
+
+    static void BottomRight(RectTransform rect, Vector2 size)
+    {
+        rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(1, 0);
+        rect.anchoredPosition = new Vector2(-1, 1); rect.sizeDelta = size;
+    }
+
+    static T Ensure<T>(GameObject go) where T : Component
+        => go.GetComponent<T>() ?? go.AddComponent<T>();
+
+    static T Required<T>(Transform root, string path) where T : Component
+        => root.Find(path)?.GetComponent<T>() ?? throw new InvalidOperationException("Missing " + path);
+}
+#endif
+

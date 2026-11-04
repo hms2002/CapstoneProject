@@ -180,6 +180,9 @@ public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
         if (monster == null)
             return;
 
+        if (playerEncounterEntered)
+            MonsterEncyclopediaProgress.RecordEncounter(monster);
+
         CompactRuntimeLists();
 
         MonsterLockTrackingUnit unit = Mob.ResolveOrCreateLockTrackingUnit(monster);
@@ -269,6 +272,9 @@ public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
         }
 
         ActiveRoom = this;
+        foreach (MonsterLockTrackingUnit unit in runtimeSpawnedMonsterUnits)
+            if (unit != null && unit.TryGetAliveRepresentative(out GameObject monster))
+                MonsterEncyclopediaProgress.RecordEncounter(monster);
         ActiveRoomEntered?.Invoke(this);
     }
 

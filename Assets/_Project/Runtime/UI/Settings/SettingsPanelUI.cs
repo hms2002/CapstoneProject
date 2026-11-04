@@ -78,6 +78,7 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
     private bool isClosing;
     private bool suppressCallbacks;
     private bool hasStoredTemporaryCanvasState;
+    private float storedCanvasAlpha = 1f;
     private bool storedCanvasInteractable = true;
     private bool storedCanvasBlocksRaycasts = true;
     private int pendingWindowModeIndex;
@@ -221,7 +222,7 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
 
         isClosing = false;
         ApplyTemporaryHiddenState(false);
-        RefreshBindings();
+        // Returning from key settings keeps the current, unapplied display choices.
     }
 
     private void FinalizeClose()
@@ -255,11 +256,13 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
         {
             if (!hasStoredTemporaryCanvasState)
             {
+                storedCanvasAlpha = temporaryHiddenCanvasGroup.alpha;
                 storedCanvasInteractable = temporaryHiddenCanvasGroup.interactable;
                 storedCanvasBlocksRaycasts = temporaryHiddenCanvasGroup.blocksRaycasts;
                 hasStoredTemporaryCanvasState = true;
             }
 
+            temporaryHiddenCanvasGroup.alpha = 0f;
             temporaryHiddenCanvasGroup.interactable = false;
             temporaryHiddenCanvasGroup.blocksRaycasts = false;
             return;
@@ -268,6 +271,7 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
         if (!hasStoredTemporaryCanvasState)
             return;
 
+        temporaryHiddenCanvasGroup.alpha = storedCanvasAlpha;
         temporaryHiddenCanvasGroup.interactable = storedCanvasInteractable;
         temporaryHiddenCanvasGroup.blocksRaycasts = storedCanvasBlocksRaycasts;
         hasStoredTemporaryCanvasState = false;

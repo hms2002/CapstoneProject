@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-31 16:11:33Z" end-time="2026-10-31 16:11:37Z" duration="4.2835461">
+  <test-suite type="TestSuite" id="2431" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="1197" result="Passed" start-time="2026-10-31 16:11:33Z" end-time="2026-10-31 16:11:37Z" duration="4.283546" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2427" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="1190" result="Passed" start-time="2026-10-31 16:11:33Z" end-time="2026-10-31 16:11:37Z" duration="4.223691" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="39848" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <output><![CDATA[[CursorDiagnostic] phase=display-stable-2s frame=6 screen=640x480 mode=Windowed focused=False visible=True lock=None domain=Combat/Default hiddenOwners=0 backend=UnityCursorAPI cursorMode=Auto texture=light_cursor_spritesheet_31_Cursor_22x22 hotspot=(11.00, 11.00)
+]]></output>
+      <test-suite type="TestFixture" id="1673" name="EncyclopediaCreaturePlayModeTests" fullname="EncyclopediaCreaturePlayModeTests" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" testcasecount="29" result="Passed" start-time="2026-10-31 16:11:33Z" end-time="2026-10-31 16:11:37Z" duration="4.169190" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1702" name="Discovery_LockedCardsHideDetailsAndRevealWithoutStaleInformation" fullname="EncyclopediaCreaturePlayModeTests.Discovery_LockedCardsHideDetailsAndRevealWithoutStaleInformation" methodname="Discovery_LockedCardsHideDetailsAndRevealWithoutStaleInformation" classname="EncyclopediaCreaturePlayModeTests" runstate="Runnable" seed="654110509" result="Passed" start-time="2026-10-31 16:11:34Z" end-time="2026-10-31 16:11:37Z" duration="3.263592" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[AffectionManager] Reloaded affection data for slot 1. NPC count: 0
+[AffectionManager] Reloaded affection data for slot 1. NPC count: 0
+[AffectionManager] Reloaded affection data for slot 1. NPC count: 0
+[AffectionManager] Reloaded affection data for slot 2. NPC count: 0
+Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,6 @@
+Beer: six RGB colors brightened; every pixel alpha, cel position/opacity, layer opacity, frame duration and native layout preserved. Ground opacity166/255. Native reopen/PNG equality passed.
+Bubbles reuse the existing AlcholeBubble.aseprite ring and prefab cream tint. Aseprite coverage reduction to4-7px;5x80ms rise/pop life. About7 births/sec,2-3 visible. This is a sample animation, not Unity rendering.
+Center ignition:64x64/16x80ms/center32,32. Monotonic irregular radial mask. First frame equals bright beer; last equals unchanged fire ground. Ground opacity166 and pivot32,32 retained; no baked flame shapes.
+All160 steady-fire preview frames match revision15 pixel-for-pixel across the entire right panel. Near35 active; airborne8-9, original colors/motion retained.
+Center demonstration:4.8s,1.28s beer hold +1.28s ignition +2.24s fire hold. Bubbles stop within burned area; individual fire particles begin from already-burned origins. Five editable preview layers.
+Aseprite 1.3.18.6

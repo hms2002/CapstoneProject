@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: input
-last_reviewed: 2026-10-05
+last_reviewed: 2026-10-31
 ---
 
 # Input Bindings
@@ -28,7 +28,7 @@ Gameplay reads through Core `InputActionQuery`; UI may read the concrete service
 - Interact and InventoryDrop may share a key because they operate in separate world/inventory contexts; their default is F. InventoryToggle and LevelRewardOpen are not exempt.
 - A conflicting change swaps all editable owners of the old/new keys. Swapping only one F owner would leave a duplicate with the inventory toggle.
 - Only slots explicitly changed by a request are applied; an unchanged secondary slot must not undo a primary/secondary exchange.
-- Authored action order is filtered against the editable policy and supplemented with missing editable actions. Older title/global UI row lists therefore expose new actions without prefab surgery.
+- Authored action order is filtered against the editable policy and supplemented with missing editable actions. Main GlobalUIRoot/TitleScene now contain 19 authored rows: KeyBindingPanelUI binds their hierarchy order without spawning or reparenting them. A count mismatch is reported instead of binding the wrong action. Adding an editable action therefore also requires an authored row and matching action order in both pages. Independent legacy panels without authored rows retain dynamic creation from rowPrefab.
 - Historical DialogueAdvance overrides are ignored and removed on load. Public mutation APIs reject fixed actions.
 - The one-time `settings.input.contextActions.v1` upgrade fills an empty inventory secondary with I if free. New action defaults do not displace existing custom keys; conflicting new slots remain None and can be assigned in Settings. Nonempty existing inventory secondary bindings are preserved.
 - Item detail hints carry an optional action ID across the Core/Gameplay/UI boundary; UI resolves its current primary key, or secondary when primary is empty. Active hints refresh on BindingChanged and unsubscribe on disable.
@@ -55,3 +55,20 @@ This map is a reconstruction aid, not a new Architecture/Contracts authority. No
 ## 2026-10-08 key settings localization
 
 KeyMapRow action captions are owned by KeyBindingRowUI.Refresh/InputBindingService.GetActionLabel. The copied Screen Mode LocalizeStringEvent was removed; localized fonts stay. Reset/listening use ui.keybinding.reset/ui.keybinding.listening. Locale changes refresh row labels without replacing working/saved bindings or cancelling key capture.
+
+## 2026-10-31 authored key page
+
+The left column contains movement5/combat4; the right contains consumables4/interaction and UI6. Row render anchors still bind to the existing panel UiRenderLayerLayout. The row object remains in its authored column, while graphics project into shared layers. The reset caption is retained inactive for identity stability and replaced visually by a pixel arrow. Existing working/saved state, conflict rules, fixed Space dialogue advance and close confirmation are unchanged. [SettingsPanelLayout](SettingsPanelLayout.md) maps skin assets and validation. The remaining independent dynamic panels are tracked in [presentation authoring debt](../RefactorBacklog/RuntimePresentationFallbackAuthoringSplit.md).
+
+Page switching is immediate: key settings does not replay the panel-drop or close animation. The underlying settings page stays logically active with its root CanvasGroup hidden, and returning restores its visibility and pending display choices. Existing conflict/dirty-close confirmation still runs before the immediate close. UIManager stack transitions and title-local OpenFromSettings both use this behavior.
+
+## Capture cancellation (2026-11-02)
+
+KeyBindingPanelUI.TryHandleCloseRequest now consumes an active rebind/conflict
+before considering panel closure. CancelRebind records the current frame, so
+UIManager or TitleMenuController cannot use that same Escape to close the page
+when their Update runs after the panel. The reverse Update order also cancels
+without closing. A later Escape retains ordinary dirty-close confirmation or
+return to settings. Apply/persist and conflict-swap ownership are unchanged.
+The shared Reset icon is now a 32x32 circular arrow, authored and displayed at
+32x32; existing sprite GUID/local ID and Button binding are retained.

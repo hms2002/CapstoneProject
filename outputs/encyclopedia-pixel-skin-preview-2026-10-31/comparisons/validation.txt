@@ -1,0 +1,2 @@
+PASS monster: both 1180x740 panels pixel-identical to source/crop; no resizing.
+PASS boss: both 1180x740 panels pixel-identical to source/crop; no resizing.

@@ -66,12 +66,14 @@ public sealed class EncyclopediaCreatureTab : MonoBehaviour
     {
         LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
         GameDataStore.OnDataLoaded += HandleProfileLoaded;
+        EncyclopediaDiscoveryProgress.Changed += HandleDiscoveryChanged;
     }
 
     private void OnDisable()
     {
         LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
         GameDataStore.OnDataLoaded -= HandleProfileLoaded;
+        EncyclopediaDiscoveryProgress.Changed -= HandleDiscoveryChanged;
         UnsubscribeAffection();
         Hide();
     }
@@ -218,22 +220,24 @@ public sealed class EncyclopediaCreatureTab : MonoBehaviour
         {
             Sprite preview = monster.previewFrames != null && monster.previewFrames.Length > 0
                 ? monster.previewFrames[0] : monster.image;
-            slot.Bind(index, monster.DisplayName, preview, false, 0, selected);
+            slot.Bind(index, monster.DisplayName, preview, false, 0, selected,
+                EncyclopediaDiscoveryProgress.Has(EncyclopediaDiscoveryKind.Monster, monster.id));
         }
         else if (activeTab == EncyclopediaMainTab.Boss && catalog.TryGetBoss(index, out EncyclopediaBossEntry boss))
             BindCharacterSlot(slot, index, boss.npcData != null ? boss.npcData.DisplayName : boss.DisplayName,
-                boss.npcData, boss.portraits, selected);
+                boss.npcData, boss.portraits, selected, IsBossDiscovered(boss.npcData), true);
         else if (activeTab == EncyclopediaMainTab.NPC && catalog.TryGetNpc(index, out EncyclopediaNpcEntry npc))
-            BindCharacterSlot(slot, index, npc.DisplayName, npc.npcData, npc.portraits, selected);
+            BindCharacterSlot(slot, index, npc.DisplayName, npc.npcData, npc.portraits, selected, true, false);
         else
             slot.Clear();
     }
 
     private static void BindCharacterSlot(EncyclopediaCharacterEntryView slot, int index, string title,
-        NPCData npc, IReadOnlyList<EncyclopediaPortrait> portraits, bool selected)
+        NPCData npc, IReadOnlyList<EncyclopediaPortrait> portraits, bool selected, bool discovered, bool bossStyle)
     {
         int portrait = EncyclopediaPortraitUtility.GetDefaultIndex(portraits);
-        slot.Bind(index, title, portrait >= 0 ? portraits[portrait].sprite : null, true, GetAffection(npc), selected);
+        slot.Bind(index, title, portrait >= 0 ? portraits[portrait].sprite : null, true, GetAffection(npc), selected,
+            discovered, bossStyle);
     }
 
     private void RefreshDetail(bool resetDetail)
@@ -247,13 +251,25 @@ public sealed class EncyclopediaCreatureTab : MonoBehaviour
             return;
         }
         if (activeTab == EncyclopediaMainTab.Monster && catalog.TryGetMonster(selected, out EncyclopediaMonsterEntry monster))
-            detailView.ShowMonster(monster, MonsterEncyclopediaProgress.GetKillCount(monster.id), resetDetail);
+        {
+            if (EncyclopediaDiscoveryProgress.Has(EncyclopediaDiscoveryKind.Monster, monster.id))
+                detailView.ShowMonster(monster, MonsterEncyclopediaProgress.GetKillCount(monster.id), resetDetail);
+            else
+                detailView.ShowUndiscovered(false);
+        }
         else if (activeTab == EncyclopediaMainTab.Boss && catalog.TryGetBoss(selected, out EncyclopediaBossEntry boss))
-            detailView.ShowCharacter(boss.npcData != null ? boss.npcData.DisplayName : boss.DisplayName,
-                boss.StoryText, boss.npcData, boss.portraits, GetAffection(boss.npcData), resetDetail);
+        {
+            if (IsBossDiscovered(boss.npcData))
+                detailView.ShowCharacter(boss.npcData != null ? boss.npcData.DisplayName : boss.DisplayName,
+                    boss.StoryText, boss.npcData, boss.portraits, GetAffection(boss.npcData), resetDetail);
+            else
+            {
+                detailView.ShowUndiscovered(true);
+            }
+        }
         else if (activeTab == EncyclopediaMainTab.NPC && catalog.TryGetNpc(selected, out EncyclopediaNpcEntry npc))
             detailView.ShowCharacter(npc.DisplayName, npc.StoryText, npc.npcData, npc.portraits,
-                GetAffection(npc.npcData), resetDetail);
+                GetAffection(npc.npcData), resetDetail, false);
         else
             detailView.Clear();
     }
@@ -368,8 +384,13 @@ public sealed class EncyclopediaCreatureTab : MonoBehaviour
     }
 
     private void HandleLocaleChanged(Locale locale) => Refresh(false);
+    private void HandleDiscoveryChanged() => Refresh(false);
     private void HandleProfileLoaded(GameData data, int slotIndex) => Refresh(false);
     private void HandleAffectionChanged(int npcId, int value) => Refresh(false);
+
+    private static bool IsBossDiscovered(NPCData npc) => npc != null &&
+        (BossDialogueProgressStore.GetEncounterCount(npc.id) > 0 ||
+         BossDialogueProgressStore.GetVictoryCount(npc.id) > 0 || BossDialogueProgressStore.GetDefeatCount(npc.id) > 0);
 
     private static void SetText(TMP_Text text, string value)
     {

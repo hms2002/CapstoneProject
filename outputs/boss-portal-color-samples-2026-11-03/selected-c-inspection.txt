@@ -1,0 +1,5 @@
+Non-Chloe/reference files unchanged: 20
+Selected C byte-identical: portal.png
+Selected C byte-identical: membrane.png
+Selected C byte-identical: preview.gif
+Chloe palette: {"id":"01-chloe","mem":"79749B","name":"CHLOE","p1":"998CB6","p2":"DAD0E8","rim":"B7ACC9","theme":"SHADOW / SMOKY"}

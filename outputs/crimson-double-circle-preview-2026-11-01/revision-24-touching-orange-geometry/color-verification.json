@@ -1,0 +1,25 @@
+{
+  "mode": "Micro-fix / preview only",
+  "dimensions": [
+    192,
+    192
+  ],
+  "geometryColors": [
+    "B63D28",
+    "F16B32"
+  ],
+  "runeColor": "FFC65A",
+  "goldRunePixels": 1053,
+  "preservedLayers": [
+    "inner-runes",
+    "outer-runes",
+    "inner-medallions",
+    "outer-medallions",
+    "medallion",
+    "glyph-directions",
+    "outer-base"
+  ],
+  "relativeOctagramAngleDegrees": 22.5,
+  "centralGeometry": "All adjacent circumcircle/incircle contacts derived from outer radius",
+  "runtime": "unchanged"
+}

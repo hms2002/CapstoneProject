@@ -1,0 +1,52 @@
+Puddle revision 8 — grounded fire flicker and asymmetric foam
+
+Scope: preview Implementation in native Aseprite, continuing the user's sample
+task. The user rejected revision7's moving color field as liquid-like and the
+beer foam's repeated perimeter arrangement. Earlier versions are preserved.
+
+beer.aseprite:
+- Replaced thirteen perimeter foam spots with an irregular main accumulation
+  inside the upper-left area, a smaller lower-right patch and sparse fragments.
+- No foam-colored pixels remain within three pixels of the footprint boundary.
+  The source RGBA palette, including liquid translucency, is unchanged.
+- 64x64, four160ms frames, eight visible colors, ground pivot32,32.
+
+fire-surface.aseprite:
+- Removed the sinusoidal heat-field movement. Low rooted flame tips and cores
+  vary independently in an irregular six-step flicker. Connected orange ground
+  reduces the appearance of separate bright objects floating on a dark pool.
+- Uneven placement and overlapping roots replace the initially tested row
+  arrangement. No flying ember overlay is included.
+- 64x64, six80ms frames/480ms loop, seven visible colors, pivot32,32.
+
+beer-to-fire.aseprite and puddle-cycle.aseprite:
+- Regenerated the eight80ms ignition frames with revised beer/fire artwork.
+- Combined18 frames with BeerIdle1-4, Ignite5-12, FireLoop13-18 and four layers.
+  FireLoop is phase-rotated to avoid a duplicate hold after ignition.
+- All ground frames preserve the original nonzero footprint and center pivot.
+
+Exports and reproduction:
+*-frame-N.png / *-sheet.png preserve native RGBA transparency.
+comparison-preview.gif: beer / ignition / low fire,960x320,3840ms.
+surface-only-preview.gif:320x320,480ms; ignition-preview.gif:320x320,3840ms.
+all-frames-2x.png: native frame contact sheet.
+author-puddles.lua and verify-native.lua: Aseprite1.3.18.6 authoring/reopen checks.
+GIFs bake the neutral review floor because partial alpha is unsupported in GIF.
+Source layers use disjoint pixel coverage to preserve palette values; hiding an
+upper layer may reveal transparency rather than underpainting.
+
+Verification:
+Aseprite authoring/reopen exit0,158 native checks passed: dimensions, frames,
+layers, tags, pivots, timings, exact source-PNG equality, GIF review pixels and
+transition endpoints. GIF maximum channel difference1/255. Export checks verify
+8/7/15 palettes, preserved footprint, unchanged beer RGBA values, no perimeter
+foam and correct loop times. Fire changes158-180 pixels between adjacent frames.
+Final comparison and frame-layout inspection performed. See native-verification.txt
+and export-verification.json for evidence. These checks verify the files and
+animation structure; the user's visual acceptance is separate.
+
+No Unity source, existing assets, scenes, prefabs, metadata or settings changed.
+Unity import/compilation/Play Mode and actual camera/floor acceptance were not
+executed. World scale/PPU and contact-directed ignition remain integration work.
+Doc Impact Check: SessionLog only; ErrorLog/DecisionLog/StructureMemory unchanged;
+no identified Presentation HTML stale candidate.

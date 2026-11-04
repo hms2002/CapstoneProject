@@ -101,7 +101,8 @@ public sealed class ShopInventoryRoll
         IReadOnlyList<ShopSlotItemFilter> slotFilters = null,
         bool consumablesOnlyInDedicatedSlots = false,
         float rareRelicWeightBonus = 0f,
-        float epicRelicWeightBonus = 0f)
+        float epicRelicWeightBonus = 0f,
+        IReadOnlyCollection<MerchantStockEntryState> retainedEntries = null)
     {
         var entries = new List<MerchantStockEntryState>(Mathf.Max(0, slotCount));
         if (slotCount <= 0 || ItemManager.Instance == null)
@@ -115,13 +116,28 @@ public sealed class ShopInventoryRoll
         List<ConsumableDefinition> consumablePool = BuildConsumablePool();
         HashSet<string> excludedKeys = BuildExcludedKeys(excludedEntries);
 
+        int weaponSlotCount = 0;
+        int consumableSlotCount = 0;
+        if (retainedEntries != null)
+        {
+            excludedKeys ??= new HashSet<string>();
+            foreach (MerchantStockEntryState entry in retainedEntries)
+            {
+                if (entry == null || !entry.HasItem)
+                    continue;
+
+                excludedKeys.Add(BuildItemKey(entry.kind, entry.itemId));
+                if (entry.kind == InventoryItemKind.Weapon)
+                    weaponSlotCount++;
+                else if (entry.kind == InventoryItemKind.Consumable)
+                    consumableSlotCount++;
+            }
+        }
+
         RemoveExcludedDefinitions(weaponPool, excludedKeys);
         RemoveExcludedDefinitions(relicPool, excludedKeys);
         RemoveExcludedDefinitions(consumablePool, excludedKeys);
         RemoveExcludedWeapons(weaponPool, excludedWeaponIds);
-
-        int weaponSlotCount = 0;
-        int consumableSlotCount = 0;
 
         for (int i = 0; i < slotCount; i++)
         {
@@ -221,11 +237,13 @@ public sealed class ShopInventoryRoll
     {
         var pool = new List<RelicDefinition>();
         List<string> unlockedIds = ItemManager.Instance.GetUnlockedRelicIDs();
+        RelicInventory inventory = LootPoolItemSelectionService.GetPlayerRelicInventory();
 
         for (int i = 0; i < unlockedIds.Count; i++)
         {
             RelicDefinition definition = ItemManager.Instance.GetRelicData(unlockedIds[i]);
-            if (definition != null && LootPoolItemSelectionService.CanDropRelic(definition.relicId))
+            if (definition != null && LootPoolItemSelectionService.CanDropRelic(definition.relicId) &&
+                LootPoolItemSelectionService.CanGainRelicLevels(definition, inventory))
                 pool.Add(definition);
         }
 

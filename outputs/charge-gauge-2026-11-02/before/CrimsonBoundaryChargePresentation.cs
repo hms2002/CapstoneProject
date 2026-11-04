@@ -1,0 +1,199 @@
+using UnityEngine;
+
+namespace CapstonePresentation
+{
+    /// <summary>Owns visuals only. All objects/references are authored; no collision or damage callbacks.</summary>
+    [DisallowMultipleComponent]
+    public sealed class CrimsonBoundaryChargePresentation : MonoBehaviour, ICrimsonBoundaryChargePresentation
+    {
+        [Header("Charge")]
+        [SerializeField] private Transform warning;
+        [SerializeField] private SpriteRenderer innerCircle;
+        [SerializeField] private SpriteRenderer outerCircle;
+        [SerializeField] private SpriteRenderer centerCircle;
+        [SerializeField] private float circleRotationSpeed = 37.5f;
+        [SerializeField] private float warningFadeSeconds = 0.25f;
+        [SerializeField] private Transform gauge;
+        [SerializeField] private UnityEngine.UI.Image gaugeFill;
+        [SerializeField] private UnityEngine.UI.Image gaugeHighlight;
+        [SerializeField] private UnityEngine.UI.Image gaugeShadow;
+        [SerializeField] private GameObject gaugeFullFrame;
+        [SerializeField] private Vector3 gaugeOffset = new(0f, 1.3f, 0f);
+        [SerializeField] private Color chargingColor = new Color32(221, 46, 70, 255);
+        [SerializeField] private Color readyColor = new Color32(240, 120, 38, 255);
+        [SerializeField] private Color fullColor = new Color32(255, 157, 65, 255);
+        [SerializeField] private Color chargingHighlight = new Color32(255, 102, 91, 255);
+        [SerializeField] private Color readyHighlight = new Color32(255, 171, 86, 255);
+        [SerializeField] private Color fullHighlight = new Color32(255, 235, 171, 255);
+        [SerializeField] private Color chargingShadow = new Color32(128, 23, 48, 255);
+        [SerializeField] private Color readyShadow = new Color32(158, 60, 33, 255);
+        [SerializeField] private Color fullShadow = new Color32(207, 70, 41, 255);
+
+        [Header("Flight sprites and independent world-space particles")]
+        [SerializeField] private Transform meteor;
+        [SerializeField] private GameObject meteorSprites;
+        [SerializeField] private SpriteRenderer flame;
+        [SerializeField] private Sprite[] flameFrames;
+        [SerializeField] private float flameFrameSeconds = 0.07f;
+        [SerializeField] private ParticleSystem[] trailParticles;
+
+        [Header("Impact")]
+        [SerializeField] private Transform impact;
+        [SerializeField] private SpriteRenderer flash;
+        [SerializeField] private Sprite[] flashFrames;
+        [SerializeField] private float[] flashFrameSeconds = { 0.04f, 0.05f, 0.06f };
+        [SerializeField] private SpriteRenderer scorch;
+        [SerializeField] private ParticleSystem[] impactParticles;
+        [SerializeField] private TopDownDebrisBounceEmitter2D debris;
+        [SerializeField] private float nominalDiameter = 6f;
+        [SerializeField] private float impactLifetime = 2.1f;
+
+        private CrimsonBoundaryRuntimeState owner;
+        private float phaseTime;
+        private float circleAngle;
+        private float centerCircleAngle;
+        private Phase phase;
+        private enum Phase { Charge, Flight, Impact }
+
+        private void Awake()
+        {
+            innerCircle.enabled = false;
+            outerCircle.enabled = false;
+            centerCircle.enabled = false;
+            innerCircle.transform.localScale = Vector3.zero;
+            outerCircle.transform.localScale = Vector3.zero;
+            centerCircle.transform.localScale = Vector3.zero;
+            meteor.gameObject.SetActive(false);
+            impact.gameObject.SetActive(false);
+        }
+
+        public void BindOwner(CrimsonBoundaryRuntimeState value) => owner = value;
+
+        public void ShowCharge(Vector3 ownerPosition, Vector3 target, float ratio, float diameter)
+        {
+            warning.position = target;
+            innerCircle.color = outerCircle.color = centerCircle.color = Color.white;
+            gauge.position = ownerPosition + gaugeOffset;
+            gaugeFill.fillAmount = Mathf.Clamp01(ratio);
+            gaugeHighlight.fillAmount = gaugeFill.fillAmount;
+            gaugeShadow.fillAmount = gaugeFill.fillAmount;
+            gaugeFill.color = ratio >= 1f ? fullColor : ratio >= 0.5f ? readyColor : chargingColor;
+            gaugeHighlight.color = ratio >= 1f ? fullHighlight : ratio >= 0.5f ? readyHighlight : chargingHighlight;
+            gaugeShadow.color = ratio >= 1f ? fullShadow : ratio >= 0.5f ? readyShadow : chargingShadow;
+            gaugeFullFrame.SetActive(ratio >= 1f);
+            float progress = Mathf.Clamp01(ratio);
+            float innerFraction = CrimsonBoundaryChargeData.InnerCircleFraction;
+            float rangeFraction = progress <= 0.5f ? innerFraction * progress * 2f
+                : Mathf.Lerp(innerFraction, 1f, progress * 2f - 1f);
+            float maximumDiameter = rangeFraction > 0f ? diameter / rangeFraction : 0f;
+            // The 192px artwork has a 128px visible inner diameter; gameplay keeps its original range ratio.
+            SetCircleDiameter(innerCircle, maximumDiameter * innerFraction * Mathf.Clamp01(progress * 2f), 128f / 192f);
+            // Both first-stage layers share a centered 192px canvas, preserving their tangent outlines.
+            centerCircle.transform.localScale = innerCircle.transform.localScale;
+            centerCircle.enabled = innerCircle.enabled;
+            SetCircleDiameter(outerCircle, progress > 0.5f ? diameter : 0f, 1f);
+        }
+
+        public void BeginFlight(Vector3 start, Vector3 target)
+        {
+            phase = Phase.Flight;
+            phaseTime = 0f;
+            warning.position = target;
+            innerCircle.color = outerCircle.color = centerCircle.color = Color.white;
+            gauge.gameObject.SetActive(false);
+            meteor.position = start;
+            Vector3 direction = target - start;
+            // The source sprite points southwest (-135 degrees).
+            meteor.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 135f);
+            meteor.gameObject.SetActive(true);
+            foreach (ParticleSystem particles in trailParticles) particles.Play(false);
+        }
+
+        public void MoveMeteor(Vector3 position)
+        {
+            meteor.position = position;
+        }
+
+        public void PlayImpact(Vector3 position, float diameter)
+        {
+            // Keep the released footprint through flight; only alpha fades after impact.
+            phase = Phase.Impact;
+            phaseTime = 0f;
+            meteorSprites.SetActive(false);
+            // Leave emitted world-space puffs alive; only stop creating new ones.
+            foreach (ParticleSystem particles in trailParticles)
+                particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+            impact.position = position;
+            impact.localScale = Vector3.one * (diameter / Mathf.Max(0.01f, nominalDiameter));
+            impact.gameObject.SetActive(true);
+            flash.sprite = flashFrames[0];
+            foreach (ParticleSystem particles in impactParticles) particles.Play(false);
+            debris.Play();
+        }
+
+        private void Update() => Tick(Time.deltaTime);
+
+        private void Tick(float deltaTime)
+        {
+            phaseTime += deltaTime;
+            if (warning.gameObject.activeSelf)
+            {
+                circleAngle = Mathf.Repeat(circleAngle + circleRotationSpeed * deltaTime, 360f);
+                innerCircle.transform.localRotation = Quaternion.Euler(0f, 0f, circleAngle);
+                outerCircle.transform.localRotation = Quaternion.Euler(0f, 0f, -circleAngle);
+                centerCircleAngle = Mathf.Repeat(centerCircleAngle - circleRotationSpeed * 1.5f * deltaTime, 360f);
+                centerCircle.transform.localRotation = Quaternion.Euler(0f, 0f, centerCircleAngle);
+                if (phase == Phase.Impact)
+                {
+                    float warningAlpha = Mathf.Clamp01(1f - phaseTime / Mathf.Max(0.01f, warningFadeSeconds));
+                    innerCircle.color = outerCircle.color = centerCircle.color = new Color(1f, 1f, 1f, warningAlpha);
+                    if (warningAlpha <= 0f) warning.gameObject.SetActive(false);
+                }
+            }
+            if (phase == Phase.Flight)
+            {
+                flame.sprite = flameFrames[(int)(phaseTime / flameFrameSeconds) % flameFrames.Length];
+            }
+            else if (phase == Phase.Impact)
+            {
+                float frameEnd = 0f;
+                int frame = 0;
+                for (; frame < flashFrameSeconds.Length; frame++)
+                {
+                    frameEnd += flashFrameSeconds[frame];
+                    if (phaseTime < frameEnd) break;
+                }
+                flash.enabled = frame < flashFrames.Length;
+                if (flash.enabled) flash.sprite = flashFrames[frame];
+                float alpha = Mathf.Clamp01(phaseTime / 0.1f) * Mathf.Clamp01((2f - phaseTime) / 0.7f) * 0.65f;
+                scorch.color = new Color(1f, 1f, 1f, alpha);
+                if (phaseTime >= impactLifetime) Destroy(gameObject);
+            }
+        }
+
+        private static void SetCircleDiameter(SpriteRenderer circle, float diameter, float visibleFraction)
+        {
+            float sourceDiameter = circle.sprite.rect.width / circle.sprite.pixelsPerUnit * visibleFraction;
+            circle.transform.localScale = Vector3.one * (Mathf.Max(0f, diameter) / sourceDiameter);
+            circle.enabled = diameter > 0f;
+        }
+
+#if UNITY_EDITOR
+        // Native Editor captures use the same phase/flipbook code and authored particle modules.
+        public void StepEditorPreview(float deltaTime)
+        {
+            Tick(deltaTime);
+            foreach (ParticleSystem p in trailParticles)
+                if (p.gameObject.activeInHierarchy) p.Simulate(deltaTime, false, false, false);
+            if (phase != Phase.Impact) return;
+            foreach (ParticleSystem p in impactParticles) p.Simulate(deltaTime, false, false, false);
+            debris.StepEditorPreview(deltaTime);
+        }
+#endif
+
+        private void OnDestroy()
+        {
+            if (owner != null) owner.Forget(gameObject);
+        }
+    }
+}

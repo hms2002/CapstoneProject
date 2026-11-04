@@ -1,0 +1,51 @@
+{
+  "radii": [
+    {
+      "charge": 0,
+      "inner": 0,
+      "outer": 0
+    },
+    {
+      "charge": 25,
+      "inner": 20,
+      "outer": 0
+    },
+    {
+      "charge": 50,
+      "inner": 40,
+      "outer": 0
+    },
+    {
+      "charge": 75,
+      "inner": 40,
+      "outer": 50
+    },
+    {
+      "charge": 100,
+      "inner": 40,
+      "outer": 60
+    }
+  ],
+  "nativePixelSizes": {
+    "inner": 80,
+    "outer": 120,
+    "proposedPpu": 20,
+    "existingCrimsonPpu": 16,
+    "maximumDiameter": 6
+  },
+  "resolutionIncreasePerAxis": "25%",
+  "worldDiameterPreservation": "120 / 20 = 96 / 16 = 6; proposed import, not applied to Unity",
+  "nativeSourcePixelMapping": "pass",
+  "palette": "FFC65A F16B32 FFF0BF from existing six-color palette; binary alpha",
+  "wholeInnerCompletedAt50": "pass",
+  "separateLayers": "pass",
+  "innerOpaquePixels": 1074,
+  "outerOpaquePixels": 748,
+  "fullCircumferenceAtPartialCharge": "pass",
+  "scaledBoundary": "pass",
+  "oppositePlanarRotation": "pass",
+  "pauseResume": "pass",
+  "artwork": "Guide-informed native grid; improved glyph spacing and curve rhythm",
+  "rendering": "offline same-JavaScript Canvas pixel adapter",
+  "limitations": "Browser DOM/layout and Unity Play Mode not run. The 20 PPU proposal is denser than existing 16 PPU effects. Point filtering alone does not guarantee stable lines at every rotation/scale or under the actual camera."
+}

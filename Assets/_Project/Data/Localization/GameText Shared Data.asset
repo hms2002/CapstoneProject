@@ -15,6 +15,174 @@ MonoBehaviour:
   m_TableCollectionName: GameText
   m_TableCollectionNameGuidString: 6e6eece5703a7af49ae3c7212669274b
   m_Entries:
+  - m_Id: 2622680836485120
+    m_Key: ui.item_keyword.electrocuted.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892226887680
+    m_Key: relic.electric.nearby.template
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328192
+    m_Key: relic.electric.move.template
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328193
+    m_Key: relic.electric.dash.template
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3053829903937536
+    m_Key: relic.electric.scene.template
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3053830046543872
+    m_Key: relic.electric.health.template
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3053830046543873
+    m_Key: relic.electric.extension.template
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3068729934016512
+    m_Key: relic.electric.targets.template
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3068730034679808
+    m_Key: relic.electric.paralysis.template
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035113558016
+    m_Key: relic.electric.expiry.template
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164352
+    m_Key: relic.electric.echo.template
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164353
+    m_Key: relic.electric.conductor.template
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328194
+    m_Key: asset.f38b7d86e797dd94987df9469a009fc6.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328195
+    m_Key: asset.f38b7d86e797dd94987df9469a009fc6.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328196
+    m_Key: asset.97084fb613250744aa79efe393f5d8e8.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328197
+    m_Key: asset.97084fb613250744aa79efe393f5d8e8.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328198
+    m_Key: asset.9a870ebedac30b24085e330264e88eb0.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3041892344328199
+    m_Key: asset.9a870ebedac30b24085e330264e88eb0.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3053830050738176
+    m_Key: asset.c89e3a71c9cffd24e8c1a0e0a868e907.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3053830050738177
+    m_Key: asset.c89e3a71c9cffd24e8c1a0e0a868e907.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3068730034679809
+    m_Key: asset.4fc8d9217c22c384f89b21f375268227.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3068730034679810
+    m_Key: asset.4fc8d9217c22c384f89b21f375268227.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3068730034679811
+    m_Key: asset.fe1d21ace548ebb42bc9885269f0cc58.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3068730034679812
+    m_Key: asset.fe1d21ace548ebb42bc9885269f0cc58.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164354
+    m_Key: asset.793dd35173233de479547ef030201574.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164355
+    m_Key: asset.793dd35173233de479547ef030201574.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164356
+    m_Key: asset.e7fc658e74db2a840b6fc0f9fb067d3a.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164357
+    m_Key: asset.e7fc658e74db2a840b6fc0f9fb067d3a.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164358
+    m_Key: asset.875bf515b62c5bf44a0f67ab48330b66.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3091035256164359
+    m_Key: asset.875bf515b62c5bf44a0f67ab48330b66.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 57923735556097
+    m_Key: code.reliclogic_featherorbit_managed.cef8ff8aec
+    m_Metadata:
+      m_Items: []
+  - m_Id: 46294717337630
+    m_Key: asset.eef19b108eae4400bb49fc1753e4aa14.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 46294717337632
+    m_Key: asset.5dfae16cf310446b821ffaf6e7a1bae3.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 46294717337620
+    m_Key: asset.16ad7526693d4a44a3183bcc3df90f61.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 46294717337624
+    m_Key: asset.4a278341ae1b4ef4b8886c04f3517f71.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 50606298271751
+    m_Key: asset.fbdac07eef844692b91bd97f7db59ce3.effectTemplate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 46294717337645
+    m_Key: asset.6e61f67002664297a735902776929cf5.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 50606298271753
+    m_Key: asset.44860a1e49e148fa8cdb24678044cc9e.effectTemplate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 46294721531906
+    m_Key: asset.d492a6f1c1a7fc84bb3b44a619dcfd4f.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3084505597251584
+    m_Key: asset.24602c35b51a9f64f8622e1094c8f5b2.effectTemplate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 50606289883180
+    m_Key: asset.eb057c0a7b239b742a001ee568ef4027.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3084505723080704
+    m_Key: asset.74bcbc64a07fc854ca2dade608e8c24c.effectTemplate
+    m_Metadata:
+      m_Items: []
   - m_Id: 8714620928
     m_Key: weapon.odd_iron.description
     m_Metadata:
@@ -1263,10 +1431,6 @@ MonoBehaviour:
     m_Key: asset.16ad7526693d4a44a3183bcc3df90f61.displayName
     m_Metadata:
       m_Items: []
-  - m_Id: 46294717337620
-    m_Key: asset.16ad7526693d4a44a3183bcc3df90f61.description
-    m_Metadata:
-      m_Items: []
   - m_Id: 46294717337621
     m_Key: asset.81eca7800b7446598237331ab25b00c8.displayName
     m_Metadata:
@@ -1277,10 +1441,6 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 46294717337623
     m_Key: asset.4a278341ae1b4ef4b8886c04f3517f71.displayName
-    m_Metadata:
-      m_Items: []
-  - m_Id: 46294717337624
-    m_Key: asset.4a278341ae1b4ef4b8886c04f3517f71.description
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337625
@@ -1303,16 +1463,8 @@ MonoBehaviour:
     m_Key: asset.a73c39a704801a1488033afff3b7f340.description
     m_Metadata:
       m_Items: []
-  - m_Id: 46294717337630
-    m_Key: asset.eef19b108eae4400bb49fc1753e4aa14.description
-    m_Metadata:
-      m_Items: []
   - m_Id: 46294717337631
     m_Key: asset.5dfae16cf310446b821ffaf6e7a1bae3.displayName
-    m_Metadata:
-      m_Items: []
-  - m_Id: 46294717337632
-    m_Key: asset.5dfae16cf310446b821ffaf6e7a1bae3.description
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337633
@@ -1363,10 +1515,6 @@ MonoBehaviour:
     m_Key: asset.6e61f67002664297a735902776929cf5.displayName
     m_Metadata:
       m_Items: []
-  - m_Id: 46294717337645
-    m_Key: asset.6e61f67002664297a735902776929cf5.description
-    m_Metadata:
-      m_Items: []
   - m_Id: 46294717337646
     m_Key: asset.1a3c46c0c9914eea8cdcba66be7916eb.displayName
     m_Metadata:
@@ -1377,10 +1525,6 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 46294721531905
     m_Key: asset.d492a6f1c1a7fc84bb3b44a619dcfd4f.displayName
-    m_Metadata:
-      m_Items: []
-  - m_Id: 46294721531906
-    m_Key: asset.d492a6f1c1a7fc84bb3b44a619dcfd4f.description
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531907
@@ -4855,10 +4999,6 @@ MonoBehaviour:
     m_Key: asset.6b22cb4e0ab0a194b968acb6b169cbfb.description
     m_Metadata:
       m_Items: []
-  - m_Id: 50606289883180
-    m_Key: asset.eb057c0a7b239b742a001ee568ef4027.description
-    m_Metadata:
-      m_Items: []
   - m_Id: 50606289883181
     m_Key: asset.6657f14bf85d4440b1a6353e784e9c3e.description
     m_Metadata:
@@ -4895,16 +5035,8 @@ MonoBehaviour:
     m_Key: asset.a6b833541606472cb49962aed161d97d.effectTemplate
     m_Metadata:
       m_Items: []
-  - m_Id: 50606298271751
-    m_Key: asset.fbdac07eef844692b91bd97f7db59ce3.effectTemplate
-    m_Metadata:
-      m_Items: []
   - m_Id: 50606298271752
     m_Key: asset.4d60d1e170a74282949a814dab156e09.effectTemplate
-    m_Metadata:
-      m_Items: []
-  - m_Id: 50606298271753
-    m_Key: asset.44860a1e49e148fa8cdb24678044cc9e.effectTemplate
     m_Metadata:
       m_Items: []
   - m_Id: 50606298271754
@@ -5131,110 +5263,6 @@ MonoBehaviour:
     m_Key: dialogue.demonkingintrodialogue_animated.874f5a98a7
     m_Metadata:
       m_Items: []
-  - m_Id: 7030060528943104
-    m_Key: dialogue.demonkingintrodialogue_animated.lesson.clear_throat
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7030060625412096
-    m_Key: dialogue.demonkingintrodialogue_animated.lesson.dignified_line
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7030060625412097
-    m_Key: dialogue.demonkingintrodialogue_animated.lesson.sword_pose
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7030060625412098
-    m_Key: dialogue.demonkingintrodialogue_animated.lesson.check_pose
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7030060625412099
-    m_Key: dialogue.demonkingintrodialogue_animated.lesson.choice_praise
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7030060625412100
-    m_Key: dialogue.demonkingintrodialogue_animated.lesson.praise_reply
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7030060625412101
-    m_Key: dialogue.demonkingintrodialogue_animated.lesson.sword_tease
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7030060625412102
-    m_Key: dialogue.demonkingintrodialogue_animated.lesson.praise_end
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7030060625412103
-    m_Key: dialogue.demonkingintrodialogue_animated.lesson.choice_weird
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7030060625412104
-    m_Key: dialogue.demonkingintrodialogue_animated.lesson.weird_reply
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7030060625412105
-    m_Key: dialogue.demonkingintrodialogue_animated.lesson.sword_defense
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7030060625412106
-    m_Key: dialogue.demonkingintrodialogue_animated.lesson.weird_end
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358447202304
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.intro
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059904
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.estimate
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059905
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.sword_nostalgic
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059906
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.sword_reminder
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059907
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.protest
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059908
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.request
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059909
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.choice_careful
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059910
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.careful_hope
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059911
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.sword_hope_tease
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059912
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.careful_end
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059913
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.choice_fancy
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059914
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.fancy_cost
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059915
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.sword_fancy_tease
-    m_Metadata:
-      m_Items: []
-  - m_Id: 7128358552059916
-    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.fancy_end
-    m_Metadata:
-      m_Items: []
   - m_Id: 53708304846869
     m_Key: dialogue.dragonbossintrodialogue_spirinotion_animated.9d356ac5a4
     m_Metadata:
@@ -5409,6 +5437,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 53708325818379
     m_Key: dialogue.shadowbossintrodialogue_animated.b9996f5b44
+    m_Metadata:
+      m_Items: []
+  - m_Id: 53708325818380
+    m_Key: dialogue.shadowbossintrodialogue_animated.3c8bf328cb
     m_Metadata:
       m_Items: []
   - m_Id: 53708325818381
@@ -5733,10 +5765,6 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 57923735556096
     m_Key: code.reliclogic_evasionfrombonusmovespeed_managed.dd6534d473
-    m_Metadata:
-      m_Items: []
-  - m_Id: 57923735556097
-    m_Key: code.reliclogic_featherorbit_managed.cef8ff8aec
     m_Metadata:
       m_Items: []
   - m_Id: 57923735556098
@@ -7339,10 +7367,6 @@ MonoBehaviour:
     m_Key: "term.\uAC10\uC804"
     m_Metadata:
       m_Items: []
-  - m_Id: 2622680836485120
-    m_Key: ui.item_keyword.electrocuted.description
-    m_Metadata:
-      m_Items: []
   - m_Id: 2622680836485121
     m_Key: ui.item_keyword.burn.description
     m_Metadata:
@@ -7399,130 +7423,6 @@ MonoBehaviour:
     m_Key: encyclopedia.close_full_view
     m_Metadata:
       m_Items: []
-  - m_Id: 3041892226887680
-    m_Key: relic.electric.nearby.template
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3041892344328192
-    m_Key: relic.electric.move.template
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3041892344328193
-    m_Key: relic.electric.dash.template
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3041892344328194
-    m_Key: asset.f38b7d86e797dd94987df9469a009fc6.displayName
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3041892344328195
-    m_Key: asset.f38b7d86e797dd94987df9469a009fc6.description
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3041892344328196
-    m_Key: asset.97084fb613250744aa79efe393f5d8e8.displayName
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3041892344328197
-    m_Key: asset.97084fb613250744aa79efe393f5d8e8.description
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3041892344328198
-    m_Key: asset.9a870ebedac30b24085e330264e88eb0.displayName
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3041892344328199
-    m_Key: asset.9a870ebedac30b24085e330264e88eb0.description
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3053829903937536
-    m_Key: relic.electric.scene.template
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3053830046543872
-    m_Key: relic.electric.health.template
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3053830046543873
-    m_Key: relic.electric.extension.template
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3053830050738176
-    m_Key: asset.c89e3a71c9cffd24e8c1a0e0a868e907.displayName
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3053830050738177
-    m_Key: asset.c89e3a71c9cffd24e8c1a0e0a868e907.description
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3068729934016512
-    m_Key: relic.electric.targets.template
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3068730034679808
-    m_Key: relic.electric.paralysis.template
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3068730034679809
-    m_Key: asset.4fc8d9217c22c384f89b21f375268227.displayName
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3068730034679810
-    m_Key: asset.4fc8d9217c22c384f89b21f375268227.description
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3068730034679811
-    m_Key: asset.fe1d21ace548ebb42bc9885269f0cc58.displayName
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3068730034679812
-    m_Key: asset.fe1d21ace548ebb42bc9885269f0cc58.description
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3084505597251584
-    m_Key: asset.24602c35b51a9f64f8622e1094c8f5b2.effectTemplate
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3084505723080704
-    m_Key: asset.74bcbc64a07fc854ca2dade608e8c24c.effectTemplate
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3091035113558016
-    m_Key: relic.electric.expiry.template
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3091035256164352
-    m_Key: relic.electric.echo.template
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3091035256164353
-    m_Key: relic.electric.conductor.template
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3091035256164354
-    m_Key: asset.793dd35173233de479547ef030201574.displayName
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3091035256164355
-    m_Key: asset.793dd35173233de479547ef030201574.description
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3091035256164356
-    m_Key: asset.e7fc658e74db2a840b6fc0f9fb067d3a.displayName
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3091035256164357
-    m_Key: asset.e7fc658e74db2a840b6fc0f9fb067d3a.description
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3091035256164358
-    m_Key: asset.875bf515b62c5bf44a0f67ab48330b66.displayName
-    m_Metadata:
-      m_Items: []
-  - m_Id: 3091035256164359
-    m_Key: asset.875bf515b62c5bf44a0f67ab48330b66.description
-    m_Metadata:
-      m_Items: []
   - m_Id: 3397458332942336
     m_Key: asset.3a669323573b7c144be1d6c8d11798e1.nameText
     m_Metadata:
@@ -7537,6 +7437,182 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 3397459331186688
     m_Key: asset.8d10d760988b81f4c826f2a3b4582465.rewardText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090273300480
+    m_Key: ui.settings_skin.screen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987200
+    m_Key: ui.settings_skin.environment
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987201
+    m_Key: ui.settings_skin.audio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987202
+    m_Key: ui.settings_skin.controls
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987203
+    m_Key: ui.settings_skin.movement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987204
+    m_Key: ui.settings_skin.combat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987205
+    m_Key: ui.settings_skin.consumables
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987206
+    m_Key: ui.settings_skin.utility
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987207
+    m_Key: ui.settings_skin.primary
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987208
+    m_Key: ui.settings_skin.secondary
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987209
+    m_Key: ui.settings_skin.settings_hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10245090503987210
+    m_Key: ui.settings_skin.keys_hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10548020289376256
+    m_Key: encyclopedia.item_not_acquired
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10548020859801600
+    m_Key: encyclopedia.monster_not_encountered
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10548020859801601
+    m_Key: encyclopedia.boss_not_encountered
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10990827974070272
+    m_Key: encyclopedia.item_stats
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11285825378488320
+    m_Key: ui.level_reward.close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11285827328839680
+    m_Key: ui.level_reward.reroll
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060528943104
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.clear_throat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412096
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.dignified_line
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412097
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.sword_pose
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412098
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.check_pose
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412099
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.choice_praise
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412100
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.praise_reply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412101
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.sword_tease
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412102
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.praise_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412103
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.choice_weird
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412104
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.weird_reply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412105
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.sword_defense
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7030060625412106
+    m_Key: dialogue.demonkingintrodialogue_animated.lesson.weird_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358447202304
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.intro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059904
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.estimate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059905
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.sword_nostalgic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059906
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.sword_reminder
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059907
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.protest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059908
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.request
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059909
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.choice_careful
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059910
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.careful_hope
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059911
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.sword_hope_tease
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059912
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.careful_end
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059913
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.choice_fancy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059914
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.fancy_cost
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059915
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.sword_fancy_tease
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7128358552059916
+    m_Key: dialogue.demonkingintrodialogue_animated.repair_cost.fancy_end
     m_Metadata:
       m_Items: []
   - m_Id: 5700027352858624
@@ -8457,10 +8533,6 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 10587451392507932
     m_Key: dialogue.merchant.run.greeting_full_b
-    m_Metadata:
-      m_Items: []
-  - m_Id: 53708325818380
-    m_Key: dialogue.shadowbossintrodialogue_animated.3c8bf328cb
     m_Metadata:
       m_Items: []
   - m_Id: 10653217630437376

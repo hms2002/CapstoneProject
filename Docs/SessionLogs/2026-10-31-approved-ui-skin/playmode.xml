@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="75" result="Failed(Child)" total="75" passed="73" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-31 04:33:55Z" end-time="2026-10-31 04:33:59Z" duration="3.3896959">
+  <test-suite type="TestSuite" id="2428" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="1194" result="Failed" site="Child" start-time="2026-10-31 04:33:55Z" end-time="2026-10-31 04:33:59Z" duration="3.389696" total="75" passed="73" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2424" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="1187" result="Failed" site="Child" start-time="2026-10-31 04:33:55Z" end-time="2026-10-31 04:33:59Z" duration="3.357474" total="75" passed="73" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="28496" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1111" name="ChestRevealWidthRegressionPlayModeTests" fullname="ChestRevealWidthRegressionPlayModeTests" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-31 04:33:55Z" end-time="2026-10-31 04:33:56Z" duration="0.567882" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="1115" name="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" fullname="ChestRevealWidthRegressionPlayModeTests.AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.153624" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1112" name="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(4)" fullname="ChestRevealWidthRegressionPlayModeTests.AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(4)" methodname="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="553862137" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.103806" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1113" name="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(5)" fullname="ChestRevealWidthRegressionPlayModeTests.AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(5)" methodname="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="717965586" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.014040" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1114" name="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(8)" fullname="ChestRevealWidthRegressionPlayModeTests.AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer(8)" methodname="AuthoredStock_InactiveCaptureThenActiveReveal_ContainsEveryOffer" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="692734174" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.017550" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1121" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.032606" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1117" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(False,56.0f,100.0f,13.0f)" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(False,56.0f,100.0f,13.0f)" methodname="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="613435683" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.001796" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1118" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,-1.0f,56.0f)" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,-1.0f,56.0f)" methodname="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1754001983" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.001084" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1119" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,80.0f,80.0f)" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,80.0f,80.0f)" methodname="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1536319546" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.000755" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1120" name="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,40.0f,56.0f)" fullname="ChestRevealWidthRegressionPlayModeTests.InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout(True,56.0f,40.0f,56.0f)" methodname="InactiveWidth_RespectsEnabledMinAndPreferredButIgnoresDisabledLayout" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="1876935281" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.000607" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1116" name="SelectionRerollAndReopen_KeepTheCapturedFrameUntilExplicitRelease" fullname="ChestRevealWidthRegressionPlayModeTests.SelectionRerollAndReopen_KeepTheCapturedFrameUntilExplicitRelease" methodname="SelectionRerollAndReopen_KeepTheCapturedFrameUntilExplicitRelease" classname="ChestRevealWidthRegressionPlayModeTests" runstate="Runnable" seed="840449151" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.055732" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1717" name="InputHudCleanupPlayModeTests" fullname="InputHudCleanupPlayModeTests" classname="InputHudCleanupPlayModeTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.141892" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1723" name="BossVanish_ReleasesHudWhileOwnerRemainsAlive" fullname="InputHudCleanupPlayModeTests.BossVanish_ReleasesHudWhileOwnerRemainsAlive" methodname="BossVanish_ReleasesHudWhileOwnerRemainsAlive" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="1637871948" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.005589" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1726" name="ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt" fullname="InputHudCleanupPlayModeTests.ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt" classname="InputHudCleanupPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.016505" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1724" name="ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt(&quot;WeaponSkillHUD2D&quot;)" fullname="InputHudCleanupPlayModeTests.ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt(&quot;WeaponSkillHUD2D&quot;)" methodname="ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="266332050" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.005589" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1725" name="ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt(&quot;SwapWeaponSkillHUD2D&quot;)" fullname="InputHudCleanupPlayModeTests.ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt(&quot;SwapWeaponSkillHUD2D&quot;)" methodname="ClearSlots_AfterInputServiceDestroyed_DoesNotRecreateIt" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="315126878" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.003398" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1721" name="ProceduralFader_RebuildsAfterPlacementAndDiscardsColorsBeforeReplacement" fullname="InputHudCleanupPlayModeTests.ProceduralFader_RebuildsAfterPlacementAndDiscardsColorsBeforeReplacement" methodname="ProceduralFader_RebuildsAfterPlacementAndDiscardsColorsBeforeReplacement" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="905455930" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.042001" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1720" name="SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud" fullname="InputHudCleanupPlayModeTests.SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud" classname="InputHudCleanupPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.035162" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1718" name="SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud(&quot;WeaponSkillHUD2D&quot;)" fullname="InputHudCleanupPlayModeTests.SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud(&quot;WeaponSkillHUD2D&quot;)" methodname="SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="689611346" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.019245" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1719" name="SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud(&quot;SwapWeaponSkillHUD2D&quot;)" fullname="InputHudCleanupPlayModeTests.SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud(&quot;SwapWeaponSkillHUD2D&quot;)" methodname="SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="1271026746" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.008021" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1722" name="StatusProjection_DeduplicatesSameOwnerButPreservesDifferentSlots" fullname="InputHudCleanupPlayModeTests.StatusProjection_DeduplicatesSameOwnerButPreservesDifferentSlots" methodname="StatusProjection_DeduplicatesSameOwnerButPreservesDifferentSlots" classname="InputHudCleanupPlayModeTests" runstate="Runnable" seed="379287586" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.020722" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="2049" name="PlayerControlAndChestRegressionPlayModeTests" fullname="PlayerControlAndChestRegressionPlayModeTests" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" testcasecount="43" result="Failed" site="Child" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:58Z" duration="1.776675" total="43" passed="41" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="2070" name="ActualExecution_OutlivesEstimatedRecovery_AndCancellationUnlocks" fullname="PlayerControlAndChestRegressionPlayModeTests.ActualExecution_OutlivesEstimatedRecovery_AndCancellationUnlocks" methodname="ActualExecution_OutlivesEstimatedRecovery_AndCancellationUnlocks" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="727143692" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.185932" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CursorDiagnostic] phase=display-stable-2s frame=16 screen=640x480 mode=Windowed focused=False visible=True lock=None domain=Combat/Default hiddenOwners=0 backend=UnityCursorAPI cursorMode=Auto texture=light_cursor_spritesheet_31_Cursor_22x22 hotspot=(11.00, 11.00)
+]]></output>
+        </test-case>
+        <test-case id="2072" name="AttackMotionLocksWalking_RepressWithoutNewAttackDoesNotRelock" fullname="PlayerControlAndChestRegressionPlayModeTests.AttackMotionLocksWalking_RepressWithoutNewAttackDoesNotRelock" methodname="AttackMotionLocksWalking_RepressWithoutNewAttackDoesNotRelock" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1948288701" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.002781" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2071" name="BufferedRequest_DoesNotLock_ButItsDeferredExecutionDoes" fullname="PlayerControlAndChestRegressionPlayModeTests.BufferedRequest_DoesNotLock_ButItsDeferredExecutionDoes" methodname="BufferedRequest_DoesNotLock_ButItsDeferredExecutionDoes" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="953702134" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:56Z" duration="0.019673" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2080" name="ChestSelection_AllAuthoredChestPrefabsHavePanelAndConfirmReferences" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_AllAuthoredChestPrefabsHavePanelAndConfirmReferences" methodname="ChestSelection_AllAuthoredChestPrefabsHavePanelAndConfirmReferences" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="760357756" result="Passed" start-time="2026-10-31 04:33:56Z" end-time="2026-10-31 04:33:57Z" duration="0.222044" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2079" name="ChestSelection_CompletionKeepsDimmedOpenChestWithoutCollisionOrReopening" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_CompletionKeepsDimmedOpenChestWithoutCollisionOrReopening" methodname="ChestSelection_CompletionKeepsDimmedOpenChestWithoutCollisionOrReopening" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1384367804" result="Passed" start-time="2026-10-31 04:33:57Z" end-time="2026-10-31 04:33:57Z" duration="0.005728" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="2097" name="ChestSelection_FullRelicInventoryReservesCombinedLevels" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_FullRelicInventoryReservesCombinedLevels" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-31 04:33:57Z" end-time="2026-10-31 04:33:57Z" duration="0.059644" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2095" name="ChestSelection_FullRelicInventoryReservesCombinedLevels(2,False)" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_FullRelicInventoryReservesCombinedLevels(2,False)" methodname="ChestSelection_FullRelicInventoryReservesCombinedLevels" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1636533010" result="Passed" start-time="2026-10-31 04:33:57Z" end-time="2026-10-31 04:33:57Z" duration="0.019498" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2096" name="ChestSelection_FullRelicInventoryReservesCombinedLevels(3,True)" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_FullRelicInventoryReservesCombinedLevels(3,True)" methodname="ChestSelection_FullRelicInventoryReservesCombinedLevels" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="793179561" result="Passed" start-time="2026-10-31 04:33:57Z" end-time="2026-10-31 04:33:57Z" duration="0.034677" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="2081" name="ChestSelection_LaterTransferFailureRollsBackEarlierItemAndAcquisitionCount" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_LaterTransferFailureRollsBackEarlierItemAndAcquisitionCount" methodname="ChestSelection_LaterTransferFailureRollsBackEarlierItemAndAcquisitionCount" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="348835602" result="Passed" start-time="2026-10-31 04:33:57Z" end-time="2026-10-31 04:33:57Z" duration="0.001947" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2078" name="ChestSelection_ReadOnlyAdapterRejectsTransfersBeforeRelicMerge" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_ReadOnlyAdapterRejectsTransfersBeforeRelicMerge" methodname="ChestSelection_ReadOnlyAdapterRejectsTransfersBeforeRelicMerge" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="531250001" result="Passed" start-time="2026-10-31 04:33:57Z" end-time="2026-10-31 04:33:57Z" duration="0.002737" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2077" name="ChestSelection_ReservesDistinctSlots_AndRejectsWholeSelectionWhenOnlyOneFits" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_ReservesDistinctSlots_AndRejectsWholeSelectionWhenOnlyOneFits" methodname="ChestSelection_ReservesDistinctSlots_AndRejectsWholeSelectionWhenOnlyOneFits" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1021098916" result="Failed" start-time="2026-10-31 04:33:57Z" end-time="2026-10-31 04:33:57Z" duration="0.006574" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: String containing "드래그"
+  But was:  "背包空间不足。请将背包物品拖至丢弃区域后，再次确认。"
+]]></message>
+            <stack-trace><![CDATA[at NUnit.Framework.StringAssert.Contains (System.String expected, System.String actual, System.String message, System.Object[] args) [0x00007] in <f577cd9686154d6ab10efd7e65e64366>:0
+at NUnit.Framework.StringAssert.Contains (System.String expected, System.String actual) [0x00000] in <f577cd9686154d6ab10efd7e65e64366>:0
+at PlayerControlAndChestRegressionPlayModeTests.ChestSelection_ReservesDistinctSlots_AndRejectsWholeSelectionWhenOnlyOneFits () [0x000db] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\PlayMode\Procedural\PlayerControlAndChestRegressionPlayModeTests.cs:607
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="2098" name="ChestSelection_SlotsMoveAndReturnInOriginalOrderWhilePaused_ClosingCancelsSelection" fullname="PlayerControlAndChestRegressionPlayModeTests.ChestSelection_SlotsMoveAndReturnInOriginalOrderWhilePaused_ClosingCancelsSelection" methodname="ChestSelection_SlotsMoveAndReturnInOriginalOrderWhilePaused_ClosingCancelsSelection" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1391560933" result="Passed" start-time="2026-10-31 04:33:57Z" end-time="2026-10-31 04:33:58Z" duration="0.947289" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2076" name="DuplicatePotion_HighlightBudgetTracksAcquisitionsAndReturns" fullname="PlayerControlAndChestRegressionPlayModeTests.DuplicatePotion_HighlightBudgetTracksAcquisitionsAndReturns" methodname="DuplicatePotion_HighlightBudgetTracksAcquisitionsAndReturns" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="414353851" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.004251" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="2068" name="HeartPush_FullHealthMovesOnlyOnSafeGround" fullname="PlayerControlAndChestRegressionPlayModeTests.HeartPush_FullHealthMovesOnlyOnSafeGround" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.065209" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2063" name="HeartPush_FullHealthMovesOnlyOnSafeGround(&quot;Open&quot;)" fullname="PlayerControlAndChestRegressionPlayModeTests.HeartPush_FullHealthMovesOnlyOnSafeGround(&quot;Open&quot;)" methodname="HeartPush_FullHealthMovesOnlyOnSafeGround" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1709857501" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.038323" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2064" name="HeartPush_FullHealthMovesOnlyOnSafeGround(&quot;Wall&quot;)" fullname="PlayerControlAndChestRegressionPlayModeTests.HeartPush_FullHealthMovesOnlyOnSafeGround(&quot;Wall&quot;)" methodname="HeartPush_FullHealthMovesOnlyOnSafeGround" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="709033844" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.008775" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2065" name="HeartPush_FullHealthMovesOnlyOnSafeGround(&quot;HoleTrap&quot;)" fullname="PlayerControlAndChestRegressionPlayModeTests.HeartPush_FullHealthMovesOnlyOnSafeGround(&quot;HoleTrap&quot;)" methodname="HeartPush_FullHealthMovesOnlyOnSafeGround" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="817666782" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.005004" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2066" name="HeartPush_FullHealthMovesOnlyOnSafeGround(&quot;Edge&quot;)" fullname="PlayerControlAndChestRegressionPlayModeTests.HeartPush_FullHealthMovesOnlyOnSafeGround(&quot;Edge&quot;)" methodname="HeartPush_FullHealthMovesOnlyOnSafeGround" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="201842354" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.003244" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2067" name="HeartPush_FullHealthMovesOnlyOnSafeGround(&quot;NoGround&quot;)" fullname="PlayerControlAndChestRegressionPlayModeTests.HeartPush_FullHealthMovesOnlyOnSafeGround(&quot;NoGround&quot;)" methodname="HeartPush_FullHealthMovesOnlyOnSafeGround" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="478816772" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.003546" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="2073" name="InputActionPressBlock_IsOwnerScoped_AndDoesNotBecomeAFullWeaponBlock" fullname="PlayerControlAndChestRegressionPlayModeTests.InputActionPressBlock_IsOwnerScoped_AndDoesNotBecomeAFullWeaponBlock" methodname="InputActionPressBlock_IsOwnerScoped_AndDoesNotBecomeAFullWeaponBlock" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="118755173" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.003648" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="2094" name="RelicLoot_ExcludesOwnedMaxLevel" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ExcludesOwnedMaxLevel" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.013572" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2089" name="RelicLoot_ExcludesOwnedMaxLevel(0,1,True)" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ExcludesOwnedMaxLevel(0,1,True)" methodname="RelicLoot_ExcludesOwnedMaxLevel" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1256114931" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.002862" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2090" name="RelicLoot_ExcludesOwnedMaxLevel(1,1,False)" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ExcludesOwnedMaxLevel(1,1,False)" methodname="RelicLoot_ExcludesOwnedMaxLevel" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1577251588" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.000483" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2091" name="RelicLoot_ExcludesOwnedMaxLevel(4,5,True)" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ExcludesOwnedMaxLevel(4,5,True)" methodname="RelicLoot_ExcludesOwnedMaxLevel" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1062054087" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.000573" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2092" name="RelicLoot_ExcludesOwnedMaxLevel(5,5,False)" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ExcludesOwnedMaxLevel(5,5,False)" methodname="RelicLoot_ExcludesOwnedMaxLevel" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1588761187" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.000529" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2093" name="RelicLoot_ExcludesOwnedMaxLevel(6,5,False)" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ExcludesOwnedMaxLevel(6,5,False)" methodname="RelicLoot_ExcludesOwnedMaxLevel" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1516322421" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.000411" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2088" name="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.030269" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2082" name="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(0,0,True)" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(0,0,True)" methodname="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1849163040" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.002236" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2083" name="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(5,0,False)" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(5,0,False)" methodname="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1974997301" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.004596" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2084" name="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(4,0,True)" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(4,0,True)" methodname="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="638378706" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.003513" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2085" name="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(4,1,False)" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(4,1,False)" methodname="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="424739276" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.003219" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2086" name="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(3,1,True)" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(3,1,True)" methodname="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1605203522" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.003759" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2087" name="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(3,2,False)" fullname="PlayerControlAndChestRegressionPlayModeTests.RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(3,2,False)" methodname="RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1386547027" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.002854" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2053" name="SceneTransition_ForcedParallelEndPreservesDeferredCooldown" fullname="PlayerControlAndChestRegressionPlayModeTests.SceneTransition_ForcedParallelEndPreservesDeferredCooldown" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.022246" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2050" name="SceneTransition_ForcedParallelEndPreservesDeferredCooldown(True,False,240.0f)" fullname="PlayerControlAndChestRegressionPlayModeTests.SceneTransition_ForcedParallelEndPreservesDeferredCooldown(True,False,240.0f)" methodname="SceneTransition_ForcedParallelEndPreservesDeferredCooldown" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1515934720" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.010941" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2051" name="SceneTransition_ForcedParallelEndPreservesDeferredCooldown(True,True,0.0f)" fullname="PlayerControlAndChestRegressionPlayModeTests.SceneTransition_ForcedParallelEndPreservesDeferredCooldown(True,True,0.0f)" methodname="SceneTransition_ForcedParallelEndPreservesDeferredCooldown" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="269017128" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.001915" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2052" name="SceneTransition_ForcedParallelEndPreservesDeferredCooldown(False,False,0.0f)" fullname="PlayerControlAndChestRegressionPlayModeTests.SceneTransition_ForcedParallelEndPreservesDeferredCooldown(False,False,0.0f)" methodname="SceneTransition_ForcedParallelEndPreservesDeferredCooldown" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1312049045" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.001936" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="2069" name="SkillCooldownBuffer_WaitsForReadyThenActivatesOnce" fullname="PlayerControlAndChestRegressionPlayModeTests.SkillCooldownBuffer_WaitsForReadyThenActivatesOnce" methodname="SkillCooldownBuffer_WaitsForReadyThenActivatesOnce" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="697840001" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.035387" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2075" name="SkillInputBlock_PreventsPressedSkillFromStarting" fullname="PlayerControlAndChestRegressionPlayModeTests.SkillInputBlock_PreventsPressedSkillFromStarting" methodname="SkillInputBlock_PreventsPressedSkillFromStarting" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="28735078" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.007152" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="2059" name="WeaponFeedback_ChargeReleaseThreshold" fullname="PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_ChargeReleaseThreshold" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.009658" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2054" name="WeaponFeedback_ChargeReleaseThreshold(0.0f,False)" fullname="PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_ChargeReleaseThreshold(0.0f,False)" methodname="WeaponFeedback_ChargeReleaseThreshold" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="967682179" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.001154" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2055" name="WeaponFeedback_ChargeReleaseThreshold(0.5f,False)" fullname="PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_ChargeReleaseThreshold(0.5f,False)" methodname="WeaponFeedback_ChargeReleaseThreshold" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="2110070115" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.000305" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2056" name="WeaponFeedback_ChargeReleaseThreshold(0.51f,True)" fullname="PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_ChargeReleaseThreshold(0.51f,True)" methodname="WeaponFeedback_ChargeReleaseThreshold" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="87935497" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.000237" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2057" name="WeaponFeedback_ChargeReleaseThreshold(0.99f,True)" fullname="PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_ChargeReleaseThreshold(0.99f,True)" methodname="WeaponFeedback_ChargeReleaseThreshold" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1615235465" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.000210" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2058" name="WeaponFeedback_ChargeReleaseThreshold(1.0f,True)" fullname="PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_ChargeReleaseThreshold(1.0f,True)" methodname="WeaponFeedback_ChargeReleaseThreshold" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1835766214" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.000218" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="2062" name="WeaponFeedback_FirstMarkRushGuidanceCompletionIsPerSaveSlot" fullname="PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_FirstMarkRushGuidanceCompletionIsPerSaveSlot" methodname="WeaponFeedback_FirstMarkRushGuidanceCompletionIsPerSaveSlot" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="730685046" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.008450" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[AffectionManager] Reloaded affection data for slot 2. NPC count: 0
+[AffectionManager] Reloaded affection data for slot 1. NPC count: 0
+]]></output>
+        </test-case>
+        <test-case id="2061" name="WeaponFeedback_MarkOutlineAndKeyFollowAvailabilityAndRebinding" fullname="PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_MarkOutlineAndKeyFollowAvailabilityAndRebinding" methodname="WeaponFeedback_MarkOutlineAndKeyFollowAvailabilityAndRebinding" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1670158623" result="Failed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.056502" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: RGBA(0.000, 0.627, 0.902, 1.000)
+  But was:  RGBA(0.000, 0.627, 0.902, 1.000)
+]]></message>
+            <stack-trace><![CDATA[at PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_MarkOutlineAndKeyFollowAvailabilityAndRebinding () [0x0015f] in C:\Users\nadom\Desktop\졸업작품\CapstoneProject\Assets\_Project\Tests\PlayMode\Procedural\PlayerControlAndChestRegressionPlayModeTests.cs:134
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="2060" name="WeaponFeedback_QuickChargeReleaseCancelsAndClearsHold" fullname="PlayerControlAndChestRegressionPlayModeTests.WeaponFeedback_QuickChargeReleaseCancelsAndClearsHold" methodname="WeaponFeedback_QuickChargeReleaseCancelsAndClearsHold" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="605544149" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.009949" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2074" name="WorldItemHover_OwnsBothSkillPressBlocksUntilHidden" fullname="PlayerControlAndChestRegressionPlayModeTests.WorldItemHover_OwnsBothSkillPressBlocksUntilHidden" methodname="WorldItemHover_OwnsBothSkillPressBlocksUntilHidden" classname="PlayerControlAndChestRegressionPlayModeTests" runstate="Runnable" seed="1043365242" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.001946" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="2099" name="PlayerInventorySlotReusePlayModeTests" fullname="PlayerInventorySlotReusePlayModeTests" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.359986" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="2106" name="ActiveOwnerDestroy_ReleasesAdaptersAndRetainedViews_ConfigureRemainsFillOnly" fullname="PlayerInventorySlotReusePlayModeTests.ActiveOwnerDestroy_ReleasesAdaptersAndRetainedViews_ConfigureRemainsFillOnly" methodname="ActiveOwnerDestroy_ReleasesAdaptersAndRetainedViews_ConfigureRemainsFillOnly" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="1653250752" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.076194" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2103" name="ClearBinding_ResetsPanelInteractionState_WithoutChangingGenericChestDisableMeaning" fullname="PlayerInventorySlotReusePlayModeTests.ClearBinding_ResetsPanelInteractionState_WithoutChangingGenericChestDisableMeaning" methodname="ClearBinding_ResetsPanelInteractionState_WithoutChangingGenericChestDisableMeaning" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="941865383" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.036697" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2102" name="ConfigurationCountAndExternalParentChanges_DiscardOnlyAffectedGroupWithoutDormantExtras" fullname="PlayerInventorySlotReusePlayModeTests.ConfigurationCountAndExternalParentChanges_DiscardOnlyAffectedGroupWithoutDormantExtras" methodname="ConfigurationCountAndExternalParentChanges_DiscardOnlyAffectedGroupWithoutDormantExtras" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="402944062" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.098562" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2101" name="InactivePreparedBind_ClearAndRebind_DetachesSubscriptionsBeforeFirstEnable" fullname="PlayerInventorySlotReusePlayModeTests.InactivePreparedBind_ClearAndRebind_DetachesSubscriptionsBeforeFirstEnable" methodname="InactivePreparedBind_ClearAndRebind_DetachesSubscriptionsBeforeFirstEnable" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="469227560" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.017934" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2105" name="MatchingHoverAndOwnedDrag_ClearBeforeAdapterDisposal" fullname="PlayerInventorySlotReusePlayModeTests.MatchingHoverAndOwnedDrag_ClearBeforeAdapterDisposal" methodname="MatchingHoverAndOwnedDrag_ClearBeforeAdapterDisposal" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="1565727185" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.036037" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2100" name="RepeatedPlayerRebind_ReusesInstancesAndDisposesOldAdaptersWithSingleSubscriptions" fullname="PlayerInventorySlotReusePlayModeTests.RepeatedPlayerRebind_ReusesInstancesAndDisposesOldAdaptersWithSingleSubscriptions" methodname="RepeatedPlayerRebind_ReusesInstancesAndDisposesOldAdaptersWithSingleSubscriptions" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="1355661688" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.038893" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2104" name="ReusedSlots_ActualDropTransfer_UsesNewAdaptersAndPreservesItems" fullname="PlayerInventorySlotReusePlayModeTests.ReusedSlots_ActualDropTransfer_UsesNewAdaptersAndPreservesItems" methodname="ReusedSlots_ActualDropTransfer_UsesNewAdaptersAndPreservesItems" classname="PlayerInventorySlotReusePlayModeTests" runstate="Runnable" seed="944527235" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.046094" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="2114" name="PotionRewardPlayModeTests" fullname="PotionRewardPlayModeTests" classname="PotionRewardPlayModeTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:59Z" duration="0.433954" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="2125" name="AuthoredCards_AreUniquePersistentTriggers_WithImmediateArtwork" fullname="PotionRewardPlayModeTests.AuthoredCards_AreUniquePersistentTriggers_WithImmediateArtwork" methodname="AuthoredCards_AreUniquePersistentTriggers_WithImmediateArtwork" classname="PotionRewardPlayModeTests" runstate="Runnable" seed="1969523005" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:58Z" duration="0.009909" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2124" name="Cheer_ReapplyPreservesDeadline_AndExpirationRemovesBothStatsAndHud" fullname="PotionRewardPlayModeTests.Cheer_ReapplyPreservesDeadline_AndExpirationRemovesBothStatsAndHud" methodname="Cheer_ReapplyPreservesDeadline_AndExpirationRemovesBothStatsAndHud" classname="PotionRewardPlayModeTests" runstate="Runnable" seed="1131362973" result="Passed" start-time="2026-10-31 04:33:58Z" end-time="2026-10-31 04:33:59Z" duration="0.366370" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=PotionRewardTestOwner
+[PlayerStatusRuntime] Applied status 'level_reward.potion_cheer' (id=1, ownerKey=level_reward.potion_cheer)
+[PlayerStatusRuntime] Released status 'level_reward.potion_cheer' (id=1)
+[PlayerStatusRuntime] Applied status 'level_reward.potion_cheer' (id=2, ownerKey=level_reward.potion_cheer)
+[PlayerStatusRuntime] Released status 'level_reward.potion_cheer' (id=2)
+]]></output>
+        </test-case>
+        <test-case id="2122" name="Cheer_TwoPotionUsesRefreshWithoutStacking_AndDisposeClearsBuff" fullname="PotionRewardPlayModeTests.Cheer_TwoPotionUsesRefreshWithoutStacking_AndDisposeClearsBuff" methodname="Cheer_TwoPotionUsesRefreshWithoutStacking_AndDisposeClearsBuff" classname="PotionRewardPlayModeTests" runstate="Runnable" seed="77967509" result="Passed" start-time="2026-10-31 04:33:59Z" end-time="2026-10-31 04:33:59Z" duration="0.014508" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[PlayerStatusHudSource] Registered. runtime=PotionRewardTestOwner
+[PlayerStatusRuntime] Applied status 'level_reward.potion_cheer' (id=1, ownerKey=level_reward.potion_cheer)
+[PlayerStatusRuntime] Released status 'level_reward.potion_cheer' (id=1)
+]]></output>
+        </test-case>
+        <test-case id="2121" name="Growth_CountsOnlySuccessfulPotionUsesAfterAcquisition" fullname="PotionRewardPlayModeTests.Growth_CountsOnlySuccessfulPotionUsesAfterAcquisition" methodname="Growth_CountsOnlySuccessfulPotionUsesAfterAcquisition" classname="PotionRewardPlayModeTests" runstate="Runnable" seed="30865749" result="Passed" start-time="2026-10-31 04:33:59Z" end-time="2026-10-31 04:33:59Z" duration="0.002891" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2123" name="Growth_RestoresRunCountWithoutCompounding_AndFreshRunStartsAtZero" fullname="PotionRewardPlayModeTests.Growth_RestoresRunCountWithoutCompounding_AndFreshRunStartsAtZero" methodname="Growth_RestoresRunCountWithoutCompounding_AndFreshRunStartsAtZero" classname="PotionRewardPlayModeTests" runstate="Runnable" seed="980613183" result="Passed" start-time="2026-10-31 04:33:59Z" end-time="2026-10-31 04:33:59Z" duration="0.001555" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="2118" name="InventoryPointerClick_UsesOnlyClickedPotionOnRightClick" fullname="PotionRewardPlayModeTests.InventoryPointerClick_UsesOnlyClickedPotionOnRightClick" classname="PotionRewardPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-31 04:33:59Z" end-time="2026-10-31 04:33:59Z" duration="0.008542" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2115" name="InventoryPointerClick_UsesOnlyClickedPotionOnRightClick(50.0f,True,True)" fullname="PotionRewardPlayModeTests.InventoryPointerClick_UsesOnlyClickedPotionOnRightClick(50.0f,True,True)" methodname="InventoryPointerClick_UsesOnlyClickedPotionOnRightClick" classname="PotionRewardPlayModeTests" runstate="Runnable" seed="1616383509" result="Passed" start-time="2026-10-31 04:33:59Z" end-time="2026-10-31 04:33:59Z" duration="0.002641" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2116" name="InventoryPointerClick_UsesOnlyClickedPotionOnRightClick(100.0f,True,False)" fullname="PotionRewardPlayModeTests.InventoryPointerClick_UsesOnlyClickedPotionOnRightClick(100.0f,True,False)" methodname="InventoryPointerClick_UsesOnlyClickedPotionOnRightClick" classname="PotionRewardPlayModeTests" runstate="Runnable" seed="525490258" result="Passed" start-time="2026-10-31 04:33:59Z" end-time="2026-10-31 04:33:59Z" duration="0.000933" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2117" name="InventoryPointerClick_UsesOnlyClickedPotionOnRightClick(50.0f,False,False)" fullname="PotionRewardPlayModeTests.InventoryPointerClick_UsesOnlyClickedPotionOnRightClick(50.0f,False,False)" methodname="InventoryPointerClick_UsesOnlyClickedPotionOnRightClick" classname="PotionRewardPlayModeTests" runstate="Runnable" seed="213018120" result="Passed" start-time="2026-10-31 04:33:59Z" end-time="2026-10-31 04:33:59Z" duration="0.000739" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="2120" name="RecoveryPendant_IsPotionOnly_AndRestoreAttachDoesNotStack" fullname="PotionRewardPlayModeTests.RecoveryPendant_IsPotionOnly_AndRestoreAttachDoesNotStack" methodname="RecoveryPendant_IsPotionOnly_AndRestoreAttachDoesNotStack" classname="PotionRewardPlayModeTests" runstate="Runnable" seed="1315561495" result="Passed" start-time="2026-10-31 04:33:59Z" end-time="2026-10-31 04:33:59Z" duration="0.003700" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2119" name="SuccessfulUse_EmitsOnceAfterSlotConsumption_AndFullHealthDoesNotConsume" fullname="PotionRewardPlayModeTests.SuccessfulUse_EmitsOnceAfterSlotConsumption_AndFullHealthDoesNotConsume" methodname="SuccessfulUse_EmitsOnceAfterSlotConsumption_AndFullHealthDoesNotConsume" classname="PotionRewardPlayModeTests" runstate="Runnable" seed="1747077946" result="Passed" start-time="2026-10-31 04:33:59Z" end-time="2026-10-31 04:33:59Z" duration="0.002098" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

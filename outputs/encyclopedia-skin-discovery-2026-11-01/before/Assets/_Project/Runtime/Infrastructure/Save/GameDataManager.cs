@@ -1,0 +1,183 @@
+using UnityEngine;
+
+// 책임: 영구 게임 저장 데이터를 로드/저장하고 Core GameDataStore 백엔드를 등록한다.
+public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
+{
+    public static GameDataManager Instance { get; private set; }
+
+    private static bool s_isQuitting;
+
+    public GameData Data { get; private set; }
+    public int ActiveSlotIndex { get; private set; }
+    public event System.Action<GameData, int> OnDataLoaded;
+
+    private GameDataRepository repository;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void AutoBootstrap()
+    {
+        if (s_isQuitting || Instance != null)
+            return;
+
+        var go = new GameObject(nameof(GameDataManager));
+        go.AddComponent<GameDataManager>();
+    }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        GameDataStore.RegisterBackend(this);
+        DontDestroyOnLoad(gameObject);
+
+        repository = new GameDataRepository(ActiveSlotIndex);
+        LoadData();
+    }
+
+    private void OnDestroy()
+    {
+        GameDataStore.UnregisterBackend(this);
+
+        if (Instance == this)
+            Instance = null;
+    }
+
+    public void RequestImmediateSave(Object requester)
+    {
+        GameDataSaveCoordinator.RequestImmediateSave(requester);
+    }
+
+    public void RequestDeferredSave(Object requester)
+    {
+        GameDataSaveCoordinator.RequestDeferredSave(requester);
+    }
+
+    public void FlushSave(Object requester)
+    {
+        GameDataSaveCoordinator.FlushNow(requester);
+    }
+
+    public void LoadData()
+    {
+        LoadData(ActiveSlotIndex);
+    }
+
+    public void LoadData(int slotIndex)
+    {
+        ActiveSlotIndex = Mathf.Max(0, slotIndex);
+        repository = new GameDataRepository(ActiveSlotIndex);
+        Data = repository.LoadOrCreate();
+        NormalizeLoadedData();
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[GameDataManager] Game data loaded for slot {ActiveSlotIndex + 1}.");
+        OnDataLoaded?.Invoke(Data, ActiveSlotIndex);
+    }
+
+    public bool LoadSlot(int slotIndex)
+    {
+        int normalizedSlotIndex = Mathf.Max(0, slotIndex);
+        LoadData(normalizedSlotIndex);
+        return true;
+    }
+
+    public void ResetLoadedSlotIfActive(int slotIndex)
+    {
+        int normalizedSlotIndex = Mathf.Max(0, slotIndex);
+        if (normalizedSlotIndex != ActiveSlotIndex)
+            return;
+
+        repository = new GameDataRepository(ActiveSlotIndex);
+        Data = new GameData();
+        NormalizeLoadedData();
+        OnDataLoaded?.Invoke(Data, ActiveSlotIndex);
+    }
+
+    public GameData EnsureData()
+    {
+        if (Data == null)
+            Data = new GameData();
+
+        return Data;
+    }
+
+    public void SaveData()
+    {
+        EnsureData();
+
+        if (Data.itemData == null)
+            Data.itemData = new ItemSaveData();
+
+        if (Data.bossDialogueData == null)
+            Data.bossDialogueData = new BossDialogueSaveData();
+        Data.bossDialogueData.bossRecords ??= new System.Collections.Generic.List<BossDialogueRecord>();
+
+        Data.bossClearProgressData ??= new BossClearProgressSaveData();
+        Data.bossClearProgressData.clearedBossThemeIds ??= new System.Collections.Generic.List<string>();
+
+        if (Data.runSpecialNpcData == null)
+            Data.runSpecialNpcData = new RunSpecialNpcSaveData();
+        Data.runSpecialNpcData.constructionRecords ??= new System.Collections.Generic.List<RunSpecialNpcConstructionRecord>();
+
+        if (Data.tutorialData == null)
+            Data.tutorialData = new TutorialSaveData();
+        Data.tutorialData.Normalize();
+
+        Data.monsterEncyclopediaData ??= new MonsterEncyclopediaSaveData();
+        Data.monsterEncyclopediaData.Normalize();
+
+        ItemManager itemManager = ItemManager.Instance;
+        if (itemManager != null && itemManager.IsReady)
+        {
+            Data.itemData.unlockedWeaponIDs = itemManager.GetUnlockedWeaponIDs();
+            Data.itemData.unlockedRelicIDs = itemManager.GetUnlockedRelicIDs();
+        }
+
+        if (UpgradeManager.Instance != null)
+        {
+            var allUpgrades = UpgradeManager.Instance.GetAllUpgrades();
+            Data.knownTotalUpgradeCount = allUpgrades != null ? Mathf.Max(0, allUpgrades.Count) : 0;
+        }
+
+        repository ??= new GameDataRepository(ActiveSlotIndex);
+        repository.Save(Data);
+        CapstoneDiagnostics.EditorOnlyLog.Log(
+            $"[GameDataManager] Save complete. Persistent: {repository.SavePath}, Inspectable: {repository.InspectableSavePath}");
+    }
+
+    private void NormalizeLoadedData()
+    {
+        EnsureData();
+
+        Data.itemData ??= new ItemSaveData();
+        Data.affectionData ??= new AffectionSaveData();
+        Data.bossDialogueData ??= new BossDialogueSaveData();
+        Data.bossDialogueData.bossRecords ??= new System.Collections.Generic.List<BossDialogueRecord>();
+        Data.bossClearProgressData ??= new BossClearProgressSaveData();
+        Data.bossClearProgressData.clearedBossThemeIds ??= new System.Collections.Generic.List<string>();
+        Data.runSpecialNpcData ??= new RunSpecialNpcSaveData();
+        Data.runSpecialNpcData.constructionRecords ??= new System.Collections.Generic.List<RunSpecialNpcConstructionRecord>();
+        Data.tutorialData ??= new TutorialSaveData();
+        Data.tutorialData.Normalize();
+        Data.monsterEncyclopediaData ??= new MonsterEncyclopediaSaveData();
+        Data.monsterEncyclopediaData.Normalize();
+    }
+
+    private void OnApplicationQuit()
+    {
+        s_isQuitting = true;
+
+        if (GamePlayDataManager.Instance != null
+            && GamePlayDataManager.Instance.Data != null
+            && GamePlayDataManager.Instance.Data.isRunActive)
+        {
+            CapstoneDiagnostics.EditorOnlyLog.Log("[GameDataManager] Skipping save on quit because a run is still active.");
+            return;
+        }
+
+        SaveData();
+    }
+}

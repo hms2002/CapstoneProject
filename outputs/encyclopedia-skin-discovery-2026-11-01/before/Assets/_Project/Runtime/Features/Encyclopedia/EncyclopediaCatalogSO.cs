@@ -1,0 +1,223 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+public enum EncyclopediaCategory
+{
+    Weapon,
+    Monster,
+    Boss,
+    Relic,
+    Consumable
+}
+
+public enum EncyclopediaMainTab
+{
+    Item,
+    Monster,
+    Boss,
+    NPC
+}
+
+public enum EncyclopediaItemSubTab
+{
+    Weapon,
+    Relic,
+    Consumable
+}
+
+[Serializable]
+public sealed class EncyclopediaWeaponEntry
+{
+    [NonSerialized] internal EncyclopediaCatalogSO localizationOwner;
+    [NonSerialized] internal int localizationIndex;
+    public string StageText => GameText.Asset(localizationOwner,
+        $"weaponEntries.Array.data[{localizationIndex}].stageText", stageText);
+    public string idOverride;
+    public WeaponDefinition weapon;
+    public Sprite imageOverride;
+    public string stageText;
+
+    public string Id => !string.IsNullOrWhiteSpace(idOverride)
+        ? idOverride
+        : weapon != null ? weapon.weaponId : string.Empty;
+
+    public string DisplayName => weapon != null ? weapon.DisplayName : Id;
+    public Sprite Image => imageOverride != null ? imageOverride : weapon != null ? weapon.icon : null;
+}
+
+[Serializable]
+public sealed class EncyclopediaMonsterEntry
+{
+    [NonSerialized] internal EncyclopediaCatalogSO localizationOwner;
+    [NonSerialized] internal int localizationIndex;
+    public string DisplayName => Localized("displayName", displayName);
+    public string AttackStyle => Localized("attackStyle", attackStyle);
+    public string StageText => Localized("stageText", stageText);
+    public string StoryText => Localized("storyText", storyText);
+    private string Localized(string field, string fallback) => GameText.Asset(localizationOwner,
+        $"monsterEntries.Array.data[{localizationIndex}].{field}", fallback);
+    public string id;
+    public string displayName;
+    public Sprite image;
+    public string type;
+    public string attackStyle;
+    public string stageText;
+    [TextArea] public string storyText;
+    public GameObject sourcePrefab;
+    public Sprite[] previewFrames = Array.Empty<Sprite>();
+    public float previewFrameRate = 8f;
+}
+
+[Serializable]
+public sealed class EncyclopediaPortrait
+{
+    public string label;
+    public Sprite sprite;
+}
+
+[Serializable]
+public sealed class EncyclopediaBossEntry
+{
+    [NonSerialized] internal EncyclopediaCatalogSO localizationOwner;
+    [NonSerialized] internal int localizationIndex;
+    public string DisplayName => Localized("displayName", displayName);
+    public string AttackStyle => Localized("attackStyle", attackStyle);
+    public string StageText => Localized("stageText", stageText);
+    public string StoryText => Localized("storyText", storyText);
+    private string Localized(string field, string fallback) => GameText.Asset(localizationOwner,
+        $"bossEntries.Array.data[{localizationIndex}].{field}", fallback);
+    public string id;
+    public string displayName;
+    public Sprite image;
+    public string type;
+    public string attackStyle;
+    public string stageText;
+    [TextArea] public string storyText;
+    public GameObject sourcePrefab;
+    public NPCData npcData;
+    public List<EncyclopediaPortrait> portraits = new();
+}
+
+[Serializable]
+public sealed class EncyclopediaNpcEntry
+{
+    [NonSerialized] internal EncyclopediaCatalogSO localizationOwner;
+    [NonSerialized] internal int localizationIndex;
+    public NPCData npcData;
+    [TextArea] public string storyText;
+    public List<EncyclopediaPortrait> portraits = new();
+    public string DisplayName => npcData != null ? npcData.DisplayName : string.Empty;
+    public string StoryText => GameText.Asset(localizationOwner,
+        $"npcEntries.Array.data[{localizationIndex}].storyText", storyText);
+}
+
+[CreateAssetMenu(fileName = "EncyclopediaCatalog", menuName = "Game/Encyclopedia/Catalog")]
+public sealed class EncyclopediaCatalogSO : ScriptableObject
+{
+    [Header("Weapons")]
+    [SerializeField] private List<EncyclopediaWeaponEntry> weaponEntries = new();
+
+    [Header("Monsters")]
+    [SerializeField] private List<EncyclopediaMonsterEntry> monsterEntries = new();
+
+    [Header("Bosses")]
+    [SerializeField] private List<EncyclopediaBossEntry> bossEntries = new();
+
+    [Header("NPCs")]
+    [SerializeField] private List<EncyclopediaNpcEntry> npcEntries = new();
+
+    public IReadOnlyList<EncyclopediaWeaponEntry> WeaponEntries => weaponEntries;
+    public IReadOnlyList<EncyclopediaMonsterEntry> MonsterEntries => monsterEntries;
+    public IReadOnlyList<EncyclopediaBossEntry> BossEntries => bossEntries;
+    public IReadOnlyList<EncyclopediaNpcEntry> NpcEntries => npcEntries;
+
+    public int GetCount(EncyclopediaCategory category)
+    {
+        return category switch
+        {
+            EncyclopediaCategory.Weapon => weaponEntries != null ? weaponEntries.Count : 0,
+            EncyclopediaCategory.Monster => monsterEntries != null ? monsterEntries.Count : 0,
+            EncyclopediaCategory.Boss => bossEntries != null ? bossEntries.Count : 0,
+            _ => 0
+        };
+    }
+
+    public string GetDisplayName(EncyclopediaCategory category, int index)
+    {
+        return category switch
+        {
+            EncyclopediaCategory.Weapon => TryGetWeapon(index, out var weapon) ? weapon.DisplayName : string.Empty,
+            EncyclopediaCategory.Monster => TryGetMonster(index, out var monster) ? monster.DisplayName : string.Empty,
+            EncyclopediaCategory.Boss => TryGetBoss(index, out var boss) ? boss.DisplayName : string.Empty,
+            _ => string.Empty
+        };
+    }
+
+    public Sprite GetImage(EncyclopediaCategory category, int index)
+    {
+        return category switch
+        {
+            EncyclopediaCategory.Weapon => TryGetWeapon(index, out var weapon) ? weapon.Image : null,
+            EncyclopediaCategory.Monster => TryGetMonster(index, out var monster) ? monster.image : null,
+            EncyclopediaCategory.Boss => TryGetBoss(index, out var boss) ? boss.image : null,
+            _ => null
+        };
+    }
+
+    public bool TryGetWeapon(int index, out EncyclopediaWeaponEntry entry)
+    {
+        if (!TryGetEntry(weaponEntries, index, out entry)) return false;
+        entry.localizationOwner = this;
+        entry.localizationIndex = index;
+        return true;
+    }
+
+    public bool TryGetMonster(int index, out EncyclopediaMonsterEntry entry)
+    {
+        if (!TryGetEntry(monsterEntries, index, out entry)) return false;
+        entry.localizationOwner = this;
+        entry.localizationIndex = index;
+        return true;
+    }
+
+    public bool TryGetBoss(int index, out EncyclopediaBossEntry entry)
+    {
+        if (!TryGetEntry(bossEntries, index, out entry)) return false;
+        entry.localizationOwner = this;
+        entry.localizationIndex = index;
+        return true;
+    }
+
+    public bool TryGetNpc(int index, out EncyclopediaNpcEntry entry)
+    {
+        if (!TryGetEntry(npcEntries, index, out entry)) return false;
+        entry.localizationOwner = this;
+        entry.localizationIndex = index;
+        return true;
+    }
+
+#if UNITY_EDITOR
+    public void SetEntries(
+        IEnumerable<EncyclopediaWeaponEntry> weapons,
+        IEnumerable<EncyclopediaMonsterEntry> monsters,
+        IEnumerable<EncyclopediaBossEntry> bosses)
+    {
+        weaponEntries = weapons != null ? new List<EncyclopediaWeaponEntry>(weapons) : new List<EncyclopediaWeaponEntry>();
+        monsterEntries = monsters != null ? new List<EncyclopediaMonsterEntry>(monsters) : new List<EncyclopediaMonsterEntry>();
+        bossEntries = bosses != null ? new List<EncyclopediaBossEntry>(bosses) : new List<EncyclopediaBossEntry>();
+    }
+#endif
+
+    private static bool TryGetEntry<T>(IReadOnlyList<T> entries, int index, out T entry) where T : class
+    {
+        if (entries != null && index >= 0 && index < entries.Count)
+        {
+            entry = entries[index];
+            return entry != null;
+        }
+
+        entry = default;
+        return false;
+    }
+}

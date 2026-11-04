@@ -1,0 +1,500 @@
+#if UNITY_EDITOR
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using TMPro;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEditor.Events;
+using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
+using UnityEngine.Localization.Tables;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
+
+/// <summary>Scoped native authoring of the approved settings and key mapping skin.</summary>
+public static class SettingsSkinAuthoring
+{
+    public const string GlobalPath = "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab";
+    public const string TitlePath = "Assets/_Project/Scenes/TitleScene.unity";
+    public const string RowPath = "Assets/_Project/Prefabs/UI/KeyMapRow.prefab";
+    public const string ArtPath = "Assets/_Project/Art/Sprites/UI/SettingsSkin/";
+    static readonly Dictionary<string, Sprite> sprites = new();
+    static readonly List<Action> textStyles = new();
+    static readonly int[] order = { 0, 1, 2, 3, 6, 4, 7, 8, 9, 10, 11, 12, 13, 5, 14, 16, 17, 18, 19 };
+
+    public static void ApplyInPlaceNavigation()
+    {
+        // Only the settings root gains an authored visibility group. Keep every
+        // other existing block, including localized text and geometry, unchanged.
+        string original = File.ReadAllText(GlobalPath);
+        var persistent = AssetDatabase.LoadAssetAtPath<GameObject>(GlobalPath).GetComponentInChildren<SettingsPanelUI>(true);
+        var ids = VisibilityIds(persistent);
+        EditPrefab(GlobalPath, root => AuthorVisibility(root.GetComponentInChildren<SettingsPanelUI>(true)), "PopupCanvas/SettingUI");
+        PreserveOutsideScope(GlobalPath, original, ids);
+        original = File.ReadAllText(TitlePath);
+        var scene = EditorSceneManager.OpenScene(TitlePath, OpenSceneMode.Single);
+        var panel = scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<SettingsPanelUI>(true)).Single();
+        ids = VisibilityIds(panel);
+        AuthorVisibility(panel);
+        EditorSceneManager.SaveScene(scene);
+        PreserveOutsideScope(TitlePath, original, ids);
+        Unity.CodeEditor.CodeEditor.CurrentEditor.SyncAll();
+        Debug.Log("SETTINGS_IN_PLACE_AUTHOR_PASS");
+    }
+
+    static HashSet<ulong> VisibilityIds(SettingsPanelUI panel) => panel.GetComponents<Component>().Cast<Object>()
+        .Append(panel.gameObject).Select(o => GlobalObjectId.GetGlobalObjectIdSlow(o).targetObjectId).ToHashSet();
+
+    static void AuthorVisibility(SettingsPanelUI panel)
+    {
+        var group = panel.GetComponent<CanvasGroup>();
+        if (group == null) group = panel.gameObject.AddComponent<CanvasGroup>();
+        group.alpha = 1; group.interactable = true; group.blocksRaycasts = true;
+        var serialized = new SerializedObject(panel);
+        serialized.FindProperty("temporaryHiddenCanvasGroup").objectReferenceValue = group;
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    [MenuItem("Tools/UI/Apply Approved Settings Skin")]
+    public static void Apply()
+    {
+        ImportArt();
+        AddTranslations();
+        EditPrefab(RowPath, StyleKeyRow, "");
+        EditPrefab(GlobalPath, StylePanels, "PopupCanvas/SettingUI", "PopupCanvas/KeyMappingUI");
+        string original = File.ReadAllText(TitlePath);
+        var scene = EditorSceneManager.OpenScene(TitlePath, OpenSceneMode.Single);
+        var panels = scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<SettingsPanelUI>(true)
+            .Select(p => p.gameObject).Concat(r.GetComponentsInChildren<KeyBindingPanelUI>(true).Select(p => p.gameObject))).ToArray();
+        var ids = CaptureIds(panels);
+        textStyles.Clear();
+        foreach (var panel in panels)
+            if (panel.TryGetComponent<SettingsPanelUI>(out var settings)) StyleSettings(settings); else StyleKeys(panel.GetComponent<KeyBindingPanelUI>());
+        foreach (Action style in textStyles) style();
+        EditorSceneManager.SaveScene(scene);
+        PreserveOutsideScope(TitlePath, original, ids);
+        Unity.CodeEditor.CodeEditor.CurrentEditor.SyncAll();
+        Debug.Log("SETTINGS_SKIN_AUTHOR_PASS");
+    }
+
+#pragma warning disable CS0618
+    static void ImportArt()
+    {
+        string path = ArtPath + "SettingsSkin.png";
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+        var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+        importer.textureType = TextureImporterType.Sprite; importer.spriteImportMode = SpriteImportMode.Multiple;
+        importer.spritePixelsPerUnit = 100; importer.filterMode = FilterMode.Point;
+        importer.mipmapEnabled = false; importer.textureCompression = TextureImporterCompression.Uncompressed;
+        importer.alphaIsTransparency = true; importer.npotScale = TextureImporterNPOTScale.None;
+        importer.wrapMode = TextureWrapMode.Clamp;
+        var settings = new TextureImporterSettings(); importer.ReadTextureSettings(settings);
+        settings.spriteMeshType = SpriteMeshType.FullRect; importer.SetTextureSettings(settings);
+        SpriteMetaData Slice(string name, int x, int y, int w, int h, int border) => new()
+        { name = name, rect = new Rect(x, 64-y-h, w, h), pivot = Vector2.one * .5f,
+            alignment = (int)SpriteAlignment.Center, border = Vector4.one * border };
+        importer.spritesheet = new[] { Slice("Panel",0,0,32,32,5), Slice("Row",40,0,32,32,5),
+            Slice("Button",80,0,32,32,5), Slice("Key",120,0,32,32,5), Slice("Handle",160,0,16,24,3),
+            Slice("Track",184,0,16,12,1), Slice("Fill",208,0,16,12,1), Slice("Divider",232,0,8,2,0), Slice("Reset",232,16,12,12,0) };
+        importer.SaveAndReimport();
+        foreach (var sprite in AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>()) sprites[sprite.name] = sprite;
+    }
+#pragma warning restore CS0618
+
+    static void EditPrefab(string path, Action<GameObject> edit, params string[] approved)
+    {
+        string original = File.ReadAllText(path);
+        var persistent = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+        var ids = CaptureIds(approved.Select(p => string.IsNullOrEmpty(p) ? persistent : persistent.transform.Find(p).gameObject));
+        var preservation = UiPrefabPresentationPreservation.Capture(persistent, approved);
+        var root = PrefabUtility.LoadPrefabContents(path);
+        textStyles.Clear();
+        try
+        {
+            preservation.BindLoadedRoot(root); edit(root); preservation.RestoreBeforeSave();
+            foreach (Action style in textStyles) style();
+            PrefabUtility.SaveAsPrefabAsset(root, path);
+        }
+        finally { PrefabUtility.UnloadPrefabContents(root); textStyles.Clear(); }
+        PreserveOutsideScope(path, original, ids);
+    }
+
+    static HashSet<ulong> CaptureIds(IEnumerable<GameObject> roots)
+    {
+        var ids = new HashSet<ulong>();
+        foreach (var root in roots)
+            foreach (var t in root.GetComponentsInChildren<Transform>(true))
+                foreach (var o in t.GetComponents<Component>().Cast<Object>().Append(t.gameObject))
+                    if (o != null) ids.Add(GlobalObjectId.GetGlobalObjectIdSlow(o).targetObjectId);
+        return ids;
+    }
+
+    static void PreserveOutsideScope(string path, string original, HashSet<ulong> approved)
+    {
+        string[] Blocks(string text) => Regex.Split(text, @"(?=^--- !u!)", RegexOptions.Multiline);
+        ulong Id(string block) => ulong.TryParse(Regex.Match(block, @"^--- !u!\d+ &(\d+)").Groups[1].Value, out var id) ? id : 0;
+        var old = Blocks(original).Where(b => Id(b) != 0).ToDictionary(Id);
+        var current = Blocks(File.ReadAllText(path));
+        for (int i = 0; i < current.Length; i++)
+        {
+            ulong id = Id(current[i]);
+            if (!old.TryGetValue(id, out var before)) continue;
+            if (!approved.Contains(id)) { current[i] = before; continue; }
+            // Native localization callbacks must not migrate existing authored fonts/materials.
+            foreach (string field in new[] { "m_fontAsset", "m_sharedMaterial", "m_fontSharedMaterials" })
+            {
+                string pattern = @"^  " + field + @":.*(?:\r?\n  -.*)*";
+                var saved = Regex.Match(before, pattern, RegexOptions.Multiline);
+                if (saved.Success) current[i] = Regex.Replace(current[i], pattern, _ => saved.Value, RegexOptions.Multiline);
+            }
+        }
+        var remaining = current.Select(Id).ToHashSet();
+        var missing=old.Keys.Where(id=>!remaining.Contains(id)).ToArray();
+        if(missing.Any(id=>!old[id].Split('\n')[0].Contains(" stripped")))
+            throw new InvalidOperationException("Authoring removed an existing object in " + path);
+        // Native saves can prune unrelated stripped references before the preserved
+        // PrefabInstance overrides are restored. Retain their original targets too.
+        // Asset readers can memory-map the current file on Windows, preventing
+        // truncation (Win32 1224). Replace it atomically after writing our copy.
+        string staged = path + ".codex-writing";
+        try
+        {
+            File.WriteAllText(staged, string.Concat(current)+string.Concat(missing.Select(id=>old[id])), new UTF8Encoding(false));
+            File.Replace(staged, path, null);
+        }
+        finally { if (File.Exists(staged)) File.Delete(staged); }
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+    }
+
+    static void StylePanels(GameObject root)
+    {
+        foreach (var panel in root.GetComponentsInChildren<SettingsPanelUI>(true)) StyleSettings(panel);
+        foreach (var panel in root.GetComponentsInChildren<KeyBindingPanelUI>(true)) StyleKeys(panel);
+    }
+
+    static RectTransform BasePanel(Component panel, float width, float height)
+    {
+        var bg = (RectTransform)panel.transform.Find("Background");
+        Fixed(bg, .5f,.5f,0,-20,width,height); Skin(bg.GetComponent<Image>(), "Panel", true);
+        foreach (var layout in bg.GetComponentsInChildren<LayoutGroup>(true)) layout.enabled = false;
+        foreach (var fitter in bg.GetComponentsInChildren<ContentSizeFitter>(true)) fitter.enabled = false;
+        bg.GetComponent<ScrollRect>().enabled = false;
+        bg.Find("Scrollbar").gameObject.SetActive(false);
+        foreach (Transform child in bg)
+            if (child.name.Contains("ButtonChain")) child.gameObject.SetActive(false);
+        var mask = (RectTransform)bg.Find("ContentsMask");
+        foreach (var b in mask.GetComponents<Behaviour>()) b.enabled = false;
+        Stretch(mask, 28, 120, 28, 62);
+        Stretch((RectTransform)mask.Find("Contents"));
+        var title = (RectTransform)bg.Find("TitleTextPanel");
+        Fixed(title,.5f,1,0,0,320,76); Skin(title.GetComponent<Image>(),"Panel");
+        var titleText = title.GetComponentInChildren<TMP_Text>(true);
+        Stretch(titleText.rectTransform,12,8,12,8); TextStyle(titleText,34,"8cdbec",TextAlignmentOptions.Center);
+        // These anchors are the existing endpoint/constraint references.
+        Fixed((RectTransform)bg.Find("BottomAnchor"),.18f,1,0,-4,0,0);
+        Fixed((RectTransform)bg.Find("BottomAnchor (1)"),.82f,1,0,-4,0,0);
+        var chains = panel.GetComponentsInChildren<SettingsPanelFakeChainPresentation>(true)
+            .Where(c => c.transform.parent == panel.transform).ToArray();
+        for (int i=0;i<chains.Length;i++)
+        {
+            var so = new SerializedObject(chains[i]);
+            var top = (RectTransform)so.FindProperty("topAnchor").objectReferenceValue;
+            var bottom = (RectTransform)so.FindProperty("bottomAnchor").objectReferenceValue;
+            Vector3 endpoint = bottom.position;
+            top.position = endpoint + panel.transform.TransformVector(new Vector3(0,600,0));
+            chains[i].CaptureAuthoredSegmentLengths();
+        }
+        return bg;
+    }
+
+    static void StyleSettings(SettingsPanelUI panel)
+    {
+        AuthorVisibility(panel);
+        var bg = BasePanel(panel,1240,764);
+        var content = bg.Find("ContentsMask/Contents");
+        var sample = bg.Find("TitleTextPanel").GetComponentInChildren<TMP_Text>(true);
+        var left = Column(content,"LeftColumn",false); var right = Column(content,"RightColumn",true);
+        Header(left,sample,"screen",0); Header(left,sample,"environment",286);
+        Header(right,sample,"audio",0); Header(right,sample,"controls",414);
+        string[] names = {"WindowMode","Resolution","Language","ScreenShake","MasterVolume","BGMVolume","SFXVolume"};
+        float[] tops = {34,158,320,444,34,158,282};
+        for(int i=0;i<names.Length;i++)
+        {
+            var row = (RectTransform)content.Find(names[i]);
+            if (row == null) row = (RectTransform)(i<4 ? left : right).Find(names[i]);
+            row.SetParent(i<4 ? left : right,false); RowAt(row,tops[i],114); Skin(row.GetComponent<Image>(),"Row");
+            var labelSlot=(RectTransform)row.GetChild(0); TopRect(labelSlot,16,10,-32,40,true);
+            TextStyle(labelSlot.GetComponentInChildren<TMP_Text>(true),26,"f5f1ff",TextAlignmentOptions.Left);
+            var control = (RectTransform)row.GetChild(1); BottomRect(control,16,14,-32,44,true);
+            foreach(var text in control.GetComponentsInChildren<TMP_Text>(true)) TextStyle(text,24,"f5f1ff",TextAlignmentOptions.Center);
+            if(control.name=="Stepper")
+            {
+                Fixed((RectTransform)control.GetChild(0),0,.5f,22,0,44,40);
+                var value=(RectTransform)control.GetChild(1); Stretch(value,54,0,54,0);
+                Fixed((RectTransform)control.GetChild(2),1,.5f,-22,0,44,40);
+                foreach(var button in control.GetComponentsInChildren<Button>(true)) ArrowButton(button);
+            }
+            else
+            {
+                var slider=control.GetComponentInChildren<Slider>(true);
+                Stretch(Slot(slider.transform),0,0,74,0);
+                var percent = control.GetComponentsInChildren<TMP_Text>(true).Single();
+                Fixed(Slot(percent.transform),1,.5f,-32,0,64,40);
+                StyleSlider(slider);
+            }
+        }
+        var keyButton = Ref<Button>(panel,"keyMappingButton");
+        var keySlot=Slot(keyButton.transform); keySlot.SetParent(right,false); RowAt(keySlot,448,110);
+        StyleButton(keyButton,26);
+        Footer(bg,sample,false,panel);
+        RaiseRenderLayers(content);
+    }
+
+    static void StyleKeys(KeyBindingPanelUI panel)
+    {
+        var bg=BasePanel(panel,1400,904); var content=bg.Find("ContentsMask/Contents");
+        var sample=bg.Find("TitleTextPanel").GetComponentInChildren<TMP_Text>(true);
+        var left=Column(content,"LeftColumn",false); var right=Column(content,"RightColumn",true);
+        foreach(var col in new[]{left,right})
+        {
+            var primary=Label(col,"PrimaryHeading",sample,"primary"); Fixed(primary.rectTransform,1,1,-189,-10,108,28); TextStyle(primary,16,"b9afce",TextAlignmentOptions.Center);
+            var secondary=Label(col,"SecondaryHeading",sample,"secondary"); Fixed(secondary.rectTransform,1,1,-92,-10,112,28); TextStyle(secondary,16,"b9afce",TextAlignmentOptions.Center);
+        }
+        Header(left,sample,"movement",24); Header(left,sample,"combat",370);
+        Header(right,sample,"consumables",24); Header(right,sample,"utility",308);
+        var existing=content.GetComponentsInChildren<KeyBindingRowUI>(true);
+        if(existing.Length!=0 && existing.Length!=19) throw new InvalidOperationException("Unexpected authored key rows.");
+        var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(RowPath);
+        for(int i=0;i<order.Length;i++)
+        {
+            var col=i<9 ? left : right;
+            GameObject row=existing.Length==19 ? existing[i].gameObject : (GameObject)PrefabUtility.InstantiatePrefab(prefab,col);
+            row.name="Action_"+(InputActionId)order[i]; row.transform.SetParent(col,false); row.SetActive(true);
+            float top=i<5 ? 56+i*62 : i<9 ? 402+(i-5)*62 : i<13 ? 56+(i-9)*62 : 340+(i-13)*62;
+            RowAt((RectTransform)row.transform,top,56);
+        }
+        RaiseRenderLayers(content);
+        var serialized=new SerializedObject(panel); var actions=serialized.FindProperty("actionOrder"); actions.arraySize=order.Length;
+        for(int i=0;i<order.Length;i++) actions.GetArrayElementAtIndex(i).intValue=order[i];
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        Footer(bg,sample,true,panel);
+        var guide=panel.transform.Find("GuideParent");
+        guide.GetComponent<VerticalLayoutGroup>().enabled=false; Stretch((RectTransform)guide);
+        var backdrop=guide.Find("GuidePanel").GetComponent<Image>(); Stretch(backdrop.rectTransform); backdrop.color=new Color(0,0,0,.75f);
+        var dialog=Ensure(guide,"DialogFrame"); Fixed(dialog,.5f,.5f,0,0,1080,340); Skin(GetImage(dialog),"Panel",true);
+        var text=Ref<TMP_Text>(panel,"guideText");text.transform.SetParent(dialog,false); TopRect(text.rectTransform,32,26,-64,190,true);TextStyle(text,30,"f5f1ff",TextAlignmentOptions.Center);
+        var group=guide.Find("GuideButtonGroup") ?? dialog.Find("GuideButtonGroup"); group.SetParent(dialog,false);
+        foreach(var layout in group.GetComponents<Behaviour>()) layout.enabled=false;
+        BottomRect((RectTransform)group,0,28,600,60,false);
+        var buttons=group.GetComponentsInChildren<Button>(true);
+        for(int i=0;i<buttons.Length;i++){Fixed((RectTransform)buttons[i].transform,.5f,.5f,(i==0?-155:155),0,290,60);StyleButton(buttons[i],26);}
+    }
+
+    static void StyleKeyRow(GameObject root)
+    {
+        foreach(var layout in root.GetComponentsInChildren<LayoutGroup>(true)) layout.enabled=false;
+        Fixed((RectTransform)root.transform,.5f,.5f,0,0,660,56);Skin(root.GetComponent<Image>(),"Row");
+        var row=root.GetComponent<KeyBindingRowUI>();
+        var label=Ref<TMP_Text>(row,"actionLabel");Stretch(Slot(label.transform),16,4,262,4);TextStyle(label,24,"f5f1ff",TextAlignmentOptions.Left);
+        var step=(RectTransform)root.transform.Find("Stepper");Fixed(step,1,.5f,-130,0,240,44);
+        var primary=Ref<Button>(row,"primaryBindingButton");Fixed(Slot(primary.transform),0,.5f,54,0,108,44);StyleButton(primary,22,"Key");
+        var secondary=Ref<Button>(row,"secondaryBindingButton");Fixed(Slot(secondary.transform),0,.5f,151,0,78,44);StyleButton(secondary,22,"Key");
+        var reset=Ref<Button>(row,"resetButton");Fixed(Slot(reset.transform),1,.5f,-18,0,36,36);StyleButton(reset,22);
+        foreach(var text in reset.GetComponentsInChildren<TMP_Text>(true)){text.gameObject.SetActive(false);Slot(text.transform).gameObject.SetActive(false);}
+        var icon=GetImage(Ensure(reset.transform,"ResetIcon"));Fixed(icon.rectTransform,.5f,.5f,0,0,24,24);Skin(icon,"Reset");icon.type=Image.Type.Simple;
+        foreach(string name in new[]{"primaryBindingIcon","secondaryBindingIcon"})
+        {var glyph=Ref<Image>(row,name);Stretch(Slot(glyph.transform),8,6,8,6);glyph.preserveAspect=true;}
+    }
+
+    static void Footer(RectTransform bg,TMP_Text sample,bool keys,Component panel)
+    {
+        var rule=GetImage(Ensure(bg,"FooterDivider"));BottomRect(rule.rectTransform,28,110,-56,2,true);Skin(rule,"Divider");
+        var hint=Label(bg,"FooterHint",sample,keys?"keys_hint":"settings_hint");BottomRect(hint.rectTransform,28,76,-56,30,true);TextStyle(hint,20,"b9afce",TextAlignmentOptions.Left);
+        var group=(RectTransform)bg.Find("ButtonGroup");BottomRect(group,28,18,-56,52,true);
+        var close=Ref<Button>(panel,"closeButton");var apply=Ref<Button>(panel,keys?"applyButton":"applyDisplayButton");
+        Fixed((RectTransform)close.transform.parent,0,.5f,130,0,260,52);Fixed((RectTransform)apply.transform.parent,1,.5f,-150,0,300,52);
+        foreach(var button in group.GetComponentsInChildren<Button>(true))
+        {
+            var drop=button.GetComponent<UIChainDropPresentation>();
+            if(drop!=null)
+            {
+                drop.enabled=false;
+                // Disabled behaviours still receive Awake. Retired constraints must
+                // not reposition the new fixed footer buttons during that callback.
+                var state=new SerializedObject(drop);
+                state.FindProperty("constrainPanelByChainReach").boolValue=false;
+                state.FindProperty("snapClosedOnAwake").boolValue=false;
+                state.FindProperty("playOnEnable").boolValue=false;
+                state.FindProperty("chainConstraints").arraySize=0;
+                state.FindProperty("fakeChainPresentation").objectReferenceValue=null;
+                state.ApplyModifiedPropertiesWithoutUndo();
+            }
+            var cg=button.GetComponent<CanvasGroup>();if(cg!=null){cg.alpha=1;cg.interactable=true;cg.blocksRaycasts=true;}
+            Stretch((RectTransform)button.transform);StyleButton(button,26);
+        }
+        if(keys){var reset=Ref<Button>(panel,"resetAllButton");Fixed((RectTransform)reset.transform.parent,1,.5f,-460,0,280,52);}
+    }
+
+    static RectTransform Column(Transform parent,string name,bool right)
+    {var r=Ensure(parent,name);r.anchorMin=new Vector2(right?.5f:0,0);r.anchorMax=new Vector2(right?1:.5f,1);r.pivot=Vector2.one*.5f;r.offsetMin=new Vector2(right?12:0,0);r.offsetMax=new Vector2(right?0:-12,0);return r;}
+    static void Header(Transform parent,TMP_Text sample,string key,float top)
+    {
+        var label=Label(parent,"Heading_"+key,sample,key);TopRect(label.rectTransform,0,top,0,32,true);TextStyle(label,22,"f1c77d",TextAlignmentOptions.Left);
+        var rule=GetImage(Ensure(label.transform,"Divider"));rule.rectTransform.anchorMin=new Vector2(.62f,.5f);rule.rectTransform.anchorMax=new Vector2(1,.5f);rule.rectTransform.sizeDelta=new Vector2(0,2);rule.rectTransform.anchoredPosition=Vector2.zero;Skin(rule,"Divider");
+    }
+    static TMP_Text Label(Transform parent,string name,TMP_Text sample,string key)
+    {
+        var existing=parent.Find(name);TMP_Text label;
+        if(existing!=null)label=existing.GetComponent<TMP_Text>();
+        else{label=Object.Instantiate(sample,parent);label.name=name;}
+        var localize=label.GetComponent<LocalizeStringEvent>() ?? label.gameObject.AddComponent<LocalizeStringEvent>();
+        localize.StringReference=new LocalizedString(GameText.TableName,"ui.settings_skin."+key);
+        if(localize.OnUpdateString.GetPersistentEventCount()==0)
+            UnityEventTools.AddPersistentListener(localize.OnUpdateString,(UnityEngine.Events.UnityAction<string>)Delegate.CreateDelegate(typeof(UnityEngine.Events.UnityAction<string>),label,typeof(TMP_Text).GetProperty("text").GetSetMethod()));
+        label.text=Translations.First(r=>r[0]==key)[1];
+        return label;
+    }
+    static void ArrowButton(Button button)
+    {
+        var bg=GetImage(Ensure(button.transform.parent,"ButtonBackground"));Stretch(bg.rectTransform);bg.transform.SetAsFirstSibling();Skin(bg,"Button",true);button.targetGraphic=bg;
+        SetButtonColors(button);TextStyle(button.GetComponent<TMP_Text>(),28,"f5f1ff",TextAlignmentOptions.Center);
+    }
+    static void StyleButton(Button button,float size,string skin="Button")
+    {Skin(button.GetComponent<Image>(),skin,true);SetButtonColors(button);foreach(var text in button.GetComponentsInChildren<TMP_Text>(true))TextStyle(text,size,"f5f1ff",TextAlignmentOptions.Center);}
+    static void SetButtonColors(Button button)
+    {button.transition=Selectable.Transition.ColorTint;var c=ColorBlock.defaultColorBlock;c.highlightedColor=new Color(1.2f,1.2f,1.2f);c.selectedColor=c.highlightedColor;c.pressedColor=new Color(.8f,.8f,.8f);c.disabledColor=new Color(.55f,.55f,.55f);button.colors=c;}
+    static void StyleSlider(Slider slider)
+    {
+        var fillArea=(RectTransform)slider.fillRect.parent;
+        fillArea.anchorMin=new Vector2(0,.5f);fillArea.anchorMax=new Vector2(1,.5f);
+        fillArea.sizeDelta=new Vector2(0,12);fillArea.anchoredPosition=Vector2.zero;
+        var handleArea=(RectTransform)slider.handleRect.parent;
+        handleArea.anchorMin=new Vector2(0,.5f);handleArea.anchorMax=new Vector2(1,.5f);
+        handleArea.sizeDelta=new Vector2(-20,32);handleArea.anchoredPosition=Vector2.zero;
+        foreach(var im in slider.GetComponentsInChildren<Image>(true))
+        {
+            if(im.transform==slider.handleRect){Skin(im,"Handle",true);im.rectTransform.sizeDelta=new Vector2(20,0);im.rectTransform.anchoredPosition=Vector2.zero;}
+            else if(im.transform==slider.fillRect){Skin(im,"Fill");im.rectTransform.sizeDelta=Vector2.zero;im.rectTransform.anchoredPosition=Vector2.zero;}
+            else{Skin(im,"Track");var r=im.rectTransform;r.anchorMin=new Vector2(0,.5f);r.anchorMax=new Vector2(1,.5f);r.sizeDelta=new Vector2(0,12);r.anchoredPosition=Vector2.zero;}
+        }
+    }
+    static void TextStyle(TMP_Text text,float size,string hex,TextAlignmentOptions alignment)
+    {
+        void Apply(){text.fontSize=size;text.enableAutoSizing=false;text.color=ColorHex(hex);text.alignment=alignment;text.textWrappingMode=TextWrappingModes.Normal;text.overflowMode=TextOverflowModes.Overflow;text.margin=Vector4.zero;text.raycastTarget=false;}
+        Apply();textStyles.Add(Apply);
+    }
+    static Color ColorHex(string hex){ColorUtility.TryParseHtmlString("#"+hex,out var c);return c;}
+    static T Ref<T>(Object owner,string field) where T:Object => (T)new SerializedObject(owner).FindProperty(field).objectReferenceValue;
+    static RectTransform Slot(Transform target) => target.parent!=null && target.parent.name.EndsWith("_Render") ? (RectTransform)target.parent.parent : (RectTransform)target;
+    static void RaiseRenderLayers(Transform content)
+    {foreach(string name in new[]{"Render_Controls","Render_Icons","Render_Text"})content.Find(name).SetAsLastSibling();}
+    static RectTransform Ensure(Transform parent,string name)
+    {var found=parent.Find(name);if(found!=null)return (RectTransform)found;var r=new GameObject(name,typeof(RectTransform)).GetComponent<RectTransform>();r.SetParent(parent,false);return r;}
+    static Image GetImage(RectTransform r)=>r.GetComponent<Image>()??r.gameObject.AddComponent<Image>();
+    static void Skin(Image image,string name,bool raycast=false){image.sprite=sprites[name];image.type=Image.Type.Sliced;image.color=Color.white;image.raycastTarget=raycast;}
+    static void Stretch(RectTransform r,float left=0,float bottom=0,float right=0,float top=0)
+    {r.anchorMin=Vector2.zero;r.anchorMax=Vector2.one;r.pivot=Vector2.one*.5f;r.offsetMin=new Vector2(left,bottom);r.offsetMax=new Vector2(-right,-top);r.localScale=Vector3.one;r.localRotation=Quaternion.identity;}
+    static void Fixed(RectTransform r,float ax,float ay,float x,float y,float w,float h)
+    {r.anchorMin=r.anchorMax=new Vector2(ax,ay);r.pivot=Vector2.one*.5f;r.sizeDelta=new Vector2(w,h);r.anchoredPosition=new Vector2(x,y);r.localScale=Vector3.one;r.localRotation=Quaternion.identity;}
+    static void TopRect(RectTransform r,float x,float top,float w,float h,bool stretch)
+    {Fixed(r,stretch?0:.5f,1,x,-top-h*.5f,w,h);if(stretch){r.anchorMax=new Vector2(1,1);r.anchoredPosition=new Vector2(x+w*.5f,-top-h*.5f);}}
+    static void BottomRect(RectTransform r,float x,float bottom,float w,float h,bool stretch)
+    {Fixed(r,stretch?0:.5f,0,x,bottom+h*.5f,w,h);if(stretch){r.anchorMax=new Vector2(1,0);r.anchoredPosition=new Vector2(x+w*.5f,bottom+h*.5f);}}
+    static void RowAt(RectTransform r,float top,float height)=>TopRect(r,0,top,0,height,true);
+
+    static readonly string[][] Translations =
+    {
+        new[]{"screen","화면","Display","画面","画面","畫面"},
+        new[]{"environment","환경","Environment","環境","环境","環境"},
+        new[]{"audio","소리","Audio","サウンド","声音","聲音"},
+        new[]{"controls","조작","Controls","操作","操作","操作"},
+        new[]{"movement","이동","Movement","移動","移动","移動"},
+        new[]{"combat","전투","Combat","戦闘","战斗","戰鬥"},
+        new[]{"consumables","소모품","Consumables","消耗品","消耗品","消耗品"},
+        new[]{"utility","상호작용 / UI","Interaction / UI","操作 / UI","交互 / UI","互動 / UI"},
+        new[]{"primary","기본 키","Primary","メイン","主按键","主要鍵"},
+        new[]{"secondary","보조 키","Secondary","サブ","副按键","輔助鍵"},
+        new[]{"settings_hint","화면 설정은 적용 후, 소리·언어·화면 흔들림은 즉시 반영됩니다.","Apply display changes below. Audio, language and screen shake update immediately.","画面設定は適用後、音量・言語・画面振動はすぐに反映されます。","画面设置需点击应用；声音、语言和画面震动立即生效。","畫面設定需點擊套用；聲音、語言與畫面震動立即生效。"},
+        new[]{"keys_hint","대화 넘기기는 Space로 고정됩니다. 원형 화살표로 해당 키를 초기화합니다.","Dialogue advance uses Space. The circular arrow resets a single action.","会話送りはSpace固定です。丸い矢印で各操作をリセットします。","对话推进固定为Space。圆形箭头可重置该操作。","對話推進固定為Space。圓形箭頭可重設該操作。"}
+    };
+    static void AddTranslations()
+    {
+        string[] locales={"ko","en","ja","zh-Hans","zh-Hant"};
+        for(int i=0;i<locales.Length;i++)
+        {
+            var table=AssetDatabase.LoadAssetAtPath<StringTable>("Assets/_Project/Data/Localization/GameText_"+locales[i]+".asset");
+            foreach(var row in Translations)table.AddEntry("ui.settings_skin."+row[0],row[i+1]);
+            EditorUtility.SetDirty(table);EditorUtility.SetDirty(table.SharedData);
+            AssetDatabase.SaveAssetIfDirty(table);AssetDatabase.SaveAssetIfDirty(table.SharedData);
+        }
+        const string csv="DataSheets/Localization/GameText.csv";string source=File.ReadAllText(csv);
+        foreach(var row in Translations)
+        {
+            string key="ui.settings_skin."+row[0];
+            if(source.Contains("\n"+key+","))continue;
+            source=source.TrimEnd('\r','\n')+"\n"+key+","+string.Join(",",row.Skip(1).Select(s=>"\""+s.Replace("\"","\"\"")+"\""))+"\n";
+        }
+        File.WriteAllText(csv,source,new UTF8Encoding(false));
+    }
+
+    public static void Inspect()
+    {
+        var report = new StringBuilder();
+        var global = AssetDatabase.LoadAssetAtPath<GameObject>(GlobalPath);
+        InspectRoot(global, report);
+        Dump(AssetDatabase.LoadAssetAtPath<GameObject>(RowPath).transform, "", report);
+        var scene = EditorSceneManager.OpenScene(TitlePath, OpenSceneMode.Single);
+        foreach (var root in scene.GetRootGameObjects()) InspectRoot(root, report);
+        Directory.CreateDirectory("Library/CodexSettingsSkin");
+        File.WriteAllText("Library/CodexSettingsSkin/inspection.txt", report.ToString());
+        Unity.CodeEditor.CodeEditor.CurrentEditor.SyncAll();
+        Debug.Log("SETTINGS_SKIN_INSPECT_PASS");
+    }
+
+    static void InspectRoot(GameObject root, StringBuilder report)
+    {
+        foreach (var panel in root.GetComponentsInChildren<SettingsPanelUI>(true))
+        {
+            report.AppendLine("SETTINGS " + root.name + "/" + PathOf(root.transform, panel.transform));
+            References(panel, report); Dump(panel.transform, "", report);
+        }
+        foreach (var panel in root.GetComponentsInChildren<KeyBindingPanelUI>(true))
+        {
+            report.AppendLine("KEYS " + root.name + "/" + PathOf(root.transform, panel.transform));
+            References(panel, report); Dump(panel.transform, "", report);
+        }
+    }
+
+    static void References(Component component, StringBuilder report)
+    {
+        var iterator = new SerializedObject(component).GetIterator();
+        while (iterator.NextVisible(true))
+            if (iterator.propertyType == SerializedPropertyType.ObjectReference && iterator.objectReferenceValue is Component target)
+                report.AppendLine("  REF " + iterator.propertyPath + " => " + PathOf(component.transform, target.transform));
+    }
+
+    static void Dump(Transform transform, string indent, StringBuilder report)
+    {
+        if (transform.name.StartsWith("ChainLink", StringComparison.Ordinal)) return;
+        string components = string.Join(",", transform.GetComponents<Component>().Select(c => c == null ? "MISSING" : c.GetType().Name));
+        string rect = transform is RectTransform r ? $" a={r.anchorMin}/{r.anchorMax} p={r.pivot} pos={r.anchoredPosition} size={r.sizeDelta} scale={r.localScale}" : "";
+        string image = transform.TryGetComponent<UnityEngine.UI.Image>(out var im) ? $" sprite={(im.sprite != null ? im.sprite.name : "none")} type={im.type} color={im.color}" : "";
+        string text = transform.TryGetComponent<TMP_Text>(out var tmp) ? $" text={tmp.text.Replace("\n", "|")} font={(tmp.font != null ? tmp.font.name : "none")} fs={tmp.fontSize}" : "";
+        report.AppendLine(indent + transform.name + " active=" + transform.gameObject.activeSelf + " [" + components + "]" + rect + image + text);
+        foreach (Transform child in transform) Dump(child, indent + "  ", report);
+    }
+
+    static string PathOf(Transform root, Transform target)
+    {
+        string result = target.name;
+        while (target.parent != null && target != root)
+        { target = target.parent; if (target != root) result = target.name + "/" + result; }
+        return result;
+    }
+}
+#endif

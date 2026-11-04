@@ -1,0 +1,110 @@
+[
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\Map\\Portal\\ScenePortal.prefab",
+    "Hash": "732EED6749A461AC80472A2CA78E8269713BE20739396013FAC807077448BF21"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\Map\\Portal\\ScenePortal.prefab.meta",
+    "Hash": "A77D363A55DFEB2270D6035DED7EFA172FE84EE0A3ACB4240A9CC65E49D39BB2"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\Map\\Procedural\\ProceduralSceneTravelPortal.prefab",
+    "Hash": "D1AF7C175372909B1444D7390F1B9846F76A9162A9FAAA5CEE42DDEC420EAF5D"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Prefabs\\Map\\Procedural\\ProceduralSceneTravelPortal.prefab.meta",
+    "Hash": "530A2A6BC3BF450C6A173647D43B0040F8223F811AD7980DBF3B9872C0CB0F64"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\Map\\Environment\\Level\\Portal.png",
+    "Hash": "3199F173E51A2419E6560A99E26FBDEF290A124517BCC62ECC441626DBCE9AA9"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\Map\\Environment\\Level\\Portal.png.meta",
+    "Hash": "02A6E311C022E9AFD9ED808B5B58F37547D85CCDA45A9C471DFD005B6972DED8"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\Map\\Environment\\Level\\Portal_Disable.png",
+    "Hash": "F3502CB817A02BAEB504896B79280F857F47BD413C4C95537EC7517CF53F33ED"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Art\\Sprites\\Map\\Environment\\Level\\Portal_Disable.png.meta",
+    "Hash": "C644CCD8F48A05DDF250DE94F023BAB9C4934549282E00E1F5EC3493D5F64DAF"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\GrandHallClearedPortalView.cs",
+    "Hash": "60DFA946BFC8F3897CCFEB6265A09C882E36D38C32A416371251D0B33AE8AC5B"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\GrandHallClearedPortalView.cs.meta",
+    "Hash": "6E3C649B175F1F2CB2F6E5409B439169994B0D393400C993D4DCEAC4E7354944"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\ProjectSettings\\EditorBuildSettings.asset",
+    "Hash": "8436F0C2ED5B429205AD47AB76073FEF555EF0FDD3015EC149FCB2D17A64F5BE"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\DungeonReturnPortal.cs",
+    "Hash": "0056607D0279E8B472D7400453B5C10943E5EE1022EB60175F470757DC86B781"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\DungeonReturnPortal.cs.meta",
+    "Hash": "FACF82D23AD67AF8B65C161DB412119140439D5948E6EFC1B929014622904531"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\DungeonReturnPortalView.cs",
+    "Hash": "9783E3F5BEC62659321302089164A796371E5EBB280794DD4E2D727AE8BDFDF2"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\DungeonReturnPortalView.cs.meta",
+    "Hash": "6EB3A47C674B7218173A060C6EC4B30AF5AD181FE6DE7EA88DF408597DD9D61E"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\DungeonReturnTravel.cs",
+    "Hash": "DCA85D1DD550B0B4B50E907D9B95CEB7BDC5E8FB917B94CE60C260034CBCDB51"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\DungeonReturnTravel.cs.meta",
+    "Hash": "F8E86DFF53C18F13E9A8917FD52B6B0F4C711B384A53C1938106A4F58C770082"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\GrandHallClearedPortalView.cs",
+    "Hash": "60DFA946BFC8F3897CCFEB6265A09C882E36D38C32A416371251D0B33AE8AC5B"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\GrandHallClearedPortalView.cs.meta",
+    "Hash": "6E3C649B175F1F2CB2F6E5409B439169994B0D393400C993D4DCEAC4E7354944"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\RequiredBossClearScenePortalAccessRule.cs",
+    "Hash": "816A85A11E24F07D57BB178632B30D8916C2671C7114E214009D816B835FDE08"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\RequiredBossClearScenePortalAccessRule.cs.meta",
+    "Hash": "489A4743D2146D9E250197D2342D21C6DCC92484D2D897608CABA9BB5F3C0DD4"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\ScenePortal.cs",
+    "Hash": "423637E04F3DA448647D44187448589A0AF0F938017A323B6CB8E7C22B079710"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\ScenePortal.cs.meta",
+    "Hash": "88FD6F0914439936104A07B32FA3211769FCD1CD81C7B76261707DEC15FE9886"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\ScenePortalAccessRule.cs",
+    "Hash": "FBCF7CC2BF0B3F9114E2077EE8DCAFD77E9B62B47D921E5CF8B715B4575B8C0C"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\ScenePortalAccessRule.cs.meta",
+    "Hash": "0F61D0F5C4AF09F18DFD530B39F5EAB2EEFC54C230CB03DEF9773899122B1DB9"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\ScenePortalTravelPlayback.cs",
+    "Hash": "F1F93AC28D3D0EDAF811131B2BA0AD3AC9248CCEDE2CFD72FB7CFE6BB70B5DAA"
+  },
+  {
+    "Path": "C:\\Users\\nadom\\Desktop\\졸업작품\\CapstoneProject\\Assets\\_Project\\Runtime\\Features\\Map\\Portals\\ScenePortalTravelPlayback.cs.meta",
+    "Hash": "E2BAC2A6E81C7583F3BEB3ACB7588D94D5E4AFF43582C30051E8EF1B5DB637CE"
+  }
+]

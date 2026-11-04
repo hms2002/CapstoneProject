@@ -2,16 +2,39 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-09-17
+last_reviewed: 2026-11-03
 ---
 
 # Inventory And Chest UI Structure
+
+> Tool retention update (2026-11-01): completed task-specific skin/layout/migration authoring and acceptance tools named below are historical and have been moved outside Assets. See [current retained tools and archive](../TestAndEditorToolRetention.md). Gameplay/save regressions and reusable profiling remain. Automated tests run only when explicitly requested.
+
 
 ## Purpose
 
 Map inventory, chest UI, HUD inventory entry points, item details, inventory runtime, world drops, and interaction scripts.
 
 ## Current Structure
+
+### Chest relic rarity frames (2026-11-03)
+
+- [ItemTypeBorderGraphic](../../../Assets/_Project/Runtime/UI/Inventory/Common/ItemTypeBorderGraphic.cs) reuses the existing authored slot Graphic to draw the selected plain double frame. Chest relic colors are Common `#C8CDD6`, Rare `#409CFF`, Epic (전설) `#F2C14E`, and weapon-exclusive `#9BE34A`. Exclusive status takes priority and comes from `RelicLogic_WeaponExclusive`; the frame has no jewel, corner emblem, or lower rarity badge.
+- [ChestScreen](../../../Assets/_Project/Runtime/UI/Chest/ChestScreen.cs) opts offers, rerolled offers, and acquisition snapshot copies into this projection via `ItemSlotUI.Bind(..., useChestRarityBorder: true)`. Selected offers retain the same slot while moving. The acquisition copy's final-level rebind retains the option too.
+- [ItemSlotUI](../../../Assets/_Project/Runtime/UI/Inventory/Common/ItemSlotUI.cs) stores this nonserialized presentation option per binding. Refresh reads the current item; clear/locked/empty paths clear the graphic, and `ClearBinding` resets the option. Other callers retain the existing item-type frames; weapons have no rarity field and keep their existing type frame.
+- No prefab/scene wiring, serialized field migration, new presentation hierarchy, gameplay/save owner, or assembly dependency was added. The frame cache includes rarity color as well as item kind so same-kind replacements update correctly. Extension entry points remain the chest binding and the existing frame projection.
+- [Image preview and evidence](../../../outputs/chest-rarity-border-2026-11-03/README.md). This is a current visual-flow map; no Architecture/Contracts promotion is proposed.
+
+### Approved stats, potion and shared reward artwork (2026-10-31)
+
+- [ApprovedUiSkin](../../../Assets/_Project/Art/Sprites/UI/ApprovedUiSkin/README.md) contains two Point-filtered sprite sheets and their editable Aseprite masters. Text and item/reward icons remain driven by existing definitions/localization. Shared CleanUIPanel/ButtonUI artwork was not overwritten.
+- The three prefabs under `Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/` author the390×742 default panel,342×38 rows,6px row gaps and section dividers. Inventory and chest inherit this same base. `PS_Section_BasicStats` orders HP, Attack, MoveSpeed, AttackSpeed, CritChance, CritDamage and Evasion; the existing `PS_Section_CombatStats` asset now displays Other Stats and orders Fire, Bleed, Poison, Electric, SkillDamage and NormalDamage. Its existing localized key is synchronized with the five-locale CSV source. `PS_StatInfo_AttackSpeed` uses Percent, valueMultiplier100 and0 decimals, so1.0 displays100%. `PlayerStatPanelView` still owns projection/subscriptions and the existing green/red acquisition deltas; the136px value column auto-sizes between12 and18px. Section/row views reuse the existing prefab spawning paths. Current entries have null icons; their bound icon object remains inactive in the text-only skin.
+- Main `GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD` retains the existing placement and four50×50 slots. Each icon is centered36×36; a16×14 sprite badge and existing key text render above it at bottom-right. `PlayerConsumableHUD2D` still owns inventory binding and icon/empty-slot visibility.
+- Main `GlobalUIRoot/RewardCanvas/RewardPanel/RewardUI` is a decorated, content-sized card (one reward564×420). The original title, description and close button are now children of the card, with their presenter references and button callback retained. Header/crest/spacers are authored prefab children. `EffectSlotUI` and `UnlockSlotUI` use96×96 frames; the latter keeps the existing hover component and root raycast target. Longer descriptions and multiple rewards grow the layout.
+- The existing card slide/fade moves the whole composition. Child title/body/button presentations keep their completion callbacks with zero slide offset and closedAlpha1. `RewardDisplayUI`, `RewardDisplayService`, grant owners and dialogue continuation remain unchanged; the skin does not own gameplay state or add runtime hierarchy creation.
+- [PlayerStatsAndRewardUiAuthoring](../../../Assets/_Project/Editor/Tools/UI/PlayerStatsAndRewardUiAuthoring.cs) preserves font/material references and unrelated GlobalUIRoot nested instance serialization. The two approved subtrees are direct authored objects, so all nested instance override blocks stay untouched. [ApprovedUiSkinValidation](../../../Assets/_Project/Editor/Tools/Validation/ApprovedUiSkinValidation.cs) uses disposable Play Mode fixtures, waits for saved-language initialization and then captures five locales without changing PlayerPrefs. Full scene flows remain a separate manual acceptance check.
+- Scope/evidence: [approved task](../../ActiveTasks/player-stats-potion-reward-skin.md), [session](../../SessionLogs/2026-10-31.md). Existing Contracts remain authoritative; no Architecture/Contracts promotion is needed for this skin replacement.
+
+The stats-only `ApplyStatRevision` authoring entry point updates existing definitions, localized titles and the row prefab. `ApprovedUiSkinValidation.RunStatRevision` uses the real attribute/stat provider, detached relic projection and chest transfer owners in a disposable fixture. It covers five-locale base/delta layout, cancellation, acquisition results and removal-driven refresh; it does not create saved game relics or replace the gameplay owners.
 
 | Area | Count | Responsibility |
 | --- | ---: | --- |
@@ -385,3 +408,12 @@ Extension and lifecycle pitfalls:
 - The descriptions contain default values rather than live character modifiers; update the copy when those gameplay defaults change. Font/style tuning belongs in the authored subtree, and combined-bounds checks should accompany changes that alter its dimensions.
 
 Verification: four native [PlayMode tests](../../../Assets/_Project/Tests/PlayMode/Procedural/ItemKeywordTooltipPlayModeTests.cs) passed, including five-locale caption/body refresh, detection/deduplication, inactive/self-text exclusion, event-driven refresh, cleanup, and unchanged primary bounds. Native authoring/preview checks also exercised the actual hover controller at nine center/edge/corner positions. This local presentation extension does not currently need Architecture/Contracts promotion.
+
+## Player stats size follow-up (2026-11-02)
+
+PlayerStatUI.prefab authors a 1.15 XY root scale, enlarging the whole panel,
+including text and 38-unit rows, by 15%. Its 390x742 logical layout is unchanged
+(448.5x853.3 before any containing-canvas scaling). The main shared instance
+retains X=686; no UI prefab overrides of this source root's scale were found.
+Stat calculations, 7/6 grouping, relic deltas and shared inventory/chest owners
+are unchanged. Actual screen fit and readability remain manual acceptance items.

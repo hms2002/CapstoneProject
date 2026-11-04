@@ -1,0 +1,142 @@
+{
+  "radii": [
+    {
+      "charge": 0,
+      "inner": 0,
+      "outer": 0
+    },
+    {
+      "charge": 25,
+      "inner": 21.5,
+      "outer": 0
+    },
+    {
+      "charge": 50,
+      "inner": 43,
+      "outer": 0
+    },
+    {
+      "charge": 75,
+      "inner": 43,
+      "outer": 53.5
+    },
+    {
+      "charge": 100,
+      "inner": 43,
+      "outer": 64
+    }
+  ],
+  "nativePixelSizes": {
+    "innerTexture": [
+      128,
+      128
+    ],
+    "outerTexture": [
+      128,
+      128
+    ],
+    "innerVisibleDiameter": 86,
+    "outerVisibleDiameter": 128,
+    "glyphAtlas": [
+      144,
+      9
+    ],
+    "existingCrimsonPpu": 16,
+    "maximumDiameter": 6
+  },
+  "palette": "3E226E / 8052D8 / BCA0FA / EFE3FF; binary alpha",
+  "paletteCounts": {
+    "outer-rings": {
+      "62,34,110": 624,
+      "128,82,216": 780,
+      "188,160,250": 40,
+      "239,227,255": 16
+    },
+    "inner-rings": {
+      "62,34,110": 324,
+      "128,82,216": 552,
+      "188,160,250": 64,
+      "239,227,255": 0
+    },
+    "inner-star": {
+      "62,34,110": 0,
+      "128,82,216": 211,
+      "188,160,250": 97,
+      "239,227,255": 8
+    },
+    "glyph-atlas": {
+      "62,34,110": 0,
+      "128,82,216": 17,
+      "188,160,250": 63,
+      "239,227,255": 83
+    },
+    "medallion": {
+      "62,34,110": 0,
+      "128,82,216": 28,
+      "188,160,250": 20,
+      "239,227,255": 0
+    }
+  },
+  "ringChecks": [
+    {
+      "radius": 63.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 60.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 49.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 47.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 42.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 40.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 29.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 18.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 16.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 11.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": "medallion",
+      "emptyRegions": 2
+    }
+  ],
+  "style": "Reference 02 Arcane Lattice: violet layered rim, small crown/staff sigils, bright crossings, original double-ring/octagram/central-circle structure",
+  "continuousBorders": "Ten isolated concentric rings plus medallion each have exactly two empty regions: center and exterior, no pinholes",
+  "regularRunes": "Eight newly authored 7x7 sigils; 3x3 medallion marks, 5x5 center marks; 16 main outer positions",
+  "uprightGlyphs": "Exact atlas colors/positions checked at rest and while orbiting; rotation 0",
+  "nativeSourcePixelMapping": "pass",
+  "wholeInnerCompletedAt50": "pass",
+  "separateLayers": "pass",
+  "innerOpaquePixels": 1611,
+  "outerOpaquePixels": 1672,
+  "fullCircumferenceAtPartialCharge": "pass",
+  "scaledBoundary": "pass",
+  "oppositeOrbits": "pass",
+  "pauseResume": "pass",
+  "rendering": "offline same-JavaScript Canvas pixel adapter",
+  "sampling": "Preview uses forward pixel coverage and bridges transformed neighbors for fine strokes; this is not standard Unity sprite sampling",
+  "limitations": "Browser DOM/layout and Unity import/Play Mode not run. Importer and world dimensions are unchanged in Unity; 128px art needs sizing during integration. Split art and equivalent coverage sampling are needed to reproduce this preview. Actual-camera and small-scale acceptance remain."
+}

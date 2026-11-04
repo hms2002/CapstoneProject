@@ -1,0 +1,41 @@
+Revision14 — dense near-ground fire and separate airborne flames
+
+Scope: Aseprite preview Implementation. User requested preserving the puddle,
+increasing density close to its surface, and distinguishing airborne flames.
+
+Independent particle sources:
+ground-flame-particle.aseprite:8x8,7x6 visible bounds, eight80ms frames,
+  GroundFlameLife tag, pivot4,6. Broad low flame holds its shape for more of its
+  lifetime.64 emitters,640ms period,560ms visible life:56 active at every sample.
+  Root displacement stays within1px sideways and0-2px upward.
+airborne-flame-particle.aseprite:12x12,7x10 visible bounds, eight80ms frames,
+  AirborneLife tag, pivot6,10.12 emitters,800ms period,560ms visible life:
+  8-9 active. Wider lateral motion and up to26px rise (25px in sampled output).
+Both sources use three colors and end with an empty frame; PNG frames, sheets
+and transparent GIFs are provided. Native artwork is independent of trajectories.
+
+Editable compositions:
+fire-with-particles-preview.aseprite: three layers — unchanged ground/background,
+  dense near-ground flames, airborne flames. Corresponding GIF is320x320/3200ms.
+particle-groups-preview.gif:960x320/3200ms; left near-ground only, center combined,
+  right airborne only. The corresponding Aseprite also separates both groups.
+comparison-preview.gif: unchanged alcohol / combined fire,608x320/3200ms.
+fire-ground.aseprite and its six PNG/GIF exports are byte-identical to revision13.
+Ground opacity remains166/255. Previews use a neutral floor, not a Unity capture.
+
+Verification:
+Aseprite authoring/reopen exit0. Particle source/PNG equality, timings and empty
+final frames passed. All160 underlying preview cels exactly match revision13;
+SHA256 confirms all seven ground files unchanged. Verified group counts, valid
+birth locations, distinct movement ranges, GIF dimensions/timings and no clipping.
+Instantaneous ground coverage from particle pixels, measured at160 samples:
+  prior combined:9.5-17.1%, mean13.3%; new near-ground:49.5-56.7%, mean53.4%;
+  new combined:52.6-60.6%, mean56.8%. This is not cumulative cycle coverage.
+Final combined and split-group previews visually inspected.
+Evidence: verification.txt, export-verification.json, particle-motion.csv.
+author-particles.lua reproduces the sources and previews through Aseprite1.3.18.6.
+
+Unity ParticleSystem integration/import/compilation/Play Mode and actual game
+camera/floor acceptance not executed. No Unity files changed.
+Doc Impact Check: SessionLog only; ErrorLog/DecisionLog unchanged; no identified
+Presentation HTML stale candidate.

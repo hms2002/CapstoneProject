@@ -1,0 +1,50 @@
+[
+{
+    "phase": "early",
+    "sampleTime": 0.0,
+    "bookFrameVisible": true,
+    "itemRootVisible": false,
+    "creaturePagesVisible": true,
+    "coverVisible": true,
+    "coverIndex": 4,
+    "creatureLeftIndex": 2,
+    "creatureRightIndex": 3,
+    "fullViewIndex": 5
+},
+{
+    "phase": "mid",
+    "sampleTime": 0.20000000298023225,
+    "bookFrameVisible": true,
+    "itemRootVisible": false,
+    "creaturePagesVisible": true,
+    "coverVisible": true,
+    "coverIndex": 4,
+    "creatureLeftIndex": 2,
+    "creatureRightIndex": 3,
+    "fullViewIndex": 5
+},
+{
+    "phase": "final",
+    "sampleTime": 0.4000000059604645,
+    "bookFrameVisible": true,
+    "itemRootVisible": false,
+    "creaturePagesVisible": true,
+    "coverVisible": true,
+    "coverIndex": 4,
+    "creatureLeftIndex": 2,
+    "creatureRightIndex": 3,
+    "fullViewIndex": 5
+},
+{
+    "phase": "post-reveal",
+    "sampleTime": 0.4000000059604645,
+    "bookFrameVisible": true,
+    "itemRootVisible": false,
+    "creaturePagesVisible": true,
+    "coverVisible": false,
+    "coverIndex": 4,
+    "creatureLeftIndex": 2,
+    "creatureRightIndex": 3,
+    "fullViewIndex": 5
+}
+]

@@ -1,0 +1,102 @@
+{
+  "scope": "Static serialized source inspection only",
+  "changedFileCount": 13,
+  "removedOverrideCount": 634,
+  "remainingConflictingOverridesInApprovedScope": 0,
+  "files": [
+    {
+      "file": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 1,
+      "afterHashMatches": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 53,
+      "afterHashMatches": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 50,
+      "afterHashMatches": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 53,
+      "afterHashMatches": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 53,
+      "afterHashMatches": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 53,
+      "afterHashMatches": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 53,
+      "afterHashMatches": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 53,
+      "afterHashMatches": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 53,
+      "afterHashMatches": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 53,
+      "afterHashMatches": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 53,
+      "afterHashMatches": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 53,
+      "afterHashMatches": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/Grand Hall.unity",
+      "onlyListedOverridesRemoved": true,
+      "existingObjectIdsUnchanged": true,
+      "removedOverrides": 53,
+      "afterHashMatches": true
+    }
+  ],
+  "testsExecuted": false,
+  "unityCompilationExecuted": false,
+  "unityPlayOrVisualCheckExecuted": false
+}

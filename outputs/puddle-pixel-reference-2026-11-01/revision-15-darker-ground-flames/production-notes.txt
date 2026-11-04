@@ -1,0 +1,26 @@
+Revision15 — fewer, darker near-ground flames
+
+Scope: local Aseprite preview adjustment requested by the user.
+- Near-ground emitters64→40; active flames56→35 (37.5% fewer).
+- Near palette changes F05D1A/FFAE29/FFF09C to DB4A16/F58B1E/FFCB58:
+  deeper orange edges and golden centers. Shape, alpha,8x80ms timing,
+  pivot4,6 and0-2px rise remain unchanged.
+- Ground and airborne source/export files are unchanged byte-for-byte copies
+  of revision14. Airborne colors, trajectories, timing and density are unchanged.
+
+Changed outputs: ground-flame-particle.aseprite and matching PNG/GIF exports;
+comparison-preview, fire-with-particles-preview and particle-groups-preview.
+The split preview remains near-ground / combined / airborne. Native compositions
+keep the original ground and both particle groups in separate editable layers.
+
+Verification: Aseprite authoring/reopen exit0; source/PNG equality and empty final
+frame passed. Exact color remap and identical alpha masks checked.18 ground/air
+files have matching SHA256; all160 background AND airborne preview cels match
+revision14. All airborne trajectory records match.35 active near flames and GIF
+dimensions/timings verified; final split preview visually inspected.
+Evidence: verification.txt and export-verification.json. Reproduction script:
+author-particles.lua. Previews use a neutral review floor, not a Unity capture.
+
+Unity integration/import/compilation/Play Mode not performed; no Unity files changed.
+Doc Impact Check: SessionLog only for this task. ErrorLog/DecisionLog not edited;
+no identified Presentation HTML stale candidate.

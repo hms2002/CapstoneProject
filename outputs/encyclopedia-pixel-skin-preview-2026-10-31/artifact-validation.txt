@@ -1,0 +1,3 @@
+PASS 21 individual PNG dimensions, named sheet bounds, and no region overlaps.
+PASS 20 referenced source sprites and four protected project files unchanged.
+PASS two preview PNGs at 1180x740.

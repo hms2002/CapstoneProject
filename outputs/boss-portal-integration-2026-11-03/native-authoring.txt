@@ -1,0 +1,18 @@
+Sprite: Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_Shadow.png; rect=(x:0.00, y:0.00, width:50.00, height:49.00); pivot=(25.00, 7.35); PPU=16
+Sprite: Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_Dragon.png; rect=(x:0.00, y:0.00, width:50.00, height:49.00); pivot=(25.00, 7.35); PPU=16
+Sprite: Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_Slime.png; rect=(x:0.00, y:0.00, width:50.00, height:49.00); pivot=(25.00, 7.35); PPU=16
+Sprite: Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_DemonKing.png; rect=(x:0.00, y:0.00, width:50.00, height:49.00); pivot=(25.00, 7.35); PPU=16
+variant:Shadow: sprite=Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_Shadow.png; particle mode=TwoColors; min=998CB6FF; max=DAD0E8FF
+Room binding: Assets/_Project/Data/Dungeon/Rooms/BossThemes/Shadow/Shadow_Boss.asset => Assets/_Project/Prefabs/Map/Procedural/ProceduralSceneTravelPortal_Shadow.prefab
+variant:Dragon: sprite=Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_Dragon.png; particle mode=TwoColors; min=FFAF4DFF; max=FFE6A8FF
+Room binding: Assets/_Project/Data/Dungeon/Rooms/BossThemes/Dragon/Dragon_Boss.asset => Assets/_Project/Prefabs/Map/Procedural/ProceduralSceneTravelPortal_Dragon.prefab
+variant:Slime: sprite=Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_Slime.png; particle mode=TwoColors; min=43DBB1FF; max=B9FFE8FF
+Room binding: Assets/_Project/Data/Dungeon/Rooms/BossThemes/Slime/Slime_Boss.asset => Assets/_Project/Prefabs/Map/Procedural/ProceduralSceneTravelPortal_Slime.prefab
+Grand Hall/Portal_To_ShadowCorridor: sprite=Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_Shadow.png; particle mode=TwoColors; min=998CB6FF; max=DAD0E8FF
+Grand Hall/Portal_To_DragonCorridor: sprite=Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_Dragon.png; particle mode=TwoColors; min=FFAF4DFF; max=FFE6A8FF
+Grand Hall/Portal_To_SlimeCorridor: sprite=Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_Slime.png; particle mode=TwoColors; min=43DBB1FF; max=B9FFE8FF
+Grand Hall/Portal_To_DemonkingCorridor: sprite=Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_DemonKing.png; particle mode=TwoColors; min=B66AFFFF; max=EBC2FFFF
+HeoMinSeok_Boss_Shadow/ScenePortal: sprite=Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_Shadow.png; particle mode=TwoColors; min=998CB6FF; max=DAD0E8FF
+HeoMinSeok_Boss_Dragon/ScenePortal: sprite=Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_Dragon.png; particle mode=TwoColors; min=FFAF4DFF; max=FFE6A8FF
+SangHyup_Boss_SlimeQueen/ScenePortal: sprite=Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_Slime.png; particle mode=TwoColors; min=43DBB1FF; max=B9FFE8FF
+DemonkingCorridor/ScenePortal: sprite=Assets/_Project/Art/Sprites/Map/Environment/Level/BossPortals/Portal_DemonKing.png; particle mode=TwoColors; min=B66AFFFF; max=EBC2FFFF

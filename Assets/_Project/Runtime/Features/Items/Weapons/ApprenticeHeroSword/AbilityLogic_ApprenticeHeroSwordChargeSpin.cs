@@ -46,7 +46,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             chargePresentation?.Update(0f);
             while (true)
             {
-                if (IsAbilityCancelled(spec))
+                if (system == null || !system.isActiveAndEnabled || IsAbilityCancelled(spec))
                 {
                     DestroyTrackedHitboxes(spec);
                     yield break;
@@ -303,6 +303,9 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
         private static Sprite directionalRevealMaskSprite;
 
         private readonly ApprenticeHeroSwordChargeSpinData data;
+        private readonly Transform owner;
+        private readonly GameObject gaugeRoot;
+        private readonly IChargeGaugePresentation gauge;
         private readonly ParticleSystem particleRoot;
         private readonly GameObject revealRoot;
         private readonly SpriteRenderer revealRenderer;
@@ -314,6 +317,9 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
 
         private ApprenticeHeroSwordChargePresentationRuntime(
             ApprenticeHeroSwordChargeSpinData data,
+            Transform owner,
+            GameObject gaugeRoot,
+            IChargeGaugePresentation gauge,
             ParticleSystem particleRoot,
             GameObject revealRoot,
             SpriteRenderer revealRenderer,
@@ -322,6 +328,9 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             Transform fullChargeVfxParent)
         {
             this.data = data;
+            this.owner = owner;
+            this.gaugeRoot = gaugeRoot;
+            this.gauge = gauge;
             this.particleRoot = particleRoot;
             this.revealRoot = revealRoot;
             this.revealRenderer = revealRenderer;
@@ -336,6 +345,24 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
         {
             if (system == null || data == null)
                 return null;
+
+            GameObject gaugeRoot = null;
+            IChargeGaugePresentation gauge = null;
+            if (data.ChargeGaugePrefab != null)
+            {
+                gaugeRoot = UnityEngine.Object.Instantiate(data.ChargeGaugePrefab, system.transform, false);
+                gauge = gaugeRoot.GetComponent<IChargeGaugePresentation>();
+                if (gauge == null)
+                {
+                    Debug.LogError("[ApprenticeHeroSwordChargeSpin] Charge gauge prefab must implement IChargeGaugePresentation.");
+                    UnityEngine.Object.Destroy(gaugeRoot);
+                    gaugeRoot = null;
+                }
+            }
+            else
+            {
+                Debug.LogError("[ApprenticeHeroSwordChargeSpin] An authored charge gauge prefab is required.");
+            }
 
             SpriteRenderer sourceRenderer = ResolveWeaponRenderer(system);
             // Suction is centered on the owner and must not inherit weapon aim or mirroring.
@@ -359,11 +386,14 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             }
 
             Transform fullChargeVfxParent = data.FullChargeVfxPrefab != null ? system.transform : null;
-            if (particle == null && revealRoot == null && fullChargeVfxParent == null)
+            if (particle == null && revealRoot == null && fullChargeVfxParent == null && gaugeRoot == null)
                 return null;
 
             return new ApprenticeHeroSwordChargePresentationRuntime(
                 data,
+                system.transform,
+                gaugeRoot,
+                gauge,
                 particle,
                 revealRoot,
                 revealRenderer,
@@ -375,6 +405,8 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
         public void Update(float chargeRatio)
         {
             float ratio = Mathf.Clamp01(chargeRatio);
+            if (gaugeRoot != null && owner != null)
+                gauge.ShowCharge(owner.position, ratio);
             bool fullCharge = ratio >= data.FullChargeSpriteThreshold;
             if (fullCharge)
                 PlayFullChargeVfx();
@@ -421,6 +453,12 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
 
         public void Release(bool clearParticles)
         {
+            if (gaugeRoot != null)
+            {
+                gauge.Hide();
+                UnityEngine.Object.Destroy(gaugeRoot);
+            }
+
             if (particleRoot != null)
             {
                 ParticleSystemStopBehavior stopBehavior = clearParticles

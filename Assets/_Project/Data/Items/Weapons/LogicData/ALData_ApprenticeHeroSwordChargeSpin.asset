@@ -57,6 +57,7 @@ MonoBehaviour:
     legacyStaggerDamage: 0
     hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
     hitImpactCueKind: 1
+  chargeGaugePrefab: {fileID: 1419195128437949357, guid: e68b0dc2137144d489eba1938b33ab67, type: 3}
   chargeParticlePrefab: {fileID: 9220266015815699353, guid: d571ccb863f2c524bbbda03c4ce06d0e, type: 3}
   chargeParticleLocalPosition: {x: 0, y: 0, z: 0}
   chargeParticleLocalEulerAngles: {x: 0, y: 0, z: 0}

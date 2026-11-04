@@ -1,0 +1,229 @@
+PASS beer native dimensions
+PASS beer frame count
+PASS beer editable layers
+PASS beer tag count
+PASS beer tag BeerIdle
+PASS beer fixed pivot
+PASS beer frame duration 1
+PASS beer PNG pixel equality 1
+PASS beer frame duration 2
+PASS beer PNG pixel equality 2
+PASS beer frame duration 3
+PASS beer PNG pixel equality 3
+PASS beer frame duration 4
+PASS beer PNG pixel equality 4
+PASS beer GIF frame count
+PASS beer GIF review compositing 1 max channel delta 0
+PASS beer GIF review compositing 2 max channel delta 1
+PASS beer GIF review compositing 3 max channel delta 1
+PASS beer GIF review compositing 4 max channel delta 1
+PASS fire-surface native dimensions
+PASS fire-surface frame count
+PASS fire-surface editable layers
+PASS fire-surface tag count
+PASS fire-surface tag FireLoop
+PASS fire-surface fixed pivot
+PASS fire-surface frame duration 1
+PASS fire-surface PNG pixel equality 1
+PASS fire-surface frame duration 2
+PASS fire-surface PNG pixel equality 2
+PASS fire-surface frame duration 3
+PASS fire-surface PNG pixel equality 3
+PASS fire-surface frame duration 4
+PASS fire-surface PNG pixel equality 4
+PASS fire-surface frame duration 5
+PASS fire-surface PNG pixel equality 5
+PASS fire-surface frame duration 6
+PASS fire-surface PNG pixel equality 6
+PASS fire-surface GIF frame count
+PASS fire-surface GIF review compositing 1 max channel delta 1
+PASS fire-surface GIF review compositing 2 max channel delta 1
+PASS fire-surface GIF review compositing 3 max channel delta 1
+PASS fire-surface GIF review compositing 4 max channel delta 1
+PASS fire-surface GIF review compositing 5 max channel delta 1
+PASS fire-surface GIF review compositing 6 max channel delta 1
+PASS beer-to-fire native dimensions
+PASS beer-to-fire frame count
+PASS beer-to-fire editable layers
+PASS beer-to-fire tag count
+PASS beer-to-fire tag Ignite
+PASS beer-to-fire fixed pivot
+PASS beer-to-fire frame duration 1
+PASS beer-to-fire PNG pixel equality 1
+PASS beer-to-fire frame duration 2
+PASS beer-to-fire PNG pixel equality 2
+PASS beer-to-fire frame duration 3
+PASS beer-to-fire PNG pixel equality 3
+PASS beer-to-fire frame duration 4
+PASS beer-to-fire PNG pixel equality 4
+PASS beer-to-fire frame duration 5
+PASS beer-to-fire PNG pixel equality 5
+PASS beer-to-fire frame duration 6
+PASS beer-to-fire PNG pixel equality 6
+PASS beer-to-fire frame duration 7
+PASS beer-to-fire PNG pixel equality 7
+PASS beer-to-fire frame duration 8
+PASS beer-to-fire PNG pixel equality 8
+PASS beer-to-fire GIF frame count
+PASS beer-to-fire GIF review compositing 1 max channel delta 0
+PASS beer-to-fire GIF review compositing 2 max channel delta 1
+PASS beer-to-fire GIF review compositing 3 max channel delta 1
+PASS beer-to-fire GIF review compositing 4 max channel delta 1
+PASS beer-to-fire GIF review compositing 5 max channel delta 1
+PASS beer-to-fire GIF review compositing 6 max channel delta 1
+PASS beer-to-fire GIF review compositing 7 max channel delta 1
+PASS beer-to-fire GIF review compositing 8 max channel delta 1
+PASS flame-particle native dimensions
+PASS flame-particle frame count
+PASS flame-particle editable layers
+PASS flame-particle tag count
+PASS flame-particle tag ParticleLife
+PASS flame-particle fixed pivot
+PASS flame-particle frame duration 1
+PASS flame-particle PNG pixel equality 1
+PASS flame-particle frame duration 2
+PASS flame-particle PNG pixel equality 2
+PASS flame-particle frame duration 3
+PASS flame-particle PNG pixel equality 3
+PASS flame-particle frame duration 4
+PASS flame-particle PNG pixel equality 4
+PASS flame-particle frame duration 5
+PASS flame-particle PNG pixel equality 5
+PASS flame-particle frame duration 6
+PASS flame-particle PNG pixel equality 6
+PASS flame-particle GIF frame count
+PASS flame-particle GIF review compositing 1 max channel delta 0
+PASS flame-particle GIF review compositing 2 max channel delta 0
+PASS flame-particle GIF review compositing 3 max channel delta 0
+PASS flame-particle GIF review compositing 4 max channel delta 0
+PASS flame-particle GIF review compositing 5 max channel delta 0
+PASS flame-particle GIF review compositing 6 max channel delta 0
+PASS ember-flight native dimensions
+PASS ember-flight frame count
+PASS ember-flight editable layers
+PASS ember-flight tag count
+PASS ember-flight tag EmberFlight
+PASS ember-flight fixed pivot
+PASS ember-flight frame duration 1
+PASS ember-flight PNG pixel equality 1
+PASS ember-flight frame duration 2
+PASS ember-flight PNG pixel equality 2
+PASS ember-flight frame duration 3
+PASS ember-flight PNG pixel equality 3
+PASS ember-flight frame duration 4
+PASS ember-flight PNG pixel equality 4
+PASS ember-flight frame duration 5
+PASS ember-flight PNG pixel equality 5
+PASS ember-flight frame duration 6
+PASS ember-flight PNG pixel equality 6
+PASS ember-flight frame duration 7
+PASS ember-flight PNG pixel equality 7
+PASS ember-flight frame duration 8
+PASS ember-flight PNG pixel equality 8
+PASS ember-flight frame duration 9
+PASS ember-flight PNG pixel equality 9
+PASS ember-flight frame duration 10
+PASS ember-flight PNG pixel equality 10
+PASS ember-flight frame duration 11
+PASS ember-flight PNG pixel equality 11
+PASS ember-flight frame duration 12
+PASS ember-flight PNG pixel equality 12
+PASS ember-flight GIF frame count
+PASS ember-flight GIF review compositing 1 max channel delta 0
+PASS ember-flight GIF review compositing 2 max channel delta 0
+PASS ember-flight GIF review compositing 3 max channel delta 0
+PASS ember-flight GIF review compositing 4 max channel delta 0
+PASS ember-flight GIF review compositing 5 max channel delta 0
+PASS ember-flight GIF review compositing 6 max channel delta 0
+PASS ember-flight GIF review compositing 7 max channel delta 0
+PASS ember-flight GIF review compositing 8 max channel delta 0
+PASS ember-flight GIF review compositing 9 max channel delta 0
+PASS ember-flight GIF review compositing 10 max channel delta 0
+PASS ember-flight GIF review compositing 11 max channel delta 0
+PASS ember-flight GIF review compositing 12 max channel delta 0
+PASS puddle-cycle native dimensions
+PASS puddle-cycle frame count
+PASS puddle-cycle editable layers
+PASS puddle-cycle tag count
+PASS puddle-cycle tag BeerIdle
+PASS puddle-cycle tag Ignite
+PASS puddle-cycle tag FireLoop
+PASS puddle-cycle fixed pivot
+PASS puddle-cycle frame duration 1
+PASS puddle-cycle PNG pixel equality 1
+PASS puddle-cycle frame duration 2
+PASS puddle-cycle PNG pixel equality 2
+PASS puddle-cycle frame duration 3
+PASS puddle-cycle PNG pixel equality 3
+PASS puddle-cycle frame duration 4
+PASS puddle-cycle PNG pixel equality 4
+PASS puddle-cycle frame duration 5
+PASS puddle-cycle PNG pixel equality 5
+PASS puddle-cycle frame duration 6
+PASS puddle-cycle PNG pixel equality 6
+PASS puddle-cycle frame duration 7
+PASS puddle-cycle PNG pixel equality 7
+PASS puddle-cycle frame duration 8
+PASS puddle-cycle PNG pixel equality 8
+PASS puddle-cycle frame duration 9
+PASS puddle-cycle PNG pixel equality 9
+PASS puddle-cycle frame duration 10
+PASS puddle-cycle PNG pixel equality 10
+PASS puddle-cycle frame duration 11
+PASS puddle-cycle PNG pixel equality 11
+PASS puddle-cycle frame duration 12
+PASS puddle-cycle PNG pixel equality 12
+PASS puddle-cycle frame duration 13
+PASS puddle-cycle PNG pixel equality 13
+PASS puddle-cycle frame duration 14
+PASS puddle-cycle PNG pixel equality 14
+PASS puddle-cycle frame duration 15
+PASS puddle-cycle PNG pixel equality 15
+PASS puddle-cycle frame duration 16
+PASS puddle-cycle PNG pixel equality 16
+PASS puddle-cycle frame duration 17
+PASS puddle-cycle PNG pixel equality 17
+PASS puddle-cycle frame duration 18
+PASS puddle-cycle PNG pixel equality 18
+PASS puddle-cycle GIF frame count
+PASS puddle-cycle GIF review compositing 1 max channel delta 0
+PASS puddle-cycle GIF review compositing 2 max channel delta 1
+PASS puddle-cycle GIF review compositing 3 max channel delta 1
+PASS puddle-cycle GIF review compositing 4 max channel delta 1
+PASS puddle-cycle GIF review compositing 5 max channel delta 0
+PASS puddle-cycle GIF review compositing 6 max channel delta 1
+PASS puddle-cycle GIF review compositing 7 max channel delta 1
+PASS puddle-cycle GIF review compositing 8 max channel delta 1
+PASS puddle-cycle GIF review compositing 9 max channel delta 1
+PASS puddle-cycle GIF review compositing 10 max channel delta 1
+PASS puddle-cycle GIF review compositing 11 max channel delta 1
+PASS puddle-cycle GIF review compositing 12 max channel delta 1
+PASS puddle-cycle GIF review compositing 13 max channel delta 1
+PASS puddle-cycle GIF review compositing 14 max channel delta 1
+PASS puddle-cycle GIF review compositing 15 max channel delta 1
+PASS puddle-cycle GIF review compositing 16 max channel delta 1
+PASS puddle-cycle GIF review compositing 17 max channel delta 1
+PASS puddle-cycle GIF review compositing 18 max channel delta 1
+PASS Ignite starts with exact beer frame
+PASS Ignite ends with exact FireLoop start
+PASS Combined timeline source equality 1
+PASS Combined timeline source equality 2
+PASS Combined timeline source equality 3
+PASS Combined timeline source equality 4
+PASS Combined timeline source equality 5
+PASS Combined timeline source equality 6
+PASS Combined timeline source equality 7
+PASS Combined timeline source equality 8
+PASS Combined timeline source equality 9
+PASS Combined timeline source equality 10
+PASS Combined timeline source equality 11
+PASS Combined timeline source equality 12
+PASS Combined timeline source equality 13
+PASS Combined timeline source equality 14
+PASS Combined timeline source equality 15
+PASS Combined timeline source equality 16
+PASS Combined timeline source equality 17
+PASS Combined timeline source equality 18
+PASS Particle lifetime ends fully transparent
+PASS Ember flight ends fully transparent
+Total passed: 228

@@ -1,0 +1,5 @@
+00-original-portal.png: 50x49; stone/exterior differences=0; alpha differences=0; recolored pixels=0
+01-chloe-portal.png: 50x49; stone/exterior differences=0; alpha differences=0; recolored pixels=664
+02-spiri-portal.png: 50x49; stone/exterior differences=0; alpha differences=0; recolored pixels=664
+03-melta-portal.png: 50x49; stone/exterior differences=0; alpha differences=0; recolored pixels=664
+04-demon-king-portal.png: 50x49; stone/exterior differences=0; alpha differences=0; recolored pixels=664

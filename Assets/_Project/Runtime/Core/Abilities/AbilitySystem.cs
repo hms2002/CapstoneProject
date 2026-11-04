@@ -895,6 +895,18 @@ namespace UnityGAS
                 : 0f;
         }
 
+        /// <summary>Commit a hold/release ability's deferred cooldown using the normal GE/modifier path.</summary>
+        public bool CommitDeferredCooldown(AbilitySpec spec)
+        {
+            if (spec?.Definition == null || !spec.Definition.startCooldownOnEnd ||
+                spec.Token == null || spec.Token.IsCancelled || cooldownController == null ||
+                FindSpec(spec.Definition) != spec || cooldownController.IsOnCooldown(spec))
+                return false;
+            cooldownController.StartCooldown(spec);
+            spec.SkipCooldownOnEnd = true;
+            return true;
+        }
+
         public bool ReduceCooldownRemaining(AbilityDefinition def, float reduceSeconds)
         {
             return cooldownController != null &&

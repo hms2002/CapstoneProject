@@ -1,0 +1,230 @@
+{
+  "beer": {
+    "frames": 4,
+    "visible_RGBA_colors": 8,
+    "alpha_levels": [
+      138,
+      144,
+      148,
+      154,
+      178,
+      180,
+      218,
+      240
+    ],
+    "same_ground_occupancy": true,
+    "gif_duration_ms": 640
+  },
+  "fire-surface": {
+    "frames": 6,
+    "visible_RGBA_colors": 7,
+    "alpha_levels": [
+      116,
+      162,
+      178,
+      228,
+      248,
+      255
+    ],
+    "same_ground_occupancy": true,
+    "gif_duration_ms": 480
+  },
+  "beer-to-fire": {
+    "frames": 8,
+    "visible_RGBA_colors": 15,
+    "alpha_levels": [
+      116,
+      138,
+      144,
+      148,
+      154,
+      162,
+      178,
+      180,
+      218,
+      228,
+      240,
+      248,
+      255
+    ],
+    "same_ground_occupancy": true,
+    "gif_duration_ms": 640
+  },
+  "flame-particle": {
+    "frames": 6,
+    "visible_RGBA_colors": 3,
+    "alpha_levels": [
+      255
+    ],
+    "gif_duration_ms": 480
+  },
+  "ember-flight": {
+    "frames": 12,
+    "visible_RGBA_colors": 3,
+    "alpha_levels": [
+      255
+    ],
+    "gif_duration_ms": 960
+  },
+  "puddle-cycle": {
+    "frames": 18,
+    "visible_RGBA_colors": 15,
+    "alpha_levels": [
+      116,
+      138,
+      144,
+      148,
+      154,
+      162,
+      178,
+      180,
+      218,
+      228,
+      240,
+      248,
+      255
+    ],
+    "same_ground_occupancy": true,
+    "gif_duration_ms": 1760
+  },
+  "beer_before": {
+    "mean_visible_alpha": 231.76,
+    "foam_pixels": [
+      291,
+      290,
+      288,
+      285
+    ],
+    "largest_foam_component": [
+      53,
+      53,
+      53,
+      53
+    ]
+  },
+  "beer_after": {
+    "mean_visible_alpha": 153.19,
+    "foam_pixels": [
+      57,
+      54,
+      53,
+      56
+    ],
+    "largest_foam_component": [
+      4,
+      4,
+      4,
+      4
+    ]
+  },
+  "fire_yellow_before": [
+    13,
+    11,
+    9,
+    9,
+    9,
+    12
+  ],
+  "fire_yellow_after": [
+    181,
+    184,
+    190,
+    190,
+    192,
+    184
+  ],
+  "ember_flight": {
+    "centroids": [
+      [
+        16.0,
+        29.0
+      ],
+      [
+        18.64,
+        26.91
+      ],
+      [
+        19.5,
+        24.0
+      ],
+      [
+        21.0,
+        24.0
+      ],
+      [
+        19.64,
+        20.91
+      ],
+      [
+        15.5,
+        18.0
+      ],
+      [
+        13.0,
+        18.0
+      ],
+      [
+        12.64,
+        14.91
+      ],
+      [
+        14.67,
+        10.5
+      ],
+      [
+        17.67,
+        8.5
+      ],
+      [
+        18.0,
+        8.0
+      ]
+    ],
+    "horizontal_reversals": 2,
+    "emission_points": 12,
+    "active_particles_per_preview_frame": 11,
+    "period_ms": 960
+  },
+  "native_checks": 228,
+  "GIF_review_max_channel_delta": 1,
+  "comparison-preview": {
+    "duration_ms": 3840,
+    "integer_scale": 4,
+    "dimensions": [
+      960,
+      320
+    ]
+  },
+  "surface-only-preview": {
+    "duration_ms": 480,
+    "integer_scale": 4,
+    "dimensions": [
+      320,
+      320
+    ]
+  },
+  "particles-only-preview": {
+    "duration_ms": 960,
+    "integer_scale": 4,
+    "dimensions": [
+      320,
+      320
+    ]
+  },
+  "ember-flight-preview": {
+    "duration_ms": 960,
+    "integer_scale": 6,
+    "dimensions": [
+      288,
+      288
+    ]
+  },
+  "ignition-preview": {
+    "duration_ms": 3840,
+    "integer_scale": 4,
+    "dimensions": [
+      320,
+      320
+    ]
+  }
+}

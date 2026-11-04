@@ -1,0 +1,45 @@
+Revision13 — wider coverage and stronger fire particles
+
+Scope: Aseprite preview Implementation. User requested spreading the effect over
+the whole puddle and making it look more threatening. Ground artwork is retained.
+
+Changes:
+- Emitters20→32, including the outer rim and lower portion of the footprint.
+  Active instances14→22-23.32 births/800ms corresponds to40 emissions per second
+  in this preview; it is not an applied Unity ParticleSystem setting.
+- Small particles retain5x6 visible bounds on8x8 canvases. Added8 larger flare
+  emitters using flare-particle.aseprite:12x12 canvas,7x10 maximum visible bounds,
+  pivot6,10. Both sprites use8x80ms frames and end fully transparent.
+- Stronger orange/yellow/pale-core contrast, mirrored flame shapes, birth-position
+  jitter on each emission cycle, outward/lateral spread and delayed acceleration
+  upward. Young flames linger near the lower/outer surface before rising.
+- Visible lifetime560ms; rise up to16px small /20px flare, reduced for top-edge
+  emitters to retain the entire sprite within the preview. No particle clipping.
+
+Files:
+pixel-particle.aseprite / flare-particle.aseprite: independent native particle art,
+  transparent per-frame PNGs, sprite sheets and GIFs also provided.
+comparison-preview.gif: alcohol / fire composition,608x320,3200ms.
+fire-with-particles-preview.gif: fire composition alone,320x320,3200ms.
+Preview Aseprite files keep ground/background and particles in separate layers.
+fire-ground.aseprite, four ground PNG frames, sheet and GIF are unchanged
+  byte-for-byte copies of revision12; ground opacity remains65.1%.
+author-particles.lua reproduces sources and previews; particle-motion.csv records
+  motion/class/birth positions. particle-coverage.png is a verification mask of
+  ground pixels reached by particles over the entire3200ms demonstration.
+
+Verification:
+Aseprite authoring/reopen exit0; particle source/PNG equality, timings and final
+empty frames passed. All160 underlying ground/alcohol/background preview cels
+match revision12. SHA256 confirms all seven ground files are byte-identical.
+Verified dimensions, GIF times,32 emitters/22-23 active instances and absence of
+clipped particles. All sampled birth positions lie inside the original footprint.
+Across the full cycle, particle coverage increases888/1625 (54.6%) to1580/1625
+(97.2%) ground pixels; this is cumulative coverage, not simultaneous coverage.
+Final comparison and isolated preview visually inspected. Evidence:
+verification.txt and export-verification.json.
+
+Unity import/compilation/Play Mode, ParticleSystem integration and actual game
+scale/background acceptance not executed. No Unity files changed.
+Doc Impact Check: SessionLog only; ErrorLog/DecisionLog unchanged; no identified
+Presentation HTML stale candidate.

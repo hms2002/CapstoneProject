@@ -1,0 +1,75 @@
+{
+  "artChecks": [
+    {
+      "name": "01-slim",
+      "frames": 14,
+      "layers": [
+        "Backdrop (preview only)",
+        "Player (original 15x22)",
+        "01 SLIM - frame",
+        "Charge fill - 0 to 100 percent"
+      ],
+      "magic": "a5e0",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "02-capsule",
+      "frames": 14,
+      "layers": [
+        "Backdrop (preview only)",
+        "Player (original 15x22)",
+        "02 CAPSULE - frame",
+        "Charge fill - 0 to 100 percent"
+      ],
+      "magic": "a5e0",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "03-segment",
+      "frames": 14,
+      "layers": [
+        "Backdrop (preview only)",
+        "Player (original 15x22)",
+        "03 SEGMENT - frame",
+        "Charge fill - 0 to 100 percent"
+      ],
+      "magic": "a5e0",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "04-wing",
+      "frames": 14,
+      "layers": [
+        "Backdrop (preview only)",
+        "Player (original 15x22)",
+        "04 WING - frame",
+        "Charge fill - 0 to 100 percent"
+      ],
+      "magic": "a5e0",
+      "width": 64,
+      "height": 64
+    }
+  ],
+  "compileChecks": {
+    "Gameplay": {
+      "errors": [],
+      "warnings": 139
+    },
+    "Presentation": {
+      "errors": [],
+      "warnings": 6
+    }
+  },
+  "prefab": {
+    "documents": 66,
+    "missingLocalReferences": [],
+    "originalCrimsonObjectsRetained": true,
+    "gaugeArtBlocksUnchanged": true
+  },
+  "unityPlayMode": "not executed",
+  "unityImport": "not verified; existing play session left running",
+  "automatedTests": "not executed"
+}

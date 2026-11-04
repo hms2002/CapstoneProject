@@ -130,6 +130,8 @@ public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
 
         Data.monsterEncyclopediaData ??= new MonsterEncyclopediaSaveData();
         Data.monsterEncyclopediaData.Normalize();
+        Data.encyclopediaDiscoveryData ??= new EncyclopediaDiscoverySaveData();
+        Data.encyclopediaDiscoveryData.Normalize();
 
         ItemManager itemManager = ItemManager.Instance;
         if (itemManager != null && itemManager.IsReady)
@@ -168,6 +170,8 @@ public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
         Data.tutorialData.Normalize();
         Data.monsterEncyclopediaData ??= new MonsterEncyclopediaSaveData();
         Data.monsterEncyclopediaData.Normalize();
+        Data.encyclopediaDiscoveryData ??= new EncyclopediaDiscoverySaveData();
+        Data.encyclopediaDiscoveryData.Normalize();
     }
 
     private void OnApplicationQuit()

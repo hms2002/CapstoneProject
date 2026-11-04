@@ -101,11 +101,13 @@ public sealed class AlcoholExposurePlayModeTests
             RunSessionStore.RegisterBackend(previousRunBackend);
     }
 
-    [Test]
-    public void ChargeFillsAtThreeSecondsButEffectStartsOnlyAfterThreeSeconds()
+    [TestCase(0, 2f)]
+    [TestCase(1, 1f)]
+    public void ChargeFillsAtRequiredTimeButEffectStartsOnlyAfterOverflow(int affection, float chargeSeconds)
     {
+        SetAffinity(affection);
         exposure.EnterPuddle(sourceA);
-        Tick(3f);
+        Tick(chargeSeconds);
         Assert.That(exposure.FillAmount, Is.EqualTo(1f));
         Assert.That(exposure.IsOverflowing, Is.False);
         Assert.That(runner.ActiveEffects, Is.Empty);
@@ -113,15 +115,15 @@ public sealed class AlcoholExposurePlayModeTests
         Assert.That(runner.ActiveEffects, Is.Empty, "Paused time does not overflow.");
         Tick(0.01f);
         Assert.That(exposure.IsOverflowing, Is.True);
-        Assert.That(Active(confusion), Is.Not.Null);
-        Assert.That(Active(buff), Is.Null);
+        Assert.That(Active(affection > 0 ? buff : confusion), Is.Not.Null);
+        Assert.That(Active(affection > 0 ? confusion : buff), Is.Null);
     }
 
     [Test]
     public void LeavingBeforeOverflowDrainsStartingFillForOneAndAHalfSeconds()
     {
         exposure.EnterPuddle(sourceA);
-        Tick(1.5f);
+        Tick(1f);
         exposure.ExitPuddle(sourceA);
         Tick(0.75f);
         Assert.That(exposure.FillAmount, Is.EqualTo(0.25f).Within(0.0001f));
@@ -135,13 +137,13 @@ public sealed class AlcoholExposurePlayModeTests
     public void ReentryResumesRemainingFillInsteadOfRestartingCharge()
     {
         exposure.EnterPuddle(sourceA);
-        Tick(1.5f);
+        Tick(1f);
         exposure.ExitPuddle(sourceA);
         Tick(0.75f);
         exposure.EnterPuddle(sourceB);
         Assert.That(exposure.IsDraining, Is.False);
         Assert.That(exposure.FillAmount, Is.EqualTo(0.25f).Within(0.0001f));
-        Tick(2.25f);
+        Tick(1.5f);
         Assert.That(exposure.IsOverflowing, Is.False);
         Tick(0.01f);
         Assert.That(exposure.IsOverflowing, Is.True);
@@ -155,7 +157,7 @@ public sealed class AlcoholExposurePlayModeTests
         exposure.EnterPuddle(sourceB);
         Tick(1f);
         exposure.ExitPuddle(sourceA);
-        Tick(2f);
+        Tick(1f);
         Assert.That(exposure.HasAlcoholContact, Is.True);
         Assert.That(exposure.IsDraining, Is.False);
         Assert.That(exposure.IsOverflowing, Is.False);
@@ -298,7 +300,7 @@ public sealed class AlcoholExposurePlayModeTests
         exposure.enabled = true;
         exposure.EnterPuddle(sourceA);
         Tick(1f);
-        Assert.That(exposure.FillAmount, Is.EqualTo(1f / 3f).Within(0.0001f));
+        Assert.That(exposure.FillAmount, Is.EqualTo(0.5f).Within(0.0001f));
         Assert.That(runner.ActiveEffects, Is.Empty);
     }
 
@@ -452,7 +454,7 @@ public sealed class AlcoholExposurePlayModeTests
     private void Overflow()
     {
         exposure.EnterPuddle(sourceA);
-        Tick(3.01f);
+        Tick(2.01f);
     }
 
     private void AssertEmptyGlass()

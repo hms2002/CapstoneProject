@@ -1,0 +1,146 @@
+{
+  "files": [
+    {
+      "file": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "sourceFileId": "7990481634182577215",
+      "nestedSceneFileId": "3812683333260759081",
+      "property": "m_AnchoredPosition.x",
+      "removedValue": 285,
+      "inheritedValue": 0,
+      "beforeSha256": "045abfd905e0ffe0f13b36489163c7bc2d01ab66af5f4418f12dd2247cd5b708",
+      "afterSha256": "8e139b089a74bd1e250b315caff9840eca7b1321d3077ff3144c8fd20be804df",
+      "removedBlock": "    - target: {fileID: 3812683333260759081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}\n      propertyPath: m_AnchoredPosition.x\n      value: 285\n      objectReference: {fileID: 0}\n"
+    },
+    {
+      "file": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "sourceFileId": "7990481634182577215",
+      "nestedSceneFileId": "3812683333260759081",
+      "property": "m_AnchoredPosition.x",
+      "removedValue": 285,
+      "inheritedValue": 0,
+      "beforeSha256": "ee319459f4aef1eb7890260ee5f1e56e180391cee2d35791aab2f5c1c3d85f34",
+      "afterSha256": "54df220e7fdff1ea4c466a5048d9df6327bea277945b8d63903a4d88b521742b",
+      "removedBlock": "    - target: {fileID: 3812683333260759081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}\n      propertyPath: m_AnchoredPosition.x\n      value: 285\n      objectReference: {fileID: 0}\n"
+    },
+    {
+      "file": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "sourceFileId": "7990481634182577215",
+      "nestedSceneFileId": "3812683333260759081",
+      "property": "m_AnchoredPosition.x",
+      "removedValue": 285,
+      "inheritedValue": 0,
+      "beforeSha256": "d321a854a9e279dc2160d5f0db31447fc4bd64f79c616aaaf35827f6f016e488",
+      "afterSha256": "f9d022fcf21459c823bbbef9abdc67de52375eb964eb22ad5d9bfd346353d354",
+      "removedBlock": "    - target: {fileID: 3812683333260759081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}\r\n      propertyPath: m_AnchoredPosition.x\r\n      value: 285\r\n      objectReference: {fileID: 0}\r\n"
+    },
+    {
+      "file": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "sourceFileId": "7990481634182577215",
+      "nestedSceneFileId": "3812683333260759081",
+      "property": "m_AnchoredPosition.x",
+      "removedValue": 285,
+      "inheritedValue": 0,
+      "beforeSha256": "16e3fb9a2eb795148ba5424521f19de28737b8e5df99265002f53e3b2db48741",
+      "afterSha256": "d0e046f5285a49ae58dcc1c295d53fbb48081562f86a9e74b369ce4e57e4c721",
+      "removedBlock": "    - target: {fileID: 3812683333260759081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}\n      propertyPath: m_AnchoredPosition.x\n      value: 285\n      objectReference: {fileID: 0}\n"
+    },
+    {
+      "file": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "sourceFileId": "7990481634182577215",
+      "nestedSceneFileId": "3812683333260759081",
+      "property": "m_AnchoredPosition.x",
+      "removedValue": 285,
+      "inheritedValue": 0,
+      "beforeSha256": "d3137c474fff599ee6836d74e3d8b2cf3f82111c1704f9b43449b47fcdffaa02",
+      "afterSha256": "e1bbbdc9b6508d6973fadd7bf7c0d5ecb17af88a5070a2cdf1668f7875576246",
+      "removedBlock": "    - target: {fileID: 3812683333260759081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}\n      propertyPath: m_AnchoredPosition.x\n      value: 285\n      objectReference: {fileID: 0}\n"
+    },
+    {
+      "file": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "sourceFileId": "7990481634182577215",
+      "nestedSceneFileId": "3812683333260759081",
+      "property": "m_AnchoredPosition.x",
+      "removedValue": 285,
+      "inheritedValue": 0,
+      "beforeSha256": "10cd301adb4191972b174b13c83c47b4964359097c597897d88a8782ef547b6f",
+      "afterSha256": "52f5d580723e6cda640bc81ea1b8d104e030b01777c8b59370dbf8e28dd4da7b",
+      "removedBlock": "    - target: {fileID: 3812683333260759081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}\n      propertyPath: m_AnchoredPosition.x\n      value: 285\n      objectReference: {fileID: 0}\n"
+    },
+    {
+      "file": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "sourceFileId": "7990481634182577215",
+      "nestedSceneFileId": "3812683333260759081",
+      "property": "m_AnchoredPosition.x",
+      "removedValue": 285,
+      "inheritedValue": 0,
+      "beforeSha256": "d5bad22547aa59d79534c053d9908d2bec2317a042d3efaf3b49dd8d8daa4513",
+      "afterSha256": "7f1df5e43884457da3047533a4a9403a6149f3304dddaaf5534238f91477e582",
+      "removedBlock": "    - target: {fileID: 3812683333260759081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}\n      propertyPath: m_AnchoredPosition.x\n      value: 285\n      objectReference: {fileID: 0}\n"
+    },
+    {
+      "file": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "sourceFileId": "7990481634182577215",
+      "nestedSceneFileId": "3812683333260759081",
+      "property": "m_AnchoredPosition.x",
+      "removedValue": 285,
+      "inheritedValue": 0,
+      "beforeSha256": "405cc5bb8fc68262f0ad542ebf50ca9f1b2ed4d84acdc8d673b0f9db4c2d20be",
+      "afterSha256": "b00ad18f8d32c00c1a6b5fd60a4a1f68194993dc618825f2d35ef30049a084f8",
+      "removedBlock": "    - target: {fileID: 3812683333260759081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}\n      propertyPath: m_AnchoredPosition.x\n      value: 285\n      objectReference: {fileID: 0}\n"
+    },
+    {
+      "file": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "sourceFileId": "7990481634182577215",
+      "nestedSceneFileId": "3812683333260759081",
+      "property": "m_AnchoredPosition.x",
+      "removedValue": 285,
+      "inheritedValue": 0,
+      "beforeSha256": "16a18cc6fa64f63a3c8a83314db9ef255c266c2829f2724d2d96abcff6830021",
+      "afterSha256": "d51eb3e36f5491160da8c5b52428852dc56598ec90b872b4f8944a4937c4dc25",
+      "removedBlock": "    - target: {fileID: 3812683333260759081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}\n      propertyPath: m_AnchoredPosition.x\n      value: 285\n      objectReference: {fileID: 0}\n"
+    },
+    {
+      "file": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "sourceFileId": "7990481634182577215",
+      "nestedSceneFileId": "3812683333260759081",
+      "property": "m_AnchoredPosition.x",
+      "removedValue": 285,
+      "inheritedValue": 0,
+      "beforeSha256": "a1b64c9755fd117ec4bc9c2e2fe5a9d9e2bbf84dc314330df88f1e3361081ac4",
+      "afterSha256": "497668010cabae2e8cb53315a5a2df6cb75fc040c663b7fc945d2e199bee93bd",
+      "removedBlock": "    - target: {fileID: 3812683333260759081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}\n      propertyPath: m_AnchoredPosition.x\n      value: 285\n      objectReference: {fileID: 0}\n"
+    },
+    {
+      "file": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "sourceFileId": "7990481634182577215",
+      "nestedSceneFileId": "3812683333260759081",
+      "property": "m_AnchoredPosition.x",
+      "removedValue": 285,
+      "inheritedValue": 0,
+      "beforeSha256": "075a61b4efc15e9be2d9adbfb04869bd9198eaf9919acbca29d5a41add0de615",
+      "afterSha256": "56eed73735ab52e1c3ffd3e122af16560157bb52e309934fdd8c0cf6298c492b",
+      "removedBlock": "    - target: {fileID: 3812683333260759081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}\n      propertyPath: m_AnchoredPosition.x\n      value: 285\n      objectReference: {fileID: 0}\n"
+    },
+    {
+      "file": "Assets/_Project/Scenes/Grand Hall.unity",
+      "sourceFileId": "7990481634182577215",
+      "nestedSceneFileId": "3812683333260759081",
+      "property": "m_AnchoredPosition.x",
+      "removedValue": 285,
+      "inheritedValue": 0,
+      "beforeSha256": "4f9f6eb733c6e8cd1f2d7c1fa164dece839dbbbf5a7cccb2be0ab68ef0b219b5",
+      "afterSha256": "82223cd0f76742ae54cc665a5f3af5c2b0cd18969630f42e5ce02383c5436ac8",
+      "removedBlock": "    - target: {fileID: 3812683333260759081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}\n      propertyPath: m_AnchoredPosition.x\n      value: 285\n      objectReference: {fileID: 0}\n"
+    }
+  ],
+  "removedOverrides": 12,
+  "nestedMappingEvidence": {
+    "explicitCorrespondenceCount": 35,
+    "nestedPrefabInstanceId": 6488204919046368278,
+    "allExplicitRecordsConsistent": true
+  },
+  "protectedPrefabHashes": {
+    "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab": "615117b502e21708b4263ccc9b8dbf0d709b068f88227d5c5b02f7df39f7954d",
+    "Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab": "aee1cf84e22bcc01166d8b5c4967b9d7e2f4aa37f34c7008bb32e35c0907e96f"
+  }
+}

@@ -1,0 +1,102 @@
+[
+  {
+    "id": "11",
+    "name": "장비와 기술",
+    "subtitle": "왼쪽은 장비 기록 · 오른쪽은 기술 전용",
+    "difference": "양쪽 페이지의 역할을 명확하게 분리",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "12",
+    "name": "역방향 서가",
+    "subtitle": "왼쪽 설명 · 오른쪽 아이템 선택",
+    "difference": "목록과 본문의 읽는 방향을 반전",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "13",
+    "name": "하단 양면 서랍",
+    "subtitle": "두 페이지 하단에 목록 · 본문은 양쪽에",
+    "difference": "선택 목록을 하단으로 이동",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "14",
+    "name": "상단 목차와 분단",
+    "subtitle": "상단 목록 · 오른쪽 두 열 기술",
+    "difference": "넓은 단일 열 대신 세로 두 열",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "15",
+    "name": "중앙 색인",
+    "subtitle": "접힘선 양옆에 목록 · 설명은 바깥쪽",
+    "difference": "중앙을 덮지 않는 양면 탐색 열",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "16",
+    "name": "양면 대조표",
+    "subtitle": "이름·입력은 왼쪽 · 같은 행의 설명은 오른쪽",
+    "difference": "페이지를 넘나드는 가로 읽기",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "17",
+    "name": "둘레 진열",
+    "subtitle": "선택 아이템 주위로 목록 배치",
+    "difference": "사각 격자 대신 둘레 탐색",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "18",
+    "name": "대각선 기록",
+    "subtitle": "왼쪽 장비·첫 기술 · 오른쪽 목록·후속 기술",
+    "difference": "목록과 상세를 대각선으로 분배",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "19",
+    "name": "기술 신문",
+    "subtitle": "왼쪽 두 열 기술 · 오른쪽 장비·끝 기술",
+    "difference": "두 열 본문과 바깥쪽 탐색 열",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  },
+  {
+    "id": "20",
+    "name": "상하 분단",
+    "subtitle": "오른쪽 위는 두 열 · 아래는 한 열",
+    "difference": "기술 중요도에 따른 열 너비 변화",
+    "paper": "F6DCB8",
+    "soft": "E5C69D",
+    "edge": "78573F",
+    "accent": "B79668"
+  }
+]

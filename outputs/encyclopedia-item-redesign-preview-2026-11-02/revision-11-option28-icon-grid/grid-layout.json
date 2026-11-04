@@ -1,0 +1,42 @@
+{
+  "columns": 4,
+  "cellSize": 88,
+  "gap": 16,
+  "x": 30,
+  "y": 96,
+  "capacity": 16,
+  "weapon": [
+    "gun",
+    "lightning",
+    "flower",
+    "sword",
+    "staff"
+  ],
+  "relic": [
+    "pendant",
+    "boots",
+    "wind",
+    "gun",
+    "hawk",
+    "medal",
+    "pipe",
+    "iron"
+  ],
+  "page": {
+    "left": {
+      "x": 464,
+      "y": 286,
+      "w": 460,
+      "h": 576
+    },
+    "right": {
+      "x": 996,
+      "y": 286,
+      "w": 460,
+      "h": 576
+    },
+    "gutter": 72
+  },
+  "source": "../revision-10-fixed-page-roles/28-{weapon,relic}.aseprite",
+  "change": "Left catalog only: remove entry names/numbers, retain category header, selected-item frame and pagination; all right-page pixels are carried over from native source layers."
+}

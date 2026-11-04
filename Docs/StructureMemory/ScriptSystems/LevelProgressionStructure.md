@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-09-16
+last_reviewed: 2026-11-04
 ---
 
 # Level Progression Structure
@@ -28,7 +28,7 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 
 1. `Enemy.Die()` sets `isDead`, runs the inherited death hook, and emits `DeathStarted` once.
 2. `ExperienceRewardSource` subscribes without subclassing `Enemy`, resolves the final rounded EXP value, and splits it across a limited number of authored `ExperiencePickup2D` instances only during an active run.
-3. `ExperiencePickup2D` waits using scaled time, homes toward `PlayerRuntimeRegistry`, and grants EXP on player contact.
+3. `ExperiencePickup2D` waits on the ground at reduced opacity while the shared combat query is active, then rises and homes toward `PlayerRuntimeRegistry` together with gold pickups before granting EXP.
 4. `BossEncounterEndDirector` grants boss EXP once per cleared encounter. It reads the current run stage index for the 120/150/180 normal-stage values and skips the final route set.
 5. `RunLevelProgression` is the gameplay facade over `RunSessionStore.Data.levelProgression` and emits read-model events for future authored UI presenters.
 6. `LevelProgressionCalculator` performs overflow, multi-level, pending-reward, and max-level calculations without Unity object dependencies.
@@ -38,10 +38,10 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 10. `OneSwordOathLevelRewardEffectSO` seals weapon slot index 1 without deleting its contents, applies an attack modifier, and scopes cooldown reduction to abilities granted by the weapon currently in slot index 0.
 11. `RunLevelRewardOffers` rolls up to three eligible cards from a persisted run seed, stores the active IDs and reroll usage, and consumes only candidates from that stored offer. A reroll fills from rewards absent from the immediately previous offer first, then backfills previous rewards only when fewer than three novel rewards remain; it is unavailable when no novel reward exists.
 12. `LevelRewardSessionController` handles manual R-key opening, dialogue/UI/combat eligibility, shared pause/input lock, and consecutive pending selections. Authored UI only projects its events and calls its public commands.
-13. Thirteen catalog rewards combine the existing reusable effects with five new effects: Berserker Rush, Hunting Flow, Overheat, Spreading Embers, and High Voltage. The former level-scaled max-heart reward asset is retained for rollback but is no longer cataloged.
+13. Non-repeatable special rewards combine the reusable effects, including Berserker Rush, Hunting Flow, Overheat, Spreading Embers, and High Voltage. The current catalog count and repeatable stat variants are described below. The former level-scaled max-heart reward asset is retained for rollback but is no longer cataloged.
 14. `GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/LevelHUD` contains the authored HUD visuals and `LevelHudPresenter`. The presenter projects level/EXP and reward-open eligibility through independent display paths.
 15. `Data/Progression/Leveling/Rewards` contains one 53-entry catalog: 17 non-repeatable special rewards and 36 repeatable stat variants (12 families, three tiers each). Conditional rewards use Thunder_Card_9, instant rewards use Earth_Card_3, curse rewards use Void_Card_1, and stat rewards use the supplied Stat_Card sheet.
-16. `GlobalUIRoot/RewardCanvas/LevelRewardSelectionRoot` contains the inactive authored selection window with a dim input blocker, title, three centered cards, and close/reroll controls. Its authored Image, Button, TMP, layout, Presenter, and card-view components also project the repeatable stat rewards.
+16. `GlobalUIRoot/RewardCanvas/LevelRewardSelectionRoot` contains the inactive authored selection window with a dim input blocker, panel-free bold outlined title, three centered cards, and A gilt close/reroll controls. Button backgrounds use SpriteSwap; localized action labels, shortcut labels, and the live reroll count are separate authored TMP objects. Its existing card views also project the repeatable stat rewards.
 17. `LevelRewardSelectionPresenter` projects session events into one to three authored card slots, handles fixed card/reroll inputs, and opens through the session-owned UI-stack path. `LevelRewardCardView` binds one authored card visual without creating UI at runtime.
 
 ## Key Files
@@ -133,9 +133,9 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 ## Known Pitfalls
 
 - `KillConfirmed` is attacker-side and does not cover environmental/direct deaths; EXP must use `Enemy.DeathStarted`.
-- A pickup without `LevelProgressionConfigSO` logs a warning and destroys itself on contact.
+- A pickup without `LevelProgressionConfigSO` logs a warning and remains unconsumed; its failed travel settlement blocks travel rather than silently losing the reward.
 - General-monster EXP values are rough prototype tuning and still need playtest balancing.
-- Pickup count is capped at 30. Large rewards preserve their total by increasing the amount carried by each Square, so visual count is no longer one-to-one above the cap.
+- Pickup count is capped at 30. Large rewards preserve their total by increasing the amount carried by each pickup, so visual count is no longer one-to-one above the cap.
 - New summon, revive, split, or infinite-spawn paths must explicitly call `SetGrantExperience(false)` when repeated farming is not intended.
 - Reward catalogs must be registered before selected IDs can be reapplied after a domain reload or fresh app start.
 - The active `LevelRewardSessionController` now references `LevelRewardCatalog.asset`; reward availability still depends on an active run, registered player, pending choice, and the existing combat/UI eligibility rules.
@@ -191,7 +191,7 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - `GlobalUIRoot` retains three authored card views and the existing reveal/selection lifecycle. Card visual mounts are 400 x 640 inside their existing layout slots.
 - `Art/Sprites/UI/LevelRewardCards/` contains original PNGs with sprite slices: common modular bounds (16, 8, 80, 128); Attack_Card_1 uses its circle-free second card (112, 160, 80, 128), in Unity bottom-left pixel coordinates.
 - Card root Image supplies the artwork and button tint target. Each LevelRewardCardView.iconImage references this active root Image so Bind projects the reward definition Icon onto the visible card artwork. CardFront owns Base, Description, Title_1 and Outline_1 layers, then bound name/description text. No circle module is imported. The legacy icon child remains inactive and is not the binding target.
-- TMP text uses the existing Galmuri9 font with dark text and autosizing inside the title/ivory panels. Nine reward descriptions use darker rich-text emphasis colors for contrast; definitions still own the exact displayed wording.
+- Card TMP text uses the existing Galmuri9 font with dark text and autosizing inside the card title/ivory panels. Nine reward descriptions use darker rich-text emphasis colors for contrast; definitions still own the exact displayed wording. The window title and footer controls use the separate style described below.
 - Extension: edit the authored layers or reward display data; do not create UI hierarchy at runtime. Preserve the existing front/back and card-view references when changing art.
 - Verification is static only for this reskin; Unity import, flip rendering and all reward text layouts still require Editor inspection.
 
@@ -203,6 +203,15 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - The gain prefabs use Art/Sprites/UI/ExpGainParticleSheet and GoldGainParticleSheet, with 5/4 ordered 9x11 sprite frames, lifetime 0.25–0.5s, one lifetime-driven sheet cycle, one random 1–2 burst, and zero movement/continuous emission. Existing heal emission remains independent.
 - Existing PlayerHealParticlePlayback in PlayerConsumableInventory.cs is reused for target-local attachment, stop/clear/play, and delayed destruction after duration + maximum lifetime. Pickup destruction does not destroy the player-attached effect; destroying the player cleans up the child. The helper retains its legacy heal name.
 - Verification: Gameplay MSBuild; static settings/reference checks. Unity visual testing remains outstanding.
+
+### EXP pickup artwork and color cycle (2026-11-03)
+
+- `Prefabs/Loot/ExperiencePickup_Square.prefab` retains its path and GUID for existing enemy and loading references; its current visual is the approved Lumen Orb, despite the legacy filename.
+- `Art/Sprites/Items/ExperiencePickup/ExperiencePickupColorCycle.png` contains 40 fixed-position frames. Unity slices the painted 8×8 center of each 16×16 cell at 8 PPU with centered pivots, Point filtering, no mipmaps, and no compression. With the unchanged 0.18 root scale, the visible bounds remain 0.18×0.18 world units.
+- `Art/Animations/VFX/ExperiencePickup/ExperiencePickupColorCycle.controller` owns one default state using the adjacent `.anim`: 10 FPS, four-second loop, only `SpriteRenderer.m_Sprite`. The renderer tint is white. There are no transform curves, animation events, Animator parameters, or root motion.
+- The prefab-owned Animator uses scaled time and stops evaluating while culled. `ExperiencePickup2D` still owns granting EXP, gain-particle playback, and pickup destruction; destroying the pickup also removes its Animator. The clip adds no bobbing or gameplay state. Runtime alpha and the brief post-combat rise/homing are now owned by each pickup's `CombatRewardPickupMotion`; see [combat reward collection](../RunGoldAndShop.md#combat-reward-collection-2026-11-03).
+- Editable Aseprite source, frame metadata, and the original Lua authoring file live in the adjacent `Source~` folder, which Unity ignores. Edit/re-export the approved 40-frame sheet there, preserving sprite names/IDs and the existing prefab GUID when changing visuals.
+- In-game appearance under scene lighting and visual playtesting remain manual follow-up; the integration record is `outputs/experience-pickup-integration-2026-11-03/README.md`.
 
 
 ### Gain particle emission bounds (2026-09-13)
@@ -235,6 +244,13 @@ LevelRewardSessionController and InventoryUIManager read MonsterSpawnRoomGroup.I
 
 `LevelRewardSessionController` now reads `InputActionId.LevelRewardOpen` (default R) through `InputActionQuery`. Its legacy serialized `openKey` is retained but no longer drives input. Eligibility and the reward window's existing reroll/number shortcuts are unchanged. See [Input Bindings](../InputBindings.md).
 
+## Reward controls and title skin (2026-11-03)
+
+- `PresentationRoot/FooterRoot/CloseControlMount` and `RerollControlMount` retain their existing 320×80 / 340×80 bounds and Button references. `Art/Sprites/UI/LevelRewardControls/` owns the selected A gilt PNGs, four states per button, and editable Aseprite source. PNGs use Point filtering, no compression, and no mipmaps. The existing Button uses SpriteSwap for focus/selected, pressed, and disabled states.
+- `CloseLabel` and `RerollActionLabel` use `LocalizeStringEvent` with `ui.level_reward.close` / `ui.level_reward.reroll`. Separate `ShortcutLabel` children display ESC/R. The original `RerollLabel` remains the presenter's `rerollCountText` and now displays only `remaining/max`; the session still owns eligibility and counts. Static labels must not share this live-count target.
+- `HeaderRoot/TitleMount` keeps its layout but disables its background Image. `TitleText` uses TMP Bold, white face, and dedicated `Art/Font/LevelRewardTitleOutline.mat` with a #17131C outline. `LocalizeTmpFontEvent.authoredMaterial` points to that preset so localized fonts preserve its style. Existing shared font assets are unchanged.
+- No runtime UI hierarchy, manager, serialized field, input command, card animation, or session lifecycle was added. Adjust visuals in the prefab/art/material and wording in GameText; keep the existing presenter references.
+- [Integration record](../../../outputs/levelup-ui-integration-2026-11-03/README.md) contains authoring and compile evidence. Manual in-game typography, language fit, and state visuals remain unverified; no automated tests or Play Mode were requested.
 
 ## Repeatable stat rewards and 20-level progression (2026-10-30)
 

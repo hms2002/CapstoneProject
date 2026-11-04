@@ -1,0 +1,170 @@
+{
+  "beer": {
+    "dimensions": [
+      64,
+      64
+    ],
+    "frames": 4,
+    "visible_rgba_colors": 8,
+    "alpha_levels": [
+      208,
+      216,
+      224,
+      232,
+      240,
+      255
+    ],
+    "frame_durations_ms": [
+      160,
+      160,
+      160,
+      160
+    ],
+    "ground_occupancy_unchanged": true,
+    "GIF_background": "neutral floor baked for review"
+  },
+  "fire-surface": {
+    "dimensions": [
+      64,
+      64
+    ],
+    "frames": 6,
+    "visible_rgba_colors": 7,
+    "alpha_levels": [
+      144,
+      150,
+      176,
+      235,
+      255
+    ],
+    "frame_durations_ms": [
+      80,
+      80,
+      80,
+      80,
+      80,
+      80
+    ],
+    "ground_occupancy_unchanged": true,
+    "GIF_background": "neutral floor baked for review"
+  },
+  "beer-to-fire": {
+    "dimensions": [
+      64,
+      64
+    ],
+    "frames": 8,
+    "visible_rgba_colors": 15,
+    "alpha_levels": [
+      144,
+      150,
+      176,
+      208,
+      216,
+      224,
+      232,
+      235,
+      240,
+      255
+    ],
+    "frame_durations_ms": [
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80
+    ],
+    "ground_occupancy_unchanged": true,
+    "GIF_background": "neutral floor baked for review"
+  },
+  "flame-particle": {
+    "dimensions": [
+      16,
+      16
+    ],
+    "frames": 6,
+    "visible_rgba_colors": 3,
+    "alpha_levels": [
+      255
+    ],
+    "frame_durations_ms": [
+      80,
+      80,
+      80,
+      80,
+      80,
+      80
+    ],
+    "ground_occupancy_unchanged": false,
+    "GIF_background": "transparent"
+  },
+  "puddle-cycle": {
+    "dimensions": [
+      64,
+      64
+    ],
+    "frames": 18,
+    "visible_rgba_colors": 15,
+    "alpha_levels": [
+      144,
+      150,
+      176,
+      208,
+      216,
+      224,
+      232,
+      235,
+      240,
+      255
+    ],
+    "frame_durations_ms": [
+      160,
+      160,
+      160,
+      160,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80
+    ],
+    "ground_occupancy_unchanged": true,
+    "GIF_background": "neutral floor baked for review"
+  },
+  "ignition_coverage": [
+    0,
+    78,
+    266,
+    553,
+    949,
+    1359,
+    1602,
+    1625
+  ],
+  "comparison-preview": {
+    "integer_4x": true,
+    "duration_ms": 3840
+  },
+  "ignition-preview": {
+    "integer_4x": true,
+    "duration_ms": 3840
+  },
+  "surface-only-preview": {
+    "integer_4x": true,
+    "duration_ms": 480
+  },
+  "GIF_review_max_channel_delta": 1,
+  "native_checks": 184
+}

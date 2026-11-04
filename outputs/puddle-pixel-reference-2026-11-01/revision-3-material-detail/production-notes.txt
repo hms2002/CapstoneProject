@@ -1,0 +1,30 @@
+술 / 화염 장판 - 재질 묘사 보강
+2026-11-01, revision 3
+
+사용자 요청: 색을 2개 더 사용하고 게임 오브젝트로서의 형태와 재질을 보강.
+기존 Aseprite 제작 방식, 평평한 시점, 64x64, 4프레임, 3개 레이어 유지.
+기존 revision-2-aseprite 파일은 보존.
+
+술: 기존 6색을 모두 유지하고 68412D(젖은 경계/짙은 액체),
+FFF4D0(거품/반사광)를 추가하여 총 8색 + 투명.
+얇고 끊긴 표면 경계, 액체의 어두운 영역, 좁은 반사광, 거품 덩어리 보강.
+화염: 기존 실제 사용 5색을 유지하고 77343A(불길 사이/경계),
+FFF5D2(고온 중심)를 추가하여 총 7색 + 투명.
+이전 팔레트에만 존재하던 미사용 C34C2E는 제거.
+불꽃의 짧은 윤곽과 밝은 중심, 불길 사이의 어두운 간격 보강.
+옆면/입체 플랫폼/높은 모닥불은 추가하지 않음.
+
+alcohol.aseprite: 64x64, 4프레임, 160ms/프레임.
+fire.aseprite: 64x64, 4프레임, 100ms/프레임.
+각 sheet.png: 256x64, 왼쪽부터 프레임1-4. 각 frame-N.png: 64x64.
+각 원본에 3개 편집 가능한 레이어, Idle 태그, GroundCenter (32,32).
+comparison-preview.gif: 4배 정수 확대, 원본 재생 속도 유지, 3.2초 공통 루프.
+비교 바닥은 중립 배경이며 실제 Unity 캡처가 아님.
+
+검증: Aseprite 원본 재열기와 native-verification.txt, export-verification.json.
+각 장판의 실제 색이 정확히 2개 추가되었고 기존 사용 색은 모두 보존.
+이전 시트와 픽셀별 alpha 동일. 바닥/기준점 고정, 원본과 PNG 일치.
+Unity 임포트/컴파일/Play Mode는 실행하지 않음. 게임 파일은 변경하지 않음.
+
+생성: Aseprite -b --script-param outputDir=<이 폴더> --script author-puddles.lua
+검증: Aseprite -b --script-param outputDir=<이 폴더> --script verify-native.lua

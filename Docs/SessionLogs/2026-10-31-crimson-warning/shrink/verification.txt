@@ -1,0 +1,20 @@
+Crimson shrinking landing warning — 2026-10-31
+
+PASS Unity6000.4.2f1 script compile and195-frame native GPU capture: exit0.
+PASS PlayMode:10 passed,0 failed,0 skipped; Unity exit0.
+PASS Partial/full diameters at0/25/50/75/99/100% flight progress:
+     proportional radius, locked center, preserved transform scale and dash thickness,
+     zero radius at arrival, original impact scale.
+PASS Existing actual-ability damage/Burn/cooldown, target locking, warning rotation,
+     release-time head-gauge hiding, cancellation and weapon/scene cleanup checks.
+PASS MSBuild Presentation.csproj and ProceduralPlayModeTests.csproj: exit0.
+PASS Changed C# whitespace and git diff --check.
+
+Changed: CrimsonBoundaryChargePresentation.cs, CrimsonChargePlayModeTests.cs,
+SessionLog and existing Burn/Crimson StructureMemory.
+No serialized/public field, prefab, scene, asset or Gameplay damage-radius change.
+The visible circle is now a flight countdown; the actual impact retains its charged area.
+
+Evidence GIF is an isolated native prefab preview, not a full gameplay-scene recording.
+Manual whole-combat play and standalone Player build not executed.
+No ErrorLog/DecisionLog additions or Presentation HTML impact in this follow-up.

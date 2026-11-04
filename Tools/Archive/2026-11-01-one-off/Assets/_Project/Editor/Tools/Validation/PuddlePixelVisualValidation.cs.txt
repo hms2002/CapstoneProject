@@ -1,0 +1,159 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+using UnityGAS;
+using Object = UnityEngine.Object;
+
+/// <summary>Native prefab/GPU evidence in a disposable preview scene; never saves a gameplay scene.</summary>
+public static class PuddlePixelVisualValidation
+{
+    private const string Output = PuddlePixelArtworkAuthoring.Output + "/native";
+
+    public static void ApplyAndCapture()
+    {
+        PuddlePixelArtworkAuthoring.Apply();
+        Capture();
+    }
+
+    [MenuItem("Tools/Puddles/Capture Approved Pixel Artwork")]
+    public static void Capture()
+    {
+        Debug.Log("PUDDLE_PIXEL_CAPTURE_BEGIN");
+        Directory.CreateDirectory(Output);
+        ValidateAssets();
+        Scene scene = EditorSceneManager.NewPreviewScene();
+        var objects = new List<Object>();
+        var rt = new RenderTexture(640, 320, 24, RenderTextureFormat.ARGB32) { antiAliasing = 1, filterMode = FilterMode.Point };
+        try
+        {
+            var cameraObject = new GameObject("Puddle validation camera"); objects.Add(cameraObject);
+            SceneManager.MoveGameObjectToScene(cameraObject, scene);
+            var camera = cameraObject.AddComponent<Camera>(); camera.scene = scene;
+            var origin = new Vector3(1000, 1000, 0);
+            camera.transform.position = origin + new Vector3(0, 0, -10); camera.orthographic = true;
+            camera.orthographicSize = 3.7125f; camera.aspect = 2; camera.enabled = false;
+            camera.clearFlags = CameraClearFlags.SolidColor; camera.backgroundColor = new Color(.14f, .16f, .18f);
+            camera.allowHDR = false; camera.allowMSAA = false; camera.targetTexture = rt;
+            var background = new Texture2D(160, 80, TextureFormat.RGBA32, false) { filterMode = FilterMode.Point };
+            objects.Add(background);
+            var colors = new Color32[160 * 80];
+            for (int y = 0; y < 80; y++) for (int x = 0; x < 160; x++)
+                colors[y * 160 + x] = (x % 16 == 0 || y % 16 == 0) ? new Color32(36, 43, 48, 255) : new Color32(43, 51, 57, 255);
+            background.SetPixels32(colors); background.Apply();
+            var sprite = Sprite.Create(background, new Rect(0, 0, 160, 80), Vector2.one * .5f, 80f / 7.425f); objects.Add(sprite);
+            var floor = new GameObject("Puddle validation floor"); objects.Add(floor);
+            SceneManager.MoveGameObjectToScene(floor, scene);
+            floor.transform.position = origin;
+            var floorRenderer = floor.AddComponent<SpriteRenderer>(); floorRenderer.sprite = sprite; floorRenderer.sortingLayerName = "Background";
+            var alcohol = Spawn(scene, "Alcohol", origin + new Vector3(-3.7125f, 0, 0)); objects.Add(alcohol);
+            var fire = Spawn(scene, "Fire", origin + new Vector3(3.7125f, 0, 0)); objects.Add(fire);
+            var alcoholView = alcohol.GetComponentInChildren<PuddleShaderVisual>(true);
+            var alcoholParticles = alcohol.GetComponentInChildren<PuddleParticleVisual>(true);
+            var fireView = fire.GetComponentInChildren<PuddleShaderVisual>(true);
+            var allSystems = alcohol.GetComponentsInChildren<ParticleSystem>(true).Concat(fire.GetComponentsInChildren<ParticleSystem>(true)).ToArray();
+            foreach (var ps in allSystems)
+            {
+                ps.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+                ps.useAutoRandomSeed = false; ps.randomSeed = (uint)(17 + Array.IndexOf(allSystems, ps) * 7);
+                ps.Simulate(.8f, false, true, true);
+            }
+            for (int frame = 0; frame < 80; frame++)
+            {
+                float time = frame * .04f;
+                foreach (var ps in allSystems) ps.Simulate(.04f, false, false, true);
+                FreezeTime(alcoholView, time); FreezeTime(fireView, time);
+                Save(camera, rt, "comparison-" + frame.ToString("000"));
+            }
+            // Show the same alcohol prefab converting, with the steady fire at right for reference.
+            alcoholView.SetMode(PuddleAreaMode.Igniting); alcoholParticles.ApplyMode(PuddleAreaMode.Igniting);
+            foreach (var ps in alcohol.GetComponentsInChildren<ParticleSystem>(true)) ps.Clear(false);
+            for (int frame = 0; frame <= 20; frame++)
+            {
+                float progress = frame / 20f;
+                alcoholView.SetIgnitionProgress(progress); alcoholParticles.SetIgnitionProgress(progress);
+                foreach (var ps in allSystems) ps.Simulate(.04f, false, false, true);
+                FreezeTime(alcoholView, frame * .04f); FreezeTime(fireView, frame * .04f);
+                Save(camera, rt, "ignition-" + frame.ToString("000"));
+            }
+            alcoholParticles.ApplyMode(PuddleAreaMode.Consumed); fire.GetComponentInChildren<PuddleParticleVisual>(true).ApplyMode(PuddleAreaMode.Consumed);
+            Require(allSystems.All(ps => ps.particleCount == 0), "Consumed state left particle residue.");
+            File.WriteAllText(Output + "/validation.txt", "PASS: seven pixel imports, both native prefab bindings, shader compilation,80 steady native GPU frames,21 center ignition frames, consumed particle cleanup. Existing scene not saved.\n");
+            Debug.Log("PUDDLE_PIXEL_NATIVE_OK");
+        }
+        finally
+        {
+            foreach (var obj in objects.AsEnumerable().Reverse()) if (obj != null) Object.DestroyImmediate(obj);
+            rt.Release(); Object.DestroyImmediate(rt); EditorSceneManager.ClosePreviewScene(scene);
+        }
+    }
+
+    private static GameObject Spawn(Scene scene, string element, Vector3 position)
+    {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PuddlePixelArtworkAuthoring.Prefabs + element + "Puddle.prefab");
+        var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, scene);
+        instance.transform.position = position;
+        var area = instance.GetComponent<PuddleAreaBase>();
+        var shader = instance.GetComponentInChildren<PuddleShaderVisual>(true);
+        typeof(PuddleShaderVisual).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(shader, null);
+        shader.SetElementType(area.ElementType); shader.SetRadii(area.GroundRadius, area.ProjectileRadius); shader.SetMode(PuddleAreaMode.Ground);
+        var particles = instance.GetComponentInChildren<PuddleParticleVisual>(true);
+        typeof(PuddleParticleVisual).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(particles, null);
+        particles.SetSurfaceRadius(area.GroundRadius); particles.SetElementType(area.ElementType); particles.ApplyMode(PuddleAreaMode.Ground);
+        return instance;
+    }
+
+    private static void FreezeTime(PuddleShaderVisual view, float time)
+    {
+        var renderer = view.GetComponent<MeshRenderer>();
+        var block = new MaterialPropertyBlock(); renderer.GetPropertyBlock(block);
+        block.SetFloat("_TimeOffset", time - Shader.GetGlobalVector("_Time").y + .001f); renderer.SetPropertyBlock(block);
+    }
+
+    private static void ValidateAssets()
+    {
+        foreach (string file in Directory.GetFiles(PuddlePixelArtworkAuthoring.Art, "*.png"))
+        {
+            var importer = (TextureImporter)AssetImporter.GetAtPath(file.Replace('\\', '/'));
+            Require(importer.filterMode == FilterMode.Point && !importer.mipmapEnabled && importer.textureCompression == TextureImporterCompression.Uncompressed && importer.npotScale == TextureImporterNPOTScale.None,
+                "Wrong pixel texture import: " + file);
+        }
+        foreach (string element in new[] { "Alcohol", "Fire" })
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PuddlePixelArtworkAuthoring.Prefabs + element + "Puddle.prefab");
+            var shader = prefab.GetComponentInChildren<PuddleShaderVisual>(true).GetComponent<MeshRenderer>().sharedMaterial;
+            Require(shader.GetFloat("_PixelGroundEnabled") == 1 && !ShaderUtil.ShaderHasError(shader.shader), "Ground shader or material error.");
+            Require(shader.GetTexture("_AlcoholGroundSheet") != null && shader.GetTexture("_FireGroundSheet") != null && shader.GetTexture("_CenterIgnitionSheet") != null, "Missing ground sheet.");
+            foreach (string name in new[] { "PixelNearFlames", "PixelAirborneFlames" })
+            {
+                var system = prefab.transform.Find(name).GetComponent<ParticleSystem>();
+                Require(system.shape.sprite != null && system.textureSheetAnimation.enabled, "Missing particle sheet/shape.");
+                var velocity = system.velocityOverLifetime;
+                Require(velocity.x.mode == velocity.y.mode && velocity.y.mode == velocity.z.mode, "Incompatible particle velocity curve modes.");
+                Require(!ShaderUtil.ShaderHasError(system.GetComponent<ParticleSystemRenderer>().sharedMaterial.shader), "Particle shader error.");
+            }
+        }
+    }
+
+    private static void Save(Camera camera, RenderTexture rt, string name)
+    {
+        if (GraphicsSettings.currentRenderPipeline != null)
+            RenderPipeline.SubmitRenderRequest(camera, new RenderPipeline.StandardRequest { destination = rt });
+        else camera.Render();
+        var previous = RenderTexture.active; RenderTexture.active = rt;
+        var texture = new Texture2D(rt.width, rt.height, TextureFormat.RGBA32, false);
+        texture.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0); texture.Apply();
+        File.WriteAllBytes(Output + "/" + name + ".png", texture.EncodeToPNG());
+        Object.DestroyImmediate(texture); RenderTexture.active = previous;
+    }
+
+    private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+}
+#endif

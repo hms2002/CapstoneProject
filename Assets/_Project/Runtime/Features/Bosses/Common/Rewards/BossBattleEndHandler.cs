@@ -74,7 +74,7 @@ public sealed class BossBattleEndHandler : MonoBehaviour
 
         if (context.IsFinalRouteSet)
         {
-            if (!BossRewardSpawnService.SpawnPhysicalDrops(context, boss.transform.position, this))
+            if (!BossRewardSpawnService.GrantFinalMagicStoneReward(context, this))
                 return;
 
             hasHandledRewards = true;
@@ -107,6 +107,13 @@ public sealed class BossBattleEndHandler : MonoBehaviour
     {
         if (hasHandledPortal)
             return;
+
+        if (context.IsFinalRouteSet)
+        {
+            hasHandledPortal = true;
+            context.MarkPortalHandled();
+            return;
+        }
 
         if (exitPortal == null)
         {

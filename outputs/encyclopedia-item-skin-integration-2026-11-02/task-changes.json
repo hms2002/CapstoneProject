@@ -1,0 +1,122 @@
+[
+  {
+    "file": "Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab",
+    "addedLines": 2272,
+    "removedLines": 143
+  },
+  {
+    "file": "Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaEntrySlot.prefab",
+    "addedLines": 19,
+    "removedLines": 19
+  },
+  {
+    "file": "Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/Panel_AbilityBlock_Encyclopedia.prefab",
+    "addedLines": 104,
+    "removedLines": 83
+  },
+  {
+    "file": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+    "addedLines": 0,
+    "removedLines": 612
+  },
+  {
+    "file": "Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemRightPage.cs",
+    "addedLines": 21,
+    "removedLines": 8
+  },
+  {
+    "file": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+    "addedLines": 0,
+    "removedLines": 368
+  },
+  {
+    "file": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+    "addedLines": 0,
+    "removedLines": 412
+  },
+  {
+    "file": "Assets/_Project/Scenes/Grand Hall.unity",
+    "addedLines": 0,
+    "removedLines": 412
+  },
+  {
+    "file": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+    "addedLines": 0,
+    "removedLines": 416
+  },
+  {
+    "file": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+    "addedLines": 0,
+    "removedLines": 412
+  },
+  {
+    "file": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+    "addedLines": 0,
+    "removedLines": 412
+  },
+  {
+    "file": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+    "addedLines": 0,
+    "removedLines": 416
+  },
+  {
+    "file": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+    "addedLines": 0,
+    "removedLines": 416
+  },
+  {
+    "file": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+    "addedLines": 0,
+    "removedLines": 416
+  },
+  {
+    "file": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+    "addedLines": 0,
+    "removedLines": 412
+  },
+  {
+    "file": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+    "addedLines": 0,
+    "removedLines": 412
+  },
+  {
+    "file": "Assets/_Project/Scenes/Tests/TestScene.unity",
+    "addedLines": 0,
+    "removedLines": 388
+  },
+  {
+    "file": "Assets/_Project/Data/Localization/GameText Shared Data.asset",
+    "addedLines": 4,
+    "removedLines": 0
+  },
+  {
+    "file": "Assets/_Project/Data/Localization/GameText_en.asset",
+    "addedLines": 4,
+    "removedLines": 0
+  },
+  {
+    "file": "Assets/_Project/Data/Localization/GameText_ja.asset",
+    "addedLines": 4,
+    "removedLines": 0
+  },
+  {
+    "file": "Assets/_Project/Data/Localization/GameText_ko.asset",
+    "addedLines": 4,
+    "removedLines": 0
+  },
+  {
+    "file": "Assets/_Project/Data/Localization/GameText_zh-Hans.asset",
+    "addedLines": 4,
+    "removedLines": 0
+  },
+  {
+    "file": "Assets/_Project/Data/Localization/GameText_zh-Hant.asset",
+    "addedLines": 4,
+    "removedLines": 0
+  },
+  {
+    "file": "DataSheets/Localization/GameText.csv",
+    "addedLines": 1,
+    "removedLines": 0
+  }
+]

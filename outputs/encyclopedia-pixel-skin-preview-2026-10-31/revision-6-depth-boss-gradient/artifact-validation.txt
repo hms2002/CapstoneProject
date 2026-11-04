@@ -1,0 +1,8 @@
+PASS 4 protected project files and 20 original sprite references retain their hashes.
+PASS all 22 original beveled sprite PNGs restored byte-for-byte from revision 2.
+PASS revision 5 gradient strips and ivory indicator PNGs unchanged.
+PASS 23 named slices: in bounds, no overlaps, matching PNG sizes.
+PASS both final previews 1180x740; visually inspected.
+PASS no Monster fade or visible nameplate draw calls; boss uses the clean rectangular frame.
+PASS native Aseprite exit 0, stderr empty; 7 opaque skin colors; alpha only 0/255.
+Unity import/compile/Play Mode/Player build not executed. Preview only.

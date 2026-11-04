@@ -1,0 +1,68 @@
+{
+  "weapon": {
+    "blocks": [
+      {
+        "bodyY": 407,
+        "height": 125,
+        "y": 350,
+        "icon": "skill1",
+        "lines": 2,
+        "input": "Mouse1"
+      },
+      {
+        "bodyY": 547,
+        "height": 152,
+        "y": 490,
+        "icon": "rush",
+        "lines": 3,
+        "input": "Mouse1"
+      },
+      {
+        "bodyY": 714,
+        "height": 152,
+        "y": 657,
+        "icon": "skill2",
+        "lines": 3,
+        "input": "Q"
+      }
+    ],
+    "bullets": [],
+    "storyLines": 2,
+    "end": 809
+  },
+  "relic": {
+    "blocks": [],
+    "bullets": [
+      {
+        "y": 438,
+        "lines": 1
+      },
+      {
+        "y": 476,
+        "lines": 2
+      },
+      {
+        "y": 541,
+        "lines": 2
+      },
+      {
+        "y": 606,
+        "lines": 1
+      },
+      {
+        "y": 644,
+        "lines": 1
+      },
+      {
+        "y": 682,
+        "lines": 1
+      },
+      {
+        "y": 720,
+        "lines": 1
+      }
+    ],
+    "bodyHeight": 341,
+    "end": 763
+  }
+}

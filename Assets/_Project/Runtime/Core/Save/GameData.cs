@@ -411,6 +411,7 @@ public class GameData
     public RunSpecialNpcSaveData runSpecialNpcData = new RunSpecialNpcSaveData();
     public TutorialSaveData tutorialData = new TutorialSaveData();
     public MonsterEncyclopediaSaveData monsterEncyclopediaData = new MonsterEncyclopediaSaveData();
+    public EncyclopediaDiscoverySaveData encyclopediaDiscoveryData = new EncyclopediaDiscoverySaveData();
     // NPC introductions are profile progress, independent of generated room/run IDs.
     public List<string> completedNpcRoomIntroductions = new List<string>();
 

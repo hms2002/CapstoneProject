@@ -1,0 +1,10 @@
+# Border color detail — original geometry restored
+
+- Mode/scope: preview Micro-fix. User clarified that border detail means color treatment, not additional shapes. This sample supersedes revision 11 and starts from revision 10.
+- [Inner PNG](inner-preview.png) / [editable Aseprite](inner.aseprite), [outer PNG](outer-preview.png) / [editable Aseprite](outer.aseprite): restored the exact 80/120px original silhouettes and border masks. Revision 11's added arcs and joins are absent. Every non-border pixel has exactly the same RGBA as revision 10.
+- Recolored existing border pixels only: `FFC65A` gold body, `FFF0BF` cream on the upper-left-facing rim, `F16B32` ember orange on the lower-right inset. The same treatment applies to the small medallions. No added colors, geometric detail, blur or partial source alpha. The authored shading rotates with each sprite.
+- [Aseprite authoring script](author-native.lua) preserves the original ring rasterization and applies the three colors inside that mask. Editable borders remain separate from the octagram, runes and cardinal symbols. Outer rune count remains 16.
+- [Full 3× view](charge-100-3x.png), [rotated](charge-rotated.png), [lighter floor](charge-light.png) visually inspected. Initial interactive preview is full charge, paused; sequential scaling and opposite planar rotation are unchanged.
+- [Verification report](preview-check.json): exact revision-10 sprite/border alpha masks, exact non-border RGBA, all three colors present on both borders, binary alpha, native pixel mapping, rune spacing, staged bounds, complete inner at 50%, layer separation, circumference and rotation/pause behavior passed using the existing [offline preview harness](check-preview.cjs).
+- No Unity files changed. Browser DOM/layout, Unity compilation/import and Play Mode not run. Proposed 20 PPU remains unapplied; actual-camera sampling remains for integration acceptance.
+- Doc Impact Check: SessionLog only. ErrorLog/DecisionLog/StructureMemory unchanged; no Presentation HTML stale candidate.

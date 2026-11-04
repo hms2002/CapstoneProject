@@ -1,0 +1,23 @@
+[
+  "Assets/_Project/Runtime/Features/Player/Status/PlayerAlcoholExposure.cs",
+  "Assets/_Project/Runtime/UI/Settings/KeyBindingPanelUI.cs",
+  "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+  "Assets/_Project/Scenes/TitleScene.unity",
+  "Assets/_Project/Prefabs/VFX/ChargeGauge.prefab",
+  "Assets/_Project/Prefabs/VFX/CrimsonBoundary/ChargeSixColor/CrimsonChargePresentation.prefab",
+  "Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatUI.prefab",
+  "Assets/_Project/Prefabs/UI/KeyMapRow.prefab",
+  "Assets/_Project/Art/Sprites/UI/SettingsSkin/SettingsSkin.png",
+  "Assets/_Project/Art/Sprites/UI/SettingsSkin/SettingsSkin.png.meta",
+  "Assets/_Project/Art/Sprites/UI/SettingsSkin/Source/SettingsSkin.aseprite",
+  "Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset",
+  "Assets/_Project/Editor/Tools/Data/SpiriAlcoholRewardAuthoring.cs",
+  "DataSheets/Localization/GameText.csv",
+  "Assets/_Project/Data/Localization/GameText_ko.asset",
+  "Assets/_Project/Data/Localization/GameText_en.asset",
+  "Assets/_Project/Data/Localization/GameText_ja.asset",
+  "Assets/_Project/Data/Localization/GameText_zh-Hans.asset",
+  "Assets/_Project/Data/Localization/GameText_zh-Hant.asset",
+  "Assets/_Project/Tests/PlayMode/Procedural/AlcoholExposurePlayModeTests.cs",
+  "Assets/_Project/Tests/PlayMode/Procedural/AlcoholExposurePlayerVisualPlayModeTests.cs"
+]

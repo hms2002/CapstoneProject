@@ -82,6 +82,7 @@ namespace UnityGAS
         {
             SetIgnitingMode();
             ShaderVisual?.SetIgnitionProgress(0f);
+            ParticleVisual?.SetIgnitionProgress(0f);
             // Blob visual + outline은 Noita풍 particle field 전환 테스트 동안 비활성화한다.
             // BlobVisual?.SetColor(ignitingColor);
         }
@@ -90,6 +91,7 @@ namespace UnityGAS
         {
             float t = Mathf.Clamp01(normalizedProgress);
             ShaderVisual?.SetIgnitionProgress(t);
+            ParticleVisual?.SetIgnitionProgress(t);
             Color color = Color.Lerp(alcoholColor, fireColor, t);
             // Blob visual + outline은 Noita풍 particle field 전환 테스트 동안 비활성화한다.
             // BlobVisual?.SetColor(color);

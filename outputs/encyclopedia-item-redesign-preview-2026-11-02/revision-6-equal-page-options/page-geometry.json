@@ -1,0 +1,22 @@
+{
+  "left": {
+    "x": 464,
+    "y": 286,
+    "width": 460,
+    "height": 576
+  },
+  "right": {
+    "x": 996,
+    "y": 286,
+    "width": 460,
+    "height": 576
+  },
+  "gutter": {
+    "x": 924,
+    "y": 286,
+    "width": 72,
+    "height": 576
+  },
+  "footerShiftY": -6,
+  "scope": "All newly authored paper, icons and typography are clipped to equal page rectangles; existing external bookmarks remain."
+}

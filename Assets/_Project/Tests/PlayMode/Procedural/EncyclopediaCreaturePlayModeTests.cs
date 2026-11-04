@@ -16,8 +16,8 @@ public sealed class EncyclopediaCreaturePlayModeTests
 {
     private const string PrefabPath = "Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab";
     private const string CatalogPath = "Assets/_Project/Data/Encyclopedia/EncyclopediaCatalog.asset";
-    private const string EvidencePath = "outputs/encyclopedia-implementation-2026-10-11";
-    private const string RevealEvidencePath = "outputs/encyclopedia-tab-visibility-reveal-2026-10-12";
+    private const string EvidencePath = "outputs/encyclopedia-layout-2026-11-01/regression";
+    private const string RevealEvidencePath = "outputs/encyclopedia-layout-2026-11-01/reveal";
     private const BindingFlags InstanceFields = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
     private static readonly Type LocalizationType = Type.GetType("UnityEngine.Localization.Settings.LocalizationSettings, Unity.Localization", true);
     private Fixture fixture;
@@ -45,17 +45,18 @@ public sealed class EncyclopediaCreaturePlayModeTests
         restoreLocale = false;
     }
 
-    [TestCase(0, 0, new int[] { }, new int[] { })]
-    [TestCase(1, 0, new[] { 0 }, new[] { 0 })]
-    [TestCase(2, 0, new[] { 0, 1 }, new[] { -1, 0 })]
-    [TestCase(2, 1, new[] { 0, 1 }, new[] { 0, 1 })]
-    [TestCase(3, 0, new[] { 0, 1, 2 }, new[] { -1, 0, 1 })]
-    [TestCase(3, 1, new[] { 0, 1, 2 }, new[] { -1, 0, 1 })]
-    [TestCase(3, 2, new[] { 0, 1, 2 }, new[] { -1, 0, 1 })]
-    [TestCase(7, 0, new[] { 0, 1, 2 }, new[] { -1, 0, 1 })]
-    [TestCase(7, 3, new[] { 2, 3, 4 }, new[] { -1, 0, 1 })]
-    [TestCase(7, 6, new[] { 4, 5, 6 }, new[] { -1, 0, 1 })]
-    public void DotWindow_PreservesRequestedBoundaryPosition(int count, int selected, int[] indices, int[] offsets)
+    [TestCase(0, 0, new int[] { }, new float[] { })]
+    [TestCase(1, 0, new[] { 0 }, new[] { 0f })]
+    [TestCase(2, 0, new[] { 0, 1 }, new[] { -.5f, .5f })]
+    [TestCase(2, 1, new[] { 0, 1 }, new[] { -.5f, .5f })]
+    [TestCase(3, 0, new[] { 0, 1, 2 }, new[] { -1f, 0f, 1f })]
+    [TestCase(3, 1, new[] { 0, 1, 2 }, new[] { -1f, 0f, 1f })]
+    [TestCase(3, 2, new[] { 0, 1, 2 }, new[] { -1f, 0f, 1f })]
+    [TestCase(5, 2, new[] { 0, 1, 2, 3, 4 }, new[] { -2f, -1f, 0f, 1f, 2f })]
+    [TestCase(7, 0, new[] { 0, 1, 2, 3, 4 }, new[] { -2f, -1f, 0f, 1f, 2f })]
+    [TestCase(7, 3, new[] { 1, 2, 3, 4, 5 }, new[] { -2f, -1f, 0f, 1f, 2f })]
+    [TestCase(7, 6, new[] { 2, 3, 4, 5, 6 }, new[] { -2f, -1f, 0f, 1f, 2f })]
+    public void DotWindow_PreservesRequestedBoundaryPosition(int count, int selected, int[] indices, float[] offsets)
     {
         Type helper = UiType("EncyclopediaPortraitUtility");
         Assert.That(StaticCall(helper, "GetDotCount", count), Is.EqualTo(indices.Length));
@@ -104,12 +105,12 @@ public sealed class EncyclopediaCreaturePlayModeTests
             Assert.That(((RectTransform)image.transform).pivot, Is.EqualTo(new Vector2(.5f, 0f)));
             Assert.That(Property(image.GetComponent(UiEngineType("AspectRatioFitter")), "aspectMode").ToString(), Is.EqualTo("EnvelopeParent"));
         }
-        Component hero = Field<Component>(detail, "characterImage");
-        Transform topFade = hero.transform.parent.Find("TopFade");
+        Transform topFade = Field<GameObject>(detail, "characterRoot").transform.Find("Illustration/TopFade");
         Assert.That(topFade, Is.Not.Null);
         Component gradient = topFade.GetComponent(UiType("EncyclopediaGradientGraphic"));
-        Assert.That(Field<Color>(gradient, "topColor").a, Is.GreaterThan(.5f));
-        Assert.That(Field<Color>(gradient, "bottomColor").a, Is.Zero);
+        Assert.That(((Behaviour)gradient).enabled, Is.False, "The approved authored sprite replaces procedural rendering.");
+        Component fadeImage = topFade.Find("PixelFade").GetComponent(UiEngineType("Image"));
+        Assert.That(((Sprite)Property(fadeImage, "sprite")).name, Is.EqualTo("BlackFadeTop"));
         EncyclopediaCatalogSO catalog = LoadCatalog();
         Assert.That(catalog.BossEntries.Count, Is.EqualTo(4));
         Assert.That(catalog.NpcEntries.Count, Is.EqualTo(5));
@@ -180,14 +181,15 @@ public sealed class EncyclopediaCreaturePlayModeTests
         Assert.That(((GameObject)markers.GetValue(0)).activeSelf, Is.True);
         Assert.That(((GameObject)markers.GetValue(1)).activeSelf, Is.False);
         float spacing = Field<float>(fixture.Detail, "portraitDotSpacing");
-        Assert.That(((RectTransform)((Component)dots.GetValue(1)).transform).anchoredPosition.x, Is.Zero);
+        Assert.That(dots.Length,Is.EqualTo(5));
+        Assert.That(((RectTransform)((Component)dots.GetValue(2)).transform).anchoredPosition.x, Is.Zero);
         for (int i = 1; i < melta.portraits.Count; i++)
         {
             Click(Field<Component>(fixture.Detail, "nextPortraitButton"));
             Assert.That(CurrentPortrait(fixture.Detail), Is.SameAs(melta.portraits[i].sprite));
         }
-        Assert.That(((GameObject)markers.GetValue(2)).activeSelf, Is.True);
-        Assert.That(((RectTransform)((Component)dots.GetValue(2)).transform).anchoredPosition.x, Is.EqualTo(spacing));
+        Assert.That(((GameObject)markers.GetValue(4)).activeSelf, Is.True);
+        Assert.That(((RectTransform)((Component)dots.GetValue(4)).transform).anchoredPosition.x, Is.EqualTo(spacing*2));
         Assert.That(previousArrow.gameObject.activeSelf, Is.True);
         Assert.That(nextArrow.gameObject.activeSelf, Is.False, "The final portrait must hide the unavailable next arrow.");
         Assert.That((bool)Property(Field<Component>(fixture.Detail, "nextPortraitButton"), "interactable"), Is.False);
@@ -196,6 +198,25 @@ public sealed class EncyclopediaCreaturePlayModeTests
         Click(Field<Component>(fixture.Detail, "fullViewButton"));
         Assert.That(Field<GameObject>(fixture.Detail, "fullViewRoot").activeInHierarchy, Is.True);
         Assert.That(Property(Field<Component>(fixture.Detail, "fullViewImage"), "sprite"), Is.SameAs(CurrentPortrait(fixture.Detail)));
+        var fullPrevious = Field<Component>(fixture.Detail, "fullViewPreviousButton");
+        var fullNext = Field<Component>(fixture.Detail, "fullViewNextButton");
+        Assert.That(fullNext.gameObject.activeInHierarchy, Is.False);
+        for (int i = 5; i >= 0; i--)
+        {
+            Click(fullPrevious);
+            Assert.That(CurrentPortrait(fixture.Detail), Is.SameAs(melta.portraits[i].sprite));
+            Assert.That(Property(Field<Component>(fixture.Detail, "fullViewImage"), "sprite"), Is.SameAs(CurrentPortrait(fixture.Detail)));
+            Assert.That(Property(Field<Component>(selectedCard, "portraitImage"), "sprite"), Is.SameAs(CurrentPortrait(fixture.Detail)));
+        }
+        Assert.That(fullPrevious.gameObject.activeInHierarchy, Is.False);
+        Assert.That(fullNext.gameObject.activeInHierarchy, Is.True);
+        Call(fixture.Tab, "SetInteractionEnabled", false);
+        Click(fullNext);
+        Assert.That(CurrentPortrait(fixture.Detail), Is.SameAs(melta.portraits[0].sprite));
+        Call(fixture.Tab, "SetInteractionEnabled", true);
+        for (int i = 1; i < 7; i++) Click(fullNext);
+        Assert.That(fullNext.gameObject.activeInHierarchy, Is.False);
+        Assert.That(Text(Field<Component>(fixture.Detail, "fullViewPageText")), Is.EqualTo("7 / 7"));
         Assert.That(Call(fixture.Screen, "TryHandleCloseRequest"), Is.EqualTo(true));
         Assert.That(Field<GameObject>(fixture.Detail, "fullViewRoot").activeSelf, Is.False);
         Assert.That(Field<GameObject>(fixture.Tab, "rightContentRoot").activeInHierarchy, Is.True);
@@ -887,7 +908,12 @@ public sealed class EncyclopediaCreaturePlayModeTests
     private static T Field<T>(object owner, string name) => (T)owner.GetType().GetField(name, InstanceFields).GetValue(owner);
     private static void SetField(object owner, string name, object value) => owner.GetType().GetField(name, InstanceFields).SetValue(owner, value);
     private static object Property(object owner, string name) => owner.GetType().GetProperty(name).GetValue(owner);
-    private static object Call(object owner, string name, params object[] args) => owner.GetType().GetMethod(name, InstanceFields).Invoke(owner, args);
+    private static object Call(object owner, string name, params object[] args)
+    {
+        var method=owner.GetType().GetMethod(name,InstanceFields);
+        var parameters=method.GetParameters();
+        return method.Invoke(owner,parameters.Select((p,i)=>i<args.Length?args[i]:p.DefaultValue).ToArray());
+    }
     private static object StaticCall(Type type, string name, params object[] args) => type.GetMethod(name, BindingFlags.Public | BindingFlags.Static).Invoke(null, args);
     private static string Text(Component text) => (string)Property(text, "text");
     private static Sprite CurrentPortrait(Component detail) => (Sprite)Property(detail, "CurrentPortrait");
@@ -902,11 +928,21 @@ public sealed class EncyclopediaCreaturePlayModeTests
         private readonly GameObject staging;
         private readonly Camera camera;
         private readonly Canvas canvas;
+        public readonly MemoryProfile Profile = new();
+        private readonly IGameDataStoreBackend previousProfile=(IGameDataStoreBackend)typeof(GameDataStore).GetField("backend",BindingFlags.Static|BindingFlags.NonPublic).GetValue(null);
+        private readonly IRunSessionStoreBackend previousRun=(IRunSessionStoreBackend)typeof(RunSessionStore).GetField("backend",BindingFlags.Static|BindingFlags.NonPublic).GetValue(null);
         private readonly InputBindingService[] inputServicesBefore = Object.FindObjectsByType<InputBindingService>(
             FindObjectsInactive.Include, FindObjectsSortMode.None);
 
-        public Fixture(bool keepScreen = false, bool keepBook = false, bool keepItemPresenters = false)
+        public Fixture(bool keepScreen = false, bool keepBook = false, bool keepItemPresenters = false, bool discovered = true)
         {
+            GameDataStore.RegisterBackend(Profile);
+            if(previousRun!=null)RunSessionStore.UnregisterBackend(previousRun);
+            if(discovered)
+            {
+                foreach(var monster in LoadCatalog().MonsterEntries)Profile.Data.encyclopediaDiscoveryData.Add(EncyclopediaDiscoveryKind.Monster,monster.id);
+                foreach(var boss in LoadCatalog().BossEntries)if(boss.npcData!=null)Profile.Data.bossDialogueData.GetOrCreateRecord(boss.npcData.id).encounterCount=1;
+            }
             staging = new GameObject("EncyclopediaCreatureTestStaging");
             staging.SetActive(false);
             var canvasObject = new GameObject("ReviewCanvas", typeof(RectTransform), typeof(Canvas));
@@ -938,6 +974,12 @@ public sealed class EncyclopediaCreaturePlayModeTests
             Book = keepBook ? ComponentOf(clone, "EncyclopediaBookPresentation") : null;
             ItemTab = keepItemPresenters ? ComponentOf(clone, "EncyclopediaItemTab") : null;
             ItemRightPage = keepItemPresenters ? ComponentOf(clone, "EncyclopediaItemRightPage") : null;
+            if(discovered && ItemTab!=null)
+            {
+                var database=Field<ItemDatabase>(ItemTab,"itemDatabase");
+                foreach(var weapon in database.allWeapons)if(weapon!=null)Profile.Data.encyclopediaDiscoveryData.Add(EncyclopediaDiscoveryKind.Weapon,weapon.weaponId);
+                foreach(var relic in database.allRelics)if(relic!=null)Profile.Data.encyclopediaDiscoveryData.Add(EncyclopediaDiscoveryKind.Relic,relic.relicId);
+            }
             Assert.That(Tab, Is.Not.Null, "Author the approved native creature pages before running these tests.");
             Assert.That(Detail, Is.Not.Null);
             if (keepScreen)
@@ -1054,7 +1096,231 @@ public sealed class EncyclopediaCreaturePlayModeTests
             InputBindingService currentInput = InputBindingService.Instance;
             if (currentInput != null && !inputServicesBefore.Contains(currentInput))
                 Object.DestroyImmediate(currentInput.gameObject);
+            GameDataStore.UnregisterBackend(Profile);
+            if(previousProfile!=null)GameDataStore.RegisterBackend(previousProfile);
+            if(previousRun!=null)RunSessionStore.RegisterBackend(previousRun);
         }
+    }
+
+    [UnityTest]
+    public IEnumerator Discovery_LockedCardsHideDetailsAndRevealWithoutStaleInformation()
+    {
+        yield return WaitForLocalization();
+        previousLocale=LocalizationType.GetProperty("SelectedLocale").GetValue(null);restoreLocale=true;
+        Type localeType=Type.GetType("UnityEngine.Localization.Locale, Unity.Localization",true);
+        LocalizationType.GetProperty("SelectedLocale").SetValue(null,UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/_Project/Data/Localization/Locale_ko.asset",localeType));
+        yield return WaitForLocalization();
+        fixture=new Fixture(true,false,true,false);
+        var catalog=LoadCatalog();
+        const string output="outputs/encyclopedia-layout-2026-11-01/native";
+        Directory.CreateDirectory(output);
+        Call(fixture.Screen,"OpenMonsterTab");yield return null;
+        yield return fixture.WaitForNativeFonts();
+        Component monsterCard=(Component)Field<Array>(fixture.Tab,"monsterSlots").GetValue(0);
+        Assert.That(Property(Field<Component>(monsterCard,"portraitImage"),"color"),Is.EqualTo(Color.black));
+        Assert.That(Text(Field<Component>(monsterCard,"titleText")),Is.EqualTo("???"));
+        Assert.That(Field<GameObject>(fixture.Detail,"undiscoveredRoot").activeInHierarchy,Is.True);
+        Assert.That(Field<GameObject>(fixture.Detail,"monsterRoot").activeSelf,Is.False);
+        Assert.That(Field<GameObject>(monsterCard,"gradientRoot").activeSelf,Is.False);
+        AssertSingleMessage(fixture.Detail, "아직 조우하지 못한 몬스터입니다.");
+        fixture.Capture(output+"/monster-locked.png");
+        fixture.Profile.Data.encyclopediaDiscoveryData.Add(EncyclopediaDiscoveryKind.Monster,catalog.MonsterEntries[0].id);
+        fixture.Profile.Refresh();yield return null;
+        Assert.That(Field<GameObject>(fixture.Detail,"undiscoveredRoot").activeSelf,Is.False);
+        Assert.That(Text(Field<Component>(fixture.Detail,"monsterTitleText")),Is.EqualTo(catalog.MonsterEntries[0].DisplayName));
+        Assert.That(Property(Field<Component>(monsterCard,"portraitImage"),"color"),Is.EqualTo(Color.white));
+        fixture.Capture(output+"/monster-revealed.png");
+
+        Call(fixture.Screen,"OpenBossTab");yield return null;
+        Component bossCard=(Component)Field<Array>(fixture.Tab,"characterSlots").GetValue(0);
+        Assert.That(Text(Field<Component>(bossCard,"titleText")),Is.EqualTo("???"));
+        Assert.That(Field<GameObject>(bossCard,"affectionRoot").activeSelf,Is.False);
+        Assert.That(Field<GameObject>(fixture.Detail,"characterRoot").activeSelf,Is.False);
+        Call(fixture.Detail,"StepPortrait",1);Click(Field<Component>(fixture.Detail,"fullViewButton"));
+        Assert.That(CurrentPortrait(fixture.Detail),Is.Null);
+        Assert.That(Field<GameObject>(fixture.Detail,"fullViewRoot").activeSelf,Is.False);
+        AssertSingleMessage(fixture.Detail, "아직 조우하지 못한 보스입니다.");
+        fixture.Capture(output+"/boss-locked.png");
+        fixture.Profile.Data.bossDialogueData.GetOrCreateRecord(catalog.BossEntries[0].npcData.id).encounterCount=1;
+        fixture.Profile.Refresh();yield return null;
+        Assert.That(Field<GameObject>(fixture.Detail,"characterRoot").activeInHierarchy,Is.True);
+        Assert.That(Field<Array>(fixture.Detail,"portraitDotButtons").Length,Is.EqualTo(5));
+        foreach(GameObject fade in Field<Array>(fixture.Detail,"bossOnlyDecorations"))Assert.That(fade.activeSelf,Is.True);
+        fixture.Capture(output+"/boss-revealed.png");
+        Click(Field<Component>(fixture.Detail,"fullViewButton"));
+        Assert.That(Field<GameObject>(fixture.Detail,"fullViewRoot").activeSelf,Is.True);
+        Call(fixture.Tab,"SelectEntry",1);
+        Assert.That(Field<GameObject>(fixture.Detail,"fullViewRoot").activeSelf,Is.False);
+        Assert.That(Field<GameObject>(fixture.Detail,"undiscoveredRoot").activeInHierarchy,Is.True);
+        LocalizationType.GetProperty("SelectedLocale").SetValue(null,UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/_Project/Data/Localization/Locale_en.asset",localeType));
+        yield return WaitForLocalization();yield return null;
+        Assert.That(Field<GameObject>(fixture.Detail,"characterRoot").activeSelf,Is.False);
+        Assert.That(Text(Field<Component>((Component)Field<Array>(fixture.Tab,"characterSlots").GetValue(1),"titleText")),Is.EqualTo("???"));
+
+        Call(fixture.Screen,"OpenItemTab");Call(fixture.ItemTab,"OpenWeaponSubTab");yield return null;
+        var weapon=Field<WeaponDefinition>(fixture.ItemTab,"selectedItem");Assert.That(weapon,Is.Not.Null);
+        fixture.Profile.Data.itemData.unlockedWeaponIDs.Add(weapon.weaponId);fixture.Profile.Refresh();
+        Assert.That(Field<GameObject>(fixture.ItemRightPage,"undiscoveredRoot").activeInHierarchy,Is.True,"Loot unlock alone is not acquisition.");
+        Assert.That(Field<Component>(fixture.ItemRightPage,"detailScrollRect").gameObject.activeSelf,Is.False);
+        var grid=(Component)Property(Field<Component>(fixture.ItemTab,"leftPage"),"EntryGridView");
+        var itemSlots=Field<IList>(grid,"runtimeEntrySlots");
+        Assert.That(Property(Field<Component>((Component)itemSlots[0],"iconImage"),"color"),Is.EqualTo(Color.black));
+        Assert.That(Field<GameObject>(fixture.ItemRightPage,"weaponStatsRoot").activeSelf,Is.False);
+        Assert.That(Field<GameObject>(fixture.ItemRightPage,"weaponAbilityRoot").activeSelf,Is.False);
+        var story=Field<Component>(fixture.ItemRightPage,"storyText");
+        Assert.That(story.gameObject.activeSelf,Is.False);
+        Assert.That(Text(story),Is.Empty);
+        fixture.Capture(output+"/weapon-locked.png");
+        EncyclopediaDiscoveryProgress.Record(EncyclopediaDiscoveryKind.Weapon,weapon.weaponId,"HubScene");yield return null;
+        Assert.That(Text(Field<Component>(fixture.ItemRightPage,"titleText")),Is.EqualTo(weapon.DisplayName));
+        Assert.That(Property(Field<Component>((Component)itemSlots[0],"iconImage"),"color"),Is.EqualTo(Color.white));
+        Call(fixture.ItemTab,"OpenRelicSubTab");yield return null;
+        var relic=Field<RelicDefinition>(fixture.ItemTab,"selectedItem");Assert.That(relic,Is.Not.Null);
+        Assert.That(Field<GameObject>(fixture.ItemRightPage,"undiscoveredRoot").activeInHierarchy,Is.True);
+        Assert.That(Field<Component>(fixture.ItemRightPage,"detailScrollRect").gameObject.activeSelf,Is.False);
+        Assert.That(Field<GameObject>(fixture.ItemRightPage,"relicPreviewRoot").activeSelf,Is.False);
+        fixture.Capture(output+"/relic-locked.png");
+        EncyclopediaDiscoveryProgress.Record(EncyclopediaDiscoveryKind.Relic,relic.relicId,"HubScene");yield return null;
+        Assert.That(Field<GameObject>(fixture.ItemRightPage,"relicPreviewRoot").activeSelf,Is.True);
+        Assert.That(Text(Field<Component>(fixture.ItemRightPage,"titleText")),Is.EqualTo(relic.DisplayName));
+        fixture.Profile.Switch();yield return null;
+        Assert.That(Field<GameObject>(fixture.ItemRightPage,"undiscoveredRoot").activeInHierarchy,Is.True);
+        Assert.That(Field<Component>(fixture.ItemRightPage,"detailScrollRect").gameObject.activeSelf,Is.False);
+        Assert.That(Field<GameObject>(fixture.ItemRightPage,"relicPreviewRoot").activeSelf,Is.False);
+        Call(fixture.Screen,"OpenNpcTab");yield return null;
+        foreach(GameObject fade in Field<Array>(fixture.Detail,"bossOnlyDecorations"))Assert.That(fade.activeSelf,Is.False);
+        Assert.That(Field<GameObject>(fixture.Detail,"characterRoot").activeInHierarchy,Is.True);
+        Assert.That(fixture.Profile.SaveRequests,Is.EqualTo(2),"Only actual hub acquisitions request saves; UI browsing never does.");
+    }
+
+    [UnityTest]
+    public IEnumerator BookLayout_NativeItemPagesAndPaperViewerAcrossLocales()
+    {
+        yield return WaitForLocalization();
+        previousLocale = LocalizationType.GetProperty("SelectedLocale").GetValue(null); restoreLocale = true;
+        Type localeType = Type.GetType("UnityEngine.Localization.Locale, Unity.Localization", true);
+        fixture = new Fixture(true, false, true);
+        const string output = "outputs/encyclopedia-layout-2026-11-01/native";
+        Directory.CreateDirectory(output);
+        foreach (string code in new[] { "ko", "en", "ja", "zh-Hans", "zh-Hant" })
+        {
+            LocalizationType.GetProperty("SelectedLocale").SetValue(null, UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/_Project/Data/Localization/Locale_" + code + ".asset", localeType));
+            yield return WaitForLocalization();
+            Call(fixture.Screen, "OpenItemTab"); Call(fixture.ItemTab, "OpenWeaponSubTab");
+            yield return fixture.WaitForNativeFonts(); yield return null;
+            Component title = Field<Component>(fixture.ItemRightPage, "titleText");
+            GameObject hint = Field<GameObject>(Field<object>(fixture.ItemRightPage, "weaponDescriptionHint"), "root");
+            Component scroll = Field<Component>(fixture.ItemRightPage, "detailScrollRect");
+            Assert.That(hint.activeInHierarchy, Is.True);
+            Assert.That(WorldRect((RectTransform)hint.transform).Overlaps(WorldRect((RectTransform)title.transform)), Is.False, "Hint must not overlap weapon title: " + code);
+            Assert.That(WorldRect((RectTransform)hint.transform).Overlaps(WorldRect((RectTransform)scroll.transform)), Is.False, "Hint has a reserved area outside the scrolling page.");
+            Assert.That(Property(title, "isTextOverflowing"), Is.EqualTo(false), "Localized item title fits: " + code);
+            fixture.Capture(output + "/weapon-" + code + ".png");
+            using (var keyboard = new ShortcutKeyboard())
+            {
+                keyboard.Set(InputContextShortcutId.TooltipDescriptionToggle, true);
+                Call(fixture.ItemRightPage, "Update");
+                keyboard.Set(InputContextShortcutId.TooltipDescriptionToggle, false);
+            }
+            Assert.That(Field<bool>(fixture.ItemRightPage, "showDetailedDescription"), Is.True);
+            yield return null;
+            scroll.GetType().GetProperty("verticalNormalizedPosition").SetValue(scroll, 0f);
+            yield return null;
+            Assert.That(hint.activeInHierarchy, Is.True);
+            fixture.Capture(output + "/weapon-detailed-bottom-" + code + ".png");
+            Call(fixture.ItemTab, "OpenRelicSubTab"); yield return fixture.WaitForNativeFonts(); yield return null;
+            Assert.That(hint.activeInHierarchy, Is.False);
+            fixture.Capture(output + "/relic-" + code + ".png");
+            Call(fixture.ItemRightPage, "ShowUndiscovered", Field<RelicDefinition>(fixture.ItemTab, "selectedItem")); yield return fixture.WaitForNativeFonts(); yield return null;
+            AssertSingleMessage(fixture.ItemRightPage, GameText.Get("encyclopedia.item_not_acquired", "아직 획득하지 못한 아이템입니다."));
+            fixture.Capture(output + "/item-unknown-" + code + ".png");
+            Call(fixture.Screen, "OpenBossTab"); yield return fixture.WaitForNativeFonts(); yield return null;
+            Click(Field<Component>(fixture.Detail, "fullViewButton")); yield return fixture.WaitForNativeFonts(); yield return null;
+            Component fullImage = Field<Component>(fixture.Detail, "fullViewImage");
+            var panel = Field<GameObject>(fixture.Detail, "fullViewRoot");
+            Assert.That((Color)Property(panel.GetComponent(UiEngineType("Image")), "color"), Is.EqualTo(new Color(1f, 1f, 1f, 0f)));
+            Assert.That(WorldRect((RectTransform)panel.transform).Contains(WorldRect((RectTransform)fullImage.transform).min), Is.True);
+            Assert.That(WorldRect((RectTransform)panel.transform).Contains(WorldRect((RectTransform)fullImage.transform).max), Is.True);
+            fixture.Capture(output + "/boss-full-" + code + ".png");
+            Click(Field<Component>(fixture.Detail, "fullViewCloseButton"));
+            Assert.That(Field<GameObject>(fixture.Detail, "fullViewRoot").activeSelf, Is.False);
+        }
+    }
+
+    private static Rect WorldRect(RectTransform rect)
+    {
+        var corners = new Vector3[4]; rect.GetWorldCorners(corners);
+        return Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
+    }
+
+    private static void AssertSingleMessage(Component presenter, string expected)
+    {
+        var root = Field<GameObject>(presenter, "undiscoveredRoot");
+        Assert.That(root.activeInHierarchy, Is.True);
+        Component message = Field<Component>(presenter, "undiscoveredText");
+        Assert.That(Text(message), Is.EqualTo(expected));
+        Assert.That(root.GetComponentsInChildren(Type.GetType("TMPro.TMP_Text, Unity.TextMeshPro", true)).Length, Is.EqualTo(1));
+        Assert.That(root.GetComponentsInChildren(UiEngineType("Image")).Length, Is.Zero);
+        Assert.That(Vector2.Distance(WorldRect((RectTransform)root.transform).center, WorldRect((RectTransform)message.transform).center), Is.LessThan(.01f));
+        Assert.That(Property(message, "isTextOverflowing"), Is.EqualTo(false));
+    }
+
+    [Test]
+    public void Discovery_ActualInventorySuccessAndEncounterFeedPendingProgress()
+    {
+        fixture=new Fixture(discovered:false);
+        var scene=UnityEngine.SceneManagement.SceneManager.CreateScene("DiscoveryGameplay");
+        var actor=new GameObject("DiscoveryInventoryActor");
+        UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(actor,scene);
+        var weapon=ScriptableObject.CreateInstance<WeaponDefinition>();weapon.weaponId="Weapon.discovery";
+        var rejected=ScriptableObject.CreateInstance<WeaponDefinition>();rejected.weaponId="Weapon.rejected";
+        var relic=ScriptableObject.CreateInstance<RelicDefinition>();relic.relicId="Relic.discovery";
+        var runObject=new GameObject("DiscoveryRunBackend");runObject.SetActive(false);
+        var run=(IRunSessionStoreBackend)runObject.AddComponent(Type.GetType("GamePlayDataManager, Infrastructure",true));
+        run.Data.isRunActive=true;RunSessionStore.RegisterBackend(run);
+        try
+        {
+            var weapons=actor.AddComponent<WeaponInventory2D>();
+            Assert.That(weapons.TrySetWeaponSlot(-1,rejected,false),Is.False);
+            Assert.That(EncyclopediaDiscoveryProgress.Has(EncyclopediaDiscoveryKind.Weapon,rejected.weaponId),Is.False);
+            Assert.That(weapons.TrySetWeaponSlot(0,weapon,false),Is.True);
+            Assert.That(EncyclopediaDiscoveryProgress.Has(EncyclopediaDiscoveryKind.Weapon,weapon.weaponId),Is.True);
+            var relics=actor.AddComponent<RelicInventory>();
+            Assert.That(relics.TryAcquireOrUpgradeDetailed(relic),Is.EqualTo(RelicInventory.AcquireResult.Success));
+            Assert.That(EncyclopediaDiscoveryProgress.Has(EncyclopediaDiscoveryKind.Relic,relic.relicId),Is.True);
+            var identity=actor.AddComponent<MonsterEncyclopediaIdentity>();identity.Configure("monster.encounter");
+            Assert.That(EncyclopediaDiscoveryProgress.Has(EncyclopediaDiscoveryKind.Monster,identity.MonsterId),Is.False,"Spawning alone does not discover a species.");
+            MonsterEncyclopediaProgress.RecordEncounter(actor);
+            Assert.That(EncyclopediaDiscoveryProgress.Has(EncyclopediaDiscoveryKind.Monster,identity.MonsterId),Is.True);
+            Assert.That(fixture.Profile.Data.encyclopediaDiscoveryData.weaponIds,Is.Empty);
+            Assert.That(fixture.Profile.SaveRequests,Is.Zero);
+            EncyclopediaDiscoveryProgress.Commit(run.Data,fixture.Profile.Data);
+            Assert.That(fixture.Profile.Data.encyclopediaDiscoveryData.weaponIds,Does.Contain(weapon.weaponId));
+            Assert.That(fixture.Profile.Data.encyclopediaDiscoveryData.relicIds,Does.Contain(relic.relicId));
+            Assert.That(fixture.Profile.Data.encyclopediaDiscoveryData.monsterIds,Does.Contain(identity.MonsterId));
+            Assert.That(run.Data.pendingEncyclopediaDiscoveryData.monsterIds,Is.Empty);
+        }
+        finally
+        {
+            RunSessionStore.UnregisterBackend(run);Object.DestroyImmediate(runObject);Object.DestroyImmediate(actor);
+            Object.DestroyImmediate(weapon);Object.DestroyImmediate(rejected);Object.DestroyImmediate(relic);
+            UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(scene);
+        }
+    }
+
+    private sealed class MemoryProfile : IGameDataStoreBackend
+    {
+        public GameData Data {get;private set;}=new();
+        public int ActiveSlotIndex {get;private set;}
+        public int SaveRequests;
+        public event Action<GameData,int> OnDataLoaded;
+        public GameData EnsureData()=>Data;
+        public void SaveData()=>SaveRequests++;
+        public void RequestImmediateSave(Object requester)=>SaveRequests++;
+        public void RequestDeferredSave(Object requester)=>SaveRequests++;
+        public void FlushSave(Object requester)=>SaveRequests++;
+        public void Refresh()=>OnDataLoaded?.Invoke(Data,ActiveSlotIndex);
+        public void Switch(){Data=new();ActiveSlotIndex++;Refresh();}
     }
 }
 #endif

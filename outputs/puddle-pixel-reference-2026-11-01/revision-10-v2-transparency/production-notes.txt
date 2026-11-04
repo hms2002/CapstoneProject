@@ -1,0 +1,14 @@
+Source: revision-2-aseprite, explicitly selected by the user.
+Micro-fix: opened the two original Aseprite files and changed only layer
+"01 Ground - fixed flat footprint" opacity from255 to166 (65.1%).
+All24 cel images/positions/opacities across both sources are unchanged.
+Upper layers, frame durations, Idle tags and ground pivots are retained.
+Transparent PNG frames/sheets use alpha0/166/255. GIFs bake the original neutral
+review floor; comparison remains608x320 and3200ms. Preview visually inspected;
+saved native sources reopened and preservation/PNG alpha checks passed.
+Changed assets: alcohol.aseprite and fire.aseprite, with matching PNG/GIF exports.
+set-ground-opacity.lua reproduces the edit; verification.txt records native checks.
+The selected revision2 sources remain untouched. No later artwork revisions used.
+Unity import/compilation/Play Mode not executed; no Unity files changed.
+Doc Impact Check: SessionLog only. ErrorLog/DecisionLog unchanged; no Presentation
+HTML stale candidate.

@@ -1,0 +1,36 @@
+{
+  "radii": [
+    {
+      "charge": 0,
+      "inner": 0,
+      "outer": 0
+    },
+    {
+      "charge": 25,
+      "inner": 28.6,
+      "outer": 0
+    },
+    {
+      "charge": 50,
+      "inner": 57.2,
+      "outer": 0
+    },
+    {
+      "charge": 75,
+      "inner": 57.2,
+      "outer": 72.6
+    },
+    {
+      "charge": 100,
+      "inner": 57.2,
+      "outer": 88
+    }
+  ],
+  "fullCircumferenceAtPartialCharge": "pass",
+  "scaledBoundary": "pass",
+  "oppositePlanarRotation": "pass",
+  "pauseResume": "pass",
+  "artwork": "outer unchanged; inner two squares at 45 degrees plus central circle",
+  "rendering": "offline same-JavaScript Canvas pixel adapter",
+  "limitations": "Browser DOM/layout and Unity Play Mode not run. Preview only."
+}

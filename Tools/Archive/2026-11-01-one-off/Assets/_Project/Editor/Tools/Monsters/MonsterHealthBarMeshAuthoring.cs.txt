@@ -1,0 +1,285 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Reflection;
+using TMPro;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
+
+/// <summary>Scoped Editor-only migration of the existing shared monster HUD; invoked explicitly by the authoring owner.</summary>
+public static class MonsterHealthBarMeshAuthoring
+{
+    public const string MeshPath = "Assets/_Project/Art/Meshes/MonsterHealthBarQuad.asset";
+    public const string MaterialPath = "Assets/_Project/Art/Materials/MonsterHealthBarInstanced.mat";
+    public const string ShaderName = "Project/Monster HP Instanced";
+    public const string SheetPath = "Assets/_Project/Art/Sprites/UI/MonsterHealthBar/MonsterHealthBar.png";
+
+    [MenuItem("Tools/Authoring/Upgrade Monster HP To Instanced Mesh")]
+    public static void ApplyToSharedHud()
+    {
+        ImportPixelSheet();
+        Shader shader = Shader.Find(ShaderName);
+        if (shader == null) throw new InvalidOperationException("Import the monster HP shader before authoring.");
+        Mesh mesh = EnsureMesh();
+        Material material = AssetDatabase.LoadAssetAtPath<Material>(MaterialPath);
+        if (material == null)
+        {
+            material = new Material(shader) { name = "MonsterHealthBarInstanced", enableInstancing = true };
+            AssetDatabase.CreateAsset(material, MaterialPath);
+        }
+        if (material.shader != shader) throw new InvalidOperationException("Unexpected HP material shader: " + MaterialPath);
+        material.enableInstancing = true;
+        var fonts = CaptureOriginalFonts();
+        var originalMaterials = CaptureOriginalSharedMaterials();
+        GameObject root = PrefabUtility.LoadPrefabContents(MonsterWorldHudAuthoring.HudPath);
+        try
+        {
+            ApplyToLoadedHud(root, mesh, material);
+            foreach (TMP_Text text in root.GetComponentsInChildren<TMP_Text>(true))
+            {
+                if (!fonts.TryGetValue(RelativePath(root.transform, text.transform), out TMP_FontAsset font)) continue;
+                var serializedText = new SerializedObject(text);
+                serializedText.FindProperty("m_fontAsset").objectReferenceValue = font;
+                serializedText.ApplyModifiedPropertiesWithoutUndo();
+            }
+            // Font validation may assign its default material. Restore the serialized style field last,
+            // without invoking TMP's public setters or another SerializedObject validation callback.
+            FieldInfo sharedMaterial = typeof(TMP_Text).GetField("m_sharedMaterial", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (sharedMaterial == null) throw new InvalidOperationException("TMP's serialized shared material field is unavailable.");
+            foreach (TMP_Text text in root.GetComponentsInChildren<TMP_Text>(true))
+                if (originalMaterials.TryGetValue(RelativePath(root.transform, text.transform), out Material original))
+                    sharedMaterial.SetValue(text, original);
+            PrefabUtility.SaveAsPrefabAsset(root, MonsterWorldHudAuthoring.HudPath);
+            EditorUtility.SetDirty(material);
+            AssetDatabase.SaveAssets();
+        }
+        finally { PrefabUtility.UnloadPrefabContents(root); }
+    }
+
+    private static Dictionary<string, Material> CaptureOriginalSharedMaterials()
+    {
+        var result = new Dictionary<string, Material>();
+        GameObject persistent = AssetDatabase.LoadAssetAtPath<GameObject>(MonsterWorldHudAuthoring.HudPath);
+        if (persistent == null) throw new InvalidOperationException("The existing shared HUD prefab is missing.");
+        string baseline = null;
+        string[] args = Environment.GetCommandLineArgs();
+        for (int i = 0; i + 1 < args.Length; i++) if (args[i] == "-uiOriginalHudBaseline") baseline = args[i + 1];
+        bool originalAllNull = false;
+        if (baseline != null)
+        {
+            if (!File.Exists(baseline)) throw new FileNotFoundException("The explicitly requested original HUD snapshot is missing.", baseline);
+            MatchCollection materials = Regex.Matches(File.ReadAllText(baseline), @"(?m)^\s*m_sharedMaterial: \{([^}]+)\}");
+            if (materials.Count == 0) throw new InvalidOperationException("The original HUD snapshot has no serialized TMP material fields.");
+            originalAllNull = true;
+            foreach (Match material in materials)
+                if (material.Groups[1].Value.Trim() != "fileID: 0") originalAllNull = false;
+            if (!originalAllNull) throw new InvalidOperationException("Snapshot material overrides require explicit per-text preservation; do not guess styles.");
+        }
+        foreach (TMP_Text text in persistent.GetComponentsInChildren<TMP_Text>(true))
+        {
+            var data = new SerializedObject(text);
+            result.Add(RelativePath(persistent.transform, text.transform), originalAllNull ? null :
+                data.FindProperty("m_sharedMaterial").objectReferenceValue as Material);
+        }
+        return result;
+    }
+
+    private static Dictionary<string, TMP_FontAsset> CaptureOriginalFonts()
+    {
+        var result = new Dictionary<string, TMP_FontAsset>();
+        GameObject persistent = AssetDatabase.LoadAssetAtPath<GameObject>(MonsterWorldHudAuthoring.HudPath);
+        if (persistent == null) throw new InvalidOperationException("The existing shared HUD prefab is missing.");
+        // The external immutable snapshot supplies the original serialized reference after a previous load drifted.
+        string baseline = null;
+        string[] args = Environment.GetCommandLineArgs();
+        for (int i = 0; i + 1 < args.Length; i++)
+            if (args[i] == "-uiOriginalHudBaseline") baseline = args[i + 1];
+        TMP_FontAsset baselineFont = null;
+        if (baseline != null)
+        {
+            if (!File.Exists(baseline)) throw new FileNotFoundException("The explicitly requested original HUD snapshot is missing.", baseline);
+            string guid = null;
+            foreach (Match match in Regex.Matches(File.ReadAllText(baseline), @"m_fontAsset: \{fileID: \d+, guid: ([0-9a-f]+), type: \d+\}"))
+            {
+                string next = match.Groups[1].Value;
+                if (guid != null && guid != next) throw new InvalidOperationException("Original HUD has multiple font references; preserve them explicitly rather than guessing.");
+                guid = next;
+            }
+            if (guid != null)
+            {
+                baselineFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(AssetDatabase.GUIDToAssetPath(guid));
+                if (baselineFont == null) throw new InvalidOperationException("The snapshot's original authored font asset is unavailable: " + guid);
+            }
+        }
+        foreach (TMP_Text text in persistent.GetComponentsInChildren<TMP_Text>(true))
+        {
+            var data = new SerializedObject(text);
+            result.Add(RelativePath(persistent.transform, text.transform), baselineFont != null ? baselineFont :
+                data.FindProperty("m_fontAsset").objectReferenceValue as TMP_FontAsset);
+        }
+        return result;
+    }
+
+    private static string RelativePath(Transform root, Transform target)
+    {
+        string path = target.name;
+        while (target.parent != null && target.parent != root) { target = target.parent; path = target.name + "/" + path; }
+        return path;
+    }
+
+    // Also usable by an explicit scene-instance authoring pass; it does not discover or save scenes.
+    public static void ApplyToLoadedHud(GameObject hud, Mesh mesh, Material material)
+    {
+        var view = hud.GetComponent<MonsterStackStatusWorldView>();
+        var canvas = hud.GetComponent<Canvas>();
+        Transform bar = hud.transform.Find("Visual/HealthBar");
+        if (view == null || canvas == null || bar == null || mesh == null || material == null)
+            throw new InvalidOperationException("Expected the existing authored monster HUD geometry and shared assets.");
+        string[] paths = { "", "Frame", "Frame/Track", "Frame/Track/FillArea/DamageTrail", "Frame/Track/FillArea/Fill", "Frame/Track/FillArea/Fill/Highlight" };
+        var legacyGraphics = new Image[paths.Length];
+        for (int i = 0; i < paths.Length; i++)
+        {
+            Transform node = paths[i].Length == 0 ? bar : bar.Find(paths[i]);
+            Image image = node != null ? node.GetComponent<Image>() : null;
+            if (image == null || image.material != image.defaultMaterial)
+                throw new InvalidOperationException("Expected the existing default-UI HP components: " + paths[i]);
+            legacyGraphics[i] = image;
+        }
+        ApplyPixelArtwork(bar, legacyGraphics, material);
+        Transform geometry = bar.Find("HPGeometry");
+        if (geometry == null)
+        {
+            geometry = new GameObject("HPGeometry", typeof(MeshFilter), typeof(MeshRenderer), typeof(MonsterHealthBarMeshView)).transform;
+            geometry.SetParent(bar, false);
+        }
+        geometry.localPosition = Vector3.zero;
+        geometry.gameObject.layer = bar.gameObject.layer;
+        geometry.localRotation = Quaternion.identity;
+        geometry.localScale = new Vector3(((RectTransform)bar).rect.width, ((RectTransform)bar).rect.height, 1f);
+        var filter = geometry.GetComponent<MeshFilter>();
+        var renderer = geometry.GetComponent<MeshRenderer>();
+        var projection = geometry.GetComponent<MonsterHealthBarMeshView>();
+        if (filter == null || renderer == null || projection == null)
+            throw new InvalidOperationException("Unexpected existing HPGeometry components.");
+        filter.sharedMesh = mesh;
+        renderer.sharedMaterial = material;
+        renderer.shadowCastingMode = ShadowCastingMode.Off;
+        renderer.receiveShadows = false;
+        renderer.lightProbeUsage = LightProbeUsage.Off;
+        renderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
+        renderer.sortingLayerID = canvas.sortingLayerID;
+        renderer.sortingOrder = canvas.sortingOrder;
+        renderer.enabled = false;
+        var projectionData = new SerializedObject(projection);
+        projectionData.FindProperty("targetRenderer").objectReferenceValue = renderer;
+        projectionData.FindProperty("targetMeshFilter").objectReferenceValue = filter;
+        SerializedProperty graphics = projectionData.FindProperty("legacyGraphics");
+        graphics.arraySize = legacyGraphics.Length;
+        for (int i = 0; i < legacyGraphics.Length; i++) graphics.GetArrayElementAtIndex(i).objectReferenceValue = legacyGraphics[i];
+        projectionData.ApplyModifiedPropertiesWithoutUndo();
+        var data = new SerializedObject(view);
+        data.FindProperty("meshHealthBar").objectReferenceValue = projection;
+        data.FindProperty("statusCanvas").objectReferenceValue = canvas;
+        data.ApplyModifiedPropertiesWithoutUndo();
+        foreach (string path in paths)
+            (path.Length == 0 ? bar : bar.Find(path)).GetComponent<Image>().enabled = false;
+    }
+
+    private static void ImportPixelSheet()
+    {
+        AssetDatabase.ImportAsset(SheetPath, ImportAssetOptions.ForceSynchronousImport);
+        var importer = AssetImporter.GetAtPath(SheetPath) as TextureImporter;
+        if (importer == null) throw new InvalidOperationException("The approved Aseprite HP sheet is missing.");
+        importer.textureType = TextureImporterType.Sprite;
+        importer.spriteImportMode = SpriteImportMode.Multiple;
+        importer.spritePixelsPerUnit = 100;
+        importer.filterMode = FilterMode.Point;
+        importer.wrapMode = TextureWrapMode.Clamp;
+        importer.mipmapEnabled = false;
+        importer.textureCompression = TextureImporterCompression.Uncompressed;
+        importer.sRGBTexture = true;
+        importer.alphaIsTransparency = false;
+        var settings = new TextureImporterSettings();
+        importer.ReadTextureSettings(settings);
+        settings.spriteMeshType = SpriteMeshType.FullRect;
+        importer.SetTextureSettings(settings);
+        // Built-in importer API, executed by Unity. Reuse an existing slice's metadata on reruns.
+#pragma warning disable CS0618
+        if (!importer.spritesheet.Select(s => s.name).SequenceEqual(new[] { "Frame", "Track", "Fill", "Trail" }))
+            importer.spritesheet = new[]
+            {
+                Slice("Frame", new Rect(2, 22, 40, 8), new Vector4(2, 2, 2, 2)),
+                Slice("Track", new Rect(2, 16, 36, 4), Vector4.zero),
+                Slice("Fill", new Rect(2, 10, 36, 4), Vector4.zero),
+                Slice("Trail", new Rect(2, 4, 36, 4), Vector4.zero)
+            };
+#pragma warning restore CS0618
+        importer.SaveAndReimport();
+    }
+
+    private static SpriteMetaData Slice(string name, Rect rect, Vector4 border) => new()
+    {
+        name = name, rect = rect, border = border,
+        alignment = (int)SpriteAlignment.Center, pivot = new Vector2(.5f, .5f)
+    };
+
+    private static void ApplyPixelArtwork(Transform bar, Image[] images, Material material)
+    {
+        Sprite[] sprites = AssetDatabase.LoadAllAssetsAtPath(SheetPath).OfType<Sprite>().ToArray();
+        Sprite Part(string name) => sprites.Single(s => s.name == name);
+        Sprite frame = Part("Frame"), track = Part("Track"), fill = Part("Fill"), trail = Part("Trail");
+        Texture2D sheet = AssetDatabase.LoadAssetAtPath<Texture2D>(SheetPath);
+        material.SetTexture("_MainTex", sheet);
+        material.SetVector("_FrameSize", new Vector4(frame.rect.width, frame.rect.height, 0, 0));
+        material.SetVector("_FrameBorder", frame.border);
+        string[] properties = { "_FrameRect", "_TrackRect", "_FillRect", "_TrailRect" };
+        Sprite[] parts = { frame, track, fill, trail };
+        for (int i = 0; i < parts.Length; i++)
+        {
+            Rect r = parts[i].rect;
+            material.SetVector(properties[i], new Vector4(r.x / sheet.width, r.y / sheet.height,
+                r.width / sheet.width, r.height / sheet.height));
+        }
+        float pixelScale = ((RectTransform)bar).rect.height / frame.rect.height;
+        images[0].sprite = frame; images[0].type = Image.Type.Sliced;
+        images[0].pixelsPerUnitMultiplier = 1f / pixelScale;
+        images[0].fillCenter = false; images[0].color = Color.white;
+        // Retain the existing six references and all hierarchy IDs. The old extra rim and
+        // highlight Graphics become transparent; their artwork is now included in the sprites.
+        images[1].color = Color.clear; images[5].color = Color.clear;
+        Stretch(images[1].rectTransform, 0);
+        Stretch(images[2].rectTransform, frame.border.x * pixelScale);
+        Stretch((RectTransform)bar.Find("Frame/Track/FillArea"), 0);
+        images[2].sprite = track; images[2].color = Color.white;
+        images[3].sprite = trail; images[3].color = Color.white;
+        images[4].sprite = fill; images[4].color = Color.white;
+        for (int i = 2; i <= 4; i++) images[i].type = Image.Type.Simple;
+        foreach (Image image in images) image.raycastTarget = false;
+    }
+
+    private static void Stretch(RectTransform rect, float inset)
+    {
+        rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+        rect.offsetMin = Vector2.one * inset; rect.offsetMax = Vector2.one * -inset;
+    }
+
+    private static Mesh EnsureMesh()
+    {
+        Mesh mesh = AssetDatabase.LoadAssetAtPath<Mesh>(MeshPath);
+        if (mesh != null) return mesh;
+        if (!AssetDatabase.IsValidFolder("Assets/_Project/Art/Meshes"))
+            AssetDatabase.CreateFolder("Assets/_Project/Art", "Meshes");
+        mesh = new Mesh { name = "MonsterHealthBarQuad" };
+        mesh.vertices = new[] { new Vector3(-.5f, -.5f, 0f), new Vector3(-.5f, .5f, 0f), new Vector3(.5f, .5f, 0f), new Vector3(.5f, -.5f, 0f) };
+        mesh.uv = new[] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
+        mesh.triangles = new[] { 0, 1, 2, 2, 3, 0 };
+        mesh.RecalculateBounds();
+        AssetDatabase.CreateAsset(mesh, MeshPath);
+        return mesh;
+    }
+}

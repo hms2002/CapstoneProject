@@ -1,0 +1,38 @@
+[
+  {
+    "file": "Assets\\_Project\\Prefabs\\UI\\EffectSlotUI.prefab",
+    "unrelated_diffs": [],
+    "missing_local_references": [],
+    "font_material_diffs": []
+  },
+  {
+    "file": "Assets\\_Project\\Prefabs\\UI\\GlobalUIRoot.prefab",
+    "unrelated_diffs": [],
+    "missing_local_references": [],
+    "font_material_diffs": []
+  },
+  {
+    "file": "Assets\\_Project\\Prefabs\\UI\\PopupUI\\PlayerStatUI\\PlayerStatRowView.prefab",
+    "unrelated_diffs": [],
+    "missing_local_references": [],
+    "font_material_diffs": []
+  },
+  {
+    "file": "Assets\\_Project\\Prefabs\\UI\\PopupUI\\PlayerStatUI\\PlayerStatSectionView.prefab",
+    "unrelated_diffs": [],
+    "missing_local_references": [],
+    "font_material_diffs": []
+  },
+  {
+    "file": "Assets\\_Project\\Prefabs\\UI\\PopupUI\\PlayerStatUI\\PlayerStatUI.prefab",
+    "unrelated_diffs": [],
+    "missing_local_references": [],
+    "font_material_diffs": []
+  },
+  {
+    "file": "Assets\\_Project\\Prefabs\\UI\\UnlockSlotUI.prefab",
+    "unrelated_diffs": [],
+    "missing_local_references": [],
+    "font_material_diffs": []
+  }
+]

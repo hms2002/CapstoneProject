@@ -1,0 +1,4 @@
+PASS Native Aseprite source and individual PNG exports.
+PASS 23 named slices; 7 opaque colors; alpha only 0/255.
+PASS Monster and boss original-asset compositions exported at 1180x740.
+Preview only; no Unity import or runtime changes.

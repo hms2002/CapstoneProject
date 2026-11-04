@@ -46,6 +46,7 @@ internal static class RunSessionProgressCommitPolicy
         CommitPendingShortcutUnlocks(request.RunData, request.PersistentData);
         CommitPendingRunSpecialNpcConstructionStarts(request.RunData, request.PersistentData);
         MonsterEncyclopediaRunProgress.Commit(request.RunData, request.PersistentData);
+        EncyclopediaDiscoveryProgress.Commit(request.RunData, request.PersistentData);
         ClearPendingRunProgress(request.RunData);
     }
 
@@ -64,6 +65,7 @@ internal static class RunSessionProgressCommitPolicy
 
         runData.pendingRunMagicStoneDelta = 0;
         MonsterEncyclopediaRunProgress.Clear(runData);
+        EncyclopediaDiscoveryProgress.Clear(runData);
         runData.pendingRunAffectionChanges ??= new List<PendingRunAffectionChange>();
         runData.pendingRunAffectionChanges.Clear();
         runData.pendingRunShortcutUnlocks ??= new List<PendingRunShortcutUnlock>();

@@ -22,6 +22,7 @@ namespace UnityGAS
         void SetElementType(PuddleElementType newElementType);
         void SetSurfaceRadius(float radius);
         void ApplyMode(PuddleAreaMode mode);
+        void SetIgnitionProgress(float normalizedProgress);
     }
 
     /// <summary>

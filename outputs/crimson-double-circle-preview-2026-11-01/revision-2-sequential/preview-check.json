@@ -1,0 +1,17 @@
+{
+  "stages": [
+    0,
+    25,
+    50,
+    75,
+    100
+  ],
+  "outerChangesBefore50": 0,
+  "innerChangesAfter50": 0,
+  "innerChangedPixels": 9176,
+  "outerChangedPixels": 11404,
+  "pauseResume": "pass",
+  "stationaryGeometry": "pass",
+  "rendering": "offline same-JavaScript Canvas pixel adapter",
+  "limitations": "Browser DOM/layout and Unity Play Mode not run. Preview only."
+}

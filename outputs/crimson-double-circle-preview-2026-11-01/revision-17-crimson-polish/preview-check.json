@@ -1,0 +1,142 @@
+{
+  "radii": [
+    {
+      "charge": 0,
+      "inner": 0,
+      "outer": 0
+    },
+    {
+      "charge": 25,
+      "inner": 21.5,
+      "outer": 0
+    },
+    {
+      "charge": 50,
+      "inner": 43,
+      "outer": 0
+    },
+    {
+      "charge": 75,
+      "inner": 43,
+      "outer": 53.5
+    },
+    {
+      "charge": 100,
+      "inner": 43,
+      "outer": 64
+    }
+  ],
+  "nativePixelSizes": {
+    "innerTexture": [
+      128,
+      128
+    ],
+    "outerTexture": [
+      128,
+      128
+    ],
+    "innerVisibleDiameter": 86,
+    "outerVisibleDiameter": 128,
+    "glyphAtlas": [
+      144,
+      9
+    ],
+    "existingCrimsonPpu": 16,
+    "maximumDiameter": 6
+  },
+  "palette": "B63D28 / F16B32 / FFC65A / FFF0BF; binary alpha",
+  "paletteCounts": {
+    "outer-rings": {
+      "182,61,40": 632,
+      "241,107,50": 740,
+      "255,198,90": 56,
+      "255,240,191": 0
+    },
+    "inner-rings": {
+      "182,61,40": 324,
+      "241,107,50": 552,
+      "255,198,90": 64,
+      "255,240,191": 0
+    },
+    "inner-star": {
+      "182,61,40": 0,
+      "241,107,50": 168,
+      "255,198,90": 109,
+      "255,240,191": 4
+    },
+    "glyph-atlas": {
+      "182,61,40": 0,
+      "241,107,50": 0,
+      "255,198,90": 138,
+      "255,240,191": 13
+    },
+    "medallion": {
+      "182,61,40": 20,
+      "241,107,50": 28,
+      "255,198,90": 0,
+      "255,240,191": 0
+    }
+  },
+  "ringChecks": [
+    {
+      "radius": 63.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 60.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 49.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 47.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 42.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 40.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 29.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 18.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 16.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 11.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": "medallion",
+      "emptyRegions": 2
+    }
+  ],
+  "style": "Reference 02 lattice structure in Crimson colors; clean gold rune strokes with single cream accents, compact junctions, regular 32-tick rim",
+  "continuousBorders": "Ten isolated concentric rings plus medallion each have exactly two empty regions: center and exterior, no pinholes",
+  "regularRunes": "Eight newly authored 7x7 sigils; 3x3 medallion marks, 5x5 center marks; 16 main outer positions",
+  "uprightGlyphs": "Exact atlas colors/positions checked at rest and while orbiting; rotation 0",
+  "nativeSourcePixelMapping": "pass",
+  "wholeInnerCompletedAt50": "pass",
+  "separateLayers": "pass",
+  "innerOpaquePixels": 1566,
+  "outerOpaquePixels": 1636,
+  "fullCircumferenceAtPartialCharge": "pass",
+  "scaledBoundary": "pass",
+  "oppositeOrbits": "pass",
+  "pauseResume": "pass",
+  "rendering": "offline same-JavaScript Canvas pixel adapter",
+  "sampling": "Preview uses forward pixel coverage and bridges transformed neighbors for fine strokes; this is not standard Unity sprite sampling",
+  "limitations": "Browser DOM/layout and Unity import/Play Mode not run. Importer and world dimensions are unchanged in Unity; 128px art needs sizing during integration. Split art and equivalent coverage sampling are needed to reproduce this preview. Actual-camera and small-scale acceptance remain."
+}

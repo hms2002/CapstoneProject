@@ -1,0 +1,38 @@
+{
+  "alcohol": {
+    "opaque_colors": 8,
+    "new_colors": [
+      "#68412D",
+      "#FFF4D0"
+    ],
+    "old_colors_preserved": true,
+    "alpha_unchanged": true,
+    "binary_alpha": true,
+    "gif_frame_durations_ms": [
+      160,
+      160,
+      160,
+      160
+    ]
+  },
+  "fire": {
+    "opaque_colors": 7,
+    "new_colors": [
+      "#77343A",
+      "#FFF5D2"
+    ],
+    "old_colors_preserved": true,
+    "alpha_unchanged": true,
+    "binary_alpha": true,
+    "gif_frame_durations_ms": [
+      100,
+      100,
+      100,
+      100
+    ]
+  },
+  "comparison": {
+    "integer_4x": true,
+    "duration_ms": 3200
+  }
+}

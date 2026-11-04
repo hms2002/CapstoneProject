@@ -1,0 +1,205 @@
+{
+    "hasInitializedProfile": true,
+    "magicStone": 69,
+    "totalPlaySeconds": 355.5749206542969,
+    "clearCount": 0,
+    "knownTotalUpgradeCount": 16,
+    "upgradeData": {
+        "exhibitionOpeningRewardGranted": true,
+        "purchasedIDs": [
+            -198029508,
+            -993005279,
+            749890120,
+            1433597785,
+            -1492335095,
+            674725477,
+            -2095978215,
+            -1633135072,
+            484471810,
+            -384975505
+        ],
+        "unlockedIDs": [
+            0,
+            538693343,
+            -466889209
+        ],
+        "runModifierData": {
+            "extraWeaponGraveCount": 0,
+            "extraRelicGraveCount": 0,
+            "extraWeaponDropCount": 0,
+            "extraRelicDropCount": 0,
+            "weaponGraveMinBonus": 0,
+            "weaponGraveMaxBonus": 0,
+            "relicGraveMinBonus": 0,
+            "relicGraveMaxBonus": 0,
+            "weaponDropMinBonus": 0,
+            "weaponDropMaxBonus": 0,
+            "relicDropMinBonus": 0,
+            "relicDropMaxBonus": 0,
+            "chestWeaponMinBonus": 0,
+            "chestWeaponMaxBonus": 0,
+            "chestRelicMinBonus": 0,
+            "chestRelicMaxBonus": 0,
+            "extraRareChance": 0.0,
+            "extraEpicChance": 0.0
+        }
+    },
+    "mapData": {
+        "stageProgressList": []
+    },
+    "affectionData": {
+        "affectionRecords": [
+            {
+                "npcId": 2001,
+                "amount": 1
+            },
+            {
+                "npcId": 3001,
+                "amount": 1
+            },
+            {
+                "npcId": 1001,
+                "amount": 1
+            }
+        ]
+    },
+    "bossDialogueData": {
+        "bossRecords": [
+            {
+                "npcId": 2001,
+                "encounterCount": 1,
+                "victoryCount": 0,
+                "defeatCount": 0,
+                "lastEncounterTotalPlaySeconds": 91.47186279296875
+            },
+            {
+                "npcId": 3001,
+                "encounterCount": 1,
+                "victoryCount": 0,
+                "defeatCount": 0,
+                "lastEncounterTotalPlaySeconds": 244.98973083496095
+            }
+        ]
+    },
+    "bossClearProgressData": {
+        "clearedBossThemeIds": []
+    },
+    "runSpecialNpcData": {
+        "constructionRecords": []
+    },
+    "tutorialData": {
+        "completedTutorialIds": [
+            "darklord_tutorial_forced_defeat_completed",
+            "hub_intro_after_darklord_seen",
+            "grandhall_scribe_intro_seen",
+            "lightning-spear:first-mark-rush"
+        ]
+    },
+    "monsterEncyclopediaData": {
+        "killRecords": [
+            {
+                "monsterId": "monster.beer",
+                "count": 4
+            }
+        ]
+    },
+    "encyclopediaDiscoveryData": {
+        "version": 1,
+        "weaponIds": [
+            "Weapon.CrimsonBoundary",
+            "Weapon.ApprenticeHeroSword"
+        ],
+        "relicIds": [
+            "RD_CounterKick",
+            "RD_CurrentShard",
+            "RD_VictoryFlag",
+            "RD_SpeedMedal"
+        ],
+        "monsterIds": []
+    },
+    "completedNpcRoomIntroductions": [
+        "npc:4101",
+        "npc:4102"
+    ],
+    "itemData": {
+        "unlockedWeaponIDs": [
+            "Weapon.ApprenticeHeroSword",
+            "Weapon.OddIron",
+            "Weapon.LightningSpear",
+            "Weapon.Flowering",
+            "Weapon.CrimsonBoundary"
+        ],
+        "unlockedRelicIDs": [
+            "RD_RecoveryPendant",
+            "Relic.LightningSpear.ThirdStrike",
+            "Relic.LightningSpear.TargetedRain",
+            "Relic.OddIron.Magazine",
+            "Relic.CrimsonBoundary.KillShot",
+            "Relic.CrimsonBoundary.LavaBall",
+            "Relic.ApprenticeHeroSword.ChargeLink",
+            "AttackBonusRelic",
+            "RD_DrunkenRush",
+            "RD_HawkEmblem",
+            "RD_RotatingIornBall",
+            "Relic.New1",
+            "RD_SpeedMedal",
+            "RD_TonicGombangdae",
+            "RD_WindTablet",
+            "RD_CounterKick",
+            "RD_FloweringBloomExtension",
+            "RD_WornWhetstone",
+            "RD_MasterWhetstone",
+            "RD_CombatGloves",
+            "RD_ToughBandage",
+            "RD_LightCord",
+            "RD_HunterMark",
+            "RD_SharpAwl",
+            "RD_EvasionFeather",
+            "RD_FirmStep",
+            "RD_HeavyBracelet",
+            "RD_ThinArmorShard",
+            "RD_BerserkerCord",
+            "RD_FocusLens",
+            "RD_BalanceWeight",
+            "RD_LastBreath",
+            "RD_CalmHeart",
+            "RD_VictoryFlag",
+            "RD_RedContract",
+            "RD_RunawayShoes",
+            "RD_ChainCharm",
+            "RD_CurrentShard",
+            "RD_RiftStone",
+            "RD_BrokenCrown",
+            "RD_SurvivorNecklace",
+            "RD_BronzeDice",
+            "RD_BluntShield",
+            "RD_NimbleCloak",
+            "RD_BrokenClock",
+            "RD_BlackIncense",
+            "RD_WarriorOath",
+            "RD_SmallHeart",
+            "RD_PursuerClaw",
+            "RD_FireBonusRelic",
+            "RD_MeltedBell",
+            "RD_SmokyIncense",
+            "RD_PortableBrazier",
+            "RD_SunFragment",
+            "RD_ScorchingSong",
+            "RD_BurningFeather",
+            "RD_CrimsonKing",
+            "RD_GoldVein",
+            "RD_GrowthSprout",
+            "RD_FlyingBoots",
+            "RD_LastStand",
+            "Relic.Electric.ThunderHeart",
+            "Relic.Electric.StormStep",
+            "Relic.Electric.DashCoil",
+            "Relic.Electric.ThunderKnot",
+            "Relic.Electric.ResonanceBell",
+            "Relic.Electric.TinglingShackles",
+            "Relic.Electric.CurrentJar",
+            "Relic.Electric.EchoCoil",
+            "Relic.Electric.ConductorRing"
+        ]
+    }
+}

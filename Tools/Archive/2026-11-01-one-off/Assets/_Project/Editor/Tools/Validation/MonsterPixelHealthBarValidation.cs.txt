@@ -1,0 +1,132 @@
+#if UNITY_EDITOR
+using System;
+using System.IO;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
+
+/// <summary>Native HP-only rendering against the approved Aseprite source, without saving a scene.</summary>
+public static class MonsterPixelHealthBarValidation
+{
+    private const string Output = "Library/CodexMonsterPixelHp";
+
+    public static void AuthorAndCapture()
+    {
+        MonsterHealthBarMeshAuthoring.ApplyToSharedHud();
+        Capture();
+        Unity.CodeEditor.CodeEditor.CurrentEditor.SyncAll();
+    }
+
+    public static void Capture()
+    {
+        Directory.CreateDirectory(Output);
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(MonsterWorldHudAuthoring.HudPath);
+        var material = AssetDatabase.LoadAssetAtPath<Material>(MonsterHealthBarMeshAuthoring.MaterialPath);
+        if (ShaderUtil.ShaderHasError(material.shader)) throw new InvalidOperationException("HP shader compilation failed.");
+        var importer = (TextureImporter)AssetImporter.GetAtPath(MonsterHealthBarMeshAuthoring.SheetPath);
+        Require(importer.filterMode == FilterMode.Point && !importer.mipmapEnabled &&
+            importer.textureCompression == TextureImporterCompression.Uncompressed, "Pixel sheet import settings.");
+        var sprites = AssetDatabase.LoadAllAssetsAtPath(MonsterHealthBarMeshAuthoring.SheetPath).OfType<Sprite>().ToArray();
+        Require(sprites.Length == 4 && sprites.All(s => AssetDatabase.GetAssetPath(s) == MonsterHealthBarMeshAuthoring.SheetPath) &&
+            material.mainTexture == AssetDatabase.LoadAssetAtPath<Texture2D>(MonsterHealthBarMeshAuthoring.SheetPath),
+            "One persistent shared sheet for four parts.");
+        Scene scene = EditorSceneManager.NewPreviewScene();
+        GameObject hud = null, cameraObject = null;
+        var target = new RenderTexture(40, 8, 24, RenderTextureFormat.ARGB32) { antiAliasing = 1, filterMode = FilterMode.Point };
+        var report = new System.Text.StringBuilder();
+        try
+        {
+            hud = (GameObject)PrefabUtility.InstantiatePrefab(prefab, scene);
+            hud.GetComponent<MonsterStackStatusWorldView>().enabled = false;
+            hud.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            hud.transform.localScale = Vector3.one * .014f;
+            hud.transform.Find("Visual").gameObject.SetActive(true);
+            hud.transform.Find("Visual/Statuses").gameObject.SetActive(false);
+            hud.transform.Find("Visual/StaggerBar").gameObject.SetActive(false);
+            var bar = (RectTransform)hud.transform.Find("Visual/HealthBar"); bar.gameObject.SetActive(true);
+            bar.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 50f);
+            var projection = bar.Find("HPGeometry").GetComponent<MonsterHealthBarMeshView>();
+            var canvas = hud.GetComponent<Canvas>();
+            var fill = (RectTransform)bar.Find("Frame/Track/FillArea/Fill");
+            var trail = (RectTransform)bar.Find("Frame/Track/FillArea/DamageTrail");
+            cameraObject = new GameObject("Pixel HP validation camera", typeof(Camera));
+            SceneManager.MoveGameObjectToScene(cameraObject, scene);
+            Camera camera = cameraObject.GetComponent<Camera>(); camera.scene = scene;
+            camera.enabled = false; camera.orthographic = true;
+            camera.orthographicSize = 10f * .014f / 2f; camera.aspect = 5f;
+            Vector3 center = bar.TransformPoint(bar.rect.center);
+            camera.transform.position = center + new Vector3(0, 0, -10);
+            camera.clearFlags = CameraClearFlags.SolidColor; camera.backgroundColor = Color.cyan;
+            camera.allowHDR = false; camera.allowMSAA = false; camera.targetTexture = target;
+            Vector2[] ratios = { Vector2.one, new(.5f, .5f), new(.35f, .75f), Vector2.zero };
+            foreach (bool useImages in new[] { false, true })
+            {
+                string mode = useImages ? "images" : "mesh";
+                for (int i = 0; i < ratios.Length; i++)
+                {
+                    fill.anchorMax = new Vector2(ratios[i].x, 1);
+                    trail.anchorMax = new Vector2(ratios[i].y, 1);
+                    fill.gameObject.SetActive(ratios[i].x > 0); trail.gameObject.SetActive(ratios[i].y > 0);
+                    canvas.enabled = useImages; projection.SetLegacyProjection(useImages);
+                    projection.Project(50, 10, ratios[i].x, ratios[i].y, canvas.sortingLayerID, canvas.sortingOrder, true);
+                    Texture2D rendered = Render(camera, target);
+                    var expected = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                    try
+                    {
+                        File.WriteAllBytes($"{Output}/{mode}-{i + 1}.png", rendered.EncodeToPNG());
+                        expected.LoadImage(File.ReadAllBytes($"{Output}/References/reference-{i + 1}.png"));
+                        Color32[] actualPixels = rendered.GetPixels32(), expectedPixels = expected.GetPixels32();
+                        int maximum = 0, mismatch = 0;
+                        for (int p = 0; p < actualPixels.Length; p++)
+                        {
+                            Color32 e = expectedPixels[p].a == 0 ? new Color32(0, 255, 255, 255) : expectedPixels[p];
+                            Color32 a = actualPixels[p];
+                            int delta = Mathf.Max(Math.Abs(e.r - a.r), Math.Abs(e.g - a.g), Math.Abs(e.b - a.b));
+                            maximum = Mathf.Max(maximum, delta);
+                            if (delta > 1) mismatch++;
+                        }
+                        report.AppendLine($"{mode} state{i + 1}: 320 pixels, mismatches={mismatch}, max RGB delta={maximum}");
+                        File.WriteAllText(Output + "/pixel-comparison.txt", report.ToString());
+                        Require(mismatch == 0, $"Aseprite mismatch: {mode} state{i + 1}, delta={maximum}, pixels={mismatch}");
+                    }
+                    finally { Object.DestroyImmediate(rendered); Object.DestroyImmediate(expected); }
+                }
+            }
+            Debug.Log("MONSTER_PIXEL_HP_OK: four source states match both native render paths; one shared point-filtered sheet.");
+        }
+        finally
+        {
+            if (hud != null) Object.DestroyImmediate(hud);
+            if (cameraObject != null) Object.DestroyImmediate(cameraObject);
+            target.Release(); Object.DestroyImmediate(target);
+            EditorSceneManager.ClosePreviewScene(scene);
+        }
+    }
+
+    private static Texture2D Render(Camera camera, RenderTexture target)
+    {
+        Canvas.ForceUpdateCanvases();
+        if (GraphicsSettings.currentRenderPipeline != null)
+            RenderPipeline.SubmitRenderRequest(camera, new RenderPipeline.StandardRequest { destination = target });
+        else camera.Render();
+        RenderTexture previous = RenderTexture.active;
+        try
+        {
+            RenderTexture.active = target;
+            var texture = new Texture2D(target.width, target.height, TextureFormat.RGBA32, false);
+            texture.ReadPixels(new Rect(0, 0, target.width, target.height), 0, 0); texture.Apply();
+            return texture;
+        }
+        finally { RenderTexture.active = previous; }
+    }
+
+    private static void Require(bool condition, string message)
+    {
+        if (!condition) throw new InvalidOperationException(message);
+    }
+}
+#endif

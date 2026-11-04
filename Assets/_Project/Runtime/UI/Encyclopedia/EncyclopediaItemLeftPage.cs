@@ -225,7 +225,7 @@ public sealed class EncyclopediaItemLeftPage : MonoBehaviour
         if (nextPageButton != null)
             nextPageButton.interactable = interactionEnabled && hasMultiplePages && currentPage < pageCount - 1;
 
-        SetText(pageText, pageCount > 0 ? $"{currentPage + 1}/{pageCount}" : "0/0");
+        SetText(pageText, pageCount > 0 ? $"{currentPage + 1} / {pageCount}" : "0 / 0");
     }
 
     public void SetEntryCount(int shownThrough, int totalCount)

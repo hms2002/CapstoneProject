@@ -1,0 +1,80 @@
+--- Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaEntrySlot.prefab (before)
++++ Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaEntrySlot.prefab (final)
+@@ -66,7 +66,7 @@
+   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+   m_Material: {fileID: 0}
+   m_Color: {r: 1, g: 1, b: 1, a: 1}
+-  m_RaycastTarget: 0
++  m_RaycastTarget: 1
+   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+   m_Maskable: 1
+   m_OnCullStateChanged:
+--- Assets/_Project/Art/Sprites/UI/EncyclopediaItemSkin/Materials/Galmuri9 SDF Opaque Outline.mat (before)
++++ Assets/_Project/Art/Sprites/UI/EncyclopediaItemSkin/Materials/Galmuri9 SDF Opaque Outline.mat (final)
+@@ -57,7 +57,7 @@
+     - _ColorMask: 15
+     - _CullMode: 0
+     - _Diffuse: 0.5
+-    - _FaceDilate: 0
++    - _FaceDilate: 0.18
+     - _FaceUVSpeedX: 0
+     - _FaceUVSpeedY: 0
+     - _GlowInner: 0.05
+@@ -71,12 +71,12 @@
+     - _OutlineSoftness: 0
+     - _OutlineUVSpeedX: 0
+     - _OutlineUVSpeedY: 0
+-    - _OutlineWidth: 0.5
++    - _OutlineWidth: 0.18
+     - _PerspectiveFilter: 0.875
+     - _Reflectivity: 10
+     - _ScaleRatioA: 0.8333333
+-    - _ScaleRatioB: 0.6770833
+-    - _ScaleRatioC: 0.6770833
++    - _ScaleRatioB: 0.52708334
++    - _ScaleRatioC: 0.52708334
+     - _ScaleX: 1
+     - _ScaleY: 1
+     - _ShaderFlags: 0
+--- Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab (before)
++++ Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab (final)
+@@ -2317,7 +2317,7 @@
+   m_enableAutoSizing: 0
+   m_fontSizeMin: 36
+   m_fontSizeMax: 36
+-  m_fontStyle: 1
++  m_fontStyle: 0
+   m_HorizontalAlignment: 2
+   m_VerticalAlignment: 512
+   m_textAlignment: 65535
+@@ -38721,7 +38721,7 @@
+   m_enableAutoSizing: 0
+   m_fontSizeMin: 27
+   m_fontSizeMax: 27
+-  m_fontStyle: 1
++  m_fontStyle: 0
+   m_HorizontalAlignment: 1
+   m_VerticalAlignment: 256
+   m_textAlignment: 65535
+--- Assets/_Project/Art/Sprites/UI/EncyclopediaItemSkin/Materials/Galmuri9 SDF Plain.mat (before)
++++ Assets/_Project/Art/Sprites/UI/EncyclopediaItemSkin/Materials/Galmuri9 SDF Plain.mat (final)
+@@ -79,7 +79,7 @@
+     - _ScaleX: 1
+     - _ScaleY: 1
+     - _ShaderFlags: 0
+-    - _Sharpness: 0
++    - _Sharpness: 1
+     - _SpecularPower: 2
+     - _Stencil: 0
+     - _StencilComp: 8
+--- Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemLeftPage.cs (before)
++++ Assets/_Project/Runtime/UI/Encyclopedia/EncyclopediaItemLeftPage.cs (final)
+@@ -225,7 +225,7 @@
+         if (nextPageButton != null)
+             nextPageButton.interactable = interactionEnabled && hasMultiplePages && currentPage < pageCount - 1;
+ 
+-        SetText(pageText, pageCount > 0 ? $"{currentPage + 1}/{pageCount}" : "0/0");
++        SetText(pageText, pageCount > 0 ? $"{currentPage + 1} / {pageCount}" : "0 / 0");
+     }
+ 
+     public void SetEntryCount(int shownThrough, int totalCount)

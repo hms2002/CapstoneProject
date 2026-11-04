@@ -1,0 +1,81 @@
+{
+  "sourceOnly": true,
+  "files": [
+    {
+      "file": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "onlySingleXOverrideRemoved": true,
+      "allObjectIdsPreserved": true,
+      "nestedContentXOverrideAbsent": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "onlySingleXOverrideRemoved": true,
+      "allObjectIdsPreserved": true,
+      "nestedContentXOverrideAbsent": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "onlySingleXOverrideRemoved": true,
+      "allObjectIdsPreserved": true,
+      "nestedContentXOverrideAbsent": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "onlySingleXOverrideRemoved": true,
+      "allObjectIdsPreserved": true,
+      "nestedContentXOverrideAbsent": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "onlySingleXOverrideRemoved": true,
+      "allObjectIdsPreserved": true,
+      "nestedContentXOverrideAbsent": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "onlySingleXOverrideRemoved": true,
+      "allObjectIdsPreserved": true,
+      "nestedContentXOverrideAbsent": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "onlySingleXOverrideRemoved": true,
+      "allObjectIdsPreserved": true,
+      "nestedContentXOverrideAbsent": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "onlySingleXOverrideRemoved": true,
+      "allObjectIdsPreserved": true,
+      "nestedContentXOverrideAbsent": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "onlySingleXOverrideRemoved": true,
+      "allObjectIdsPreserved": true,
+      "nestedContentXOverrideAbsent": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "onlySingleXOverrideRemoved": true,
+      "allObjectIdsPreserved": true,
+      "nestedContentXOverrideAbsent": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "onlySingleXOverrideRemoved": true,
+      "allObjectIdsPreserved": true,
+      "nestedContentXOverrideAbsent": true
+    },
+    {
+      "file": "Assets/_Project/Scenes/Grand Hall.unity",
+      "onlySingleXOverrideRemoved": true,
+      "allObjectIdsPreserved": true,
+      "nestedContentXOverrideAbsent": true
+    }
+  ],
+  "prefabsUnchanged": true,
+  "automatedTestsExecuted": false,
+  "unityPlayOrVisualCheckExecuted": false,
+  "compilationExecuted": false
+}

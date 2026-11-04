@@ -1,0 +1,168 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using TMPro;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Localization.Settings;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
+
+/// <summary>Exercises the saved title scene and restores the language preference.</summary>
+[InitializeOnLoad]
+public static class TitleLanguageMenuValidation
+{
+    const string Pending = "Capstone.TitleLanguageValidation";
+    const string Output = "Library/CodexTitleLanguage";
+    static readonly Stack<IEnumerator> routines = new();
+    static readonly List<string> checks = new();
+    static double deadline;
+    static int frame = -1;
+    static bool prefExisted;
+    static int originalPref;
+    static TitleLanguageMenuValidation() => EditorApplication.update += Tick;
+
+    public static void AuthorAndRun() { TitleLanguageMenuAuthoring.Apply(); Run(); }
+    [MenuItem("Tools/UI/Validate Title Language Menu")]
+    public static void Run()
+    {
+        if (!Application.isBatchMode) throw new InvalidOperationException("Run this validation in a disposable batch Editor.");
+        EditorSceneManager.OpenScene(TitleLanguageMenuAuthoring.ScenePath);
+        SessionState.SetBool(Pending, true);
+        SessionState.SetBool(Pending + ".hadPref", PlayerPrefs.HasKey("settings.language"));
+        SessionState.SetInt(Pending + ".pref", PlayerPrefs.GetInt("settings.language"));
+        EditorApplication.isPlaying = true;
+    }
+    static void Tick()
+    {
+        if (!SessionState.GetBool(Pending, false) || !EditorApplication.isPlaying || frame == Time.frameCount) return;
+        frame = Time.frameCount;
+        try
+        {
+            if (deadline == 0)
+            {
+                deadline = EditorApplication.timeSinceStartup + 180;
+                prefExisted = SessionState.GetBool(Pending + ".hadPref", false);
+                originalPref = SessionState.GetInt(Pending + ".pref", 0);
+                routines.Push(Suite());
+            }
+            if (EditorApplication.timeSinceStartup > deadline) throw new TimeoutException("Title language validation timed out.");
+            while (routines.Count > 0)
+            {
+                var routine = routines.Peek();
+                if (!routine.MoveNext()) { routines.Pop(); continue; }
+                if (routine.Current is IEnumerator nested) { routines.Push(nested); continue; }
+                return;
+            }
+            Finish(null);
+        }
+        catch (Exception e) { Finish(e.ToString()); }
+    }
+    static IEnumerator Suite()
+    {
+        while (!LocalizationSettings.InitializationOperation.IsDone) yield return null;
+        var menu = Object.FindAnyObjectByType<TitleLanguageMenuUI>();
+        var title = Object.FindAnyObjectByType<TitleMenuController>();
+        var service = GameSettingsService.Instance;
+        Check(menu != null && title != null && service != null, "real TitleScene components initialized");
+        while (!menu.ToggleButton.gameObject.activeInHierarchy || !menu.ToggleButton.IsInteractable()) yield return null;
+        for (int i = 0; i < 20; i++) yield return null;
+        Check(!menu.IsOpen, "dropdown starts closed");
+        var buttons = Get<Button[]>(menu, "languageButtons");
+        var marks = Get<GameObject[]>(menu, "selectionMarks");
+        var dismiss = Get<Button>(menu, "dismissButton");
+        Check(buttons.Length == 5 && marks.Length == 5, "five authored choices");
+        Capture(menu, "title-closed", 1920, 1080);
+        for (int i = 0; i < 5; i++)
+        {
+            menu.ToggleButton.onClick.Invoke(); yield return null; yield return null;
+            Check(menu.IsOpen, "toggle opens list " + i);
+            Check(EventSystem.current.currentSelectedGameObject.transform.IsChildOf(Get<GameObject>(menu, "dropdownRoot").transform), "list owns keyboard focus " + i);
+            foreach (var button in buttons)
+            {
+                var label = button.GetComponentInChildren<TMP_Text>(); label.ForceMeshUpdate();
+                Check(!label.isTextOverflowing, "native label fits: " + label.text);
+                Check(label.font.HasCharacters(label.text, out uint[] missing, true, true), "native label glyphs: " + label.text);
+            }
+            Check(Hit(menu, buttons[i]) == buttons[i].gameObject, "choice raycast unblocked " + i);
+            buttons[i].onClick.Invoke();
+            Check(!menu.IsOpen, "selection closes list " + i);
+            while (service.DisplayedLanguage != (GameLanguageOption)i) yield return null;
+            for (int wait = 0; wait < 3; wait++) yield return null;
+            Check(service.CurrentLanguage == (GameLanguageOption)i && PlayerPrefs.GetInt("settings.language") == i, "service and saved language " + i);
+            menu.ToggleButton.onClick.Invoke(); yield return null;
+            Check(marks.Count(m => m.activeSelf) == 1 && marks[i].activeSelf, "current language marker " + i);
+            Capture(menu, "title-language-" + i, 1920, 1080);
+            Check(menu.TryHandleCloseRequest() && !menu.IsOpen, "escape close route " + i);
+            Check(EventSystem.current.currentSelectedGameObject == menu.ToggleButton.gameObject, "focus returns to toggle " + i);
+        }
+        menu.ToggleButton.onClick.Invoke(); yield return null;
+        dismiss.onClick.Invoke(); Check(!menu.IsOpen, "outside click dismisses");
+        menu.ToggleButton.onClick.Invoke(); yield return null;
+        Check(EventSystem.current.currentSelectedGameObject == buttons[(int)service.CurrentLanguage].gameObject, "reopen selects current language");
+        Capture(menu, "title-language-1280", 1280, 720);
+        menu.TryHandleCloseRequest();
+        Get<Button>(title, "settingsButton").onClick.Invoke(); yield return null; yield return null;
+        Check(!menu.IsOpen && !menu.ToggleButton.gameObject.activeInHierarchy, "settings hides language button and dropdown");
+        var settings = Get<SettingsPanelUI>(title, "settingsPanel");
+        settings.CloseUI();
+        while (settings.gameObject.activeSelf || !menu.ToggleButton.gameObject.activeInHierarchy) yield return null;
+        menu.ToggleButton.onClick.Invoke(); yield return null;
+        Check(menu.IsOpen, "language menu works after settings closes");
+        menu.TryHandleCloseRequest();
+        var originalLanguage = prefExisted ? (GameLanguageOption)originalPref : GameLanguageOption.Korean;
+        service.SetLanguage(originalLanguage);
+        while (service.DisplayedLanguage != originalLanguage) yield return null;
+        Check(true, "original display language restored before exit");
+    }
+    static GameObject Hit(TitleLanguageMenuUI menu, Button button)
+    {
+        Canvas.ForceUpdateCanvases();
+        var canvas = menu.GetComponentInParent<Canvas>();
+        var point = RectTransformUtility.WorldToScreenPoint(canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera, button.transform.TransformPoint(((RectTransform)button.transform).rect.center));
+        var hits = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current) { position = point }, hits);
+        return hits.Count > 0 ? hits[0].gameObject : null;
+    }
+    static void Capture(TitleLanguageMenuUI menu, string name, int width, int height)
+    {
+        var canvas = menu.GetComponentInParent<Canvas>();
+        var oldMode = canvas.renderMode; var oldCamera = canvas.worldCamera; var oldPlane = canvas.planeDistance;
+        var camera = new GameObject("TitleLanguageCaptureCamera", typeof(Camera)).GetComponent<Camera>();
+        camera.orthographic = true; camera.orthographicSize = 5.4f; camera.transform.position = Vector3.back * 10;
+        camera.clearFlags = CameraClearFlags.SolidColor; camera.backgroundColor = new Color32(14,10,24,255);
+        camera.nearClipPlane = .01f; camera.farClipPlane = 100;
+        var rt = new RenderTexture(width,height,24); var previous = RenderTexture.active;
+        var texture = new Texture2D(width,height,TextureFormat.RGBA32,false);
+        try
+        {
+            canvas.renderMode = RenderMode.ScreenSpaceCamera; canvas.worldCamera = camera; canvas.planeDistance = 1;
+            camera.targetTexture = rt; Canvas.ForceUpdateCanvases(); camera.Render(); RenderTexture.active = rt;
+            texture.ReadPixels(new Rect(0,0,width,height),0,0); texture.Apply(); File.WriteAllBytes(Output + "/" + name + ".png",texture.EncodeToPNG());
+        }
+        finally
+        {
+            canvas.renderMode = oldMode; canvas.worldCamera = oldCamera; canvas.planeDistance = oldPlane;
+            camera.targetTexture = null; RenderTexture.active = previous;
+            Object.DestroyImmediate(texture); Object.DestroyImmediate(rt); Object.DestroyImmediate(camera.gameObject); Canvas.ForceUpdateCanvases();
+        }
+    }
+    static T Get<T>(object owner, string field) => (T)owner.GetType().GetField(field, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(owner);
+    static void Check(bool ok, string label) { if (!ok) throw new InvalidOperationException(label); checks.Add("PASS " + label); }
+    static void Finish(string error)
+    {
+        SessionState.SetBool(Pending,false);
+        if (prefExisted) PlayerPrefs.SetInt("settings.language",originalPref); else PlayerPrefs.DeleteKey("settings.language");
+        PlayerPrefs.Save();
+        File.WriteAllLines(Output + "/validation.txt", checks.Concat(new[] { error ?? "TITLE_LANGUAGE_VALIDATION_PASS" }));
+        if (error == null) Debug.Log("TITLE_LANGUAGE_VALIDATION_PASS " + checks.Count); else Debug.LogError(error);
+        EditorApplication.Exit(error == null ? 0 : 1);
+    }
+}
+#endif

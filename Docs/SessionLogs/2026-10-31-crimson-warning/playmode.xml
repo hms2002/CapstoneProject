@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-30 15:07:13Z" end-time="2026-10-30 15:07:23Z" duration="10.4249649">
+  <test-suite type="TestSuite" id="2425" name="Capstone_Project" fullname="Capstone_Project" runstate="Runnable" testcasecount="1192" result="Passed" start-time="2026-10-30 15:07:13Z" end-time="2026-10-30 15:07:23Z" duration="10.424965" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2421" name="ProceduralPlayModeTests.dll" fullname="C:/Users/nadom/Desktop/졸업작품/CapstoneProject/Library/ScriptAssemblies/ProceduralPlayModeTests.dll" runstate="Runnable" testcasecount="1185" result="Passed" start-time="2026-10-30 15:07:13Z" end-time="2026-10-30 15:07:23Z" duration="10.379496" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="45480" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <output><![CDATA[[CursorDiagnostic] phase=display-stable-2s frame=6 screen=640x480 mode=Windowed focused=False visible=True lock=None domain=Combat/Default hiddenOwners=0 backend=UnityCursorAPI cursorMode=Auto texture=light_cursor_spritesheet_31_Cursor_22x22 hotspot=(11.00, 11.00)
+]]></output>
+      <test-suite type="TestFixture" id="1260" name="CrimsonChargePlayModeTests" fullname="CrimsonChargePlayModeTests" classname="CrimsonChargePlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-30 15:07:13Z" end-time="2026-10-30 15:07:23Z" duration="10.313403" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1261" name="AuthoredBinding_ThresholdsAndVisualSeparation" fullname="CrimsonChargePlayModeTests.AuthoredBinding_ThresholdsAndVisualSeparation" methodname="AuthoredBinding_ThresholdsAndVisualSeparation" classname="CrimsonChargePlayModeTests" runstate="Runnable" seed="1386512626" result="Passed" start-time="2026-10-30 15:07:14Z" end-time="2026-10-30 15:07:14Z" duration="0.116587" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1267" name="CancelAndSceneCleanupDuringHold_LeaveNoCooldownOrVisuals" fullname="CrimsonChargePlayModeTests.CancelAndSceneCleanupDuringHold_LeaveNoCooldownOrVisuals" methodname="CancelAndSceneCleanupDuringHold_LeaveNoCooldownOrVisuals" classname="CrimsonChargePlayModeTests" runstate="Runnable" seed="1043025977" result="Passed" start-time="2026-10-30 15:07:14Z" end-time="2026-10-30 15:07:15Z" duration="0.584352" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[HAS TAG
+ThisIsTagMask
+HAS TAG
+ThisIsTagMask
+]]></output>
+        </test-case>
+        <test-case id="1265" name="DeferredCooldown_UsesGameplayEffectModifiers_AndSurvivesPostReleaseCancel" fullname="CrimsonChargePlayModeTests.DeferredCooldown_UsesGameplayEffectModifiers_AndSurvivesPostReleaseCancel" methodname="DeferredCooldown_UsesGameplayEffectModifiers_AndSurvivesPostReleaseCancel" classname="CrimsonChargePlayModeTests" runstate="Runnable" seed="239427347" result="Passed" start-time="2026-10-30 15:07:15Z" end-time="2026-10-30 15:07:16Z" duration="1.005675" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[HAS TAG
+ThisIsTagMask
+]]></output>
+        </test-case>
+        <test-case id="1262" name="EarlyRelease_CancelsWithoutDamageOrCooldown_AndCanRetry" fullname="CrimsonChargePlayModeTests.EarlyRelease_CancelsWithoutDamageOrCooldown_AndCanRetry" methodname="EarlyRelease_CancelsWithoutDamageOrCooldown_AndCanRetry" classname="CrimsonChargePlayModeTests" runstate="Runnable" seed="537158342" result="Passed" start-time="2026-10-30 15:07:16Z" end-time="2026-10-30 15:07:16Z" duration="0.315260" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[HAS TAG
+ThisIsTagMask
+HAS TAG
+ThisIsTagMask
+]]></output>
+        </test-case>
+        <test-case id="1264" name="FullCharge_WaitsForRelease_UsesFullDamageAndBurn_ThenExpires" fullname="CrimsonChargePlayModeTests.FullCharge_WaitsForRelease_UsesFullDamageAndBurn_ThenExpires" methodname="FullCharge_WaitsForRelease_UsesFullDamageAndBurn_ThenExpires" classname="CrimsonChargePlayModeTests" runstate="Runnable" seed="1054241840" result="Passed" start-time="2026-10-30 15:07:16Z" end-time="2026-10-30 15:07:20Z" duration="4.469944" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[HAS TAG
+ThisIsTagMask
+]]></output>
+        </test-case>
+        <test-case id="1263" name="PartialRelease_CommitsModifiedCooldown_LocksAim_HitsOnceThroughWall" fullname="CrimsonChargePlayModeTests.PartialRelease_CommitsModifiedCooldown_LocksAim_HitsOnceThroughWall" methodname="PartialRelease_CommitsModifiedCooldown_LocksAim_HitsOnceThroughWall" classname="CrimsonChargePlayModeTests" runstate="Runnable" seed="356114574" result="Passed" start-time="2026-10-30 15:07:20Z" end-time="2026-10-30 15:07:22Z" duration="1.403152" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[HAS TAG
+ThisIsTagMask
+]]></output>
+        </test-case>
+        <test-case id="1268" name="TargetClampAndFlightStart_RespectCameraViewport" fullname="CrimsonChargePlayModeTests.TargetClampAndFlightStart_RespectCameraViewport" methodname="TargetClampAndFlightStart_RespectCameraViewport" classname="CrimsonChargePlayModeTests" runstate="Runnable" seed="376865780" result="Passed" start-time="2026-10-30 15:07:22Z" end-time="2026-10-30 15:07:22Z" duration="0.010299" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1266" name="WeaponDisableDuringFlight_RemovesAllVisualsAndCancelsImpact" fullname="CrimsonChargePlayModeTests.WeaponDisableDuringFlight_RemovesAllVisualsAndCancelsImpact" methodname="WeaponDisableDuringFlight_RemovesAllVisualsAndCancelsImpact" classname="CrimsonChargePlayModeTests" runstate="Runnable" seed="1649504660" result="Passed" start-time="2026-10-30 15:07:22Z" end-time="2026-10-30 15:07:23Z" duration="1.534568" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[HAS TAG
+ThisIsTagMask
+Saving results to: C:/Users/nadom/AppData/LocalLow/DefaultCompany/Capstone_Project\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

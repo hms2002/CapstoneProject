@@ -1,0 +1,41 @@
+-- Native Aseprite edit: replace exact stationary corner templates only.
+-- Work on a source copy and inspect the exported sheet before importing into Unity.
+local source=Image{fromFile=app.params.source}
+local result=Image(source)
+local rx,ry=2448,720
+local patches={
+ {97,197,22,23,300,97,98},{368,197,23,23,300,389,390},
+ {427,197,22,23,600,427,428},{699,197,22,23,600,719,720},
+ {97,536,22,22,300,97,98},{368,536,23,22,300,389,390},
+ {427,536,22,22,600,427,428},{699,536,22,22,600,719,720}
+}
+local changed,matched=0,0
+local report={}
+for row=0,4 do for col=0,8 do
+ local ox,oy=col*816,row*720
+ for pi,p in ipairs(patches) do
+  local same=true
+  for y=p[2],p[2]+p[4]-1 do for x=p[1],p[1]+p[3]-1 do
+   if source:getPixel(ox+x,oy+y)~=source:getPixel(rx+x,ry+y) then same=false end
+  end end
+  if same then
+   matched=matched+1
+   for y=p[2],p[2]+p[4]-1 do for x=p[1],p[1]+p[3]-1 do
+    local color=source:getPixel(rx+p[5],ry+y)
+    if x>=p[6] and x<=p[7] and y<557 then color=source:getPixel(rx+x,ry+300) end
+    if result:getPixel(ox+x,oy+y)~=color then changed=changed+1 end
+    result:drawPixel(ox+x,oy+y,color)
+   end end
+   report[#report+1]=string.format('frame=%d patch=%d rect=%d,%d,%d,%d',row*9+col,pi,ox+p[1],oy+p[2],p[3],p[4])
+  end
+ end
+end end
+assert(matched>=8,'Open-book corner templates were not found')
+local s=Sprite(source.width,source.height,ColorMode.RGB);s.cels[1].image:drawImage(result)
+s:saveCopyAs(app.params.outputDir..'/Inventory Book SpriteSheet.png');s:close()
+local preview=Sprite(816,720,ColorMode.RGB);preview.cels[1].image:drawImage(result,Point(-rx,-ry))
+preview:saveCopyAs(app.params.outputDir..'/book-open-after.png');preview:close()
+local f=io.open(app.params.outputDir..'/book-corner-validation.txt','w')
+f:write(string.format('PASS %d exact-matching stationary patches; %d changed pixels.\nAll other pixels untouched; original sheet size and palette retained.\n',matched,changed))
+f:write(table.concat(report,'\n'));f:close()
+print('BOOK_CORNER_CLEANUP_PASS '..matched..' patches, '..changed..' pixels')

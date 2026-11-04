@@ -1,0 +1,507 @@
+{
+  "date": "2026-11-01",
+  "scope": "Physical organization only; stable IDs/GUIDs, ItemDatabase registration, Addressables address keys, active routes and drop behavior preserved",
+  "entries": [
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Relics/RD_BloodBonusRelic.asset",
+      "destination": "Assets/_Project/Unused/Items/Relics/RD_BloodBonusRelic.asset",
+      "guid": "a901646dacf2764408f638b7cdbb3663",
+      "sha256": "12cee6cdfb6ebced2c76d8fc37e3806b260026d04813a3f083458cc1d09906a8",
+      "metaSha256": "4268b6b5daec0e67718e5553d8c2880ca6f0607a9ac675eafc9306b51c7d1b6e",
+      "id": "RD_BloodBonusRelic",
+      "displayName": "피 부적",
+      "category": "Items/Relics",
+      "reason": "Not registered in ItemDatabase"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Relics/RD_LightningRelic.asset",
+      "destination": "Assets/_Project/Unused/Items/Relics/RD_LightningRelic.asset",
+      "guid": "1f774045e4d72664996fab05fc0e1308",
+      "sha256": "456fb92388bf1fb5864652e9272d1abbfa25c1eae69424354f41e76cd0ec66ac",
+      "metaSha256": "9fbed42c48d70c27aeb7f565974b2042f8a2be38837c1d74b7bcde87809b7483",
+      "id": "Relic.New2",
+      "displayName": "번개 부적",
+      "category": "Items/Relics",
+      "reason": "Not registered in ItemDatabase"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_ChainSpear.asset",
+      "destination": "Assets/_Project/Unused/Items/Weapons/WD_ChainSpear.asset",
+      "guid": "6a2a0aa9e8e7416ab7e5b80a1671dcb2",
+      "sha256": "e1ac070c781a5a04005707ddcfffcb93c31578cbb71d9ba3235fab4fcf3a8001",
+      "metaSha256": "3fd9b569d5ce1314bd8a7cb07791f55d41d001081ef89f32d42a06fdb6412d79",
+      "id": "Weapon.ChainSpear",
+      "displayName": "사슬창",
+      "category": "Items/Weapons",
+      "reason": "Not registered in ItemDatabase"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_EclipseSword.asset",
+      "destination": "Assets/_Project/Unused/Items/Weapons/WD_EclipseSword.asset",
+      "guid": "a30c4a3fe7ea4b71b7a622c0f5653b6f",
+      "sha256": "0d34f9d30ab99604244823aea0bd68bfa5d803968bc058be1348c30a33deab00",
+      "metaSha256": "00ca65b37a50a119a29e433ed58edd717f4f0d1d2b7e71b9e79db61c70bf9c23",
+      "id": "Weapon.EclipseSword",
+      "displayName": "월식도",
+      "category": "Items/Weapons",
+      "reason": "Not registered in ItemDatabase"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_ExecutionerGreatsword.asset",
+      "destination": "Assets/_Project/Unused/Items/Weapons/WD_ExecutionerGreatsword.asset",
+      "guid": "92d5c5dc6e2847c89fda25b5888a06d7",
+      "sha256": "4290040b82aca35fdcf8edbdfeaedf431db759e4d59c4051aab0cbf9ae91b505",
+      "metaSha256": "f1c8db1668a73090676231b6d1bd38c95e00c6e749927f08780ebf1b4eec749f",
+      "id": "Weapon.ExecutionerGreatsword",
+      "displayName": "처형자의 대검",
+      "category": "Items/Weapons",
+      "reason": "Not registered in ItemDatabase"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_ExecutionGun.asset",
+      "destination": "Assets/_Project/Unused/Items/Weapons/WD_ExecutionGun.asset",
+      "guid": "3ce3ce38b1a6491e9647218fc4003014",
+      "sha256": "5b2b33e684bec0a5a49a8f14f898f7fa8b0d376beb2afc05235b4525e903b837",
+      "metaSha256": "d5c7e323af2ba9dba12685828aeb80ab1fa88af24c49e526fb17e7fed4ab1356",
+      "id": "Weapon.ExecutionGun",
+      "displayName": "처형총",
+      "category": "Items/Weapons",
+      "reason": "Not registered in ItemDatabase"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_FragmentBlade.asset",
+      "destination": "Assets/_Project/Unused/Items/Weapons/WD_FragmentBlade.asset",
+      "guid": "4d258aba25a64b5e8c2a1925edd571d6",
+      "sha256": "b6adbc43e76b6db3450937da06e840afe5cbc013efac50304d8e373b9e5361a8",
+      "metaSha256": "559265dd217d19b781692561b6d8238c568536b4e6862f44be3137f89fdfb235",
+      "id": "Weapon.FragmentBlade",
+      "displayName": "파편검",
+      "category": "Items/Weapons",
+      "reason": "Not registered in ItemDatabase"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_MarkSword.asset",
+      "destination": "Assets/_Project/Unused/Items/Weapons/WD_MarkSword.asset",
+      "guid": "29be7cddf55e4f47a20f0a3ec4003013",
+      "sha256": "147c86392c4d542951128741303a87ee2b7f4346399ad111bf20704dfcd1732c",
+      "metaSha256": "52064a66071e1ded4e1544b69c14e0711a5db343a801978816bde262c558b5b9",
+      "id": "Weapon.MarkSword",
+      "displayName": "표식검",
+      "category": "Items/Weapons",
+      "reason": "Not registered in ItemDatabase"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_MoonBlade.asset",
+      "destination": "Assets/_Project/Unused/Items/Weapons/WD_MoonBlade.asset",
+      "guid": "1ca2e6c6a388452199113cc97413b7a7",
+      "sha256": "1e391c59031b18c7c096aff72652f5c46e88c7bcccb7a1e69756dc8bf09f8a86",
+      "metaSha256": "69dcf7e0fd45d7bca1ac1d4d1ab9ac658f9b412bea1b22e9636410d0c48c18d4",
+      "id": "Weapon.MoonBlade",
+      "displayName": "월영도",
+      "category": "Items/Weapons",
+      "reason": "Not registered in ItemDatabase"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_SunBlade.asset",
+      "destination": "Assets/_Project/Unused/Items/Weapons/WD_SunBlade.asset",
+      "guid": "6c615cee73cf4a0584e74d6e36c2ce19",
+      "sha256": "4e307c0fa9f1961d49d895df36b97df4bb00d9dac67200fd4a63af1b83a4d73b",
+      "metaSha256": "91ad66dd9d6cf62301735c232d4ed73970bfbdaadd0a99b212a8b1bfefbde18b",
+      "id": "Weapon.SunBlade",
+      "displayName": "태양도",
+      "category": "Items/Weapons",
+      "reason": "Not registered in ItemDatabase"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset",
+      "destination": "Assets/_Project/Unused/Items/Relics/RD_AttackBonusRelic.asset",
+      "guid": "1f2641bce49c9884eaec41adfdfa29f3",
+      "sha256": "259deb73b54a4485dc7b1863afb226cee04c5e114d5bac9e4ddd764c21081d19",
+      "metaSha256": "f46f945d8eaf7ede0dad4fbd4dcea56b9a7056b7998c8546145c359cedde4e69",
+      "id": "AttackBonusRelic",
+      "displayName": "힘 부적",
+      "category": "Items/Relics",
+      "reason": "Excluded by LootPoolItemSelectionService"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset",
+      "destination": "Assets/_Project/Unused/Items/Relics/RD_FeatherOrbit.asset",
+      "guid": "eb057c0a7b239b742a001ee568ef4027",
+      "sha256": "d92f400212209f92ac588ebc7035f91bb4ac47507c4fa797c176f81a291e49fd",
+      "metaSha256": "48906fa89533c9b7ea915ed53bd2ba404c6bc77a5ad8dd028db8640af2fcff0d",
+      "id": "RD_FeatherOrbit",
+      "displayName": "하얀 깃털",
+      "category": "Items/Relics",
+      "reason": "Excluded by LootPoolItemSelectionService"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Relics/Definitions/RD_OneDropOfSwiftness.asset",
+      "destination": "Assets/_Project/Unused/Items/Relics/RD_OneDropOfSwiftness.asset",
+      "guid": "7c21e56d0f854d95b4ac9ef71d603f28",
+      "sha256": "8af929510c3459303523af65a33062aee2248d7331e9d877bfb101e93f952e36",
+      "metaSha256": "fa4a9c0547dbf5fd7e3023d4258c734cd216c9ea07a04a24e27112a12ab259bf",
+      "id": "RD_OneDropOfSwiftness",
+      "displayName": "한방울의 신속",
+      "category": "Items/Relics",
+      "reason": "Excluded by LootPoolItemSelectionService"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Relics/Definitions/RD_RunningLedger.asset",
+      "destination": "Assets/_Project/Unused/Items/Relics/RD_RunningLedger.asset",
+      "guid": "c0e9e82eb0ce4caa9efb337cb57764ff",
+      "sha256": "fac1e3af0330bcb49d511386ee6df396473cfc63034a42c43f2731a0ddb710ab",
+      "metaSha256": "515dc64671fa623428a9b41293c42f1c9760ec807633f94490864d6dcd423638",
+      "id": "RD_RunningLedger",
+      "displayName": "달리는 장부",
+      "category": "Items/Relics",
+      "reason": "Excluded by LootPoolItemSelectionService"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Relics/Definitions/RD_Stenographer.asset",
+      "destination": "Assets/_Project/Unused/Items/Relics/RD_Stenographer.asset",
+      "guid": "f2a47c8de19b4d8d9e67a31f5b2c4e90",
+      "sha256": "cf198aeba6482a9c7a70e27e5378c36afb940407f3b414e7d9e17b0363138833",
+      "metaSha256": "10ae1376b4d16cb1409c7605b841b1fa94a0d6bd64c9baded9c50d5cf41b8084",
+      "id": "RD_Stenographer",
+      "displayName": "속기사",
+      "category": "Items/Relics",
+      "reason": "Excluded by LootPoolItemSelectionService"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Weapons/Definitions/WD_WindWeapon.asset",
+      "destination": "Assets/_Project/Unused/Items/Weapons/WD_WindWeapon.asset",
+      "guid": "86f606da826554b40b2d47660998aa30",
+      "sha256": "79a89d1952a0afacd9745d714dbce40565b124002cc2c8a501c3a48a94bd26f5",
+      "metaSha256": "1d2c00ab13d8eb98de67039ebc29c21b86a187f3e12b2680727478e5cfa585e1",
+      "id": "Weapon.WindWeapon",
+      "displayName": "잔영의 날개",
+      "category": "Items/Weapons",
+      "reason": "Excluded by LootPoolItemSelectionService"
+    },
+    {
+      "source": "Assets/_Project/Scenes/DragonCorridor 1.unity",
+      "destination": "Assets/_Project/Unused/Scenes/DragonCorridor 1.unity",
+      "guid": "0445665125270fa41b5cb238750d228c",
+      "sha256": "01bab6e6392c748e38c9f1ec015d9d8e049c6ede58bc2feda8bc463e252b0c35",
+      "metaSha256": "31d676a35250feee1c6c61daf57ec5232237a759e1476e4a1af5c370b76bf05b",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/_Project/Scenes/HeoMinSeokScene.unity",
+      "destination": "Assets/_Project/Unused/Scenes/HeoMinSeokScene.unity",
+      "guid": "8c13838df8e680749ae1bb30cfe63339",
+      "sha256": "b8eb846dc393ccf4d09324b37f5207d413effb37a929a358ea29d2d019c148e9",
+      "metaSha256": "aeaec62ccf85146c78afb592923b17c57b55cad953cfd2abdced86ed213acdda",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/_Project/Scenes/LEeJunmo 1.unity",
+      "destination": "Assets/_Project/Unused/Scenes/LEeJunmo 1.unity",
+      "guid": "44063079bb076824497c3ef09ebc077f",
+      "sha256": "8675102bdc3363d218e3f43ad94d7acc0d936b245cc5fe83ddcf702a52718dd2",
+      "metaSha256": "6aed9ef2e5501622ff2e45c1929b94d000576b00799e857cb9f322895c5643ee",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/_Project/Scenes/LEeJunmo.unity",
+      "destination": "Assets/_Project/Unused/Scenes/LEeJunmo.unity",
+      "guid": "d5b6a2079bf8fff49b69b53253999c00",
+      "sha256": "55329986b3a2e1e31ff9eb9cf7b9b16b7526784868807ce378566d6b832ed0fc",
+      "metaSha256": "35249eaa11844ba793dffe46372031f6053d8d19b4eccd7d04fd359fa7f92673",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/_Project/Scenes/ProtoTypeBoss 2.unity",
+      "destination": "Assets/_Project/Unused/Scenes/ProtoTypeBoss 2.unity",
+      "guid": "876e53bb7d6b02e42b21347f23f1cfbe",
+      "sha256": "b6fc33e86c75dc1e12aa119e655788c1e9fe5d270d2ce230b4c8f02e7db851ad",
+      "metaSha256": "45ebb70300fbe482164dc7d90998cee0dcee66240998516029fa682271f5a088",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/_Project/Scenes/ProtoTypeBoss 3.unity",
+      "destination": "Assets/_Project/Unused/Scenes/ProtoTypeBoss 3.unity",
+      "guid": "ccf86b7c6582e754fa64eec807925d96",
+      "sha256": "4ccb084fe0d7e4935f23f7212dd974f1f6b71e7e9767576f550069a1e4eaace4",
+      "metaSha256": "ccd8fab2e5ea71ff0347ef1e331bb7cbf83afa1b15f4a035ad517a7f78675e99",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/_Project/Scenes/ProtoTypeBoss 4.unity",
+      "destination": "Assets/_Project/Unused/Scenes/ProtoTypeBoss 4.unity",
+      "guid": "709a5294c3bbe4f42917397438384780",
+      "sha256": "a0010ab06180773efef038ef037243432c76bb08052c76ac1019d056cf97dad3",
+      "metaSha256": "19401c1eeecdcad35f11b0e62dd4f77346e308d5213e0e61203f5d1c1ce04da1",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/_Project/Scenes/ProtoTypeBossLagacy.unity",
+      "destination": "Assets/_Project/Unused/Scenes/ProtoTypeBossLagacy.unity",
+      "guid": "082a9c74b9de115459c49b0710498fe2",
+      "sha256": "f9d1805ac3ea45d74c5b651268fd0701f596141589b37b5e73d1b3eb4b93e11e",
+      "metaSha256": "39ca5200a0db48ad8a431c572e1d6b68e8567cc391406c6caefe96eb4539b59c",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/_Project/Scenes/ProtoTypeCorridor 1.unity",
+      "destination": "Assets/_Project/Unused/Scenes/ProtoTypeCorridor 1.unity",
+      "guid": "bf1fb07cfd75c214ab7e45b086a84b74",
+      "sha256": "bd7e101b4d5c1db7160a6a17afee339590208ceb35029c5abd63a92a6c1a8693",
+      "metaSha256": "cc762592360a36d593bec3a074d5d4b950ca2fcd09fdbcd39ad51e27a28086a1",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/_Project/Scenes/ProtoTypeCorridor 2.unity",
+      "destination": "Assets/_Project/Unused/Scenes/ProtoTypeCorridor 2.unity",
+      "guid": "43e9207563224ba4ba57c86c4b2bf8a2",
+      "sha256": "ff327b69dcfb80d4548713933126c3b0fd3d3b33afc984a5c773d18a18955d76",
+      "metaSha256": "c7187fdbccbce529b37e48c5768895ddbdd6a7f2ad95a019ba26f901a995292f",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/_Project/Scenes/ProtoTypeCorridor 3.unity",
+      "destination": "Assets/_Project/Unused/Scenes/ProtoTypeCorridor 3.unity",
+      "guid": "786a60c28c5a0c448b00b7ae51ee3d90",
+      "sha256": "852c8d56677f43ea28826c95b2a007608c3b5372897c9a8b1a93d55506d705e6",
+      "metaSha256": "a0d5c05798d3e3e43eeb0ebe6e9e7429273358002357a64a6fb7f43f12e8bd33",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/_Project/Scenes/ProtoTypeHubasf.unity",
+      "destination": "Assets/_Project/Unused/Scenes/ProtoTypeHubasf.unity",
+      "guid": "c2c196de3b50dd2438f4d881139d81e0",
+      "sha256": "b4be0376f490b14e9b77a57b57790533c63515934b9fce0d775cff438062d82f",
+      "metaSha256": "1bf4d2034659f7ec702449e14107e20c61cb509ec20689006517f0a6b8d485da",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/_Project/Scenes/SlimeCorridor 1.unity",
+      "destination": "Assets/_Project/Unused/Scenes/SlimeCorridor 1.unity",
+      "guid": "eb52fcfd8ff4e5c42b14773285e998ca",
+      "sha256": "77510ab17c0d0ff92fd99b76936ea5b895f3271de762b7ff95c4950cef1f096b",
+      "metaSha256": "c9ac16928729a2ffb2931ffb33f65042c674d32718d140ca1ad52d8b2d43bd04",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    },
+    {
+      "source": "Assets/Scenes/MainMenu.unity",
+      "destination": "Assets/_Project/Unused/Scenes/MainMenu.unity",
+      "guid": "c02f99292f03e154d87674a5e3ce0d5c",
+      "sha256": "0176428917677399086e3057b3cc2f904fc1039ea9786316450b7af648aa0d45",
+      "metaSha256": "58515a83708ef2f4cd8d063d39617d96f67ca3de457933af7dd1257f301a1e3d",
+      "id": "",
+      "displayName": "",
+      "category": "Scenes",
+      "reason": "No enabled build entry, active loading route, GUID/path reference or maintained scene-loading tool/test dependency"
+    }
+  ],
+  "folderMetadata": [
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase.meta",
+      "destination": "Assets/_Project/Unused/Items.meta",
+      "sha256": "98afdb612553f9b26646450299d50c80e2443afaccc7ffff0b750639eafa683d"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons.meta",
+      "destination": "Assets/_Project/Unused/Items/Weapons.meta",
+      "sha256": "c8f797555abbcdc20cb98bea4c60cab49644cd63a2943f55bf721a194a2ff305"
+    },
+    {
+      "source": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Relics.meta",
+      "destination": "Assets/_Project/Unused/Items/Relics.meta",
+      "sha256": "68bb01826526165935ed2f6f780b38a6728966a8f7bd3b37ac393728567fcabe"
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": "Assets/_Project/Data/Items/ItemDatabase.asset",
+      "sha256": "9c9969effffc05ffd85469a1e57e7c48ef4db61ffc3dc979499fc88e3faad35e"
+    },
+    {
+      "path": "Assets/AddressableAssetsData/AssetGroups/BootCommon.asset",
+      "sha256": "03ef6c39ba30ec124ecd70a1d94a8abde9f6425d7700733c5a5986e90682dfc5"
+    },
+    {
+      "path": "Assets/_Project/Data/SceneFlow/LoadingManifests/LoadingAddressableRegistry.asset",
+      "sha256": "aac80c6d7d5409f3111b4820db63af6053fe542f87bb1ec050604c0950dc3426"
+    },
+    {
+      "path": "ProjectSettings/EditorBuildSettings.asset",
+      "sha256": "8436f0c2ed5b429205ad47ab76073fef555ef0fdd3015ec149fcb2d17a64f5be"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Loot/LootPoolItemSelectionService.cs",
+      "sha256": "8c3c7212115d246423a0327123430096d2f4fd789eb2c5f6a0cc543712c18786"
+    },
+    {
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "sha256": "fc77e2020bf2c4b8754727dce7664fbe0726cd86cb2edb5158d0b257c2b1f577"
+    },
+    {
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "sha256": "dfa2fef43b1b167dc51a52647a6fa463f53c54a44cb4b6a08d41b05983c677f3"
+    },
+    {
+      "path": "Assets/_Project/Scenes/DragonCorridor.unity",
+      "sha256": "b241fdce4e29eec1918e86fe2602c42a69ed3c312aa85fb8b2024f9cf38b21ce"
+    },
+    {
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "sha256": "d26f6fa50cdfad7acfc25664dff2f4c4f15584a9298aeeb302168bc6eec2fe59"
+    },
+    {
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "sha256": "f8b2ec3939b74b19cb9ca6a6ac423abeb42951c1d50d37906ac373fe2d4507d6"
+    },
+    {
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "sha256": "6bd5321a95f92a6d9fbd462829f57285c8a4d7bb640e0de732b38c96913298df"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "sha256": "36ad208e2bef5112f37fc7357b9cc5a7b9dcaa06b0f9bb49de5c47d2bc30c6df"
+    },
+    {
+      "path": "Assets/_Project/Scenes/PixelLightTest.unity",
+      "sha256": "f224068a41723ab978e6b401603f82e46d57d1cb7cce58f431e6fe85edb3619f"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity",
+      "sha256": "0686fcf10ce318687ad91ac9ff46d09476bfe03ce3bba6a967bbb20f00844c87"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "sha256": "fde591b5844739e3bc32f23cd80fe2a58134d6a163b57e1d15acce260606929f"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProceduralDungeonV0Test.unity",
+      "sha256": "0967a0d9a7619b572ecd84564d74da32b4a7ed0c5c4cf0e671ed55aeb72bb690"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "sha256": "7a9e386403c746d101c25359a5b37fd47b9e6d6dfaa1fa4e1ed06401e28a5490"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "sha256": "602a6bbb58518216f32384c42c0f783906505d5b6ed632a1a5a660d52b89bf9d"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProtoTypeBoss 1.unity",
+      "sha256": "c7c695cb9ba8194f754173821ea7680bc47390635aeb9ba0cc4dbdd04651974e"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProtoTypeCorridor.unity",
+      "sha256": "a616b568673fd2be499c465728210945afcbedc41eafae4264fbe6ce1b7f9b88"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "sha256": "72988dd1791d03b7eb95bd8bdfe41066af89f595d6e86e04d2645f3f5a62bb7c"
+    },
+    {
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "sha256": "585be80a7bcc88dfc2ca4c354cb7c7260b9e5db76342a7b17cfb6815d334845f"
+    },
+    {
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "sha256": "2d926758016ed5fa186e0772d62786862dc96a789a330ab85102b540eba8944b"
+    },
+    {
+      "path": "Assets/_Project/Scenes/SangHyup_Hallway.unity",
+      "sha256": "56bf85e630dacbcc57f348cc083cbdce1a99340614d49f7a54575725b17a0f32"
+    },
+    {
+      "path": "Assets/_Project/Scenes/ShadowCorridor.unity",
+      "sha256": "dc0ec6b0c62143d495d6502bca245191af590bbb408715dc993e37d6e4734869"
+    },
+    {
+      "path": "Assets/_Project/Scenes/SlimeCorridor.unity",
+      "sha256": "1e9adb30c32b1ab34a01e0750b9772785588b58d3abb9970645e12e3cc537fc8"
+    },
+    {
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "sha256": "0a37fd126a594e8a65168e28b0ace5efe75978c0a9baf7c3fdc5a45e1911eb1a"
+    },
+    {
+      "path": "Assets/_Project/Scenes/TutorialCorridor.unity",
+      "sha256": "929d164ddd722eb62863a6cc6e44df052a69b22b21c52cffd8bce25bb2a15ab9"
+    },
+    {
+      "path": "Assets/_Project/Scenes/Tests/TestScene.unity",
+      "sha256": "90b6c4db142246075d37ce8839c929b350c008ef606c620324248d67fdeea850"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs",
+      "sha256": "82994898a66c157ccec2072f99e2ae70d7396dfad7f5e1afd7e9393d0f4d25c3"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantPurchaseService.cs",
+      "sha256": "92c55873f68743a0f8ab0aef21cc7d21aa9f9ed5921f625f206da7b375fd33f6"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRefreshInteractable.cs",
+      "sha256": "09fb77ab73fa592e41d4ebded03d9f339c14da0d77dcc9d28e58351de6dc2d94"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRunStateService.cs",
+      "sha256": "eb65eaced52736083a196cfcbcc5133fea5da98a357ccf2a317e276c599d0308"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantShopPolicy.cs",
+      "sha256": "710a40badee078aaf3ba0a880849bc4ffb1a1817300d88477844866c29788361"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantStockEntryStateDefinitionExtensions.cs",
+      "sha256": "e4e18fcad57b90e1d779647acf7de492ae770bd0b70f492de71ffd0f9ef4d99c"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopDefinitionSO.cs",
+      "sha256": "9418967097b37ddfe57853c0b223c925e61aa18eefb3e9e5fb8156c61c2f4a1b"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopInventoryRoll.cs",
+      "sha256": "68324795d51870513060407dd43a5346014bd43dae7c5977c17d24a32b06448d"
+    },
+    {
+      "path": "Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopSlot.cs",
+      "sha256": "12dc1131cdcc3231aae9a3f62b0221c485751f9f68988de967f84a4964035e47"
+    }
+  ]
+}

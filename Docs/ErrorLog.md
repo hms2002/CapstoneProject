@@ -2238,6 +2238,9 @@ These are verified code/diagnostic issues, not proven causes of the run-entry na
 - Test isolation: the UI coroutine temporarily unregisters only the recorder's `FlushIfNeeded` editor update delegate and re-registers it during teardown. Do not globally ignore error logs to make the test pass. The next batch run passed all eight cases.
 - The production recorder is unchanged. Treat resilient editor trace flushing as a separate follow-up, and remove only test-generated trace-session changes when cleaning the task diff.
 - 2026-10-11 recurrence: the electric relic suite hit the same Windows1224 exception while writing `PrewarmTrace_nadom_DESKTOP-I2QAD8O.json`. Re-running with the existing `TestScenePresentationTraceIsolation` command-line option `-uiBatchValidationTests` removed recorder I/O from disposable fixtures without suppressing errors or changing production flushing. A later dash-duration assertion failure was separately diagnosed as fixture timing; it was not attributed to the recorder. See [electric revision record](./SessionLogs/2026-10-11.md).
+- 2026-10-30 recurrence: Crimson charge Play Mode fixtures again encountered this mapped trace-file lock. Use the same `-uiBatchValidationTests` isolation for this suite; no production recorder fix or blanket log suppression belongs in the weapon change. Keep damage/target assertion failures separate from recorder exceptions. See [charge integration record](./SessionLogs/2026-10-30.md).
+
+- 2026-11-01 recurrence: encyclopedia UI tests also require `-uiBatchValidationTests`. The unisolated rerun produced14 trace-lock failures; a separate authored-gradient assertion still expected the old hierarchy and was corrected for the approved sprite/inset layout. Keep these causes distinct. Production trace code is unchanged; see [integration log](SessionLogs/2026-11-01.md).
 
 ## 2026-09-18 — Guided tutorial dash retained its own UI control lock
 
@@ -2547,6 +2550,85 @@ Suggested Later: expanded validation found `CombatFeelLootQuestPlayModeTests.Imp
 - 함정: 기존 Canvas 활성 조건은 상태 슬롯 또는 HP 겹침만 고려했다. 새 그로기 바는 같은 Canvas의 일반 Graphic이므로 status 없는 독립 몬스터에서 숨겨진다. 겹침 bounds에 그로기 영역을 넣지 않으면 이웃 HP와 겹치는 경우에도 분리된 Mesh/Canvas 순서를 계속 사용한다.
 - 수정 경계: 보이는 그로기 바를 Canvas 활성 조건과 projection bounds에 포함한다. 기존 Mesh 등록·fallback·정리와 원격 게이지/회복 계산을 보존하며, 시간에 따른 회복은 LateUpdate에서 갱신한다. prefab marker 해소에서는 새 GUID/fileID를 만들지 않고 양쪽 레코드 합집합을 유지한다.
 - 검증: 실제 합쳐진 prefab의 네 typed 참조와 legacy HP Image6개, status 없는 Canvas, 그로기 영역만 교차하는 raster/sorting, 게이지·HP 숨김·회복·재사용·구독 해제를 함께 확인한다. 프리팹 비교 fixture가 참조를 재저작하는 경우 원본 prefab typed readback을 별도로 추가해야 한다. [결과](SessionLogs/2026-10-14.md), [구조](StructureMemory/MonsterWorldHudAndStatus.md).
+
+## 2026-10-30 — Pixel sprite sheet authoring must validate named slices and persistent texture references
+
+- 증상: 새 HP PNG를 Multiple로 가져왔을 때 자동 잘라내기 항목4개가 이미 있어, 비어 있을 때만 명시적 slice를 넣는 조건이 건너뛰어졌다. 기대한 Frame/Track/Fill/Trail 이름을 찾지 못했다.
+- 수정: 명시한4개 이름이 일치하는지 검사한 뒤 새 시트의 rect/border를 Unity TextureImporter API로 지정했다. 기존에 정상 authoring한 명명 정보는 재사용한다. meta를 수동 편집하거나 기존 프리팹 GUID를 바꾸지 않았다.
+- 추가 관찰: Sprite.texture로 material에 연결한 첫 결과는 저장된 MainTex 참조가0이었다. 저장용 texture는 AssetDatabase.LoadAssetAtPath<Texture2D>로 가져오도록 바꾸고, 원본 PNG GUID/fileID가 material에 유지되는지와 별도 Unity 프로세스의 실제 렌더를 확인했다. 내부 임시 texture 생성 원인까지 확정한 것은 아니다.
+- 예방/검증: 배열 개수만으로 importer 설정 성공을 판단하지 않는다. 이름·원본 경로·저장된 참조를 확인하고 native 렌더를 승인 원본과 비교한다. 최종 양쪽 렌더 경로4상태는 RGB 오차0, Play Mode30/30 통과. [기록](SessionLogs/2026-10-30.md), [구조](StructureMemory/MonsterWorldHudAndStatus.md).
+
+## 2026-10-31 — Retired chain buttons and native stripped references
+
+- 증상/원인: 하단 사슬 버튼의 UIChainDropPresentation을 disabled로 바꿔도 Awake가 실행되어 이전 reach constraint가 새 고정 버튼 위치를 이동시켰다. 슬라이더 손잡이 또한 Slider가 stretch anchors를 구동하므로 height delta를32로 주면 부모 높이까지 더해졌다.
+- 수정: 고정 버튼의 사슬 제약·자동 재생 참조를 해제하고 기존 컴포넌트는 보존했다. 슬라이더는 Handle Slide Area 높이32/손잡이 height delta0, Fill Area 높이12로 저작했다. 런타임 공용 동작을 변경하지 않았다.
+- 저장 함정: 사용하지 않게 된 nested prefab component의 `stripped` 레코드를 Unity가 저장 중 정리했다. PrefabInstance override만 원복하면 그 override가 가리키던 기존 식별자를 잃을 수 있다. 범위 밖 원본 블록과 기존 stripped 참조를 함께 보존하고, 실제 authored object 삭제는 오류로 처리한다. 작업 전 사본을 기준으로 ID·GUID·폰트/재질과 변경 경로를 검사한다.
+- 후속 저장 함정: Windows에서 사용 중인 prefab 파일을 `File.WriteAllText`로 truncate할 때 Win32 1224(user-mapped section)로 실패했다. 범위 보존 결과를 같은 폴더의 임시 파일에 먼저 쓰고 `File.Replace`로 교체한 뒤 재import하도록 수정했다. native 저장 직후 실패하면 원본 사본과 scoped blocks를 비교해 범위 밖 변경을 복구한 다음 재시도하며, 최종 source별 변경2블록/CanvasGroup 추가1개와 나머지 블록 보존을 확인했다.
+- 도감 레이아웃 후속에서도 기존 localization 검증 TXT를 덮어쓸 때 동일한 1224가 재현됐다. 이번 범위의 보고서 경로를 별도로 전달하고 임시 파일 작성 후 원자적 교체를 사용한다. `LocalizeTmpFontEvent.OnEnable`은 null `authoredMaterial`을 채울 수 있으므로 native prefab 로드 전 값을 캡처하고 저장 직전 원복한다. 실제 TMP font/material 참조 보존 검사만으로 이 캐시 필드 변경을 놓치지 않는다. 또한 해석되지 않는 기존 nested material 참조는 해당 binding을 건드리지 않아도 native 저장이 null로 정규화할 수 있다. 최종 저장에서도 세 참조만 바뀐 것을 확인한 뒤 원본 instance record를 정확히 복구했다. 재실행 때도 보존 검사가 필요하다. [도감 검증](../outputs/encyclopedia-layout-2026-11-01/README.md).
+- 2026-11-03 레벨업 버튼/제목 native authoring에서도 대상 외 TMP material과 nested override 정규화가 재현됐다. 저장 전 사본의 대상 외 document 127개를 정확히 복구하고, 대상 기존 14개/new 17개만 달라지는지 및 최종 import 후 해시를 확인했다. 이전 Git HEAD가 아니라 작업 직전 사용자 변경 상태를 기준으로 보존한다. [적용 기록](../outputs/levelup-ui-integration-2026-11-03/README.md).
+- 검증 경로: [SettingsSkinScopeValidation](../Tools/Validation/SettingsSkinScopeValidation.py), [실제 화면/동작 검사](../Assets/_Project/Editor/Tools/Validation/SettingsSkinValidation.cs), [결과](SessionLogs/2026-10-31.md).
+
+
+## 2026-11-01 — Unity Search LMDB native crash during Play assembly reload
+
+- Evidence: Unity 6000.4.2f1 crashed when Play was pressed. Crash log reports `SearchTask 'Update' thread did not stop within 5 seconds`, then `mdb_cursor_sibling` / `mdb_cursor_prev` / `mdb_cursor_get` / `LMDB_Enumerator::Next` / `LMDBIndexStorage::RemoveDocuments`, with background MergeArtifacts work. This stack matches [UUM-141720](https://issuetracker.unity.com/issues/11928/crash-on-mdbcursorsibling-when-performing-various-actions-in-the-editor). No game-script exception appears at the original crash point.
+- User-approved workaround without version change: close Editor; back up local Search settings and generated Library/Search; empty `UserSettings/Search.index` roots; set `indexOnEditorStartup = false`; move old cache aside. Do not delete the whole Library or disable domain reload. Settings are user-local, and advanced indexed property/dependency searches are limited.
+- Verification: same Editor, TitleScene, three real Play/Stop cycles and Project name search; zero SearchTask timeout/native crash markers. Only 2,984 bytes of Search bookkeeping regenerated, no LMDB asset index. Saved data and preexisting work preserved. [Evidence and rollback](../outputs/unity-search-crash-workaround-2026-11-01/README.md).
+- Separate recurring problem: `PrewarmTraceRuntime.Flush` Windows 1224 errors still occurred on later Play cycles. This confirms the previously recorded trace-writer problem also affects ordinary Editor use; do not attribute it to the LMDB crash or hide it with test-isolation flags in production. Suggested Later: scoped trace writer atomic-write/lifecycle fix.
+- Native verification cleanup: loading/closing the Editor also reserialized GlobalUIRoot and several Monster prefabs. Restore only verified test side effects, preserving prior UI changes; compare exact pre-test hashes where available. A prior backup may predate approved UI work and must not be restored blindly.
+
+## 2026-11-01 — Sparse ability YAML expands on save; mapped asset text cannot be overwritten live
+
+- Changing only Crimson's fallback range text through `SetDirty`/`SaveAssets` expanded the sparse ability asset with hundreds of unrelated default fields. A direct file-write alternative then met Windows1224 because Unity had mapped the asset. Both were caught during scoped verification, before handoff.
+- Restored only this task's verified serialization side effects from the immediate pre-task baseline and applied the one range-text replacement while the Editor was closed. The authoring command now leaves fallback YAML alone and updates only targeted StringTable entries through Unity APIs. Future text-only edits of sparse legacy assets should preserve their byte-level scope and avoid direct writes while mapped by the Editor.
+- Migration text replacement must match the whole value prefix: `{val:3~6` instead of `3~6`; the latter also matches the suffix of `4.03~6` and is not idempotent. Exact expected locale values and unrelated prefab/asset preservation are checked by [scope validation](SessionLogs/2026-11-01-crimson-magic-circles/verify-scope.py).
+
+## 2026-11-01 — Puddle material owner and native particle authoring traps
+
+- Assigning only the MeshRenderer material is insufficient: `PuddleShaderVisual` restores its serialized `materialTemplate` during initialization/validation. The approved ground material must be assigned to both; validate saved prefab bindings and native pixels.
+- Unity missing-component references need an explicit Unity null comparison before `AddComponent`; `??` does not use that comparison. Particle velocity X/Y/Z curves must all use the same mode. Both issues were found in native authoring and corrected before handoff.
+- New pixel flame prewarming is restricted to Play Mode so preview-prefab validation does not schedule particle jobs during `OnValidate`. A non-Play preview tool must not invoke lifecycle methods through native `SendMessage`, which produced `ShouldRunBehaviour()` assertions; the disposable capture tool invokes only the two presentation initializers explicitly.
+- Stop and clear preview ParticleSystems before assigning their random seeds. The final native capture rerun has zero related curve, seed, lifecycle, shader or script error markers.
+- [Evidence, scoped tests and file purposes](../outputs/puddle-pixel-integration-2026-11-01/README.md), [current owner map](StructureMemory/PuddlePixelPresentation.md). These corrections do not change gameplay timing or the legacy buff indicator hierarchy.
+
+## 2026-11-01 — Stock generation filters do not validate later inventory changes
+
+- Source inspection found that merchants filtered current weapons only at roll time, then reused saved stock without observing acquisition or shell restoration. An old offer can therefore conflict with current ownership even when the initial filter is correct. The user's precise acquisition timing was unavailable; this was not reproduced in Play Mode.
+- MerchantNPC now follows registry/inventory lifecycle and MerchantRunStateService repairs only conflicting unsold entries. Do not rebuild every valid offer on inventory changes. Partial replacement must include retained entries in duplicate exclusions and category caps.
+- Weapon acquisition emits OnInventoryChanged before MerchantNPC marks the purchased slot SOLD. Reconcile from the deferred update instead of inside that callback, so the just-purchased slot is not replenished. Keep slot detail projection aligned when an offer changes. [Evidence, source checks and unexecuted manual scenarios](SessionLogs/2026-11-01-merchant-owned-weapons/README.md).
+
+## 2026-11-01 — Cross-source loot exclusions need owner and snapshot boundaries
+
+- Including every opened chest without excluding the requesting chest would make a reroll reserve its own previous offers. Pass the source chest in the nonserialized context and let RetainedItems alone reserve kept selections. Boss bonus lists also bypass random generation, so final chest insertion applies the same weapon filter.
+- Saved dungeon chestLoot is a scene-exit snapshot. Combining it with the regenerated live dungeon can keep consumed items excluded or reintroduce the source chest's old roll. Loaded successful dungeon IDs use live inventories; only unloaded dungeons contribute snapshot leftovers.
+- Candidate filtering alone leaves old maximum-level relic shop offers intact. Existing per-slot stock reconciliation now uses the common level rule and reacts to relic restore/changes, while deferred notifications preserve purchase-before-SOLD ordering. [Source review, compile evidence and pending runtime checks](SessionLogs/2026-11-01-chest-shop-policy/README.md). No runtime test reproduction is claimed.
+
+## 2026-11-02 — UI prefab geometry shadowed by scene and nested-prefab overrides
+
+- 실제 화면 후속 확인: 전용 TMP OutlineWidth를 0.5로 올린 이전 보정은 글자 내부와 강조색을 덮어 검은 덩어리처럼 보였다. Computer Use로 실제 허브에서 관찰한 뒤 OutlineWidth/FaceDilate를 0.18로 균형 조정했다. 또한 슬롯 스킨 작업에서 Button의 루트 Image까지 Raycast Target을 꺼 클릭 대상이 사라졌다. 루트만 켠 후 실제 선택/탭/페이지/스크롤/유물 레벨 표시를 확인했다. 장식 Image의 입력 비활성화를 클릭 표면까지 일괄 적용하지 않는다. [최종 화면 및 수정 기록](../outputs/encyclopedia-live-ui-fix-2026-11-02/README.md).
+
+- 재설계 적용 후 재발: 허브의 이름 누락, Q/E 아이콘 누락, 하단 화살표 겹침을 사용자가 보고했다. 이전 정리의 raw UTF-8 + LF 전용 패턴이 CRLF 씬을 건너뛰어 ProtoTypeHub의 104개, 총 10개 씬의 1,001개 아이템 override가 남았다. 읽을 때 줄바꿈을 정규화하고 저장할 때 원래 CRLF를 보존하여 해당 override만 제거했다. 검색 결과가 0이라는 사실만으로 상속 정리가 끝났다고 판단하지 않는다. 특정 씬에서 보이는 이름/입력 안내/페이지 버튼의 실제 target ID를 직접 역추적한다. [수정 기록](../outputs/encyclopedia-item-layout-fix-2026-11-02/README.md).
+- 같은 화면의 상세 아이콘은 InventorySlot 프로필의 (-16,-16) 이동과 1.7배 확대, pivot 변경을 작은 도감 틀에 그대로 적용해 범위를 벗어났다. 도감의 저작된 중앙 64×64 상자에서 위치·크기를 소유하고 프로필의 스프라이트·회전만 사용하도록 수정했다. 전용 TMP 외곽선도 alpha 1만으로 충분하지 않아 실제 18px 글자 크기에 맞게 두께/선명도를 조정했다. 소스·MSBuild 확인이며 새 Play Mode 재현/시각 확인은 실행하지 않았다.
+
+- 증상: 실제 허브의 설정 행들이 하단에 겹치고, 도감 오른쪽 상세가 오른쪽으로 밀려 잘렸다. 독립 프리팹의 이전 검증 결과만으로 실제 씬 배치를 보장할 수 없었다.
+- 소스 원인: 설정 원본의 상단 anchor/Y 간격을 사용 씬 12개의 override가 하단 anchor/Y=0으로 덮어썼다. 도감은 중간 GlobalUIRoot 프리팹이 ContentPanel의 X=0을 285로 덮어썼다. 이 중첩 상속 경로를 독립 UI fixture만으로 놓칠 수 있다.
+- 수정: 충돌하는 설정/키설정 위치 override 633개와 도감 X override 1개만 제거했다. 기존 오브젝트 식별자, 다른 override와 참조를 보존했다. 전체 Revert나 프리팹 재생성을 하지 않았다.
+- 확인 한계: 사용자 스크린샷과 직렬화 소스/변경 전후 비교에 근거한다. 이번 수정 후 Unity 화면·Play·테스트·컴파일은 실행하지 않았다. 향후 배치 확인은 원본 프리팹뿐 아니라 중간 프리팹과 실제 사용 씬까지 상속 경로를 확인한다. [변경 및 보관 기록](../outputs/ui-layout-normalization-2026-11-02/README.md).
+- 후속 누락: 사용자가 설정 정상화와 아이템 도감의 지속적인 잘림을 확인했다. 첫 소스 검사는 YAML에 독립 레코드가 없는 중첩 상속 fileID를 건너뛰어 씬의 ContentPanel X=285를 놓쳤다. 원본 7990481634182577215와 씬에서 쓰는 3812683333260759081의 대응을 중첩 instance 6488204919046368278 및 35개 명시적 source pair로 확인했다. 사용 씬 12개의 해당 X override만 추가 제거했다. 직접 레코드 맵에 없다는 이유로 nested override를 검토 대상에서 제외하지 않는다. 몬스터/보스 및 설정 변경 없이 소스 비교만 완료했으며, 후속 실제 화면 확인은 미실행이다. [후속 기록](../outputs/encyclopedia-scene-layout-followup-2026-11-02/README.md).
+
+## 2026-11-02 — Rendered control siblings and same-frame Escape ownership
+
+- Settings skin source inspection found that each stepper's raycast-enabled
+  background was a sibling of its Button/TMP object. Pointer events bubble to
+  parents, so clicking the background could not reach the sibling Button.
+  Enable raycasting on the full-rect Button/TMP object and leave the background
+  non-raycasting while retaining its targetGraphic tint reference.
+- KeyBindingPanelUI's close-request handler ran before CanCloseOnEscape and
+  cleared active capture before closing. Separately, clearing capture in Update
+  could expose the same Escape to UIManager/TitleMenuController later that frame.
+  Consume active capture first and retain the cancellation frame for all callers.
+- These mechanisms were identified by source/serialized inspection, not a Play
+  Mode reproduction. [Change record and validation limits](../outputs/ui-gameplay-fixes-2026-11-02/README.md).
 
 ## 2026-10-26 — Ink 문장 줄바꿈이 불필요한 대사창을 늘림
 

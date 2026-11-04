@@ -85,6 +85,14 @@ internal static class LootPoolItemSelectionService
             (long)Mathf.Max(0, ownedLevel) + Mathf.Max(0, reservedLevel) < Mathf.Max(1, relic.maxLevel));
     }
 
+    internal static bool CanGainRelicLevels(RelicDefinition relic, RelicInventory inventory)
+    {
+        int ownedLevel = 0;
+        if (relic != null && inventory != null)
+            inventory.TryGetRelicLevelById(relic.relicId, out ownedLevel);
+        return CanGainRelicLevels(relic, ownedLevel);
+    }
+
     public static RelicDefinition GetRandomRelicByRarity(
         ItemRarity targetRarity, System.Func<RelicDefinition, bool> additionalFilter = null)
     {
@@ -109,10 +117,7 @@ internal static class LootPoolItemSelectionService
             if (relicData == null)
                 continue;
 
-            int ownedLevel = 0;
-            if (inventory != null)
-                inventory.TryGetRelicLevelById(relicData.relicId, out ownedLevel);
-            if (!CanGainRelicLevels(relicData, ownedLevel) ||
+            if (!CanGainRelicLevels(relicData, inventory) ||
                 (additionalFilter != null && !additionalFilter(relicData)))
                 continue;
 

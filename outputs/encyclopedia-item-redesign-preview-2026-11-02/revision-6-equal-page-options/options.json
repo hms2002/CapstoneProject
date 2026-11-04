@@ -1,0 +1,54 @@
+[
+  {
+    "id": "E",
+    "name": "고전 장정",
+    "subtitle": "4열 목록 · 장식 테두리와 연속 본문",
+    "kind": "classic",
+    "paper": "F9DDB8",
+    "soft": "EAC69C",
+    "edge": "76503A",
+    "accent": "BD965E",
+    "bodyDX": -6,
+    "bodyDY": 0,
+    "header": "center"
+  },
+  {
+    "id": "F",
+    "name": "장서 색인",
+    "subtitle": "이름이 붙은 2열 목록 · 여백 색인",
+    "kind": "cards",
+    "paper": "F2DFC1",
+    "soft": "DEC5A5",
+    "edge": "7D6751",
+    "accent": "B79A72",
+    "bodyDX": 2,
+    "bodyDY": 0,
+    "header": "center"
+  },
+  {
+    "id": "G",
+    "name": "표본 도감",
+    "subtitle": "선택 아이콘 확대 · 4열 작은 목록",
+    "kind": "specimen",
+    "paper": "F7D5A5",
+    "soft": "E7BF8D",
+    "edge": "895735",
+    "accent": "C0995C",
+    "bodyDX": -6,
+    "bodyDY": -16,
+    "header": "compact"
+  },
+  {
+    "id": "H",
+    "name": "제본 기록부",
+    "subtitle": "이름으로 고르는 세로 목록 · 초상 머리말",
+    "kind": "ledger",
+    "paper": "F4D8B8",
+    "soft": "DEC1A2",
+    "edge": "735E4D",
+    "accent": "B49471",
+    "bodyDX": -6,
+    "bodyDY": 0,
+    "header": "portrait"
+  }
+]

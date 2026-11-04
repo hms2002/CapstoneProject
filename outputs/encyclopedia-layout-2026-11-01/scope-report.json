@@ -1,0 +1,181 @@
+{
+  "prefab_original_records": 2770,
+  "prefab_added_records": 49,
+  "changed_records": [
+    {
+      "id": "7340884938114470066",
+      "path": "/EncyclopediaUI/Book/CreatureRightPage/UndiscoveredDetail/Silhouette",
+      "type": "1"
+    },
+    {
+      "id": "8765020101877257718",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header",
+      "type": "224"
+    },
+    {
+      "id": "8709210000000000011",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/WeaponDescriptionHint/DescriptionToggleLabel",
+      "type": "114"
+    },
+    {
+      "id": "5485187651302506328",
+      "path": "/EncyclopediaUI/Book/LeftPage/SlotGrid",
+      "type": "114"
+    },
+    {
+      "id": "8365083889743291225",
+      "path": "/EncyclopediaUI/Book/LeftPage/TitleGroup",
+      "type": "224"
+    },
+    {
+      "id": "8757153454739910614",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel",
+      "type": "224"
+    },
+    {
+      "id": "2752927446786567112",
+      "path": "/EncyclopediaUI/Book/LeftPage/TitleGroup",
+      "type": "114"
+    },
+    {
+      "id": "3241555391183142179",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/Name_Panel/Title",
+      "type": "114"
+    },
+    {
+      "id": "7715238569657689129",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/Name_Panel",
+      "type": "114"
+    },
+    {
+      "id": "8709234358913308640",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel",
+      "type": "114"
+    },
+    {
+      "id": "5636171701766641102",
+      "path": "/EncyclopediaUI/Book/LeftPage/PageButtonGroup",
+      "type": "224"
+    },
+    {
+      "id": "5521546214420382048",
+      "path": "/EncyclopediaUI/Book/CreatureFullIllustration",
+      "type": "224"
+    },
+    {
+      "id": "8709210000000000009",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/WeaponDescriptionHint/DescriptionToggleLabel",
+      "type": "224"
+    },
+    {
+      "id": "4296879548229141479",
+      "path": "/EncyclopediaUI/Book/RightPage",
+      "type": "114"
+    },
+    {
+      "id": "8709210000000000001",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/WeaponDescriptionHint",
+      "type": "1"
+    },
+    {
+      "id": "3633219522933028530",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/Scrollbar/Sliding Area/Handle",
+      "type": "224"
+    },
+    {
+      "id": "1446926275529342044",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/Name_Panel/Title",
+      "type": "114"
+    },
+    {
+      "id": "8709210000000000002",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/WeaponDescriptionHint",
+      "type": "224"
+    },
+    {
+      "id": "7522577667769019081",
+      "path": "/EncyclopediaUI/Book/LeftPage/SlotGrid",
+      "type": "224"
+    },
+    {
+      "id": "6577088094632541110",
+      "path": "/EncyclopediaUI/Book/CreatureFullIllustration/CloseFullView",
+      "type": "224"
+    },
+    {
+      "id": "1205954291165668183",
+      "path": "/EncyclopediaUI/Book/CreatureRightPage/UndiscoveredDetail/UnknownName",
+      "type": "114"
+    },
+    {
+      "id": "3936463414556649760",
+      "path": "/EncyclopediaUI/Book/CreatureRightPage/UndiscoveredDetail/UnknownName",
+      "type": "224"
+    },
+    {
+      "id": "3755211357110751799",
+      "path": "/EncyclopediaUI/Book/CreatureFullIllustration",
+      "type": "114"
+    },
+    {
+      "id": "8709210000000000005",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/WeaponDescriptionHint/DescriptionKeyGlyph",
+      "type": "224"
+    },
+    {
+      "id": "7108732978824953789",
+      "path": "/EncyclopediaUI/Book/CreatureRightPage",
+      "type": "114"
+    },
+    {
+      "id": "8709210000000000004",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/WeaponDescriptionHint/DescriptionKeyGlyph",
+      "type": "1"
+    },
+    {
+      "id": "4176512178205340397",
+      "path": "/EncyclopediaUI/Book/LeftPage/TitleGroup",
+      "type": "114"
+    },
+    {
+      "id": "7990481634182577215",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel",
+      "type": "224"
+    },
+    {
+      "id": "7608822679903982515",
+      "path": "/EncyclopediaUI/Book/RightPage/ItemDetailPanel",
+      "type": "114"
+    },
+    {
+      "id": "7655396100115582861",
+      "path": "/EncyclopediaUI/Book/RightPage",
+      "type": "224"
+    },
+    {
+      "id": "2569218436411474983",
+      "path": "/EncyclopediaUI/Book/CreatureFullIllustration/ImageFrame",
+      "type": "224"
+    }
+  ],
+  "missing_records": [],
+  "unexpected_changes": [],
+  "original_font_material_changes": [],
+  "original_csv_entries_preserved": true,
+  "new_localization_keys": [
+    "encyclopedia.boss_not_encountered",
+    "encyclopedia.item_not_acquired",
+    "encyclopedia.monster_not_encountered"
+  ],
+  "expected_keys_only": true,
+  "five_translations_each": true,
+  "save_hashes_preserved": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "passed": true
+}

@@ -1,0 +1,141 @@
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Assembly Assembly-CSharp-Editor-firstpass.dll at Library/ScriptAssemblies/Assembly-CSharp-Editor-firstpass.dll not valid. Loading of assembly skipped.
+Assembly Assembly-CSharp-Editor.dll at Library/ScriptAssemblies/Assembly-CSharp-Editor.dll not valid. Loading of assembly skipped.
+Assembly Assembly-CSharp-firstpass.dll at Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll not valid. Loading of assembly skipped.
+Assembly Assembly-CSharp.dll at Library/ScriptAssemblies/Assembly-CSharp.dll not valid. Loading of assembly skipped.
+Assembly DocCodeExamples.dll at Library/ScriptAssemblies/DocCodeExamples.dll not valid. Loading of assembly skipped.
+Assembly TestNewCustomAssembly.dll at Library/ScriptAssemblies/TestNewCustomAssembly.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.Animation.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.Animation.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.Aseprite.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.Aseprite.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.Common.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.Common.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.PixelPerfect.Editor.Tests.dll at Library/ScriptAssemblies/Unity.2D.PixelPerfect.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.Psdimporter.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.Psdimporter.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.Sprite.Package.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.Sprite.Package.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.SpriteShape.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.SpriteShape.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.Tilemap.Package.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.Tilemap.Package.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Addressables.Editor.Tests.dll at Library/ScriptAssemblies/Unity.Addressables.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Addressables.Runtime.Tests.dll at Library/ScriptAssemblies/Unity.Addressables.Runtime.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.AppUI.Editor.Tests.dll at Library/ScriptAssemblies/Unity.AppUI.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.AppUI.Tests.dll at Library/ScriptAssemblies/Unity.AppUI.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Collections.BurstCompatibilityGen.dll at Library/ScriptAssemblies/Unity.Collections.BurstCompatibilityGen.dll not valid. Loading of assembly skipped.
+Assembly Unity.Collections.DocCodeSamples.dll at Library/ScriptAssemblies/Unity.Collections.DocCodeSamples.dll not valid. Loading of assembly skipped.
+Assembly Unity.Collections.PerformanceTests.dll at Library/ScriptAssemblies/Unity.Collections.PerformanceTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Collections.Tests.dll at Library/ScriptAssemblies/Unity.Collections.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Collections.Tests.Playmode.dll at Library/ScriptAssemblies/Unity.Collections.Tests.Playmode.dll not valid. Loading of assembly skipped.
+Assembly Unity.InputSystem.IntegrationTests.dll at Library/ScriptAssemblies/Unity.InputSystem.IntegrationTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Localization.DocCodeSamples.dll at Library/ScriptAssemblies/Unity.Localization.DocCodeSamples.dll not valid. Loading of assembly skipped.
+Assembly Unity.Mathematics.Tests.dll at Library/ScriptAssemblies/Unity.Mathematics.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Multiplayer.Center.Editor.Tests.dll at Library/ScriptAssemblies/Unity.Multiplayer.Center.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Multiplayer.Center.Tests.dll at Library/ScriptAssemblies/Unity.Multiplayer.Center.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Nuget.Mono-Cecil.dll at Library/ScriptAssemblies/Unity.Nuget.Mono-Cecil.dll not valid. Loading of assembly skipped.
+Assembly Unity.PathTracing.Editor.Tests.dll at Library/ScriptAssemblies/Unity.PathTracing.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.PathTracing.Runtime.Tests.dll at Library/ScriptAssemblies/Unity.PathTracing.Runtime.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.RenderPipelines.Core.Editor.Tests.dll at Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.RenderPipelines.Core.Runtime.Tests.dll at Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.RenderPipelines.Universal.Config.Editor.Tests.dll at Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Config.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.RenderPipelines.Universal.Editor.Tests.dll at Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.RenderPipelines.Universal.Runtime.Tests.dll at Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.ResourceManager.Tests.dll at Library/ScriptAssemblies/Unity.ResourceManager.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.ScriptableBuildPipeline.Editor.Tests.dll at Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.ScriptableBuildPipeline.Tests.dll at Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.ScriptableBuildPipelineTests.Runtime.Tests.dll at Library/ScriptAssemblies/Unity.ScriptableBuildPipelineTests.Runtime.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Searcher.EditorTests.dll at Library/ScriptAssemblies/Unity.Searcher.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Settings.Tests.dll at Library/ScriptAssemblies/Unity.Settings.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.ShaderGraph.Editor.Tests.dll at Library/ScriptAssemblies/Unity.ShaderGraph.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.TextMeshPro.Editor.Tests.dll at Library/ScriptAssemblies/Unity.TextMeshPro.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.TextMeshPro.Tests.dll at Library/ScriptAssemblies/Unity.TextMeshPro.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.UnifiedRayTracing.Editor.Tests.dll at Library/ScriptAssemblies/Unity.UnifiedRayTracing.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly UnityEditor.UI.Common.Tests.dll at Library/ScriptAssemblies/UnityEditor.UI.Common.Tests.dll not valid. Loading of assembly skipped.
+Assembly UnityEditor.UI.EditorTests.dll at Library/ScriptAssemblies/UnityEditor.UI.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly UnityEngine.UI.Tests.dll at Library/ScriptAssemblies/UnityEngine.UI.Tests.dll not valid. Loading of assembly skipped.
+Begin MonoManager ReloadAssembly
+Assembly Assembly-CSharp-Editor-firstpass.dll at Library/ScriptAssemblies/Assembly-CSharp-Editor-firstpass.dll not valid. Loading of assembly skipped.
+Assembly Assembly-CSharp-Editor.dll at Library/ScriptAssemblies/Assembly-CSharp-Editor.dll not valid. Loading of assembly skipped.
+Assembly Assembly-CSharp-firstpass.dll at Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll not valid. Loading of assembly skipped.
+Assembly Assembly-CSharp.dll at Library/ScriptAssemblies/Assembly-CSharp.dll not valid. Loading of assembly skipped.
+Assembly DocCodeExamples.dll at Library/ScriptAssemblies/DocCodeExamples.dll not valid. Loading of assembly skipped.
+Assembly TestNewCustomAssembly.dll at Library/ScriptAssemblies/TestNewCustomAssembly.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.Animation.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.Animation.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.Aseprite.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.Aseprite.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.Common.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.Common.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.PixelPerfect.Editor.Tests.dll at Library/ScriptAssemblies/Unity.2D.PixelPerfect.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.Psdimporter.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.Psdimporter.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.Sprite.Package.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.Sprite.Package.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.SpriteShape.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.SpriteShape.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.2D.Tilemap.Package.EditorTests.dll at Library/ScriptAssemblies/Unity.2D.Tilemap.Package.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Addressables.Editor.Tests.dll at Library/ScriptAssemblies/Unity.Addressables.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Addressables.Runtime.Tests.dll at Library/ScriptAssemblies/Unity.Addressables.Runtime.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.AppUI.Editor.Tests.dll at Library/ScriptAssemblies/Unity.AppUI.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.AppUI.Tests.dll at Library/ScriptAssemblies/Unity.AppUI.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Collections.BurstCompatibilityGen.dll at Library/ScriptAssemblies/Unity.Collections.BurstCompatibilityGen.dll not valid. Loading of assembly skipped.
+Assembly Unity.Collections.DocCodeSamples.dll at Library/ScriptAssemblies/Unity.Collections.DocCodeSamples.dll not valid. Loading of assembly skipped.
+Assembly Unity.Collections.PerformanceTests.dll at Library/ScriptAssemblies/Unity.Collections.PerformanceTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Collections.Tests.dll at Library/ScriptAssemblies/Unity.Collections.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Collections.Tests.Playmode.dll at Library/ScriptAssemblies/Unity.Collections.Tests.Playmode.dll not valid. Loading of assembly skipped.
+Assembly Unity.InputSystem.IntegrationTests.dll at Library/ScriptAssemblies/Unity.InputSystem.IntegrationTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Localization.DocCodeSamples.dll at Library/ScriptAssemblies/Unity.Localization.DocCodeSamples.dll not valid. Loading of assembly skipped.
+Assembly Unity.Mathematics.Tests.dll at Library/ScriptAssemblies/Unity.Mathematics.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Multiplayer.Center.Editor.Tests.dll at Library/ScriptAssemblies/Unity.Multiplayer.Center.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Multiplayer.Center.Tests.dll at Library/ScriptAssemblies/Unity.Multiplayer.Center.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Nuget.Mono-Cecil.dll at Library/ScriptAssemblies/Unity.Nuget.Mono-Cecil.dll not valid. Loading of assembly skipped.
+Assembly Unity.PathTracing.Editor.Tests.dll at Library/ScriptAssemblies/Unity.PathTracing.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.PathTracing.Runtime.Tests.dll at Library/ScriptAssemblies/Unity.PathTracing.Runtime.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.RenderPipelines.Core.Editor.Tests.dll at Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.RenderPipelines.Core.Runtime.Tests.dll at Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.RenderPipelines.Universal.Config.Editor.Tests.dll at Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Config.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.RenderPipelines.Universal.Editor.Tests.dll at Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.RenderPipelines.Universal.Runtime.Tests.dll at Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.ResourceManager.Tests.dll at Library/ScriptAssemblies/Unity.ResourceManager.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.ScriptableBuildPipeline.Editor.Tests.dll at Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.ScriptableBuildPipeline.Tests.dll at Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.ScriptableBuildPipelineTests.Runtime.Tests.dll at Library/ScriptAssemblies/Unity.ScriptableBuildPipelineTests.Runtime.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Searcher.EditorTests.dll at Library/ScriptAssemblies/Unity.Searcher.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly Unity.Settings.Tests.dll at Library/ScriptAssemblies/Unity.Settings.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.ShaderGraph.Editor.Tests.dll at Library/ScriptAssemblies/Unity.ShaderGraph.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.TextMeshPro.Editor.Tests.dll at Library/ScriptAssemblies/Unity.TextMeshPro.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.TextMeshPro.Tests.dll at Library/ScriptAssemblies/Unity.TextMeshPro.Tests.dll not valid. Loading of assembly skipped.
+Assembly Unity.UnifiedRayTracing.Editor.Tests.dll at Library/ScriptAssemblies/Unity.UnifiedRayTracing.Editor.Tests.dll not valid. Loading of assembly skipped.
+Assembly UnityEditor.UI.Common.Tests.dll at Library/ScriptAssemblies/UnityEditor.UI.Common.Tests.dll not valid. Loading of assembly skipped.
+Assembly UnityEditor.UI.EditorTests.dll at Library/ScriptAssemblies/UnityEditor.UI.EditorTests.dll not valid. Loading of assembly skipped.
+Assembly UnityEngine.UI.Tests.dll at Library/ScriptAssemblies/UnityEngine.UI.Tests.dll not valid. Loading of assembly skipped.
+Start importing Assets/_Project/Unused using Guid(1fe2106cf55b4ce99114d62968580a10) (DefaultImporter) -> (Import Result ID: 'c2e5911bf8dda862019a875295887250') in 0.0490071 seconds [static dependencies only]. Details - ImportResultOutputID=277c64fb4b7fea484710aeee87f61b85 DependenciesID=86edf367f394e37f65e45abb6008bf4f StaticDependenciesID=b91214fa788eff4f31bb58424c002de5 
+Start importing Assets/_Project/Unused/Items using Guid(689b6bfe321f47f88e3e157dc10938d3) (DefaultImporter) -> (Import Result ID: '612c1cd4db7f0cf6cc38053119b71421') in 0.0033677 seconds [static dependencies only]. Details - ImportResultOutputID=c7db3488795a5a9eb68dc5765271703a DependenciesID=eaca7dff9ddfeba10c38848933fac796 StaticDependenciesID=82c8c7f69ac37c24d03057e085526b9a 
+Start importing Assets/_Project/Unused/Scenes using Guid(dd549bd57a5643028d69481f2180e5bd) (DefaultImporter) -> (Import Result ID: '02769921fb8a8274a22cab5cb3ade388') in 0.0026315 seconds [static dependencies only]. Details - ImportResultOutputID=a1a3aeaac06c4d0e1e13ec1788451c99 DependenciesID=54f8f99063a57fb91db1c1f193228e57 StaticDependenciesID=991dcc871922506da5273e6e276998c9 
+Domain Reload Profiling: 19595ms
+	BeginReloadAssembly (6195ms)
+Asset Pipeline Refresh (id=37ccf4b8496ba2248a0790d890da4c2e): Total: 37.585 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+	CategorizeScriptCompilationAssets: 0.105ms
+Asset Pipeline Refresh (id=7ddb1cd2c56c5fa47a35667870906cc5): Total: 0.089 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=33f828fdfd7307f4880b42753c661b58): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=252b6eb5787f2b343a52f6e326eaec5c): Total: 0.070 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=9570590a8659db34f875f01642438e74): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=a4e4041aea8cb89408cffd082212fbe1): Total: 0.068 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=940049841aff3df4fbab6647abcfd7e7): Total: 0.089 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=2ef491b2c040d5c4cb67153ef16855ed): Total: 0.088 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=06fbf5117cb6a4042903ad01c7a627a8): Total: 0.070 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=4656702eb046f1d4baa21f1818e27d19): Total: 0.067 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=dd30a7ef113cb174fad7fd88b5dfa57e): Total: 0.140 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=e5df4e7d3abbff14fa5abd1071e4a3e2): Total: 0.083 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=b4528d144612b464f9918cbf8d698c43): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=b87ec618a491d19458c5724a390f3af2): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=a02f2b24c565a2245aa6194efae4eec2): Total: 0.149 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=c8baeb2390e655140a883560d2913152): Total: 0.068 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=baf31f09b6ab8234d8be495c5467b570): Total: 0.067 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=4ffb951364e160c4797dfbeab2f748db): Total: 0.068 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=98589456764185648b9286e5bce3ad81): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=c5919be8b021f4e41bb4b46c99fb0ad3): Total: 0.076 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=5e6622f21a06d024aafe1ff0f23ae3d0): Total: 0.067 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=64ebb1e4eb52f294db80e6b76a70a8f6): Total: 0.065 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=5cf56f49ba9b95749b719f674dbdda26): Total: 0.081 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=3572392f2cc694642bc867ff64d9e1c1): Total: 0.108 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=b2a74f0664e8ab346815210be5a305af): Total: 0.065 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=584101f3aa31ad848a5e31aa80a419cc): Total: 0.068 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=85f00612134c6754abd40d2b6fcc3c3e): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=cf19cc7e0ef4361438860b4468f2d134): Total: 0.078 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=75cc9be055dbc9942ae0f6f7d5a2ffa2): Total: 0.070 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=d7934490ea37bf84baa6b9515f033818): Total: 0.069 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=d795c92d4fdeadf4cbcec72f99e97a75): Total: 0.068 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=8b75964b23f297d46bcc2a114ed8a562): Total: 0.080 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=5343eb3683302974a9dea98f76fe81d7): Total: 0.077 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=821d7e977c3c75d42a63de3df2bfbfad): Total: 0.068 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=3095ae3d23c34e24d84f1d27b744471a): Total: 0.213 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)

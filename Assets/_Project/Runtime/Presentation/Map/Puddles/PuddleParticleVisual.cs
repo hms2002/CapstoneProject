@@ -34,6 +34,14 @@ namespace UnityGAS
         [SerializeField, Min(0f)] private float ignitingFlameEmissionRate = 16f;
         [SerializeField] private bool clearFlamesWhenDisabled = true;
 
+        [Header("Approved Pixel Artwork")]
+        [Tooltip("Authored sprite emission: flame index0 is near-ground, index1 is airborne.")]
+        [SerializeField] private bool usePixelArtwork;
+        [SerializeField] private Vector2 pixelFlameEmissionRates = new Vector2(62.5f, 15f);
+        private float ignitionProgress;
+        private bool ignitionSparkEmitted;
+        private readonly ParticleSystem.Particle[] bubbleBuffer = new ParticleSystem.Particle[32];
+
         private PuddleElementType elementType = PuddleElementType.Alcohol;
         private PuddleAreaMode currentMode = PuddleAreaMode.Ground;
         private float surfaceRadius = 1.35f;
@@ -67,6 +75,8 @@ namespace UnityGAS
 
         private void Update()
         {
+            if (usePixelArtwork && currentMode == PuddleAreaMode.Igniting)
+                RemoveBurnedBubbles();
             if (!ShouldShowBuffArrows) return;
             EnsureBuffArrows();
             float lifetime = Mathf.Max(0.1f, buffArrowLifetime);
@@ -187,7 +197,11 @@ namespace UnityGAS
                 if (arrow != null) arrow.enabled = false;
         }
 
-        private void OnDisable() => HideBuffArrows();
+        private void OnDisable()
+        {
+            HideBuffArrows();
+            if (usePixelArtwork) { StopBubbleLayer(true); StopFlameLayer(true); }
+        }
 
         private void OnDestroy()
         {
@@ -240,10 +254,58 @@ namespace UnityGAS
 
         public void ApplyMode(PuddleAreaMode mode)
         {
+            if (mode != currentMode && mode == PuddleAreaMode.Igniting)
+            {
+                ignitionProgress = 0f;
+                ignitionSparkEmitted = false;
+            }
             currentMode = mode;
             if (!ShouldShowBuffArrows) HideBuffArrows();
             ApplyBubbleLayerMode();
             ApplyFlameLayerMode();
+        }
+
+        public void SetIgnitionProgress(float normalizedProgress)
+        {
+            ignitionProgress = Mathf.Clamp01(normalizedProgress);
+            if (!usePixelArtwork || currentMode != PuddleAreaMode.Igniting) return;
+            ConfigureFlameLayer();
+            ApplyFlameLayerMode();
+            if (!ignitionSparkEmitted && ignitionProgress > 0f && flameParticleSystems != null &&
+                flameParticleSystems.Length > 0 && flameParticleSystems[0] != null)
+            {
+                var spark = new ParticleSystem.EmitParams
+                {
+                    position = Vector3.zero,
+                    velocity = Vector3.zero,
+                    applyShapeToPosition = false
+                };
+                flameParticleSystems[0].Emit(spark, 1);
+                ignitionSparkEmitted = true;
+            }
+            RemoveBurnedBubbles();
+        }
+
+        private void RemoveBurnedBubbles()
+        {
+            if (bubbleParticles == null || ignitionProgress <= 0f) return;
+            int count = bubbleParticles.GetParticles(bubbleBuffer);
+            float pixelSize = surfaceRadius * 2.2f / 64f;
+            float front = 27.2383446f * (Mathf.Floor(ignitionProgress * 15f + 0.0001f) / 15f);
+            bool changed = false;
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 position = bubbleBuffer[i].position;
+                // Local particle space is the authored ground plane; image Y points down.
+                float x = position.x / pixelSize, y = -position.y / pixelSize;
+                float angle = Mathf.Atan2(y, x);
+                float distance = Mathf.Sqrt(x * x + y * y) *
+                    (1f + .065f * Mathf.Sin(angle * 5f + .4f) + .035f * Mathf.Sin(angle * 9f + 1.2f));
+                if (distance > front && ignitionProgress < 1f) continue;
+                bubbleBuffer[i].remainingLifetime = 0f;
+                changed = true;
+            }
+            if (changed) bubbleParticles.SetParticles(bubbleBuffer, count);
         }
 
         private void ConfigureBubbleLayer()
@@ -257,7 +319,11 @@ namespace UnityGAS
 
             ParticleSystem.ShapeModule shape = bubbleParticles.shape;
             if (shape.enabled)
+            {
                 shape.radius = Mathf.Max(0.01f, surfaceRadius * bubbleLayerRadiusScale);
+                if (usePixelArtwork) shape.scale = Vector3.one * surfaceRadius * 2.2f * bubbleLayerRadiusScale;
+            }
+            if (usePixelArtwork) main.startSize = surfaceRadius * 2.2f * 8f / 64f;
 
             ParticleSystem.EmissionModule emission = bubbleParticles.emission;
             emission.rateOverTime = driveAlcoholBubbleLayer ? alcoholBubbleEmissionRate : 0f;
@@ -280,7 +346,15 @@ namespace UnityGAS
 
                 ParticleSystem.ShapeModule shape = flameParticleSystem.shape;
                 if (shape.enabled)
+                {
                     shape.radius = Mathf.Max(0.01f, surfaceRadius * flameLayerRadiusScale);
+                    if (usePixelArtwork)
+                    {
+                        float spread = currentMode == PuddleAreaMode.Igniting ? ignitionProgress : 1f;
+                        shape.scale = Vector3.one * surfaceRadius * 2.2f * flameLayerRadiusScale * Mathf.Max(.01f, spread);
+                    }
+                }
+                if (usePixelArtwork) main.startSize = surfaceRadius * 2.2f * (i == 0 ? 8f : 12f) / 64f;
             }
         }
 
@@ -375,10 +449,19 @@ namespace UnityGAS
 
                     ParticleSystem.EmissionModule emission = flameParticleSystem.emission;
                     emission.enabled = true;
-                    emission.rateOverTime = emissionRatePerSystem;
+                    float authoredRate = i == 0 ? pixelFlameEmissionRates.x : pixelFlameEmissionRates.y;
+                    float coverage = currentMode == PuddleAreaMode.Igniting ? ignitionProgress * ignitionProgress : 1f;
+                    emission.rateOverTime = usePixelArtwork ? authoredRate * coverage : emissionRatePerSystem;
 
                     if (!flameParticleSystem.isPlaying)
+                    {
+                        if (usePixelArtwork)
+                        {
+                            var main = flameParticleSystem.main;
+                            main.prewarm = Application.isPlaying && currentMode == PuddleAreaMode.Ground && elementType == PuddleElementType.Fire;
+                        }
                         flameParticleSystem.Play();
+                    }
                 }
 
                 return;

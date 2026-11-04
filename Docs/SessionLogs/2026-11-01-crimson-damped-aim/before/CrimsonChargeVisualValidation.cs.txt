@@ -1,0 +1,308 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using CapstonePresentation;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
+
+public static class CrimsonChargeVisualValidation
+{
+    private const string Output = "Library/CodexCrimsonMagicCircles192/Captures";
+
+    public static void ApplyMagicCirclesAndCapture()
+    {
+        CrimsonChargeAssetAuthoring.ApplyMagicCircles();
+        Capture();
+    }
+
+    public static void AuthorAndCapture()
+    {
+        CrimsonChargeAssetAuthoring.Author();
+        Capture();
+    }
+
+    public static void RestoreGaugeAndCapture()
+    {
+        CrimsonChargeAssetAuthoring.RestoreReferenceGauge();
+        Capture();
+    }
+
+    [MenuItem("Tools/Weapons/Crimson Boundary/Capture and Validate Charge Visuals")]
+    public static void Capture()
+    {
+        string pipeline = DetectPipeline();
+        Require(pipeline.Contains("Universal"), "Magic-circle sampling expects the project's existing URP pipeline.");
+        ValidateArtAndPrefab();
+        Directory.CreateDirectory(Output);
+        Scene scene = EditorSceneManager.NewPreviewScene();
+        GameObject cameraObject = null, instance = null, floor = null, actor = null;
+        Texture2D background = null;
+        Sprite backgroundSprite = null;
+        var rt = new RenderTexture(400, 225, 24, RenderTextureFormat.ARGB32) { antiAliasing = 1, filterMode = FilterMode.Point };
+        try
+        {
+            cameraObject = new GameObject("Crimson validation camera");
+            SceneManager.MoveGameObjectToScene(cameraObject, scene);
+            Camera camera = cameraObject.AddComponent<Camera>();
+            camera.scene = scene;
+            camera.orthographic = true; camera.orthographicSize = 225f / 32f;
+            camera.aspect = 400f / 225f; camera.transform.position = new Vector3(0, 0, -10);
+            camera.clearFlags = CameraClearFlags.SolidColor; camera.backgroundColor = new Color(0.16f, 0.18f, 0.19f);
+            camera.allowHDR = false; camera.allowMSAA = false; camera.enabled = false;
+            camera.targetTexture = rt;
+            // Neutral test floor; this is a native prefab render, not a saved gameplay scene.
+            background = new Texture2D(400, 225, TextureFormat.RGBA32, false) { filterMode = FilterMode.Point };
+            Color[] colors = new Color[400 * 225];
+            for (int y = 0; y < 225; y++)
+                for (int x = 0; x < 400; x++)
+                {
+                    float tone = ((x / 16 + y / 16) % 2 == 0 ? 0.2f : 0.23f);
+                    colors[y * 400 + x] = new Color(tone * 0.9f, tone, tone * 1.04f);
+                }
+            background.SetPixels(colors); background.Apply();
+            backgroundSprite = Sprite.Create(background, new Rect(0, 0, 400, 225), Vector2.one * 0.5f, 16);
+            floor = new GameObject("Validation floor"); SceneManager.MoveGameObjectToScene(floor, scene);
+            var floorRenderer = floor.AddComponent<SpriteRenderer>(); floorRenderer.sprite = backgroundSprite;
+            floorRenderer.sortingLayerName = "Background";
+            instance = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(CrimsonChargeAssetAuthoring.PrefabPath), scene);
+            var view = instance.GetComponent<CrimsonBoundaryChargePresentation>();
+            view.SendMessage("Awake");
+            Vector3 target = new(-1.5f, -0.5f, 0f);
+            Vector3 owner = new(-5f, -2f, 0f);
+            var playerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Player/PF Player.prefab");
+            var source = playerPrefab.GetComponentsInChildren<SpriteRenderer>(true).First(r => r.name == "PlayerRender");
+            actor = new GameObject("Player sprite scale reference"); SceneManager.MoveGameObjectToScene(actor, scene);
+            actor.transform.position = owner + source.transform.position - playerPrefab.transform.position;
+            actor.transform.localScale = source.transform.lossyScale;
+            var actorRenderer = actor.AddComponent<SpriteRenderer>(); actorRenderer.sprite = source.sprite;
+            actorRenderer.sortingLayerName = "Entity";
+            view.ShowCharge(owner, target, 0.35f, Diameter(.35f));
+            ValidateMagicCircleOpacity(instance, .5f);
+            ValidateGauge(instance, 0.35f, "DD2E46", "FF665B", "801730");
+            Save(camera, rt, "charge-red");
+            view.ShowCharge(owner, target, 0.5f, Diameter(.5f));
+            ValidateMagicCircleOpacity(instance, .5f);
+            ValidateGauge(instance, 0.5f, "F07826", "FFAB56", "9E3C21");
+            ValidateMagicCircleScale(instance, 4.03125f, 0f);
+            Save(camera, rt, "charge-orange");
+            view.ShowCharge(owner, target, 1f, 6f);
+            ValidateMagicCircleOpacity(instance, .5f);
+            ValidateGauge(instance, 1f, "FF9D41", "FFEBAB", "CF4629");
+            ValidateMagicCircleScale(instance, 4.03125f, 6f);
+            Save(camera, rt, "charge-full");
+            CaptureGaugeDetail(camera, instance, view, owner, target, floor, actor);
+            for (int i = 0; i < 70; i++)
+            {
+                float ratio = (i + 1) / 70f;
+                view.ShowCharge(owner, target, ratio, Diameter(ratio));
+                view.StepEditorPreview(0.02f);
+                Save(camera, rt, $"sequence-{i:000}");
+            }
+            Vector3 start = AbilityLogic_CrimsonBoundaryCharge.ResolveFlightStart(target, camera);
+            view.BeginFlight(start, target);
+            ValidateMagicCircleOpacity(instance, 1f);
+            for (int i = 0; i < 25; i++)
+            {
+                view.MoveMeteor(Vector3.Lerp(start, target, i / 25f));
+                view.StepEditorPreview(0.02f);
+                ValidateMagicCircleScale(instance, 4.03125f, 6f);
+                ValidateMagicCircleOpacity(instance, 1f);
+                Save(camera, rt, $"sequence-{i + 70:000}");
+                if (i == 19) Save(camera, rt, "flight");
+            }
+            view.MoveMeteor(target);
+            view.PlayImpact(target, 6f);
+            for (int i = 0; i < 100; i++)
+            {
+                view.StepEditorPreview(0.02f);
+                ValidateMagicCircleOpacity(instance, Mathf.Clamp01(1f - (i + 1) * .02f / .25f));
+                Save(camera, rt, $"sequence-{i + 95:000}");
+                if (i == 3) Save(camera, rt, "impact-flash");
+                if (i == 9) Save(camera, rt, "impact-fire");
+                if (i == 24) Save(camera, rt, "impact-smoke");
+                if (i == 5) Save(camera, rt, "impact-warning-fade");
+                if (i == 12)
+                {
+                    Require(!instance.transform.Find("ChargeWarning").gameObject.activeSelf, "Warning should finish fading after 0.25s.");
+                    Save(camera, rt, "impact-warning-gone");
+                }
+            }
+            Debug.Log("CRIMSON_CHARGE_VISUAL_OK: approved circle PNG/import/prefab/gauge/staged scale/post-impact fade checks and 195 native GPU frames saved to " + Output);
+        }
+        finally
+        {
+            if (instance != null)
+            {
+                Object.DestroyImmediate(instance);
+            }
+            if (cameraObject != null) Object.DestroyImmediate(cameraObject);
+            if (floor != null) Object.DestroyImmediate(floor);
+            if (actor != null) Object.DestroyImmediate(actor);
+            if (backgroundSprite != null) Object.DestroyImmediate(backgroundSprite);
+            if (background != null) Object.DestroyImmediate(background);
+            rt.Release(); Object.DestroyImmediate(rt);
+            EditorSceneManager.ClosePreviewScene(scene);
+        }
+        Unity.CodeEditor.CodeEditor.CurrentEditor.SyncAll();
+    }
+
+    public static void ValidateArtAndPrefab()
+    {
+        var palette = new HashSet<string> { "2F242B", "876657", "B63D28", "F16B32", "FFC65A", "FFF0BF" };
+        var used = new HashSet<string>();
+        int files = 0;
+        foreach (string file in Directory.GetFiles(CrimsonChargeAssetAuthoring.Art, "*.png", SearchOption.AllDirectories))
+        {
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            try
+            {
+                texture.LoadImage(File.ReadAllBytes(file));
+                foreach (Color32 color in texture.GetPixels32())
+                {
+                    if (color.a == 0) continue;
+                    string rgb = $"{color.r:X2}{color.g:X2}{color.b:X2}";
+                    Require(color.a == 255 && palette.Contains(rgb), "Unexpected source color: " + file + " " + rgb);
+                    used.Add(rgb);
+                }
+            }
+            finally { Object.DestroyImmediate(texture); }
+            var importer = (TextureImporter)AssetImporter.GetAtPath(file.Replace('\\', '/'));
+            Require(importer.filterMode == FilterMode.Point && !importer.mipmapEnabled &&
+                importer.textureCompression == TextureImporterCompression.Uncompressed, "Pixel import settings: " + file);
+            files++;
+        }
+        Require(used.SetEquals(palette) && files == 47, "Expected six colors across 47 source PNGs.");
+        foreach (string name in new[] { "inner", "outer" })
+        {
+            string path = CrimsonChargeAssetAuthoring.CircleArt + "/" + name + ".png";
+            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            Require(sprite != null && sprite.rect.size == new Vector2(192, 192) && sprite.pixelsPerUnit == 16f,
+                "Circle source dimensions/PPU: " + name);
+            Require(importer.filterMode == FilterMode.Point && !importer.mipmapEnabled &&
+                importer.textureCompression == TextureImporterCompression.Uncompressed, "Circle pixel import: " + name);
+            string approved = "outputs/crimson-double-circle-preview-2026-11-01/revision-24-touching-orange-geometry/" + name + ".png";
+            Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(approved)), "Approved circle PNG bytes: " + name);
+            Require(File.ReadAllBytes(Path.ChangeExtension(path, ".aseprite")).SequenceEqual(
+                File.ReadAllBytes(Path.ChangeExtension(approved, ".aseprite"))), "Approved editable circle source: " + name);
+        }
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(CrimsonChargeAssetAuthoring.PrefabPath);
+        foreach (string name in new[] { "InnerCircle", "OuterCircle" })
+        {
+            var material = prefab.transform.Find("ChargeWarning/" + name).GetComponent<SpriteRenderer>().sharedMaterial;
+            Require(material.shader.name == "Project/Crimson Magic Circle" && !ShaderUtil.ShaderHasError(material.shader), "Circle shader compilation: " + name);
+        }
+        Require(prefab.GetComponentsInChildren<Collider2D>(true).Length == 0 &&
+            prefab.GetComponentsInChildren<Rigidbody2D>(true).Length == 0, "VFX must be collision-free.");
+        var fill = prefab.transform.Find("HeadChargeGauge/Fill").GetComponent<UnityEngine.UI.Image>();
+        Require(fill.type == UnityEngine.UI.Image.Type.Filled && fill.fillMethod == UnityEngine.UI.Image.FillMethod.Horizontal &&
+            fill.sprite != null && !fill.raycastTarget, "Authored horizontal fill gauge.");
+        foreach (ParticleSystem p in prefab.GetComponentsInChildren<ParticleSystem>(true))
+        {
+            Require(!p.collision.enabled && !p.trigger.enabled && !p.main.playOnAwake, "Unexpected particle physics/autoplay: " + p.name);
+            Require(p.GetComponent<ParticleSystemRenderer>().sharedMaterial.mainTexture != null, "Missing particle sheet: " + p.name);
+        }
+        Directory.CreateDirectory(Output);
+        File.WriteAllText(Output + "/art-validation.txt", "PASS: approved revision24 192px circles and editable sources; 47 VFX PNGs, six exact opaque colors, point/no mipmaps/uncompressed; authored filled gauge; 9 collision-free particle systems.\n");
+    }
+
+    private static void ValidateGauge(GameObject instance, float amount, string rgb, string highlight, string shadow)
+    {
+        var gauge = (RectTransform)instance.transform.Find("HeadChargeGauge");
+        Require(gauge.sizeDelta == new Vector2(32, 10), "Gauge must retain the 32x10 reference proportions.");
+        string[] parts = { "Fill", "FillHighlight", "FillShadow" };
+        string[] colors = { rgb, highlight, shadow };
+        for (int i = 0; i < parts.Length; i++)
+        {
+            var fill = gauge.Find(parts[i]).GetComponent<UnityEngine.UI.Image>();
+            Require(fill.type == UnityEngine.UI.Image.Type.Filled && fill.fillMethod == UnityEngine.UI.Image.FillMethod.Horizontal &&
+                fill.fillOrigin == 0 && Mathf.Approximately(fill.fillAmount, amount) && ColorUtility.ToHtmlStringRGB(fill.color) == colors[i],
+                "Gauge threshold color/fill mismatch: " + parts[i]);
+        }
+        Require(gauge.Find("FullFrame").gameObject.activeSelf == (amount >= 1f), "Full-charge frame visibility mismatch.");
+    }
+
+    private static void CaptureGaugeDetail(Camera camera, GameObject instance, CrimsonBoundaryChargePresentation view,
+        Vector3 owner, Vector3 target, GameObject floor, GameObject actor)
+    {
+        Vector3 position = camera.transform.position;
+        float size = camera.orthographicSize, aspect = camera.aspect;
+        RenderTexture previous = camera.targetTexture;
+        var detail = new RenderTexture(32, 10, 24, RenderTextureFormat.ARGB32) { antiAliasing = 1, filterMode = FilterMode.Point };
+        GameObject warning = instance.transform.Find("ChargeWarning").gameObject;
+        try
+        {
+            floor.SetActive(false); actor.SetActive(false); warning.SetActive(false);
+            Vector3 gaugePosition = instance.transform.Find("HeadChargeGauge").position;
+            camera.transform.position = new Vector3(gaugePosition.x, gaugePosition.y, position.z);
+            camera.orthographicSize = 10f / 32f; camera.aspect = 32f / 10f;
+            camera.targetTexture = detail;
+            float[] amounts = { 0f, 0.25f, 0.5f, 0.75f, 1f };
+            for (int i = 0; i < amounts.Length; i++)
+            {
+                view.ShowCharge(owner, target, amounts[i], Diameter(amounts[i]));
+                Save(camera, detail, $"gauge-{i}");
+            }
+            // Full -> partial must restore the normal rim and all three red fill bands.
+            view.ShowCharge(owner, target, 0.35f, Diameter(.35f));
+            ValidateGauge(instance, 0.35f, "DD2E46", "FF665B", "801730");
+        }
+        finally
+        {
+            camera.transform.position = position; camera.orthographicSize = size; camera.aspect = aspect;
+            camera.targetTexture = previous;
+            floor.SetActive(true); actor.SetActive(true); warning.SetActive(true);
+            detail.Release(); Object.DestroyImmediate(detail);
+        }
+    }
+
+    private static float Diameter(float ratio)
+    {
+        var data = AssetDatabase.LoadAssetAtPath<CrimsonBoundaryChargeData>(CrimsonChargeAssetAuthoring.DataPath);
+        return data.ChargeDiameter(ratio * data.fullChargeSeconds);
+    }
+
+    private static string DetectPipeline() => GraphicsSettings.currentRenderPipeline != null
+        ? GraphicsSettings.currentRenderPipeline.GetType().FullName : "BuiltIn";
+
+    private static void ValidateMagicCircleScale(GameObject instance, float innerDiameter, float outerDiameter)
+    {
+        Transform warning = instance.transform.Find("ChargeWarning");
+        Require(Mathf.Abs(warning.Find("InnerCircle").localScale.x * 128f / 16f - innerDiameter) < .0001f, "Inner circle diameter.");
+        Require(Mathf.Abs(warning.Find("OuterCircle").localScale.x * 192f / 16f - outerDiameter) < .0001f, "Outer circle diameter.");
+    }
+
+    private static void ValidateMagicCircleOpacity(GameObject instance, float alpha)
+    {
+        foreach (string name in new[] { "InnerCircle", "OuterCircle" })
+        {
+            var renderer = instance.transform.Find("ChargeWarning/" + name).GetComponent<SpriteRenderer>();
+            Require(Mathf.Abs(renderer.color.a - alpha) < .0001f, "Circle opacity: " + name);
+        }
+    }
+
+    private static void Save(Camera camera, RenderTexture rt, string name)
+    {
+        Canvas.ForceUpdateCanvases();
+        var request = new RenderPipeline.StandardRequest { destination = rt };
+        if (GraphicsSettings.currentRenderPipeline != null) RenderPipeline.SubmitRenderRequest(camera, request);
+        else camera.Render();
+        RenderTexture previous = RenderTexture.active;
+        RenderTexture.active = rt;
+        var texture = new Texture2D(rt.width, rt.height, TextureFormat.RGBA32, false);
+        texture.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0); texture.Apply();
+        File.WriteAllBytes(Output + "/" + name + ".png", texture.EncodeToPNG());
+        Object.DestroyImmediate(texture); RenderTexture.active = previous;
+    }
+    private static void Require(bool condition, string message)
+    {
+        if (!condition) throw new InvalidOperationException(message);
+    }
+}
+#endif

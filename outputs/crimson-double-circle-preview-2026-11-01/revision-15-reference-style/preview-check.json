@@ -1,0 +1,114 @@
+{
+  "radii": [
+    {
+      "charge": 0,
+      "inner": 0,
+      "outer": 0
+    },
+    {
+      "charge": 25,
+      "inner": 20,
+      "outer": 0
+    },
+    {
+      "charge": 50,
+      "inner": 40,
+      "outer": 0
+    },
+    {
+      "charge": 75,
+      "inner": 40,
+      "outer": 50
+    },
+    {
+      "charge": 100,
+      "inner": 40,
+      "outer": 60
+    }
+  ],
+  "nativePixelSizes": {
+    "inner": 80,
+    "outer": 120,
+    "glyphAtlas": [
+      126,
+      9
+    ],
+    "proposedPpu": 20,
+    "existingCrimsonPpu": 16,
+    "maximumDiameter": 6
+  },
+  "palette": "FFC65A / FFF0BF / B63D28; binary alpha",
+  "paletteCounts": {
+    "outer-rings": {
+      "255,198,90": 332,
+      "255,240,191": 4,
+      "182,61,40": 268
+    },
+    "inner-rings": {
+      "255,198,90": 272,
+      "255,240,191": 8,
+      "182,61,40": 252
+    },
+    "inner-star": {
+      "255,198,90": 92,
+      "255,240,191": 12,
+      "182,61,40": 144
+    },
+    "glyph-atlas": {
+      "255,198,90": 115,
+      "255,240,191": 58,
+      "182,61,40": 0
+    },
+    "medallion": {
+      "255,198,90": 24,
+      "255,240,191": 4,
+      "182,61,40": 0
+    }
+  },
+  "ringChecks": [
+    {
+      "radius": 59.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 47.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 39.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 27.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 16.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 9.5,
+      "emptyRegions": 2
+    },
+    {
+      "radius": 4.5,
+      "emptyRegions": 2
+    }
+  ],
+  "style": "Reference-inspired fine luminous contours, whole-stroke color hierarchy, no beveled edge shading",
+  "continuousBorders": "Seven isolated ring masks each have exactly two empty regions: center and exterior, no pinholes",
+  "regularRunes": "Fine upright strokes within the existing 7x7 structure; 3x3 medallions, 5x5 center marks; outer 16",
+  "uprightGlyphs": "Exact atlas colors/positions checked at rest and while orbiting; rotation 0",
+  "nativeSourcePixelMapping": "pass",
+  "wholeInnerCompletedAt50": "pass",
+  "separateLayers": "pass",
+  "innerOpaquePixels": 1112,
+  "outerOpaquePixels": 891,
+  "fullCircumferenceAtPartialCharge": "pass",
+  "scaledBoundary": "pass",
+  "oppositeOrbits": "pass",
+  "pauseResume": "pass",
+  "rendering": "offline same-JavaScript Canvas pixel adapter",
+  "sampling": "Preview uses forward pixel coverage and bridges transformed neighbors for fine strokes; this is not standard Unity sprite sampling",
+  "limitations": "Browser DOM/layout and Unity import/Play Mode not run. Proposed 20 PPU remains unapplied. Runtime integration must use split art for upright glyphs and validate matching thin-stroke sampling. Fine strokes need actual-camera and small-scale acceptance."
+}

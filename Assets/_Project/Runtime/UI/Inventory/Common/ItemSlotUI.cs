@@ -48,6 +48,7 @@ public class ItemSlotUI : MonoBehaviour,
     private Sprite defaultBackgroundSprite;
     private Color defaultBackgroundColor;
     private bool chestSelectionOverlay;
+    private bool useChestRarityBorder;
     private bool selectionBlocked;
     private UnityEngine.UI.Graphic selectionHighlightGraphic;
     private Color defaultHighlightColor;
@@ -128,7 +129,7 @@ public class ItemSlotUI : MonoBehaviour,
             container.OnChanged -= Refresh;
     }
 
-    public void Bind(IItemContainer container, int index)
+    public void Bind(IItemContainer container, int index, bool useChestRarityBorder = false)
     {
         EnsurePresentationInitialized();
         if (this.container != null)
@@ -136,6 +137,7 @@ public class ItemSlotUI : MonoBehaviour,
 
         this.container = container;
         this.index = index;
+        this.useChestRarityBorder = useChestRarityBorder;
         isPointerOver = false;
         isPointerPressed = false;
         isDraggingThisSlot = false;
@@ -163,6 +165,7 @@ public class ItemSlotUI : MonoBehaviour,
         index = -1;
         selectionClicked = null;
         chestSelectionOverlay = false;
+        useChestRarityBorder = false;
         wasChestReturnCandidate = false;
         SetSelectionBlocked(false);
         isPointerOver = false;
@@ -194,7 +197,7 @@ public class ItemSlotUI : MonoBehaviour,
         }
 
         var so = container.Get(index);
-        if (itemTypeBorder != null) itemTypeBorder.SetItem(so);
+        if (itemTypeBorder != null) itemTypeBorder.SetItem(so, useChestRarityBorder);
         RestoreDefaultBackground();
         RefreshHoverHighlight(so);
 

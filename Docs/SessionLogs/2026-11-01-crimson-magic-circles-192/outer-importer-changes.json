@@ -1,0 +1,27 @@
+[
+  {
+    "line": 140,
+    "before": "width: 128",
+    "after": "width: 192"
+  },
+  {
+    "line": 141,
+    "before": "height: 128",
+    "after": "height: 192"
+  },
+  {
+    "line": 172,
+    "before": "width: 128",
+    "after": "width: 192"
+  },
+  {
+    "line": 173,
+    "before": "height: 128",
+    "after": "height: 192"
+  },
+  {
+    "line": 184,
+    "before": "canvasSize: {x: 128, y: 128}",
+    "after": "canvasSize: {x: 192, y: 192}"
+  }
+]

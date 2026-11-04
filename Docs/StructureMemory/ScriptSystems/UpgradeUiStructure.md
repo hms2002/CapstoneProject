@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-31
+last_reviewed: 2026-10-31
 ---
 
 # Upgrade UI Structure
@@ -12,6 +12,8 @@ last_reviewed: 2026-05-31
 Map the upgrade tree UI navigation and purchase feedback flow after the overflow-arrow and warning-popup additions.
 
 ## Current Structure
+
+- The completed-upgrade popup now shares the approved decorated Aseprite skin with affection rewards in the main `Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab` (`RewardCanvas/RewardPanel/RewardUI`). The existing grant/service queue and close callbacks are unchanged. This replaces the completion popup's authored layout/artwork, not the upgrade tree. See [Inventory and Chest UI memory](InventoryAndChestUIStructure.md#approved-stats-potion-and-shared-reward-artwork-2026-10-31) for asset paths, layout and animation ownership.
 
 - `UpgradeTreeUI` builds node buttons and lines from `UpgradeManager.GetAllUpgrades()`.
 - `UpgradeTreeUI` owns content sizing, cursor-centered wheel zoom, clamp/pan behavior, lake presentation hooks, and optional authored overflow arrow buttons.

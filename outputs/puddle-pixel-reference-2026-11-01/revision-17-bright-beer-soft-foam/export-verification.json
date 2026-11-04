@@ -1,0 +1,162 @@
+{
+  "preserved_fire_files": [
+    "airborne-flame-particle-frame-1.png",
+    "airborne-flame-particle-frame-2.png",
+    "airborne-flame-particle-frame-3.png",
+    "airborne-flame-particle-frame-4.png",
+    "airborne-flame-particle-frame-5.png",
+    "airborne-flame-particle-frame-6.png",
+    "airborne-flame-particle-frame-7.png",
+    "airborne-flame-particle-frame-8.png",
+    "airborne-flame-particle-sheet.png",
+    "airborne-flame-particle.aseprite",
+    "airborne-flame-particle.gif",
+    "fire-ground-frame-1.png",
+    "fire-ground-frame-2.png",
+    "fire-ground-frame-3.png",
+    "fire-ground-frame-4.png",
+    "fire-ground-sheet.png",
+    "fire-ground.aseprite",
+    "fire-ground.gif",
+    "ground-flame-particle-frame-1.png",
+    "ground-flame-particle-frame-2.png",
+    "ground-flame-particle-frame-3.png",
+    "ground-flame-particle-frame-4.png",
+    "ground-flame-particle-frame-5.png",
+    "ground-flame-particle-frame-6.png",
+    "ground-flame-particle-frame-7.png",
+    "ground-flame-particle-frame-8.png",
+    "ground-flame-particle-sheet.png",
+    "ground-flame-particle.aseprite",
+    "ground-flame-particle.gif"
+  ],
+  "existing_game_bubble_sha256": "c82af4ad9460af80fca161f8cf0239123aa32e1edc921f9dec5ab4131dc16d68",
+  "beer_body_and_ripple_alpha_unchanged": true,
+  "beer_footprint_unchanged": true,
+  "surface_foam_reauthored_with_softer_alpha": true,
+  "flattened_beer_alpha_levels": [
+    0,
+    166,
+    204,
+    227,
+    246,
+    255
+  ],
+  "beer_average_RGB_brightness_increase_per_frame": [
+    29.709,
+    29.747,
+    29.569,
+    29.77
+  ],
+  "ignition_burned_pixels_per_frame": [
+    0,
+    9,
+    42,
+    93,
+    165,
+    262,
+    376,
+    513,
+    666,
+    847,
+    1046,
+    1263,
+    1454,
+    1579,
+    1619,
+    1625
+  ],
+  "ignition_endpoints_exact": true,
+  "bubble_active_count": [
+    2,
+    3
+  ],
+  "foam_peak_sizes": {
+    "bubble-particle": [
+      4,
+      4
+    ],
+    "bubble-particle-small": [
+      3,
+      3
+    ],
+    "bubble-particle-soft": [
+      5,
+      5
+    ]
+  },
+  "foam_partial_alpha_and_sparse_glints": true,
+  "bubble_trajectories_unchanged": true,
+  "center_ignition_mask_and_timing_unchanged": true,
+  "native_sources": {
+    "alcohol": {
+      "frames": 4,
+      "width": 64,
+      "height": 64,
+      "depth": 32
+    },
+    "bubble-particle": {
+      "frames": 5,
+      "width": 8,
+      "height": 8,
+      "depth": 32
+    },
+    "bubble-particle-small": {
+      "frames": 5,
+      "width": 8,
+      "height": 8,
+      "depth": 32
+    },
+    "bubble-particle-soft": {
+      "frames": 5,
+      "width": 8,
+      "height": 8,
+      "depth": 32
+    },
+    "alcohol-to-fire-center": {
+      "frames": 16,
+      "width": 64,
+      "height": 64,
+      "depth": 32
+    }
+  },
+  "preview_gifs": {
+    "comparison-preview": {
+      "size": [
+        608,
+        320
+      ],
+      "frames": 160,
+      "duration_ms": 3200,
+      "first_frame_max_RGB_quantization_error": 0
+    },
+    "alcohol-with-bubbles-preview": {
+      "size": [
+        320,
+        320
+      ],
+      "frames": 160,
+      "duration_ms": 3200,
+      "first_frame_max_RGB_quantization_error": 1
+    },
+    "center-ignition-preview": {
+      "size": [
+        320,
+        320
+      ],
+      "frames": 240,
+      "duration_ms": 4800,
+      "first_frame_max_RGB_quantization_error": 1
+    },
+    "beer-before-after-preview": {
+      "size": [
+        640,
+        320
+      ],
+      "frames": 160,
+      "duration_ms": 3200,
+      "first_frame_max_RGB_quantization_error": 1
+    }
+  },
+  "unity_import_compile_playmode": "not executed; sample assets only"
+}

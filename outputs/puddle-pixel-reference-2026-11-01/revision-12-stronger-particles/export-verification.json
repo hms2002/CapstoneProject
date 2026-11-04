@@ -1,0 +1,67 @@
+{
+  "ground_files_byte_identical": [
+    "fire-ground-frame-1.png",
+    "fire-ground-frame-2.png",
+    "fire-ground-frame-3.png",
+    "fire-ground-frame-4.png",
+    "fire-ground-sheet.png",
+    "fire-ground.aseprite",
+    "fire-ground.gif"
+  ],
+  "particle_before": {
+    "max_visible_dimensions": [
+      3,
+      3
+    ],
+    "opaque_pixels_per_frame": [
+      4,
+      9,
+      9,
+      6,
+      4,
+      2,
+      1,
+      0
+    ]
+  },
+  "particle_after": {
+    "max_visible_dimensions": [
+      5,
+      6
+    ],
+    "opaque_pixels_per_frame": [
+      8,
+      14,
+      18,
+      14,
+      8,
+      5,
+      2,
+      0
+    ]
+  },
+  "emitters": 20,
+  "active_particles": 14,
+  "comparison-preview": {
+    "dimensions": [
+      608,
+      320
+    ],
+    "duration_ms": 3200
+  },
+  "fire-with-particles-preview": {
+    "dimensions": [
+      320,
+      320
+    ],
+    "duration_ms": 3200
+  },
+  "pixel-particle": {
+    "dimensions": [
+      8,
+      8
+    ],
+    "duration_ms": 640
+  },
+  "all_160_underlying_preview_frames_unchanged": "Aseprite image equality verified in author-particles.lua"
+}

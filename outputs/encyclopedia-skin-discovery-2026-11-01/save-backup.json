@@ -1,0 +1,32 @@
+[
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\\uc878\uc5c5\uc791\ud488\\CapstoneProject\\GameData_Slot1.json",
+    "backup": "C:\\Users\\nadom\\Desktop\\\uc878\uc5c5\uc791\ud488\\CapstoneProject\\outputs\\encyclopedia-skin-discovery-2026-11-01\\save-backup\\0.json",
+    "sha256": "ee4d99d13d59fe28a818d138978f88166b65c348db288f893f0b003734b590da"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\\uc878\uc5c5\uc791\ud488\\CapstoneProject\\GameData_Slot2.json",
+    "backup": "C:\\Users\\nadom\\Desktop\\\uc878\uc5c5\uc791\ud488\\CapstoneProject\\outputs\\encyclopedia-skin-discovery-2026-11-01\\save-backup\\1.json",
+    "sha256": "7a1dc80db0f70075ab467d27139929f946e8481174c4e9d35083270102e58ad1"
+  },
+  {
+    "path": "C:\\Users\\nadom\\Desktop\\\uc878\uc5c5\uc791\ud488\\CapstoneProject\\GameData_Slot3.json",
+    "backup": "C:\\Users\\nadom\\Desktop\\\uc878\uc5c5\uc791\ud488\\CapstoneProject\\outputs\\encyclopedia-skin-discovery-2026-11-01\\save-backup\\2.json",
+    "sha256": "6f52a9a4caf636c23d8d385e792bb68f610988a04a8bd996bea7e8c649db6999"
+  },
+  {
+    "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot1.json",
+    "backup": "C:\\Users\\nadom\\Desktop\\\uc878\uc5c5\uc791\ud488\\CapstoneProject\\outputs\\encyclopedia-skin-discovery-2026-11-01\\save-backup\\3.json",
+    "sha256": "ee4d99d13d59fe28a818d138978f88166b65c348db288f893f0b003734b590da"
+  },
+  {
+    "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot2.json",
+    "backup": "C:\\Users\\nadom\\Desktop\\\uc878\uc5c5\uc791\ud488\\CapstoneProject\\outputs\\encyclopedia-skin-discovery-2026-11-01\\save-backup\\4.json",
+    "sha256": "d92eed72af322272171c4dbd02d8ee2022ae41faf962340d61d318156bde7d68"
+  },
+  {
+    "path": "C:\\Users\\nadom\\AppData\\LocalLow\\DefaultCompany\\Capstone_Project\\GameSave_Slot3.json",
+    "backup": "C:\\Users\\nadom\\Desktop\\\uc878\uc5c5\uc791\ud488\\CapstoneProject\\outputs\\encyclopedia-skin-discovery-2026-11-01\\save-backup\\5.json",
+    "sha256": "6f52a9a4caf636c23d8d385e792bb68f610988a04a8bd996bea7e8c649db6999"
+  }
+]
