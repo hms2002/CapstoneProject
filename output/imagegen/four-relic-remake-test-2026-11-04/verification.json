@@ -1,0 +1,176 @@
+{
+  "date": "2026-11-04",
+  "mode": "drafts only",
+  "tool": "built-in image_gen",
+  "generation_calls": 4,
+  "items": [
+    {
+      "index": 1,
+      "name": "독한 술기운",
+      "file": "01-drunken-rush-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#8A5E40",
+        "#D49C73",
+        "#E9CEA1",
+        "#F1E9D4",
+        "#F2F9F8"
+      ],
+      "opaque_color_count": 6,
+      "palette_matches_supplied_image": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "0ed735138a50551f9a0087c87860c79a61ac461dbfdc46b52a8bc607d08408bd"
+    },
+    {
+      "index": 2,
+      "name": "송골매의 증표",
+      "file": "02-hawk-emblem-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        32,
+        0,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#8A5E40",
+        "#C2C2C2",
+        "#D49C73",
+        "#E9CEA1",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "palette_matches_supplied_image": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "f1fad628abd03c1f8c6f80f25437a2d0771d08b5a6f264a0726dbcb40586aa94"
+    },
+    {
+      "index": 3,
+      "name": "달리는 장부",
+      "file": "03-running-ledger-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#8A5E40",
+        "#AB6E7C",
+        "#D49C73",
+        "#E9CEA1",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "palette_matches_supplied_image": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        3,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "bf31ed38c74098c4e75c0fb71236957df1ad7987f8354f9cf60d6fe6f796eee6"
+    },
+    {
+      "index": 4,
+      "name": "회전하는 철구",
+      "file": "04-rotating-iron-balls-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#62494C",
+        "#75656A",
+        "#978C8E",
+        "#C2C2C2",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "palette_matches_supplied_image": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        3,
+        2,
+        3,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "93c4edfa1cf7dcdda232f5b21b9f80240231ebeb8157f303ede14b626b606d50"
+    }
+  ],
+  "sheet_size": [
+    64,
+    64
+  ],
+  "layout": "2x2 in user-specified order",
+  "preview_size": [
+    512,
+    512
+  ],
+  "sheet_matches_individual_files": true,
+  "preview_exact_nearest_8x": true,
+  "protected_project_files_unchanged": 388,
+  "project_applied": false,
+  "unity_import_compile_playmode": "not executed",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged by this task",
+  "ErrorLog": "unchanged by this task",
+  "DecisionLog": "unchanged by this task",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "markdown_links_verified": 9
+}

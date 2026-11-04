@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-03",
+  "total": 21,
+  "replaced": 20,
+  "retained": 1,
+  "source_files_preserved": 88,
+  "rendered_icons_pixels_verified": 21,
+  "native_copies_byte_equal": 21,
+  "markdown_links_verified": 44,
+  "project_assets_changed": false,
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged by this task",
+  "ErrorLog": "unchanged by this task",
+  "DecisionLog": "unchanged by this task",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "unity_verification": "not executed"
+}

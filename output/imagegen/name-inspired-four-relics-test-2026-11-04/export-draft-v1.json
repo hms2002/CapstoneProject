@@ -1,0 +1,102 @@
+[
+  {
+    "key": "01-strong-liquor",
+    "name": "독한 술기운",
+    "native": "01-strong-liquor-draft-v1-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-77d40619-a0c0-4a39-b9ea-4203b0e8e0d6.png",
+    "sourceMaterialBounds": [
+      237,
+      185,
+      1060,
+      1072
+    ],
+    "materialSize": [
+      22,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#8A5E40",
+      "#D49C73",
+      "#E09656",
+      "#C2C2C2",
+      "#F1E9D4"
+    ]
+  },
+  {
+    "key": "02-gale-tablet",
+    "name": "질풍의 석판",
+    "native": "02-gale-tablet-draft-v1-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-1adb812f-be82-44d7-b7cc-f524aceab66d.png",
+    "sourceMaterialBounds": [
+      257,
+      159,
+      996,
+      1137
+    ],
+    "materialSize": [
+      18,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#65725F",
+      "#978C8E",
+      "#C2C2C2",
+      "#5DA16E",
+      "#B1D368"
+    ]
+  },
+  {
+    "key": "03-worn-whetstone",
+    "name": "낡은 숫돌",
+    "native": "03-worn-whetstone-draft-v1-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-7e27711e-0194-46d8-9883-e80ead2b3db7.png",
+    "sourceMaterialBounds": [
+      169,
+      207,
+      1113,
+      1119
+    ],
+    "materialSize": [
+      24,
+      23
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#62494C",
+      "#75656A",
+      "#978C8E",
+      "#C2C2C2",
+      "#F1E9D4"
+    ]
+  },
+  {
+    "key": "04-focus-lens",
+    "name": "집중의 렌즈",
+    "native": "04-focus-lens-draft-v1-32x32.png",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-a331f546-7319-413e-9e7e-b0e9f69d67d2.png",
+    "sourceMaterialBounds": [
+      231,
+      157,
+      1072,
+      1109
+    ],
+    "materialSize": [
+      21,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#E09656",
+      "#EECF5A",
+      "#436794",
+      "#77BCD6",
+      "#B1DECF"
+    ]
+  }
+]

@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-04",
+  "mode": "four draft remakes, no project application",
+  "tool": "built-in image_gen",
+  "generation_calls": 4,
+  "delivery": "individual 32x32 transparent PNGs and a 64x64 2x2 sheet in user-specified order",
+  "constraints": "provided palette only, two-pixel outline, minimum two-pixel transparent margins, simplified design",
+  "tasks": [
+    {
+      "key": "01-drunken-rush",
+      "name": "독한 술기운",
+      "definition": "RD_DrunkenRush.asset",
+      "source": "Icon_DrunkenRush.png",
+      "palette": [
+        "#363232",
+        "#8A5E40",
+        "#D49C73",
+        "#E9CEA1",
+        "#F1E9D4",
+        "#F2F9F8"
+      ],
+      "prompt": "Use case: style-transfer.\nAsset type: ONE tiny 32x32 fantasy roguelike inventory relic icon, a clean remake of the existing icon.\nInput image 1 is the EDIT TARGET: preserve its recognizable object design, general proportions and orientation while simplifying. Input image 2 is a STYLE reference only: match its chunky square pixels, broad flat connected color areas, clean stepped curves, strong charcoal contour and restrained highlights. Do not copy the boot or wing shape. Input image 3 is the allowed COLOR PALETTE, not an object to draw.\nLogical canvas EXACTLY 32x32. Deliberately coarse pixels, not a high-detail picture reduced later. A consistent TWO logical pixel thick #363232 charcoal outline around the full silhouette. Every visible pixel INCLUDING OUTLINE stays within x=2..29,y=2..29, so leave at least TWO transparent logical pixels on all four sides. Preserve natural proportions, never stretch to fill the square. Make the small object fill the available area comfortably without losing the margins.\nUse a few large purposeful color clusters, one or two simple shading planes. Absolutely no gradients, dithering, fine texture, speckling, decorative engraving, realistic gloss, anti-aliasing, blur, cast shadow, external glow, free particles or motion streaks. No added flames, electricity, wings, eyes or face.\nBackground genuinely transparent. Exactly ONE isolated centered icon. No text, number, label, grid, frame or scene. Enlarged rendering must look like an integer enlargement of a low-resolution sprite with uniform square pixels.\n\nSubject: FROTHING ALE MUG, preserving the existing target. A compact sturdy tan-brown wooden drinking mug with a small stout handle on the RIGHT and a large soft LOBED MASS of pale foam rising from its mouth. Foam and mug join into one clear silhouette. The lower mug stays broad and solid, with one simple pale band near the lower middle and a darker base; no many stave lines or little rivets. Keep foam as two or three large connected rounded lobes, not dozens of bubbles. The handle is short, thick and legible. It should still look like the same beer mug relic.\nUse ONLY these SIX colors including outline: #363232 charcoal outline; #8A5E40 dark brown; #D49C73 tan; #E9CEA1 light warm tan; #F1E9D4 cream foam shade; #F2F9F8 pale foam. Use all six in flat clusters, with pale foam concentrated at the top. No tiny colored flecks in the foam."
+    },
+    {
+      "key": "02-hawk-emblem",
+      "name": "송골매의 증표",
+      "definition": "RD_HawkEmblem.asset",
+      "source": "Icon_HawkEmblem.png",
+      "palette": [
+        "#363232",
+        "#8A5E40",
+        "#D49C73",
+        "#E9CEA1",
+        "#F1E9D4",
+        "#C2C2C2"
+      ],
+      "prompt": "Use case: style-transfer.\nAsset type: ONE tiny 32x32 fantasy roguelike inventory relic icon, a clean remake of the existing icon.\nInput image 1 is the EDIT TARGET: preserve its recognizable object design, general proportions and orientation while simplifying. Input image 2 is a STYLE reference only: match its chunky square pixels, broad flat connected color areas, clean stepped curves, strong charcoal contour and restrained highlights. Do not copy the boot or wing shape. Input image 3 is the allowed COLOR PALETTE, not an object to draw.\nLogical canvas EXACTLY 32x32. Deliberately coarse pixels, not a high-detail picture reduced later. A consistent TWO logical pixel thick #363232 charcoal outline around the full silhouette. Every visible pixel INCLUDING OUTLINE stays within x=2..29,y=2..29, so leave at least TWO transparent logical pixels on all four sides. Preserve natural proportions, never stretch to fill the square. Make the small object fill the available area comfortably without losing the margins.\nUse a few large purposeful color clusters, one or two simple shading planes. Absolutely no gradients, dithering, fine texture, speckling, decorative engraving, realistic gloss, anti-aliasing, blur, cast shadow, external glow, free particles or motion streaks. No added flames, electricity, wings, eyes or face.\nBackground genuinely transparent. Exactly ONE isolated centered icon. No text, number, label, grid, frame or scene. Enlarged rendering must look like an integer enlargement of a low-resolution sprite with uniform square pixels.\n\nSubject: FALCON TALON CHARM ON A LEATHER LOOP, preserving the existing target's loop-and-curved-white-charm design. A thick brown leather loop curves around the LEFT and over the top. One stout curved ivory talon charm hangs at the LOWER RIGHT from a small tan attachment. The talon is a short, broad, gently hooked pale piece with a blunt upper mounting and one tapered lower-right tip, not a long thin feather or a whole bird. A single broad gray side plane gives it thickness. The leather loop has a large clear open center and two simple brown/tan planes; make it thick and compact enough to remain readable at 32 pixels. One loop and one charm, no multiple necklace strands, tiny knots, face, bird head, eye, beak or extra feather details.\nUse ONLY these SIX colors including outline: #363232 charcoal; #8A5E40 dark brown; #D49C73 tan; #E9CEA1 pale warm leather accent; #F1E9D4 ivory charm; #C2C2C2 gray charm side plane. Use all six, with brown on the loop and broad ivory/gray planes on the charm."
+    },
+    {
+      "key": "03-running-ledger",
+      "name": "달리는 장부",
+      "definition": "RD_RunningLedger.asset",
+      "source": "Icon_RunningLedger.png",
+      "palette": [
+        "#363232",
+        "#8A5E40",
+        "#D49C73",
+        "#E9CEA1",
+        "#F1E9D4",
+        "#AB6E7C"
+      ],
+      "prompt": "Use case: style-transfer.\nAsset type: ONE tiny 32x32 fantasy roguelike inventory relic icon, a clean remake of the existing icon.\nInput image 1 is the EDIT TARGET: preserve its recognizable object design, general proportions and orientation while simplifying. Input image 2 is a STYLE reference only: match its chunky square pixels, broad flat connected color areas, clean stepped curves, strong charcoal contour and restrained highlights. Do not copy the boot or wing shape. Input image 3 is the allowed COLOR PALETTE, not an object to draw.\nLogical canvas EXACTLY 32x32. Deliberately coarse pixels, not a high-detail picture reduced later. A consistent TWO logical pixel thick #363232 charcoal outline around the full silhouette. Every visible pixel INCLUDING OUTLINE stays within x=2..29,y=2..29, so leave at least TWO transparent logical pixels on all four sides. Preserve natural proportions, never stretch to fill the square. Make the small object fill the available area comfortably without losing the margins.\nUse a few large purposeful color clusters, one or two simple shading planes. Absolutely no gradients, dithering, fine texture, speckling, decorative engraving, realistic gloss, anti-aliasing, blur, cast shadow, external glow, free particles or motion streaks. No added flames, electricity, wings, eyes or face.\nBackground genuinely transparent. Exactly ONE isolated centered icon. No text, number, label, grid, frame or scene. Enlarged rendering must look like an integer enlargement of a low-resolution sprite with uniform square pixels.\n\nSubject: BOUND PARCHMENT LEDGER SCROLL, preserving the existing diagonal rolled-paper design. One compact cylindrical parchment roll lies diagonally from LOWER LEFT to UPPER RIGHT. Pale tan/cream parchment has two rolled ends with one broad simple curved fold indicating thickness at each end, and ONE broad muted-rose binding strap around the middle. Preserve its shape as rolled parchment, not a bound book. Give the overall roll enough body and width to be readable, with a clear barrel-like middle and neat two ends. No tiny spiral coils, writing, tally marks, fine paper fibers, dangling ribbon tails, wings or running legs. Exactly one scroll and one binding strap. Keep broad flat shading and a compact rounded silhouette.\nUse ONLY these SIX colors including outline: #363232 charcoal outline; #8A5E40 dark fold shade; #D49C73 tan shadow; #E9CEA1 parchment body; #F1E9D4 pale parchment face; #AB6E7C muted rose binding. Use all six deliberately. The pink-rose belt is a single clean wide band, without jewelry or a seal."
+    },
+    {
+      "key": "04-rotating-iron-balls",
+      "name": "회전하는 철구",
+      "definition": "RD_RotatingIornBall.asset",
+      "source": "Icon_RotatingIornBall.png",
+      "palette": [
+        "#363232",
+        "#62494C",
+        "#75656A",
+        "#978C8E",
+        "#C2C2C2",
+        "#F1E9D4"
+      ],
+      "prompt": "Use case: style-transfer.\nAsset type: ONE tiny 32x32 fantasy roguelike inventory relic icon, a clean remake of the existing icon.\nInput image 1 is the EDIT TARGET: preserve its recognizable object design, general proportions and orientation while simplifying. Input image 2 is a STYLE reference only: match its chunky square pixels, broad flat connected color areas, clean stepped curves, strong charcoal contour and restrained highlights. Do not copy the boot or wing shape. Input image 3 is the allowed COLOR PALETTE, not an object to draw.\nLogical canvas EXACTLY 32x32. Deliberately coarse pixels, not a high-detail picture reduced later. A consistent TWO logical pixel thick #363232 charcoal outline around the full silhouette. Every visible pixel INCLUDING OUTLINE stays within x=2..29,y=2..29, so leave at least TWO transparent logical pixels on all four sides. Preserve natural proportions, never stretch to fill the square. Make the small object fill the available area comfortably without losing the margins.\nUse a few large purposeful color clusters, one or two simple shading planes. Absolutely no gradients, dithering, fine texture, speckling, decorative engraving, realistic gloss, anti-aliasing, blur, cast shadow, external glow, free particles or motion streaks. No added flames, electricity, wings, eyes or face.\nBackground genuinely transparent. Exactly ONE isolated centered icon. No text, number, label, grid, frame or scene. Enlarged rendering must look like an integer enlargement of a low-resolution sprite with uniform square pixels.\n\nSubject: TWO CONNECTED IRON BALLS, preserving the existing target. A pair of thick round steel spheres touch through a very short stout connector, arranged diagonally with one at LOWER LEFT and one at UPPER RIGHT. Keep BOTH spheres distinct, equally substantial and smoothly round with chunky stair-step boundaries. Each ball is shaded with two or three LARGE flat gray planes and one small pale flat highlight, giving simple volume. The connector is short and wide; do not make a long chain or a narrow dumbbell handle. Retain the target's compact linked pair, not one single orb. Avoid spikes, screw heads, segmented armor, crisscrossing stripes, many rings, holes, tiny rivets, detached orbit lines or flying particles. The two round masses should provide almost all visual detail.\nUse ONLY these SIX colors including outline: #363232 charcoal; #62494C deep muted shadow; #75656A dark gray; #978C8E medium gray; #C2C2C2 light gray; #F1E9D4 pale highlight. Use all six, keeping most of the metal in large connected gray planes. No glossy reflective streaks or white sparkle stars."
+    }
+  ]
+}

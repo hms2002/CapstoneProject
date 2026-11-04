@@ -1,0 +1,98 @@
+[
+  {
+    "key": "01-drunken-rush-new",
+    "name": "독한 술기운",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-8e989750-d694-4c6e-9959-bf68ed3d2b29.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      220,
+      184,
+      1092,
+      1122
+    ],
+    "material_bbox_method": "nearest selected palette excluding outline, alpha >= 200",
+    "palette": [
+      "#363232",
+      "#8A5E40",
+      "#D49C73",
+      "#E09656",
+      "#EECF5A",
+      "#F1E9D4"
+    ]
+  },
+  {
+    "key": "02-wind-tablet",
+    "name": "질풍의 석판",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-289f2f61-8871-454e-aba5-b6c360eb519a.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      309,
+      345,
+      946,
+      976
+    ],
+    "material_bbox_method": "nearest selected palette excluding outline, alpha >= 200",
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#C2C2C2",
+      "#F1E9D4",
+      "#B1D368",
+      "#56774A"
+    ]
+  },
+  {
+    "key": "03-worn-whetstone",
+    "name": "낡은 숫돌",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-9fdfaeb6-93a3-4e65-917b-36c3148426c3.png",
+    "size": [
+      1263,
+      1246
+    ],
+    "material_bbox": [
+      216,
+      205,
+      1095,
+      1060
+    ],
+    "material_bbox_method": "nearest selected palette excluding outline, alpha >= 200",
+    "palette": [
+      "#363232",
+      "#453C3C",
+      "#62494C",
+      "#75656A",
+      "#978C8E",
+      "#C2C2C2"
+    ]
+  },
+  {
+    "key": "04-focus-lens",
+    "name": "집중의 렌즈",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-23214d63-6758-4279-9b08-e9e8ddc04824.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      236,
+      186,
+      1011,
+      1077
+    ],
+    "material_bbox_method": "nearest selected palette excluding outline, alpha >= 200",
+    "palette": [
+      "#363232",
+      "#E09656",
+      "#EECF5A",
+      "#436794",
+      "#77BCD6",
+      "#F2F9F8"
+    ]
+  }
+]

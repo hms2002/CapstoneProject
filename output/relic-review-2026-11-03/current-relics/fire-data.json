@@ -1,0 +1,182 @@
+[
+  {
+    "name": "타오르는 심핵",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FireBonusRelic.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BlazingCore.png",
+    "sprite": "Icon_BlazingCore",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "c516ef40dcdd491ba98999b39c724230",
+    "fileID": "21300000",
+    "updated": true,
+    "effect": "화염 피해 증가",
+    "description": "화염 피해가 증가합니다.",
+    "category": "일반 화염"
+  },
+  {
+    "name": "불타는 깃털",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BurningFeather.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BurningFeather.png",
+    "sprite": "Icon_BurningFeather",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "042c17c7c4c74dab9e72ac90d1052c5b",
+    "fileID": "21300000",
+    "updated": true,
+    "effect": "모든 화상 부여량 증가",
+    "description": "모든 화상 부여량이 늘어납니다.",
+    "category": "일반 화염"
+  },
+  {
+    "name": "녹아내린 종",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_MeltedBell.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_MeltedBell.png",
+    "sprite": "Icon_MeltedBell",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "313804d7843f41bb9a0f29124fe36f32",
+    "fileID": "21300000",
+    "updated": true,
+    "effect": "화상 소모 주기 단축",
+    "description": "화상 소모 주기가 빨라집니다.",
+    "category": "일반 화염"
+  },
+  {
+    "name": "매캐한 향로",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SmokyIncense.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SmokyIncense.png",
+    "sprite": "Icon_SmokyIncense",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "cf8c0cc8be3a490789cfeca716c76092",
+    "fileID": "21300000",
+    "updated": true,
+    "effect": "화상 피해 계수 증가",
+    "description": "화상 피해 계수가 증가합니다.",
+    "category": "일반 화염"
+  },
+  {
+    "name": "홍련의 왕관",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKing.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonCrown.png",
+    "sprite": "Icon_CrimsonCrown",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "b9d08640b4e5410bbfb685ec1b03df98",
+    "fileID": "21300000",
+    "updated": true,
+    "effect": "적의 화상 중첩에 비례해\n화상 피해 증가",
+    "description": "적의 화상 중첩에 비례해 화상 피해가 증가합니다.",
+    "category": "일반 화염"
+  },
+  {
+    "name": "화룡의 송곳니",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ScorchingSong.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FireDragonFang.png",
+    "sprite": "Icon_FireDragonFang",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "49c9c24160c8403da198d9b0550e38c0",
+    "fileID": "21300000",
+    "updated": true,
+    "effect": "대상에게 화상이 없으면 화상 부여",
+    "description": "대상에게 화상이 없으면 화상을 부여합니다.",
+    "category": "일반 화염"
+  },
+  {
+    "name": "휴대용 화로",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_PortableBrazier.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_PortableBrazier.png",
+    "sprite": "Icon_PortableBrazier",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "e89d5d3835f94cc1a87d7c5f90187782",
+    "fileID": "21300000",
+    "updated": true,
+    "effect": "화상 중인 적에게 치명타 적중 시\n화상 1/2/3 부여 · 재사용 대기 0.5초",
+    "description": "화상 상태인 적에게 치명타 적중 시 화상을 1/2/3 부여합니다. (재사용 대기시간: 0.5초)",
+    "category": "일반 화염"
+  },
+  {
+    "name": "태양의 파편",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SunFragment.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SunFragment.png",
+    "sprite": "Icon_SunFragment",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "7717ecb9649f42b48c009dd9e3e2a197",
+    "fileID": "21300000",
+    "updated": true,
+    "effect": "주위를 회전하는 태양의 파편 생성",
+    "description": "주위를 회전하는 태양의 파편을 생성합니다.",
+    "category": "일반 화염"
+  },
+  {
+    "name": "한계선의 잔불 추격",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKillShot.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonKillShot.png",
+    "sprite": "Icon_CrimsonKillShot",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "d37464f1928f44fab39518a3553403c9",
+    "fileID": "21300000",
+    "updated": true,
+    "effect": "점화!로 처치 시 추적 화염탄 1개 생성\n대상 없으면 미생성 · 추가 생성 불가",
+    "description": "● {em:홍련의 한계선} 전용 유물\n● {em:점화!}로 적 처치 시 해당 위치에서 {em:추적 화염탄} {val:1개} 생성\n● 화염탄은 가까운 적을 추적\n● 추적할 적이 없으면 생성되지 않으며, 추적 화염탄으로는 {neg:추가 생성 불가}",
+    "category": "무기 전용"
+  },
+  {
+    "name": "한계선의 관통 용암",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonLavaBall.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CrimsonLavaBall.png",
+    "sprite": "Icon_CrimsonLavaBall",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "bf5fcc2b9ddb48ee94684d1099aa3de9",
+    "fileID": "21300000",
+    "updated": true,
+    "effect": "대폭발!을 관통 용암구 발사로 전환\n기존 피해·크기 유지 · 벽 충돌 시 소멸",
+    "description": "● {em:홍련의 한계선} 전용 유물\n● {em:대폭발!}이 적을 관통하는 {em:거대 용암구 발사}로 전환\n● 대폭발!의 피해와 크기 유지\n● 용암구 속도는 기본 공격 투사체의 {val:75%}\n● 벽에 닿으면 소멸",
+    "category": "무기 전용"
+  }
+]

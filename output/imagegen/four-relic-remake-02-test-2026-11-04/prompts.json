@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-04",
+  "tool": "built-in image_gen",
+  "mode": "drafts only",
+  "generation_calls": 4,
+  "delivery": "four individual 32x32 PNGs, one 64x64 2x2 sheet",
+  "scope": "Redesign Drunken Rush as a clear tankard, remake Wind Tablet, Worn Whetstone and Focus Lens",
+  "tasks": [
+    {
+      "key": "01-drunken-rush-new",
+      "name": "독한 술기운",
+      "definition": "RD_DrunkenRush.asset",
+      "target": null,
+      "palette": [
+        "#363232",
+        "#8A5E40",
+        "#D49C73",
+        "#E09656",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "prompt": "Use case: stylized-concept, redesign from scratch.\nInput 1 is STYLE reference only. Input 2 is the allowed PALETTE reference.\nAsset: ONE 32x32 pixel-art inventory relic for a fantasy 2D roguelike.\nMatch the supplied winged-boot STYLE reference: deliberately coarse square pixels, chunky clean silhouette, broad connected FLAT color planes and very restrained highlights. Do not copy its boot or wing shape. Use colors exclusively from the supplied palette card.\nIntended logical canvas EXACTLY 32x32. A uniform TWO logical pixel charcoal #363232 outline surrounds the full object. All visible object pixels INCLUDING OUTLINE lie within x=2..29,y=2..29, leaving at least TWO completely transparent logical pixels on ALL FOUR sides. Preserve natural proportions, never stretch to fill. Pixel squares must all have the same size if shown enlarged.\nExactly ONE isolated centered icon on a genuinely transparent background. No text, labels, letters, numbers, frame, grid, scenery, shadow on the ground, detached particles, external glow, gradients, dithering, texture noise, realistic gloss, blur or anti-aliasing. Use a few large purposeful color regions; interior detail is sparse and easily readable at 32 pixels. Do not turn material shading into little shiny speckles.\n\nSubject: A CLASSIC ALE TANKARD that is unmistakably a DRINKING MUG. The previous icon had an oversized mound of foam and did not read as a mug; redesign the proportions completely.\nCreate an upright sturdy brown/tan wooden mug seen slightly from above. The CYLINDRICAL VESSEL itself occupies at least THREE QUARTERS of the height. A thick oval rim clearly surrounds a visible top opening with AMBER ALE inside. Add only a LOW thin patch of cream foam, at most TWO logical pixels tall along a small part of the back-left rim; most of the oval amber liquid surface remains visible.\nThe RIGHT SIDE has a very prominent thick C-shaped handle with a clearly OPEN central hole. Make the opening broad enough to remain legible after the two-pixel outline, not a tiny black dot. The handle joins the vessel at upper and lower points, forming the familiar mug silhouette. The body has nearly straight sides, a gently rounded flat bottom, ONE simple lower band, a broad tan front face and a darker brown side. Keep the body broad and stable, not tapered into a cone. No many vertical stave lines, screws or ornamental engravings.\nUse ONLY these SIX colors including outline: #363232 charcoal; #8A5E40 dark brown body/shadow; #D49C73 tan body; #E09656 amber ale/orange band; #EECF5A golden ale highlight; #F1E9D4 SMALL low foam patch. It should read as a tankard full of drink, with the rim, handle and body immediately clear. No ice-cream mound, big foam cloud, whipped cream, flames, smoke, cup face, saucer, bottle, barrel or goblet stem."
+    },
+    {
+      "key": "02-wind-tablet",
+      "name": "질풍의 석판",
+      "definition": "RD_WindTablet.asset",
+      "target": "reference-02-wind-tablet.png",
+      "palette": [
+        "#363232",
+        "#75656A",
+        "#C2C2C2",
+        "#F1E9D4",
+        "#B1D368",
+        "#56774A"
+      ],
+      "prompt": "Use case: style-transfer.\nInput 1 is the original tablet EDIT TARGET. Input 2 is STYLE only. Input 3 is the allowed PALETTE.\nAsset: ONE 32x32 pixel-art inventory relic for a fantasy 2D roguelike.\nMatch the supplied winged-boot STYLE reference: deliberately coarse square pixels, chunky clean silhouette, broad connected FLAT color planes and very restrained highlights. Do not copy its boot or wing shape. Use colors exclusively from the supplied palette card.\nIntended logical canvas EXACTLY 32x32. A uniform TWO logical pixel charcoal #363232 outline surrounds the full object. All visible object pixels INCLUDING OUTLINE lie within x=2..29,y=2..29, leaving at least TWO completely transparent logical pixels on ALL FOUR sides. Preserve natural proportions, never stretch to fill. Pixel squares must all have the same size if shown enlarged.\nExactly ONE isolated centered icon on a genuinely transparent background. No text, labels, letters, numbers, frame, grid, scenery, shadow on the ground, detached particles, external glow, gradients, dithering, texture noise, realistic gloss, blur or anti-aliasing. Use a few large purposeful color regions; interior detail is sparse and easily readable at 32 pixels. Do not turn material shading into little shiny speckles.\n\nSubject: WIND TABLET. Preserve the target's upright thick rectangular stone slab with a small green side attachment at lower RIGHT. Give it a broad pale gray front and one darker thick left side, with slightly worn/chamfered corners. Make it a solid stone relic, not paper or a book.\nOn the front, place exactly THREE simple broad incised strokes suggesting curling WIND: a few connected stepped horizontal grooves with one subtle hooked end. They are an abstract icon, not letters or a dense inscription. Keep the marks grouped in the center and generous blank stone around them. One tiny green cloth/talisman tab is tucked at the lower-right side, short and chunky, with two flat green planes. No trailing thin ribbon, detached leaves, external wind effects or many cracks. A single pale edge plane may indicate the slab thickness.\nUse ONLY SIX colors including outline: #363232 charcoal outline/engraved grooves; #75656A gray stone side; #C2C2C2 pale gray front; #F1E9D4 small light edge; #B1D368 bright green tab; #56774A green tab shadow. Clean large areas and deliberate steps."
+    },
+    {
+      "key": "03-worn-whetstone",
+      "name": "낡은 숫돌",
+      "definition": "RD_WornWhetstone.asset",
+      "target": "reference-03-worn-whetstone.png",
+      "palette": [
+        "#363232",
+        "#453C3C",
+        "#62494C",
+        "#75656A",
+        "#978C8E",
+        "#C2C2C2"
+      ],
+      "prompt": "Use case: style-transfer.\nInput 1 is the original whetstone EDIT TARGET. Input 2 is STYLE only. Input 3 is the allowed PALETTE.\nAsset: ONE 32x32 pixel-art inventory relic for a fantasy 2D roguelike.\nMatch the supplied winged-boot STYLE reference: deliberately coarse square pixels, chunky clean silhouette, broad connected FLAT color planes and very restrained highlights. Do not copy its boot or wing shape. Use colors exclusively from the supplied palette card.\nIntended logical canvas EXACTLY 32x32. A uniform TWO logical pixel charcoal #363232 outline surrounds the full object. All visible object pixels INCLUDING OUTLINE lie within x=2..29,y=2..29, leaving at least TWO completely transparent logical pixels on ALL FOUR sides. Preserve natural proportions, never stretch to fill. Pixel squares must all have the same size if shown enlarged.\nExactly ONE isolated centered icon on a genuinely transparent background. No text, labels, letters, numbers, frame, grid, scenery, shadow on the ground, detached particles, external glow, gradients, dithering, texture noise, realistic gloss, blur or anti-aliasing. Use a few large purposeful color regions; interior detail is sparse and easily readable at 32 pixels. Do not turn material shading into little shiny speckles.\n\nSubject: WORN WHETSTONE. Preserve the target's thick elongated rectangular grinding stone in three-quarter view, oriented diagonally from lower LEFT front end to upper RIGHT far end. It is a SUBSTANTIAL rectangular block with a broad visible top plane, a dark long right side and a small front end plane. Show convincing thickness using only THREE main large planes.\nThe old stone has gently rounded/chipped corners, ONE broad shallow worn depression along the top and at most ONE simple corner chip. Make the worn depression a single clean inset region with two or three deliberate steps, not a network of scratches. This is dense matte stone, without glow or metallic shine. Keep the rectangular silhouette readable and the side face broad, not a thin blade, slab of shiny metal or tall pillar. No base, mounting, handle, writing, sparks or floating dust.\nUse ONLY these SIX colors including outline: #363232 charcoal outline; #453C3C deep side shadow; #62494C subdued deepest worn/front shade; #75656A dark stone face; #978C8E mid-gray top; #C2C2C2 a small broad worn edge plane. Most of the block stays in flat gray material areas; highlights are restrained."
+    },
+    {
+      "key": "04-focus-lens",
+      "name": "집중의 렌즈",
+      "definition": "RD_FocusLens.asset",
+      "target": "reference-04-focus-lens.png",
+      "palette": [
+        "#363232",
+        "#E09656",
+        "#EECF5A",
+        "#436794",
+        "#77BCD6",
+        "#F2F9F8"
+      ],
+      "prompt": "Use case: style-transfer.\nInput 1 is the original focus lens EDIT TARGET. Input 2 is STYLE only. Input 3 is the allowed PALETTE.\nAsset: ONE 32x32 pixel-art inventory relic for a fantasy 2D roguelike.\nMatch the supplied winged-boot STYLE reference: deliberately coarse square pixels, chunky clean silhouette, broad connected FLAT color planes and very restrained highlights. Do not copy its boot or wing shape. Use colors exclusively from the supplied palette card.\nIntended logical canvas EXACTLY 32x32. A uniform TWO logical pixel charcoal #363232 outline surrounds the full object. All visible object pixels INCLUDING OUTLINE lie within x=2..29,y=2..29, leaving at least TWO completely transparent logical pixels on ALL FOUR sides. Preserve natural proportions, never stretch to fill. Pixel squares must all have the same size if shown enlarged.\nExactly ONE isolated centered icon on a genuinely transparent background. No text, labels, letters, numbers, frame, grid, scenery, shadow on the ground, detached particles, external glow, gradients, dithering, texture noise, realistic gloss, blur or anti-aliasing. Use a few large purposeful color regions; interior detail is sparse and easily readable at 32 pixels. Do not turn material shading into little shiny speckles.\n\nSubject: FOCUS LENS. Preserve the target's large ROUND BLUE LENS enclosed by a thick GOLDEN circular rim and a SHORT sturdy handle extending toward lower LEFT. The lens is the dominant mass and the handle is only about one quarter of the object's length. Give the rim simple two-plane golden volume without tiny little gem studs or layered narrow borders.\nThe glass is mostly one broad pale blue face with ONE dark blue crescent side plane and ONE small flat pale reflection in the upper-left quadrant. It should read as a magnifying lens or handheld focusing lens. Keep the reflection a simple two- or three-pixel cluster, not a star or many diagonal streaks. The blue interior stays open and clear with no symbol or picture. A slight three-quarter tilt can show rim thickness while the circular silhouette stays broad and compact.\nUse ONLY these SIX colors including outline: #363232 charcoal; #E09656 orange rim/handle shade; #EECF5A golden rim/handle; #436794 dark blue glass side; #77BCD6 blue glass face; #F2F9F8 small pale reflection. No glowing orb, electricity, lightning symbol, flames, chain, extra rings, runes or tiny texture."
+    }
+  ]
+}
