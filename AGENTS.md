@@ -136,8 +136,11 @@ Use a balanced documentation policy: small local fixes usually need only `Sessio
 
 ### SessionLogs
 
-Use `Docs/SessionLogs/YYYY-MM-DD.md` for what actually changed in the current task.
+Use `Docs/SessionLogs/YYYY-MM-DD-<github-login>-<task-id>.md` for new session logs.
 
+- Use the date the log is first created and the task author's GitHub login. Use the login supplied by the author or confirmed for their account (e.g. `gh api user --jq .login`). If it is unknown, ask the author before creating the log.
+- Use the matching ActiveTask ID, or choose a short, distinct kebab-case ID for the work. Append follow-ups by the same author to the same file, including on later dates.
+- Keep existing date-only logs as historical records. Do not create or append to a shared `YYYY-MM-DD.md` log for new work.
 - Record changed files or systems, why they changed, verification performed, manual playtest confirmation if available, and remaining risks.
 - Do not repeat a full system map here if a feature-level `StructureMemory` document exists; link or name it instead.
 
