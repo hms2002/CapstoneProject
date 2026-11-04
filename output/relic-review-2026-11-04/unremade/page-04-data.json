@@ -1,0 +1,254 @@
+[
+  {
+    "name": "붉은 계약",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RedContract.asset",
+    "definition_guid": "6e61f67002664297a735902776929cf5",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "6897696648242941555",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_18",
+    "rect": [
+      164,
+      78,
+      41,
+      39
+    ],
+    "description": "적 처치 시 4초 동안 공격력이 2 증가합니다.",
+    "effect": "적 처치 시 4초 동안 공격력이 2 증가합니다.",
+    "nativeFile": "icons/RD_RedContract.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 37
+  },
+  {
+    "name": "도망자의 신발",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RunawayShoes.asset",
+    "definition_guid": "3f678aae4cb94331bd3caeb317c659ce",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-1211621753745056308",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_19",
+    "rect": [
+      205,
+      78,
+      41,
+      39
+    ],
+    "description": "피해를 받으면 잠시 회피율이 증가합니다.",
+    "effect": "피해를 받으면 잠시 회피율이 증가합니다.",
+    "nativeFile": "icons/RD_RunawayShoes.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 38
+  },
+  {
+    "name": "연쇄의 부적",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ChainCharm.asset",
+    "definition_guid": "bd3599e0184c43cc83826652107c5e89",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-9140534868678271618",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_24",
+    "rect": [
+      123,
+      117,
+      41,
+      39
+    ],
+    "description": "치명타를 내면 이동속도가 누적 증가합니다.",
+    "effect": "치명타를 내면 이동속도가 누적 증가합니다.",
+    "nativeFile": "icons/RD_ChainCharm.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 39
+  },
+  {
+    "name": "균열석",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RiftStone.asset",
+    "definition_guid": "1a3c46c0c9914eea8cdcba66be7916eb",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "6123753626580635574",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_22",
+    "rect": [
+      41,
+      117,
+      41,
+      39
+    ],
+    "description": "최종 피해가 증가합니다.",
+    "effect": "최종 피해가 증가합니다.",
+    "nativeFile": "icons/RD_RiftStone.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 40
+  },
+  {
+    "name": "부서진 왕관",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenCrown.asset",
+    "definition_guid": "35caaa840c424d98b8c5095a4383348e",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "745922690225715111",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_23",
+    "rect": [
+      82,
+      117,
+      41,
+      39
+    ],
+    "description": "최대 체력이 감소하지만 최종 피해가 크게 증가합니다.",
+    "effect": "최대 체력이 감소하지만 최종 피해가 크게 증가합니다.",
+    "nativeFile": "icons/RD_BrokenCrown.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 41
+  },
+  {
+    "name": "생존자의 목걸이",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SurvivorNecklace.asset",
+    "definition_guid": "c3f1d032e5184fc9ac7fc75cf5632436",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-6626285524676906614",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_20",
+    "rect": [
+      246,
+      78,
+      41,
+      39
+    ],
+    "description": "최대 체력과 이동속도가 조금 증가합니다.",
+    "effect": "최대 체력과 이동속도가 조금 증가합니다.",
+    "nativeFile": "icons/RD_SurvivorNecklace.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 42
+  },
+  {
+    "name": "청동 주사위",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BronzeDice.asset",
+    "definition_guid": "cce9e7321f8d4b6aa9dc77661650dedd",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-8993961506304712746",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_26",
+    "rect": [
+      205,
+      117,
+      41,
+      39
+    ],
+    "description": "치명타 확률과 회피율이 조금 증가합니다.",
+    "effect": "치명타 확률과 회피율이 조금 증가합니다.",
+    "nativeFile": "icons/RD_BronzeDice.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 43
+  },
+  {
+    "name": "무딘 방패",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BluntShield.asset",
+    "definition_guid": "f06c064d63ee47f4854cef0c2fc19a01",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "3131486497833835367",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_27",
+    "rect": [
+      246,
+      117,
+      41,
+      39
+    ],
+    "description": "공격속도가 감소하지만 최대 체력이 크게 증가합니다.",
+    "effect": "공격속도가 감소하지만 최대 체력이 크게 증가합니다.",
+    "nativeFile": "icons/RD_BluntShield.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 44
+  },
+  {
+    "name": "날렵한 망토",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_NimbleCloak.asset",
+    "definition_guid": "fcd257e9b1924b26bd998dd2bfae2bca",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "6358970640032765685",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_28",
+    "rect": [
+      0,
+      156,
+      41,
+      39
+    ],
+    "description": "이동속도와 회피율이 증가합니다.",
+    "effect": "이동속도와 회피율이 증가합니다.",
+    "nativeFile": "icons/RD_NimbleCloak.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 45
+  },
+  {
+    "name": "깨진 시계",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenClock.asset",
+    "definition_guid": "7d20d2a7cdf74a0bb83fccd22ed1c5a6",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "8375218632860420053",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_29",
+    "rect": [
+      41,
+      156,
+      41,
+      39
+    ],
+    "description": "공격속도가 증가하지만 스킬 피해가 감소합니다.",
+    "effect": "공격속도가 증가하지만 스킬 피해가 감소합니다.",
+    "nativeFile": "icons/RD_BrokenClock.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 46
+  },
+  {
+    "name": "검은 향로",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BlackIncense.asset",
+    "definition_guid": "3127d39f416e4d56849df4e7835f709b",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-2091944441",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_30",
+    "rect": [
+      82,
+      156,
+      41,
+      39
+    ],
+    "description": "스킬 피해가 크게 증가하지만 기본공격 피해가 감소합니다.",
+    "effect": "스킬 피해가 크게 증가하지만 기본공격 피해가 감소합니다.",
+    "nativeFile": "icons/RD_BlackIncense.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 47
+  },
+  {
+    "name": "전사의 맹세",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WarriorOath.asset",
+    "definition_guid": "66fe60611ced4fefbcf921ed07eaf47c",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-4832650501692778596",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_25",
+    "rect": [
+      164,
+      117,
+      41,
+      39
+    ],
+    "description": "기본공격 피해가 크게 증가하지만 스킬 피해가 감소합니다.",
+    "effect": "기본공격 피해가 크게 증가하지만 스킬 피해가 감소합니다.",
+    "nativeFile": "icons/RD_WarriorOath.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 48
+  }
+]

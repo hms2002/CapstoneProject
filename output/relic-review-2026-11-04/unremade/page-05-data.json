@@ -1,0 +1,149 @@
+[
+  {
+    "name": "작은 심장",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SmallHeart.asset",
+    "definition_guid": "ef617ca72b6f4423b7e133a909367516",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "336388868",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_32",
+    "rect": [
+      164,
+      156,
+      41,
+      39
+    ],
+    "description": "최대 체력이 증가하고, 피해를 받으면 잠시 이동속도가 증가합니다.",
+    "effect": "최대 체력이 증가하고, 피해를 받으면 잠시 이동속도가 증가합니다.",
+    "nativeFile": "icons/RD_SmallHeart.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 49
+  },
+  {
+    "name": "추격자의 발톱",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_PursuerClaw.asset",
+    "definition_guid": "ddead4c1dd0048d8a332a78cd84cc690",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "959958486",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_33",
+    "rect": [
+      205,
+      156,
+      41,
+      39
+    ],
+    "description": "적을 처치하면 잠시 이동속도가 증가합니다.",
+    "effect": "적을 처치하면 잠시 이동속도가 증가합니다.",
+    "nativeFile": "icons/RD_PursuerClaw.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 50
+  },
+  {
+    "name": "소포",
+    "definition": "Assets/_Project/Data/Items/Relics/RD_EventParcel.asset",
+    "definition_guid": "b5a11e75eae575b4193be62ab58517ed",
+    "source": "Assets/_Project/Art/Sprites/UI/Chest/weaponbox_relicbox.png",
+    "fileID": "2914263891378394802",
+    "guid": "522fe167c55eab149b6bf24c2e3fa0ff",
+    "sprite": "weaponbox_relicbox_0",
+    "rect": [
+      0,
+      0,
+      14,
+      14
+    ],
+    "description": "파셀이 배달해야 했을 소포. 버리는건 용사답지 않다.",
+    "effect": "파셀이 배달해야 했을 소포. 버리는건 용사답지 않다.",
+    "nativeFile": "icons/RD_EventParcel.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 51
+  },
+  {
+    "name": "금광",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_GoldVein.asset",
+    "definition_guid": "cca649e618674edeae7fb55e0743a416",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/gold_vein.png",
+    "fileID": "21300000",
+    "guid": "872382315c4b44deaa3440a4afe18c0a",
+    "sprite": "gold_vein",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "description": "적 처치 시 얻는 금화의 획득량이 10% 증가",
+    "effect": "적 처치 시 얻는 금화의 획득량이 10% 증가",
+    "nativeFile": "icons/RD_GoldVein.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 52
+  },
+  {
+    "name": "성장의 새싹",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_GrowthSprout.asset",
+    "definition_guid": "2a030bcc770946f8abfe827a9bb0afc0",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/plant.png",
+    "fileID": "21300000",
+    "guid": "7861b6e666064cd7b04a49aca55b80c9",
+    "sprite": "plant",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "description": "경험치 획득량이 10% 증가",
+    "effect": "경험치 획득량이 10% 증가",
+    "nativeFile": "icons/RD_GrowthSprout.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 53
+  },
+  {
+    "name": "날개 부츠",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FlyingBoots.asset",
+    "definition_guid": "4781e03df8c544459db8dc6863762e5c",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/flying_boots.png",
+    "fileID": "21300000",
+    "guid": "5e75f76ed6404d0e95d4b05a8a46ae0d",
+    "sprite": "flying_boots",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "description": "대쉬 재사용 대기시간이 10% 감소",
+    "effect": "대쉬 재사용 대기시간이 10% 감소",
+    "nativeFile": "icons/RD_FlyingBoots.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 54
+  },
+  {
+    "name": "최후의 저항",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LastStand.asset",
+    "definition_guid": "d866e0f16ecf48d0948bda26ce39842a",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/arrow.png",
+    "fileID": "21300000",
+    "guid": "eba60ca92d654057bce8a3f6664ed7b1",
+    "sprite": "arrow",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "description": "현재 체력이 1 이하일 경우 모든 공격이 반드시 치명타로 적중.",
+    "effect": "현재 체력이 1 이하일 경우 모든 공격이 반드시 치명타로 적중.",
+    "nativeFile": "icons/RD_LastStand.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 55
+  }
+]

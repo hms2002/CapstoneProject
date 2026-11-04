@@ -1,0 +1,41 @@
+{
+  "original": {
+    "path": "outputs/tutorial-darklord-portrait-2026-11-03/TutorialDarkLord-original-1024.png",
+    "sha256": "e6cf13aba5623626c654651c87b63b4ffd93b4a4663c5b44eddebca349d31b6b",
+    "width": 1024,
+    "height": 1024,
+    "bitDepth": 8,
+    "colorType": 6
+  },
+  "applied": {
+    "path": "Assets/_Project/Art/Sprites/Bosses/TutorialBoss/TuTorialBoss_Dialogue.png",
+    "sha256": "b94a37d7cc1bba7daa8c655ce3ec6f7526a637b5c2e819718d0873df28e3b807",
+    "width": 1152,
+    "height": 1152,
+    "bitDepth": 8,
+    "colorType": 6
+  },
+  "archive": "outputs/tutorial-darklord-portrait-2026-11-03/TutorialDarkLord-original-1024.zip",
+  "checks": {
+    "backupMatchesOriginal": true,
+    "appliedMatchesAttachment": true,
+    "archiveMatchesOriginal": true,
+    "protectedFilesUnchanged": {
+      "Assets/_Project/Art/Sprites/Bosses/TutorialBoss/TuTorialBoss_Dialogue.png.meta": true,
+      "Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DarkLord.spriteLib": true,
+      "Assets/_Project/Data/Encyclopedia/EncyclopediaCatalog.asset": true,
+      "Assets/AddressableAssetsData/AssetGroups/RunCommon.asset": true,
+      "Assets/_Project/Prefabs/UI/Portraitlmage.prefab": true,
+      "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab": true,
+      "Assets/_Project/Scenes/DarkLord_Tutorial.unity": true,
+      "Assets/_Project/Art/Sprites/Bosses/TutorialBoss/TutorialBoss_Idle.png": true
+    }
+  },
+  "unityImportExecuted": false,
+  "unityPlayModeExecuted": false,
+  "notes": [
+    "Sprite mode Single; retained dormant spriteSheet rectangle is unused in this mode.",
+    "Encyclopedia Tutorial portrait shares this sprite and also displays the replacement.",
+    "No C# changes; MSBuild not applicable."
+  ]
+}

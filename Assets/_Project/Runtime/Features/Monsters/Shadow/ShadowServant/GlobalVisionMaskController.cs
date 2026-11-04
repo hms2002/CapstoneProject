@@ -25,6 +25,7 @@ public class GlobalVisionMaskController : MonoBehaviour
 
     private readonly HashSet<int> activeRequesterIds = new();
     private PlayerVisionMaskFollower spawnedVisionMaskFollower;
+    private Vector3 spawnedVisionMaskBaseScale;
     private Coroutine overlayAlphaFadeCoroutine;
     private bool hasCapturedBaseSortingOrder;
     private int baseOverlaySortingOrder;
@@ -41,12 +42,13 @@ public class GlobalVisionMaskController : MonoBehaviour
         RenderPipelineManager.beginCameraRendering -= FitOverlayToCamera;
     }
 
-    // Resize only the overlay, leaving the player mask and its parent untouched.
+    // Keep viewport fitting independent from affection-based player mask sizing.
     private void FitOverlayToCamera(ScriptableRenderContext context, Camera camera)
     {
         if (camera == null || camera != Camera.main || !camera.orthographic)
             return;
 
+        ApplyAffectionVisionScale();
         EnsureOverlayRenderer();
         if (darkOverlayRenderer == null || darkOverlayRenderer.sprite == null)
             return;
@@ -114,6 +116,7 @@ public class GlobalVisionMaskController : MonoBehaviour
         EnsurePlayerVisionMask();
         spawnedVisionMaskFollower?.SetLocalOffset(playerVisionMaskOffset);
         spawnedVisionMaskFollower?.Bind(player);
+        ApplyAffectionVisionScale();
     }
 
     private int GetRequesterId(Object requester)
@@ -131,10 +134,27 @@ public class GlobalVisionMaskController : MonoBehaviour
 
         Transform parent = playerVisionMaskParent != null ? playerVisionMaskParent : transform;
         GameObject maskObject = Instantiate(playerVisionMaskPrefab, parent);
+        spawnedVisionMaskBaseScale = maskObject.transform.localScale;
 
         spawnedVisionMaskFollower = maskObject.GetComponent<PlayerVisionMaskFollower>();
         if (spawnedVisionMaskFollower == null)
             spawnedVisionMaskFollower = maskObject.AddComponent<PlayerVisionMaskFollower>();
+    }
+
+    private void ApplyAffectionVisionScale()
+    {
+        if (spawnedVisionMaskFollower == null)
+            return;
+
+        CorridorBossRouteSetSO stage = RunRoutePlayback.CurrentStageSet;
+        bool isChloeArea = RunRoutePlayback.HasActivePlan && stage != null &&
+            stage.StableThemeId == "shadow" && stage.MatchesScene(gameObject.scene.name);
+        float scale = isChloeArea && NpcAffectionDialogue.GetAffection(1003) < 1 ? 0.7f : 1f;
+        Vector3 targetScale = spawnedVisionMaskBaseScale;
+        targetScale.x *= scale;
+        targetScale.y *= scale;
+        if (spawnedVisionMaskFollower.transform.localScale != targetScale)
+            spawnedVisionMaskFollower.transform.localScale = targetScale;
     }
 
     private void SyncMaskState(bool isActive, bool instant)

@@ -15,6 +15,30 @@ MonoBehaviour:
   m_TableCollectionName: GameText
   m_TableCollectionNameGuidString: 6e6eece5703a7af49ae3c7212669274b
   m_Entries:
+  - m_Id: 11832946039439360
+    m_Key: asset.c6b658f2b5f61af438415d4d0fb6c848.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11832946194628608
+    m_Key: asset.c6b658f2b5f61af438415d4d0fb6c848.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11832946198822912
+    m_Key: relic.slime_bottle.effect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11828984452202496
+    m_Key: asset.ddf04bff7fe8b144580e25eb7b52a207.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11828984599003136
+    m_Key: asset.ddf04bff7fe8b144580e25eb7b52a207.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11828984599003137
+    m_Key: relic.chloe_lantern.effect
+    m_Metadata:
+      m_Items: []
   - m_Id: 2622680836485120
     m_Key: ui.item_keyword.electrocuted.description
     m_Metadata:
@@ -8601,6 +8625,30 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 11005436400660480
     m_Key: dialogue.merchant.run.affection_0_c.5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11820468849229824
+    m_Key: asset.bbc1e85ba3984d0a955c674de8aaf6b5.rewardText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11823303972528128
+    m_Key: asset.3e6c202c0a464c3b93ade1aca60e7948.rewardText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11837594560045056
+    m_Key: asset.1d1e3da61e754a4c927dee88e53855ab.rewardText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11837594657722368
+    m_Key: asset.c0cba4733e4b45d193fd0b751f2491dc.rewardText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11841047940149248
+    m_Key: asset.d1ec2d394ab443e0856cafd9cc93a61e.rewardText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11841048591966208
+    m_Key: asset.98bab4e87b4e423483f4b55d17eee8b5.rewardText
     m_Metadata:
       m_Items: []
   m_Metadata:

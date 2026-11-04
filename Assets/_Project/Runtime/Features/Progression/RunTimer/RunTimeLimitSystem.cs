@@ -10,6 +10,9 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class RunTimeLimitSystem : MonoBehaviour
 {
+    private const int DemonKingNpcId = 1005;
+    private const float DemonKingPatienceBonusSeconds = 120f;
+
     public static RunTimeLimitSystem Instance { get; private set; }
     public static event Action<RunTimeLimitSystem> InstanceChanged;
 
@@ -24,7 +27,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
     public event Action OnTimeExpired;
 
     public float RemainingSeconds => remainingSeconds;
-    public float InactivePreviewSeconds => config != null ? Mathf.Max(0f, config.InitialLimitSeconds) : 0f;
+    public float InactivePreviewSeconds => ResolveInitialLimitSeconds();
     public bool IsRunning => isRunning;
     public bool IsExpired => hasExpired;
     public bool IsLowTime => config != null && remainingSeconds <= config.LowTimeWarningSeconds;
@@ -177,7 +180,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
             return;
         }
 
-        InitializeRemainingTime(config.InitialLimitSeconds);
+        InitializeRemainingTime(ResolveInitialLimitSeconds());
     }
 
     private void HandleRunStarted()
@@ -191,7 +194,27 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
             return;
         }
 
-        InitializeRemainingTime(config.InitialLimitSeconds);
+        InitializeRemainingTime(ResolveInitialLimitSeconds());
+    }
+
+    // Only committed affection extends future runs; restoring remaining time never adds it again.
+    private float ResolveInitialLimitSeconds()
+    {
+        if (config == null)
+            return 0f;
+
+        float initialSeconds = Mathf.Max(0f, config.InitialLimitSeconds);
+        var records = GameDataStore.Data?.affectionData?.affectionRecords;
+        if (records != null)
+        {
+            foreach (AffectionRecord record in records)
+            {
+                if (record != null && record.npcId == DemonKingNpcId && record.amount >= 1)
+                    return initialSeconds + DemonKingPatienceBonusSeconds;
+            }
+        }
+
+        return initialSeconds;
     }
 
     private void HandleRunEnded(RunEndReason reason)

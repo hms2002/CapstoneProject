@@ -1,0 +1,11 @@
+{
+  "changed": [
+    "Assets/_Project/Data/Localization/GameText_ko.asset",
+    "Assets/_Project/Data/Localization/GameText_en.asset"
+  ],
+  "key": "asset.2a2133b4854b68e4eb9a420c0bb3e215.description",
+  "entry_id": "46294721531920",
+  "full_scalar_values_match": 5,
+  "only_target_scalar_changed": true,
+  "unity_import_playmode": "not executed"
+}

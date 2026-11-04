@@ -111,8 +111,12 @@ public sealed class DamagePopupFormatProfileSO : ScriptableObject
             (entry != null ? Mathf.Max(0.01f, entry.startScale) : 0.9f) * request.SizeScale,
             (entry != null ? Mathf.Max(0.01f, entry.endScale) : 1.1f) * request.SizeScale,
             entry != null ? entry.fontSize : 0f,
-            entry != null && entry.fontSize > 0f);
+            entry != null && entry.fontSize > 0f,
+            elasticPop: IsSlimeBlock(request));
     }
+
+    public static bool IsSlimeBlock(DamagePopupRequest request)
+        => request.IsPlayerTarget && request.Kind == DamagePopupKind.Text && request.TextOverride == "Slime!";
 
     public static Color ResolvePlayerColor(DamagePopupRequest request, Color defaultColor)
     {
@@ -121,7 +125,8 @@ public sealed class DamagePopupFormatProfileSO : ScriptableObject
 
         if (request.Kind == DamagePopupKind.Text)
             return request.TextOverride == "Evade" ? new Color32(255, 215, 0, 255)
-                : request.TextOverride == "EVADE" ? new Color32(50, 156, 199, 255) : defaultColor;
+                : request.TextOverride == "EVADE" ? new Color32(50, 156, 199, 255)
+                : IsSlimeBlock(request) ? new Color32(116, 219, 175, 255) : defaultColor;
 
         return new Color32(255, 77, 77, 255);
     }

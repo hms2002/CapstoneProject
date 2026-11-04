@@ -1,0 +1,125 @@
+[
+  {
+    "key": "01-rift-stone",
+    "name": "균열석",
+    "palette": [
+      "#363232",
+      "#BE8EC1",
+      "#9D5789",
+      "#75656A",
+      "#F1E5F8"
+    ],
+    "subject": "One chunky irregular rounded violet stone, slightly taller than wide and tilted a little. A prominent single jagged fracture splits the front face, with just one short branch. Show the crack as dark plum/charcoal with a sparse pale lilac inner edge, without separate floating fragments. Mostly opaque solid matte stone, large light purple main plane and one dark mauve side/shadow plane. It must look like a cracked physical rock, not a cut gemstone, not a lightning rune. Keep silhouette plump with 5-7 broad corners, not tiny facets.",
+    "prompt": "Use case: stylized-concept. Asset: a fantasy roguelike inventory relic sprite.\nREFERENCE ROLES: first attached image is the user's eight favorite pixel-art icons, STYLE reference only (not objects to copy). Second image is the ONLY ALLOWED COLOR PALETTE. Match the first image's soft plump hand-authored silhouettes, restrained flat shading, readable little physical objects, and muted warm/cool material shading.\nDraw ONE new object only, centered on an actually transparent background, without text, grid, scenery, detached decorations, cast shadow or labels. Intended asset is 32x32 LOGICAL PIXELS. Use a true coarse 32x32 pixel grid, visible chunky discrete pixel clusters, NO subpixel details. A large preview must look exactly like an integer nearest-neighbor enlargement of a tiny sprite. Preserve at least TWO logical transparent pixels on EVERY edge, outline included. Thick TWO-logical-pixel solid charcoal #363232 outer outline, with rounded diagonal corners and carefully stepped concavities, not a square-inflated contour. Broad base color shapes, one useful shadow plane per material, and very few identifying structural marks. No gradients, anti-aliasing, noise, dithering, excessive facets, decorative trim or automatic sparkle. Interior dark structural cracks/holes are allowed. Highlights only when material needs them. Do NOT force a six-color quota; use only the few necessary colors from the object-specific list. Retain the object's actual structure rather than turning it into a geometric emblem. Style is grounded, friendly compact fantasy pixel illustration, not realistic, not vector.\nSUBJECT: One chunky irregular rounded violet stone, slightly taller than wide and tilted a little. A prominent single jagged fracture splits the front face, with just one short branch. Show the crack as dark plum/charcoal with a sparse pale lilac inner edge, without separate floating fragments. Mostly opaque solid matte stone, large light purple main plane and one dark mauve side/shadow plane. It must look like a cracked physical rock, not a cut gemstone, not a lightning rune. Keep silhouette plump with 5-7 broad corners, not tiny facets.\nAllowed colors including outline: #363232, #BE8EC1, #9D5789, #75656A, #F1E5F8. Use only these exact palette swatches.",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-17bf11c5-aeb2-48f5-9276-c7fd1a2206e8.png",
+    "size": [
+      1261,
+      1247
+    ],
+    "visible_bbox": [
+      0,
+      23,
+      1223,
+      1247
+    ],
+    "material_bbox": [
+      271,
+      249,
+      986,
+      1035
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "02-broken-crown",
+    "name": "부서진 왕관",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#AB6E7C"
+    ],
+    "subject": "One squat battered golden royal crown in a simple three-quarter view. Wide rounded oval lower band, with three broad prongs; one prong visibly snapped short with a jagged missing corner. Main band remains intact and substantial. The broken shape must be immediately clear at 32x32. Warm pale yellow gold main plane, muted orange side plane, a little dusty rose deepest shadow inside. NO gemstone, no glowing particles, no scattered fragments, no elaborate engraving. Broad soft curves in the lower band and clean angular breaks in the damaged tooth; readable royal crown rather than a gear or bowl.",
+    "prompt": "Use case: stylized-concept. Asset: a fantasy roguelike inventory relic sprite.\nREFERENCE ROLES: first attached image is the user's eight favorite pixel-art icons, STYLE reference only (not objects to copy). Second image is the ONLY ALLOWED COLOR PALETTE. Match the first image's soft plump hand-authored silhouettes, restrained flat shading, readable little physical objects, and muted warm/cool material shading.\nDraw ONE new object only, centered on an actually transparent background, without text, grid, scenery, detached decorations, cast shadow or labels. Intended asset is 32x32 LOGICAL PIXELS. Use a true coarse 32x32 pixel grid, visible chunky discrete pixel clusters, NO subpixel details. A large preview must look exactly like an integer nearest-neighbor enlargement of a tiny sprite. Preserve at least TWO logical transparent pixels on EVERY edge, outline included. Thick TWO-logical-pixel solid charcoal #363232 outer outline, with rounded diagonal corners and carefully stepped concavities, not a square-inflated contour. Broad base color shapes, one useful shadow plane per material, and very few identifying structural marks. No gradients, anti-aliasing, noise, dithering, excessive facets, decorative trim or automatic sparkle. Interior dark structural cracks/holes are allowed. Highlights only when material needs them. Do NOT force a six-color quota; use only the few necessary colors from the object-specific list. Retain the object's actual structure rather than turning it into a geometric emblem. Style is grounded, friendly compact fantasy pixel illustration, not realistic, not vector.\nSUBJECT: One squat battered golden royal crown in a simple three-quarter view. Wide rounded oval lower band, with three broad prongs; one prong visibly snapped short with a jagged missing corner. Main band remains intact and substantial. The broken shape must be immediately clear at 32x32. Warm pale yellow gold main plane, muted orange side plane, a little dusty rose deepest shadow inside. NO gemstone, no glowing particles, no scattered fragments, no elaborate engraving. Broad soft curves in the lower band and clean angular breaks in the damaged tooth; readable royal crown rather than a gear or bowl.\nAllowed colors including outline: #363232, #EECF5A, #E09656, #AB6E7C. Use only these exact palette swatches.",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-0d1488fa-ef85-42a0-b65e-1ccbcff7f508.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "visible_bbox": [
+      0,
+      85,
+      1230,
+      1254
+    ],
+    "material_bbox": [
+      158,
+      297,
+      1059,
+      1040
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "03-tough-bandage",
+    "name": "질긴 붕대",
+    "palette": [
+      "#363232",
+      "#F1E9D4",
+      "#E9CEA1",
+      "#D49C73"
+    ],
+    "subject": "One thick sturdy rolled cloth bandage, diagonally arranged, with a short wide loose folded tail resting against the roll. Warm ivory linen base, pale tan folded shadow, muted ochre inner roll. A simple visible spiral/open roll cross-section and only two wrap/fold seams identify it as a BANDAGE, not a scroll, toilet paper or shiny capsule. The cloth is matte, soft and chunky. No text, no stains, no pins, no cross/medical emblem, no floating ends, no many narrow stripes. Use the reference glove's restrained base/shadow planes and softly stepped shape.",
+    "prompt": "Use case: stylized-concept. Asset: a fantasy roguelike inventory relic sprite.\nREFERENCE ROLES: first attached image is the user's eight favorite pixel-art icons, STYLE reference only (not objects to copy). Second image is the ONLY ALLOWED COLOR PALETTE. Match the first image's soft plump hand-authored silhouettes, restrained flat shading, readable little physical objects, and muted warm/cool material shading.\nDraw ONE new object only, centered on an actually transparent background, without text, grid, scenery, detached decorations, cast shadow or labels. Intended asset is 32x32 LOGICAL PIXELS. Use a true coarse 32x32 pixel grid, visible chunky discrete pixel clusters, NO subpixel details. A large preview must look exactly like an integer nearest-neighbor enlargement of a tiny sprite. Preserve at least TWO logical transparent pixels on EVERY edge, outline included. Thick TWO-logical-pixel solid charcoal #363232 outer outline, with rounded diagonal corners and carefully stepped concavities, not a square-inflated contour. Broad base color shapes, one useful shadow plane per material, and very few identifying structural marks. No gradients, anti-aliasing, noise, dithering, excessive facets, decorative trim or automatic sparkle. Interior dark structural cracks/holes are allowed. Highlights only when material needs them. Do NOT force a six-color quota; use only the few necessary colors from the object-specific list. Retain the object's actual structure rather than turning it into a geometric emblem. Style is grounded, friendly compact fantasy pixel illustration, not realistic, not vector.\nSUBJECT: One thick sturdy rolled cloth bandage, diagonally arranged, with a short wide loose folded tail resting against the roll. Warm ivory linen base, pale tan folded shadow, muted ochre inner roll. A simple visible spiral/open roll cross-section and only two wrap/fold seams identify it as a BANDAGE, not a scroll, toilet paper or shiny capsule. The cloth is matte, soft and chunky. No text, no stains, no pins, no cross/medical emblem, no floating ends, no many narrow stripes. Use the reference glove's restrained base/shadow planes and softly stepped shape.\nAllowed colors including outline: #363232, #F1E9D4, #E9CEA1, #D49C73. Use only these exact palette swatches.",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-86089c36-087e-416d-a605-4da4f49714f4.png",
+    "size": [
+      1261,
+      1247
+    ],
+    "visible_bbox": [
+      130,
+      55,
+      1130,
+      1154
+    ],
+    "material_bbox": [
+      212,
+      274,
+      1068,
+      1014
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "04-victory-flag",
+    "name": "승리의 깃발",
+    "palette": [
+      "#363232",
+      "#E55C5C",
+      "#A75064",
+      "#D49C73",
+      "#AB6E7C",
+      "#EECF5A"
+    ],
+    "subject": "One compact victory banner: stout short wooden flagpole on the left, large flowing RED cloth flag to the right with a single broad swallowtail notch. Slight diagonal stance, cloth and pole form a balanced substantial icon. One broad dusty burgundy shadow fold shows the billowing cloth; muted tan pole with rose-brown shaded side and a small rounded golden finial. On the cloth one large simple GOLD chevron/triangular victory mark, no text and no many tiny symbols. Avoid long thin shafts, skinny ribbons or wispy fabric. The flag should read as cloth on a pole, not a shield or wall plaque. Keep material planes large and simple.",
+    "prompt": "Use case: stylized-concept. Asset: a fantasy roguelike inventory relic sprite.\nREFERENCE ROLES: first attached image is the user's eight favorite pixel-art icons, STYLE reference only (not objects to copy). Second image is the ONLY ALLOWED COLOR PALETTE. Match the first image's soft plump hand-authored silhouettes, restrained flat shading, readable little physical objects, and muted warm/cool material shading.\nDraw ONE new object only, centered on an actually transparent background, without text, grid, scenery, detached decorations, cast shadow or labels. Intended asset is 32x32 LOGICAL PIXELS. Use a true coarse 32x32 pixel grid, visible chunky discrete pixel clusters, NO subpixel details. A large preview must look exactly like an integer nearest-neighbor enlargement of a tiny sprite. Preserve at least TWO logical transparent pixels on EVERY edge, outline included. Thick TWO-logical-pixel solid charcoal #363232 outer outline, with rounded diagonal corners and carefully stepped concavities, not a square-inflated contour. Broad base color shapes, one useful shadow plane per material, and very few identifying structural marks. No gradients, anti-aliasing, noise, dithering, excessive facets, decorative trim or automatic sparkle. Interior dark structural cracks/holes are allowed. Highlights only when material needs them. Do NOT force a six-color quota; use only the few necessary colors from the object-specific list. Retain the object's actual structure rather than turning it into a geometric emblem. Style is grounded, friendly compact fantasy pixel illustration, not realistic, not vector.\nSUBJECT: One compact victory banner: stout short wooden flagpole on the left, large flowing RED cloth flag to the right with a single broad swallowtail notch. Slight diagonal stance, cloth and pole form a balanced substantial icon. One broad dusty burgundy shadow fold shows the billowing cloth; muted tan pole with rose-brown shaded side and a small rounded golden finial. On the cloth one large simple GOLD chevron/triangular victory mark, no text and no many tiny symbols. Avoid long thin shafts, skinny ribbons or wispy fabric. The flag should read as cloth on a pole, not a shield or wall plaque. Keep material planes large and simple.\nAllowed colors including outline: #363232, #E55C5C, #A75064, #D49C73, #AB6E7C, #EECF5A. Use only these exact palette swatches.",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-1c5b1daf-4bd7-4884-9d6a-73eb7a81c15d.png",
+    "size": [
+      1262,
+      1246
+    ],
+    "visible_bbox": [
+      0,
+      90,
+      1238,
+      1227
+    ],
+    "material_bbox": [
+      175,
+      185,
+      1083,
+      1074
+    ],
+    "preserve_alpha_holes": []
+  }
+]

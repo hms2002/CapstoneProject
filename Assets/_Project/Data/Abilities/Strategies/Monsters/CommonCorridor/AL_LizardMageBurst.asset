@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6559ed611a30b74da2896e8ce173b56, type: 3}
   m_Name: AL_LizardMageBurst
   m_EditorClassIdentifier: Assembly-CSharp::AbilityLogic_LizardMageBurst
-  projectilePrefab: {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
+  projectilePrefab: {fileID: 8003320094034868151, guid: 59097f661c1944af88d909ca3bf2ba07, type: 3}
   damageEffect: {fileID: 11400000, guid: a7c21e5f6a1f4d0d8f4c2b3a19e8d725, type: 2}
   damageAmount: 1
   attackRange: 7.5
-  warningSeconds: 1.8
+  warningSeconds: 1.2
   warningWidth: 0.12
-  projectileSpeedMultiplier: 1.3
-  projectileLifetime: 5
-  shotCount: 3
-  shotInterval: 0.3
+  projectileSpeedMultiplier: 1.95
+  projectileLifetime: 2.6
+  homingSeconds: 0.8
+  homingTurnDegreesPerSecond: 75
+  homingHalfAngle: 60
+  shotRestSeconds: 1.5
   recoverSeconds: 0.25
   wallLayers:
     serializedVersion: 2
@@ -29,3 +31,8 @@ MonoBehaviour:
   targetLayers:
     serializedVersion: 2
     m_Bits: 8
+  retreatStartDistance: 3
+  retreatStopDistance: 4
+  approachDistance: 5
+  retreatSpeedMultiplier: 0.5
+  strafeSpeedMultiplier: 0.25

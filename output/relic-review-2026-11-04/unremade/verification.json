@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-04",
+  "registered": 75,
+  "excluded_remade_in_this_chat": 20,
+  "included": 55,
+  "existing_dedicated_png_included": 12,
+  "pages": 5,
+  "sprite_guid_fileID_rect_verified": 55,
+  "native_alpha_and_opaque_colors_verified": 55,
+  "rendered_native_pixel_scaling_verified": 55,
+  "protected_source_files_preserved": 162,
+  "markdown_links_verified": 115,
+  "project_assets_changed": false,
+  "unity_verification": "not executed",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no stale candidate"
+}

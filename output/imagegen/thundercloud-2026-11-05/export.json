@@ -1,0 +1,24 @@
+{
+  "key": "thundercloud",
+  "name": "먹구름과 번개",
+  "native": "thundercloud-32x32.png",
+  "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\thundercloud-2026-11-05\\thundercloud-source.png",
+  "sourceMaterialBounds": [
+    217,
+    186,
+    1034,
+    1127
+  ],
+  "materialSize": [
+    21,
+    24
+  ],
+  "samplingPhaseY": 0.5,
+  "palette": [
+    "#363232",
+    "#75656A",
+    "#978C8E",
+    "#77BCD6",
+    "#B1DECF"
+  ]
+}

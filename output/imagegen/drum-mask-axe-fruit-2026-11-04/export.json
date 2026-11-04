@@ -1,0 +1,100 @@
+[
+  {
+    "key": "01-charge-drum",
+    "name": "돌격의 북",
+    "native": "01-charge-drum-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-5a4dff6a-b9d0-4a44-b0dc-8a2721e7ffa9.png",
+    "sourceMaterialBounds": [
+      217,
+      245,
+      1017,
+      1072
+    ],
+    "materialSize": [
+      23,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#D49C73",
+      "#E9CEA1",
+      "#E55C5C",
+      "#A75064"
+    ]
+  },
+  {
+    "key": "02-shamans-mask",
+    "name": "주술사의 가면",
+    "native": "02-shamans-mask-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-fe907d2d-a84c-4182-8115-499d936dbf91.png",
+    "sourceMaterialBounds": [
+      253,
+      195,
+      1002,
+      1099
+    ],
+    "materialSize": [
+      20,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#BE8EC1",
+      "#9D5789",
+      "#75656A",
+      "#EECF5A"
+    ]
+  },
+  {
+    "key": "03-executioners-axe",
+    "name": "처형자의 도끼",
+    "native": "03-executioners-axe-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-eb51e06f-defc-493d-8e83-679ad7c5b681.png",
+    "sourceMaterialBounds": [
+      161,
+      167,
+      1037,
+      1114
+    ],
+    "materialSize": [
+      22,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#C2C2C2",
+      "#8599B0",
+      "#F2F9F8",
+      "#D49C73",
+      "#AB6E7C"
+    ]
+  },
+  {
+    "key": "04-madness-fruit",
+    "name": "광기의 열매",
+    "native": "04-madness-fruit-32x32.png",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-02e512b3-6b18-495a-9115-f55f2da89680.png",
+    "sourceMaterialBounds": [
+      228,
+      146,
+      1022,
+      1126
+    ],
+    "materialSize": [
+      19,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#A75064",
+      "#E55C5C",
+      "#7F4A50",
+      "#56774A",
+      "#B1D368"
+    ]
+  }
+]

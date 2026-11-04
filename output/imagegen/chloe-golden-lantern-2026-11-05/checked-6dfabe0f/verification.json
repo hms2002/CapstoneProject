@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-05",
+  "generation_id": "6dfabe0f-5a5c-4017-97c3-c249227dbb76",
+  "files": [
+    {
+      "file": "chloe-lantern-6dfabe0f-32x32.png",
+      "copied_from": "chloe-golden-lantern-32x32.png",
+      "sha256": "cdc0d2a4788bb30ce727405bfa689dbc941a510014bcecd4963b54f2a49a801d",
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "file": "chloe-lantern-6dfabe0f-preview.png",
+      "copied_from": "chloe-golden-lantern-preview.png",
+      "sha256": "ed77b1566a6489c90c8e9ec04f4fb9ba9017800a105cc45b54200d8a02f7ebbd",
+      "dimensions": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "chloe-lantern-6dfabe0f-generated.png",
+      "copied_from": "chloe-golden-lantern-source.png",
+      "sha256": "57618cd29ff2875051ba0cb76f1f60981327370d2127ada07b13f93c9009cd7c",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "native_preview_exact_8x": true,
+  "regenerated": false,
+  "project_assets_changed": false,
+  "reason": "Provide unique image paths after suspected pre-reroll preview/path reuse. Current original pair is pixel-identical; UI caching not independently confirmed.",
+  "doc_impact": "No project document update needed; artifact link repair only"
+}

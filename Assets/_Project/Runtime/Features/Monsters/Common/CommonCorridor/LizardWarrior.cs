@@ -3,39 +3,25 @@ using UnityEngine;
 using UnityGAS;
 using CapstoneAudio;
 
-/// <summary>
-/// 책임:
-/// - 리자드맨 전사의 2연타 돌진 공격 판단과 공격 step 데이터를 소유한다.
-/// - 실제 경고/돌진/피해 실행은 LizardWarriorChargeRunner에 위임한다.
-/// </summary>
+/// <summary>Owns frenzy eligibility, damage context and actor-local movement/presentation.</summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(MobAbilityCoordinator))]
 [RequireComponent(typeof(LizardWarriorChargeRunner))]
 public sealed class LizardWarrior : Mob, IMobAttackDecisionSource
 {
-    [System.Serializable]
-    public struct ChargeStep
-    {
-        public float warningSeconds;
-        public float dashDistance;
-        public float dashSeconds;
-        public float warningWidth;
-    }
-
     [SerializeField] private AbilityDefinition chargeAbility;
 
     private LizardWarriorChargeRunner runner;
     private bool hasLoggedInvalidConfig;
-    private bool hasChargeFacingLock;
+    private float nextFrenzyTime;
+    private SpriteRenderer frenzyRenderer;
+    private Color originalColor;
+    private bool hasFrenzyPresentation;
 
-    private AbilityLogic_LizardWarriorCharge Logic => chargeAbility != null ? chargeAbility.logic as AbilityLogic_LizardWarriorCharge : null;
-    private float AttackTriggerRange => Logic != null ? Mathf.Max(0.01f, Logic.FirstStep.dashDistance) : 0.01f;
+    public AbilityLogic_LizardWarriorCharge ChargeLogic => chargeAbility != null
+        ? chargeAbility.logic as AbilityLogic_LizardWarriorCharge : null;
+    public Vector2 ContactCenter => collision != null ? (Vector2)collision.bounds.center : (Vector2)transform.position;
 
-    public AbilityLogic_LizardWarriorCharge ChargeLogic => Logic;
-    public ChargeStep FirstStep => Logic != null ? Logic.FirstStep : default;
-    public ChargeStep SecondStep => Logic != null ? Logic.SecondStep : default;
-
-    // 책임: 리자드 전사 돌진 단계에 필요한 타겟, 방향, 피해 정보를 보관한다.
     public readonly struct ChargeContext
     {
         public readonly GameObject Target;
@@ -63,192 +49,184 @@ public sealed class LizardWarrior : Mob, IMobAttackDecisionSource
             abilitySystem.GiveAbility(chargeAbility);
     }
 
-    public override bool CanUseChaseMovement()
-    {
-        return base.CanUseChaseMovement() && (runner == null || !runner.IsRunning);
-    }
+    public override bool CanUseChaseMovement() => base.CanUseChaseMovement() && (runner == null || !runner.IsRunning);
+    public override bool CanUsePostAttackRecoveryRetreat() => false;
+
+    // The exhausted opening must survive attack-speed bonuses.
+    public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds) =>
+        Mathf.Max(ChargeLogic != null ? ChargeLogic.RecoverSeconds : 0f, scaledRecoverSeconds);
 
     public bool TryBuildAttackRequest(out MobAttackRequest request)
     {
         request = default;
+        AbilityLogic_LizardWarriorCharge logic = ChargeLogic;
         GameObject targetObject = Target != null ? Target.gameObject : null;
-        if (!HasRequiredData() || !CommonMonsterCombatUtility.InRange(transform, targetObject, AttackTriggerRange))
-            return false;
-
-        AbilityLogic_LizardWarriorCharge logic = Logic;
-        if (logic == null)
+        if (!HasRequiredData() || CombatHitPause2D.GetActionTime(gameObject) < nextFrenzyTime ||
+            !CommonMonsterCombatUtility.InRange(transform, targetObject, logic.AttackRange))
             return false;
 
         request = new MobAttackRequest(chargeAbility, targetObject, logic.RecoverSeconds);
         return request.IsValid;
     }
 
-    /// <summary>2연타 각각의 준비 애니메이션과 방향 고정은 Runner가 step 단위로 요청한다.</summary>
-    public void OnAttackStateEntered(MobAttackRequest request)
-    {
-    }
+    public void OnAttackStateEntered(MobAttackRequest request) { }
 
-    /// <summary>공격 상태 종료 시 취소가 아니라면 회복 애니메이션을 요청한다.</summary>
     public void OnAttackStateExited(MobAttackRequest request, bool wasCancelled)
     {
-        ReleaseChargeFacingLock();
-        if (!wasCancelled && !IsDead)
-            CommonMonsterCombatUtility.TriggerAnimation(this, CommonMonsterAnimationCue.Recover);
+        StopFrenzyMovement();
+        CleanupFrenzyPresentation();
+        if (ChargeLogic != null)
+            nextFrenzyTime = CombatHitPause2D.GetActionTime(gameObject) + ChargeLogic.RecoverSeconds + ChargeLogic.RearmSeconds;
     }
 
     protected override void OnDeathStarted()
     {
-        ReleaseChargeFacingLock();
         CommonMonsterCombatUtility.TriggerAnimation(this, CommonMonsterAnimationCue.Die);
         base.OnDeathStarted();
     }
 
-    /// <summary>
-    /// 책임:
-    /// - 리자드맨 전사의 2연타 준비부터 마지막 공격 종료까지 자동 flipX 갱신을 잠근다.
-    /// - 1타와 2타 사이에 타깃 위치가 바뀌어도 공격 방향 연출이 흔들리지 않게 한다.
-    /// </summary>
-    public void LockFacingForChargeStep(GameObject targetObject)
+    public void BeginFrenzyPresentation()
     {
-        if (targetObject != null)
-            TryApplySpriteFacingTargetX(targetObject.transform.position.x);
-
-        AcquireChargeFacingLock();
+        if (hasFrenzyPresentation) return;
+        hasFrenzyPresentation = true;
+        frenzyRenderer = sprite;
+        if (frenzyRenderer != null)
+        {
+            originalColor = frenzyRenderer.color;
+            frenzyRenderer.color = originalColor * ChargeLogic.FrenzyTint;
+        }
+        CommonMonsterCombatUtility.TriggerAnimation(this, CommonMonsterAnimationCue.AttackReady);
     }
 
-    private void AcquireChargeFacingLock()
+    public void CleanupFrenzyPresentation()
     {
-        if (hasChargeFacingLock)
-            return;
-
-        PushFacingLock();
-        hasChargeFacingLock = true;
+        if (!hasFrenzyPresentation) return;
+        hasFrenzyPresentation = false;
+        if (frenzyRenderer != null) frenzyRenderer.color = originalColor;
+        frenzyRenderer = null;
+        // The authored frenzy state holds until explicit completion/cancellation.
+        if (animator != null && !IsDead)
+        {
+            animator.ResetTrigger("LizardWarrior_AttackReady");
+            animator.ResetTrigger("LizardWarrior_Attack");
+            animator.Play("Base Layer.Idle", 0, 0f);
+        }
     }
 
-    /// <summary>
-    /// 책임:
-    /// - 리자드맨 전사의 2연타 패턴이 끝나거나 취소될 때 자동 flipX 갱신 잠금을 해제한다.
-    /// - 취소/사망 경로에서 여러 번 호출되어도 안전하게 한 번만 해제한다.
-    /// </summary>
-    public void ReleaseChargeFacingLock()
+    public void SetFrenzyMovement(Vector2 direction, float speed)
     {
-        if (!hasChargeFacingLock)
-            return;
-
-        PopFacingLock();
-        hasChargeFacingLock = false;
+        StopFrenzyMovement();
+        if (externalMovement == null) return;
+        float duration = Mathf.Max(0.08f, Time.fixedDeltaTime * 2f);
+        // Use the existing body sweep so frenzy cannot walk into walls or holes.
+        if (IsRecoveryRetreatDirectionBlocked(direction, speed * duration + 0.03f)) return;
+        externalMovement.AddTimedVelocity(direction * speed, duration, 0f, this);
     }
+
+    public void StopFrenzyMovement() => externalMovement?.RemoveTimedVelocitiesFromSource(this);
 
     public bool TryBuildChargeContext(AbilitySystem system, AbilitySpec spec, GameObject explicitTarget, out ChargeContext context)
     {
         context = default;
         GameObject targetObject = explicitTarget != null ? explicitTarget : Target != null ? Target.gameObject : null;
-        if (!HasRequiredData() || targetObject == null)
-            return false;
-
+        if (!HasRequiredData() || targetObject == null) return false;
+        AbilityLogic_LizardWarriorCharge logic = ChargeLogic;
         Vector2 direction = CommonMonsterCombatUtility.DirectionTo(gameObject, targetObject, sprite != null && sprite.flipX);
-        AbilityLogic_LizardWarriorCharge logic = Logic;
-        if (logic == null)
-            return false;
-
         CombatHitPayload payload = CommonMonsterCombatUtility.BuildPayload(
-            system != null ? system : abilitySystem,
-            spec,
-            logic.DamageEffect,
-            logic.KnockbackEffect,
-            gameObject,
-            logic.DamageAmount,
-            logic.KnockbackImpulse);
-
+            system != null ? system : abilitySystem, spec, logic.DamageEffect, logic.KnockbackEffect,
+            gameObject, logic.DamageAmount, logic.KnockbackImpulse);
         context = new ChargeContext(targetObject, direction, payload);
         return true;
     }
 
     private bool HasRequiredData()
     {
-        AbilityLogic_LizardWarriorCharge logic = Logic;
-        bool valid = abilitySystem != null && chargeAbility != null && logic != null && logic.DamageEffect != null && runner != null;
-        if (valid)
-            return true;
-
-        if (!hasLoggedInvalidConfig)
+        bool valid = abilitySystem != null && chargeAbility != null && ChargeLogic != null &&
+            ChargeLogic.DamageEffect != null && runner != null && externalMovement != null && collision != null;
+        if (!valid && !hasLoggedInvalidConfig)
         {
-            Debug.LogError($"[{nameof(LizardWarrior)}] 돌진 공격 설정이 비어 있습니다.", this);
+            Debug.LogError($"[{nameof(LizardWarrior)}] 광폭 추격 설정이 비어 있습니다.", this);
             hasLoggedInvalidConfig = true;
         }
-
-        return false;
+        return valid;
     }
 }
 
-/// <summary>
-/// 책임:
-/// - 리자드맨 전사의 2연타 돌진 시퀀스를 실행하고 각 타격의 경고, 이동, 피해 판정을 정리한다.
-/// - 2타는 1타 직후 거리 조건과 무관하게 이어지게 한다.
-/// </summary>
+/// <summary>Runs a finite, turn-limited pursuit. Contact consumes the attack even when damage is evaded.</summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(LizardWarrior))]
 public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
-    private static readonly SoundRef Dash1Sound = SoundRef.FromKey("sound_LizardWarrior_dash1");
-    private static readonly SoundRef Dash2Sound = SoundRef.FromKey("sound_LizardWarrior_dash2");
-
+    private static readonly SoundRef FrenzySound = SoundRef.FromKey("sound_LizardWarrior_dash1");
     [SerializeField] private LizardWarrior owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private MonoBehaviour telegraphService;
-
-    [Header("Telegraph Clipping")]
-    [SerializeField] private LayerMask telegraphWallClipLayers = 1 << 30;
-    [SerializeField, Min(3)] private int telegraphWallClipSampleCount = 48;
-    [SerializeField, Min(0f)] private float telegraphWallClipSkinWidth = 0.03f;
-
-    private AttackTelegraphStyle warningStyle;
-    private IAttackTelegraphPresenter telegraphPresenter;
     private bool isRunning;
     private bool cancelRequested;
-
     public bool IsRunning => isRunning;
 
     private void Awake()
     {
-        if (owner == null)
-            owner = GetComponent<LizardWarrior>();
-        if (abilityCoordinator == null)
-            abilityCoordinator = GetComponent<MobAbilityCoordinator>();
-        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
-        warningStyle = CreateWarningStyle();
-    }
-
-    private void OnDestroy()
-    {
-        if (warningStyle != null)
-            Destroy(warningStyle);
+        if (owner == null) owner = GetComponent<LizardWarrior>();
+        if (abilityCoordinator == null) abilityCoordinator = GetComponent<MobAbilityCoordinator>();
     }
 
     private void OnDisable()
     {
         Cancel();
+        isRunning = false;
+        abilityCoordinator?.EndRunner(this);
     }
 
     public IEnumerator Run(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
-        if (owner == null) yield break;
-        if (!owner.TryBuildChargeContext(system, spec, initialTarget, out LizardWarrior.ChargeContext context)) yield break;
+        if (owner == null || !owner.TryBuildChargeContext(system, spec, initialTarget, out LizardWarrior.ChargeContext context))
+            yield break;
         if (abilityCoordinator != null && !abilityCoordinator.TryBeginRunner(this)) yield break;
-
         isRunning = true;
         cancelRequested = false;
-
+        AbilityLogic_LizardWarriorCharge logic = owner.ChargeLogic;
         try
         {
-            yield return RunStep(system, context, owner.FirstStep, spec, 0);
-            if (!cancelRequested && !owner.IsDead && !IsCancelled(spec))
-                yield return RunStep(system, context, owner.SecondStep, spec, 1);
+            owner.BeginFrenzyPresentation();
+            float playerBaseSpeed = CommonMonsterCombatUtility.ResolvePlayerBaseSpeed(context.Target.transform);
+            float warningSeconds = Mathf.Max(0.6f,
+                CombatTimingService.ScaleSeconds(system, logic.WarningSeconds, CombatTimingSlot.AttackWarning));
+            yield return CommonMonsterCombatUtility.WaitAttackWarning(
+                warningSeconds, () => ShouldStop(spec, context.Target),
+                () => owner.SetFrenzyMovement(CommonMonsterCombatUtility.DirectionTo(gameObject, context.Target, false),
+                    playerBaseSpeed * logic.WarningSpeedMultiplier), owner.gameObject);
+            if (ShouldStop(spec, context.Target)) yield break;
+
+            CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.Attack);
+            SoundPlaybackUtility.Play(FrenzySound, instigator: gameObject, causer: gameObject,
+                target: context.Target, position: transform.position, sourceObject: this);
+            Vector2 direction = CommonMonsterCombatUtility.DirectionTo(gameObject, context.Target, false);
+            float speed = playerBaseSpeed * logic.ChaseSpeedMultiplier;
+            float elapsed = 0f;
+            while (elapsed < logic.ChaseSeconds && !ShouldStop(spec, context.Target))
+            {
+                if (CombatHitPause2D.IsParalyzedOn(owner.gameObject))
+                {
+                    owner.StopFrenzyMovement();
+                    yield return null;
+                    continue;
+                }
+                float dt = CombatHitPause2D.GetActionDeltaTime(owner.gameObject);
+                if (CommonMonsterCombatUtility.TryApplyCircleDamage(owner.ContactCenter, logic.ContactDiameter,
+                    logic.TargetLayers, gameObject, context.HitPayload)) yield break;
+                Vector2 desired = CommonMonsterCombatUtility.DirectionTo(gameObject, context.Target, false);
+                float angle = Mathf.Clamp(Vector2.SignedAngle(direction, desired),
+                    -logic.TurnDegreesPerSecond * dt, logic.TurnDegreesPerSecond * dt);
+                direction = (Quaternion.Euler(0f, 0f, angle) * direction).normalized;
+                owner.SetFrenzyMovement(direction, speed);
+                elapsed += dt;
+                yield return null;
+            }
         }
         finally
         {
-            HideWarning();
-            cancelRequested = false;
+            owner.StopFrenzyMovement();
+            CleanupPresentation();
             isRunning = false;
             abilityCoordinator?.EndRunner(this);
         }
@@ -257,155 +235,14 @@ public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatte
     public void Cancel()
     {
         cancelRequested = true;
-        HideWarning();
+        owner?.StopFrenzyMovement();
+        CleanupPresentation();
     }
 
-    public void CleanupPresentation()
-    {
-        HideWarning();
-    }
+    public void CleanupPresentation() => owner?.CleanupFrenzyPresentation();
 
-    private IEnumerator RunStep(AbilitySystem system, LizardWarrior.ChargeContext context, LizardWarrior.ChargeStep step, AbilitySpec spec, int stepIndex)
-    {
-        Vector2 direction = context.Target != null
-            ? CommonMonsterCombatUtility.DirectionTo(gameObject, context.Target, false)
-            : context.Direction;
-
-        try
-        {
-            owner.LockFacingForChargeStep(context.Target);
-            CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.AttackReady);
-            float warningSeconds = CombatTimingService.ScaleSeconds(this, step.warningSeconds, CombatTimingSlot.AttackWarning);
-            ShowWarning(direction, step, warningSeconds);
-            if (warningSeconds > 0f)
-            {
-                yield return CommonMonsterCombatUtility.WaitAttackWarning(
-                    warningSeconds,
-                    () => cancelRequested || owner.IsDead || IsCancelled(spec),
-                    () => UpdateWarning(direction, step, warningSeconds),
-                    owner.gameObject);
-            }
-
-            if (cancelRequested || owner.IsDead || IsCancelled(spec))
-                yield break;
-
-            HideWarning();
-            CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.Attack);
-            PlayDashSound(stepIndex);
-            yield return Dash(direction, step, context.HitPayload, spec);
-        }
-        finally
-        {
-            owner.ReleaseChargeFacingLock();
-        }
-    }
-
-    private IEnumerator Dash(Vector2 direction, LizardWarrior.ChargeStep step, CombatHitPayload payload, AbilitySpec spec)
-    {
-        Vector2 safeDirection = direction.normalized;
-        float speed = step.dashDistance / Mathf.Max(0.01f, step.dashSeconds);
-        float duration = Mathf.Max(0.01f, step.dashSeconds);
-        float elapsed = 0f;
-        bool hitTarget = false;
-
-        while (elapsed < duration)
-        {
-            if (cancelRequested || owner.IsDead || IsCancelled(spec))
-                yield break;
-
-            if (CombatHitPause2D.IsParalyzedOn(owner.gameObject))
-            {
-                yield return null;
-                continue;
-            }
-
-            float deltaTime = Mathf.Min(CombatHitPause2D.GetActionDeltaTime(owner.gameObject), duration - elapsed);
-            Vector2 desiredDelta = safeDirection * (speed * deltaTime);
-            Vector2 resolvedDelta = CommonMonsterCombatUtility.ResolveDashWallSlideDelta(
-                transform.position,
-                desiredDelta,
-                owner.ChargeLogic.DashCastRadius,
-                owner.ChargeLogic.DashObstacleLayers,
-                owner.ChargeLogic.DashWallSkinWidth);
-            transform.position += (Vector3)resolvedDelta;
-            if (!hitTarget)
-                hitTarget = CommonMonsterCombatUtility.TryApplyCircleDamage(transform.position, step.warningWidth, owner.ChargeLogic.TargetLayers, gameObject, payload);
-            elapsed += deltaTime;
-            yield return null;
-        }
-
-        if (!hitTarget)
-            CommonMonsterCombatUtility.TryApplyCircleDamage(transform.position, step.warningWidth, owner.ChargeLogic.TargetLayers, gameObject, payload);
-    }
-
-    private void ShowWarning(Vector2 direction, LizardWarrior.ChargeStep step, float warningSeconds)
-    {
-        if (telegraphPresenter == null)
-            return;
-
-        telegraphPresenter.Show(CreateWarningSpec(direction, step, warningSeconds));
-    }
-
-    /// <summary>준비 중 밀림이 발생해도 돌진 경고의 시작점을 현재 몬스터 위치로 유지합니다.</summary>
-    private void UpdateWarning(Vector2 direction, LizardWarrior.ChargeStep step, float warningSeconds)
-    {
-        if (telegraphPresenter == null)
-            return;
-
-        telegraphPresenter.UpdateCurrentGeometry(CreateWarningSpec(direction, step, warningSeconds));
-    }
-
-    /// <summary>확정된 돌진 방향과 현재 몬스터 위치로 리자드 워리어 경고 사각형을 구성합니다.</summary>
-    private AttackTelegraphSpec CreateWarningSpec(Vector2 direction, LizardWarrior.ChargeStep step, float warningSeconds)
-    {
-        Vector3 center = transform.position + (Vector3)(direction.normalized * step.dashDistance * 0.5f);
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        return AttackTelegraphSpec.CreateRectangle(
-            center,
-            new Vector2(step.dashDistance, step.warningWidth),
-            angle,
-            warningSeconds,
-            warningStyle)
-            .WithWallClipping(
-                telegraphWallClipLayers,
-                telegraphWallClipSampleCount,
-                telegraphWallClipSkinWidth);
-    }
-
-    private void HideWarning()
-    {
-        telegraphPresenter?.HideCurrent();
-    }
-
-    /// <summary>리자드 워리어의 1타/2타 돌진 시작 타이밍에 대응 사운드를 재생합니다.</summary>
-    private void PlayDashSound(int stepIndex)
-    {
-        SoundRef sound = stepIndex <= 0 ? Dash1Sound : Dash2Sound;
-        SoundPlaybackUtility.Play(
-            sound,
-            instigator: gameObject,
-            causer: gameObject,
-            target: owner != null && owner.Target != null ? owner.Target.gameObject : null,
-            position: transform.position,
-            sourceObject: this);
-    }
-
-    private static bool IsCancelled(AbilitySpec spec)
-    {
-        return spec != null && spec.Token != null && spec.Token.IsCancelled;
-    }
-
-    private static AttackTelegraphStyle CreateWarningStyle()
-    {
-        AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
-        style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-        style.blinkStartNormalized = 0.72f;
-        style.blinkFrequency = 5f;
-        style.blinkAlphaMin = 0.45f;
-        style.scaleFillWithProgress = false;
-        style.fillScaleStart = 1f;
-        style.fillScaleEnd = 1f;
-        return style;
-    }
+    private bool ShouldStop(AbilitySpec spec, GameObject targetObject) =>
+        cancelRequested || owner == null || owner.IsDead || targetObject == null ||
+        (abilityCoordinator != null && abilityCoordinator.IsAbilityExecutionSuppressed) ||
+        (spec != null && spec.Token != null && spec.Token.IsCancelled);
 }

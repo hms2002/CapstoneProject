@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_EvasionFeather
   displayName: "\uD68C\uD53C\uC758 \uAE43"
-  icon: {fileID: -7853464663418827758, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  icon: {fileID: 21300000, guid: db4ec1acd27a4e18855afa5b3473fd6c, type: 3}
   rarity: 0
   description: "\uD68C\uD53C\uC728\uC774 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   maxLevel: 3

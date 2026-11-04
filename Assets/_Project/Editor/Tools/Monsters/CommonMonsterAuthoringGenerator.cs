@@ -91,11 +91,11 @@ public static class CommonMonsterAuthoringGenerator
             LizardWarrior = CreateAbility<AbilityLogic_LizardWarriorCharge>(
                 "LizardWarriorCharge",
                 "AD_LizardWarriorCharge",
-                "리자드맨 전사 2연타 돌진"),
+                "리자드맨 전사 광폭 추격"),
             LizardMage = CreateAbility<AbilityLogic_LizardMageBurst>(
                 "LizardMageBurst",
                 "AD_LizardMageBurst",
-                "리자드맨 마법사 3연속 사격"),
+                "리자드맨 마법사 이동 단발 추적탄"),
             ArcaneMeleeGolem = CreateAbility<AbilityLogic_ArcaneMeleeGolemCharge>(
                 "ArcaneMeleeGolemCharge",
                 "AD_ArcaneMeleeGolemCharge",
@@ -662,6 +662,8 @@ public static class CommonMonsterAuthoringGenerator
         SetObject(serialized, "healthDef", LoadByGuid<AttributeDefinition>("3ff045849daafe84d97370c69cd17747"));
         SetString(serialized, "enemyName", enemyName);
         SetObject(serialized, "chaseIntent", instance.GetComponent<EnemyChaseIntent2D>());
+        if (monster is LizardWarrior || monster is LizardMage)
+            SetBool(serialized, "usePostAttackRecoveryRetreat", false);
         serialized.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(monster);
     }

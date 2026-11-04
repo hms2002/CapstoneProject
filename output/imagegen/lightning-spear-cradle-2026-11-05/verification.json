@@ -1,0 +1,25 @@
+{
+  "native": "32x32",
+  "colors": [
+    "#363232",
+    "#436794",
+    "#77BCD6",
+    "#8599B0",
+    "#E09656",
+    "#EECF5A"
+  ],
+  "color_count": 6,
+  "margins_ltrb": [
+    2,
+    2,
+    2,
+    2
+  ],
+  "binary_alpha": true,
+  "preview": "exact nearest-neighbor 8x",
+  "method": "image_gen generation; nearest-cell export, palette restriction and rounded two-pixel outline",
+  "game_assets": "not modified",
+  "Unity_and_automated_tests": "not executed",
+  "doc_impact": "No project document update needed; output draft only",
+  "SessionLogs_ErrorLog_DecisionLog_PresentationHTML": "unchanged; no new stale candidate"
+}

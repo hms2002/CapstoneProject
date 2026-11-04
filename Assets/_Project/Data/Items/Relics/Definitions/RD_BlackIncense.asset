@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_BlackIncense
   m_EditorClassIdentifier: 
   relicId: RD_BlackIncense
-  displayName: "\uAC80\uC740 \uD5A5\uB85C"
-  icon: {fileID: -2091944441, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  displayName: "\uc8fc\uc220\uc0ac \uac00\uba74"
+  icon: {fileID: 21300000, guid: de42057eee5c4388b1f7ff5c81055767, type: 3}
   rarity: 1
   description: "\uC2A4\uD0AC \uD53C\uD574\uAC00 \uD06C\uAC8C \uC99D\uAC00\uD558\uC9C0\uB9CC
     \uAE30\uBCF8\uACF5\uACA9 \uD53C\uD574\uAC00 \uAC10\uC18C\uD569\uB2C8\uB2E4."

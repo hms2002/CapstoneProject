@@ -1,0 +1,218 @@
+[
+  {
+    "name": "여유로운 심장",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CalmHeart.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_15",
+    "rect": [
+      41,
+      78,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "9137266158227281547",
+    "updated": false,
+    "effect": "체력이 높을 때 이동속도가 증가합니다.",
+    "description": "체력이 높을 때 이동속도가 증가합니다.",
+    "definition_guid": "11d7fc46673146558d7d95385305a393"
+  },
+  {
+    "name": "연쇄의 부적",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ChainCharm.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_24",
+    "rect": [
+      123,
+      117,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "-9140534868678271618",
+    "updated": false,
+    "effect": "치명타를 내면 이동속도가 누적 증가합니다.",
+    "description": "치명타를 내면 이동속도가 누적 증가합니다.",
+    "definition_guid": "bd3599e0184c43cc83826652107c5e89"
+  },
+  {
+    "name": "예리한 송곳",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SharpAwl.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_6",
+    "rect": [
+      246,
+      0,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "-8081933682657346706",
+    "updated": false,
+    "effect": "치명타 피해가 증가합니다.",
+    "description": "치명타 피해가 증가합니다.",
+    "definition_guid": "350592c90a7f493b999f7b9f349dfe91"
+  },
+  {
+    "name": "작은 심장",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SmallHeart.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_32",
+    "rect": [
+      164,
+      156,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "336388868",
+    "updated": false,
+    "effect": "최대 체력이 증가하고, 피해를 받으면 잠시 이동속도가 증가합니다.",
+    "description": "최대 체력이 증가하고, 피해를 받으면 잠시 이동속도가 증가합니다.",
+    "definition_guid": "ef617ca72b6f4423b7e133a909367516"
+  },
+  {
+    "name": "장인의 숫돌",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_MasterWhetstone.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_1",
+    "rect": [
+      41,
+      0,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "1230076527310467192",
+    "updated": false,
+    "effect": "공격력이 고정 수치로 증가하고, 기본공격 피해가 비율로 증가합니다.",
+    "description": "공격력이 고정 수치로 증가하고, 기본공격 피해가 비율로 증가합니다.",
+    "definition_guid": "5dfae16cf310446b821ffaf6e7a1bae3"
+  },
+  {
+    "name": "전사의 맹세",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WarriorOath.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_25",
+    "rect": [
+      164,
+      117,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "-4832650501692778596",
+    "updated": false,
+    "effect": "기본공격 피해가 크게 증가하지만 스킬 피해가 감소합니다.",
+    "description": "기본공격 피해가 크게 증가하지만 스킬 피해가 감소합니다.",
+    "definition_guid": "66fe60611ced4fefbcf921ed07eaf47c"
+  },
+  {
+    "name": "전투 장갑",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CombatGloves.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_2",
+    "rect": [
+      82,
+      0,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "3179228444970898203",
+    "updated": false,
+    "effect": "공격속도가 증가합니다.",
+    "description": "공격속도가 증가합니다.",
+    "definition_guid": "a2a3ad10170b41e5bd89c1d48bcd56a9"
+  },
+  {
+    "name": "질긴 붕대",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ToughBandage.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_3",
+    "rect": [
+      123,
+      0,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "2652998765610666854",
+    "updated": false,
+    "effect": "최대 체력이 증가합니다.",
+    "description": "최대 체력이 증가합니다.",
+    "definition_guid": "acf93562c8b943abaf5d216c50f859b8"
+  },
+  {
+    "name": "질풍의 석판",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WindTablet.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindTablet.png",
+    "sprite": "Icon_WindTablet",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "guid": "f891dbf6eb980e447b2d7d8a74a386fd",
+    "fileID": "21300000",
+    "updated": false,
+    "effect": "최대 체력이 1 감소하고, 레벨에 따라 이동속도가 6/9/12/15/18% 증가합니다.",
+    "description": "최대 체력이 1 감소하고, 레벨에 따라 이동속도가 6/9/12/15/18% 증가합니다.",
+    "definition_guid": "3176a6ca3d2df1f4d8f3770d42b8457f"
+  },
+  {
+    "name": "집중의 렌즈",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FocusLens.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_12",
+    "rect": [
+      205,
+      39,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "-3399255907306226351",
+    "updated": false,
+    "effect": "스킬 피해가 증가합니다.",
+    "description": "스킬 피해가 증가합니다.",
+    "definition_guid": "324fe8dd5a9d478790d21ad2c9881fab"
+  },
+  {
+    "name": "청동 주사위",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BronzeDice.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_26",
+    "rect": [
+      205,
+      117,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "-8993961506304712746",
+    "updated": false,
+    "effect": "치명타 확률과 회피율이 조금 증가합니다.",
+    "description": "치명타 확률과 회피율이 조금 증가합니다.",
+    "definition_guid": "cce9e7321f8d4b6aa9dc77661650dedd"
+  },
+  {
+    "name": "최후의 저항",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LastStand.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/arrow.png",
+    "sprite": "arrow",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "eba60ca92d654057bce8a3f6664ed7b1",
+    "fileID": "21300000",
+    "updated": false,
+    "effect": "현재 체력이 1 이하일 경우 모든 공격이 반드시 치명타로 적중.",
+    "description": "현재 체력이 1 이하일 경우 모든 공격이 반드시 치명타로 적중.",
+    "definition_guid": "d866e0f16ecf48d0948bda26ce39842a"
+  }
+]

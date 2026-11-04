@@ -1,0 +1,84 @@
+{
+  "date": "2026-11-05",
+  "records": [
+    {
+      "name": "창 파편 A — 부러진 창끝",
+      "png": "01-spear-tip-fragment-32x32.png",
+      "colors": [
+        "#363232",
+        "#436794",
+        "#77BCD6",
+        "#E09656",
+        "#EECF5A"
+      ],
+      "margins_ltrb": [
+        2,
+        2,
+        3,
+        2
+      ]
+    },
+    {
+      "name": "창 파편 B — 갈라진 창날 밑동",
+      "png": "02-spear-collar-fragment-32x32.png",
+      "colors": [
+        "#363232",
+        "#436794",
+        "#77BCD6",
+        "#E09656",
+        "#EECF5A"
+      ],
+      "margins_ltrb": [
+        2,
+        3,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "기사 휘장 A — 방패형 검 문장",
+      "png": "03-knightly-shield-badge-32x32.png",
+      "colors": [
+        "#363232",
+        "#436794",
+        "#77BCD6",
+        "#E09656",
+        "#EECF5A",
+        "#F2F9F8"
+      ],
+      "margins_ltrb": [
+        5,
+        2,
+        6,
+        2
+      ]
+    },
+    {
+      "name": "기사 휘장 B — 날개형 검 훈장",
+      "png": "04-knightly-winged-badge-32x32.png",
+      "colors": [
+        "#363232",
+        "#436794",
+        "#77BCD6",
+        "#E09656",
+        "#EECF5A",
+        "#F2F9F8"
+      ],
+      "margins_ltrb": [
+        2,
+        5,
+        2,
+        5
+      ]
+    }
+  ],
+  "binary_alpha": true,
+  "palette_exact": true,
+  "dimensions": "32x32",
+  "minimum_margin": 2,
+  "sheets_match_individuals": true,
+  "previews": "exact nearest-neighbor 8x",
+  "project_assets": "unchanged",
+  "Unity_and_automated_tests": "not executed",
+  "doc_impact": "no project doc update needed; draft artifacts only"
+}

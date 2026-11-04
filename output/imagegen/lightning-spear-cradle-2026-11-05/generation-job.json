@@ -1,0 +1,15 @@
+{
+  "key": "lightning-spear-cradle",
+  "name": "낙뢰의 창받침",
+  "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-1e5c9db5-4fcb-49f3-82cb-9aa6025352f5.png",
+  "palette": [
+    "#363232",
+    "#EECF5A",
+    "#E09656",
+    "#77BCD6",
+    "#436794",
+    "#8599B0"
+  ],
+  "prompt": "Use case: stylized-concept. Asset: ONE fantasy roguelike inventory PIXEL ART icon, \"Lightning Spear Cradle\".\nReference roles: image 1 STYLE ONLY, user-approved plump chunky objects with broad flat color planes; image 2 ONLY allowed color palette; image 3 WEAPON IDENTITY ONLY, golden hooked prongs and blue inset groove.\nSubject: a compact heavy magical SPEAR REST / CHARGING CRADLE, with NO spear inserted. An unmistakable substantial pedestal base with two short thick GOLDEN HOOKED SUPPORT ARMS rising left and right and curling inward, shaped like the distinctive hooked side-prongs of image 3. Between them a clearly visible BLUE RECESSED SOCKET into which a spear shaft would be set, open at the TOP. Show the top socket surface as a simple dark blue ellipse/recess with bright blue inner plane, in slight three-quarter top view. Gold arms and collar, warm orange metal shadow. Base is a thick squat blue-gray block or oval plinth with one shadow plane, clearly a standing physical apparatus. Overall silhouette wide at the bottom, cupped at the top; not a long blade, throne, helmet, bowl, trophy, crown, altar scene, compass or flat logo. No spear, pole, floating sparks, decorative wings, extra tiny legs or thin wires. Keep the blue socket and paired hooks large and readable at 32 pixels.\nStyle: actual hand-authored 32x32 logical pixel grid, crisp uniform square pixels, exactly TWO logical-pixel rounded charcoal #363232 exterior outline. Minimum TWO fully transparent logical pixels margin on every side INCLUDING outline. Material footprint about 24x24 logical pixels. Match image 1's simple broad base-color shapes plus one clear shadow area per material, charming plump physical silhouette, sparse identifying structure. No gradients, dithering, realistic texture, tiny decoration, automatic sparkles, soft shadows, labels, text, grid or background. Genuinely transparent background.\nUse only these 6 colors TOTAL including outline: #363232 outline, #EECF5A gold, #E09656 orange shadow, #77BCD6 light blue, #436794 dark blue, #8599B0 blue-gray. No white or extra shades. Single finished object only, not a sheet.",
+  "generation": "built-in image_gen"
+}

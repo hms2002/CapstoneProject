@@ -1,0 +1,254 @@
+[
+  {
+    "name": "회복의 팬턴트",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RecoveryPendant.asset",
+    "definition_guid": "b7ac0f2e281a44768c35210163fd6aba",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/potion1.png",
+    "fileID": "21300000",
+    "guid": "b7ac0f2e281a44768c35210163fd6abc",
+    "sprite": "potion1",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "description": "포션의 회복량이 1에서 2로 증가",
+    "effect": "포션의 회복량이 1에서 2로 증가",
+    "nativeFile": "icons/RD_RecoveryPendant.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 1
+  },
+  {
+    "name": "뇌창의 세 번째 번개",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearThirdStrike.asset",
+    "definition_guid": "f36d5720370d475cb8ad55ee5b68c27c",
+    "source": "Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png",
+    "fileID": "21300000",
+    "guid": "10552735fdb1e6e42a67dd8f5e1ae667",
+    "sprite": "LightningSpear",
+    "rect": [
+      0,
+      0,
+      16,
+      80
+    ],
+    "description": "● {em:뇌창 갈라론} 전용 유물\n● [[공격속도]] {pos:[+20%]}\n● 기본 공격의 {val:세 번째 타격} 시 공격 끝 지점 주변의 적을 향해 뇌창 {val:1개} 낙하",
+    "effect": "뇌창 갈라론 전용 유물 · 공격속도 [+20%] · 기본 공격의 세 번째 타격 시 공격 끝 지점 주변의 적을 향…",
+    "nativeFile": "icons/RD_LightningSpearThirdStrike.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 2
+  },
+  {
+    "name": "뇌창의 추적 낙뢰",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearTargetedRain.asset",
+    "definition_guid": "b21a9cb41264495aadb828708bd905f7",
+    "source": "Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png",
+    "fileID": "21300000",
+    "guid": "10552735fdb1e6e42a67dd8f5e1ae667",
+    "sprite": "LightningSpear",
+    "rect": [
+      0,
+      0,
+      16,
+      80
+    ],
+    "description": "● {em:뇌창 갈라론} 전용 유물\n● 낙뢰 표식이 적의 위치에 {val:0.07초} 간격으로 순차 낙하\n● 해당 위치에 떨어질 수 없거나 다른 뇌창과 너무 가까우면 적과 가까운 빈 위치에 낙하",
+    "effect": "뇌창 갈라론 전용 유물 · 낙뢰 표식이 적의 위치에 0.07초 간격으로 순차 낙하 · 해당 위치에 떨어질 수 없…",
+    "nativeFile": "icons/RD_LightningSpearTargetedRain.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 3
+  },
+  {
+    "name": "쇳덩이의 예비 탄창",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_OddIronMagazine.asset",
+    "definition_guid": "897b88fc1f3a40baa3b72a4269743a84",
+    "source": "Assets/_Project/Art/Sprites/Items/Weapons/OddIron/OddIron.png",
+    "fileID": "6943876887964716198",
+    "guid": "959fd486b4d99da4687a456b33eb4a27",
+    "sprite": "OddIron_0",
+    "rect": [
+      0,
+      0,
+      19,
+      13
+    ],
+    "description": "● {em:기묘한 쇠덩이} 전용 유물\n● 탄약이 없을 때 공격 또는 {em:난사} 입력 시 재장전\n● 재장전 완료 시 유물 레벨 {val:1}을 소모해 {pos:완전 장전}\n● 장전 후 다시 입력하면 발사\n● 유물 레벨은 남은 장전 횟수를 의미\n● 레벨이 {val:0}이 되면 {neg:유물 소멸}",
+    "effect": "기묘한 쇠덩이 전용 유물 · 탄약이 없을 때 공격 또는 난사 입력 시 재장전 · 재장전 완료 시 유물 레벨 1을…",
+    "nativeFile": "icons/RD_OddIronMagazine.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 4
+  },
+  {
+    "name": "견습 용사의 연계 증표",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ApprenticeChargeLink.asset",
+    "definition_guid": "056770c65bd343ea8bf1553c842ff605",
+    "source": "Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeapon.png",
+    "fileID": "21300000",
+    "guid": "748bd1286788d5f468f9857941b73367",
+    "sprite": "BasicWeapon",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "description": "● {em:용사의 검} 전용 유물\n● 회전베기 차징 중 {pos:돌진 찌르기 사용 가능}\n● 사용 순간의 차징 정도에 따라 돌진 찌르기의 피해·크기·색상 변화\n● 최대 차징 시 돌진 찌르기 피해 약 {val:1.67배}\n● 돌진 중 버튼을 놓으면 {em:강화 회전베기}로 연계",
+    "effect": "용사의 검 전용 유물 · 회전베기 차징 중 돌진 찌르기 사용 가능 · 사용 순간의 차징 정도에 따라 돌진 찌르기…",
+    "nativeFile": "icons/RD_ApprenticeChargeLink.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 5
+  },
+  {
+    "name": "힘 부적",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset",
+    "definition_guid": "1f2641bce49c9884eaec41adfdfa29f3",
+    "source": "Assets/_Project/Art/Sprites/UI/Dialogue/bubble emotes july update.png",
+    "fileID": "-1330801700",
+    "guid": "ef16b2ddeb64123459076c2c8a541a63",
+    "sprite": "bubble emotes july update_86",
+    "rect": [
+      32,
+      112,
+      16,
+      16
+    ],
+    "description": "공격력이 증가합니다.",
+    "effect": "공격력이 증가합니다.",
+    "nativeFile": "icons/RD_AttackBonusRelic.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 6
+  },
+  {
+    "name": "독한 술기운",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_DrunkenRush.asset",
+    "definition_guid": "7b7fd4d273ca49739198391f6ed4d309",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DrunkenRush.png",
+    "fileID": "21300000",
+    "guid": "a23fffd2b25f3824fb678b34be8c8d8b",
+    "sprite": "Icon_DrunkenRush",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "description": "피해를 받으면 6초 동안 최종 피해가 증가합니다.",
+    "effect": "피해를 받으면 6초 동안 최종 피해가 증가합니다.",
+    "nativeFile": "icons/RD_DrunkenRush.png",
+    "dedicated": true,
+    "updated": false,
+    "number": 7
+  },
+  {
+    "name": "하얀 깃털",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset",
+    "definition_guid": "eb057c0a7b239b742a001ee568ef4027",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FeatherOrbit.png",
+    "fileID": "21300000",
+    "guid": "07e2e0377cda6d94eb4680ca1b68ab8c",
+    "sprite": "Icon_FeatherOrbit",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "description": "플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 고정 피해 3/4/5/6/7을 주며, 이동속도가 높을수록 더 빠르게 회전합니다.",
+    "effect": "플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 고정 피해 3/4/5/6/7을 주며, 이동속도가 높을수록 …",
+    "nativeFile": "icons/RD_FeatherOrbit.png",
+    "dedicated": true,
+    "updated": false,
+    "number": 8
+  },
+  {
+    "name": "송골매의 증표",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_HawkEmblem.asset",
+    "definition_guid": "7d7ef88dcbf743f7b79623379d0cd8c6",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_HawkEmblem.png",
+    "fileID": "21300000",
+    "guid": "8962ffe16144980439939f691764cb69",
+    "sprite": "Icon_HawkEmblem",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "description": "추가 이동속도 20%마다 공격 회피 확률이 3% 증가합니다.",
+    "effect": "추가 이동속도 20%마다 공격 회피 확률이 3% 증가합니다.",
+    "nativeFile": "icons/RD_HawkEmblem.png",
+    "dedicated": true,
+    "updated": false,
+    "number": 9
+  },
+  {
+    "name": "한방울의 신속",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_OneDropOfSwiftness.asset",
+    "definition_guid": "7c21e56d0f854d95b4ac9ef71d603f28",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_OneDropOfSwiftness.png",
+    "fileID": "21300000",
+    "guid": "4af3438a19a9ff54683d8233bd993349",
+    "sprite": "Icon_OneDropOfSwiftness",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "description": "잔영의 날개 전용 유물\n스피드 스트라이크로 적을 처치하면 러쉬가 종료되지 않습니다.",
+    "effect": "잔영의 날개 전용 유물 · 스피드 스트라이크로 적을 처치하면 러쉬가 종료되지 않습니다.",
+    "nativeFile": "icons/RD_OneDropOfSwiftness.png",
+    "dedicated": true,
+    "updated": false,
+    "number": 10
+  },
+  {
+    "name": "회전하는 철구",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RotatingIornBall.asset",
+    "definition_guid": "d492a6f1c1a7fc84bb3b44a619dcfd4f",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RotatingIornBall.png",
+    "fileID": "21300000",
+    "guid": "6a513faa0e54c5147a1942958fe1a540",
+    "sprite": "Icon_RotatingIornBall",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "description": "적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다.",
+    "effect": "적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다.",
+    "nativeFile": "icons/RD_RotatingIornBall.png",
+    "dedicated": true,
+    "updated": false,
+    "number": 11
+  },
+  {
+    "name": "달리는 장부",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RunningLedger.asset",
+    "definition_guid": "c0e9e82eb0ce4caa9efb337cb57764ff",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RunningLedger.png",
+    "fileID": "21300000",
+    "guid": "6cd59cbf386c7134c99727cb4cdc3f83",
+    "sprite": "Icon_RunningLedger",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "description": "[치명타 시] [이동속도] 2% 씩 증가\n최대 50%까지 증가 가능\n[피해를 받으면 초기화]",
+    "effect": "[치명타 시] [이동속도] 2% 씩 증가 · 최대 50%까지 증가 가능 · [피해를 받으면 초기화]",
+    "nativeFile": "icons/RD_RunningLedger.png",
+    "dedicated": true,
+    "updated": false,
+    "number": 12
+  }
+]

@@ -1,0 +1,107 @@
+{
+  "date": "2026-11-04",
+  "records": [
+    {
+      "name": "회전하는 철구",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RotatingIornBall.asset",
+      "definition_guid": "d492a6f1c1a7fc84bb3b44a619dcfd4f",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-5d0e5302-f841-449e-98b7-45a986d0b529.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RotatingIornBall.png",
+      "sprite_guid": "6a513faa0e54c5147a1942958fe1a540",
+      "new_sprite": false
+    },
+    {
+      "name": "집중의 렌즈",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FocusLens.asset",
+      "definition_guid": "324fe8dd5a9d478790d21ad2c9881fab",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-ad62c121-2f4c-45d4-92a9-19737243c0c8.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FocusLens.png",
+      "sprite_guid": "fbe76233bc674820b3e3e4780e15ffa2",
+      "new_sprite": true
+    },
+    {
+      "name": "송골매의 증표",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_HawkEmblem.asset",
+      "definition_guid": "7d7ef88dcbf743f7b79623379d0cd8c6",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-33b90e4f-a105-4f1b-a8fb-1b48d0e73e65.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_HawkEmblem.png",
+      "sprite_guid": "8962ffe16144980439939f691764cb69",
+      "new_sprite": false
+    },
+    {
+      "name": "소포",
+      "definition": "Assets/_Project/Data/Items/Relics/RD_EventParcel.asset",
+      "definition_guid": "b5a11e75eae575b4193be62ab58517ed",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-13cbdb73-2274-4e53-b39a-8f7dc9e389ce.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EventParcel.png",
+      "sprite_guid": "5bde9142227f4afe8f9b260c27874583",
+      "new_sprite": true
+    },
+    {
+      "name": "신속의 부츠",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedBoots.asset",
+      "definition_guid": "a73c39a704801a1488033afff3b7f340",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-2ae10bf5-27be-4f0b-9f3d-be9478e75d01.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedBoots.png",
+      "sprite_guid": "d950f06d53ce11c41b1f7b2cb791c628",
+      "new_sprite": false
+    },
+    {
+      "name": "전투 교본",
+      "definition": "Assets/_Project/Unused/Items/Relics/RD_AttackBonusRelic.asset",
+      "definition_guid": "1f2641bce49c9884eaec41adfdfa29f3",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-27e80ee2-caf4-447a-9d8b-bd77683063ab.png",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CombatManual.png",
+      "sprite_guid": "3c04bab3051c48758e686afa6e900026",
+      "new_sprite": true
+    }
+  ],
+  "name_key": "asset.1f2641bce49c9884eaec41adfdfa29f3.displayName",
+  "entry_id": "46294708949004",
+  "old_name_row": [
+    "asset.1f2641bce49c9884eaec41adfdfa29f3.displayName",
+    "힘 부적",
+    "Strength Charm",
+    "力の護符",
+    "力量护符",
+    "力量護符"
+  ],
+  "new_names": {
+    "ko": "전투 교본",
+    "en": "Combat Manual",
+    "ja": "戦闘教本",
+    "zh-Hans": "战斗教本",
+    "zh-Hant": "戰鬥教本"
+  },
+  "existing_changed": [
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RotatingIornBall.png",
+    "Assets/_Project/Data/Items/Relics/Definitions/RD_FocusLens.asset",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_HawkEmblem.png",
+    "Assets/_Project/Data/Items/Relics/RD_EventParcel.asset",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedBoots.png",
+    "Assets/_Project/Unused/Items/Relics/RD_AttackBonusRelic.asset",
+    "DataSheets/Localization/GameText.csv",
+    "Assets/_Project/Data/Localization/GameText_ko.asset",
+    "Assets/_Project/Data/Localization/GameText_en.asset",
+    "Assets/_Project/Data/Localization/GameText_ja.asset",
+    "Assets/_Project/Data/Localization/GameText_zh-Hans.asset",
+    "Assets/_Project/Data/Localization/GameText_zh-Hant.asset"
+  ],
+  "new_files": [
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FocusLens.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FocusLens.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EventParcel.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EventParcel.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CombatManual.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CombatManual.png"
+  ],
+  "source_png_exact": 6,
+  "localized_names_exact": 5,
+  "other_protected_files_unchanged": 326,
+  "expected_changed_bytes_exact": 18,
+  "unity_import_compile_playmode": "not executed",
+  "automated_tests": "not executed",
+  "markdown_links_valid": 14,
+  "new_guid_unique": 3,
+  "definition_reference_inspection": "passed"
+}

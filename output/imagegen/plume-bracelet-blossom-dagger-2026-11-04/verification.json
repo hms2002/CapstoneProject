@@ -1,0 +1,168 @@
+{
+  "date": "2026-11-04",
+  "mode": "preview-only artwork",
+  "method": "four built-in image_gen calls; System.Drawing nearest-neighbor native export, exact palette quantization, rounded two-pixel outline and sheet assembly; no Python image editing",
+  "primary_style": "User-approved rift stone/broken crown/bandage/flag quartet",
+  "icons": [
+    {
+      "name": "회피의 깃",
+      "design_for": "회피의 깃",
+      "file": "01-evasion-plume-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        2,
+        29,
+        30
+      ],
+      "transparent_margins": [
+        3,
+        2,
+        3,
+        2
+      ],
+      "colors": [
+        "#363232",
+        "#C2C2C2",
+        "#D49C73",
+        "#F2F9F8"
+      ],
+      "color_count": 4,
+      "alpha": "0 or 255 only",
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-8d7c2f26-395d-48b4-b37c-a393fe60d94e.png"
+    },
+    {
+      "name": "무거운 팔찌",
+      "design_for": "무거운 팔찌",
+      "file": "02-heavy-bracelet-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        4,
+        30,
+        27
+      ],
+      "transparent_margins": [
+        2,
+        4,
+        2,
+        5
+      ],
+      "colors": [
+        "#363232",
+        "#75656A",
+        "#978C8E",
+        "#C2C2C2",
+        "#E09656"
+      ],
+      "color_count": 5,
+      "alpha": "0 or 255 only",
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-96e694b2-b1e7-4fcf-a182-99a237f43bb5.png"
+    },
+    {
+      "name": "귀인의 검흔 — 벚꽃 초안",
+      "design_for": "귀인의 검흔",
+      "file": "03-cherry-blossom-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        2,
+        30,
+        29
+      ],
+      "transparent_margins": [
+        2,
+        2,
+        2,
+        3
+      ],
+      "colors": [
+        "#363232",
+        "#BE8EC1",
+        "#EDBCCC",
+        "#EECF5A",
+        "#F1E5F8"
+      ],
+      "color_count": 5,
+      "alpha": "0 or 255 only",
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-75dd2c62-b0fd-4363-8994-14612c6864a1.png"
+    },
+    {
+      "name": "네잎클로버 장식 단검",
+      "design_for": "보약 곰방대",
+      "file": "04-clover-dagger-32x32.png",
+      "dimensions": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        2,
+        28,
+        30
+      ],
+      "transparent_margins": [
+        3,
+        2,
+        4,
+        2
+      ],
+      "colors": [
+        "#363232",
+        "#5DA16E",
+        "#8599B0",
+        "#B1D368",
+        "#EECF5A",
+        "#F2F9F8"
+      ],
+      "color_count": 6,
+      "alpha": "0 or 255 only",
+      "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-1f74fa13-d086-4017-896e-8a6ff817776b.png"
+    }
+  ],
+  "sheet_dimensions": [
+    [
+      64,
+      64
+    ],
+    [
+      32,
+      128
+    ],
+    [
+      128,
+      32
+    ]
+  ],
+  "preview_dimensions": [
+    512,
+    512
+  ],
+  "minimum_margin": 2,
+  "outline_color": "#363232",
+  "outline_method": "rounded radius-two footprint excluding four diagonal corners; native and enlarged visual review",
+  "visual_review": [
+    "Feather retains broad vane, shaft and short quill.",
+    "Bracelet retains wide iron front, large oval recess and two copper rivets.",
+    "Cherry blossom retains five pink petals and tip indentations; identification as sakura remains the user review point.",
+    "Dagger and four-lobed clover ornament both remain visible at native scale; ornament intentionally enlarged."
+  ],
+  "protected_project_files_unchanged": 4047,
+  "project_applied": false,
+  "project_names_or_effects_changed": false,
+  "unity_import_tests": "not executed; preview artwork only",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged",
+  "ErrorLog": "unchanged",
+  "DecisionLog": "unchanged",
+  "PresentationHTML": "unchanged; no new stale candidate"
+}

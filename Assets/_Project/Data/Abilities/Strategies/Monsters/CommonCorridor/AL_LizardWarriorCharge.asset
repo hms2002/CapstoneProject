@@ -16,22 +16,16 @@ MonoBehaviour:
   knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
   damageAmount: 1
   knockbackImpulse: 0
-  recoverSeconds: 0.25
-  firstStep:
-    warningSeconds: 1
-    dashDistance: 1.875
-    dashSeconds: 0.34
-    warningWidth: 0.95
-  secondStep:
-    warningSeconds: 0.7
-    dashDistance: 1.875
-    dashSeconds: 0.34
-    warningWidth: 0.95
+  recoverSeconds: 1.1
+  attackRange: 3.74
+  warningSeconds: 0.8
+  chaseSeconds: 2.2
+  chaseSpeedMultiplier: 1.4
+  warningSpeedMultiplier: 0.75
+  turnDegreesPerSecond: 270
+  rearmSeconds: 1
+  frenzyTint: {r: 1, g: 0.28, b: 0.22, a: 1}
   targetLayers:
     serializedVersion: 2
     m_Bits: 8
-  dashObstacleLayers:
-    serializedVersion: 2
-    m_Bits: 1073741824
-  dashCastRadius: 0.3
-  dashWallSkinWidth: 0.03
+  contactDiameter: 0.95

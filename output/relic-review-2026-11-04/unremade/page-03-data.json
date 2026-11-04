@@ -1,0 +1,254 @@
+[
+  {
+    "name": "사냥꾼의 표식",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_HunterMark.asset",
+    "definition_guid": "81eca7800b7446598237331ab25b00c8",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "6214254870795243053",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_5",
+    "rect": [
+      205,
+      0,
+      41,
+      39
+    ],
+    "description": "치명타 확률이 증가합니다.",
+    "effect": "치명타 확률이 증가합니다.",
+    "nativeFile": "icons/RD_HunterMark.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 25
+  },
+  {
+    "name": "예리한 송곳",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SharpAwl.asset",
+    "definition_guid": "350592c90a7f493b999f7b9f349dfe91",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-8081933682657346706",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_6",
+    "rect": [
+      246,
+      0,
+      41,
+      39
+    ],
+    "description": "치명타 피해가 증가합니다.",
+    "effect": "치명타 피해가 증가합니다.",
+    "nativeFile": "icons/RD_SharpAwl.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 26
+  },
+  {
+    "name": "회피의 깃",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_EvasionFeather.asset",
+    "definition_guid": "7c8c681dbbe24cb68c36637db0844b0c",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-7853464663418827758",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_7",
+    "rect": [
+      0,
+      39,
+      41,
+      39
+    ],
+    "description": "회피율이 증가합니다.",
+    "effect": "회피율이 증가합니다.",
+    "nativeFile": "icons/RD_EvasionFeather.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 27
+  },
+  {
+    "name": "굳센 발걸음",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FirmStep.asset",
+    "definition_guid": "6657f14bf85d4440b1a6353e784e9c3e",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-8815494589321632592",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_8",
+    "rect": [
+      41,
+      39,
+      41,
+      39
+    ],
+    "description": "치명타가 아닌 공격 적중 시 치명타 확률이 2/3/4% 증가합니다. 최대 8회 중첩되며, 치명타 발생 시 초기화됩니다.",
+    "effect": "치명타가 아닌 공격 적중 시 치명타 확률이 2/3/4% 증가합니다. 최대 8회 중첩되며, 치명타 발생 시 초기화…",
+    "nativeFile": "icons/RD_FirmStep.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 28
+  },
+  {
+    "name": "무거운 팔찌",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_HeavyBracelet.asset",
+    "definition_guid": "16ad7526693d4a44a3183bcc3df90f61",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "6752461376909513456",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_9",
+    "rect": [
+      82,
+      39,
+      41,
+      39
+    ],
+    "description": "이동속도가 비율로 감소하고, 공격력이 고정 수치로 증가합니다.",
+    "effect": "이동속도가 비율로 감소하고, 공격력이 고정 수치로 증가합니다.",
+    "nativeFile": "icons/RD_HeavyBracelet.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 29
+  },
+  {
+    "name": "얇은 갑옷 조각",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThinArmorShard.asset",
+    "definition_guid": "884462a2ad3d4a1e81d32a56a1597d51",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-9195065147404484278",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_10",
+    "rect": [
+      123,
+      39,
+      41,
+      39
+    ],
+    "description": "최대 체력과 회피율이 조금 증가합니다.",
+    "effect": "최대 체력과 회피율이 조금 증가합니다.",
+    "nativeFile": "icons/RD_ThinArmorShard.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 30
+  },
+  {
+    "name": "광전사의 끈",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BerserkerCord.asset",
+    "definition_guid": "c3f65c9408584fc09145a782d74839bc",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "1290818826102019816",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_11",
+    "rect": [
+      164,
+      39,
+      41,
+      39
+    ],
+    "description": "최대 체력이 감소하지만 공격속도가 크게 증가합니다.",
+    "effect": "최대 체력이 감소하지만 공격속도가 크게 증가합니다.",
+    "nativeFile": "icons/RD_BerserkerCord.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 31
+  },
+  {
+    "name": "집중의 렌즈",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FocusLens.asset",
+    "definition_guid": "324fe8dd5a9d478790d21ad2c9881fab",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-3399255907306226351",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_12",
+    "rect": [
+      205,
+      39,
+      41,
+      39
+    ],
+    "description": "스킬 피해가 증가합니다.",
+    "effect": "스킬 피해가 증가합니다.",
+    "nativeFile": "icons/RD_FocusLens.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 32
+  },
+  {
+    "name": "균형추",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BalanceWeight.asset",
+    "definition_guid": "a491ffe08c1246b7b39b04fdca100c95",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "7824667717655779811",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_13",
+    "rect": [
+      246,
+      39,
+      41,
+      39
+    ],
+    "description": "기본공격 피해와 스킬 피해가 증가합니다.",
+    "effect": "기본공격 피해와 스킬 피해가 증가합니다.",
+    "nativeFile": "icons/RD_BalanceWeight.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 33
+  },
+  {
+    "name": "마지막 숨",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LastBreath.asset",
+    "definition_guid": "4a278341ae1b4ef4b8886c04f3517f71",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-3051198569075358200",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_14",
+    "rect": [
+      0,
+      78,
+      41,
+      39
+    ],
+    "description": "체력이 50% 이하일 때 공격력이 3 증가합니다.",
+    "effect": "체력이 50% 이하일 때 공격력이 3 증가합니다.",
+    "nativeFile": "icons/RD_LastBreath.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 34
+  },
+  {
+    "name": "여유로운 심장",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CalmHeart.asset",
+    "definition_guid": "11d7fc46673146558d7d95385305a393",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "9137266158227281547",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_15",
+    "rect": [
+      41,
+      78,
+      41,
+      39
+    ],
+    "description": "체력이 높을 때 이동속도가 증가합니다.",
+    "effect": "체력이 높을 때 이동속도가 증가합니다.",
+    "nativeFile": "icons/RD_CalmHeart.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 35
+  },
+  {
+    "name": "승리의 깃발",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_VictoryFlag.asset",
+    "definition_guid": "1215f1b7fec1495dab3f473078c1e13c",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-7409323811495052916",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_17",
+    "rect": [
+      123,
+      78,
+      41,
+      39
+    ],
+    "description": "적을 처치하면 잠시 공격속도가 증가합니다.",
+    "effect": "적을 처치하면 잠시 공격속도가 증가합니다.",
+    "nativeFile": "icons/RD_VictoryFlag.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 36
+  }
+]

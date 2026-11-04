@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
+  m_Name: RD_DrunkenRush
+  m_EditorClassIdentifier: 
+  relicId: RD_DrunkenRush
+  displayName: "\uB3C5\uD55C \uC220\uAE30\uC6B4"
+  icon: {fileID: 21300000, guid: a23fffd2b25f3824fb678b34be8c8d8b, type: 3}
+  rarity: 1
+  description: "\uD53C\uD574\uB97C \uBC1B\uC73C\uBA74 6\uCD08 \uB3D9\uC548 \uCD5C\uC885 \uD53C\uD574\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  maxLevel: 3
+  dropLevel: 1
+  logic: {fileID: 11400000, guid: 4e35d4699f5d4db0a66010eb126c4ee1, type: 2}
+  param: {fileID: 0}

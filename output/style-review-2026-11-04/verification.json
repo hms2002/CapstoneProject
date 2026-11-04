@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-04",
+  "reference_files_copied_byte_exact": 4,
+  "native_reference_crops_exact": 8,
+  "enlargements_exact_20x": 2,
+  "reference_board_frames_exact": 8,
+  "board_preview_exact_8x": true,
+  "rounded_21_point_outline_exact_matches": 5,
+  "remaining_reference_outline_pixel_differences": [
+    1,
+    3,
+    2
+  ],
+  "square_25_point_outline_added_pixel_range": [
+    24,
+    44
+  ],
+  "observed_color_counts": [
+    3,
+    4,
+    4,
+    5,
+    6,
+    6,
+    7,
+    8
+  ],
+  "protected_project_files_unchanged": 387,
+  "markdown_links_verified": 8,
+  "new_relic_art_generated": false,
+  "project_assets_changed": false,
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged by this task",
+  "ErrorLog": "unchanged by this task",
+  "DecisionLog": "unchanged by this task",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "unity_verification": "not executed"
+}

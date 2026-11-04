@@ -1,0 +1,55 @@
+[
+  {
+    "key": "chloe-golden-lantern",
+    "name": "클로에의 황금 사각 랜턴",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\chloe-golden-lantern-2026-11-05\\chloe-golden-lantern-source.png",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#9D5789",
+      "#BE8EC1",
+      "#EDBCCC"
+    ],
+    "material_bbox": [
+      295,
+      213,
+      952,
+      1048
+    ],
+    "preserve_alpha_holes": [
+      [
+        14,
+        7
+      ],
+      [
+        15,
+        7
+      ],
+      [
+        16,
+        7
+      ],
+      [
+        13,
+        8
+      ],
+      [
+        14,
+        8
+      ],
+      [
+        15,
+        8
+      ],
+      [
+        16,
+        8
+      ],
+      [
+        17,
+        8
+      ]
+    ]
+  }
+]

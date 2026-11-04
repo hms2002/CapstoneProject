@@ -1,0 +1,244 @@
+{
+  "date": "2026-11-04",
+  "mode": "Implementation",
+  "items": [
+    {
+      "name": "목각 주사위",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BronzeDice.asset",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WoodenDice.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WoodenDice.png.meta",
+      "guid": "3e59cd7f3931434ba4f25de798b75abe",
+      "fileID": "21300000",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-9129f071-177a-43d8-bc0b-095494f21ac5.png",
+      "sha256": "56044c1036343f2860386b80fcea1d55fe952b4c42a703730ebfebad2dad23b2",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        2,
+        30,
+        30
+      ]
+    },
+    {
+      "name": "질풍의 석판",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WindTablet.asset",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindTablet.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindTablet.png.meta",
+      "guid": "f891dbf6eb980e447b2d7d8a74a386fd",
+      "fileID": "21300000",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-ccb0f3cc-2115-4cd6-8c35-bada36d62be2.png",
+      "sha256": "99f19025ebc20168522e95433b11c1df1ffadb11b892021d0d13ed0bc5f7c91c",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        3,
+        2,
+        29,
+        30
+      ]
+    },
+    {
+      "name": "전투 장갑",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CombatGloves.asset",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CombatGloves.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CombatGloves.png.meta",
+      "guid": "2b0a07ce77e446039090e50cd7dfb281",
+      "fileID": "21300000",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-7590b63d-57c3-4f95-a983-5dee6b188cac.png",
+      "sha256": "00fcadcd872a1c1471a993e8f6e5e13c6e3847b1e15a4b2b8a637892c9cfe438",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        1,
+        2,
+        31,
+        31
+      ]
+    },
+    {
+      "name": "낡은 숫돌",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WornWhetstone.asset",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WornWhetstone.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WornWhetstone.png.meta",
+      "guid": "812daf9b99ae444896ffee43c6dc011f",
+      "fileID": "21300000",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-ee71814f-c1d0-49e9-8429-a00cacb2513d.png",
+      "sha256": "e4f9d7d21e11dc1d5d1c17a609d93388393a01ad370c307cd768a6565f1aaf08",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        4,
+        30,
+        29
+      ]
+    },
+    {
+      "name": "장인의 숫돌",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_MasterWhetstone.asset",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_MasterWhetstone.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_MasterWhetstone.png.meta",
+      "guid": "c5b140d829b0412b8bbc86d2fd3eca63",
+      "fileID": "21300000",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-cffb8737-b666-4609-bbf3-5d7616a7685b.png",
+      "sha256": "f6f943a9f0a6165dfe22aa095b6b80cda4e4bde4762fc9e11aeafbb93f23cf08",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        2,
+        4,
+        30,
+        29
+      ]
+    },
+    {
+      "name": "독한 한잔",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_DrunkenRush.asset",
+      "png": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DrunkenRush.png",
+      "meta": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DrunkenRush.png.meta",
+      "guid": "a23fffd2b25f3824fb678b34be8c8d8b",
+      "fileID": "21300000",
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-06315ea6-e473-4c05-8008-d55cb565a1d9.png",
+      "sha256": "d9f2e669c643a03055d138e51e994b5543720aaf5dc5b8aa3c2a17757565daf0",
+      "size": [
+        32,
+        32
+      ],
+      "bbox": [
+        4,
+        3,
+        31,
+        29
+      ]
+    }
+  ],
+  "renames": [
+    {
+      "definition": "RD_BronzeDice",
+      "key": "asset.cce9e7321f8d4b6aa9dc77661650dedd.displayName",
+      "names": {
+        "ko": "목각 주사위",
+        "en": "Wooden Die",
+        "ja": "木彫りのサイコロ",
+        "zh-Hans": "木雕骰子",
+        "zh-Hant": "木雕骰子"
+      },
+      "entry_id": "46294713143299"
+    },
+    {
+      "definition": "RD_DrunkenRush",
+      "key": "asset.7b7fd4d273ca49739198391f6ed4d309.displayName",
+      "names": {
+        "ko": "독한 한잔",
+        "en": "A Stiff Drink",
+        "ja": "強い一杯",
+        "zh-Hans": "烈酒一杯",
+        "zh-Hant": "烈酒一杯"
+      },
+      "entry_id": "46294717337600"
+    }
+  ],
+  "existing_changed_files": [
+    {
+      "file": "Assets/_Project/Data/Items/Relics/Definitions/RD_BronzeDice.asset",
+      "before_sha256": "f969ca0bb6c54dc181ad9071b65ed1d58f4be9e5091c650bbf9be0ecaa08a47e",
+      "after_sha256": "cd309a884c25033e378a1b1176c2524131f0c4886986ac4e17292160e01ea12f"
+    },
+    {
+      "file": "Assets/_Project/Data/Items/Relics/Definitions/RD_CombatGloves.asset",
+      "before_sha256": "42cfc8654ea330ebf19b770e41db1011768f513d92f3e5c3a6f85382200db1ab",
+      "after_sha256": "c51a2d437be42919450f14d58fc1ffdcb85b0fabb4cad8ccdb4db523fe120ac3"
+    },
+    {
+      "file": "Assets/_Project/Data/Items/Relics/Definitions/RD_WornWhetstone.asset",
+      "before_sha256": "01c07dab31d1d8833268816a12834f44521648d3e9ecd858acbd6ba53ce6c8a3",
+      "after_sha256": "288ea1a8cb3573f22f1b6d2847a65c4d3b1ba91a0d1ced3d06b478440cdc8929"
+    },
+    {
+      "file": "Assets/_Project/Data/Items/Relics/Definitions/RD_MasterWhetstone.asset",
+      "before_sha256": "551bbb6d33c22cd957582ad9d0959647227ee0ecc6c1ff7aa56bb7c4ddb75af3",
+      "after_sha256": "007ba7c6f032876d3b6b0abedc7699e62c338323dbbf6a8f12c0acdba7a11035"
+    },
+    {
+      "file": "Assets/_Project/Data/Items/Relics/Definitions/RD_DrunkenRush.asset",
+      "before_sha256": "fe89a13d4dfb122be6d54cd0d60fb83382dcbee247bce097ab6f6054fb541711",
+      "after_sha256": "b0402a75b459f13a3fd13d59e950a8a7a84591c8c434add3c04015a348b8885f"
+    },
+    {
+      "file": "Assets/_Project/Data/Localization/GameText_ko.asset",
+      "before_sha256": "1ef8cf249a5a262b0476d573556ebffe12d5b9e7bfabea0c083f66ccd92a5461",
+      "after_sha256": "33720b4c92b779d9c2eb8c22599a375e3a243743eb2de07fc7ce27d1c12283fc"
+    },
+    {
+      "file": "Assets/_Project/Data/Localization/GameText_en.asset",
+      "before_sha256": "2cbb60b361ea2fa271f9e331be59c3bac9fea59ccec42b29c6b064c1b025d616",
+      "after_sha256": "8dc71cd4736e8881768b18893732219f6097f5f0f64695503c601a4ac222dce1"
+    },
+    {
+      "file": "Assets/_Project/Data/Localization/GameText_ja.asset",
+      "before_sha256": "6006c3569cf8e90be87e8aa50ff6402e013e1dc150f9611bb3afff9959013a87",
+      "after_sha256": "257ec4999483a2f3451d491d4730e27929c8a91905097d6276e147e25c58a23e"
+    },
+    {
+      "file": "Assets/_Project/Data/Localization/GameText_zh-Hans.asset",
+      "before_sha256": "1528bf1f1b5d9082564456e14a829bde0233e0a5c69a4fd2f3c900e8225f8c4c",
+      "after_sha256": "f54fd6f46d3b627c7b45eedc87434d7f7f2da81c3671c5d2ac447a1212ab42bb"
+    },
+    {
+      "file": "Assets/_Project/Data/Localization/GameText_zh-Hant.asset",
+      "before_sha256": "72ab3e48b90d06fe0443f134c0702f82db578f6313379734e43025a26c4c2a46",
+      "after_sha256": "db5872213219444dd1b0d8495e37bf44c62ad69daaf170d720ca277c4f6e1001"
+    },
+    {
+      "file": "DataSheets/Localization/GameText.csv",
+      "before_sha256": "570d323d392d0ad341eb9437f9771c9a1a02b9e252c61940410cffb2a3ec337c",
+      "after_sha256": "48ff68639bf1d8962e40c0a673c38f972b8d451103fe0b6dddcecc2984d02577"
+    },
+    {
+      "file": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindTablet.png",
+      "before_sha256": "44b4bfd783d035f9fb04666a55f1e5cde2c932ee447269148d3acf020bf99105",
+      "after_sha256": "99f19025ebc20168522e95433b11c1df1ffadb11b892021d0d13ed0bc5f7c91c"
+    },
+    {
+      "file": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DrunkenRush.png",
+      "before_sha256": "e164cc3b0555506026a05e5ce45a88dbb99744469bfc365a97a6cf15c1521b10",
+      "after_sha256": "d9f2e669c643a03055d138e51e994b5543720aaf5dc5b8aa3c2a17757565daf0"
+    }
+  ],
+  "new_files": [
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WoodenDice.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WoodenDice.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CombatGloves.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CombatGloves.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WornWhetstone.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WornWhetstone.png.meta",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_MasterWhetstone.png",
+    "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_MasterWhetstone.png.meta"
+  ],
+  "source_png_bytes_exact": "6/6",
+  "name_translations_verified": "10/10",
+  "only_requested_fields_changed": true,
+  "existing_key_ids_saved_ids_effects_preserved": true,
+  "existing_metadata_preserved": true,
+  "new_guid_preflight_passed": true,
+  "protected_other_files_unchanged": 382,
+  "definition_diff_whitespace_passed": true,
+  "unity_import_compile_playmode": "not executed",
+  "doc_impact": "SessionLog",
+  "ErrorLog": "unchanged by this task",
+  "DecisionLog": "unchanged by this task",
+  "PresentationHTML": "unchanged; no new stale candidate",
+  "markdown_links_verified": 15,
+  "session_log_appended_once": true
+}

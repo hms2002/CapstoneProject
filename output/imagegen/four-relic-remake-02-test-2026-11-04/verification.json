@@ -1,0 +1,176 @@
+{
+  "date": "2026-11-04",
+  "mode": "drafts only",
+  "tool": "built-in image_gen",
+  "generation_calls": 4,
+  "items": [
+    {
+      "index": 1,
+      "name": "독한 술기운",
+      "file": "01-drunken-rush-new-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#8A5E40",
+        "#D49C73",
+        "#E09656",
+        "#EECF5A",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "palette_matches_supplied_image": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        3,
+        2,
+        3,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "e830cebbb12c23f52ad3d4cec31dcf623e697d9a739638ffdc82c0d8a2f5ce44"
+    },
+    {
+      "index": 2,
+      "name": "질풍의 석판",
+      "file": "02-wind-tablet-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        32,
+        0,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#56774A",
+        "#75656A",
+        "#B1D368",
+        "#C2C2C2",
+        "#F1E9D4"
+      ],
+      "opaque_color_count": 6,
+      "palette_matches_supplied_image": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "fbbfdecd2b5f63a3cfea2d38d0462a3b7f69d547273804e412947f971f232412"
+    },
+    {
+      "index": 3,
+      "name": "낡은 숫돌",
+      "file": "03-worn-whetstone-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#453C3C",
+        "#62494C",
+        "#75656A",
+        "#978C8E",
+        "#C2C2C2"
+      ],
+      "opaque_color_count": 6,
+      "palette_matches_supplied_image": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        2,
+        2,
+        2,
+        3
+      ],
+      "two_pixel_outline": true,
+      "sha256": "27aa1f31692a0012c730726b859978126a34fa344a06de443defeb15a48592ae"
+    },
+    {
+      "index": 4,
+      "name": "집중의 렌즈",
+      "file": "04-focus-lens-draft-v1-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet_rect": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#436794",
+        "#77BCD6",
+        "#E09656",
+        "#EECF5A",
+        "#F2F9F8"
+      ],
+      "opaque_color_count": 6,
+      "palette_matches_supplied_image": true,
+      "alpha_values": [
+        0,
+        255
+      ],
+      "margins_l_t_r_b": [
+        3,
+        2,
+        4,
+        2
+      ],
+      "two_pixel_outline": true,
+      "sha256": "a399a4892f1ee3cf25d51e9bf8d13a18e8122dd6ff51c92716f808a85fd5f3ce"
+    }
+  ],
+  "sheet_size": [
+    64,
+    64
+  ],
+  "layout": "2x2 in user order: mug, tablet, whetstone, lens",
+  "preview_size": [
+    512,
+    512
+  ],
+  "sheet_matches_individual_files": true,
+  "preview_exact_nearest_8x": true,
+  "protected_project_files_unchanged": 388,
+  "project_applied": false,
+  "unity_import_compile_playmode": "not executed",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged by this task",
+  "ErrorLog": "unchanged by this task",
+  "DecisionLog": "unchanged by this task",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "markdown_links_verified": 9
+}

@@ -15,6 +15,7 @@ public readonly struct DamagePopupViewModel
     public readonly float EndScale;
     public readonly float FontSize;
     public readonly bool OverrideFontSize;
+    public readonly bool ElasticPop;
 
     public DamagePopupViewModel(
         string text,
@@ -25,7 +26,8 @@ public readonly struct DamagePopupViewModel
         float startScale,
         float endScale,
         float fontSize,
-        bool overrideFontSize)
+        bool overrideFontSize,
+        bool elasticPop = false)
     {
         Text = text;
         TextColor = textColor;
@@ -36,5 +38,6 @@ public readonly struct DamagePopupViewModel
         EndScale = endScale;
         FontSize = fontSize;
         OverrideFontSize = overrideFontSize;
+        ElasticPop = elasticPop;
     }
 }

@@ -419,7 +419,8 @@ public sealed class DamagePopupService : MonoBehaviour
             startScale * request.SizeScale,
             endScale * request.SizeScale,
             fontSize: 0f,
-            overrideFontSize: false);
+            overrideFontSize: false,
+            elasticPop: DamagePopupFormatProfileSO.IsSlimeBlock(request));
     }
 
     private static Color ResolveFallbackColor(DamagePopupRequest request)

@@ -142,7 +142,10 @@ public class TreasureChest : MonoBehaviour
                     continue;
 
                 if (entry.item is RelicDefinition relic)
-                    inventory.SetRelicWithLevel(entry.slotIndex, relic, entry.relicLevel);
+                {
+                    if (!RelicDefinition.IsRetiredId(relic.relicId))
+                        inventory.SetRelicWithLevel(entry.slotIndex, relic, entry.relicLevel);
+                }
                 else
                     inventory.Set(entry.slotIndex, entry.item);
             }

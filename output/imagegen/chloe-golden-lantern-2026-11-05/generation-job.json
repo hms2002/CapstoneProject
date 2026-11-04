@@ -1,0 +1,15 @@
+{
+  "key": "chloe-golden-lantern",
+  "name": "클로에의 황금 사각 랜턴",
+  "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-6dfabe0f-5a5c-4017-97c3-c249227dbb76.png",
+  "palette": [
+    "#363232",
+    "#EECF5A",
+    "#E09656",
+    "#9D5789",
+    "#BE8EC1",
+    "#EDBCCC"
+  ],
+  "prompt": "Use case: stylized-concept. ONE fantasy roguelike inventory pixel-art sprite: Chloe's affection reward, a GOLD RECTANGULAR CASE LANTERN with a PURPLE INTERIOR.\nReference roles: image 1 ONLY art style, the user's most loved hand-authored chunky stone/crown/bandage/flag icons. Image 2 the ONLY allowed color palette.\nSubject: a compact BOX-SHAPED handheld lantern. The MAIN BODY IS A SQUAT RECTANGULAR GOLD CASE with a FLAT TOP AND FLAT BOTTOM, nearly square large front window, straight substantial vertical corner posts, a narrow right side visible in gentle three-quarter view. Small short thick SQUARED ARCH HANDLE firmly attached on top, not a thin dangling wire. The broad front glass panel is filled with lavender-purple illumination with one deeper muted-violet side/shadow plane; a tiny but chunky pale lavender magical flame inside suggests it is a lantern, no detailed candle. Golden top cap and flat sturdy gold foot/base, one broad warm orange metal shadow on the side. Keep case dominant, main front window large, distinctly squared corners; soften only with one-pixel steps like the reference icons. Physical dimensional inventory item, no extra pedestal or scene. This should read immediately as a rectangular GOLD LANTERN with PURPLE LIGHT, not a round lamp, orb, bag, gem, bottle, birdcage, clock or elaborate cathedral. No ornate filigree or bars across window, no starbursts, chains, hearts, rays, text, logos or floating effects.\nStyle: logical 32x32 pixel canvas, uniform hard-edged square pixels, plump object silhouette, broad flat base-color shapes plus one clear shadow plane per material, sparse identifying features. TWO logical-pixel charcoal rounded exterior outline. At least TWO fully transparent logical-pixel margins on all four edges INCLUDING outline; material footprint about 24 pixels in its longest dimension. Genuinely transparent background, no drop shadow. No gradients, dithering, texture, antialiasing, realistic lighting, microdetail or automatic shiny trim. One icon only, no sheet.\nExact colors ONLY (6 total including outline): #363232 outline, #EECF5A gold, #E09656 gold shadow, #9D5789 deep muted violet, #BE8EC1 lavender-purple, #EDBCCC pale lavender flame. Purple visible interior area must be substantial.",
+  "generation": "built-in image_gen"
+}

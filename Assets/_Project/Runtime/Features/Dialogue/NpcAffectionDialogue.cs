@@ -18,17 +18,22 @@ public static class NpcAffectionDialogue
     public static int GetAffection(NPCData npc)
     {
         if (npc == null) return 0;
+        return GetAffection(npc.id);
+    }
+
+    public static int GetAffection(int npcId)
+    {
         int saved = 0;
         var records = GameDataStore.Data?.affectionData?.affectionRecords;
         if (records != null)
             foreach (var record in records)
-                if (record.npcId == npc.id) saved = record.amount;
+                if (record.npcId == npcId) saved = record.amount;
         var pending = RunSessionStore.Data?.pendingRunAffectionChanges;
         if (pending != null)
             foreach (var change in pending)
-                if (change.npcId == npc.id) saved += change.delta;
+                if (change.npcId == npcId) saved += change.delta;
         if (AffectionManager.Instance == null) return saved;
-        int current = AffectionManager.Instance.GetAffection(npc.id);
+        int current = AffectionManager.Instance.GetAffection(npcId);
         return current != 0 || saved == 0 ? current : saved;
     }
 

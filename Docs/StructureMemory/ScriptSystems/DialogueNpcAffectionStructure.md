@@ -11,6 +11,26 @@ last_reviewed: 2026-11-02
 
 Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scripts.
 
+## Chloe and Melta area benefits
+
+- Their level-2 rewards now unlock one relic each: `MeltaRelicUnlockReward` → `RD_SlimeBottle`, `ChloeRelicUnlockReward` → `RD_ChloeLantern`. Both use existing `UnlockItemAffectionEffect`, producing one item icon/tooltip slot and a five-locale unlock summary. These relics remain registered in allRelics and absent from defaults. `ItemManager` restores missing earned item-unlock effects from committed profile affection during initialization/unlock queries, without replaying other effects or reward popups. [Tier-two scope](../../ActiveTasks/melta-chloe-tier-two-unlocks.md).
+- Chloe (1003) and Melta (3001) each have a new level-1 `InfoOnlyAffectionEffect` reward: `ChloeVisionReward` and `MeltaRegionalDiscountReward`. Their supplied portraits are separate Point/Single reward icon assets, with source pixels unchanged. Melta's existing level-5 teleport effect is retained; dialogue portraits and progression rules are unchanged.
+- `NpcAffectionDialogue.GetAffection(int npcId)` exposes the existing saved/pending/manager query to the area consumers; the NPCData overload delegates to it with the original null behavior. It owns no state.
+- `GlobalVisionMaskController` captures its spawned mask's authored scale once. In an active Shadow route matching its host scene, pre-reward XY size is 0.7 of that baseline and affection >=1 restores 1.0. `MerchantNPC` adds 0.10 to the gold shop's affection discount only in an active Slime route matching its own scene and with Melta affection >=1. These benefits read current affection, including run gains, and persist through the existing run-end commit. Previously qualifying profiles need no replayed reward popup.
+- Merchant affection subscriptions are removed on disable, with late manager adoption handled by the existing Update lifecycle. A Melta change reprices the same stock through its original-price path. The existing popup displays each portrait plus the five-locale description. [Approved scope](../../ActiveTasks/chloe-melta-affection-rewards.md).
+
+## Demon King patience reward
+
+- `DarkLordNpcData` (1005) binds `DemonKingPatienceReward` at affection 1. It uses the existing `InfoOnlyAffectionEffect` presentation path, the supplied unmodified 68x68 PNG `Art/Sprites/UI/ApprovedUiSkin/Icon_DemonKingPatience.png`, and five-locale reward text: “마왕의 인내심이 2분 늘어납니다.”
+- The timer owns the actual benefit: `RunTimeLimitSystem.ResolveInitialLimitSeconds` adds 120 seconds when the loaded profile's committed Demon King affection is >=1. Current config remains 900 seconds, so eligible new runs/idle preview show 17 minutes instead of 15. Current-run gains take effect after the existing commit boundary on a future run. Positive saved remaining time is restored as-is; rebuilding the HUD or changing scenes never adds time again. Existing qualifying profiles get the benefit without a forced popup. [Scope](../../ActiveTasks/demon-king-patience-reward.md).
+
+## Spiri relic unlock reward
+
+- Spiri's level-1 `SpiriAlcoholPuddleReward` now uses the supplied portrait `Art/Sprites/UI/ApprovedUiSkin/Icon_SpiriAlcoholReward.png`. Only its icon reference changed; reward text and alcohol behavior are preserved. `SpiriAlcoholRewardAuthoring` loads the new reward icon separately from the mug sprite, so reauthoring keeps the portrait while confusion/mug HUD still uses the original mug art.
+- `DragonBossNpc` (2001) retains its level-1 alcohol reward and adds `SpiriRelicUnlockReward` at affection 2. The existing `UnlockItemAffectionEffect` unlocks Fire Dragon's Fang / Sun Fragment / A Stiff Drink in `ItemManager`; no inventory grant or forced drop is attached.
+- `RewardDisplayUI.ProcessAffection` generates one existing `UnlockSlotUI` per relic, preserving item tooltips, and shows the shared localized summary. The new reward's `rewardIcon` is unused; its three relic references supply the icons. No popup prefab or runtime presentation hierarchy code changed.
+- The three relics are no longer default unlocked on fresh profiles. Existing saved unlock IDs stay accessible, with no retroactive popup for already crossed thresholds. `GameDataManager.SaveData` collects only a ready ItemManager; run-end saving and affection commit timing remain as before. [Scope and verification limits](../../ActiveTasks/spiri-tier-two-relic-unlocks.md).
+
 ## Authored world nameplates
 
 - `Runtime/UI/HUD/WorldPrompt/NpcNameplatePresenter.cs` drives `Prefabs/UI/NpcNameplate.prefab`; there is no runtime hierarchy creation. Instances belong to the NPC/stand scene or prefab and are destroyed with it.

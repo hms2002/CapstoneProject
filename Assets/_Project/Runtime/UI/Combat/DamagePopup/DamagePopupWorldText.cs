@@ -33,6 +33,7 @@ public class DamagePopupWorldText : MonoBehaviour
     private float _runtimeFadeOutRatio;
     private float _runtimeStartScale;
     private float _runtimeEndScale;
+    private bool _runtimeElasticPop;
     private float _defaultFontSize;
     private Color _defaultTextColor;
     private DamagePopupService poolOwner;
@@ -97,6 +98,7 @@ public class DamagePopupWorldText : MonoBehaviour
         _runtimeFadeOutRatio = Mathf.Clamp01(viewModel.FadeOutRatio);
         _runtimeStartScale = Mathf.Max(0.01f, viewModel.StartScale);
         _runtimeEndScale = Mathf.Max(0.01f, viewModel.EndScale);
+        _runtimeElasticPop = viewModel.ElasticPop;
 
         _textColor = viewModel.TextColor;
 
@@ -141,6 +143,12 @@ public class DamagePopupWorldText : MonoBehaviour
 
         transform.position += _runtimeMoveVelocity * TimeScalePausePlayback.PresentationDeltaTime;
         transform.localScale = Vector3.one * Mathf.Lerp(_runtimeStartScale, _runtimeEndScale, p);
+        if (_runtimeElasticPop)
+        {
+            float bounce = Mathf.Sin(p * Mathf.PI * 5f) * Mathf.Exp(-7f * p);
+            transform.localScale = Vector3.Scale(transform.localScale,
+                new Vector3(1f + 0.22f * bounce, 1f - 0.28f * bounce, 1f));
+        }
 
         if (faceCamera)
             UpdateFacing();
@@ -181,6 +189,7 @@ public class DamagePopupWorldText : MonoBehaviour
         _runtimeFadeOutRatio = Mathf.Clamp01(fadeOutRatio);
         _runtimeStartScale = Mathf.Max(0.01f, startScale);
         _runtimeEndScale = Mathf.Max(0.01f, endScale);
+        _runtimeElasticPop = false;
 
         if (text != null && _defaultFontSize > 0f)
             text.fontSize = _defaultFontSize;

@@ -3694,3 +3694,35 @@ User approved showing retained gold in the lobby. The existing gold HUD projects
 ## 2026-11-02 - Sasha Gold Retention Cap Increased To 500
 
 The user raises the tier-2 cap from 100 to 500. After defeat/time-out retain min(held gold, 500), keep the captured credit visible in the lobby and pay it once on the next run. Existing saved credits are not topped up; victory/abort and other reward tuning are unchanged. This supersedes only the original November 1 100-gold tuning. See [gold/shop map](StructureMemory/RunGoldAndShop.md).
+
+
+## 2026-11-04 — Seven relics retired from acquisition and encyclopedia
+
+사용자는 하얀 깃털(RD_FeatherOrbit), 속기사(RD_Stenographer), 한방울의 신속(RD_OneDropOfSwiftness), 사냥꾼의 표식(RD_HunterMark), 도망자의 신발(RD_RunawayShoes), 연쇄의 부적(RD_ChainCharm), 달리는 장부(RD_RunningLedger)를 획득과 도감 양쪽에서 제외하도록 지시했다. 원본 에셋·정의 GUID·저장용 ID·기존 보유 유물은 보존한다. 공통 제외 판정은 RelicDefinition.IsRetiredId에 두고 loot/상점 후보, 상자 삽입·미획득 보상 복원, 미판매 상점 재고 보정과 도감 count/index lookup에서 사용한다. 기존 세이브 해금 ID와 전체 DB 등록은 삭제하지 않는다. [검증 및 한계](../output/relic-retirement-2026-11-04/README.md).
+
+
+## 2026-11-05 — Spiri affection 2 unlocks three relics
+
+스피리 호감도 2단계 보상은 화룡의 송곳니(RD_ScorchingSong), 태양의 파편(RD_SunFragment), 독한 한잔(RD_DrunkenRush)의 영구 등장 해금으로 정한다. 기존 UnlockItemAffectionEffect와 유물별 툴팁이 있는 보상 아이콘 3개를 사용한다. 세 유물은 allRelics에 유지하고 defaultUnlockedRelics에서만 제외한다. 기존 세이브에 저장된 해금 ID를 되잠그거나 보유 유물을 제거하지 않으며, 이미 넘긴 단계의 팝업을 강제로 다시 띄우지 않는다. 이후 새로 생성되는 적격 상자/상점 후보에 반영하고 기존 재고는 재추첨하지 않는다. 해금 상태 저장은 기존 ItemManager 및 run-end/save-request 소유권을 따른다. [범위 및 검증 한계](ActiveTasks/spiri-tier-two-relic-unlocks.md).
+
+
+## 2026-11-05 — Demon King patience: 15 to 17 minutes
+
+사용자는 기본 제한 시간 15분을 유지하고 마왕 호감도 1단계 보상으로 2분을 영구 추가하도록 확정했다. 최종 문구는 “마왕의 인내심이 2분 늘어납니다.”이며 제공한 마왕 PNG를 아이콘으로 쓴다. 실제 보너스는 로드된 프로필의 저장된 마왕(NPC 1005) 호감도 >=1에서 새 런 초기 시간에 120초를 더해 계산한다. 진행 중인 런의 획득 시점에 시간을 추가하지 않고, 남은 시간 복원 시 재가산하지 않는다. 기존 조건 충족 프로필도 이후 런부터 적용하며 소급 팝업을 강제하지 않는다. [범위](ActiveTasks/demon-king-patience-reward.md).
+
+
+## 2026-11-05 — 병 속의 슬라임의 독립 방어와 지속 피해 구분
+
+병 속의 슬라임(`RD_SlimeBottle`)은 전설/최대 1레벨이며, 일반 회피 이후에 별도 10% 확률로 해당 타격을 차단한다. 적의 공격, 장판 안의 반복 피해 및 낙사 체력 피해를 포함하고, 이미 부여된 상태의 지속 피해는 제외한다. 성공 시 피해/보호막 소모와 타격의 넉백·경직·속성 누적/피격 이벤트를 적용하기 전에 종료하며, #74DBAF 색의 literal `Slime!` 팝업에 짧은 탄성 연출을 표시한다. 일반 회피 수치와 Evade/EVADE 스타일은 유지한다.
+
+Core의 `CombatHitPrevention`은 대상 소유의 disposable 등록만 보관하고 실제 확률/유물 수명은 token 소유 proc이 담당한다. 두 피해 진입점의 `isDamageOverTime`은 상태 tick 의미를 명시하는 인자이며 화상 tick이 true를 전달한다. 장판의 반복 적용은 이 상태 DoT 분류와 구분한다. 낙하 연출/안전 지점 복귀는 유지하고 체력 차감만 방어한다. 멜타 호감도 해금 연결은 별도 작업으로 남기며 기본 해금에는 추가하지 않는다. [구조](StructureMemory/ScriptSystems/RelicRuntimeStructure.md), [기록](SessionLogs/2026-11-05.md).
+
+
+## 2026-11-05 — Chloe vision and Melta regional discount
+
+클로에/멜타 보상을 각각 호감도 1단계에 연결한다. 클로에 영역의 시야는 기존 authored XY 크기를 100으로 보고 미해금 시 70, 해금 후 100으로 한다(축소된 70에 30%를 곱하는 91이 아님). 멜타 영역의 금화 상점에서는 모든 상품에 10%p 할인을 추가하며 사샤의 전체 할인과 합산한다. 현재 5%+10%=15%; 무작위 특가는 기존 별도 곱셈을 유지한다. 영역은 활성 route theme과 소비자 오브젝트의 실제 scene 일치로 제한한다. 현재 런의 호감도 상승부터 혜택을 반영하고 영구 저장은 기존 런 종료 commit을 따른다. 멜타의 기존 5단계 이동 보상은 보존한다. 사용자 제공 1번/2번 이미지를 각각 멜타/클로에 보상 아이콘으로 원본 그대로 사용한다. [범위와 검증 한계](ActiveTasks/chloe-melta-affection-rewards.md).
+
+
+## 2026-11-05 — Melta/Chloe tier-two relics and earned unlock restoration
+
+멜타 호감도 2는 병 속의 슬라임(RD_SlimeBottle), 클로에 호감도 2는 클로에의 등불(RD_ChloeLantern)을 각각 하나씩 영구 등장 해금한다. 기존 UnlockItemAffectionEffect를 사용하고 현물 지급이나 강제 드롭은 추가하지 않는다. 두 유물은 이미 기본 해금에서 제외되어 있어 DB는 수정하지 않는다. 이전에 2단계를 넘긴 프로필에서도 빠진 해금이 복원되어야 하므로 ItemManager는 committed 호감도와 현재 NPC 보상 데이터를 조회해 이미 획득한 item-unlock 효과의 ID만 기존 해금 set에 추가한다. 준비되지 않은 소스는 건너뛰고 이후 조회에서 재시도하며, 기존 save collector/readiness guard를 유지한다. 보상 팝업과 다른 효과를 소급 재생하지 않는다. 취룡 1단계 아이콘은 제공된 초상화로 바꾸며 기존 문구/효과/술잔 HUD 아트는 유지한다. [범위](ActiveTasks/melta-chloe-tier-two-unlocks.md).

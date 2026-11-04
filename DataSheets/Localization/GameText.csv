@@ -386,25 +386,25 @@ asset.457f21a59b6313f4092d91eb97ac1232.followUps.Array.data[0].displayName,소�
 asset.6b22cb4e0ab0a194b968acb6b169cbfb.displayName,회복 물약,Healing Potion,回復ポーション,治疗药水,治療藥水
 asset.b5a11e75eae575b4193be62ab58517ed.displayName,소포,Parcel,小包,包裹,包裹
 asset.b5a11e75eae575b4193be62ab58517ed.description,파셀이 배달해야 했을 소포. 버리는건 용사답지 않다.,A parcel that Parcel was supposed to deliver. A hero wouldn't throw it away.,パーセルが届けるはずだった小包。捨てるのは勇者らしくない。,帕塞尔原本要送的包裹。勇者可不会把它扔掉。,帕塞爾原本要送的包裹。勇者可不會把它扔掉。
-asset.1f2641bce49c9884eaec41adfdfa29f3.displayName,힘 부적,Strength Charm,力の護符,力量护符,力量護符
+asset.1f2641bce49c9884eaec41adfdfa29f3.displayName,전투 교본,Combat Manual,戦闘教本,战斗教本,戰鬥教本
 asset.1f2641bce49c9884eaec41adfdfa29f3.description,공격력이 증가합니다.,Increases attack power.,攻撃力が増加する。,提高攻击力。,提高攻擊力。
 asset.a491ffe08c1246b7b39b04fdca100c95.displayName,균형추,Counterweight,釣り合い重り,平衡砝码,平衡砝碼
 asset.a491ffe08c1246b7b39b04fdca100c95.description,기본공격 피해와 스킬 피해가 증가합니다.,Increases basic attack and skill damage.,通常攻撃とスキルのダメージが増加する。,提高普通攻击和技能伤害。,提高普通攻擊和技能傷害。
-asset.c3f65c9408584fc09145a782d74839bc.displayName,광전사의 끈,Berserker's Strap,狂戦士の紐,狂战士束带,狂戰士束帶
+asset.c3f65c9408584fc09145a782d74839bc.displayName,광란의 열매,Fruit of Frenzy,狂乱の果実,狂乱之果,狂亂之果
 asset.c3f65c9408584fc09145a782d74839bc.description,최대 체력이 감소하지만 공격속도가 크게 증가합니다.,Reduces max HP but greatly increases attack speed.,最大HPが減少するが、攻撃速度が大幅に増加する。,降低生命值上限，但大幅提高攻击速度。,降低生命值上限，但大幅提高攻擊速度。
-asset.3127d39f416e4d56849df4e7835f709b.displayName,검은 향로,Black Censer,黒い香炉,黑色香炉,黑色香爐
+asset.3127d39f416e4d56849df4e7835f709b.displayName,주술사 가면,Shaman's Mask,呪術師の仮面,巫师面具,巫師面具
 asset.3127d39f416e4d56849df4e7835f709b.description,스킬 피해가 크게 증가하지만 기본공격 피해가 감소합니다.,Greatly increases skill damage but reduces basic attack damage.,スキルダメージが大幅に増加するが、通常攻撃ダメージが減少する。,大幅提高技能伤害，但降低普通攻击伤害。,大幅提高技能傷害，但降低普通攻擊傷害。
 asset.f06c064d63ee47f4854cef0c2fc19a01.displayName,무딘 방패,Blunt Shield,鈍い盾,钝盾,鈍盾
 asset.f06c064d63ee47f4854cef0c2fc19a01.description,공격속도가 감소하지만 최대 체력이 크게 증가합니다.,Reduces attack speed but greatly increases max HP.,攻撃速度が減少するが、最大HPが大幅に増加する。,降低攻击速度，但大幅提高生命值上限。,降低攻擊速度，但大幅提高生命值上限。
-asset.7d20d2a7cdf74a0bb83fccd22ed1c5a6.displayName,깨진 시계,Broken Clock,壊れた時計,破损时钟,破損時鐘
+asset.7d20d2a7cdf74a0bb83fccd22ed1c5a6.displayName,전사의 완갑,Warrior's Bracer,戦士の腕甲,战士护臂,戰士護臂
 asset.7d20d2a7cdf74a0bb83fccd22ed1c5a6.description,공격속도가 증가하지만 스킬 피해가 감소합니다.,Increases attack speed but reduces skill damage.,攻撃速度が増加するが、スキルダメージが減少する。,提高攻击速度，但降低技能伤害。,提高攻擊速度，但降低技能傷害。
 asset.35caaa840c424d98b8c5095a4383348e.displayName,부서진 왕관,Shattered Crown,砕けた王冠,碎裂王冠,碎裂王冠
 asset.35caaa840c424d98b8c5095a4383348e.description,최대 체력이 감소하지만 최종 피해가 크게 증가합니다.,Reduces max HP but greatly increases final damage.,最大HPが減少するが、最終ダメージが大幅に増加する。,降低生命值上限，但大幅提高最终伤害。,降低生命值上限，但大幅提高最終傷害。
-asset.cce9e7321f8d4b6aa9dc77661650dedd.displayName,청동 주사위,Bronze Dice,青銅のサイコロ,青铜骰子,青銅骰子
+asset.cce9e7321f8d4b6aa9dc77661650dedd.displayName,목각 주사위,Wooden Die,木彫りのサイコロ,木雕骰子,木雕骰子
 asset.cce9e7321f8d4b6aa9dc77661650dedd.description,치명타 확률과 회피율이 조금 증가합니다.,Slightly increases critical chance and evasion.,クリティカル率と回避率が少し増加する。,小幅提高暴击率和闪避率。,小幅提高暴擊率和閃避率。
 asset.579612df77094cd69982a34f1903427a.displayName,불타는 깃털,Burning Feather,燃える羽根,燃烧羽毛,燃燒羽毛
 asset.579612df77094cd69982a34f1903427a.description,모든 화상 부여량이 늘어납니다.,Increases all burn buildup.,すべての火傷付与量が増加する。,提高所有灼烧积累量。,提高所有灼燒累積量。
-asset.11d7fc46673146558d7d95385305a393.displayName,여유로운 심장,Carefree Heart,余裕のある心臓,从容之心,從容之心
+asset.11d7fc46673146558d7d95385305a393.displayName,순풍의 소라,Tailwind Conch,追い風の巻き貝,顺风海螺,順風海螺
 asset.11d7fc46673146558d7d95385305a393.description,체력이 높을 때 이동속도가 증가합니다.,Increases movement speed while HP is high.,HPが高いとき、移動速度が増加する。,生命值较高时提高移动速度。,生命值較高時提高移動速度。
 asset.bd3599e0184c43cc83826652107c5e89.displayName,연쇄의 부적,Chain Charm,連鎖の護符,连锁护符,連鎖護符
 asset.bd3599e0184c43cc83826652107c5e89.description,치명타를 내면 이동속도가 누적 증가합니다.,Critical hits grant stacking movement speed.,クリティカルが発生すると、移動速度が累積して増加する。,暴击时获得可叠加的移动速度提升。,暴擊時獲得可疊加的移動速度提升。
@@ -416,14 +416,14 @@ asset.daf2c9814b2f4219a01240dbe50c6c0f.displayName,홍련의 왕관,Crimson Crow
 asset.daf2c9814b2f4219a01240dbe50c6c0f.description,적의 화상 중첩에 비례해 화상 피해가 증가합니다.,Burn damage increases with the enemy's burn stacks.,敵の火傷スタック数に応じて火傷ダメージが増加する。,灼烧伤害随敌人的灼烧层数提高。,灼燒傷害隨敵人的灼燒層數提高。
 asset.a53b2ba473004d28a0fb7db9af49ad7a.displayName,전류 조각,Current Fragment,電流の欠片,电流碎片,電流碎片
 asset.a53b2ba473004d28a0fb7db9af49ad7a.description,전기 속성 보너스가 증가합니다.,Increases the electric element bonus.,電気属性ボーナスが増加する。,提高电属性加成。,提高電屬性加成。
-asset.7b7fd4d273ca49739198391f6ed4d309.displayName,독한 술기운,Strong Spirits,強い酒気,烈酒余劲,烈酒餘勁
+asset.7b7fd4d273ca49739198391f6ed4d309.displayName,독한 한잔,A Stiff Drink,強い一杯,烈酒一杯,烈酒一杯
 asset.7b7fd4d273ca49739198391f6ed4d309.description,피해를 받으면 6초 동안 최종 피해가 증가합니다.,Taking damage increases final damage for 6 seconds.,ダメージを受けると、6秒間最終ダメージが増加する。,受到伤害后提高最终伤害，持续6秒。,受到傷害後提高最終傷害，持續6秒。
 asset.7c8c681dbbe24cb68c36637db0844b0c.displayName,회피의 깃,Evasion Plume,回避の羽根,闪避之羽,閃避之羽
 asset.7c8c681dbbe24cb68c36637db0844b0c.description,회피율이 증가합니다.,Increases evasion.,回避率が増加する。,提高闪避率。,提高閃避率。
 asset.eb057c0a7b239b742a001ee568ef4027.displayName,하얀 깃털,White Feather,白い羽根,白色羽毛,白色羽毛
 asset.cac88c9620b50844baf46e203a9d222c.displayName,타오르는 심핵,Blazing Core,燃え盛る心核,炽燃心核,熾燃心核
 asset.cac88c9620b50844baf46e203a9d222c.description,화염 피해가 증가합니다.,Increases fire damage.,火炎ダメージが増加する。,提高火焰伤害。,提高火焰傷害。
-asset.6657f14bf85d4440b1a6353e784e9c3e.displayName,굳센 발걸음,Steadfast Steps,不屈の歩み,坚定步伐,堅定步伐
+asset.6657f14bf85d4440b1a6353e784e9c3e.displayName,행운의 증표,Token of Luck,幸運の証,幸运信物,幸運信物
 asset.6f66b76c2399491ab2b555651f017664.displayName,귀인의 검흔,Noble Sword Scar,貴人の剣痕,贵人剑痕,貴人劍痕
 asset.4781e03df8c544459db8dc6863762e5c.displayName,날개 부츠,Winged Boots,翼のブーツ,羽翼靴,羽翼靴
 asset.4781e03df8c544459db8dc6863762e5c.description,대쉬 재사용 대기시간이 10% 감소,Reduces dash cooldown by 10%.,ダッシュのクールダウンが10%減少する。,冲刺冷却时间减少10%。,衝刺冷卻時間減少10%。
@@ -439,11 +439,11 @@ asset.16ad7526693d4a44a3183bcc3df90f61.displayName,무거운 팔찌,Heavy Bracel
 asset.16ad7526693d4a44a3183bcc3df90f61.description,"이동속도가 비율로 감소하고, 공격력이 고정 수치로 증가합니다.",Reduces movement speed by a percentage and increases Attack by a fixed amount.,移動速度が割合で低下し、攻撃力が固定値で増加します。,移动速度按比例降低，攻击力增加固定数值。,移動速度按比例降低，攻擊力增加固定數值。
 asset.81eca7800b7446598237331ab25b00c8.displayName,사냥꾼의 표식,Hunter's Mark,狩人の印,猎人印记,獵人印記
 asset.81eca7800b7446598237331ab25b00c8.description,치명타 확률이 증가합니다.,Increases critical chance.,クリティカル率が増加する。,提高暴击率。,提高暴擊率。
-asset.4a278341ae1b4ef4b8886c04f3517f71.displayName,마지막 숨,Last Breath,最後の息,最后一息,最後一息
+asset.4a278341ae1b4ef4b8886c04f3517f71.displayName,깨진 투구,Broken Helm,壊れた兜,破损头盔,破損頭盔
 asset.4a278341ae1b4ef4b8886c04f3517f71.description,체력이 50% 이하일 때 공격력이 3 증가합니다.,"While HP is at most 50%, increases Attack by 3.",HPが50%以下のとき、攻撃力が3増加します。,生命值不高于50%时，攻击力增加3。,生命值不高於50%時，攻擊力增加3。
 asset.d866e0f16ecf48d0948bda26ce39842a.displayName,최후의 저항,Last Stand,最後の抵抗,背水一战,背水一戰
 asset.d866e0f16ecf48d0948bda26ce39842a.description,현재 체력이 1 이하일 경우 모든 공격이 반드시 치명타로 적중.,All attacks are guaranteed critical hits while current HP is 1 or lower.,現在のHPが1以下の場合、すべての攻撃が必ずクリティカルになる。,当前生命值不高于1时，所有攻击必定暴击。,目前生命值不高於1時，所有攻擊必定暴擊。
-asset.211ffa758fea44fd94388e8bd6e4eb4a.displayName,가벼운 끈,Light Strap,軽い紐,轻巧束带,輕巧束帶
+asset.211ffa758fea44fd94388e8bd6e4eb4a.displayName,바람의 부채,Wind Fan,風の扇,风之扇,風之扇
 asset.211ffa758fea44fd94388e8bd6e4eb4a.description,이동속도가 증가합니다.,Increases movement speed.,移動速度が増加する。,提高移动速度。,提高移動速度。
 asset.a73c39a704801a1488033afff3b7f340.description,이동속도가 증가합니다.,Increases movement speed.,移動速度が増加する。,提高移动速度。,提高移動速度。
 asset.eef19b108eae4400bb49fc1753e4aa14.description,공격력이 고정 수치로 증가합니다.,Increases Attack by a fixed amount.,攻撃力が固定値で増加します。,攻击力增加固定数值。,攻擊力增加固定數值。
@@ -457,10 +457,10 @@ asset.897b88fc1f3a40baa3b72a4269743a84.displayName,쇳덩이의 예비 탄창,Od
 asset.7c21e56d0f854d95b4ac9ef71d603f28.displayName,한방울의 신속,A Drop of Haste,一滴の迅速,一滴迅捷,一滴迅捷
 asset.98eb683a82ef453986db3d9419cedeb6.displayName,휴대용 화로,Portable Brazier,携帯火鉢,便携火盆,便攜火盆
 asset.98eb683a82ef453986db3d9419cedeb6.description,화상 상태인 적에게 치명타 적중 시 화상을 1/2/3 부여합니다. (재사용 대기시간: 0.5초),Critical hits against burning enemies inflict 1/2/3 burn. (Cooldown: 0.5 seconds),火傷中の敵にクリティカルが命中すると、火傷を1/2/3付与する。（クールダウン：0.5秒）,对灼烧中的敌人暴击时施加1/2/3层灼烧。（冷却时间：0.5秒）,對灼燒中的敵人暴擊時施加1/2/3層灼燒。（冷卻時間：0.5秒）
-asset.ddead4c1dd0048d8a332a78cd84cc690.displayName,추격자의 발톱,Pursuer's Claw,追跡者の爪,追猎者之爪,追獵者之爪
+asset.ddead4c1dd0048d8a332a78cd84cc690.displayName,추격 명령,Pursuit Order,追撃命令,追击命令,追擊命令
 asset.ddead4c1dd0048d8a332a78cd84cc690.description,적을 처치하면 잠시 이동속도가 증가합니다.,Defeating an enemy briefly increases movement speed.,敵を倒すと、一時的に移動速度が増加する。,击败敌人后短暂提高移动速度。,擊敗敵人後短暫提高移動速度。
 asset.b7ac0f2e281a44768c35210163fd6aba.displayName,회복의 팬턴트,Healing Pendant,回復のペンダント,治愈吊坠,治癒吊墜
-asset.6e61f67002664297a735902776929cf5.displayName,붉은 계약,Crimson Pact,赤い契約,赤红契约,赤紅契約
+asset.6e61f67002664297a735902776929cf5.displayName,광전사의 보석,Berserker's Gem,狂戦士の宝石,狂战士宝石,狂戰士寶石
 asset.6e61f67002664297a735902776929cf5.description,적 처치 시 4초 동안 공격력이 2 증가합니다.,Killing an enemy increases Attack by 2 for 4 seconds.,敵を倒すと4秒間攻撃力が2増加します。,击杀敌人后，攻击力增加2，持续4秒。,擊殺敵人後，攻擊力增加2，持續4秒。
 asset.1a3c46c0c9914eea8cdcba66be7916eb.displayName,균열석,Rift Stone,亀裂石,裂隙石,裂隙石
 asset.1a3c46c0c9914eea8cdcba66be7916eb.description,최종 피해가 증가합니다.,Increases final damage.,最終ダメージが増加する。,提高最终伤害。,提高最終傷害。
@@ -471,28 +471,28 @@ asset.3f678aae4cb94331bd3caeb317c659ce.description,피해를 받으면 잠시 �
 asset.c0e9e82eb0ce4caa9efb337cb57764ff.displayName,달리는 장부,Running Ledger,走る帳簿,奔跑账簿,奔跑帳簿
 asset.102507ab60734546ba64e6abfe926c11.displayName,화룡의 송곳니,Fire Dragon's Fang,火竜の牙,火龙之牙,火龍之牙
 asset.102507ab60734546ba64e6abfe926c11.description,대상에게 화상이 없으면 화상을 부여합니다.,Inflicts burn if the target is not already burning.,対象が火傷状態でなければ、火傷を付与する。,目标未处于灼烧状态时施加灼烧。,目標未處於灼燒狀態時施加灼燒。
-asset.350592c90a7f493b999f7b9f349dfe91.displayName,예리한 송곳,Sharp Awl,鋭い錐,锋利尖锥,鋒利尖錐
+asset.350592c90a7f493b999f7b9f349dfe91.displayName,치명적인 도끼,Deadly Axe,致命の斧,致命之斧,致命之斧
 asset.350592c90a7f493b999f7b9f349dfe91.description,치명타 피해가 증가합니다.,Increases critical damage.,クリティカルダメージが増加する。,提高暴击伤害。,提高暴擊傷害。
-asset.ef617ca72b6f4423b7e133a909367516.displayName,작은 심장,Small Heart,小さな心臓,小小心脏,小小心臟
+asset.ef617ca72b6f4423b7e133a909367516.displayName,박동하는 심장,Beating Heart,鼓動する心臓,跳动的心脏,跳動的心臟
 asset.ef617ca72b6f4423b7e133a909367516.description,"최대 체력이 증가하고, 피해를 받으면 잠시 이동속도가 증가합니다.",Increases max HP. Taking damage briefly increases movement speed.,最大HPが増加する。ダメージを受けると、一時的に移動速度が増加する。,提高生命值上限。受到伤害后短暂提高移动速度。,提高生命值上限。受到傷害後短暫提高移動速度。
 asset.b7b94923a45d4b4abbc68c00d3e6b39e.displayName,매캐한 향로,Acrid Censer,煙たい香炉,呛鼻香炉,嗆鼻香爐
 asset.b7b94923a45d4b4abbc68c00d3e6b39e.description,화상 피해 계수가 증가합니다.,Increases the burn damage coefficient.,火傷ダメージ係数が増加する。,提高灼烧伤害系数。,提高灼燒傷害係數。
 asset.a73c39a704801a1488033afff3b7f340.displayName,신속의 부츠,Boots of Haste,迅速のブーツ,迅捷之靴,迅捷之靴
-asset.2a2133b4854b68e4eb9a420c0bb3e215.displayName,스피드 메달,Speed Medal,スピードメダル,速度奖章,速度獎章
-asset.2a2133b4854b68e4eb9a420c0bb3e215.description,"레벨에 따라 이동속도가 3/5/7/9/12%, 치명타 확률이 2/4/6/8/10% 증가합니다.","Increases movement speed by 3/5/7/9/12% and critical chance by 2/4/6/8/10%, depending on level.",レベルに応じて移動速度が3/5/7/9/12%、クリティカル率が2/4/6/8/10%増加する。,根据等级，移动速度提高3/5/7/9/12%，暴击率提高2/4/6/8/10%。,根據等級，移動速度提高3/5/7/9/12%，暴擊率提高2/4/6/8/10%。
+asset.2a2133b4854b68e4eb9a420c0bb3e215.displayName,만드라고라,Mandragora,マンドラゴラ,曼德拉草,曼德拉草
+asset.2a2133b4854b68e4eb9a420c0bb3e215.description,레벨에 따라 치명타 확률이 2/4/6/8/10% 증가합니다.,"Increases critical chance by 2/4/6/8/10%, depending on level.",レベルに応じてクリティカル率が2/4/6/8/10%増加する。,根据等级，暴击率提高2/4/6/8/10%。,根據等級，暴擊率提高2/4/6/8/10%。
 asset.f2a47c8de19b4d8d9e67a31f5b2c4e90.displayName,속기사,Swift Knight,速き騎士,疾行骑士,疾行騎士
 asset.3277c1c8d8b04f848cae2c16f3770ed2.displayName,태양의 파편,Sun Fragment,太陽の欠片,太阳碎片,太陽碎片
 asset.3277c1c8d8b04f848cae2c16f3770ed2.description,주위를 회전하는 태양의 파편을 생성합니다.,Creates a sun fragment that orbits you.,周囲を回転する太陽の欠片を生成する。,生成环绕自身旋转的太阳碎片。,生成環繞自身旋轉的太陽碎片。
-asset.c3f1d032e5184fc9ac7fc75cf5632436.displayName,생존자의 목걸이,Survivor's Necklace,生存者の首飾り,幸存者项链,倖存者項鏈
+asset.c3f1d032e5184fc9ac7fc75cf5632436.displayName,나뭇잎 펜던트,Leaf Pendant,木の葉のペンダント,叶形吊坠,葉形吊墜
 asset.c3f1d032e5184fc9ac7fc75cf5632436.description,최대 체력과 이동속도가 조금 증가합니다.,Slightly increases max HP and movement speed.,最大HPと移動速度が少し増加する。,小幅提高生命值上限和移动速度。,小幅提高生命值上限和移動速度。
 asset.884462a2ad3d4a1e81d32a56a1597d51.displayName,얇은 갑옷 조각,Thin Armor Shard,薄い鎧の欠片,薄甲碎片,薄甲碎片
 asset.884462a2ad3d4a1e81d32a56a1597d51.description,최대 체력과 회피율이 조금 증가합니다.,Slightly increases max HP and evasion.,最大HPと回避率が少し増加する。,小幅提高生命值上限和闪避率。,小幅提高生命值上限和閃避率。
-asset.d808a1e0c7ccc7e48abc50b9a9884b61.displayName,보약 곰방대,Tonic Pipe,滋養の煙管,滋补烟斗,滋補煙斗
+asset.d808a1e0c7ccc7e48abc50b9a9884b61.displayName,행운의 다트,Lucky Dart,幸運のダーツ,幸运飞镖,幸運飛鏢
 asset.acf93562c8b943abaf5d216c50f859b8.displayName,질긴 붕대,Tough Bandage,丈夫な包帯,坚韧绷带,堅韌繃帶
 asset.acf93562c8b943abaf5d216c50f859b8.description,최대 체력이 증가합니다.,Increases max HP.,最大HPが増加する。,提高生命值上限。,提高生命值上限。
-asset.1215f1b7fec1495dab3f473078c1e13c.displayName,승리의 깃발,Victory Flag,勝利の旗,胜利旗帜,勝利旗幟
+asset.1215f1b7fec1495dab3f473078c1e13c.displayName,광전사의 깃발,Berserker's Banner,狂戦士の旗,狂战士旗帜,狂戰士旗幟
 asset.1215f1b7fec1495dab3f473078c1e13c.description,적을 처치하면 잠시 공격속도가 증가합니다.,Defeating an enemy briefly increases attack speed.,敵を倒すと、一時的に攻撃速度が増加する。,击败敌人后短暂提高攻击速度。,擊敗敵人後短暫提高攻擊速度。
-asset.66fe60611ced4fefbcf921ed07eaf47c.displayName,전사의 맹세,Warrior's Oath,戦士の誓い,战士誓言,戰士誓言
+asset.66fe60611ced4fefbcf921ed07eaf47c.displayName,전사의 메달,Warrior's Medal,戦士のメダル,战士勋章,戰士勳章
 asset.66fe60611ced4fefbcf921ed07eaf47c.description,기본공격 피해가 크게 증가하지만 스킬 피해가 감소합니다.,Greatly increases basic attack damage but reduces skill damage.,通常攻撃ダメージが大幅に増加するが、スキルダメージが減少する。,大幅提高普通攻击伤害，但降低技能伤害。,大幅提高普通攻擊傷害，但降低技能傷害。
 asset.3176a6ca3d2df1f4d8f3770d42b8457f.displayName,질풍의 석판,Gale Tablet,疾風の石板,疾风石板,疾風石板
 asset.3176a6ca3d2df1f4d8f3770d42b8457f.description,"최대 체력이 1 감소하고, 레벨에 따라 이동속도가 6/9/12/15/18% 증가합니다.","Reduces max HP by 1 and increases movement speed by 6/9/12/15/18%, depending on level.",最大HPが1減少し、レベルに応じて移動速度が6/9/12/15/18%増加する。,生命值上限降低1，并根据等级提高6/9/12/15/18%移动速度。,生命值上限降低1，並根據等級提高6/9/12/15/18%移動速度。
@@ -547,7 +547,7 @@ asset.348ad3a604f1416bad4cdbf897ace578.entries.Array.data[0].displayNameOverride
 asset.467ab97574ea03a469a2633a51aae8a3.entries.Array.data[0].displayNameOverride,화염 피해,Fire Damage,火炎ダメージ,火焰伤害,火焰傷害
 asset.4e35d4699f5d4db0a66010eb126c4ee1.displayNameOverride,최종 피해,Final Damage,最終ダメージ,最终伤害,最終傷害
 asset.159416ccba97abb43b4cd1fc49a0d026.entries.Array.data[0].displayNameOverride,이동속도,Movement Speed,移動速度,移动速度,移動速度
-asset.3dbb80240a8ddb744a0525322aad2b6f.entries.Array.data[0].displayNameOverride,이동속도,Movement Speed,移動速度,移动速度,移動速度
+asset.3dbb80240a8ddb744a0525322aad2b6f.entries.Array.data[0].displayNameOverride,치명타 확률,Critical Chance,クリティカル率,暴击率,暴擊率
 asset.3dbb80240a8ddb744a0525322aad2b6f.entries.Array.data[1].displayNameOverride,치명타 확률,Critical Chance,クリティカル率,暴击率,暴擊率
 asset.62252f9a0ec433649a7688898956f179.entries.Array.data[0].displayNameOverride,이동속도,Movement Speed,移動速度,移动速度,移動速度
 asset.62252f9a0ec433649a7688898956f179.entries.Array.data[1].displayNameOverride,최대 체력,Max HP,最大HP,生命值上限,生命值上限
@@ -2708,7 +2708,7 @@ asset.875bf515b62c5bf44a0f67ab48330b66.description,연쇄될 때마다 연쇄 �
 asset.3a669323573b7c144be1d6c8d11798e1.nameText,혼란,Confusion,混乱,混乱,混亂
 asset.3a669323573b7c144be1d6c8d11798e1.storyText,술기운에 방향 감각이 흐려진다.,Alcohol clouds your sense of direction.,酔いで方向感覚が鈍る。,醉意让方向感变得模糊。,醉意讓方向感變得模糊。
 asset.3a669323573b7c144be1d6c8d11798e1.effectText,일반 걷기의 상하좌우 입력이 반전됩니다. 장판을 벗어나 맥주잔이 비워지면 해제됩니다.,Normal walking inputs are reversed in all four directions. Ends when the mug empties after leaving the puddle.,通常歩行の上下左右の入力が反転します。酒の床から離れ、ジョッキが空になると解除されます。,普通行走的上下左右输入反转。离开酒液区域后，啤酒杯清空时解除。,普通行走的上下左右輸入反轉。離開酒液區域後，啤酒杯清空時解除。
-asset.8d10d760988b81f4c826f2a3b4582465.rewardText,"술 장판에서 1초 동안 술을 채우면 혼란 대신 이동 속도 +25%, 공격 속도 +40% 버프를 얻습니다. 장판 안에서는 지속시간을 갱신하며, 장판을 벗어나 1.5초 동안 잔이 비워진 뒤 5초 동안 유지됩니다.","Filling the mug for 1 second in an alcohol puddle grants +25% movement speed and +40% attack speed instead of confusion. The duration refreshes inside the puddle. After leaving, the mug drains for 1.5 seconds, then the buff lasts 5 seconds.",酒の床で1秒かけてジョッキを満たすと、混乱の代わりに移動速度+25%、攻撃速度+40%のバフを得ます。床の上では持続時間が更新されます。離れてから1.5秒でジョッキが空になり、その後5秒間バフが続きます。,在酒液区域中用1秒填满酒杯后，获得移动速度+25%、攻击速度+40%的增益，替代混乱。区域内会刷新持续时间。离开后，酒杯用1.5秒清空，随后增益持续5秒。,在酒液區域中用1秒填滿酒杯後，獲得移動速度+25%、攻擊速度+40%的增益，替代混亂。區域內會刷新持續時間。離開後，酒杯用1.5秒清空，隨後增益持續5秒。
+asset.8d10d760988b81f4c826f2a3b4582465.rewardText,"더 이상 술 위에서 혼란에 빠지지 않으며, 발걸음은 가벼워지고 공격은 빨라집니다.",Alcohol puddles no longer confuse you. Your steps grow lighter and your attacks faster.,酒の上でも混乱しなくなり、足取りは軽く、攻撃は速くなります。,不再因脚下的酒液而陷入混乱，步伐更加轻盈，攻击更加迅捷。,不再因腳下的酒液而陷入混亂，步伐更加輕盈，攻擊更加迅捷。
 ui.settings_skin.screen,화면,Display,画面,画面,畫面
 ui.settings_skin.environment,환경,Environment,環境,环境,環境
 ui.settings_skin.audio,소리,Audio,サウンド,声音,聲音
@@ -3000,3 +3000,55 @@ dialogue.merchant.run.affection_1_c.4,그래도 안 살 건데.,I am still not b
 dialogue.merchant.run.affection_1_c.5,"왜?! 가격도 깎았고, 설명도 공짜였는데?! ……설명을 더 해야 하나?","Why?! I lowered the price, and the explanation was free too! ...Do I need to explain more?",なんで？！ 値引きもしたし、説明だってタダだったのに？！ ……もっと説明しなきゃダメ？,为什么？！价格都降了，说明也是免费的？！……还得再多解释一点吗？,為什麼？！價格都降了，說明也是免費的？！……還得再多解釋一點嗎？
 dialogue.merchant.run.affection_0_b.5,다들 왜 그렇게 무서워하지? 취해서 자는 동안 살짝 가져오면 되는데. 안 깨우면 되는 거잖아?,"Why is everyone so scared? Just slip a few things away while that dragon sleeps off the booze. As long as I don't wake the dragon, right?",みんな、どうしてそんなに怖がるの？ 酔って寝てる間に、こっそり持ってくればいいのに。起こさなきゃいいんでしょ？,大家为什么那么害怕？趁那条龙喝醉睡着时悄悄拿走不就好了。别吵醒不就行了吗？,大家為什麼那麼害怕？趁那條龍喝醉睡著時悄悄拿走不就好了。別吵醒不就行了嗎？
 dialogue.merchant.run.affection_0_c.5,"물론 용사님 몫도 따로 빼 놨지. 헤헤, 나 의리 있는 상인이잖아?","Of course I set aside your share. Hehe, I'm a merchant who looks after her partners, right?",もちろん勇者様の分も取り分けてあるよ。へへ、私って義理堅い商人でしょ？,当然也给勇者大人留了一份。嘿嘿，我可是个讲义气的商人呀？,當然也給勇者大人留了一份。嘿嘿，我可是個講義氣的商人呀？
+asset.bbc1e85ba3984d0a955c674de8aaf6b5.rewardText,"화룡의 송곳니, 태양의 파편, 독한 한잔이 해금되었습니다.
+이제 상자와 상점에서 발견할 수 있습니다.","Fire Dragon's Fang, Sun Fragment, and A Stiff Drink have been unlocked.
+You can now find them in chests and shops.","火竜の牙、太陽の欠片、強い一杯が解放されました。
+宝箱やショップで見つけられるようになります。","已解锁火龙之牙、太阳碎片和烈酒一杯。
+现在可以在宝箱和商店中发现它们。","已解鎖火龍之牙、太陽碎片和烈酒一杯。
+現在可以在寶箱和商店中發現它們。"
+asset.3e6c202c0a464c3b93ade1aca60e7948.rewardText,마왕의 인내심이 2분 늘어납니다.,The Demon King's patience lasts 2 minutes longer.,魔王の忍耐が2分延びます。,魔王的耐心延长2分钟。,魔王的耐心延長2分鐘。
+asset.ddf04bff7fe8b144580e25eb7b52a207.displayName,클로에의 등불,Chloe's Lantern,クロエのランタン,克洛艾的提灯,克洛艾的提燈
+asset.ddf04bff7fe8b144580e25eb7b52a207.description,주위를 공전하는 소환수가 적에게 강한 유도탄을 발사합니다.,An orbiting familiar fires strongly homing projectiles at enemies.,周囲を公転する使い魔が、敵に強力な追尾弾を放ちます。,环绕身边的召唤物会向敌人发射强力追踪弹。,環繞身邊的召喚物會向敵人發射強力追蹤彈。
+relic.chloe_lantern.effect,"● 소환수가 주위를 공전하며 {{val:{0:0.##}초}}마다 시야 안의 적에게 유도탄 발사
+● 벽에 가리지 않은 가장 가까운 적을 조준
+● 발사 시점 공격력의 {{val:100%}} 피해
+● 치명타와 속성 효과 없음 · 첫 적이나 벽에 닿으면 소멸","● An orbiting familiar fires a homing shot every {{val:{0:0.##} s}} at enemies on screen
+● Targets the nearest enemy with a clear line of sight
+● Deals {{val:100%}} of your Attack at launch
+● No critical hits or elemental effects · Vanishes on the first enemy or wall","● 周囲を公転する使い魔が{{val:{0:0.##}秒}}ごとに画面内の敵へ追尾弾を発射
+● 壁に遮られていない最も近い敵を狙う
+● 発射時の攻撃力の{{val:100%}}のダメージ
+● クリティカル・属性効果なし · 最初の敵か壁に当たると消滅","● 召唤物环绕身边，每{{val:{0:0.##}秒}}向画面内的敌人发射追踪弹
+● 瞄准未被墙壁遮挡的最近敌人
+● 造成发射时攻击力{{val:100%}}的伤害
+● 无暴击或属性效果 · 命中第一个敌人或墙壁后消失","● 召喚物環繞身邊，每{{val:{0:0.##}秒}}向畫面內的敵人發射追蹤彈
+● 瞄準未被牆壁遮擋的最近敵人
+● 造成發射時攻擊力{{val:100%}}的傷害
+● 無暴擊或屬性效果 · 命中第一個敵人或牆壁後消失"
+asset.c6b658f2b5f61af438415d4d0fb6c848.displayName,병 속의 슬라임,Slime in a Bottle,瓶詰めスライム,瓶中史莱姆,瓶中史萊姆
+asset.c6b658f2b5f61af438415d4d0fb6c848.description,작은 슬라임이 가끔 튀어나와 피해를 막아줍니다.,A tiny slime sometimes springs out to block incoming damage.,小さなスライムが時々飛び出して、ダメージを防いでくれます。,小史莱姆偶尔会跳出来，为你挡下伤害。,小史萊姆偶爾會跳出來，為你擋下傷害。
+relic.slime_bottle.effect,"● 회피와 별개로 {{val:{0:0.#}%}} 확률로 피해 방어
+● 적의 공격·장판·낙사 피해에 적용 · 지속 피해 제외
+● 방어한 타격의 넉백·경직·속성 누적도 차단","● {{val:{0:0.#}%}} chance to block damage, independently of evasion
+● Applies to enemy attacks, ground hazards and falls · Excludes status damage over time
+● Also blocks knockback, hit stun and elemental build-up from that hit","● 回避とは別に{{val:{0:0.#}%}}の確率でダメージを防ぐ
+● 敵の攻撃・ダメージ床・落下ダメージが対象 · 状態による継続ダメージは対象外
+● 防いだ攻撃のノックバック・ひるみ・属性蓄積も無効化","● 独立于闪避，以{{val:{0:0.#}%}}的概率格挡伤害
+● 对敌人攻击、地面危险区域和坠落伤害生效 · 不包括状态造成的持续伤害
+● 同时阻挡该次攻击的击退、硬直和属性积累","● 獨立於閃避，以{{val:{0:0.#}%}}的機率格擋傷害
+● 對敵人攻擊、地面危險區域和墜落傷害生效 · 不包括狀態造成的持續傷害
+● 同時阻擋該次攻擊的擊退、硬直和屬性累積"
+asset.1d1e3da61e754a4c927dee88e53855ab.rewardText,멜타의 영역 내 상점에서 모든 상품의 가격이 10% 할인됩니다.,All goods in shops within Melta's domain cost 10% less.,メルタの領域内にあるショップでは、すべての商品が10%割引になります。,在梅尔塔的领域内，商店所有商品的价格降低10%。,在梅爾塔的領域內，商店所有商品的價格降低10%。
+asset.c0cba4733e4b45d193fd0b751f2491dc.rewardText,클로에의 영역에서 어둠 너머를 더 멀리 볼 수 있습니다.,You can see farther through the darkness in Chloe's domain.,クロエの領域では、闇の向こうをより遠くまで見通せます。,在克洛伊的领域内，可以看穿黑暗，看得更远。,在克洛伊的領域內，可以看穿黑暗，看得更遠。
+asset.d1ec2d394ab443e0856cafd9cc93a61e.rewardText,"병 속의 슬라임이 해금되었습니다.
+이제 상자와 상점에서 발견할 수 있습니다.","Slime in a Bottle has been unlocked.
+You can now find it in chests and shops.","瓶詰めスライムが解放されました。
+宝箱やショップで見つけられるようになります。","瓶中史莱姆已解锁。
+现在可以在宝箱和商店中发现它。","瓶中史萊姆已解鎖。
+現在可以在寶箱和商店中發現它。"
+asset.98bab4e87b4e423483f4b55d17eee8b5.rewardText,"클로에의 등불이 해금되었습니다.
+이제 상자와 상점에서 발견할 수 있습니다.","Chloe's Lantern has been unlocked.
+You can now find it in chests and shops.","クロエのランタンが解放されました。
+宝箱やショップで見つけられるようになります。","克洛艾的提灯已解锁。
+现在可以在宝箱和商店中发现它。","克洛艾的提燈已解鎖。
+現在可以在寶箱和商店中發現它。"

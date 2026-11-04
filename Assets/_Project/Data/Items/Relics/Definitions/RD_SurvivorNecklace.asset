@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_SurvivorNecklace
   m_EditorClassIdentifier: 
   relicId: RD_SurvivorNecklace
-  displayName: "\uC0DD\uC874\uC790\uC758 \uBAA9\uAC78\uC774"
-  icon: {fileID: -6626285524676906614, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  displayName: "\ub098\ubb47\uc78e \ud39c\ub358\ud2b8"
+  icon: {fileID: 21300000, guid: 4c49bb522d4944dabee1fcbdfe07e1bb, type: 3}
   rarity: 0
   description: "\uCD5C\uB300 \uCCB4\uB825\uACFC \uC774\uB3D9\uC18D\uB3C4\uAC00 \uC870\uAE08
     \uC99D\uAC00\uD569\uB2C8\uB2E4."

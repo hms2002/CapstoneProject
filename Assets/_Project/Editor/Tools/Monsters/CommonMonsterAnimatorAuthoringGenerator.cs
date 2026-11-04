@@ -24,7 +24,7 @@ public static class CommonMonsterAnimatorAuthoringGenerator
             MonsterAnimatorConfig.Basic("GoblinWarrior", "PrepareAttack", "Attack", "RecoverAttack", "Die"),
             MonsterAnimatorConfig.Basic("GoblinGunner", "ShotReady", "Shot", "ShotRecovery", "Die"),
             MonsterAnimatorConfig.Basic("GoblinTank", "PrepareAttack", "Attack", "RecoveryAttack", "Die"),
-            MonsterAnimatorConfig.Basic("LizardWarrior", "AttackPrepare", "Attack", null, "Die"),
+            MonsterAnimatorConfig.LizardWarrior(),
             MonsterAnimatorConfig.LizardMage(),
             MonsterAnimatorConfig.Basic("ArcaneMeleeGolem", "PrepareDash", "Dash1", "Dash2", "Die"),
             MonsterAnimatorConfig.ArcaneTank("ArcaneTankGolem")
@@ -68,6 +68,9 @@ public static class CommonMonsterAnimatorAuthoringGenerator
         AnimatorState jump = AddOptionalState(stateMachine, "Jump", config.MonsterName, config.JumpClipSuffix, new Vector3(520f, 220f, 0f));
         AnimatorState land = AddOptionalState(stateMachine, "Land", config.MonsterName, config.LandClipSuffix, new Vector3(520f, 320f, 0f));
         AnimatorState die = AddOptionalState(stateMachine, "Die", config.MonsterName, config.DieClipSuffix, new Vector3(250f, 300f, 0f));
+
+        if (config.MonsterName == "LizardWarrior" && attack != null)
+            attack.speed = 1.5f;
 
         // Keep death ahead of action cues when multiple triggers are pending in one frame.
         AddTriggerTransition(stateMachine, die, config.DieTrigger, null);
@@ -324,6 +327,13 @@ public static class CommonMonsterAnimatorAuthoringGenerator
                 attackState,
                 recoverState,
                 holdAttackReadyUntilNextTrigger: monsterName == "GoblinTank");
+        }
+
+        public static MonsterAnimatorConfig LizardWarrior()
+        {
+            return new MonsterAnimatorConfig(
+                "LizardWarrior", "AttackPrepare", "Walk", null, "Die", null, null,
+                "AttackReady", "Attack", null, true, true);
         }
 
         public static MonsterAnimatorConfig LizardMage()

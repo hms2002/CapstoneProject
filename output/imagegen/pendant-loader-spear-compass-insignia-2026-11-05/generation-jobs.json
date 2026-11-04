@@ -1,0 +1,108 @@
+[
+  {
+    "key": "01-recovery-pendant",
+    "name": "회복 펜던트",
+    "palette": [
+      "#363232",
+      "#E55C5C",
+      "#A75064",
+      "#E9CEA1",
+      "#E09656",
+      "#F2F9F8"
+    ],
+    "subject": "A chunky HEART-SHAPED healing pendant, upright frontal view. Warm red heart body with muted rose lower shadow, a small gold suspension loop touching the heart top, no chain. A large plainly readable ivory POTION BOTTLE pictogram is inset on the heart face: squat rounded bottle belly, short narrow neck, simple gold stopper, red liquid cutout. Pendant has substantial dimensional thickness but only one broad shadow plane. The heart silhouette and bottle motif must both be unmistakable at 32x32. No extra cross/sparkles/gems.",
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/style-review-2026-11-04/reference-eight-8x.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png"
+    ],
+    "prompt": "Use case: stylized-concept. Asset type: a single hand-authored pixel-art fantasy roguelike inventory sprite.\nReference roles: image 1 PRIMARY STYLE only (the user says this quartet is perfect); image 2 additional material and shape style reference; image 3 the ONLY allowed color palette. Any image 4 is weapon identity reference, not a style reference.\nProduce ONE new object on a genuinely transparent background. Match the references' plump rounded physical-object silhouettes, broad flat base-color areas and one clear shadow plane per material. Spare structural detail, irregular charming shapes, NO gradients, dithering, tiny textures, glitter, realistic rendering, text, grid, numbers, UI or background.\nDesigned at a logical 32x32 pixel grid, every pixel crisp and uniform. Exactly two logical pixel charcoal #363232 rounded exterior outline, deliberate stair steps, avoid square inflated corners. At least 2 transparent logical pixels on all four edges INCLUDING outline. Subject occupies about 24x24 material pixels. Broad identifying parts, no fragile thin chains or shafts. Use 4–7 total colors as needed, exclusively from image 3, including outline. Large simple flat color clusters, not multiple shiny concentric trims. Reference objects are STYLE EXAMPLES; do not copy them into this new subject.\nSubject: A chunky HEART-SHAPED healing pendant, upright frontal view. Warm red heart body with muted rose lower shadow, a small gold suspension loop touching the heart top, no chain. A large plainly readable ivory POTION BOTTLE pictogram is inset on the heart face: squat rounded bottle belly, short narrow neck, simple gold stopper, red liquid cutout. Pendant has substantial dimensional thickness but only one broad shadow plane. The heart silhouette and bottle motif must both be unmistakable at 32x32. No extra cross/sparkles/gems.\nExact selected palette (no other colors): #363232, #E55C5C, #A75064, #E9CEA1, #E09656, #F2F9F8",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-324dbd10-fd93-47e4-828c-93dcc23dfb93.png"
+  },
+  {
+    "key": "02-reserve-speedloader",
+    "name": "쇳덩이의 예비 탄약",
+    "palette": [
+      "#363232",
+      "#8599B0",
+      "#436794",
+      "#C2C2C2",
+      "#E9CEA1",
+      "#E09656"
+    ],
+    "subject": "A chunky revolver ammunition SPEED LOADER accessory seen in three-quarter view: compact blue-gray cylindrical carrier, five or six broad brass cartridge ends arranged around one central short dark grip knob. Clearly a loading device carrying rounds, not a loose revolver cylinder, not a gear or gatling gun. Cartridges project a little below the carrier; round brass ends visibly separated by dark gaps. Wide simple silhouette, large flat gray metal top and blue-gray shadow side, sparse gold cartridge surfaces, no fine grooves or mechanical micro-detail. Cartridge group visually dominant.",
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/style-review-2026-11-04/reference-eight-8x.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png"
+    ],
+    "prompt": "Use case: stylized-concept. Asset type: a single hand-authored pixel-art fantasy roguelike inventory sprite.\nReference roles: image 1 PRIMARY STYLE only (the user says this quartet is perfect); image 2 additional material and shape style reference; image 3 the ONLY allowed color palette. Any image 4 is weapon identity reference, not a style reference.\nProduce ONE new object on a genuinely transparent background. Match the references' plump rounded physical-object silhouettes, broad flat base-color areas and one clear shadow plane per material. Spare structural detail, irregular charming shapes, NO gradients, dithering, tiny textures, glitter, realistic rendering, text, grid, numbers, UI or background.\nDesigned at a logical 32x32 pixel grid, every pixel crisp and uniform. Exactly two logical pixel charcoal #363232 rounded exterior outline, deliberate stair steps, avoid square inflated corners. At least 2 transparent logical pixels on all four edges INCLUDING outline. Subject occupies about 24x24 material pixels. Broad identifying parts, no fragile thin chains or shafts. Use 4–7 total colors as needed, exclusively from image 3, including outline. Large simple flat color clusters, not multiple shiny concentric trims. Reference objects are STYLE EXAMPLES; do not copy them into this new subject.\nSubject: A chunky revolver ammunition SPEED LOADER accessory seen in three-quarter view: compact blue-gray cylindrical carrier, five or six broad brass cartridge ends arranged around one central short dark grip knob. Clearly a loading device carrying rounds, not a loose revolver cylinder, not a gear or gatling gun. Cartridges project a little below the carrier; round brass ends visibly separated by dark gaps. Wide simple silhouette, large flat gray metal top and blue-gray shadow side, sparse gold cartridge surfaces, no fine grooves or mechanical micro-detail. Cartridge group visually dominant.\nExact selected palette (no other colors): #363232, #8599B0, #436794, #C2C2C2, #E9CEA1, #E09656",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-e0a0597c-856f-4275-817f-7cfb4bf63bb6.png"
+  },
+  {
+    "key": "03-third-lightning-spearhead",
+    "name": "뇌창의 세 번째 번개",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794",
+      "#F2F9F8"
+    ],
+    "weapon": "C:/Users/user/Desktop/CapstoneProject/Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png",
+    "subject": "A relic consisting of the iconic golden HEAD of the lightning spear in image 4, separated from its long pole. Keep the recognizable long pointed central blade and the two short hooked side prongs near its base. Enlarge and thicken this form to read as a chunky physical spearhead fragment, angled from lower-left to upper-right. Gold outer blade and orange shadow, a broad blue inset lightning groove that forks into THREE short branches near the base. Short dark socket at bottom, no long shaft. The weapon's actual pronged silhouette is key. Not a generic blue crystal or an entire skinny spear; no floating sparks.",
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/style-review-2026-11-04/reference-eight-8x.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png"
+    ],
+    "prompt": "Use case: stylized-concept. Asset type: a single hand-authored pixel-art fantasy roguelike inventory sprite.\nReference roles: image 1 PRIMARY STYLE only (the user says this quartet is perfect); image 2 additional material and shape style reference; image 3 the ONLY allowed color palette. Any image 4 is weapon identity reference, not a style reference.\nProduce ONE new object on a genuinely transparent background. Match the references' plump rounded physical-object silhouettes, broad flat base-color areas and one clear shadow plane per material. Spare structural detail, irregular charming shapes, NO gradients, dithering, tiny textures, glitter, realistic rendering, text, grid, numbers, UI or background.\nDesigned at a logical 32x32 pixel grid, every pixel crisp and uniform. Exactly two logical pixel charcoal #363232 rounded exterior outline, deliberate stair steps, avoid square inflated corners. At least 2 transparent logical pixels on all four edges INCLUDING outline. Subject occupies about 24x24 material pixels. Broad identifying parts, no fragile thin chains or shafts. Use 4–7 total colors as needed, exclusively from image 3, including outline. Large simple flat color clusters, not multiple shiny concentric trims. Reference objects are STYLE EXAMPLES; do not copy them into this new subject.\nSubject: A relic consisting of the iconic golden HEAD of the lightning spear in image 4, separated from its long pole. Keep the recognizable long pointed central blade and the two short hooked side prongs near its base. Enlarge and thicken this form to read as a chunky physical spearhead fragment, angled from lower-left to upper-right. Gold outer blade and orange shadow, a broad blue inset lightning groove that forks into THREE short branches near the base. Short dark socket at bottom, no long shaft. The weapon's actual pronged silhouette is key. Not a generic blue crystal or an entire skinny spear; no floating sparks.\nExact selected palette (no other colors): #363232, #EECF5A, #E09656, #77BCD6, #436794, #F2F9F8",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-c5876826-4ef2-4b80-b813-658bf9e14a6b.png"
+  },
+  {
+    "key": "04-tracking-thunder-compass",
+    "name": "뇌창의 추적 낙뢰",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#77BCD6",
+      "#436794",
+      "#8599B0"
+    ],
+    "weapon": "C:/Users/user/Desktop/CapstoneProject/Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png",
+    "subject": "A solid magical tracking COMPASS relic, round squat gold casing in a slight three-quarter view, blue face, with ONE large golden spearhead as the needle. The needle faithfully echoes image 4's lightning spear: long central point and two hooked basal side prongs, but broadened for readability. It points diagonally up-right and fills most of the blue face. Simple gold casing has one broad orange shadow plane; dark blue face shadow; one small blue rune groove on rim only if needed. No lettering, numbers, ticks, crosshairs, extra compass needles or filigree. Must look like a physical magical instrument belonging to that spear rather than a flat emblem.",
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/style-review-2026-11-04/reference-eight-8x.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png"
+    ],
+    "prompt": "Use case: stylized-concept. Asset type: a single hand-authored pixel-art fantasy roguelike inventory sprite.\nReference roles: image 1 PRIMARY STYLE only (the user says this quartet is perfect); image 2 additional material and shape style reference; image 3 the ONLY allowed color palette. Any image 4 is weapon identity reference, not a style reference.\nProduce ONE new object on a genuinely transparent background. Match the references' plump rounded physical-object silhouettes, broad flat base-color areas and one clear shadow plane per material. Spare structural detail, irregular charming shapes, NO gradients, dithering, tiny textures, glitter, realistic rendering, text, grid, numbers, UI or background.\nDesigned at a logical 32x32 pixel grid, every pixel crisp and uniform. Exactly two logical pixel charcoal #363232 rounded exterior outline, deliberate stair steps, avoid square inflated corners. At least 2 transparent logical pixels on all four edges INCLUDING outline. Subject occupies about 24x24 material pixels. Broad identifying parts, no fragile thin chains or shafts. Use 4–7 total colors as needed, exclusively from image 3, including outline. Large simple flat color clusters, not multiple shiny concentric trims. Reference objects are STYLE EXAMPLES; do not copy them into this new subject.\nSubject: A solid magical tracking COMPASS relic, round squat gold casing in a slight three-quarter view, blue face, with ONE large golden spearhead as the needle. The needle faithfully echoes image 4's lightning spear: long central point and two hooked basal side prongs, but broadened for readability. It points diagonally up-right and fills most of the blue face. Simple gold casing has one broad orange shadow plane; dark blue face shadow; one small blue rune groove on rim only if needed. No lettering, numbers, ticks, crosshairs, extra compass needles or filigree. Must look like a physical magical instrument belonging to that spear rather than a flat emblem.\nExact selected palette (no other colors): #363232, #EECF5A, #E09656, #77BCD6, #436794, #8599B0",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-9de142af-874a-4c9c-9243-4b3a603a77a9.png"
+  },
+  {
+    "key": "05-hero-link-insignia",
+    "name": "견습 용사의 연계 증표",
+    "palette": [
+      "#363232",
+      "#EECF5A",
+      "#E09656",
+      "#436794",
+      "#77BCD6",
+      "#C2C2C2"
+    ],
+    "weapon": "C:/Users/user/Desktop/CapstoneProject/Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeapon.png",
+    "subject": "A chunky relic insignia made from the distinctive HILT of the hero sword in image 4. Upright pendant/medal-like object: a substantial wide GOLD CROSSGUARD with softly upswept thick ends, a short BLUE GRIP below it with gold pommel, and only a very short broad pale metal blade base above. Enlarge and soften the actual sword's guard profile so the weapon identity is clear. One large simple blue inset gem at crossguard center. Overall compact cross/T silhouette, cheerful apprentice hero equipment, physical 3D flat-shadow shading, no extra shield or circular medallion backing, no crossed swords, no dangling chain, no rays. Simple enough for 32x32.",
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/style-review-2026-11-04/reference-eight-8x.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeapon.png"
+    ],
+    "prompt": "Use case: stylized-concept. Asset type: a single hand-authored pixel-art fantasy roguelike inventory sprite.\nReference roles: image 1 PRIMARY STYLE only (the user says this quartet is perfect); image 2 additional material and shape style reference; image 3 the ONLY allowed color palette. Any image 4 is weapon identity reference, not a style reference.\nProduce ONE new object on a genuinely transparent background. Match the references' plump rounded physical-object silhouettes, broad flat base-color areas and one clear shadow plane per material. Spare structural detail, irregular charming shapes, NO gradients, dithering, tiny textures, glitter, realistic rendering, text, grid, numbers, UI or background.\nDesigned at a logical 32x32 pixel grid, every pixel crisp and uniform. Exactly two logical pixel charcoal #363232 rounded exterior outline, deliberate stair steps, avoid square inflated corners. At least 2 transparent logical pixels on all four edges INCLUDING outline. Subject occupies about 24x24 material pixels. Broad identifying parts, no fragile thin chains or shafts. Use 4–7 total colors as needed, exclusively from image 3, including outline. Large simple flat color clusters, not multiple shiny concentric trims. Reference objects are STYLE EXAMPLES; do not copy them into this new subject.\nSubject: A chunky relic insignia made from the distinctive HILT of the hero sword in image 4. Upright pendant/medal-like object: a substantial wide GOLD CROSSGUARD with softly upswept thick ends, a short BLUE GRIP below it with gold pommel, and only a very short broad pale metal blade base above. Enlarge and soften the actual sword's guard profile so the weapon identity is clear. One large simple blue inset gem at crossguard center. Overall compact cross/T silhouette, cheerful apprentice hero equipment, physical 3D flat-shadow shading, no extra shield or circular medallion backing, no crossed swords, no dangling chain, no rays. Simple enough for 32x32.\nExact selected palette (no other colors): #363232, #EECF5A, #E09656, #436794, #77BCD6, #C2C2C2",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-36ab8487-d7c5-407f-b86f-2cf5eb76251a.png"
+  }
+]

@@ -1128,7 +1128,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294708949004
-    m_Localized: Strength Charm
+    m_Localized: "Combat Manual"
     m_Metadata:
       m_Items: []
   - m_Id: 46294708949005
@@ -1144,7 +1144,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294708949008
-    m_Localized: Berserker's Strap
+    m_Localized: "Fruit of Frenzy"
     m_Metadata:
       m_Items: []
   - m_Id: 46294708949009
@@ -1152,7 +1152,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294708949010
-    m_Localized: Black Censer
+    m_Localized: "Shaman's Mask"
     m_Metadata:
       m_Items: []
   - m_Id: 46294708949011
@@ -1168,7 +1168,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294708949014
-    m_Localized: Broken Clock
+    m_Localized: "Warrior's Bracer"
     m_Metadata:
       m_Items: []
   - m_Id: 46294713143296
@@ -1184,7 +1184,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294713143299
-    m_Localized: Bronze Dice
+    m_Localized: "Wooden Die"
     m_Metadata:
       m_Items: []
   - m_Id: 46294713143300
@@ -1200,7 +1200,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294713143303
-    m_Localized: Carefree Heart
+    m_Localized: "Tailwind Conch"
     m_Metadata:
       m_Items: []
   - m_Id: 46294713143304
@@ -1248,7 +1248,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337600
-    m_Localized: Strong Spirits
+    m_Localized: "A Stiff Drink"
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337601
@@ -1276,7 +1276,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337607
-    m_Localized: Steadfast Steps
+    m_Localized: "Token of Luck"
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337608
@@ -1341,7 +1341,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337623
-    m_Localized: Last Breath
+    m_Localized: "Broken Helm"
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337624
@@ -1358,7 +1358,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337627
-    m_Localized: Light Strap
+    m_Localized: "Wind Fan"
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337628
@@ -1416,7 +1416,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337641
-    m_Localized: Pursuer's Claw
+    m_Localized: "Pursuit Order"
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337642
@@ -1428,7 +1428,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337644
-    m_Localized: Crimson Pact
+    m_Localized: "Berserker's Gem"
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337645
@@ -1473,7 +1473,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531912
-    m_Localized: Sharp Awl
+    m_Localized: "Deadly Axe"
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531913
@@ -1481,7 +1481,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531914
-    m_Localized: Small Heart
+    m_Localized: "Beating Heart"
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531915
@@ -1501,12 +1501,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531919
-    m_Localized: Speed Medal
+    m_Localized: "Mandragora"
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531920
-    m_Localized: Increases movement speed by 3/5/7/9/12% and critical chance by 2/4/6/8/10%,
-      depending on level.
+    m_Localized: "Increases critical chance by 2/4/6/8/10%, depending on level."
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531921
@@ -1522,7 +1521,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531924
-    m_Localized: Survivor's Necklace
+    m_Localized: "Leaf Pendant"
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531925
@@ -1538,7 +1537,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531928
-    m_Localized: Tonic Pipe
+    m_Localized: "Lucky Dart"
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531929
@@ -1550,7 +1549,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531931
-    m_Localized: Victory Flag
+    m_Localized: "Berserker's Banner"
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531932
@@ -1558,7 +1557,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531933
-    m_Localized: Warrior's Oath
+    m_Localized: "Warrior's Medal"
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531934
@@ -1779,7 +1778,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294729920533
-    m_Localized: Movement Speed
+    m_Localized: "Critical Chance"
     m_Metadata:
       m_Items: []
   - m_Id: 46294734114816
@@ -7870,10 +7869,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3397459331186688
-    m_Localized: Filling the mug for 1 second in an alcohol puddle grants +25% movement
-      speed and +40% attack speed instead of confusion. The duration refreshes inside
-      the puddle. After leaving, the mug drains for 1.5 seconds, then the buff lasts
-      5 seconds.
+    m_Localized: "Alcohol puddles no longer confuse you. Your steps grow lighter and your attacks faster."
     m_Metadata:
       m_Items: []
   - m_Id: 10245090273300480
@@ -9143,6 +9139,60 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 11005436400660480
     m_Localized: "Of course I set aside your share. Hehe, I'm a merchant who looks after her partners, right?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11820468849229824
+    m_Localized: "Fire Dragon's Fang, Sun Fragment, and A Stiff Drink have been unlocked.\nYou can now find them in chests and shops."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11823303972528128
+    m_Localized: "The Demon King's patience lasts 2 minutes longer."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11828984452202496
+    m_Localized: Chloe's Lantern
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11828984599003136
+    m_Localized: An orbiting familiar fires strongly homing projectiles at enemies.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11828984599003137
+    m_Localized: "\u25CF An orbiting familiar fires a homing shot every {{val:{0:0.##}
+      s}} at enemies on screen\n\u25CF Targets the nearest enemy with a clear line
+      of sight\n\u25CF Deals {{val:100%}} of your Attack at launch\n\u25CF No critical
+      hits or elemental effects \xB7 Vanishes on the first enemy or wall"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11832946039439360
+    m_Localized: Slime in a Bottle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11832946194628608
+    m_Localized: A tiny slime sometimes springs out to block incoming damage.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11832946198822912
+    m_Localized: "\u25CF {{val:{0:0.#}%}} chance to block damage, independently of
+      evasion\n\u25CF Applies to enemy attacks, ground hazards and falls \xB7 Excludes
+      status damage over time\n\u25CF Also blocks knockback, hit stun and elemental
+      build-up from that hit"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11837594560045056
+    m_Localized: "All goods in shops within Melta's domain cost 10% less."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11837594657722368
+    m_Localized: "You can see farther through the darkness in Chloe's domain."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11841047940149248
+    m_Localized: "Slime in a Bottle has been unlocked.\nYou can now find it in chests and shops."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11841048591966208
+    m_Localized: "Chloe's Lantern has been unlocked.\nYou can now find it in chests and shops."
     m_Metadata:
       m_Items: []
   references:

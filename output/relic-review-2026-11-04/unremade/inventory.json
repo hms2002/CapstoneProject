@@ -1,0 +1,446 @@
+{
+  "registered": 75,
+  "remade": 20,
+  "remaining": [
+    {
+      "name": "회복의 팬턴트",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RecoveryPendant.asset",
+      "definition_guid": "b7ac0f2e281a44768c35210163fd6aba",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/potion1.png",
+      "fileID": "21300000",
+      "guid": "b7ac0f2e281a44768c35210163fd6abc"
+    },
+    {
+      "name": "뇌창의 세 번째 번개",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearThirdStrike.asset",
+      "definition_guid": "f36d5720370d475cb8ad55ee5b68c27c",
+      "source": "Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png",
+      "fileID": "21300000",
+      "guid": "10552735fdb1e6e42a67dd8f5e1ae667"
+    },
+    {
+      "name": "뇌창의 추적 낙뢰",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearTargetedRain.asset",
+      "definition_guid": "b21a9cb41264495aadb828708bd905f7",
+      "source": "Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png",
+      "fileID": "21300000",
+      "guid": "10552735fdb1e6e42a67dd8f5e1ae667"
+    },
+    {
+      "name": "쇳덩이의 예비 탄창",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_OddIronMagazine.asset",
+      "definition_guid": "897b88fc1f3a40baa3b72a4269743a84",
+      "source": "Assets/_Project/Art/Sprites/Items/Weapons/OddIron/OddIron.png",
+      "fileID": "6943876887964716198",
+      "guid": "959fd486b4d99da4687a456b33eb4a27"
+    },
+    {
+      "name": "견습 용사의 연계 증표",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ApprenticeChargeLink.asset",
+      "definition_guid": "056770c65bd343ea8bf1553c842ff605",
+      "source": "Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeapon.png",
+      "fileID": "21300000",
+      "guid": "748bd1286788d5f468f9857941b73367"
+    },
+    {
+      "name": "힘 부적",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset",
+      "definition_guid": "1f2641bce49c9884eaec41adfdfa29f3",
+      "source": "Assets/_Project/Art/Sprites/UI/Dialogue/bubble emotes july update.png",
+      "fileID": "-1330801700",
+      "guid": "ef16b2ddeb64123459076c2c8a541a63"
+    },
+    {
+      "name": "독한 술기운",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_DrunkenRush.asset",
+      "definition_guid": "7b7fd4d273ca49739198391f6ed4d309",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DrunkenRush.png",
+      "fileID": "21300000",
+      "guid": "a23fffd2b25f3824fb678b34be8c8d8b"
+    },
+    {
+      "name": "하얀 깃털",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset",
+      "definition_guid": "eb057c0a7b239b742a001ee568ef4027",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FeatherOrbit.png",
+      "fileID": "21300000",
+      "guid": "07e2e0377cda6d94eb4680ca1b68ab8c"
+    },
+    {
+      "name": "송골매의 증표",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_HawkEmblem.asset",
+      "definition_guid": "7d7ef88dcbf743f7b79623379d0cd8c6",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_HawkEmblem.png",
+      "fileID": "21300000",
+      "guid": "8962ffe16144980439939f691764cb69"
+    },
+    {
+      "name": "한방울의 신속",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_OneDropOfSwiftness.asset",
+      "definition_guid": "7c21e56d0f854d95b4ac9ef71d603f28",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_OneDropOfSwiftness.png",
+      "fileID": "21300000",
+      "guid": "4af3438a19a9ff54683d8233bd993349"
+    },
+    {
+      "name": "회전하는 철구",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RotatingIornBall.asset",
+      "definition_guid": "d492a6f1c1a7fc84bb3b44a619dcfd4f",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RotatingIornBall.png",
+      "fileID": "21300000",
+      "guid": "6a513faa0e54c5147a1942958fe1a540"
+    },
+    {
+      "name": "달리는 장부",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RunningLedger.asset",
+      "definition_guid": "c0e9e82eb0ce4caa9efb337cb57764ff",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RunningLedger.png",
+      "fileID": "21300000",
+      "guid": "6cd59cbf386c7134c99727cb4cdc3f83"
+    },
+    {
+      "name": "신속의 부츠",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedBoots.asset",
+      "definition_guid": "a73c39a704801a1488033afff3b7f340",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedBoots.png",
+      "fileID": "21300000",
+      "guid": "d950f06d53ce11c41b1f7b2cb791c628"
+    },
+    {
+      "name": "스피드 메달",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedMedal.asset",
+      "definition_guid": "2a2133b4854b68e4eb9a420c0bb3e215",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedMedal.png",
+      "fileID": "21300000",
+      "guid": "cc05db3731cb2e447b06a5902cb16b6c"
+    },
+    {
+      "name": "속기사",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_Stenographer.asset",
+      "definition_guid": "f2a47c8de19b4d8d9e67a31f5b2c4e90",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_Stenographer.png",
+      "fileID": "21300000",
+      "guid": "6e5063279097f8b4abb904145fd23e7c"
+    },
+    {
+      "name": "보약 곰방대",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_TonicGombangdae.asset",
+      "definition_guid": "d808a1e0c7ccc7e48abc50b9a9884b61",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_TonicGombangdae.png",
+      "fileID": "21300000",
+      "guid": "b21ecde7f4efbae44b88a07fc7a7610e"
+    },
+    {
+      "name": "질풍의 석판",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WindTablet.asset",
+      "definition_guid": "3176a6ca3d2df1f4d8f3770d42b8457f",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindTablet.png",
+      "fileID": "21300000",
+      "guid": "f891dbf6eb980e447b2d7d8a74a386fd"
+    },
+    {
+      "name": "반격의 박차",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CounterKick.asset",
+      "definition_guid": "0bd69b2b4237473ead517a6bb31f0ab1",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CounterKick.png",
+      "fileID": "21300000",
+      "guid": "fe26a83a4ededf64ba867c2d5e1863f8"
+    },
+    {
+      "name": "귀인의 검흔",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FloweringBloomExtension.asset",
+      "definition_guid": "6f66b76c2399491ab2b555651f017664",
+      "source": "Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_Artifact.png",
+      "fileID": "21300000",
+      "guid": "bd99ece40b3e73841bdc7fb710c6d066"
+    },
+    {
+      "name": "낡은 숫돌",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WornWhetstone.asset",
+      "definition_guid": "eef19b108eae4400bb49fc1753e4aa14",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-979860976084526476",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "장인의 숫돌",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_MasterWhetstone.asset",
+      "definition_guid": "5dfae16cf310446b821ffaf6e7a1bae3",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "1230076527310467192",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "전투 장갑",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CombatGloves.asset",
+      "definition_guid": "a2a3ad10170b41e5bd89c1d48bcd56a9",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "3179228444970898203",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "질긴 붕대",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ToughBandage.asset",
+      "definition_guid": "acf93562c8b943abaf5d216c50f859b8",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "2652998765610666854",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "가벼운 끈",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightCord.asset",
+      "definition_guid": "211ffa758fea44fd94388e8bd6e4eb4a",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-5249522915942291002",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "사냥꾼의 표식",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_HunterMark.asset",
+      "definition_guid": "81eca7800b7446598237331ab25b00c8",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "6214254870795243053",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "예리한 송곳",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SharpAwl.asset",
+      "definition_guid": "350592c90a7f493b999f7b9f349dfe91",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-8081933682657346706",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "회피의 깃",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_EvasionFeather.asset",
+      "definition_guid": "7c8c681dbbe24cb68c36637db0844b0c",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-7853464663418827758",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "굳센 발걸음",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FirmStep.asset",
+      "definition_guid": "6657f14bf85d4440b1a6353e784e9c3e",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-8815494589321632592",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "무거운 팔찌",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_HeavyBracelet.asset",
+      "definition_guid": "16ad7526693d4a44a3183bcc3df90f61",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "6752461376909513456",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "얇은 갑옷 조각",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThinArmorShard.asset",
+      "definition_guid": "884462a2ad3d4a1e81d32a56a1597d51",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-9195065147404484278",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "광전사의 끈",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BerserkerCord.asset",
+      "definition_guid": "c3f65c9408584fc09145a782d74839bc",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "1290818826102019816",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "집중의 렌즈",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FocusLens.asset",
+      "definition_guid": "324fe8dd5a9d478790d21ad2c9881fab",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-3399255907306226351",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "균형추",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BalanceWeight.asset",
+      "definition_guid": "a491ffe08c1246b7b39b04fdca100c95",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "7824667717655779811",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "마지막 숨",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LastBreath.asset",
+      "definition_guid": "4a278341ae1b4ef4b8886c04f3517f71",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-3051198569075358200",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "여유로운 심장",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CalmHeart.asset",
+      "definition_guid": "11d7fc46673146558d7d95385305a393",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "9137266158227281547",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "승리의 깃발",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_VictoryFlag.asset",
+      "definition_guid": "1215f1b7fec1495dab3f473078c1e13c",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-7409323811495052916",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "붉은 계약",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RedContract.asset",
+      "definition_guid": "6e61f67002664297a735902776929cf5",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "6897696648242941555",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "도망자의 신발",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RunawayShoes.asset",
+      "definition_guid": "3f678aae4cb94331bd3caeb317c659ce",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-1211621753745056308",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "연쇄의 부적",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ChainCharm.asset",
+      "definition_guid": "bd3599e0184c43cc83826652107c5e89",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-9140534868678271618",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "균열석",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RiftStone.asset",
+      "definition_guid": "1a3c46c0c9914eea8cdcba66be7916eb",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "6123753626580635574",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "부서진 왕관",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenCrown.asset",
+      "definition_guid": "35caaa840c424d98b8c5095a4383348e",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "745922690225715111",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "생존자의 목걸이",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SurvivorNecklace.asset",
+      "definition_guid": "c3f1d032e5184fc9ac7fc75cf5632436",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-6626285524676906614",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "청동 주사위",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BronzeDice.asset",
+      "definition_guid": "cce9e7321f8d4b6aa9dc77661650dedd",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-8993961506304712746",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "무딘 방패",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BluntShield.asset",
+      "definition_guid": "f06c064d63ee47f4854cef0c2fc19a01",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "3131486497833835367",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "날렵한 망토",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_NimbleCloak.asset",
+      "definition_guid": "fcd257e9b1924b26bd998dd2bfae2bca",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "6358970640032765685",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "깨진 시계",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenClock.asset",
+      "definition_guid": "7d20d2a7cdf74a0bb83fccd22ed1c5a6",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "8375218632860420053",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "검은 향로",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BlackIncense.asset",
+      "definition_guid": "3127d39f416e4d56849df4e7835f709b",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-2091944441",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "전사의 맹세",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WarriorOath.asset",
+      "definition_guid": "66fe60611ced4fefbcf921ed07eaf47c",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "-4832650501692778596",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "작은 심장",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SmallHeart.asset",
+      "definition_guid": "ef617ca72b6f4423b7e133a909367516",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "336388868",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "추격자의 발톱",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_PursuerClaw.asset",
+      "definition_guid": "ddead4c1dd0048d8a332a78cd84cc690",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+      "fileID": "959958486",
+      "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f"
+    },
+    {
+      "name": "소포",
+      "definition": "Assets/_Project/Data/Items/Relics/RD_EventParcel.asset",
+      "definition_guid": "b5a11e75eae575b4193be62ab58517ed",
+      "source": "Assets/_Project/Art/Sprites/UI/Chest/weaponbox_relicbox.png",
+      "fileID": "2914263891378394802",
+      "guid": "522fe167c55eab149b6bf24c2e3fa0ff"
+    },
+    {
+      "name": "금광",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_GoldVein.asset",
+      "definition_guid": "cca649e618674edeae7fb55e0743a416",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/gold_vein.png",
+      "fileID": "21300000",
+      "guid": "872382315c4b44deaa3440a4afe18c0a"
+    },
+    {
+      "name": "성장의 새싹",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_GrowthSprout.asset",
+      "definition_guid": "2a030bcc770946f8abfe827a9bb0afc0",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/plant.png",
+      "fileID": "21300000",
+      "guid": "7861b6e666064cd7b04a49aca55b80c9"
+    },
+    {
+      "name": "날개 부츠",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FlyingBoots.asset",
+      "definition_guid": "4781e03df8c544459db8dc6863762e5c",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/flying_boots.png",
+      "fileID": "21300000",
+      "guid": "5e75f76ed6404d0e95d4b05a8a46ae0d"
+    },
+    {
+      "name": "최후의 저항",
+      "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LastStand.asset",
+      "definition_guid": "d866e0f16ecf48d0948bda26ce39842a",
+      "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/arrow.png",
+      "fileID": "21300000",
+      "guid": "eba60ca92d654057bce8a3f6664ed7b1"
+    }
+  ]
+}

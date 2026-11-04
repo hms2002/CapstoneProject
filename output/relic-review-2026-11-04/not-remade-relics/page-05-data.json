@@ -1,0 +1,128 @@
+[
+  {
+    "name": "추격자의 발톱",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_PursuerClaw.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_33",
+    "rect": [
+      205,
+      156,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "959958486",
+    "updated": false,
+    "effect": "적을 처치하면 잠시 이동속도가 증가합니다.",
+    "description": "적을 처치하면 잠시 이동속도가 증가합니다.",
+    "definition_guid": "ddead4c1dd0048d8a332a78cd84cc690"
+  },
+  {
+    "name": "하얀 깃털",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FeatherOrbit.png",
+    "sprite": "Icon_FeatherOrbit",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "07e2e0377cda6d94eb4680ca1b68ab8c",
+    "fileID": "21300000",
+    "updated": false,
+    "effect": "플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 고정 피해 3/4/5/6/7을 주며, 이동속도가 높을수록 더 빠르게 회전합니다.",
+    "description": "플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 고정 피해 3/4/5/6/7을 주며, 이동속도가 높을수록 더 빠르게 회전합니다.",
+    "definition_guid": "eb057c0a7b239b742a001ee568ef4027"
+  },
+  {
+    "name": "한방울의 신속",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_OneDropOfSwiftness.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_OneDropOfSwiftness.png",
+    "sprite": "Icon_OneDropOfSwiftness",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "guid": "4af3438a19a9ff54683d8233bd993349",
+    "fileID": "21300000",
+    "updated": false,
+    "effect": "잔영의 날개 전용 유물 · 스피드 스트라이크로 적을 처치하면 러쉬가 종료되지 않습니다.",
+    "description": "잔영의 날개 전용 유물\n스피드 스트라이크로 적을 처치하면 러쉬가 종료되지 않습니다.",
+    "definition_guid": "7c21e56d0f854d95b4ac9ef71d603f28"
+  },
+  {
+    "name": "회복의 팬턴트",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RecoveryPendant.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/potion1.png",
+    "sprite": "potion1",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "b7ac0f2e281a44768c35210163fd6abc",
+    "fileID": "21300000",
+    "updated": false,
+    "effect": "포션의 회복량이 1에서 2로 증가",
+    "description": "포션의 회복량이 1에서 2로 증가",
+    "definition_guid": "b7ac0f2e281a44768c35210163fd6aba"
+  },
+  {
+    "name": "회전하는 철구",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RotatingIornBall.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RotatingIornBall.png",
+    "sprite": "Icon_RotatingIornBall",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "guid": "6a513faa0e54c5147a1942958fe1a540",
+    "fileID": "21300000",
+    "updated": false,
+    "effect": "적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다.",
+    "description": "적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다.",
+    "definition_guid": "d492a6f1c1a7fc84bb3b44a619dcfd4f"
+  },
+  {
+    "name": "회피의 깃",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_EvasionFeather.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_7",
+    "rect": [
+      0,
+      39,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "-7853464663418827758",
+    "updated": false,
+    "effect": "회피율이 증가합니다.",
+    "description": "회피율이 증가합니다.",
+    "definition_guid": "7c8c681dbbe24cb68c36637db0844b0c"
+  },
+  {
+    "name": "힘 부적",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset",
+    "source": "Assets/_Project/Art/Sprites/UI/Dialogue/bubble emotes july update.png",
+    "sprite": "bubble emotes july update_86",
+    "rect": [
+      32,
+      112,
+      16,
+      16
+    ],
+    "guid": "ef16b2ddeb64123459076c2c8a541a63",
+    "fileID": "-1330801700",
+    "updated": false,
+    "effect": "공격력이 증가합니다.",
+    "description": "공격력이 증가합니다.",
+    "definition_guid": "1f2641bce49c9884eaec41adfdfa29f3"
+  }
+]

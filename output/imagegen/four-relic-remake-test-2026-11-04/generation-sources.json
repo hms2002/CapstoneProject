@@ -1,0 +1,94 @@
+[
+  {
+    "key": "01-drunken-rush",
+    "name": "독한 술기운",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-c96d17dc-2523-451b-a4fb-0ed9375698a7.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      339,
+      282,
+      944,
+      991
+    ],
+    "palette": [
+      "#363232",
+      "#8A5E40",
+      "#D49C73",
+      "#E9CEA1",
+      "#F1E9D4",
+      "#F2F9F8"
+    ]
+  },
+  {
+    "key": "02-hawk-emblem",
+    "name": "송골매의 증표",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-24ec63af-e296-4fe2-85ed-a362ef5d8706.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      294,
+      239,
+      953,
+      1046
+    ],
+    "palette": [
+      "#363232",
+      "#8A5E40",
+      "#D49C73",
+      "#E9CEA1",
+      "#F1E9D4",
+      "#C2C2C2"
+    ]
+  },
+  {
+    "key": "03-running-ledger",
+    "name": "달리는 장부",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-568f0068-92ab-4b60-a13e-9df3e211e5bd.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      220,
+      199,
+      1033,
+      1036
+    ],
+    "palette": [
+      "#363232",
+      "#8A5E40",
+      "#D49C73",
+      "#E9CEA1",
+      "#F1E9D4",
+      "#AB6E7C"
+    ]
+  },
+  {
+    "key": "04-rotating-iron-balls",
+    "name": "회전하는 철구",
+    "source": "C:\\Users\\user\\.codex\\generated_images\\01a17b9a-dd0d-7952-934c-baa8ac291ab7\\exec-7378ed17-6e64-44ae-9821-fbb5e7945cce.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "material_bbox": [
+      273,
+      246,
+      960,
+      1009
+    ],
+    "palette": [
+      "#363232",
+      "#62494C",
+      "#75656A",
+      "#978C8E",
+      "#C2C2C2",
+      "#F1E9D4"
+    ]
+  }
+]

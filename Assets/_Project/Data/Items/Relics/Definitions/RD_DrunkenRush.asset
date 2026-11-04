@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RD_DrunkenRush
   m_EditorClassIdentifier: 
   relicId: RD_DrunkenRush
-  displayName: "\uB3C5\uD55C \uC220\uAE30\uC6B4"
+  displayName: "\ub3c5\ud55c \ud55c\uc794"
   icon: {fileID: 21300000, guid: a23fffd2b25f3824fb678b34be8c8d8b, type: 3}
   rarity: 1
   description: "\uD53C\uD574\uB97C \uBC1B\uC73C\uBA74 6\uCD08 \uB3D9\uC548 \uCD5C\uC885 \uD53C\uD574\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."

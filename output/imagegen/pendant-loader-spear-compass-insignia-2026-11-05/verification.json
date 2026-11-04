@@ -1,0 +1,101 @@
+{
+  "records": [
+    {
+      "name": "회복 펜던트",
+      "png": "01-recovery-pendant-32x32.png",
+      "colors": [
+        "#363232",
+        "#A75064",
+        "#E09656",
+        "#E55C5C",
+        "#E9CEA1",
+        "#F2F9F8"
+      ],
+      "margins_ltrb": [
+        3,
+        2,
+        3,
+        2
+      ]
+    },
+    {
+      "name": "쇳덩이의 예비 탄약",
+      "png": "02-reserve-speedloader-32x32.png",
+      "colors": [
+        "#363232",
+        "#436794",
+        "#8599B0",
+        "#C2C2C2",
+        "#E09656",
+        "#E9CEA1"
+      ],
+      "margins_ltrb": [
+        3,
+        2,
+        3,
+        2
+      ]
+    },
+    {
+      "name": "뇌창의 세 번째 번개",
+      "png": "03-third-lightning-spearhead-32x32.png",
+      "colors": [
+        "#363232",
+        "#436794",
+        "#77BCD6",
+        "#E09656",
+        "#EECF5A"
+      ],
+      "margins_ltrb": [
+        3,
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "name": "뇌창의 추적 낙뢰",
+      "png": "04-tracking-thunder-compass-32x32.png",
+      "colors": [
+        "#363232",
+        "#436794",
+        "#77BCD6",
+        "#8599B0",
+        "#E09656",
+        "#EECF5A"
+      ],
+      "margins_ltrb": [
+        4,
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "name": "견습 용사의 연계 증표",
+      "png": "05-hero-link-insignia-32x32.png",
+      "colors": [
+        "#363232",
+        "#436794",
+        "#77BCD6",
+        "#C2C2C2",
+        "#E09656",
+        "#EECF5A"
+      ],
+      "margins_ltrb": [
+        2,
+        2,
+        3,
+        2
+      ]
+    }
+  ],
+  "dimensions": "32x32",
+  "binary_alpha": true,
+  "palette_exact": true,
+  "minimum_margin": 2,
+  "preview": "exact nearest-neighbor 8x",
+  "game_assets": "not modified",
+  "automated_tests": "not executed",
+  "doc_impact": "no project doc update needed; draft artifacts only"
+}

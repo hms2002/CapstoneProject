@@ -479,6 +479,10 @@ MonoBehaviour:
       lastBossEncounterOutcome: 0
       invert: 0
   dialogueTheme: {fileID: 11400000, guid: 3ef1664fdf0dac148a47091038acdfd9, type: 2}
-  affectionRewards: []
+  affectionRewards:
+  - targetLevel: 1
+    effect: {fileID: 11400000, guid: c0cba4733e4b45d193fd0b751f2491dc, type: 2}
+  - targetLevel: 2
+    effect: {fileID: 11400000, guid: 98bab4e87b4e423483f4b55d17eee8b5, type: 2}
   spriteLibraryAsset: {fileID: 7108339969198208228, guid: 11fe976bca44ca04996308bdbaf83e5c, type: 3}
   emoteOffset: {x: 75, y: 100}

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_WarriorOath
   m_EditorClassIdentifier: 
   relicId: RD_WarriorOath
-  displayName: "\uC804\uC0AC\uC758 \uB9F9\uC138"
-  icon: {fileID: -4832650501692778596, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  displayName: "\uc804\uc0ac\uc758 \uba54\ub2ec"
+  icon: {fileID: 21300000, guid: 59c02d65aa6f46bd9db150b93eb82fe7, type: 3}
   rarity: 1
   description: "\uAE30\uBCF8\uACF5\uACA9 \uD53C\uD574\uAC00 \uD06C\uAC8C \uC99D\uAC00\uD558\uC9C0\uB9CC
     \uC2A4\uD0AC \uD53C\uD574\uAC00 \uAC10\uC18C\uD569\uB2C8\uB2E4."

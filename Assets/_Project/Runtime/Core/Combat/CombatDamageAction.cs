@@ -175,7 +175,8 @@ public static class CombatDamageAction
         float? hitCameraScale = null,
         HashSet<GameObject> evadeFeedbackTargets = null,
         ElementDamageResult[] elementHpDamages = null,
-        GameplayTag damagePopupElementTag = null)
+        GameplayTag damagePopupElementTag = null,
+        bool isDamageOverTime = false)
     {
         ApplyDamageAndEmitHitInternal(
             system,
@@ -200,7 +201,8 @@ public static class CombatDamageAction
             hitCameraScale,
             evadeFeedbackTargets,
             elementHpDamages,
-            damagePopupElementTag);
+            damagePopupElementTag,
+            isDamageOverTime);
     }
 
     private static void ApplyDamageAndEmitHitInternal(
@@ -226,7 +228,8 @@ public static class CombatDamageAction
         float? hitCameraScale,
         HashSet<GameObject> evadeFeedbackTargets,
         ElementDamageResult[] elementHpDamages,
-        GameplayTag damagePopupElementTag)
+        GameplayTag damagePopupElementTag,
+        bool isDamageOverTime)
     {
         if (!Validate(system, damageEffect, target))
             return;
@@ -245,12 +248,15 @@ public static class CombatDamageAction
             return;
         }
 
+        float requestedBaseDamage = Mathf.Max(0f, finalHpDamage);
+        float requestedTotalDamage = ElementHitDamageCalculator.Sum(requestedBaseDamage, elementHpDamages);
+        if (!isDamageOverTime && requestedTotalDamage > 0f && CombatHitPrevention.TryPrevent(target))
+            return;
+
         var runner = system.EffectRunner;
         var geDamage = damageEffect as GE_Damage_Spec;
         var hpCheck = CaptureHpCheck(target, geDamage);
 
-        float requestedBaseDamage = Mathf.Max(0f, finalHpDamage);
-        float requestedTotalDamage = ElementHitDamageCalculator.Sum(requestedBaseDamage, elementHpDamages);
         bool hasElementPresentation = damagePopupElementTag != null ||
             (elementHpDamages != null && elementHpDamages.Length > 0);
         finalHpDamage = CombatOutgoingDamageModifiers.Apply(

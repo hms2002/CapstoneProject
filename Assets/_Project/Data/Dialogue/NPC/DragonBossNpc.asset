@@ -308,5 +308,7 @@ MonoBehaviour:
   affectionRewards:
   - targetLevel: 1
     effect: {fileID: 11400000, guid: 8d10d760988b81f4c826f2a3b4582465, type: 2}
+  - targetLevel: 2
+    effect: {fileID: 11400000, guid: bbc1e85ba3984d0a955c674de8aaf6b5, type: 2}
   spriteLibraryAsset: {fileID: 7108339969198208228, guid: e3f9a4eb235a0cc4da7a0c799a104cba, type: 3}
   emoteOffset: {x: 75, y: 100}

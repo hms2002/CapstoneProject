@@ -1,0 +1,158 @@
+{
+  "date": "2026-11-04",
+  "mode": "fresh designs inspired by names, draft only",
+  "tool": "built-in image_gen",
+  "generation_calls": 5,
+  "tankard_generation_calls": 2,
+  "other_generation_calls_each": 1,
+  "items": [
+    {
+      "index": 1,
+      "name": "독한 술기운",
+      "idea": "입구에 호박빛 술이 보이고 큰 손잡이와 금속 띠가 있는 나무 술잔",
+      "file": "01-strong-liquor-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#8A5E40",
+        "#C2C2C2",
+        "#D49C73",
+        "#E09656",
+        "#F1E9D4"
+      ],
+      "colors": 6,
+      "supplied_palette_only": true,
+      "outline_pixels": 2,
+      "margins_l_t_r_b": [
+        2,
+        3,
+        2,
+        4
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "8d63800f0818f1afd02e51d5a279949468953182f36f20344121f6d5a466e8a1"
+    },
+    {
+      "index": 2,
+      "name": "질풍의 석판",
+      "idea": "바람 문양이 크게 새겨진 두꺼운 회색 석판",
+      "file": "02-gale-tablet-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#5DA16E",
+        "#65725F",
+        "#978C8E",
+        "#B1D368",
+        "#C2C2C2"
+      ],
+      "colors": 6,
+      "supplied_palette_only": true,
+      "outline_pixels": 2,
+      "margins_l_t_r_b": [
+        5,
+        2,
+        5,
+        2
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "29a88c3b5935873169b9746e9484fd88a18873465028d96d3ed41d7a84e24262"
+    },
+    {
+      "index": 3,
+      "name": "낡은 숫돌",
+      "idea": "가운데가 닳고 모서리가 마모된 두툼한 회색 숫돌",
+      "file": "03-worn-whetstone-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#62494C",
+        "#75656A",
+        "#978C8E",
+        "#C2C2C2",
+        "#F1E9D4"
+      ],
+      "colors": 6,
+      "supplied_palette_only": true,
+      "outline_pixels": 2,
+      "margins_l_t_r_b": [
+        2,
+        2,
+        2,
+        3
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "dde5b2cc3c42ba903d9faef3b82fe48f5a1d0ea88313a315f9e7829b19c6f3d4"
+    },
+    {
+      "index": 4,
+      "name": "집중의 렌즈",
+      "idea": "짧은 손잡이와 금빛 테두리를 지닌 푸른 집광 렌즈",
+      "file": "04-focus-lens-draft-v2-32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "palette": [
+        "#363232",
+        "#436794",
+        "#77BCD6",
+        "#B1DECF",
+        "#E09656",
+        "#EECF5A"
+      ],
+      "colors": 6,
+      "supplied_palette_only": true,
+      "outline_pixels": 2,
+      "margins_l_t_r_b": [
+        3,
+        2,
+        4,
+        2
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "sha256": "0d87eb5bbde22beed9cea02293f330c27930afcec9ab9a5ec170be4ca9d873a8"
+    }
+  ],
+  "tankard_handle_transparent_inner_pixels": 20,
+  "sheet_size": [
+    64,
+    64
+  ],
+  "preview_size": [
+    512,
+    512
+  ],
+  "sheet_frames_exact": true,
+  "preview_exact_nearest_8x": true,
+  "protected_project_files_unchanged": 388,
+  "project_applied": false,
+  "unity_import_compile_playmode": "not executed",
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged by this task",
+  "ErrorLog": "unchanged by this task",
+  "DecisionLog": "unchanged by this task",
+  "PresentationHTML": "unchanged; no stale candidate",
+  "markdown_links_verified": 10
+}

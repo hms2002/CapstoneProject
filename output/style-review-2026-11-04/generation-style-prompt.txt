@@ -1,0 +1,12 @@
+Style reference: the eight supplied 32x32 illustrated fantasy inventory icons. Use the relevant material references, not only the winged boot.
+Match their plump rounded hand-authored silhouettes, purposeful one-pixel stair steps, broad base-color shapes and one clear shadow plane per material. Retain a few structural details that identify the object, like folds, feather divisions, finger seams, glass rim or vessel opening.
+Use two-logical-pixel charcoal #363232 outlines with rounded diagonal corners and careful concave edges. Preserve authored interior dark regions and useful holes. Avoid a mechanically inflated square border.
+Choose only necessary colors from the user's allowed palette. Do not force six colors or invent intermediate shades to fill a quota. Honor any explicit color-count limit.
+Shadows may shift hue according to material, such as muted rose against warm leather or blue-gray against pale metal. Place highlights by material; matte stone needs a broad worn plane, not a shiny pale trim. Luminous fire may have a bright center, while cloth can be described with just a base and shadow.
+Keep the illustration readable, lightly stylized and dimensional through the shape of flat shading. Avoid gradients, dithering, textural noise, uniformly rimmed geometric pictograms and automatic center sparkles.
+Design the actual subject from its name unless the user explicitly asks to preserve an existing object. Reference images establish style rather than dictate the new object's shape.
+Output: one true 32x32 transparent icon, at least two transparent pixels of margin on all sides including the outline. Integer nearest-neighbor enlargements are previews. Evaluate the silhouette and material at native scale and enlarged scale before delivery.
+Subject/name and any object-specific instruction: supplied separately.
+
+
+Most recently approved quartet (2026-11-04): output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png. The user explicitly praised these four as perfect and requested that this feel be retained. Use this quartet as the primary recent style reference alongside the original eight: rounded chunky silhouette, sparse structural details, broad base/shadow planes, palette restraint, physical object readability. Approval of the style does not authorize applying draft sprites to the project.

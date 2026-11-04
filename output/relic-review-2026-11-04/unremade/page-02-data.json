@@ -1,0 +1,254 @@
+[
+  {
+    "name": "신속의 부츠",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedBoots.asset",
+    "definition_guid": "a73c39a704801a1488033afff3b7f340",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedBoots.png",
+    "fileID": "21300000",
+    "guid": "d950f06d53ce11c41b1f7b2cb791c628",
+    "sprite": "Icon_SpeedBoots",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "description": "이동속도가 증가합니다.",
+    "effect": "이동속도가 증가합니다.",
+    "nativeFile": "icons/RD_SpeedBoots.png",
+    "dedicated": true,
+    "updated": false,
+    "number": 13
+  },
+  {
+    "name": "스피드 메달",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedMedal.asset",
+    "definition_guid": "2a2133b4854b68e4eb9a420c0bb3e215",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedMedal.png",
+    "fileID": "21300000",
+    "guid": "cc05db3731cb2e447b06a5902cb16b6c",
+    "sprite": "Icon_SpeedMedal",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "description": "레벨에 따라 이동속도가 3/5/7/9/12%, 치명타 확률이 2/4/6/8/10% 증가합니다.",
+    "effect": "레벨에 따라 이동속도가 3/5/7/9/12%, 치명타 확률이 2/4/6/8/10% 증가합니다.",
+    "nativeFile": "icons/RD_SpeedMedal.png",
+    "dedicated": true,
+    "updated": false,
+    "number": 14
+  },
+  {
+    "name": "속기사",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_Stenographer.asset",
+    "definition_guid": "f2a47c8de19b4d8d9e67a31f5b2c4e90",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_Stenographer.png",
+    "fileID": "21300000",
+    "guid": "6e5063279097f8b4abb904145fd23e7c",
+    "sprite": "Icon_Stenographer",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "description": "잔영의 날개 전용 유물\n러쉬의 이동속도 보너스가 증가\n러쉬 사용 시 [이동속도] 150% 증가\n3초 후 [이동속도] 150% 추가 증가\n3초 후 [이동속도] 200% 추가 증가",
+    "effect": "잔영의 날개 전용 유물 · 러쉬의 이동속도 보너스가 증가 · 러쉬 사용 시 [이동속도] 150% 증가 · 3초 …",
+    "nativeFile": "icons/RD_Stenographer.png",
+    "dedicated": true,
+    "updated": false,
+    "number": 15
+  },
+  {
+    "name": "보약 곰방대",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_TonicGombangdae.asset",
+    "definition_guid": "d808a1e0c7ccc7e48abc50b9a9884b61",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_TonicGombangdae.png",
+    "fileID": "21300000",
+    "guid": "b21ecde7f4efbae44b88a07fc7a7610e",
+    "sprite": "Icon_TonicGombangdae",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "description": "치명타 적중 시 3초 동안 치명타 확률이 4/6/8/10/12% 증가합니다. 치명타 적중 시 지속 시간이 초기화됩니다.",
+    "effect": "치명타 적중 시 3초 동안 치명타 확률이 4/6/8/10/12% 증가합니다. 치명타 적중 시 지속 시간이 초기화…",
+    "nativeFile": "icons/RD_TonicGombangdae.png",
+    "dedicated": true,
+    "updated": false,
+    "number": 16
+  },
+  {
+    "name": "질풍의 석판",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WindTablet.asset",
+    "definition_guid": "3176a6ca3d2df1f4d8f3770d42b8457f",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindTablet.png",
+    "fileID": "21300000",
+    "guid": "f891dbf6eb980e447b2d7d8a74a386fd",
+    "sprite": "Icon_WindTablet",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "description": "최대 체력이 1 감소하고, 레벨에 따라 이동속도가 6/9/12/15/18% 증가합니다.",
+    "effect": "최대 체력이 1 감소하고, 레벨에 따라 이동속도가 6/9/12/15/18% 증가합니다.",
+    "nativeFile": "icons/RD_WindTablet.png",
+    "dedicated": true,
+    "updated": false,
+    "number": 17
+  },
+  {
+    "name": "반격의 박차",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CounterKick.asset",
+    "definition_guid": "0bd69b2b4237473ead517a6bb31f0ab1",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CounterKick.png",
+    "fileID": "21300000",
+    "guid": "fe26a83a4ededf64ba867c2d5e1863f8",
+    "sprite": "Icon_CounterKick",
+    "rect": [
+      0,
+      0,
+      25,
+      25
+    ],
+    "description": "피해를 받으면 잠시 이동속도가 증가합니다.",
+    "effect": "피해를 받으면 잠시 이동속도가 증가합니다.",
+    "nativeFile": "icons/RD_CounterKick.png",
+    "dedicated": true,
+    "updated": false,
+    "number": 18
+  },
+  {
+    "name": "귀인의 검흔",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FloweringBloomExtension.asset",
+    "definition_guid": "6f66b76c2399491ab2b555651f017664",
+    "source": "Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_Artifact.png",
+    "fileID": "21300000",
+    "guid": "bd99ece40b3e73841bdc7fb710c6d066",
+    "sprite": "Flowering_Artifact",
+    "rect": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "description": "개화 전용 유물\n개화 중 적 처치 시 개화 지속 시간이 1초 증가합니다.",
+    "effect": "개화 전용 유물 · 개화 중 적 처치 시 개화 지속 시간이 1초 증가합니다.",
+    "nativeFile": "icons/RD_FloweringBloomExtension.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 19
+  },
+  {
+    "name": "낡은 숫돌",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WornWhetstone.asset",
+    "definition_guid": "eef19b108eae4400bb49fc1753e4aa14",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-979860976084526476",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_0",
+    "rect": [
+      0,
+      0,
+      41,
+      39
+    ],
+    "description": "공격력이 고정 수치로 증가합니다.",
+    "effect": "공격력이 고정 수치로 증가합니다.",
+    "nativeFile": "icons/RD_WornWhetstone.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 20
+  },
+  {
+    "name": "장인의 숫돌",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_MasterWhetstone.asset",
+    "definition_guid": "5dfae16cf310446b821ffaf6e7a1bae3",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "1230076527310467192",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_1",
+    "rect": [
+      41,
+      0,
+      41,
+      39
+    ],
+    "description": "공격력이 고정 수치로 증가하고, 기본공격 피해가 비율로 증가합니다.",
+    "effect": "공격력이 고정 수치로 증가하고, 기본공격 피해가 비율로 증가합니다.",
+    "nativeFile": "icons/RD_MasterWhetstone.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 21
+  },
+  {
+    "name": "전투 장갑",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CombatGloves.asset",
+    "definition_guid": "a2a3ad10170b41e5bd89c1d48bcd56a9",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "3179228444970898203",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_2",
+    "rect": [
+      82,
+      0,
+      41,
+      39
+    ],
+    "description": "공격속도가 증가합니다.",
+    "effect": "공격속도가 증가합니다.",
+    "nativeFile": "icons/RD_CombatGloves.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 22
+  },
+  {
+    "name": "질긴 붕대",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ToughBandage.asset",
+    "definition_guid": "acf93562c8b943abaf5d216c50f859b8",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "2652998765610666854",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_3",
+    "rect": [
+      123,
+      0,
+      41,
+      39
+    ],
+    "description": "최대 체력이 증가합니다.",
+    "effect": "최대 체력이 증가합니다.",
+    "nativeFile": "icons/RD_ToughBandage.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 23
+  },
+  {
+    "name": "가벼운 끈",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightCord.asset",
+    "definition_guid": "211ffa758fea44fd94388e8bd6e4eb4a",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "fileID": "-5249522915942291002",
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "sprite": "RelicImageBundle_4",
+    "rect": [
+      164,
+      0,
+      41,
+      39
+    ],
+    "description": "이동속도가 증가합니다.",
+    "effect": "이동속도가 증가합니다.",
+    "nativeFile": "icons/RD_LightCord.png",
+    "dedicated": false,
+    "updated": false,
+    "number": 24
+  }
+]

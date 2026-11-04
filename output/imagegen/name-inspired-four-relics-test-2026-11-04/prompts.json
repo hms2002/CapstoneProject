@@ -1,0 +1,66 @@
+{
+  "date": "2026-11-04",
+  "mode": "fresh name-inspired designs; draft only",
+  "tool": "built-in image_gen",
+  "generation_calls": 4,
+  "design_scope": "Original item artwork is deliberately not used as a design target; names determine the new designs. Established pixel-art formatting and supplied palette remain.",
+  "delivery": "four individual 32x32 PNGs and one 64x64 2x2 sheet",
+  "tasks": [
+    {
+      "key": "01-strong-liquor",
+      "name": "독한 술기운",
+      "palette": [
+        "#363232",
+        "#8A5E40",
+        "#D49C73",
+        "#E09656",
+        "#C2C2C2",
+        "#F1E9D4"
+      ],
+      "idea": "입구에 호박빛 술이 보이고 큰 손잡이와 금속 띠가 있는 나무 술잔",
+      "prompt": "Use case: stylized-concept.\nCreate ONE new fantasy roguelike relic icon inspired by its NAME. This is a fresh design, not a recolor of an existing item.\nInput 1 is only a PIXEL STYLE reference (chunky square pixels, clear silhouette, broad flat color clusters, restrained shading). Do not copy its boot/wing shape. Input 2 is only the allowed COLOR PALETTE.\nIntended logical canvas EXACTLY 32x32. Render deliberate coarse low-resolution pixel art, not a detailed illustration reduced later. Outer charcoal #363232 outline is TWO logical pixels thick. Keep all visible pixels including outline within x=2..29,y=2..29: minimum TWO transparent logical pixels on every side. Preserve natural proportions.\nUse the listed six-color subset of the supplied palette, with large connected color planes, purposeful simple volume and minimal interior marks. No gradients, fine texture, dithering, speckles, elaborate decoration, realistic gloss, antialiasing, blur, cast shadows or external glow.\nActual transparent background. Exactly ONE isolated centered object. No text, labels, numbers, grid, frame, floor, extra items or scene. Readability at 32 pixels is the priority.\n\nNAME: Strong Liquor / Potent Drink.\nMake a clearly recognizable fantasy tavern DRINKING TANKARD, slightly three-quarter view. A substantial cylindrical brown wooden mug with a visibly OPEN oval mouth containing AMBER LIQUOR. Its stout vertical vessel body takes about three quarters of the object height, clearly longer than the mouth. A LARGE thick C-shaped handle on the RIGHT has a clear open gap; the handle must read immediately. A simple pale metal rim and a broad lower metal band distinguish it as a sturdy drinking vessel. Keep the base flat and stable. At most a tiny cream foam line clings to one edge INSIDE the mouth; the silhouette must not have a foam mound. Emphasize the open rim, amber drink, broad wooden vessel and strong handle. It must feel like a proper cup of strong alcohol. A few broad wood-tone planes are enough; no fine stave grooves, branding, lettering, faces or ornaments.\nSIX colors only: #363232 charcoal outline and dark mouth; #8A5E40 brown shade; #D49C73 wood face; #E09656 amber liquor; #C2C2C2 matte metal rim/band; #F1E9D4 small pale highlight or tiny mouth foam. No large white mass, frothy tower, ice cream shape, pastry, bottle, bowl, pot or floating steam."
+    },
+    {
+      "key": "02-gale-tablet",
+      "name": "질풍의 석판",
+      "palette": [
+        "#363232",
+        "#65725F",
+        "#978C8E",
+        "#C2C2C2",
+        "#5DA16E",
+        "#B1D368"
+      ],
+      "idea": "바람 문양이 크게 새겨진 두꺼운 회색 석판",
+      "prompt": "Use case: stylized-concept.\nCreate ONE new fantasy roguelike relic icon inspired by its NAME. This is a fresh design, not a recolor of an existing item.\nInput 1 is only a PIXEL STYLE reference (chunky square pixels, clear silhouette, broad flat color clusters, restrained shading). Do not copy its boot/wing shape. Input 2 is only the allowed COLOR PALETTE.\nIntended logical canvas EXACTLY 32x32. Render deliberate coarse low-resolution pixel art, not a detailed illustration reduced later. Outer charcoal #363232 outline is TWO logical pixels thick. Keep all visible pixels including outline within x=2..29,y=2..29: minimum TWO transparent logical pixels on every side. Preserve natural proportions.\nUse the listed six-color subset of the supplied palette, with large connected color planes, purposeful simple volume and minimal interior marks. No gradients, fine texture, dithering, speckles, elaborate decoration, realistic gloss, antialiasing, blur, cast shadows or external glow.\nActual transparent background. Exactly ONE isolated centered object. No text, labels, numbers, grid, frame, floor, extra items or scene. Readability at 32 pixels is the priority.\n\nNAME: Tablet of the Gale.\nInvent an ancient, hefty STONE TABLET with a bold carved WIND emblem. A compact upright rectangular gray slab, slightly tilted in three-quarter view so a thick side edge is visible. A gently chipped upper corner and uneven worn lower corner make the stone feel old. The broad flat front bears ONE large readable curving gust motif made of TWO simple green sweeping strokes; the strokes suggest wind curling swiftly across the tablet, not letters, a face, a tree or a leaf. Keep the emblem broad and uncomplicated, taking much of the front face. Stone is heavy and matte with two or three big gray planes; the green motif is inset into it and remains contained within the stone. Strong solid silhouette and simple bevelled thickness. No stand, scroll, paper, scroll-end rods, small runes, fine cracks, scattered stones or flying wisps.\nSIX colors only: #363232 charcoal; #65725F deep gray-green stone shade; #978C8E main gray stone; #C2C2C2 lighter bevel; #5DA16E jade groove shade; #B1D368 pale green wind emblem. All colors come from the supplied palette."
+    },
+    {
+      "key": "03-worn-whetstone",
+      "name": "낡은 숫돌",
+      "palette": [
+        "#363232",
+        "#62494C",
+        "#75656A",
+        "#978C8E",
+        "#C2C2C2",
+        "#F1E9D4"
+      ],
+      "idea": "가운데가 닳고 모서리가 마모된 두툼한 회색 숫돌",
+      "prompt": "Use case: stylized-concept.\nCreate ONE new fantasy roguelike relic icon inspired by its NAME. This is a fresh design, not a recolor of an existing item.\nInput 1 is only a PIXEL STYLE reference (chunky square pixels, clear silhouette, broad flat color clusters, restrained shading). Do not copy its boot/wing shape. Input 2 is only the allowed COLOR PALETTE.\nIntended logical canvas EXACTLY 32x32. Render deliberate coarse low-resolution pixel art, not a detailed illustration reduced later. Outer charcoal #363232 outline is TWO logical pixels thick. Keep all visible pixels including outline within x=2..29,y=2..29: minimum TWO transparent logical pixels on every side. Preserve natural proportions.\nUse the listed six-color subset of the supplied palette, with large connected color planes, purposeful simple volume and minimal interior marks. No gradients, fine texture, dithering, speckles, elaborate decoration, realistic gloss, antialiasing, blur, cast shadows or external glow.\nActual transparent background. Exactly ONE isolated centered object. No text, labels, numbers, grid, frame, floor, extra items or scene. Readability at 32 pixels is the priority.\n\nNAME: Worn Whetstone.\nInvent a believable used SHARPENING STONE: a long stout rounded rectangular abrasive stone block, seen from above in three-quarter angle, diagonally across the icon. The block is thick enough to show a broad top and one darker side face. Its long upper surface has a single broad shallow wear trough / rubbed pale strip following the length, showing years of sharpening. One small chipped end corner and gently rounded worn edges are the only extra marks. A large gray top plane and darker warm-gray side create a solid, tactile relic. Keep the stone's sharpening surface smooth and readable, the overall form elongated and substantial. No ornate mounting, handle, blade, sword, loose rock pile, crystal points, lettering, little speckles or multiple thin scratches. It should look like a worn practical whetstone rather than a generic jagged rock.\nSIX colors only: #363232 charcoal outline; #62494C deep muted shadow; #75656A dark gray side; #978C8E main stone; #C2C2C2 worn top; #F1E9D4 restrained rubbed-edge highlight. Broad matte planes, no glinting shine."
+    },
+    {
+      "key": "04-focus-lens",
+      "name": "집중의 렌즈",
+      "palette": [
+        "#363232",
+        "#E09656",
+        "#EECF5A",
+        "#436794",
+        "#77BCD6",
+        "#B1DECF"
+      ],
+      "idea": "짧은 손잡이와 금빛 테두리를 지닌 푸른 집광 렌즈",
+      "prompt": "Use case: stylized-concept.\nCreate ONE new fantasy roguelike relic icon inspired by its NAME. This is a fresh design, not a recolor of an existing item.\nInput 1 is only a PIXEL STYLE reference (chunky square pixels, clear silhouette, broad flat color clusters, restrained shading). Do not copy its boot/wing shape. Input 2 is only the allowed COLOR PALETTE.\nIntended logical canvas EXACTLY 32x32. Render deliberate coarse low-resolution pixel art, not a detailed illustration reduced later. Outer charcoal #363232 outline is TWO logical pixels thick. Keep all visible pixels including outline within x=2..29,y=2..29: minimum TWO transparent logical pixels on every side. Preserve natural proportions.\nUse the listed six-color subset of the supplied palette, with large connected color planes, purposeful simple volume and minimal interior marks. No gradients, fine texture, dithering, speckles, elaborate decoration, realistic gloss, antialiasing, blur, cast shadows or external glow.\nActual transparent background. Exactly ONE isolated centered object. No text, labels, numbers, grid, frame, floor, extra items or scene. Readability at 32 pixels is the priority.\n\nNAME: Focusing Lens.\nInvent a compact magical OPTICAL LENS in a thick brass bezel, with a very short sturdy grip pointing toward the lower left. The large circular blue glass occupies most of the icon. Slight three-quarter tilt gives the gold/orange bezel thickness, with one simple side plane. The blue glass contains two broad geometric cool-blue planes converging toward ONE small pale mint focal area near its center; this should suggest gathering and focusing light, without tiny rays or a printed eye/target. Preserve a clear circular rim and a visibly short grip so the object reads as a lens / magnifying optical relic. Clean and substantial, one lens only, no nested many rings, extra stand, scroll, text, crosshair, eyeball, spikes, detached beams, orbiting sparkles or external halo.\nSIX colors only: #363232 charcoal; #E09656 brass shade; #EECF5A brass rim; #436794 dark blue lens edge; #77BCD6 main blue glass; #B1DECF pale mint focal highlight. Simple flat optical planes, no realistic reflective texture."
+    }
+  ]
+}

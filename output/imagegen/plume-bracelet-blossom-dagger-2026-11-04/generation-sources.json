@@ -1,0 +1,130 @@
+[
+  {
+    "key": "01-evasion-plume",
+    "name": "회피의 깃",
+    "replaces": "회피의 깃",
+    "palette": [
+      "#363232",
+      "#F2F9F8",
+      "#C2C2C2",
+      "#D49C73"
+    ],
+    "subject": "One elegant but CHUNKY IVORY FEATHER, diagonally curved, with a generous broad soft vane and only a SHORT stout warm-tan quill tip. Rounded tapered upper tip and two broad feather lobes on either side, at most two simple edge notches. One pale-gray shaded half and a single gently curved structural shaft line describe the vane. No dozens of fine barbs, thin strands, wind streaks, detached fluff or sparkles. The feather should read as a real soft pale feather rather than a leaf, wing, blade or magic flame. Keep the central vane physically broad enough to survive at 32x32 and the quill very short.",
+    "prompt": "Use case: stylized-concept. Asset: ONE new physical fantasy roguelike inventory relic sprite.\nREFERENCE ROLES: Image 1 is the user's explicitly approved best quartet (rift stone, crown, bandage, flag), PRIMARY style reference. Match its plump softly rounded silhouettes, few broad flat color planes, sparse meaningful details and thick charcoal contour. Image 2 is the original eight favorite icons, secondary material/style guide. Image 3 is the ONLY allowed palette. These are style references, not edit targets.\nOne centered isolated object on genuinely transparent background. Intended actual asset is 32x32 LOGICAL PIXELS. Very coarse discrete clusters, as if a tiny 32x32 sprite were enlarged with integer nearest-neighbor. TWO-logical-pixel solid charcoal #363232 outer outline, rounded diagonal corners and deliberate one-pixel stair steps. Minimum TWO transparent logical pixels at every edge including outline. Compact substantial shapes, no frail thin appendages.\nFlat base plus one meaningful shadow per material, enough structure to identify the item. No smooth gradients, antialiasing, textures, dithering, noise, detailed engraving, automatic shine spot or pale trim on everything. No text/numbers, background, cast shadow, extra objects or floating particles. No accidental transparent stains inside solid materials; only deliberate structural openings may be transparent. Use ONLY necessary colors from the subject's swatch list, no invented intermediate shades and no fixed color quota. Keep the exact calm/simple density of the FIRST approved quartet.\nSUBJECT: One elegant but CHUNKY IVORY FEATHER, diagonally curved, with a generous broad soft vane and only a SHORT stout warm-tan quill tip. Rounded tapered upper tip and two broad feather lobes on either side, at most two simple edge notches. One pale-gray shaded half and a single gently curved structural shaft line describe the vane. No dozens of fine barbs, thin strands, wind streaks, detached fluff or sparkles. The feather should read as a real soft pale feather rather than a leaf, wing, blade or magic flame. Keep the central vane physically broad enough to survive at 32x32 and the quill very short.\nEXACT permitted swatches including outline: #363232, #F2F9F8, #C2C2C2, #D49C73",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-8d7c2f26-395d-48b4-b37c-a393fe60d94e.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "visible_bbox": [
+      144,
+      109,
+      1170,
+      1230
+    ],
+    "material_bbox": [
+      285,
+      261,
+      1006,
+      1048
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "02-heavy-bracelet",
+    "name": "무거운 팔찌",
+    "replaces": "무거운 팔찌",
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#978C8E",
+      "#C2C2C2",
+      "#E09656"
+    ],
+    "subject": "One CLOSED HEAVY IRON BRACELET in a strong three-quarter view. A broad thick dark-gray cuff/band, substantial flat front face, clear large oval inner opening, and broad pale-gray top rim. One mauve-gray side shadow shows the mass of solid metal. Only TWO large warm-copper rivet heads on the front are enough; no chains, spikes, gems, thin wires or intricate runes. It must read as a weighty chunky metal bangle worn on a wrist, NOT an open horseshoe, ring for a finger, necklace, wheel or full sleeve/gauntlet. Keep the visible band very wide and the inner hole simple, with a slightly squared/sturdy lower front.",
+    "prompt": "Use case: stylized-concept. Asset: ONE new physical fantasy roguelike inventory relic sprite.\nREFERENCE ROLES: Image 1 is the user's explicitly approved best quartet (rift stone, crown, bandage, flag), PRIMARY style reference. Match its plump softly rounded silhouettes, few broad flat color planes, sparse meaningful details and thick charcoal contour. Image 2 is the original eight favorite icons, secondary material/style guide. Image 3 is the ONLY allowed palette. These are style references, not edit targets.\nOne centered isolated object on genuinely transparent background. Intended actual asset is 32x32 LOGICAL PIXELS. Very coarse discrete clusters, as if a tiny 32x32 sprite were enlarged with integer nearest-neighbor. TWO-logical-pixel solid charcoal #363232 outer outline, rounded diagonal corners and deliberate one-pixel stair steps. Minimum TWO transparent logical pixels at every edge including outline. Compact substantial shapes, no frail thin appendages.\nFlat base plus one meaningful shadow per material, enough structure to identify the item. No smooth gradients, antialiasing, textures, dithering, noise, detailed engraving, automatic shine spot or pale trim on everything. No text/numbers, background, cast shadow, extra objects or floating particles. No accidental transparent stains inside solid materials; only deliberate structural openings may be transparent. Use ONLY necessary colors from the subject's swatch list, no invented intermediate shades and no fixed color quota. Keep the exact calm/simple density of the FIRST approved quartet.\nSUBJECT: One CLOSED HEAVY IRON BRACELET in a strong three-quarter view. A broad thick dark-gray cuff/band, substantial flat front face, clear large oval inner opening, and broad pale-gray top rim. One mauve-gray side shadow shows the mass of solid metal. Only TWO large warm-copper rivet heads on the front are enough; no chains, spikes, gems, thin wires or intricate runes. It must read as a weighty chunky metal bangle worn on a wrist, NOT an open horseshoe, ring for a finger, necklace, wheel or full sleeve/gauntlet. Keep the visible band very wide and the inner hole simple, with a slightly squared/sturdy lower front.\nEXACT permitted swatches including outline: #363232, #75656A, #978C8E, #C2C2C2, #E09656",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-96e694b2-b1e7-4fcf-a182-99a237f43bb5.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "visible_bbox": [
+      0,
+      38,
+      1208,
+      1140
+    ],
+    "material_bbox": [
+      198,
+      296,
+      1054,
+      989
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "03-cherry-blossom",
+    "name": "귀인의 검흔 — 벚꽃 초안",
+    "replaces": "귀인의 검흔",
+    "palette": [
+      "#363232",
+      "#EDBCCC",
+      "#F1E5F8",
+      "#BE8EC1",
+      "#EECF5A"
+    ],
+    "subject": "A SINGLE LARGE PALE PINK CHERRY BLOSSOM icon, viewed straight on, intended as the blossom motif for a sword relic. EXACTLY FIVE broad rounded petals radiate from one small warm-gold center. One petal up, two to the sides and two down. Each petal has a CLEAR SMALL V-NOTCH at its outer tip, the key identifying CHERRY BLOSSOM feature, large enough to remain perceptible at a tiny logical 32x32. Pale pink main planes, a little muted mauve-pink folded shadow near the petal bases and a few very broad pale highlights only if needed. A simple gold center cluster, no thin stamens or busy dots. No stem, leaves, branches, detached petals, sword, streaks, lettering, heart shape, four-leaf clover, six petals, sharp star tips or lotus layers. It should be one compact soft five-petaled sakura blossom with a thick rounded charcoal outline, not a geometric flower logo.",
+    "prompt": "Use case: stylized-concept. Asset: ONE new physical fantasy roguelike inventory relic sprite.\nREFERENCE ROLES: Image 1 is the user's explicitly approved best quartet (rift stone, crown, bandage, flag), PRIMARY style reference. Match its plump softly rounded silhouettes, few broad flat color planes, sparse meaningful details and thick charcoal contour. Image 2 is the original eight favorite icons, secondary material/style guide. Image 3 is the ONLY allowed palette. These are style references, not edit targets.\nOne centered isolated object on genuinely transparent background. Intended actual asset is 32x32 LOGICAL PIXELS. Very coarse discrete clusters, as if a tiny 32x32 sprite were enlarged with integer nearest-neighbor. TWO-logical-pixel solid charcoal #363232 outer outline, rounded diagonal corners and deliberate one-pixel stair steps. Minimum TWO transparent logical pixels at every edge including outline. Compact substantial shapes, no frail thin appendages.\nFlat base plus one meaningful shadow per material, enough structure to identify the item. No smooth gradients, antialiasing, textures, dithering, noise, detailed engraving, automatic shine spot or pale trim on everything. No text/numbers, background, cast shadow, extra objects or floating particles. No accidental transparent stains inside solid materials; only deliberate structural openings may be transparent. Use ONLY necessary colors from the subject's swatch list, no invented intermediate shades and no fixed color quota. Keep the exact calm/simple density of the FIRST approved quartet.\nSUBJECT: A SINGLE LARGE PALE PINK CHERRY BLOSSOM icon, viewed straight on, intended as the blossom motif for a sword relic. EXACTLY FIVE broad rounded petals radiate from one small warm-gold center. One petal up, two to the sides and two down. Each petal has a CLEAR SMALL V-NOTCH at its outer tip, the key identifying CHERRY BLOSSOM feature, large enough to remain perceptible at a tiny logical 32x32. Pale pink main planes, a little muted mauve-pink folded shadow near the petal bases and a few very broad pale highlights only if needed. A simple gold center cluster, no thin stamens or busy dots. No stem, leaves, branches, detached petals, sword, streaks, lettering, heart shape, four-leaf clover, six petals, sharp star tips or lotus layers. It should be one compact soft five-petaled sakura blossom with a thick rounded charcoal outline, not a geometric flower logo.\nEXACT permitted swatches including outline: #363232, #EDBCCC, #F1E5F8, #BE8EC1, #EECF5A",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-75dd2c62-b0fd-4363-8994-14612c6864a1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "visible_bbox": [
+      0,
+      23,
+      1240,
+      1214
+    ],
+    "material_bbox": [
+      146,
+      177,
+      1108,
+      1114
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "04-clover-dagger",
+    "name": "네잎클로버 장식 단검",
+    "replaces": "보약 곰방대",
+    "palette": [
+      "#363232",
+      "#F2F9F8",
+      "#8599B0",
+      "#B1D368",
+      "#5DA16E",
+      "#EECF5A"
+    ],
+    "subject": "One compact SHORT SILVER DAGGER with a prominent FOUR-LEAF CLOVER ornament integrated into its hilt/pommel. Diagonal composition: broad short double-edged blade points toward the upper area, and a large chunky green clover decorates the lower hilt. The clover must visibly have FOUR rounded heart-like lobes and a simple central join, NOT just a green handle, three leaves, a flower with five petals, or tiny unreadable engraving. Give the clover a substantial 8-10 logical pixel area, and keep the blade broad and short so both dagger and clover are instantly recognizable within 32x32. Silver-white blade plus one blue-gray shadow face, light/dark herbal-green clover, one small solid gold guard/connector. Short thick grip, no wrapping stripes, long thin stem, chain, tassel, blood, runes, sparks or detached clover. A physical lucky dagger relic, no pipe, medicine bottle or background.",
+    "prompt": "Use case: stylized-concept. Asset: ONE new physical fantasy roguelike inventory relic sprite.\nREFERENCE ROLES: Image 1 is the user's explicitly approved best quartet (rift stone, crown, bandage, flag), PRIMARY style reference. Match its plump softly rounded silhouettes, few broad flat color planes, sparse meaningful details and thick charcoal contour. Image 2 is the original eight favorite icons, secondary material/style guide. Image 3 is the ONLY allowed palette. These are style references, not edit targets.\nOne centered isolated object on genuinely transparent background. Intended actual asset is 32x32 LOGICAL PIXELS. Very coarse discrete clusters, as if a tiny 32x32 sprite were enlarged with integer nearest-neighbor. TWO-logical-pixel solid charcoal #363232 outer outline, rounded diagonal corners and deliberate one-pixel stair steps. Minimum TWO transparent logical pixels at every edge including outline. Compact substantial shapes, no frail thin appendages.\nFlat base plus one meaningful shadow per material, enough structure to identify the item. No smooth gradients, antialiasing, textures, dithering, noise, detailed engraving, automatic shine spot or pale trim on everything. No text/numbers, background, cast shadow, extra objects or floating particles. No accidental transparent stains inside solid materials; only deliberate structural openings may be transparent. Use ONLY necessary colors from the subject's swatch list, no invented intermediate shades and no fixed color quota. Keep the exact calm/simple density of the FIRST approved quartet.\nSUBJECT: One compact SHORT SILVER DAGGER with a prominent FOUR-LEAF CLOVER ornament integrated into its hilt/pommel. Diagonal composition: broad short double-edged blade points toward the upper area, and a large chunky green clover decorates the lower hilt. The clover must visibly have FOUR rounded heart-like lobes and a simple central join, NOT just a green handle, three leaves, a flower with five petals, or tiny unreadable engraving. Give the clover a substantial 8-10 logical pixel area, and keep the blade broad and short so both dagger and clover are instantly recognizable within 32x32. Silver-white blade plus one blue-gray shadow face, light/dark herbal-green clover, one small solid gold guard/connector. Short thick grip, no wrapping stripes, long thin stem, chain, tassel, blood, runes, sparks or detached clover. A physical lucky dagger relic, no pipe, medicine bottle or background.\nEXACT permitted swatches including outline: #363232, #F2F9F8, #8599B0, #B1D368, #5DA16E, #EECF5A",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-1f74fa13-d086-4017-896e-8a6ff817776b.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "visible_bbox": [
+      25,
+      23,
+      1158,
+      1180
+    ],
+    "material_bbox": [
+      229,
+      213,
+      997,
+      1079
+    ],
+    "preserve_alpha_holes": []
+  }
+]

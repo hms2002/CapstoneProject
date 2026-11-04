@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_AttackBonusRelic
   m_EditorClassIdentifier: 
   relicId: AttackBonusRelic
-  displayName: "\uD798 \uBD80\uC801"
-  icon: {fileID: -1330801700, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  displayName: "\uc804\ud22c \uad50\ubcf8"
+  icon: {fileID: 21300000, guid: 3c04bab3051c48758e686afa6e900026, type: 3}
   rarity: 0
   description: "공격력이 증가합니다."
   maxLevel: 3

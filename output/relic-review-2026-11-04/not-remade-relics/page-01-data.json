@@ -1,0 +1,218 @@
+[
+  {
+    "name": "가벼운 끈",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightCord.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_4",
+    "rect": [
+      164,
+      0,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "-5249522915942291002",
+    "updated": false,
+    "effect": "이동속도가 증가합니다.",
+    "description": "이동속도가 증가합니다.",
+    "definition_guid": "211ffa758fea44fd94388e8bd6e4eb4a"
+  },
+  {
+    "name": "검은 향로",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BlackIncense.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_30",
+    "rect": [
+      82,
+      156,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "-2091944441",
+    "updated": false,
+    "effect": "스킬 피해가 크게 증가하지만 기본공격 피해가 감소합니다.",
+    "description": "스킬 피해가 크게 증가하지만 기본공격 피해가 감소합니다.",
+    "definition_guid": "3127d39f416e4d56849df4e7835f709b"
+  },
+  {
+    "name": "견습 용사의 연계 증표",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ApprenticeChargeLink.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeapon.png",
+    "sprite": "BasicWeapon",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "748bd1286788d5f468f9857941b73367",
+    "fileID": "21300000",
+    "updated": false,
+    "effect": "용사의 검 전용 유물 · 회전베기 차징 중 {pos:돌진 찌르기 사용 가능} · 사용 순간의 차징 정도에 따라 돌진 찌르기의 피해·크기·색상 변화 · 최대 차징 시 돌진 찌르기 피…",
+    "description": "● {em:용사의 검} 전용 유물\n● 회전베기 차징 중 {pos:돌진 찌르기 사용 가능}\n● 사용 순간의 차징 정도에 따라 돌진 찌르기의 피해·크기·색상 변화\n● 최대 차징 시 돌진 찌르기 피해 약 {val:1.67배}\n● 돌진 중 버튼을 놓으면 {em:강화 회전베기}로 연계",
+    "definition_guid": "056770c65bd343ea8bf1553c842ff605"
+  },
+  {
+    "name": "광전사의 끈",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BerserkerCord.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_11",
+    "rect": [
+      164,
+      39,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "1290818826102019816",
+    "updated": false,
+    "effect": "최대 체력이 감소하지만 공격속도가 크게 증가합니다.",
+    "description": "최대 체력이 감소하지만 공격속도가 크게 증가합니다.",
+    "definition_guid": "c3f65c9408584fc09145a782d74839bc"
+  },
+  {
+    "name": "굳센 발걸음",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FirmStep.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_8",
+    "rect": [
+      41,
+      39,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "-8815494589321632592",
+    "updated": false,
+    "effect": "치명타가 아닌 공격 적중 시 치명타 확률이 2/3/4% 증가합니다. 최대 8회 중첩되며, 치명타 발생 시 초기화됩니다.",
+    "description": "치명타가 아닌 공격 적중 시 치명타 확률이 2/3/4% 증가합니다. 최대 8회 중첩되며, 치명타 발생 시 초기화됩니다.",
+    "definition_guid": "6657f14bf85d4440b1a6353e784e9c3e"
+  },
+  {
+    "name": "귀인의 검흔",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FloweringBloomExtension.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_Artifact.png",
+    "sprite": "Flowering_Artifact",
+    "rect": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "guid": "bd99ece40b3e73841bdc7fb710c6d066",
+    "fileID": "21300000",
+    "updated": false,
+    "effect": "개화 전용 유물 · 개화 중 적 처치 시 개화 지속 시간이 1초 증가합니다.",
+    "description": "개화 전용 유물\n개화 중 적 처치 시 개화 지속 시간이 1초 증가합니다.",
+    "definition_guid": "6f66b76c2399491ab2b555651f017664"
+  },
+  {
+    "name": "균열석",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RiftStone.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_22",
+    "rect": [
+      41,
+      117,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "6123753626580635574",
+    "updated": false,
+    "effect": "최종 피해가 증가합니다.",
+    "description": "최종 피해가 증가합니다.",
+    "definition_guid": "1a3c46c0c9914eea8cdcba66be7916eb"
+  },
+  {
+    "name": "균형추",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BalanceWeight.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_13",
+    "rect": [
+      246,
+      39,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "7824667717655779811",
+    "updated": false,
+    "effect": "기본공격 피해와 스킬 피해가 증가합니다.",
+    "description": "기본공격 피해와 스킬 피해가 증가합니다.",
+    "definition_guid": "a491ffe08c1246b7b39b04fdca100c95"
+  },
+  {
+    "name": "금광",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_GoldVein.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/gold_vein.png",
+    "sprite": "gold_vein",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "872382315c4b44deaa3440a4afe18c0a",
+    "fileID": "21300000",
+    "updated": false,
+    "effect": "적 처치 시 얻는 금화의 획득량이 10% 증가",
+    "description": "적 처치 시 얻는 금화의 획득량이 10% 증가",
+    "definition_guid": "cca649e618674edeae7fb55e0743a416"
+  },
+  {
+    "name": "깨진 시계",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenClock.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_29",
+    "rect": [
+      41,
+      156,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "8375218632860420053",
+    "updated": false,
+    "effect": "공격속도가 증가하지만 스킬 피해가 감소합니다.",
+    "description": "공격속도가 증가하지만 스킬 피해가 감소합니다.",
+    "definition_guid": "7d20d2a7cdf74a0bb83fccd22ed1c5a6"
+  },
+  {
+    "name": "날개 부츠",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FlyingBoots.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/flying_boots.png",
+    "sprite": "flying_boots",
+    "rect": [
+      0,
+      0,
+      32,
+      32
+    ],
+    "guid": "5e75f76ed6404d0e95d4b05a8a46ae0d",
+    "fileID": "21300000",
+    "updated": false,
+    "effect": "대쉬 재사용 대기시간이 10% 감소",
+    "description": "대쉬 재사용 대기시간이 10% 감소",
+    "definition_guid": "4781e03df8c544459db8dc6863762e5c"
+  },
+  {
+    "name": "날렵한 망토",
+    "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_NimbleCloak.asset",
+    "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+    "sprite": "RelicImageBundle_28",
+    "rect": [
+      0,
+      156,
+      41,
+      39
+    ],
+    "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+    "fileID": "6358970640032765685",
+    "updated": false,
+    "effect": "이동속도와 회피율이 증가합니다.",
+    "description": "이동속도와 회피율이 증가합니다.",
+    "definition_guid": "fcd257e9b1924b26bd998dd2bfae2bca"
+  }
+]

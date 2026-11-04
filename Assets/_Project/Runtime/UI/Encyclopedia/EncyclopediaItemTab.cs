@@ -707,7 +707,8 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
         int count = 0;
         for (int i = 0; i < entries.Count; i++)
         {
-            if (entries[i] != null && entries[i] is not ParcelRelicDefinition)
+            if (entries[i] != null && entries[i] is not ParcelRelicDefinition &&
+                !RelicDefinition.IsRetiredId(entries[i].relicId))
                 count++;
         }
 
@@ -727,7 +728,8 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
         for (int i = 0; i < entries.Count; i++)
         {
             RelicDefinition candidate = entries[i];
-            if (candidate == null || candidate is ParcelRelicDefinition)
+            if (candidate == null || candidate is ParcelRelicDefinition ||
+                RelicDefinition.IsRetiredId(candidate.relicId))
                 continue;
 
             if (currentIndex == index)

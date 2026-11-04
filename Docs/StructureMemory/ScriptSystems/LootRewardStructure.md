@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-11-03
+last_reviewed: 2026-11-04
 ---
 
 # Loot Reward Structure
@@ -12,6 +12,15 @@ last_reviewed: 2026-11-03
 Map loot, boss rewards, drops, pickups, currency, and reward presentation boundaries.
 
 ## Current Structure
+
+### Retired relics (2026-11-04)
+
+- `RelicDefinition.IsRetiredId` identifies the seven retired IDs: `RD_FeatherOrbit`, `RD_Stenographer`, `RD_OneDropOfSwiftness`, `RD_HunterMark`, `RD_RunawayShoes`, `RD_ChainCharm`, and `RD_RunningLedger`.
+- `LootPoolItemSelectionService.CanDropRelic` rejects these IDs for chest/monster/grave rolls and merchant pool construction, including unlocks retained in older saves. Existing unrelated drop exclusions remain separate.
+- `ChestRewardPolicy.CanOfferRelic` also rejects retired relics at final chest insertion, so fixed/boss reward inputs cannot bypass the pool. `TreasureChest.RestoreOpenedStateForDungeon` omits retired, unclaimed relic offers without changing retained slots, levels, acquisition counts, or already-owned relics.
+- `MerchantNPC.ReconcileStock` replaces retired unsold offers through the existing partial stock repair. SOLD entries, refresh usage, valid offers, and the slot's special-offer rate retain the existing rules.
+- The encyclopedia's count and indexed lookup use the same retired-ID predicate, in addition to their existing parcel exclusion. `ItemDatabase.allRelics`, default unlock data, original assets/GUIDs and inventory/save resolution remain intact. Retirement changes future availability and catalog visibility, not existing ownership.
+- This is a stateless content exclusion, with no new service, serialized field, prefab authoring, or Architecture/Contracts promotion candidate. Source/build verification and manual limits: [retirement record](../../../output/relic-retirement-2026-11-04/README.md).
 
 | Area | Count | Responsibility |
 | --- | ---: | --- |

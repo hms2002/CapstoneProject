@@ -204,7 +204,7 @@ internal sealed class SceneMonsterSpawnDirector
         if (mob is LizardWarrior or Knight or ShadowMonster)
         {
             baseHp = 45f;
-            targetHp = 100f;
+            targetHp = 170f;
         }
         else if (mob is LizardMage or Bishop or Wizard)
         {

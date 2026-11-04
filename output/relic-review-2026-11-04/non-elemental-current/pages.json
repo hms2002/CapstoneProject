@@ -1,0 +1,1156 @@
+[
+  {
+    "stem": "updated-01",
+    "title": "마왕성 · 교체한 유물 1/2",
+    "subtitle": "화염·전기 각 10종 제외 · 대상 55종 중 교체 18종 / 기존 37종 · 2026-11-04",
+    "hint": "현재 이름 · 이미지 · 효과 설명    |    원본 픽셀을 정수 배율로 확대",
+    "rows": 3,
+    "items": [
+      {
+        "name": "목각 주사위",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BronzeDice.asset",
+        "definition_guid": "cce9e7321f8d4b6aa9dc77661650dedd",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WoodenDice.png",
+        "fileID": "21300000",
+        "guid": "3e59cd7f3931434ba4f25de798b75abe",
+        "sprite": "Icon_WoodenDice",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "치명타 확률과 회피율이 조금 증가합니다.",
+        "effect": "치명타 확률과 회피율이 조금 증가합니다.",
+        "nativeFile": "icons/RD_BronzeDice.png",
+        "updated": true,
+        "number": 1
+      },
+      {
+        "name": "질풍의 석판",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WindTablet.asset",
+        "definition_guid": "3176a6ca3d2df1f4d8f3770d42b8457f",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindTablet.png",
+        "fileID": "21300000",
+        "guid": "f891dbf6eb980e447b2d7d8a74a386fd",
+        "sprite": "Icon_WindTablet",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "최대 체력이 1 감소하고, 레벨에 따라 이동속도가 6/9/12/15/18% 증가합니다.",
+        "effect": "최대 체력이 1 감소하고, 레벨에 따라 이동속도가 6/9/12/15/18% 증가합니다.",
+        "nativeFile": "icons/RD_WindTablet.png",
+        "updated": true,
+        "number": 2
+      },
+      {
+        "name": "전투 장갑",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CombatGloves.asset",
+        "definition_guid": "a2a3ad10170b41e5bd89c1d48bcd56a9",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CombatGloves.png",
+        "fileID": "21300000",
+        "guid": "2b0a07ce77e446039090e50cd7dfb281",
+        "sprite": "Icon_CombatGloves",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "공격속도가 증가합니다.",
+        "effect": "공격속도가 증가합니다.",
+        "nativeFile": "icons/RD_CombatGloves.png",
+        "updated": true,
+        "number": 3
+      },
+      {
+        "name": "낡은 숫돌",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WornWhetstone.asset",
+        "definition_guid": "eef19b108eae4400bb49fc1753e4aa14",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WornWhetstone.png",
+        "fileID": "21300000",
+        "guid": "812daf9b99ae444896ffee43c6dc011f",
+        "sprite": "Icon_WornWhetstone",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "공격력이 고정 수치로 증가합니다.",
+        "effect": "공격력이 고정 수치로 증가합니다.",
+        "nativeFile": "icons/RD_WornWhetstone.png",
+        "updated": true,
+        "number": 4
+      },
+      {
+        "name": "장인의 숫돌",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_MasterWhetstone.asset",
+        "definition_guid": "5dfae16cf310446b821ffaf6e7a1bae3",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_MasterWhetstone.png",
+        "fileID": "21300000",
+        "guid": "c5b140d829b0412b8bbc86d2fd3eca63",
+        "sprite": "Icon_MasterWhetstone",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "공격력이 고정 수치로 증가하고, 기본공격 피해가 비율로 증가합니다.",
+        "effect": "공격력이 고정 수치로 증가하고, 기본공격 피해가 비율로 증가합니다.",
+        "nativeFile": "icons/RD_MasterWhetstone.png",
+        "updated": true,
+        "number": 5
+      },
+      {
+        "name": "독한 한잔",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_DrunkenRush.asset",
+        "definition_guid": "7b7fd4d273ca49739198391f6ed4d309",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DrunkenRush.png",
+        "fileID": "21300000",
+        "guid": "a23fffd2b25f3824fb678b34be8c8d8b",
+        "sprite": "Icon_DrunkenRush",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "피해를 받으면 6초 동안 최종 피해가 증가합니다.",
+        "effect": "피해를 받으면 6초 동안 최종 피해가 증가합니다.",
+        "nativeFile": "icons/RD_DrunkenRush.png",
+        "updated": true,
+        "number": 6
+      },
+      {
+        "name": "회전하는 철구",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RotatingIornBall.asset",
+        "definition_guid": "d492a6f1c1a7fc84bb3b44a619dcfd4f",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RotatingIornBall.png",
+        "fileID": "21300000",
+        "guid": "6a513faa0e54c5147a1942958fe1a540",
+        "sprite": "Icon_RotatingIornBall",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다.",
+        "effect": "적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다.",
+        "nativeFile": "icons/RD_RotatingIornBall.png",
+        "updated": true,
+        "number": 7
+      },
+      {
+        "name": "집중의 렌즈",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FocusLens.asset",
+        "definition_guid": "324fe8dd5a9d478790d21ad2c9881fab",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FocusLens.png",
+        "fileID": "21300000",
+        "guid": "fbe76233bc674820b3e3e4780e15ffa2",
+        "sprite": "Icon_FocusLens",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "스킬 피해가 증가합니다.",
+        "effect": "스킬 피해가 증가합니다.",
+        "nativeFile": "icons/RD_FocusLens.png",
+        "updated": true,
+        "number": 8
+      },
+      {
+        "name": "송골매의 증표",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_HawkEmblem.asset",
+        "definition_guid": "7d7ef88dcbf743f7b79623379d0cd8c6",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_HawkEmblem.png",
+        "fileID": "21300000",
+        "guid": "8962ffe16144980439939f691764cb69",
+        "sprite": "Icon_HawkEmblem",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "추가 이동속도 20%마다 공격 회피 확률이 3% 증가합니다.",
+        "effect": "추가 이동속도 20%마다 공격 회피 확률이 3% 증가합니다.",
+        "nativeFile": "icons/RD_HawkEmblem.png",
+        "updated": true,
+        "number": 9
+      }
+    ]
+  },
+  {
+    "stem": "updated-02",
+    "title": "마왕성 · 교체한 유물 2/2",
+    "subtitle": "화염·전기 각 10종 제외 · 대상 55종 중 교체 18종 / 기존 37종 · 2026-11-04",
+    "hint": "현재 이름 · 이미지 · 효과 설명    |    원본 픽셀을 정수 배율로 확대",
+    "rows": 3,
+    "items": [
+      {
+        "name": "소포",
+        "definition": "Assets/_Project/Data/Items/Relics/RD_EventParcel.asset",
+        "definition_guid": "b5a11e75eae575b4193be62ab58517ed",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_EventParcel.png",
+        "fileID": "21300000",
+        "guid": "5bde9142227f4afe8f9b260c27874583",
+        "sprite": "Icon_EventParcel",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "파셀이 배달해야 했을 소포. 버리는건 용사답지 않다.",
+        "effect": "파셀이 배달해야 했을 소포. 버리는건 용사답지 않다.",
+        "nativeFile": "icons/RD_EventParcel.png",
+        "updated": true,
+        "number": 10
+      },
+      {
+        "name": "신속의 부츠",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedBoots.asset",
+        "definition_guid": "a73c39a704801a1488033afff3b7f340",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedBoots.png",
+        "fileID": "21300000",
+        "guid": "d950f06d53ce11c41b1f7b2cb791c628",
+        "sprite": "Icon_SpeedBoots",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "이동속도가 증가합니다.",
+        "effect": "이동속도가 증가합니다.",
+        "nativeFile": "icons/RD_SpeedBoots.png",
+        "updated": true,
+        "number": 11
+      },
+      {
+        "name": "전투 교본",
+        "definition": "Assets/_Project/Unused/Items/Relics/RD_AttackBonusRelic.asset",
+        "definition_guid": "1f2641bce49c9884eaec41adfdfa29f3",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CombatManual.png",
+        "fileID": "21300000",
+        "guid": "3c04bab3051c48758e686afa6e900026",
+        "sprite": "Icon_CombatManual",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "공격력이 증가합니다.",
+        "effect": "공격력이 증가합니다.",
+        "nativeFile": "icons/RD_AttackBonusRelic.png",
+        "updated": true,
+        "number": 12
+      },
+      {
+        "name": "무딘 방패",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BluntShield.asset",
+        "definition_guid": "f06c064d63ee47f4854cef0c2fc19a01",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BluntShield.png",
+        "fileID": "21300000",
+        "guid": "e5bc7a8d97e841229796fdb6d8bd516e",
+        "sprite": "Icon_BluntShield",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "공격속도가 감소하지만 최대 체력이 크게 증가합니다.",
+        "effect": "공격속도가 감소하지만 최대 체력이 크게 증가합니다.",
+        "nativeFile": "icons/RD_BluntShield.png",
+        "updated": true,
+        "number": 13
+      },
+      {
+        "name": "박동하는 심장",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SmallHeart.asset",
+        "definition_guid": "ef617ca72b6f4423b7e133a909367516",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BeatingHeart.png",
+        "fileID": "21300000",
+        "guid": "0f1087d9fd23419ab0c05e0b49a2584d",
+        "sprite": "Icon_BeatingHeart",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "최대 체력이 증가하고, 피해를 받으면 잠시 이동속도가 증가합니다.",
+        "effect": "최대 체력이 증가하고, 피해를 받으면 잠시 이동속도가 증가합니다.",
+        "nativeFile": "icons/RD_SmallHeart.png",
+        "updated": true,
+        "number": 14
+      },
+      {
+        "name": "광전사의 보석",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RedContract.asset",
+        "definition_guid": "6e61f67002664297a735902776929cf5",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_BerserkerGem.png",
+        "fileID": "21300000",
+        "guid": "52aad4bfdb8f4b65a49b9d43566781d0",
+        "sprite": "Icon_BerserkerGem",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "적 처치 시 4초 동안 공격력이 2 증가합니다.",
+        "effect": "적 처치 시 4초 동안 공격력이 2 증가합니다.",
+        "nativeFile": "icons/RD_RedContract.png",
+        "updated": true,
+        "number": 15
+      },
+      {
+        "name": "추격 명령",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_PursuerClaw.asset",
+        "definition_guid": "ddead4c1dd0048d8a332a78cd84cc690",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_PursuitOrder.png",
+        "fileID": "21300000",
+        "guid": "f2fb44ecb2b0432f88fbd7391a15d3cd",
+        "sprite": "Icon_PursuitOrder",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "적을 처치하면 잠시 이동속도가 증가합니다.",
+        "effect": "적을 처치하면 잠시 이동속도가 증가합니다.",
+        "nativeFile": "icons/RD_PursuerClaw.png",
+        "updated": true,
+        "number": 16
+      },
+      {
+        "name": "만드라고라",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedMedal.asset",
+        "definition_guid": "2a2133b4854b68e4eb9a420c0bb3e215",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedMedal.png",
+        "fileID": "21300000",
+        "guid": "cc05db3731cb2e447b06a5902cb16b6c",
+        "sprite": "Icon_SpeedMedal",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "레벨에 따라 치명타 확률이 2/4/6/8/10% 증가합니다.",
+        "effect": "레벨에 따라 치명타 확률이 2/4/6/8/10% 증가합니다.",
+        "nativeFile": "icons/RD_SpeedMedal.png",
+        "updated": true,
+        "number": 17
+      },
+      {
+        "name": "행운의 증표",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FirmStep.asset",
+        "definition_guid": "6657f14bf85d4440b1a6353e784e9c3e",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_LuckyToken.png",
+        "fileID": "21300000",
+        "guid": "2e4f520a25af4ef3a3e2d00ec4972efb",
+        "sprite": "Icon_LuckyToken",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "치명타가 아닌 공격 적중 시 치명타 확률이 2/3/4% 증가합니다. 최대 8회 중첩되며, 치명타 발생 시 초기화됩니다.",
+        "effect": "치명타가 아닌 공격 적중 시 치명타 확률이 2/3/4% 증가합니다. 최대 8회 중첩되며, 치명타 발생 시 초기화됩니다.",
+        "nativeFile": "icons/RD_FirmStep.png",
+        "updated": true,
+        "number": 18
+      }
+    ]
+  },
+  {
+    "stem": "remaining-01",
+    "title": "마왕성 · 기존 이미지 유물 1/4",
+    "subtitle": "화염·전기 각 10종 제외 · 대상 55종 중 교체 18종 / 기존 37종 · 2026-11-04",
+    "hint": "현재 이름 · 이미지 · 효과 설명    |    원본 픽셀을 정수 배율로 확대",
+    "rows": 4,
+    "items": [
+      {
+        "name": "회복의 팬턴트",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RecoveryPendant.asset",
+        "definition_guid": "b7ac0f2e281a44768c35210163fd6aba",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/potion1.png",
+        "fileID": "21300000",
+        "guid": "b7ac0f2e281a44768c35210163fd6abc",
+        "sprite": "potion1",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "포션의 회복량이 1에서 2로 증가",
+        "effect": "포션의 회복량이 1에서 2로 증가",
+        "nativeFile": "icons/RD_RecoveryPendant.png",
+        "updated": false,
+        "number": 19
+      },
+      {
+        "name": "뇌창의 세 번째 번개",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearThirdStrike.asset",
+        "definition_guid": "f36d5720370d475cb8ad55ee5b68c27c",
+        "source": "Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png",
+        "fileID": "21300000",
+        "guid": "10552735fdb1e6e42a67dd8f5e1ae667",
+        "sprite": "LightningSpear",
+        "rect": [
+          0,
+          0,
+          16,
+          80
+        ],
+        "description": "● {em:뇌창 갈라론} 전용 유물\r\n● [[공격속도]] {pos:[+20%]}\r\n● 기본 공격의 {val:세 번째 타격} 시 공격 끝 지점 주변의 적을 향해 뇌창 {val:1개} 낙하",
+        "effect": "● 뇌창 갈라론 전용 유물 · ● 공격속도 [+20%] · ● 기본 공격의 세 번째 타격 시 공격 끝 지점 주변의 적을 향해 뇌창 1개 낙하",
+        "nativeFile": "icons/RD_LightningSpearThirdStrike.png",
+        "updated": false,
+        "number": 20
+      },
+      {
+        "name": "뇌창의 추적 낙뢰",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningSpearTargetedRain.asset",
+        "definition_guid": "b21a9cb41264495aadb828708bd905f7",
+        "source": "Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear.png",
+        "fileID": "21300000",
+        "guid": "10552735fdb1e6e42a67dd8f5e1ae667",
+        "sprite": "LightningSpear",
+        "rect": [
+          0,
+          0,
+          16,
+          80
+        ],
+        "description": "● {em:뇌창 갈라론} 전용 유물\r\n● 낙뢰 표식이 적의 위치에 {val:0.07초} 간격으로 순차 낙하\r\n● 해당 위치에 떨어질 수 없거나 다른 뇌창과 너무 가까우면 적과 가까운 빈 위치에 낙하",
+        "effect": "● 뇌창 갈라론 전용 유물 · ● 낙뢰 표식이 적의 위치에 0.07초 간격으로 순차 낙하 · ● 해당 위치에 떨어질 수 없거나 다른 뇌창과 너무 가까우면 적과 가까운 빈 위치에 낙하",
+        "nativeFile": "icons/RD_LightningSpearTargetedRain.png",
+        "updated": false,
+        "number": 21
+      },
+      {
+        "name": "쇳덩이의 예비 탄창",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_OddIronMagazine.asset",
+        "definition_guid": "897b88fc1f3a40baa3b72a4269743a84",
+        "source": "Assets/_Project/Art/Sprites/Items/Weapons/OddIron/OddIron.png",
+        "fileID": "6943876887964716198",
+        "guid": "959fd486b4d99da4687a456b33eb4a27",
+        "sprite": "OddIron_0",
+        "rect": [
+          0,
+          0,
+          19,
+          13
+        ],
+        "description": "● {em:기묘한 쇠덩이} 전용 유물\r\n● 탄약이 없을 때 공격 또는 {em:난사} 입력 시 재장전\r\n● 재장전 완료 시 유물 레벨 {val:1}을 소모해 {pos:완전 장전}\r\n● 장전 후 다시 입력하면 발사\r\n● 유물 레벨은 남은 장전 횟수를 의미\r\n● 레벨이 {val:0}이 되면 {neg:유물 소멸}",
+        "effect": "● 기묘한 쇠덩이 전용 유물 · ● 탄약이 없을 때 공격 또는 난사 입력 시 재장전 · ● 재장전 완료 시 유물 레벨 1을 소모해 완전 장전 · ● 장전 후 다시 입력하면 발사 ·…",
+        "nativeFile": "icons/RD_OddIronMagazine.png",
+        "updated": false,
+        "number": 22
+      },
+      {
+        "name": "견습 용사의 연계 증표",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ApprenticeChargeLink.asset",
+        "definition_guid": "056770c65bd343ea8bf1553c842ff605",
+        "source": "Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeapon.png",
+        "fileID": "21300000",
+        "guid": "748bd1286788d5f468f9857941b73367",
+        "sprite": "BasicWeapon",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "● {em:용사의 검} 전용 유물\r\n● 회전베기 차징 중 {pos:돌진 찌르기 사용 가능}\r\n● 사용 순간의 차징 정도에 따라 돌진 찌르기의 피해·크기·색상 변화\r\n● 최대 차징 시 돌진 찌르기 피해 약 {val:1.67배}\r\n● 돌진 중 버튼을 놓으면 {em:강화 회전베기}로 연계",
+        "effect": "● 용사의 검 전용 유물 · ● 회전베기 차징 중 돌진 찌르기 사용 가능 · ● 사용 순간의 차징 정도에 따라 돌진 찌르기의 피해·크기·색상 변화 · ● 최대 차징 시 돌진 찌르기…",
+        "nativeFile": "icons/RD_ApprenticeChargeLink.png",
+        "updated": false,
+        "number": 23
+      },
+      {
+        "name": "하얀 깃털",
+        "definition": "Assets/_Project/Unused/Items/Relics/RD_FeatherOrbit.asset",
+        "definition_guid": "eb057c0a7b239b742a001ee568ef4027",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_FeatherOrbit.png",
+        "fileID": "21300000",
+        "guid": "07e2e0377cda6d94eb4680ca1b68ab8c",
+        "sprite": "Icon_FeatherOrbit",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 고정 피해 3/4/5/6/7을 주며, 이동속도가 높을수록 더 빠르게 회전합니다.",
+        "effect": "플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 고정 피해 3/4/5/6/7을 주며, 이동속도가 높을수록 더 빠르게 회전합니다.",
+        "nativeFile": "icons/RD_FeatherOrbit.png",
+        "updated": false,
+        "number": 24
+      },
+      {
+        "name": "한방울의 신속",
+        "definition": "Assets/_Project/Unused/Items/Relics/RD_OneDropOfSwiftness.asset",
+        "definition_guid": "7c21e56d0f854d95b4ac9ef71d603f28",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_OneDropOfSwiftness.png",
+        "fileID": "21300000",
+        "guid": "4af3438a19a9ff54683d8233bd993349",
+        "sprite": "Icon_OneDropOfSwiftness",
+        "rect": [
+          0,
+          0,
+          25,
+          25
+        ],
+        "description": "잔영의 날개 전용 유물\r\n스피드 스트라이크로 적을 처치하면 러쉬가 종료되지 않습니다.",
+        "effect": "잔영의 날개 전용 유물 · 스피드 스트라이크로 적을 처치하면 러쉬가 종료되지 않습니다.",
+        "nativeFile": "icons/RD_OneDropOfSwiftness.png",
+        "updated": false,
+        "number": 25
+      },
+      {
+        "name": "달리는 장부",
+        "definition": "Assets/_Project/Unused/Items/Relics/RD_RunningLedger.asset",
+        "definition_guid": "c0e9e82eb0ce4caa9efb337cb57764ff",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_RunningLedger.png",
+        "fileID": "21300000",
+        "guid": "6cd59cbf386c7134c99727cb4cdc3f83",
+        "sprite": "Icon_RunningLedger",
+        "rect": [
+          0,
+          0,
+          25,
+          25
+        ],
+        "description": "[치명타 시] [이동속도] 2% 씩 증가\r\n최대 50%까지 증가 가능\r\n[피해를 받으면 초기화]",
+        "effect": "[치명타 시] [이동속도] 2% 씩 증가 · 최대 50%까지 증가 가능 · [피해를 받으면 초기화]",
+        "nativeFile": "icons/RD_RunningLedger.png",
+        "updated": false,
+        "number": 26
+      },
+      {
+        "name": "속기사",
+        "definition": "Assets/_Project/Unused/Items/Relics/RD_Stenographer.asset",
+        "definition_guid": "f2a47c8de19b4d8d9e67a31f5b2c4e90",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_Stenographer.png",
+        "fileID": "21300000",
+        "guid": "6e5063279097f8b4abb904145fd23e7c",
+        "sprite": "Icon_Stenographer",
+        "rect": [
+          0,
+          0,
+          25,
+          25
+        ],
+        "description": "잔영의 날개 전용 유물\r\n러쉬의 이동속도 보너스가 증가\r\n러쉬 사용 시 [이동속도] 150% 증가\r\n3초 후 [이동속도] 150% 추가 증가\r\n3초 후 [이동속도] 200% 추가 증가",
+        "effect": "잔영의 날개 전용 유물 · 러쉬의 이동속도 보너스가 증가 · 러쉬 사용 시 [이동속도] 150% 증가 · 3초 후 [이동속도] 150% 추가 증가 · 3초 후 [이동속도] 200%…",
+        "nativeFile": "icons/RD_Stenographer.png",
+        "updated": false,
+        "number": 27
+      },
+      {
+        "name": "보약 곰방대",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_TonicGombangdae.asset",
+        "definition_guid": "d808a1e0c7ccc7e48abc50b9a9884b61",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_TonicGombangdae.png",
+        "fileID": "21300000",
+        "guid": "b21ecde7f4efbae44b88a07fc7a7610e",
+        "sprite": "Icon_TonicGombangdae",
+        "rect": [
+          0,
+          0,
+          25,
+          25
+        ],
+        "description": "치명타 적중 시 3초 동안 치명타 확률이 4/6/8/10/12% 증가합니다. 치명타 적중 시 지속 시간이 초기화됩니다.",
+        "effect": "치명타 적중 시 3초 동안 치명타 확률이 4/6/8/10/12% 증가합니다. 치명타 적중 시 지속 시간이 초기화됩니다.",
+        "nativeFile": "icons/RD_TonicGombangdae.png",
+        "updated": false,
+        "number": 28
+      },
+      {
+        "name": "반격의 박차",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CounterKick.asset",
+        "definition_guid": "0bd69b2b4237473ead517a6bb31f0ab1",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_CounterKick.png",
+        "fileID": "21300000",
+        "guid": "fe26a83a4ededf64ba867c2d5e1863f8",
+        "sprite": "Icon_CounterKick",
+        "rect": [
+          0,
+          0,
+          25,
+          25
+        ],
+        "description": "피해를 받으면 잠시 이동속도가 증가합니다.",
+        "effect": "피해를 받으면 잠시 이동속도가 증가합니다.",
+        "nativeFile": "icons/RD_CounterKick.png",
+        "updated": false,
+        "number": 29
+      },
+      {
+        "name": "귀인의 검흔",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FloweringBloomExtension.asset",
+        "definition_guid": "6f66b76c2399491ab2b555651f017664",
+        "source": "Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_Artifact.png",
+        "fileID": "21300000",
+        "guid": "bd99ece40b3e73841bdc7fb710c6d066",
+        "sprite": "Flowering_Artifact",
+        "rect": [
+          0,
+          0,
+          16,
+          16
+        ],
+        "description": "개화 전용 유물\r\n개화 중 적 처치 시 개화 지속 시간이 1초 증가합니다.",
+        "effect": "개화 전용 유물 · 개화 중 적 처치 시 개화 지속 시간이 1초 증가합니다.",
+        "nativeFile": "icons/RD_FloweringBloomExtension.png",
+        "updated": false,
+        "number": 30
+      }
+    ]
+  },
+  {
+    "stem": "remaining-02",
+    "title": "마왕성 · 기존 이미지 유물 2/4",
+    "subtitle": "화염·전기 각 10종 제외 · 대상 55종 중 교체 18종 / 기존 37종 · 2026-11-04",
+    "hint": "현재 이름 · 이미지 · 효과 설명    |    원본 픽셀을 정수 배율로 확대",
+    "rows": 4,
+    "items": [
+      {
+        "name": "질긴 붕대",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ToughBandage.asset",
+        "definition_guid": "acf93562c8b943abaf5d216c50f859b8",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "2652998765610666854",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_3",
+        "rect": [
+          123,
+          0,
+          41,
+          39
+        ],
+        "description": "최대 체력이 증가합니다.",
+        "effect": "최대 체력이 증가합니다.",
+        "nativeFile": "icons/RD_ToughBandage.png",
+        "updated": false,
+        "number": 31
+      },
+      {
+        "name": "가벼운 끈",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightCord.asset",
+        "definition_guid": "211ffa758fea44fd94388e8bd6e4eb4a",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "-5249522915942291002",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_4",
+        "rect": [
+          164,
+          0,
+          41,
+          39
+        ],
+        "description": "이동속도가 증가합니다.",
+        "effect": "이동속도가 증가합니다.",
+        "nativeFile": "icons/RD_LightCord.png",
+        "updated": false,
+        "number": 32
+      },
+      {
+        "name": "사냥꾼의 표식",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_HunterMark.asset",
+        "definition_guid": "81eca7800b7446598237331ab25b00c8",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "6214254870795243053",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_5",
+        "rect": [
+          205,
+          0,
+          41,
+          39
+        ],
+        "description": "치명타 확률이 증가합니다.",
+        "effect": "치명타 확률이 증가합니다.",
+        "nativeFile": "icons/RD_HunterMark.png",
+        "updated": false,
+        "number": 33
+      },
+      {
+        "name": "예리한 송곳",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SharpAwl.asset",
+        "definition_guid": "350592c90a7f493b999f7b9f349dfe91",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "-8081933682657346706",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_6",
+        "rect": [
+          246,
+          0,
+          41,
+          39
+        ],
+        "description": "치명타 피해가 증가합니다.",
+        "effect": "치명타 피해가 증가합니다.",
+        "nativeFile": "icons/RD_SharpAwl.png",
+        "updated": false,
+        "number": 34
+      },
+      {
+        "name": "회피의 깃",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_EvasionFeather.asset",
+        "definition_guid": "7c8c681dbbe24cb68c36637db0844b0c",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "-7853464663418827758",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_7",
+        "rect": [
+          0,
+          39,
+          41,
+          39
+        ],
+        "description": "회피율이 증가합니다.",
+        "effect": "회피율이 증가합니다.",
+        "nativeFile": "icons/RD_EvasionFeather.png",
+        "updated": false,
+        "number": 35
+      },
+      {
+        "name": "무거운 팔찌",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_HeavyBracelet.asset",
+        "definition_guid": "16ad7526693d4a44a3183bcc3df90f61",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "6752461376909513456",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_9",
+        "rect": [
+          82,
+          39,
+          41,
+          39
+        ],
+        "description": "이동속도가 비율로 감소하고, 공격력이 고정 수치로 증가합니다.",
+        "effect": "이동속도가 비율로 감소하고, 공격력이 고정 수치로 증가합니다.",
+        "nativeFile": "icons/RD_HeavyBracelet.png",
+        "updated": false,
+        "number": 36
+      },
+      {
+        "name": "얇은 갑옷 조각",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ThinArmorShard.asset",
+        "definition_guid": "884462a2ad3d4a1e81d32a56a1597d51",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "-9195065147404484278",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_10",
+        "rect": [
+          123,
+          39,
+          41,
+          39
+        ],
+        "description": "최대 체력과 회피율이 조금 증가합니다.",
+        "effect": "최대 체력과 회피율이 조금 증가합니다.",
+        "nativeFile": "icons/RD_ThinArmorShard.png",
+        "updated": false,
+        "number": 37
+      },
+      {
+        "name": "광전사의 끈",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BerserkerCord.asset",
+        "definition_guid": "c3f65c9408584fc09145a782d74839bc",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "1290818826102019816",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_11",
+        "rect": [
+          164,
+          39,
+          41,
+          39
+        ],
+        "description": "최대 체력이 감소하지만 공격속도가 크게 증가합니다.",
+        "effect": "최대 체력이 감소하지만 공격속도가 크게 증가합니다.",
+        "nativeFile": "icons/RD_BerserkerCord.png",
+        "updated": false,
+        "number": 38
+      },
+      {
+        "name": "균형추",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BalanceWeight.asset",
+        "definition_guid": "a491ffe08c1246b7b39b04fdca100c95",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "7824667717655779811",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_13",
+        "rect": [
+          246,
+          39,
+          41,
+          39
+        ],
+        "description": "기본공격 피해와 스킬 피해가 증가합니다.",
+        "effect": "기본공격 피해와 스킬 피해가 증가합니다.",
+        "nativeFile": "icons/RD_BalanceWeight.png",
+        "updated": false,
+        "number": 39
+      },
+      {
+        "name": "마지막 숨",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LastBreath.asset",
+        "definition_guid": "4a278341ae1b4ef4b8886c04f3517f71",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "-3051198569075358200",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_14",
+        "rect": [
+          0,
+          78,
+          41,
+          39
+        ],
+        "description": "체력이 50% 이하일 때 공격력이 3 증가합니다.",
+        "effect": "체력이 50% 이하일 때 공격력이 3 증가합니다.",
+        "nativeFile": "icons/RD_LastBreath.png",
+        "updated": false,
+        "number": 40
+      },
+      {
+        "name": "여유로운 심장",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_CalmHeart.asset",
+        "definition_guid": "11d7fc46673146558d7d95385305a393",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "9137266158227281547",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_15",
+        "rect": [
+          41,
+          78,
+          41,
+          39
+        ],
+        "description": "체력이 높을 때 이동속도가 증가합니다.",
+        "effect": "체력이 높을 때 이동속도가 증가합니다.",
+        "nativeFile": "icons/RD_CalmHeart.png",
+        "updated": false,
+        "number": 41
+      },
+      {
+        "name": "승리의 깃발",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_VictoryFlag.asset",
+        "definition_guid": "1215f1b7fec1495dab3f473078c1e13c",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "-7409323811495052916",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_17",
+        "rect": [
+          123,
+          78,
+          41,
+          39
+        ],
+        "description": "적을 처치하면 잠시 공격속도가 증가합니다.",
+        "effect": "적을 처치하면 잠시 공격속도가 증가합니다.",
+        "nativeFile": "icons/RD_VictoryFlag.png",
+        "updated": false,
+        "number": 42
+      }
+    ]
+  },
+  {
+    "stem": "remaining-03",
+    "title": "마왕성 · 기존 이미지 유물 3/4",
+    "subtitle": "화염·전기 각 10종 제외 · 대상 55종 중 교체 18종 / 기존 37종 · 2026-11-04",
+    "hint": "현재 이름 · 이미지 · 효과 설명    |    원본 픽셀을 정수 배율로 확대",
+    "rows": 4,
+    "items": [
+      {
+        "name": "도망자의 신발",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RunawayShoes.asset",
+        "definition_guid": "3f678aae4cb94331bd3caeb317c659ce",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "-1211621753745056308",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_19",
+        "rect": [
+          205,
+          78,
+          41,
+          39
+        ],
+        "description": "피해를 받으면 잠시 회피율이 증가합니다.",
+        "effect": "피해를 받으면 잠시 회피율이 증가합니다.",
+        "nativeFile": "icons/RD_RunawayShoes.png",
+        "updated": false,
+        "number": 43
+      },
+      {
+        "name": "연쇄의 부적",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_ChainCharm.asset",
+        "definition_guid": "bd3599e0184c43cc83826652107c5e89",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "-9140534868678271618",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_24",
+        "rect": [
+          123,
+          117,
+          41,
+          39
+        ],
+        "description": "치명타를 내면 이동속도가 누적 증가합니다.",
+        "effect": "치명타를 내면 이동속도가 누적 증가합니다.",
+        "nativeFile": "icons/RD_ChainCharm.png",
+        "updated": false,
+        "number": 44
+      },
+      {
+        "name": "균열석",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_RiftStone.asset",
+        "definition_guid": "1a3c46c0c9914eea8cdcba66be7916eb",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "6123753626580635574",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_22",
+        "rect": [
+          41,
+          117,
+          41,
+          39
+        ],
+        "description": "최종 피해가 증가합니다.",
+        "effect": "최종 피해가 증가합니다.",
+        "nativeFile": "icons/RD_RiftStone.png",
+        "updated": false,
+        "number": 45
+      },
+      {
+        "name": "부서진 왕관",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenCrown.asset",
+        "definition_guid": "35caaa840c424d98b8c5095a4383348e",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "745922690225715111",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_23",
+        "rect": [
+          82,
+          117,
+          41,
+          39
+        ],
+        "description": "최대 체력이 감소하지만 최종 피해가 크게 증가합니다.",
+        "effect": "최대 체력이 감소하지만 최종 피해가 크게 증가합니다.",
+        "nativeFile": "icons/RD_BrokenCrown.png",
+        "updated": false,
+        "number": 46
+      },
+      {
+        "name": "생존자의 목걸이",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_SurvivorNecklace.asset",
+        "definition_guid": "c3f1d032e5184fc9ac7fc75cf5632436",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "-6626285524676906614",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_20",
+        "rect": [
+          246,
+          78,
+          41,
+          39
+        ],
+        "description": "최대 체력과 이동속도가 조금 증가합니다.",
+        "effect": "최대 체력과 이동속도가 조금 증가합니다.",
+        "nativeFile": "icons/RD_SurvivorNecklace.png",
+        "updated": false,
+        "number": 47
+      },
+      {
+        "name": "날렵한 망토",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_NimbleCloak.asset",
+        "definition_guid": "fcd257e9b1924b26bd998dd2bfae2bca",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "6358970640032765685",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_28",
+        "rect": [
+          0,
+          156,
+          41,
+          39
+        ],
+        "description": "이동속도와 회피율이 증가합니다.",
+        "effect": "이동속도와 회피율이 증가합니다.",
+        "nativeFile": "icons/RD_NimbleCloak.png",
+        "updated": false,
+        "number": 48
+      },
+      {
+        "name": "깨진 시계",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenClock.asset",
+        "definition_guid": "7d20d2a7cdf74a0bb83fccd22ed1c5a6",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "8375218632860420053",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_29",
+        "rect": [
+          41,
+          156,
+          41,
+          39
+        ],
+        "description": "공격속도가 증가하지만 스킬 피해가 감소합니다.",
+        "effect": "공격속도가 증가하지만 스킬 피해가 감소합니다.",
+        "nativeFile": "icons/RD_BrokenClock.png",
+        "updated": false,
+        "number": 49
+      },
+      {
+        "name": "검은 향로",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_BlackIncense.asset",
+        "definition_guid": "3127d39f416e4d56849df4e7835f709b",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "-2091944441",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_30",
+        "rect": [
+          82,
+          156,
+          41,
+          39
+        ],
+        "description": "스킬 피해가 크게 증가하지만 기본공격 피해가 감소합니다.",
+        "effect": "스킬 피해가 크게 증가하지만 기본공격 피해가 감소합니다.",
+        "nativeFile": "icons/RD_BlackIncense.png",
+        "updated": false,
+        "number": 50
+      },
+      {
+        "name": "전사의 맹세",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_WarriorOath.asset",
+        "definition_guid": "66fe60611ced4fefbcf921ed07eaf47c",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/RelicImageBundle.png",
+        "fileID": "-4832650501692778596",
+        "guid": "21b9f59aa21a76448a3d5baf5a6a2d8f",
+        "sprite": "RelicImageBundle_25",
+        "rect": [
+          164,
+          117,
+          41,
+          39
+        ],
+        "description": "기본공격 피해가 크게 증가하지만 스킬 피해가 감소합니다.",
+        "effect": "기본공격 피해가 크게 증가하지만 스킬 피해가 감소합니다.",
+        "nativeFile": "icons/RD_WarriorOath.png",
+        "updated": false,
+        "number": 51
+      },
+      {
+        "name": "금광",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_GoldVein.asset",
+        "definition_guid": "cca649e618674edeae7fb55e0743a416",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/gold_vein.png",
+        "fileID": "21300000",
+        "guid": "872382315c4b44deaa3440a4afe18c0a",
+        "sprite": "gold_vein",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "적 처치 시 얻는 금화의 획득량이 10% 증가",
+        "effect": "적 처치 시 얻는 금화의 획득량이 10% 증가",
+        "nativeFile": "icons/RD_GoldVein.png",
+        "updated": false,
+        "number": 52
+      },
+      {
+        "name": "성장의 새싹",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_GrowthSprout.asset",
+        "definition_guid": "2a030bcc770946f8abfe827a9bb0afc0",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/plant.png",
+        "fileID": "21300000",
+        "guid": "7861b6e666064cd7b04a49aca55b80c9",
+        "sprite": "plant",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "경험치 획득량이 10% 증가",
+        "effect": "경험치 획득량이 10% 증가",
+        "nativeFile": "icons/RD_GrowthSprout.png",
+        "updated": false,
+        "number": 53
+      },
+      {
+        "name": "날개 부츠",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_FlyingBoots.asset",
+        "definition_guid": "4781e03df8c544459db8dc6863762e5c",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/flying_boots.png",
+        "fileID": "21300000",
+        "guid": "5e75f76ed6404d0e95d4b05a8a46ae0d",
+        "sprite": "flying_boots",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "대쉬 재사용 대기시간이 10% 감소",
+        "effect": "대쉬 재사용 대기시간이 10% 감소",
+        "nativeFile": "icons/RD_FlyingBoots.png",
+        "updated": false,
+        "number": 54
+      }
+    ]
+  },
+  {
+    "stem": "remaining-04",
+    "title": "마왕성 · 기존 이미지 유물 4/4",
+    "subtitle": "화염·전기 각 10종 제외 · 대상 55종 중 교체 18종 / 기존 37종 · 2026-11-04",
+    "hint": "현재 이름 · 이미지 · 효과 설명    |    원본 픽셀을 정수 배율로 확대",
+    "rows": 1,
+    "items": [
+      {
+        "name": "최후의 저항",
+        "definition": "Assets/_Project/Data/Items/Relics/Definitions/RD_LastStand.asset",
+        "definition_guid": "d866e0f16ecf48d0948bda26ce39842a",
+        "source": "Assets/_Project/Art/Sprites/Items/RelicIcon/arrow.png",
+        "fileID": "21300000",
+        "guid": "eba60ca92d654057bce8a3f6664ed7b1",
+        "sprite": "arrow",
+        "rect": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "description": "현재 체력이 1 이하일 경우 모든 공격이 반드시 치명타로 적중.",
+        "effect": "현재 체력이 1 이하일 경우 모든 공격이 반드시 치명타로 적중.",
+        "nativeFile": "icons/RD_LastStand.png",
+        "updated": false,
+        "number": 55
+      }
+    ]
+  }
+]

@@ -16,7 +16,7 @@ last_reviewed: 2026-11-04
 - `ShopDefinitionSO`: 상점 사용 조건, 슬롯 수, 종류별 최대 개수, 가중치, 가격과 새로고침 설정.
 - `MerchantShopPolicy`: 정의와 `RunModifierService.ShopModifiers`로 유효 정책 계산.
 - `MerchantNPC`: 씬 소유 상점 조율자. 재고 바인딩, 플레이어/무기·유물 인벤토리/상자 상태 구독, 구매/새로고침 요청과 표시 갱신.
-- `MerchantRunStateService`: `GamePlayData.merchantStates`의 상인별 재고·판매 여부·새로고침 횟수 관리. 현재 제외 무기 또는 최대 레벨 유물인 미판매 슬롯만 보정.
+- `MerchantRunStateService`: `GamePlayData.merchantStates`의 상인별 재고·판매 여부·새로고침 횟수 관리. 현재 제외 무기, 제외 유물 또는 최대 레벨 유물인 미판매 슬롯만 보정.
 - `ShopInventoryRoll`: 최초/새로고침/부분 보정/슬롯 확장의 공통 후보 선택. 유지 슬롯도 중복 제외와 종류별 한도에 포함.
 - `MerchantOfferPricing`: 원가에서 전체 할인과 슬롯 특가를 곱해 최종 가격을 계산한다. 호감도 희귀도 보너스는 `MerchantNPC`가 최초/새로고침/부분 보정/슬롯 확장의 모든 추첨에 전달한다.
 - `MerchantPurchaseService`: 실제 인벤토리 획득 가능 여부와 통화 지출/실패 환불. 인벤토리가 최종 획득 가능 여부를 결정한다.
@@ -28,7 +28,7 @@ last_reviewed: 2026-11-04
 | 조건 | 현재 규칙 |
 | --- | --- |
 | 무기 기본 후보 | 해금된 무기 중 `LootPoolItemSelectionService.CanDropWeapon(id, treasureChest: true)` 통과 |
-| 유물 기본 후보 | 해금된 유물 중 `CanDropRelic` 및 공통 `CanGainRelicLevels` 통과. 최대 레벨 제외 |
+| 유물 기본 후보 | 해금된 유물 중 `CanDropRelic` 및 공통 `CanGainRelicLevels` 통과. 제외 유물 7종과 최대 레벨 제외 |
 | 소모품 후보 | ItemDatabase의 소모품 목록 |
 | 무기 제외 | `LootPoolContext.ShopStock`: 모든 보유 슬롯 + 월드 픽업 + 활성 WeaponDrop2D + 열린 상자 잔여 무기 |
 | 재고 내 중복 | 같은 종류+ID 중복 금지. 보정/확장의 유지 슬롯도 제외 |
@@ -68,6 +68,7 @@ last_reviewed: 2026-11-04
 
 ## Extension entry points and known pitfalls
 
+- 제외 유물 7종은 `RelicDefinition.IsRetiredId`가 식별한다. 신규 추첨은 `CanDropRelic`, 저장된 미판매 재고 보정은 `MerchantNPC.ReconcileStock`에서 확인한다. 구매 직전 기존 재고 재검사도 유지되며 SOLD 슬롯과 보유 유물은 제거하지 않는다. [대상·검증 기록](../../../output/relic-retirement-2026-11-04/README.md).
 - 후보 허용 정책: `LootPoolItemSelectionService`; 상점 종류·수량·가격: `ShopDefinitionSO`/`MerchantShopPolicy`; 보정할 슬롯 판정과 저장: `MerchantRunStateService`.
 - 슬롯 일부를 다시 뽑을 때 실제 anchor index와 유지 슬롯을 넘긴다. 유지 상품을 빼고 개수 한도를 계산하면 소모품/무기 한도를 초과할 수 있다.
 - 부분 보정의 유지 슬롯 정보와 호감도 `ShopRunModifierDelta`는 함께 전달한다. 어느 한쪽을 누락하면 중복/개수 제한 또는 희귀도 혜택이 빠진다. [병합 확인 기록](../../SessionLogs/2026-11-04.md).

@@ -1,0 +1,485 @@
+{
+  "version": 1,
+  "date": "2026-11-04",
+  "scope": "Future draft style calibration only; do not apply to approved assets retroactively",
+  "reference_count": 8,
+  "reference_native_size": [
+    32,
+    32
+  ],
+  "reference_sheet_sizes": [
+    [
+      64,
+      64
+    ],
+    [
+      64,
+      64
+    ]
+  ],
+  "enlargements_exact_nearest": 20,
+  "outline_color": "#363232",
+  "outline_guidance": "2 logical pixels with rounded stepped corners; evaluate silhouette, preserve authored holes and interior charcoal",
+  "outline_kernel_analysis": {
+    "candidate_size": [
+      5,
+      5
+    ],
+    "offsets": [
+      [
+        -1,
+        -2
+      ],
+      [
+        0,
+        -2
+      ],
+      [
+        1,
+        -2
+      ],
+      [
+        -2,
+        -1
+      ],
+      [
+        -1,
+        -1
+      ],
+      [
+        0,
+        -1
+      ],
+      [
+        1,
+        -1
+      ],
+      [
+        2,
+        -1
+      ],
+      [
+        -2,
+        0
+      ],
+      [
+        -1,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        -2,
+        1
+      ],
+      [
+        -1,
+        1
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        -1,
+        2
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        1,
+        2
+      ]
+    ],
+    "exact_reference_matches": 5,
+    "note": "This 21-point kernel matches 5/8 reference visible masks exactly and differs by at most 3 pixels for the rest. It is a technical guide, not a substitute for per-icon judgement."
+  },
+  "colors": {
+    "observed_counts": [
+      3,
+      4,
+      4,
+      5,
+      6,
+      6,
+      7,
+      8
+    ],
+    "guidance": "Do not force six colors. Use only necessary material base, shadow and semantic accents; obey any explicit user color cap and the supplied palette. Reference colors do not automatically expand the allowed palette."
+  },
+  "rendering": [
+    "Rounded bulky silhouette with deliberate 1-pixel stair steps",
+    "Broad base-color field with one clear shadow field per material",
+    "Muted hue shift for shadows rather than multiple neutral gray bands",
+    "Sparse identifying interior details allowed: seams, folds, feather divisions, rim",
+    "Place highlights according to material; no automatic pale rim or central shine on every object",
+    "Draw at native scale; do not depend on high-resolution compression to establish style"
+  ],
+  "future_output_format": {
+    "native_size": [
+      32,
+      32
+    ],
+    "transparent_margin_minimum": 2,
+    "outline_target_pixels": 2,
+    "preview_scale": "integer nearest-neighbor"
+  },
+  "source_manifest": [
+    {
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-15055c5a-6f2a-463a-9f3e-f0970b625639.png",
+      "copy": "references/sheet-a-64x64.png",
+      "sha256": "5682601822c75d8a5be1cd276d256dba6e069a35c1074a566bbc3b01c5cdf45e"
+    },
+    {
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-dc92bcb2-b61d-4844-b450-6058c88339d3.png",
+      "copy": "references/sheet-b-64x64.png",
+      "sha256": "8da07f22c6e17f793aad48202c948eccdaec04becc72be110ce805ff01633744"
+    },
+    {
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-6d84d1fe-566d-44dc-bed4-b48041890d98.png",
+      "copy": "references/sheet-a-1280x1280.png",
+      "sha256": "bc8ae05fb5502f6fa5cfe17262a01c79461cfc2a819b9d5d3e544ecf17391166"
+    },
+    {
+      "source": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-779a55c5-9322-4a62-ab23-017098c04421.png",
+      "copy": "references/sheet-b-1280x1280.png",
+      "sha256": "0e4eff76e7cc94311ed433203f9ecccd960250fd4dac0851efae9433540554ed"
+    }
+  ],
+  "reference_metrics": [
+    {
+      "index": 1,
+      "name": "망치",
+      "key": "hammer",
+      "native_file": "icons/hammer-32x32.png",
+      "sheet": 0,
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "color_count_including_outline": 5,
+      "material_palette": [
+        {
+          "rgb": "#AB6E7C",
+          "pixels": 10
+        },
+        {
+          "rgb": "#C2C2C2",
+          "pixels": 104
+        },
+        {
+          "rgb": "#D49C73",
+          "pixels": 18
+        },
+        {
+          "rgb": "#E8F3F2",
+          "pixels": 212
+        }
+      ],
+      "visible_pixels": 541,
+      "outline_share": 0.3641,
+      "square_radius_2_extra_pixels": 43,
+      "rounded_radius_2_extra_pixels": 0,
+      "rounded_radius_2_missing_pixels": 0
+    },
+    {
+      "index": 2,
+      "name": "장갑",
+      "key": "glove",
+      "native_file": "icons/glove-32x32.png",
+      "sheet": 0,
+      "rect": [
+        32,
+        0,
+        32,
+        32
+      ],
+      "color_count_including_outline": 3,
+      "material_palette": [
+        {
+          "rgb": "#C2C2C2",
+          "pixels": 99
+        },
+        {
+          "rgb": "#E8F3F2",
+          "pixels": 333
+        }
+      ],
+      "visible_pixels": 620,
+      "outline_share": 0.3032,
+      "square_radius_2_extra_pixels": 33,
+      "rounded_radius_2_extra_pixels": 1,
+      "rounded_radius_2_missing_pixels": 0
+    },
+    {
+      "index": 3,
+      "name": "불꽃 지팡이",
+      "key": "fire-wand",
+      "native_file": "icons/fire-wand-32x32.png",
+      "sheet": 0,
+      "rect": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "color_count_including_outline": 7,
+      "material_palette": [
+        {
+          "rgb": "#AB6E7C",
+          "pixels": 29
+        },
+        {
+          "rgb": "#E09656",
+          "pixels": 80
+        },
+        {
+          "rgb": "#E7946D",
+          "pixels": 13
+        },
+        {
+          "rgb": "#E9CEA1",
+          "pixels": 9
+        },
+        {
+          "rgb": "#EECF5A",
+          "pixels": 64
+        },
+        {
+          "rgb": "#FFFFFF",
+          "pixels": 35
+        }
+      ],
+      "visible_pixels": 448,
+      "outline_share": 0.4866,
+      "square_radius_2_extra_pixels": 31,
+      "rounded_radius_2_extra_pixels": 0,
+      "rounded_radius_2_missing_pixels": 0
+    },
+    {
+      "index": 4,
+      "name": "날개 부츠",
+      "key": "winged-boots",
+      "native_file": "icons/winged-boots-32x32.png",
+      "sheet": 0,
+      "rect": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "color_count_including_outline": 6,
+      "material_palette": [
+        {
+          "rgb": "#62494C",
+          "pixels": 13
+        },
+        {
+          "rgb": "#AB6E7C",
+          "pixels": 109
+        },
+        {
+          "rgb": "#C2C2C2",
+          "pixels": 32
+        },
+        {
+          "rgb": "#D49C73",
+          "pixels": 147
+        },
+        {
+          "rgb": "#E8F3F2",
+          "pixels": 73
+        }
+      ],
+      "visible_pixels": 582,
+      "outline_share": 0.3574,
+      "square_radius_2_extra_pixels": 27,
+      "rounded_radius_2_extra_pixels": 1,
+      "rounded_radius_2_missing_pixels": 2
+    },
+    {
+      "index": 5,
+      "name": "화염",
+      "key": "flame",
+      "native_file": "icons/flame-32x32.png",
+      "sheet": 1,
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "color_count_including_outline": 4,
+      "material_palette": [
+        {
+          "rgb": "#E09656",
+          "pixels": 172
+        },
+        {
+          "rgb": "#EECF5A",
+          "pixels": 150
+        },
+        {
+          "rgb": "#FFFFFF",
+          "pixels": 80
+        }
+      ],
+      "visible_pixels": 606,
+      "outline_share": 0.3366,
+      "square_radius_2_extra_pixels": 30,
+      "rounded_radius_2_extra_pixels": 0,
+      "rounded_radius_2_missing_pixels": 0
+    },
+    {
+      "index": 6,
+      "name": "심장",
+      "key": "heart",
+      "native_file": "icons/heart-32x32.png",
+      "sheet": 1,
+      "rect": [
+        32,
+        0,
+        32,
+        32
+      ],
+      "color_count_including_outline": 4,
+      "material_palette": [
+        {
+          "rgb": "#A75064",
+          "pixels": 76
+        },
+        {
+          "rgb": "#E55C5C",
+          "pixels": 290
+        },
+        {
+          "rgb": "#E9CEA1",
+          "pixels": 4
+        }
+      ],
+      "visible_pixels": 557,
+      "outline_share": 0.3357,
+      "square_radius_2_extra_pixels": 28,
+      "rounded_radius_2_extra_pixels": 0,
+      "rounded_radius_2_missing_pixels": 0
+    },
+    {
+      "index": 7,
+      "name": "모래시계",
+      "key": "hourglass",
+      "native_file": "icons/hourglass-32x32.png",
+      "sheet": 1,
+      "rect": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "color_count_including_outline": 8,
+      "material_palette": [
+        {
+          "rgb": "#62494C",
+          "pixels": 6
+        },
+        {
+          "rgb": "#74CDC6",
+          "pixels": 27
+        },
+        {
+          "rgb": "#8599B0",
+          "pixels": 68
+        },
+        {
+          "rgb": "#AB6E7C",
+          "pixels": 12
+        },
+        {
+          "rgb": "#E09656",
+          "pixels": 115
+        },
+        {
+          "rgb": "#EECF5A",
+          "pixels": 140
+        },
+        {
+          "rgb": "#FFFFFF",
+          "pixels": 53
+        }
+      ],
+      "visible_pixels": 601,
+      "outline_share": 0.2995,
+      "square_radius_2_extra_pixels": 44,
+      "rounded_radius_2_extra_pixels": 0,
+      "rounded_radius_2_missing_pixels": 0
+    },
+    {
+      "index": 8,
+      "name": "방패",
+      "key": "shield",
+      "native_file": "icons/shield-32x32.png",
+      "sheet": 1,
+      "rect": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "color_count_including_outline": 6,
+      "material_palette": [
+        {
+          "rgb": "#8599B0",
+          "pixels": 111
+        },
+        {
+          "rgb": "#AB6E7C",
+          "pixels": 86
+        },
+        {
+          "rgb": "#C2C2C2",
+          "pixels": 128
+        },
+        {
+          "rgb": "#D49C73",
+          "pixels": 78
+        },
+        {
+          "rgb": "#E8F3F2",
+          "pixels": 31
+        }
+      ],
+      "visible_pixels": 678,
+      "outline_share": 0.3599,
+      "square_radius_2_extra_pixels": 24,
+      "rounded_radius_2_extra_pixels": 0,
+      "rounded_radius_2_missing_pixels": 2
+    }
+  ],
+  "project_assets_changed": false,
+  "doc_impact": "no doc update needed",
+  "SessionLogs": "unchanged by this task",
+  "ErrorLog": "unchanged by this task",
+  "DecisionLog": "unchanged by this task",
+  "PresentationHTML": "unchanged; no stale candidate"
+}

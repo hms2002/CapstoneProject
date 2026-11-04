@@ -1,0 +1,81 @@
+{
+  "date": "2026-11-04",
+  "mode": "fresh drafts using the calibrated eight-reference style",
+  "tool": "built-in image_gen",
+  "generation_calls": 4,
+  "style_guide": "output/style-review-2026-11-04/README.md",
+  "delivery": "individual 32x32 PNGs and 64x64 2x2 comparison sheet",
+  "palette_policy": "Allowed subsets per material; unused colors need not be forced into the image",
+  "outline_policy": "Preserve authored silhouette and rounded corners; do not regenerate a uniform square dilation",
+  "tasks": [
+    {
+      "key": "01-strong-liquor",
+      "name": "독한 술기운",
+      "refs": [
+        "winged-boots",
+        "hammer"
+      ],
+      "palette": [
+        "#363232",
+        "#D49C73",
+        "#AB6E7C",
+        "#C2C2C2",
+        "#E09656",
+        "#F2F9F8"
+      ],
+      "idea": "황갈색과 탁한 장밋빛 명암으로 그린 둥근 나무 술잔",
+      "prompt": "Use case: stylized-concept, fantasy inventory pixel art.\nDraw ONE new relic from its name. Match the USER'S EIGHT REFERENCE ICONS closely.\nImage 1 is the eight-icon STYLE BOARD. Images 2 and 3 are enlarged material/style examples selected from that board. Image 4 is the allowed COLOR PALETTE. All are reference only: do not draw their objects or a sheet.\nThe art should feel hand-authored like those references: plump softly rounded shapes, natural one-pixel stair steps, a broad base-color area and one clearly shaped shadow per material. Slightly informal/organic contours, useful structural details, a gentle three-quarter tilt. Keep the expressive illustrated quality of the reference, rather than rigid geometric symbols.\nA few functional marks such as folds, rim, worn groove, wood seam or a glass reflection may identify the object. Use only needed colors; DO NOT fill a color quota or add intermediate tones merely to make shading smoother.\nLogical 32x32 transparent sprite. Rounded charcoal #363232 outline about TWO logical pixels wide, with corners sculpted like the references, not a swollen square border. Leave at least TWO transparent logical pixels of margin including outline on every side. Keep the entire object comfortably inside the tile.\nONLY flat palette colors, no gradients, antialiasing, blur, dithering, noisy texture, cast shadow or external glow. Highlights depend on the material, not a uniform shiny rim or a center sparkle on every item.\nExactly ONE isolated centered relic, no text, number, labels, grid, frame, scenery or unrelated accessories. Draw the native pixels deliberately; do not invent high-resolution micro-detail.\n\nNAME: Strong Liquor.\nA real WOODEN DRINKING TANKARD, full of amber liquor, with a stout rounded vessel and a large open C-shaped handle on the right. It is a small fantasy tavern relic, slightly tilted, with the inviting plump shape of the boot reference. The wooden body is the main mass; the open mouth and generous handle hole make it immediately readable as a mug. A simple pale gray rim and lower hoop, perhaps one purposeful stave seam. Just a tiny pale foam edge at the mouth, not a foam mound.\nUse warm tan #D49C73 as the big wood face and muted rose #AB6E7C as ONE broad wood shadow, echoing the boot reference. Gray #C2C2C2 for the simple metal hoop, amber #E09656 for the drink, #F2F9F8 only if a little foam/light edge is useful. Charcoal #363232 outline and mouth depth. These are available colors, not a required count. Shape the rounded cup and open handle carefully; no beige/brown shading ladder, fussy metal trim, mug logo, ice cream shape or tall froth."
+    },
+    {
+      "key": "02-gale-tablet",
+      "name": "질풍의 석판",
+      "refs": [
+        "shield",
+        "glove"
+      ],
+      "palette": [
+        "#363232",
+        "#C2C2C2",
+        "#8599B0",
+        "#5DA16E",
+        "#B1D368"
+      ],
+      "idea": "큰 회색 면과 청회색 그림자, 녹색 바람 문양으로 표현한 석판",
+      "prompt": "Use case: stylized-concept, fantasy inventory pixel art.\nDraw ONE new relic from its name. Match the USER'S EIGHT REFERENCE ICONS closely.\nImage 1 is the eight-icon STYLE BOARD. Images 2 and 3 are enlarged material/style examples selected from that board. Image 4 is the allowed COLOR PALETTE. All are reference only: do not draw their objects or a sheet.\nThe art should feel hand-authored like those references: plump softly rounded shapes, natural one-pixel stair steps, a broad base-color area and one clearly shaped shadow per material. Slightly informal/organic contours, useful structural details, a gentle three-quarter tilt. Keep the expressive illustrated quality of the reference, rather than rigid geometric symbols.\nA few functional marks such as folds, rim, worn groove, wood seam or a glass reflection may identify the object. Use only needed colors; DO NOT fill a color quota or add intermediate tones merely to make shading smoother.\nLogical 32x32 transparent sprite. Rounded charcoal #363232 outline about TWO logical pixels wide, with corners sculpted like the references, not a swollen square border. Leave at least TWO transparent logical pixels of margin including outline on every side. Keep the entire object comfortably inside the tile.\nONLY flat palette colors, no gradients, antialiasing, blur, dithering, noisy texture, cast shadow or external glow. Highlights depend on the material, not a uniform shiny rim or a center sparkle on every item.\nExactly ONE isolated centered relic, no text, number, labels, grid, frame, scenery or unrelated accessories. Draw the native pixels deliberately; do not invent high-resolution micro-detail.\n\nNAME: Tablet of the Gale.\nA heavy old gray STONE TABLET with a bold green wind carving. A broad rounded rectangular slab with one naturally chipped corner and visible thickness, slightly tilted in three-quarter view. The front has a simple flowing gust emblem, with a large curling stroke and one short companion sweep. Give the stone a pleasing chunky silhouette and the wind motif clean purposeful pixels. No decorative frame or stacks of borders.\nUse a broad #C2C2C2 gray stone face and ONE #8599B0 blue-gray shadow/side plane, as simply as the glove's shading. #B1D368 pale green for the wind motif, with #5DA16E jade only where the groove benefits from a little depth. Charcoal #363232 outline. No mauve/gray multi-step ramp, central gem, green glow, literal lettering, extra pebbles or many scratches. Keep the surface matte and the wind symbol expressive, not rigid typography."
+    },
+    {
+      "key": "03-worn-whetstone",
+      "name": "낡은 숫돌",
+      "refs": [
+        "hammer",
+        "glove"
+      ],
+      "palette": [
+        "#363232",
+        "#C2C2C2",
+        "#8599B0"
+      ],
+      "idea": "기본색과 한 단계 그림자로 닳은 면과 두께를 보여주는 숫돌",
+      "prompt": "Use case: stylized-concept, fantasy inventory pixel art.\nDraw ONE new relic from its name. Match the USER'S EIGHT REFERENCE ICONS closely.\nImage 1 is the eight-icon STYLE BOARD. Images 2 and 3 are enlarged material/style examples selected from that board. Image 4 is the allowed COLOR PALETTE. All are reference only: do not draw their objects or a sheet.\nThe art should feel hand-authored like those references: plump softly rounded shapes, natural one-pixel stair steps, a broad base-color area and one clearly shaped shadow per material. Slightly informal/organic contours, useful structural details, a gentle three-quarter tilt. Keep the expressive illustrated quality of the reference, rather than rigid geometric symbols.\nA few functional marks such as folds, rim, worn groove, wood seam or a glass reflection may identify the object. Use only needed colors; DO NOT fill a color quota or add intermediate tones merely to make shading smoother.\nLogical 32x32 transparent sprite. Rounded charcoal #363232 outline about TWO logical pixels wide, with corners sculpted like the references, not a swollen square border. Leave at least TWO transparent logical pixels of margin including outline on every side. Keep the entire object comfortably inside the tile.\nONLY flat palette colors, no gradients, antialiasing, blur, dithering, noisy texture, cast shadow or external glow. Highlights depend on the material, not a uniform shiny rim or a center sparkle on every item.\nExactly ONE isolated centered relic, no text, number, labels, grid, frame, scenery or unrelated accessories. Draw the native pixels deliberately; do not invent high-resolution micro-detail.\n\nNAME: Worn Whetstone.\nA used SHARPENING STONE, an elongated thick rounded rectangular block in gentle three-quarter view across the tile. It has a broad smooth worn top, a shallow lengthwise sharpening groove and rounded chipped ends from use. Make it tactile and chunky, with the same economical hand-shaped shading as the reference glove and hammer. The top is flat and matte; one visible side and a purposeful worn recess explain its function.\nUse #C2C2C2 for the large stone face and #8599B0 for a single shaped shadow plane and the worn groove, with #363232 outline. Those few colors should be enough. Small corner wear can be conveyed by silhouette and the same two material colors. NO bright pale rim, polished chrome highlight, glowing strip, ornamental mounting, blade, crystal facets or extra gray levels. Preserve a softly rounded contour and simple believable stone volume."
+    },
+    {
+      "key": "04-focus-lens",
+      "name": "집중의 렌즈",
+      "refs": [
+        "hourglass",
+        "shield"
+      ],
+      "palette": [
+        "#363232",
+        "#EECF5A",
+        "#E09656",
+        "#AB6E7C",
+        "#8599B0",
+        "#77BCD6",
+        "#F2F9F8"
+      ],
+      "idea": "모래시계 참고작처럼 금빛 틀과 차분한 청회색 유리를 조합한 렌즈",
+      "prompt": "Use case: stylized-concept, fantasy inventory pixel art.\nDraw ONE new relic from its name. Match the USER'S EIGHT REFERENCE ICONS closely.\nImage 1 is the eight-icon STYLE BOARD. Images 2 and 3 are enlarged material/style examples selected from that board. Image 4 is the allowed COLOR PALETTE. All are reference only: do not draw their objects or a sheet.\nThe art should feel hand-authored like those references: plump softly rounded shapes, natural one-pixel stair steps, a broad base-color area and one clearly shaped shadow per material. Slightly informal/organic contours, useful structural details, a gentle three-quarter tilt. Keep the expressive illustrated quality of the reference, rather than rigid geometric symbols.\nA few functional marks such as folds, rim, worn groove, wood seam or a glass reflection may identify the object. Use only needed colors; DO NOT fill a color quota or add intermediate tones merely to make shading smoother.\nLogical 32x32 transparent sprite. Rounded charcoal #363232 outline about TWO logical pixels wide, with corners sculpted like the references, not a swollen square border. Leave at least TWO transparent logical pixels of margin including outline on every side. Keep the entire object comfortably inside the tile.\nONLY flat palette colors, no gradients, antialiasing, blur, dithering, noisy texture, cast shadow or external glow. Highlights depend on the material, not a uniform shiny rim or a center sparkle on every item.\nExactly ONE isolated centered relic, no text, number, labels, grid, frame, scenery or unrelated accessories. Draw the native pixels deliberately; do not invent high-resolution micro-detail.\n\nNAME: Focusing Lens.\nA large round optical lens in a thick GOLD/BRASS bezel with a short sturdy grip pointing diagonally down-left. Gentle three-quarter tilt, softly rounded silhouette, the glass is the main face. Echo the reference hourglass's warm gold structure and muted cool glass. The glass has a broad calm blue-gray area and one clean cyan reflection shape, with a small pale edge accent if useful. Keep the rim and handle simple enough to read at 32 pixels.\nAvailable palette: #EECF5A gold face, #E09656 orange shadow, #AB6E7C muted rose only for a little structural depth if needed; #8599B0 blue-gray glass, #77BCD6 cyan reflection, #F2F9F8 restrained pale glass accent; #363232 outline. Use only the needed colors. No big central star or glint, eye, crosshair, multiple nested rings, huge handle, detailed engraving or a white highlight running around every edge. Let the shaped glass planes suggest focused light, as economically as the hourglass reference."
+    }
+  ]
+}

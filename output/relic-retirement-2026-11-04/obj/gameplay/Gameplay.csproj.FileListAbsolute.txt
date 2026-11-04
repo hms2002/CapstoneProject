@@ -1,0 +1,2 @@
+C:\Users\user\Desktop\CapstoneProject\output\relic-retirement-2026-11-04\obj\gameplay\Gameplay.csproj.AssemblyReference.cache
+C:\Users\user\Desktop\CapstoneProject\output\relic-retirement-2026-11-04\obj\gameplay\Gameplay.csproj.CoreCompileInputs.cache

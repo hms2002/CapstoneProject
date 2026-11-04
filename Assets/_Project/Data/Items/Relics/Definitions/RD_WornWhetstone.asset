@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_WornWhetstone
   displayName: "\uB0A1\uC740 \uC22B\uB3CC"
-  icon: {fileID: -979860976084526476, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  icon: {fileID: 21300000, guid: 812daf9b99ae444896ffee43c6dc011f, type: 3}
   rarity: 0
   description: "\uACF5\uACA9\uB825\uC774 \uACE0\uC815 \uC218\uCE58\uB85C \uC99D\uAC00\uD569\uB2C8\uB2E4."
   maxLevel: 3
