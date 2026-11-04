@@ -7,6 +7,10 @@ last_reviewed: 2026-06-01
 
 # Decision Log
 
+## 2026-11-04 - Keep session logs separate by author and task
+
+Independent branches repeatedly created different logs at the same date-only path. New logs use the author's GitHub login and task ID in the filename. Existing daily logs remain historical records. See the [session log naming rule](../AGENTS.md#sessionlogs).
+
 ## 2026-11-02 - Encyclopedia keeps two equal facing pages
 
 - 사용자가 도감을 같은 크기의 페이지 2개로 양분하는 구성을 반드시 유지하도록 지정했다. 이후 견본과 적용 작업에서도 좌우 페이지 크기 및 중앙 접힘선을 유지한다.
@@ -1295,7 +1299,7 @@ Reason:
 Session logs that only say what was done are not enough when a later task starts in a different part of the codebase. Future work is faster and uses fewer tokens when the log also records ownership, lifecycle, key files, verification, and the next document or source file to read.
 
 Implications:
-- Material architecture, ownership, runtime state, lifecycle, shared service, interface, asmdef, MonoBehaviour, ScriptableObject, and prefab-facing changes should leave a concise task entry in `Docs/SessionLogs/YYYY-MM-DD.md`, and a feature-level `Docs/StructureMemory/` entry when future context reconstruction needs a stable system map.
+- Material architecture, ownership, runtime state, lifecycle, shared service, interface, asmdef, MonoBehaviour, ScriptableObject, and prefab-facing changes should leave a concise task entry in `Docs/SessionLogs/`, and a feature-level `Docs/StructureMemory/` entry when future context reconstruction needs a stable system map.
 - Durable decisions still belong in `Docs/DecisionLog.md`.
 - `Docs/Architecture/` and `Docs/Contracts/` remain source-of-truth documents and should only be rewritten with explicit approval.
 - Small implementation edits do not need new memory documents unless they change how future work should understand the system.
