@@ -75,9 +75,10 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     }
 
     // Only an accepted attack starts this lock; pressing/holding alone cannot re-lock walking.
-    // Crimson Boundary keeps its attack/aim timing while allowing walking through the swing.
+    // Crimson Boundary and Bloom slashes keep their attack/aim timing while allowing walking.
     public bool IsBasicAttackMovementLocked => IsMeleeControlLocked &&
-        meleeExecutionSpec?.Definition?.logic is not AbilityLogic_CrimsonBoundaryAttack;
+        meleeExecutionSpec?.Definition?.logic is not AbilityLogic_CrimsonBoundaryAttack &&
+        meleeExecutionSpec?.Definition?.sourceObject is not FloweringAttackData;
 
     private void HandleAbilityExecutionStarted(AbilitySpec spec)
     {

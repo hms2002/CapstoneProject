@@ -1,18 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "3a0a438657e8410c8277d27004edd6b3",
-            "startedUtc": "2026-10-12T10:32:31.9778373Z",
-            "endedUtc": "2026-10-12T10:32:34.7089571Z",
-            "entries": []
-        },
-        {
-            "sessionId": "b85b763b345e455d88967ac9ee86a6cc",
-            "startedUtc": "2026-10-12T10:43:44.6552648Z",
-            "endedUtc": "2026-10-12T10:44:03.8387208Z",
-            "entries": []
-        },
-        {
             "sessionId": "beab653f567a4f5795f08851f90f797f",
             "startedUtc": "2026-10-12T11:53:25.0547467Z",
             "endedUtc": "2026-10-12T11:53:44.6785187Z",
@@ -364,6 +352,18 @@
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 }
             ]
+        },
+        {
+            "sessionId": "832c4e35628a498d99fcb5944cb87a7f",
+            "startedUtc": "2026-11-03T19:18:19.3117614Z",
+            "endedUtc": "2026-11-03T19:18:20.3411150Z",
+            "entries": []
+        },
+        {
+            "sessionId": "404810f5b84e4b379acd5b5dc7706760",
+            "startedUtc": "2026-11-04T04:31:18.6408182Z",
+            "endedUtc": "2026-11-04T04:31:20.2722611Z",
+            "entries": []
         }
     ]
 }

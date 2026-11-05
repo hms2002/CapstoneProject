@@ -256,12 +256,10 @@ public static class MerchantAffectionRewardsValidation
                 var original = (TMP_Text)slotData.FindProperty("originalPriceText").objectReferenceValue;
                 var final = (TMP_Text)slotData.FindProperty("priceText").objectReferenceValue;
                 var badge = (TMP_Text)slotData.FindProperty("specialOfferText").objectReferenceValue;
-                if (i == 2)
-                {
-                    var badgeBackground = badge.transform.Find("Background").GetComponent<SpriteRenderer>();
-                    Check(badgeBackground.sprite != null && badgeBackground.sortingOrder < badge.GetComponent<Renderer>().sortingOrder,
-                        "Special badge has an authored background behind its glyph renderer");
-                }
+                var paper = (SpriteRenderer)slotData.FindProperty("pricePaper").objectReferenceValue;
+                var expectedPaper = slotData.FindProperty(i == 2 ? "specialPaper" : "discountPaper").objectReferenceValue;
+                Check(paper.enabled && paper.sprite != null && paper.sprite == expectedPaper &&
+                    paper.sortingOrder < badge.GetComponent<Renderer>().sortingOrder, "Folded parchment behind the price: slot " + i);
                 foreach (var label in slot.GetComponentsInChildren<TMP_Text>(true))
                     if (label.gameObject.activeInHierarchy)
                     {
@@ -269,13 +267,14 @@ public static class MerchantAffectionRewardsValidation
                         Check(label.textInfo.characterCount > 0 && label.GetComponent<Renderer>().bounds.size.x > 0f, "Native localized label has visible glyphs: slot " + i + "/" + label.name);
                     }
                 Check(original.gameObject.activeSelf && original.text.Contains(bases[i].ToString("N0")), "Actual original price text: slot " + i);
-                Check(final.text.Contains(entry.price.ToString("N0")) && badge.gameObject.activeSelf == (i == 2), "Displayed payable price and special status agree with stock: slot " + i);
+                Check(final.text == entry.price.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) &&
+                    badge.gameObject.activeSelf && badge.text == (i == 2 ? "-24%" : "-5%"), "Payable price and total discount agree with stock: slot " + i);
                 if (i == 0)
                 {
                     entry.isSold = true; Call(slot, "RefreshView");
-                    Check(!original.gameObject.activeSelf && !badge.gameObject.activeSelf && final.text == "SOLD", "Sold state hides original/special and preserves existing SOLD label");
+                    Check(paper.enabled && !original.gameObject.activeSelf && !badge.gameObject.activeSelf && final.text == "SOLD", "Sold state uses a plain SOLD ticket");
                     Set(slot, "currentState", null); Call(slot, "RefreshView");
-                    Check(!original.gameObject.activeSelf && !badge.gameObject.activeSelf && string.IsNullOrEmpty(final.text), "Empty state hides prices and special tag");
+                    Check(!paper.enabled && !original.gameObject.activeSelf && !badge.gameObject.activeSelf && string.IsNullOrEmpty(final.text), "Empty state hides the entire ticket");
                     Set(slot, "currentState", entry);
                     entry.isSold = false; Call(slot, "RefreshView");
                 }
