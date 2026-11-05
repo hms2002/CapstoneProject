@@ -129,7 +129,7 @@ ScriptedImporter:
   animatedSpriteImportData:
   - name: center
     originalName: 
-    pivot: {x: 0.49999994, y: -1.5869565}
+    pivot: {x: 0.46153846, y: -4.8333335}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -137,8 +137,8 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 46
-      height: 46
+      width: 13
+      height: 18
     spriteID: 38392691e9978d440b528052ab1b2da2
     spriteBone: []
     spriteOutline: []
@@ -147,7 +147,7 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: -69, y: -69}
+    uvTransform: {x: -86, y: -83}
   spriteSheetImportData: []
   tileSetImportData: []
   asepriteLayers:
@@ -182,4 +182,4 @@ ScriptedImporter:
   secondarySpriteTextures: []
   spritePackingTag: 
   canvasSize: {x: 192, y: 192}
-  previousTextureSize: {x: 64, y: 64}
+  previousTextureSize: {x: 32, y: 32}

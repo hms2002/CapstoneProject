@@ -1759,21 +1759,21 @@ asset.056770c65bd343ea8bf1553c842ff605.description,"● {em:용사의 검} 전�
 ● 最大蓄力時刺擊傷害約{val:1.67倍}
 ● 衝鋒中鬆開按鈕可銜接{em:強化旋轉斬}"
 asset.4b071ddcddf7409599bf8b7fa38f5bb2.description,"● {em:홍련의 한계선} 전용 유물
-● {em:점화!}로 적 처치 시 해당 위치에서 {em:추적 화염탄} {val:1개} 생성
-● 화염탄은 가까운 적을 추적
-● 추적할 적이 없으면 생성되지 않으며, 추적 화염탄으로는 {neg:추가 생성 불가}","● Exclusive relic for {em:Crimson Limit}
-● Kills with {em:Ignite!} create {val:1} {em:Homing Fireball} at the target's location
-● The fireball tracks a nearby enemy
-● No target means no fireball; homing fireballs {neg:cannot create further fireballs}","● {em:紅蓮の限界線}専用の遺物
-● {em:点火！}で敵を倒すと、その位置に{em:追跡火炎弾}を{val:1個}生成
-● 火炎弾は近くの敵を追跡
-● 追跡対象がなければ生成されず、追跡火炎弾では{neg:追加生成できない}","● {em:红莲极限}专属遗物
-● 用{em:点燃！}击败敌人时，在其位置生成{val:1个}{em:追踪火球}
-● 火球追踪附近敌人
-● 没有追踪目标时不生成，追踪火球{neg:无法继续生成火球}","● {em:紅蓮極限}專屬遺物
-● 用{em:點燃！}擊敗敵人時，在其位置生成{val:1個}{em:追蹤火球}
-● 火球追蹤附近敵人
-● 沒有追蹤目標時不生成，追蹤火球{neg:無法繼續生成火球}"
+● {em:점화!}를 차징하면 마법진 {val:3개}가 서로 겹쳐 자랍니다.
+● 버튼을 놓으면 세 마법진에 운석이 동시에 떨어집니다.
+● 겹친 곳의 적은 마법진마다 피해와 [[화상]]을 받습니다.","● Exclusive relic for {em:Crimson Limit}
+● Charging {em:Ignite!} grows {val:3} overlapping magic circles.
+● Release to land a meteor in each circle at the same time.
+● Enemies in overlapping circles take damage and gain [[화상]] from each circle.","● {em:紅蓮の限界線}専用の遺物
+● {em:点火！}をチャージすると、重なり合う{val:3つ}の魔法陣が同時に広がる。
+● ボタンを離すと、それぞれの魔法陣に隕石が同時に落ちる。
+● 重なった場所の敵は、魔法陣ごとにダメージと[[화상]]を受ける。","● {em:红莲极限}专属遗物
+● 为{em:点燃！}蓄力时，{val:3个}相互重叠的魔法阵会同时扩大。
+● 松开按键，陨石会同时落在各个魔法阵中。
+● 重叠区域内的敌人会受到每个魔法阵的伤害并被施加[[화상]]。","● {em:紅蓮極限}專屬遺物
+● 為{em:點燃！}蓄力時，{val:3個}互相重疊的魔法陣會同時擴大。
+● 放開按鍵，隕石會同時落在各個魔法陣中。
+● 重疊區域內的敵人會受到每個魔法陣的傷害並被施加[[화상]]。"
 asset.ef860793fa5041008597ec103172b749.description,"● {em:홍련의 한계선} 전용 유물
 ● {em:대폭발!}이 적을 관통하는 {em:거대 용암구 발사}로 전환
 ● 대폭발!의 피해와 크기 유지

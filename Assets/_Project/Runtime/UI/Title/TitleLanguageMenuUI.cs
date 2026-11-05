@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>Projects the existing settings language into an authored title menu.</summary>
@@ -39,7 +38,7 @@ public sealed class TitleLanguageMenuUI : MonoBehaviour
 
     private void OnDisable()
     {
-        Close(false);
+        Close();
     }
 
     // Driven by TitleMenuController so the main menu and language list cannot
@@ -49,21 +48,21 @@ public sealed class TitleLanguageMenuUI : MonoBehaviour
         available = inputAllowed;
         toggleButton.interactable = inputAllowed;
         toggleButton.gameObject.SetActive(inputAllowed);
-        if (!inputAllowed) Close(false);
+        if (!inputAllowed) Close();
         navigation?.Refresh(inputAllowed && IsOpen);
     }
 
     public bool TryHandleCloseRequest()
     {
         if (!IsOpen) return false;
-        Close(true);
+        Close();
         return true;
     }
 
     private void Toggle()
     {
         if (!available) return;
-        if (IsOpen) { Close(true); return; }
+        if (IsOpen) { Close(); return; }
         var settings = GameSettingsService.Instance;
         if (settings == null) return;
         dropdownRoot.SetActive(true);
@@ -74,24 +73,22 @@ public sealed class TitleLanguageMenuUI : MonoBehaviour
             selectionMarks[i].SetActive(current);
             if (current) selected = i;
         }
-        EventSystem.current?.SetSelectedGameObject(languageButtons[selected].gameObject);
+        navigation.SetEntryControl(languageButtons[selected]);
     }
 
     private void SelectLanguage(int index)
     {
         if (!available || !IsOpen) return;
         GameSettingsService.Instance?.SetLanguage(Languages[index]);
-        Close(true);
+        Close();
     }
 
-    private void Dismiss() => Close(true);
+    private void Dismiss() => Close();
 
-    private void Close(bool restoreFocus)
+    private void Close()
     {
         if (!IsOpen) return;
         navigation?.Reset();
         dropdownRoot.SetActive(false);
-        if (restoreFocus && available)
-            EventSystem.current?.SetSelectedGameObject(toggleButton.gameObject);
     }
 }

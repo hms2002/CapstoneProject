@@ -13,6 +13,12 @@ public class Boss : Enemy, ICombatHitPauseImmune
     [Header("Boss's Effects")]
     [SerializeField] private GameplayEffect groggyEffect;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        IgnorePlayerContactForces();
+    }
+
     /// <summary>보스 Attribute 변화에 따라 그로기와 사망 처리를 실행합니다.</summary>
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
     {

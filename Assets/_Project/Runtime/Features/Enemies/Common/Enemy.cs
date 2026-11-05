@@ -260,6 +260,17 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand, ICombatActionState
         return rootCollider;
     }
 
+    /// <summary>플레이어와의 접촉은 유지하고, 플레이어 몸체가 전달하는 충돌 힘만 차단한다.</summary>
+    protected void IgnorePlayerContactForces()
+    {
+        int playerMask = LayerMask.GetMask("Player");
+        foreach (Collider2D bodyCollider in GetComponentsInChildren<Collider2D>(true))
+        {
+            if (bodyCollider.attachedRigidbody == rigid2D && !bodyCollider.isTrigger)
+                bodyCollider.forceReceiveLayers &= ~playerMask;
+        }
+    }
+
     protected virtual void OnDestroy()
     {
         ActiveEnemies.Remove(this);

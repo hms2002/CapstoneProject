@@ -32,6 +32,7 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
     private Vector2 swordVisiblePosition;
     private bool pointerInside;
     private bool selected;
+    internal bool KeyboardNavigationActive { get; set; }
     private bool visible;
     private bool swordPositionCaptured;
     private TMP_Text labelText;
@@ -147,7 +148,8 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
 
     private void RefreshState()
     {
-        bool shouldShow = isActiveAndEnabled && button != null && button.IsInteractable() && (pointerInside || selected);
+        bool shouldShow = isActiveAndEnabled && button != null && button.IsInteractable() &&
+                          (selected || (pointerInside && !KeyboardNavigationActive));
         if (visible == shouldShow)
             return;
 
@@ -393,19 +395,29 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
     }
 }
 
-// Responsibility: keeps existing menu/card Buttons in one navigation group and restores its focus after suspension.
-// Plain presentation state only; callers decide when their screen may receive input.
+// Screen owners call Refresh after EventSystem.Update so the first move can acquire focus without skipping an item.
 internal sealed class ButtonNavigationGroup
 {
-    private readonly UnityEngine.UI.Button[] buttons;
-    private readonly bool horizontal;
-    private UnityEngine.UI.Button lastSelected;
+    private readonly Selectable[] controls;
+    private readonly Navigation.Mode layout;
+    private readonly Color[] pointerColors;
+    private readonly Sprite[] pointerSprites;
+    private Selectable lastSelected;
+    private bool keyboardActive;
     private bool spaceNeedsRelease = true;
+    private int suspendedFrame = -1;
 
     public ButtonNavigationGroup(bool horizontal, params UnityEngine.UI.Button[] buttons)
+        : this(horizontal ? Navigation.Mode.Horizontal : Navigation.Mode.Vertical, buttons)
     {
-        this.horizontal = horizontal;
-        this.buttons = buttons;
+    }
+
+    public ButtonNavigationGroup(Navigation.Mode layout, params Selectable[] controls)
+    {
+        this.layout = layout;
+        this.controls = controls;
+        pointerColors = new Color[controls.Length];
+        pointerSprites = new Sprite[controls.Length];
     }
 
     public void Refresh(bool inputAllowed)
@@ -421,24 +433,103 @@ internal sealed class ButtonNavigationGroup
         if (eventSystem == null)
             return;
 
-        UnityEngine.UI.Button selected = FindSelected(eventSystem);
-        if (IsAvailable(selected))
+        Selectable selected = FindSelected(eventSystem);
+        if (HasPointerInput(eventSystem))
         {
-            lastSelected = selected;
-            SubmitSpaceIfPressed(eventSystem, selected);
+            SetKeyboardActive(false);
+            // A pointer down also selects a uGUI control. Let hover alone represent the mouse.
+            if (selected != null)
+                eventSystem.SetSelectedGameObject(null);
             return;
         }
 
-        UnityEngine.UI.Button target = IsAvailable(lastSelected) ? lastSelected : FindAvailable(0, 1);
-        if (target == null)
+        if (!IsAvailable(selected))
         {
-            spaceNeedsRelease = true;
+            if (!keyboardActive && (Time.frameCount == suspendedFrame || !HasNavigationPress(eventSystem)))
+                return;
+            Selectable target = IsAvailable(lastSelected) ? lastSelected : FindAvailable(0, 1);
+            if (target == null)
+            {
+                Suspend();
+                return;
+            }
+
+            SetKeyboardActive(true);
+            eventSystem.SetSelectedGameObject(target.gameObject);
+            lastSelected = target;
+            spaceNeedsRelease = InputKeyCompatibility.IsPressed(KeyCode.Space);
             return;
         }
 
-        eventSystem.SetSelectedGameObject(target.gameObject);
-        lastSelected = target;
-        SubmitSpaceIfPressed(eventSystem, target);
+        SetKeyboardActive(true);
+        lastSelected = selected;
+        if (selected is Button button)
+            SubmitSpaceIfPressed(eventSystem, button);
+    }
+
+    private static bool HasPointerInput(EventSystem eventSystem)
+    {
+#if ENABLE_INPUT_SYSTEM
+        if (eventSystem.currentInputModule is UnityEngine.InputSystem.UI.InputSystemUIInputModule module)
+            return module.point?.action?.WasPerformedThisDynamicUpdate() == true ||
+                   module.leftClick?.action?.WasPerformedThisDynamicUpdate() == true ||
+                   module.scrollWheel?.action?.WasPerformedThisDynamicUpdate() == true;
+#endif
+        return Input.mousePositionDelta.sqrMagnitude > 0f || Input.GetMouseButtonDown(0) ||
+               Input.mouseScrollDelta.sqrMagnitude > 0f;
+    }
+
+    private bool HasNavigationPress(EventSystem eventSystem)
+    {
+        if (!eventSystem.sendNavigationEvents)
+            return false;
+#if ENABLE_INPUT_SYSTEM
+        if (eventSystem.currentInputModule is UnityEngine.InputSystem.UI.InputSystemUIInputModule module)
+        {
+            var move = module.move?.action;
+            if (move == null || !move.WasPerformedThisDynamicUpdate())
+                return false;
+            Vector2 direction = move.ReadValue<Vector2>();
+            return (layout != Navigation.Mode.Vertical && direction.x != 0f) ||
+                   (layout != Navigation.Mode.Horizontal && direction.y != 0f);
+        }
+#endif
+        return (layout != Navigation.Mode.Horizontal &&
+                (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow) ||
+                 Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S))) ||
+               (layout != Navigation.Mode.Vertical &&
+                (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) ||
+                 Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D)));
+    }
+
+    // uGUI keeps a stationary pointer inside its control even when navigation moves elsewhere.
+    private void SetKeyboardActive(bool active)
+    {
+        if (keyboardActive == active)
+            return;
+        keyboardActive = active;
+        for (int i = 0; i < controls.Length; i++)
+        {
+            Selectable control = controls[i];
+            if (control == null)
+                continue;
+            if (control.TryGetComponent(out MenuButtonHighlightPresentation highlight))
+                highlight.KeyboardNavigationActive = active;
+            if (control.transition == Selectable.Transition.ColorTint)
+            {
+                var colors = control.colors;
+                if (active) pointerColors[i] = colors.highlightedColor;
+                colors.highlightedColor = active ? colors.normalColor : pointerColors[i];
+                control.colors = colors;
+            }
+            else if (control.transition == Selectable.Transition.SpriteSwap)
+            {
+                var sprites = control.spriteState;
+                if (active) pointerSprites[i] = sprites.highlightedSprite;
+                sprites.highlightedSprite = active ? null : pointerSprites[i];
+                control.spriteState = sprites;
+            }
+        }
     }
 
     private void SubmitSpaceIfPressed(EventSystem eventSystem, UnityEngine.UI.Button selected)
@@ -467,12 +558,14 @@ internal sealed class ButtonNavigationGroup
 
     public void Suspend()
     {
+        SetKeyboardActive(false);
         spaceNeedsRelease = true;
+        suspendedFrame = Time.frameCount;
         EventSystem eventSystem = EventSystem.current;
         if (eventSystem == null)
             return;
 
-        UnityEngine.UI.Button selected = FindSelected(eventSystem);
+        Selectable selected = FindSelected(eventSystem);
         if (selected == null)
             return;
 
@@ -487,11 +580,16 @@ internal sealed class ButtonNavigationGroup
         ConfigureNavigation(false);
     }
 
+    public void SetEntryControl(Selectable control) => lastSelected = control;
+
     private void ConfigureNavigation(bool inputAllowed)
     {
-        for (int i = 0; i < buttons.Length; i++)
+        // Settings retains its authored two-dimensional navigation and native slider adjustment.
+        if (layout == Navigation.Mode.Automatic)
+            return;
+        for (int i = 0; i < controls.Length; i++)
         {
-            UnityEngine.UI.Button button = buttons[i];
+            Selectable button = controls[i];
             if (button == null)
                 continue;
 
@@ -503,9 +601,9 @@ internal sealed class ButtonNavigationGroup
             };
             if (navigation.mode == UnityEngine.UI.Navigation.Mode.Explicit)
             {
-                UnityEngine.UI.Button previous = FindAvailable(i - 1, -1);
-                UnityEngine.UI.Button next = FindAvailable(i + 1, 1);
-                if (horizontal)
+                Selectable previous = FindAvailable(i - 1, -1);
+                Selectable next = FindAvailable(i + 1, 1);
+                if (layout == Navigation.Mode.Horizontal)
                 {
                     navigation.selectOnLeft = previous;
                     navigation.selectOnRight = next;
@@ -521,29 +619,29 @@ internal sealed class ButtonNavigationGroup
         }
     }
 
-    private UnityEngine.UI.Button FindAvailable(int start, int direction)
+    private Selectable FindAvailable(int start, int direction)
     {
-        for (int i = start; i >= 0 && i < buttons.Length; i += direction)
+        for (int i = start; i >= 0 && i < controls.Length; i += direction)
         {
-            if (IsAvailable(buttons[i]))
-                return buttons[i];
+            if (IsAvailable(controls[i]))
+                return controls[i];
         }
 
         return null;
     }
 
-    private UnityEngine.UI.Button FindSelected(EventSystem eventSystem)
+    private Selectable FindSelected(EventSystem eventSystem)
     {
-        for (int i = 0; i < buttons.Length; i++)
+        for (int i = 0; i < controls.Length; i++)
         {
-            if (buttons[i] != null && eventSystem.currentSelectedGameObject == buttons[i].gameObject)
-                return buttons[i];
+            if (controls[i] != null && eventSystem.currentSelectedGameObject == controls[i].gameObject)
+                return controls[i];
         }
 
         return null;
     }
 
-    private static bool IsAvailable(UnityEngine.UI.Button button)
+    private static bool IsAvailable(Selectable button)
     {
         return button != null && button.IsActive() && button.IsInteractable();
     }

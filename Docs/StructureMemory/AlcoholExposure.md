@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: alcohol-exposure
-last_verified: 2026-10-12
+last_verified: 2026-11-05
 ---
 
 # Alcohol exposure and Spiri reward
@@ -32,9 +32,15 @@ and [Presentation Authoring Contract](../Contracts/PresentationAuthoringContract
   Raw input, other ability input, forced movement and no-input aim fallback
   retain their existing direction semantics.
 - [AlcoholExposurePlayerVisual](../../Assets/_Project/Runtime/Presentation/Map/Puddles/AlcoholExposurePlayerVisual.cs)
-  projects exposure onto the player prefab's authored mug/drop renderers. The
-  [mug shader](../../Assets/_Project/Art/Shaders/AlcoholMugFill.shader) changes the
-  liquid interior without changing Drink.png or generating runtime objects.
+  uses the player prefab's mug renderer and three poses from
+  [AlcoholMonsterMug](../../Assets/_Project/Art/Sprites/UI/StatusIcons/AlcoholMonsterMug.png).
+  Edit the three tagged frames in the [layered Aseprite source](../../Assets/_Project/Art/Sprites/UI/StatusIcons/Source~/AlcoholMonsterMug.aseprite)
+  and export horizontally at 1×, without trimming or padding.
+  The handle, staves, hoops and lip use linked cels across all three frames.
+  The two active frames also share their foam cel.
+  The [mug shader](../../Assets/_Project/Art/Shaders/AlcoholMugFill.shader) uses
+  the oak front between the brass hoops to show charge rising and draining.
+  Eyes, foam and the buff arrow stay readable for the duration of the effect.
 - [SpiriAlcoholRewardAuthoring](../../Assets/_Project/Editor/Tools/Data/SpiriAlcoholRewardAuthoring.cs)
   registers confusion GE/GameplayTag/HUD, player references and the level-1
   information reward on DragonBossNpc (ID2001). Four text fields use the existing
@@ -78,6 +84,14 @@ and [Presentation Authoring Contract](../Contracts/PresentationAuthoringContract
   residual speed buff's HUD timer.
 - The old puddle buff definition/interval/duration fields are hidden compatibility
   data, not active settings. See [migration debt](../RefactorBacklog/AlcoholPuddleLegacyAuthoring.md).
+- The head reads `HasActiveConfusion` and `HasActiveSpeedBuff` from the exposure
+  owner. Both check the actual recipient/GE/source in the effect runner. Confusion
+  keeps the spiral eyes and sway through drain. The smiling mug and up arrow persist
+  through the residual speed buff, including reentry. The three physical droplets
+  still follow contact overflow. The prefab and authoring menu bind the same
+  32×32, bottom-center, 32-PPU poses in the 96×32 strip.
+  The mug moves in whole sprite pixels from its authored position. It sways
+  horizontally during confusion and lifts two pixels on entering either effect.
 
 ## Recent structure and recovery
 

@@ -24,3 +24,10 @@ Aseprite 1.3.18.6에서 두 원본을 다시 열어 레이어와 15개 슬라이
 - 격리된 Unity 6000.4.2f1 에디터에서 두 프리팹과 스프라이트를 임포트해 한국어 가격표를 렌더링했다. 첫 캡처에서 결제 숫자가 종이 아래 테두리에 닿아 글자 크기와 기준선을 조정했다. [런 상점](../../outputs/shop-discount-preview-2026-11-04/applied-b1/b1-merchant.png)에서 950→722와 −24%, [허브 마정석 슬롯](../../outputs/shop-discount-preview-2026-11-04/applied-b1/b1-hub-price.png)에서 정수 반올림 후 8→6과 −25%, [정상가·품절·빈 슬롯](../../outputs/shop-discount-preview-2026-11-04/applied-b1/b1-states-native.png) 표시를 확인했다. 허브 캡처는 비교를 위해 같은 진열대에 허브 프리팹을 배치한 것이다. 실제 플레이 카메라와 언어 전환은 미확인이다.
 - 최종 렌더에 사용한 게임·에디터 파일 7개의 SHA-256이 작업 트리와 일치했다. 검토용 임시 프로젝트 `%TEMP%/b1-shop-2d430eec/Stage`는 재귀 삭제가 실행 정책에서 차단되어 남아 있다(약 2.3 GiB).
 - 문서 영향은 SessionLog와 [RunGoldAndShop](../StructureMemory/RunGoldAndShop.md)이다. 이번 적용에 따른 ErrorLog·DecisionLog 및 Presentation HTML 갱신 사항은 없다.
+
+## 2026-11-05 정가 취소선과 상품 겹침
+
+- [정가 전용 TMP 라벨](../../Assets/_Project/Runtime/UI/Shop/ShopOriginalPriceText.cs)과 Unity 메타를 추가했다. 기존 정가 텍스트의 첫 숫자 상단과 하단 사이 중앙에 취소선을 그린다. [허브 슬롯](../../Assets/_Project/Prefabs/UI/Dialogue/ShopSlot.prefab)과 [런 골드 슬롯](../../Assets/_Project/Prefabs/UI/Dialogue/ShopSlot_RunGold.prefab)의 정가에 연결하고, 두 슬롯 모두 기존 `ItemDisplay` 레이어에서 양피지를 순서 1, 정가·결제액·할인율·통화 아이콘을 순서 2에 두었다. 번개창의 전용 진열 그룹은 같은 레이어의 순서 0이다.
+- 격리된 Unity 6000.4.2f1 편집 모드에서 두 프리팹을 임포트하고 한국어 글꼴로 렌더링했다. 기존 1280×720 캡처와 비교해 정가 950의 취소선이 화면 y=376에서 y=370으로 올라갔다. 숫자 위·아래는 y=359~380이다. [겹침 확인 이미지](../../outputs/shop-discount-preview-2026-11-04/applied-b1/b1-price-overlap.png)는 비교용으로 첫 번째 검만 내려서 양피지가 칼날을 가리는 모습을 보여 준다. 실제 슬롯의 상품 위치는 유지했다.
+- 새 스크립트를 임시 MSBuild 대상으로 포함해 UI 어셈블리 빌드에 성공했다. 두 프리팹의 로컬 참조, 정가 필드 연결, 각 렌더러의 순서와 렌더에 사용한 네 파일의 일치를 대조했다. 자동 테스트와 실제 Play Mode는 실행하지 않았다.
+- 문서 영향은 SessionLog와 [RunGoldAndShop](../StructureMemory/RunGoldAndShop.md)이다. ErrorLog·DecisionLog 및 Presentation HTML 갱신 사항은 없다.

@@ -26,7 +26,7 @@ public sealed class ItemTypeBorderGraphic : MaskableGraphic
     private static Color ChestRelicColor(RelicDefinition relic)
     {
         // Exclusive relics use their authored logic; names and localized text are not identity.
-        if (relic.logic is RelicLogic_WeaponExclusive)
+        if (relic.logic is RelicLogic_WeaponExclusive or RelicLogic_FloweringBloomExtension_Managed)
             return new Color32(155, 227, 74, 255);
         return relic.rarity switch
         {

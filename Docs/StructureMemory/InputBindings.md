@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: input
-last_reviewed: 2026-10-31
+last_reviewed: 2026-11-05
 ---
 
 # Input Bindings
@@ -35,14 +35,14 @@ Gameplay reads through Core `InputActionQuery`; UI may read the concrete service
 
 ## Extension Points And Validation
 
-### Menu and level-card keyboard focus
+### Menu, settings and level-card keyboard focus
 
-- [TitleMenuController](../../Assets/_Project/Runtime/UI/Title/TitleMenuController.cs), [PauseMenuUI](../../Assets/_Project/Runtime/UI/Settings/PauseMenuUI.cs), and [LevelRewardSelectionPresenter](../../Assets/_Project/Runtime/UI/Progression/Leveling/LevelRewardSelectionPresenter.cs) own their screen eligibility and refresh a plain `ButtonNavigationGroup` in `LateUpdate`.
-- `ButtonNavigationGroup` is declared alongside [MenuButtonHighlightPresentation](../../Assets/_Project/Runtime/UI/Common/MenuButtonHighlightPresentation.cs). It sets explicit links between existing eligible Buttons, focuses the first available control after animation unlock, remembers the last control across a child panel, and removes only its own selected object when suspended. It creates no hierarchy, component, service, or serialized state.
-- Title/pause menus use vertical W/S and up/down navigation; level cards use horizontal A/D and left/right navigation. The existing `InputSystemUIInputModule` owns those fixed UI keys and Enter submission. Existing menu highlights and authored card selected colors project focus.
-- These three navigation groups also dispatch a local Space Submit to their selected Button. Opening, suspension, an unavailable/animation-locked group, and a fresh card offer require Space release before another confirmation. A held Space never repeats, and a native Submit already performed in the same frame prevents a second Space Submit. Global UI actions are unchanged, so intro skip, tutorial/chest hold buttons, key/text capture and the regular dialogue's existing Space path retain their own input handling.
+- [TitleMenuController](../../Assets/_Project/Runtime/UI/Title/TitleMenuController.cs), [PauseMenuUI](../../Assets/_Project/Runtime/UI/Settings/PauseMenuUI.cs), [SettingsPanelUI](../../Assets/_Project/Runtime/UI/Settings/SettingsPanelUI.cs) and [LevelRewardSelectionPresenter](../../Assets/_Project/Runtime/UI/Progression/Leveling/LevelRewardSelectionPresenter.cs) refresh the eligible screen's `ButtonNavigationGroup` in `LateUpdate`.
+- [ButtonNavigationGroup](../../Assets/_Project/Runtime/UI/Common/MenuButtonHighlightPresentation.cs) leaves a newly opened group without focus. The first move along a supported axis focuses the first available control. A returning group can resume its last control on that move. The language list starts keyboard navigation at the current language.
+- Title and pause menus use W/S or up/down. Level cards use A/D or left/right. Settings keeps the authored automatic navigation between its buttons and sliders. The native UI module handles movement after entry, slider adjustment and Enter. A focused button also accepts a fresh Space press. The local Space handler waits for release and skips a frame already handled by native Submit.
+- While navigating, only selection drives the sword, tint or sprite highlight. Mouse movement, a left click or scrolling clears the group's selection and restores its hover appearance. Suspension clears only a selection owned by the group.
 - [UIManager.CanProcessNavigationInput](../../Assets/_Project/Runtime/UI/Common/UIManager.cs) queries the top active stack entry, loading state, and existing external-block owner exceptions. This keeps the level session's owned popup operable under its own blocker while rejecting another flow's blocker and background-menu input.
-- A new card offer resets focus to its first available card. Applying, flipping, rerolling, opening-frame and closing gates also cover Button submission. Existing 1/2/3 selections, R reroll and session-owned candidate/pause state remain with their existing owners.
+- A new card offer clears focus and uses the first available card on the next horizontal navigation press. Applying, flipping, rerolling, opening-frame and closing gates also cover Button submission. Existing 1/2/3 selections, R reroll and session-owned candidate/pause state remain with their existing owners.
 - [DialogueController](../../Assets/_Project/Runtime/UI/Dialogue/DialogueController.cs) includes Enter/numpad Enter in the choice-confirm release gate. Holding Enter while revealing choices therefore keeps confirmation disabled until release and the existing guard delay finish.
 - [UiKeyboardNavigationRegression](../../Tools/Validation/UiKeyboardNavigationRegression.cs) exercises the built UI/input assemblies in a disposable Unity project. Production scene layout and rendered presentation acceptance remain separate manual checks.
 

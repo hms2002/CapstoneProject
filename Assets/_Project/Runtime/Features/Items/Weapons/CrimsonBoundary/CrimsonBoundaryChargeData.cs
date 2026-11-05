@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ALData_CrimsonBoundaryCharge", menuName = "GAS/Weapon/Crimson Boundary/Charge Data")]
 public sealed class CrimsonBoundaryChargeData : ScriptableObject
 {
-    // Approved artwork: the inner circle spans 86 pixels inside the 128-pixel outer circle.
+    // Gameplay diameter at the end of the first half of the charge, as a fraction of full diameter.
     public const float InnerCircleFraction = 86f / 128f;
     public CrimsonBoundaryWeaponData weaponData;
     public GameObject presentationPrefab;
@@ -33,7 +33,8 @@ public sealed class CrimsonBoundaryChargeData : ScriptableObject
 // Gameplay commands authored presentation without depending on the Presentation assembly.
 public interface ICrimsonBoundaryChargePresentation
 {
-    void BindOwner(CrimsonBoundaryRuntimeState owner);
+    // The outward direction orients each relic contour. A single circle is centered on the aim.
+    void BindOwner(CrimsonBoundaryRuntimeState owner, bool showGauge = true, Vector2 outward = default);
     void ShowCharge(Vector3 ownerPosition, Vector3 target, float ratio, float diameter);
     void BeginFlight(Vector3 start, Vector3 target);
     void MoveMeteor(Vector3 position);

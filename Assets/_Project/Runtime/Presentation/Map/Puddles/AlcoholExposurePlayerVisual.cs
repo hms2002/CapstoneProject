@@ -7,10 +7,15 @@ namespace UnityGAS
     public sealed class AlcoholExposurePlayerVisual : MonoBehaviour
     {
         private static readonly int FillAmountId = Shader.PropertyToID("_FillAmount");
+        private static readonly int StatusActiveId = Shader.PropertyToID("_StatusActive");
+        private const float MugPixelsPerUnit = 32f;
+        private enum MugState { Charging, Confused, Buffed }
 
         [SerializeField] private PlayerAlcoholExposure exposure;
         [SerializeField] private Transform visualRoot;
         [SerializeField] private SpriteRenderer mug;
+        [SerializeField] private Sprite confusedMug;
+        [SerializeField] private Sprite buffedMug;
         [SerializeField] private SpriteRenderer[] overflowDroplets;
         [SerializeField, Min(0f)] private float overflowShakeDegrees = 9f;
         [SerializeField, Min(0f)] private float overflowShakeCyclesPerSecond = 3f;
@@ -21,7 +26,10 @@ namespace UnityGAS
         private Vector3 rootPosition;
         private Vector3 rootScale;
         private Quaternion rootRotation;
-        private Quaternion mugRotation;
+        private Vector3 mugPosition;
+        private Sprite chargingMug;
+        private MugState displayedState;
+        private float stateTime;
         private Vector3[] dropPositions;
         private Color[] dropColors;
         private bool cached;
@@ -40,11 +48,27 @@ namespace UnityGAS
             }
 
             float fill = Mathf.Clamp01(exposure.FillAmount);
-            if (!exposure.HasAlcoholContact && fill <= 0f)
+            MugState state = MugState.Charging;
+            if (exposure.HasActiveConfusion) state = MugState.Confused;
+            else if (exposure.HasActiveSpeedBuff) state = MugState.Buffed;
+            if (!exposure.HasAlcoholContact && fill <= 0f && state == MugState.Charging)
             {
-                Hide();
+                if (mug.enabled) Hide();
                 return;
             }
+
+            if (state != displayedState)
+            {
+                displayedState = state;
+                stateTime = 0f;
+                mug.sprite = state switch
+                {
+                    MugState.Confused => confusedMug,
+                    MugState.Buffed => buffedMug,
+                    _ => chargingMug
+                };
+            }
+            else stateTime += Time.deltaTime;
 
             bool showOverflow = exposure.IsOverflowing && !exposure.IsDraining && fill >= 0.999f;
             if (!showOverflow || !overflowing) overflowTime = 0f;
@@ -53,19 +77,28 @@ namespace UnityGAS
 
             // The root remains a prefab child, but its head offset and size do not mirror or scale with the body.
             visualRoot.position = transform.position + rootPosition;
-            float angle = showOverflow
-                ? Mathf.Sin(overflowTime * overflowShakeCyclesPerSecond * Mathf.PI * 2f) * overflowShakeDegrees
-                : 0f;
             visualRoot.rotation = rootRotation;
             Vector3 parentScale = visualRoot.parent != null ? visualRoot.parent.lossyScale : Vector3.one;
             visualRoot.localScale = new Vector3(
                 CompensateScale(rootScale.x, parentScale.x),
                 CompensateScale(rootScale.y, parentScale.y),
                 CompensateScale(rootScale.z, parentScale.z));
-            mug.transform.localRotation = mugRotation * Quaternion.Euler(0f, 0f, angle);
+            // Project the authored tilt onto horizontal travel at half the mug height.
+            // Whole sprite pixels keep the outline intact through overflow and confusion drain.
+            float swayPixels = 0f;
+            if (state == MugState.Confused || (state == MugState.Charging && showOverflow))
+            {
+                float swayTime = state == MugState.Confused ? stateTime : overflowTime;
+                float phase = swayTime * overflowShakeCyclesPerSecond * Mathf.PI * 2f;
+                float tilt = Mathf.Sin(phase) * overflowShakeDegrees * Mathf.Deg2Rad;
+                swayPixels = Mathf.Round(0.5f * MugPixelsPerUnit * Mathf.Sin(tilt));
+            }
+            float liftPixels = state == MugState.Charging ? 0f : Mathf.Round(2f * Mathf.Clamp01(1f - stateTime / 0.18f));
+            mug.transform.localPosition = mugPosition + new Vector3(swayPixels, liftPixels, 0f) / MugPixelsPerUnit;
 
             mug.GetPropertyBlock(mugProperties);
             mugProperties.SetFloat(FillAmountId, fill);
+            mugProperties.SetFloat(StatusActiveId, state == MugState.Charging ? 0f : 1f);
             mug.SetPropertyBlock(mugProperties);
             mug.enabled = true;
             UpdateDroplets(showOverflow);
@@ -77,7 +110,8 @@ namespace UnityGAS
             rootPosition = visualRoot.localPosition;
             rootScale = visualRoot.localScale;
             rootRotation = visualRoot.localRotation;
-            mugRotation = mug.transform.localRotation;
+            mugPosition = mug.transform.localPosition;
+            chargingMug = mug.sprite;
             mugProperties = new MaterialPropertyBlock();
             int count = overflowDroplets != null ? overflowDroplets.Length : 0;
             dropPositions = new Vector3[count];
@@ -120,6 +154,8 @@ namespace UnityGAS
         {
             overflowing = false;
             overflowTime = 0f;
+            displayedState = MugState.Charging;
+            stateTime = 0f;
             if (mug != null) mug.enabled = false;
             if (!cached) return;
             if (visualRoot != null)
@@ -130,9 +166,11 @@ namespace UnityGAS
             }
             if (mug != null)
             {
-                mug.transform.localRotation = mugRotation;
+                mug.sprite = chargingMug;
+                mug.transform.localPosition = mugPosition;
                 mug.GetPropertyBlock(mugProperties);
                 mugProperties.SetFloat(FillAmountId, 0f);
+                mugProperties.SetFloat(StatusActiveId, 0f);
                 mug.SetPropertyBlock(mugProperties);
             }
             if (overflowDroplets == null) return;

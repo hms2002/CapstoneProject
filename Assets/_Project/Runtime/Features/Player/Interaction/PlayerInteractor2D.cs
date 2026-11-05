@@ -113,7 +113,8 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
             return null;
 
         IInteractable previousTarget = targetResolver.CurrentTarget;
-        IInteractable currentTarget = targetResolver.RefreshTarget(this, transform.position);
+        Collider2D sensorCollider = interactionSensor != null ? interactionSensor.TriggerCollider : null;
+        IInteractable currentTarget = targetResolver.RefreshTarget(this, transform.position, sensorCollider);
 
         if (!ReferenceEquals(previousTarget, currentTarget) && currentTarget != null)
             CapstoneDiagnostics.EditorOnlyLog.Log($"[Player] New currentTarget = {(currentTarget as MonoBehaviour)?.name}");

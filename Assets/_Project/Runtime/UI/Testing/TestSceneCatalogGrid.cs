@@ -36,6 +36,11 @@ public sealed class TestSceneCatalogGrid : MonoBehaviour
     private void OnEnable()
     {
         BindButtons(true);
+        BindCatalogCells();
+    }
+
+    internal void BindCatalogCells()
+    {
         for (int category = 0; category < selectedIndices.Length; category++)
         {
             TestSceneCatalogCell[] cells = Cells(category);
@@ -82,6 +87,12 @@ public sealed class TestSceneCatalogGrid : MonoBehaviour
     {
         if (!IsCategory(category) || Count(category) == 0) return -1;
         return Mathf.Clamp(selectedIndices[category], 0, Count(category) - 1);
+    }
+
+    public T SelectedTarget<T>(int category) where T : UnityEngine.Object
+    {
+        int index = GetSelectedIndex(category);
+        return index >= 0 ? Cells(category)[index]?.Target as T : null;
     }
 
     public void Select(int category, int index)

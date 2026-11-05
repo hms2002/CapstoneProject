@@ -5,6 +5,8 @@ using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
@@ -13,10 +15,11 @@ using UnityEngine.UI;
 using Unity.Cinemachine;
 
 /// <summary>Authors the isolated test arena and its UI. Runtime code only drives saved references.</summary>
-public static partial class TestSceneBuilder
+public sealed partial class TestSceneBuilder : IProcessSceneWithReport
 {
     public const string ScenePath = "Assets/_Project/Scenes/Tests/TestScene.unity";
-    private const string EventFolder = "Assets/_Project/Prefabs/Testing/EventRooms";
+    private const string DemonKingPath = "Assets/_Project/Prefabs/Bosses/DemonKing/DemonKing.prefab";
+    private const string DemonRigPath = "Assets/_Project/Prefabs/Testing/Bosses/DemonKing_TestRig.prefab";
     private static TMP_FontAsset font;
 
     [MenuItem("Tools/Testing/Build TestScene")]
@@ -94,22 +97,13 @@ public static partial class TestSceneBuilder
         light.intensity = 1;
         MonsterSceneNavigationInstaller.EnsureSceneNavigation(scene);
 
-        var bosses = FindPrefabs("Assets/_Project/Prefabs/Bosses", x => x.GetComponent<BossControllerBase>() != null);
-        GameObject demonRig = BuildDemonKingRig(scene);
-        for (int i = 0; i < bosses.Length; i++)
-            if (bosses[i].GetComponent<DemonKingController>() != null) bosses[i] = demonRig;
-        var mobs = FindPrefabs("Assets/_Project/Prefabs/Monsters", x => x.GetComponent<Mob>() != null);
-        var chests = FindPrefabs("Assets/_Project/Prefabs/Items/Chests", x => x.GetComponent<TreasureChest>() != null);
-        GameObject[] events = BuildEventRoomPrefabs(ground);
+        BuildDemonKingRig(scene);
         var controls = BuildCanvas();
         Set(controls, "itemDatabase", Load<ItemDatabase>("Assets/_Project/Data/Items/ItemDatabase.asset"));
         Set(controls, "rewardCatalog", Load<LevelRewardCatalogSO>("Assets/_Project/Data/Progression/Leveling/Rewards/Catalog/LevelRewardCatalog.asset"));
         Set(controls, "progressionConfig", Load<LevelProgressionConfigSO>("Assets/_Project/Data/Progression/Leveling/LevelProgressionConfig.asset"));
-        SetArray(controls, "bossPrefabs", bosses);
-        SetArray(controls, "mobPrefabs", mobs);
-        SetArray(controls, "chestPrefabs", chests);
-        SetArray(controls, "eventRoomPrefabs", events);
         BuildCatalogGrid(controls);
+        PrepareCatalogs(controls);
         Set(controls, "arenaRoot", arena);
         Set(controls, "roomArea", room.GetComponent<MonsterRoomArea2D>());
         Set(controls, "roomGroup", room.GetComponent<MonsterSpawnRoomGroup>());
@@ -120,7 +114,51 @@ public static partial class TestSceneBuilder
         if (!EditorSceneManager.SaveScene(scene, ScenePath)) throw new InvalidOperationException("Scene save failed.");
         AssetDatabase.SaveAssets();
         ValidateScene();
-        Debug.Log($"[TestScene] Authored 30x30 arena: bosses={bosses.Length}, mobs={mobs.Length}, chests={chests.Length}, events={events.Length}.");
+        Debug.Log("[TestScene] Authored arena and test controls.");
+    }
+
+    // Unity processes a temporary scene for Editor Play and for builds that include TestScene.
+    public int callbackOrder => 0;
+
+    public void OnProcessScene(Scene scene, BuildReport report)
+    {
+        if (scene.path != ScenePath) return;
+        var controls = scene.GetRootGameObjects()
+            .SelectMany(root => root.GetComponentsInChildren<TestSceneControlPanel>(true)).Single();
+        PrepareCatalogs(controls);
+    }
+
+    private static void PrepareCatalogs(TestSceneControlPanel controls)
+    {
+        GameObject[] mobs = FindPrefabs("Assets/_Project/Prefabs/Monsters", p => p.GetComponent<Mob>() != null);
+        GameObject[] bosses = FindPrefabs("Assets/_Project/Prefabs/Bosses", p => p.GetComponent<BossControllerBase>() != null);
+        for (int i = 0; i < bosses.Length; i++)
+        {
+            if (AssetDatabase.GetAssetPath(bosses[i]) == DemonKingPath) bosses[i] = Load<GameObject>(DemonRigPath);
+        }
+        GameObject[] chests = FindPrefabs("Assets/_Project/Prefabs/Items/Chests", p => p.GetComponent<TreasureChest>() != null);
+        var templates = AssetDatabase.FindAssets("t:RoomTemplateSO", new[] { "Assets/_Project/Data/Dungeon/Rooms" })
+            .Select(AssetDatabase.GUIDToAssetPath).OrderBy(path => path, StringComparer.Ordinal)
+            .Select(AssetDatabase.LoadAssetAtPath<RoomTemplateSO>).Where(IsTestEvent).ToArray();
+        SetArray(controls, "mobPrefabs", mobs);
+        SetArray(controls, "bossPrefabs", bosses);
+        SetArray(controls, "chestPrefabs", chests);
+        SetArray(controls, "eventTemplates", templates);
+        var data = new SerializedObject(controls);
+        if (data.FindProperty("eventRoomShell").objectReferenceValue == null)
+            Set(controls, "eventRoomShell", CreateEventRoomShell(controls.gameObject.scene));
+        var database = (ItemDatabase)data.FindProperty("itemDatabase").objectReferenceValue;
+        var grid = (TestSceneCatalogGrid)data.FindProperty("catalogGrid").objectReferenceValue;
+        RefreshCards(grid, database, mobs, bosses);
+        controls.EditorCatalogPrepared();
+    }
+
+    private static bool IsTestEvent(RoomTemplateSO template)
+    {
+        if (template == null || template.LayoutData.roomType != RoomType.Event) return false;
+        return template.BuildData.objectPlacements == null || !template.BuildData.objectPlacements.Any(x =>
+            x.prefab != null && (x.prefab.GetComponentInChildren<RunSpecialNpcFeatureBase>(true) != null ||
+                                x.prefab.GetComponentInChildren<RunSpecialNpcInteractor>(true) != null));
     }
 
     public static void BuildFromCommandLine() => Build();
@@ -223,73 +261,35 @@ public static partial class TestSceneBuilder
         return controls;
     }
 
-    private static GameObject[] BuildEventRoomPrefabs(Tilemap ground)
+    private static RoomPieceAuthoring CreateEventRoomShell(Scene scene)
     {
-        Directory.CreateDirectory(EventFolder);
-        var result = new List<GameObject>();
-        foreach (string path in AssetDatabase.FindAssets("t:RoomTemplateSO", new[] { "Assets/_Project/Data/Dungeon/Rooms" }).Select(AssetDatabase.GUIDToAssetPath).OrderBy(x => x))
+        var root = new GameObject("Test Event Room Shell", typeof(Grid));
+        root.SetActive(false);
+        SceneManager.MoveGameObjectToScene(root, scene);
+        Tilemap Layer(string name, string sorting, int order = 0, int physicsLayer = 0)
         {
-            var template = AssetDatabase.LoadAssetAtPath<RoomTemplateSO>(path);
-            if (template.LayoutData.roomType != RoomType.Event) continue;
-            bool legacyNpc = template.BuildData.objectPlacements != null && template.BuildData.objectPlacements.Any(x =>
-                x.prefab != null && (x.prefab.GetComponentInChildren<RunSpecialNpcFeatureBase>(true) != null ||
-                                    x.prefab.GetComponentInChildren<RunSpecialNpcInteractor>(true) != null));
-            if (legacyNpc)
-            {
-                // Remove only this builder's previously generated test snapshot, never source content.
-                string obsoleteSnapshot = EventFolder + "/" + template.name + ".prefab";
-                if (AssetDatabase.LoadAssetAtPath<GameObject>(obsoleteSnapshot) != null) AssetDatabase.DeleteAsset(obsoleteSnapshot);
-                continue;
-            }
-            var bounds = template.LayoutData.localBounds;
-            var root = new GameObject(template.name, typeof(Grid));
-            var grid = root.GetComponent<Grid>();
-            Tilemap floor = TilemapObject("Ground", root.transform, LayerMask.NameToLayer("Ground"), "Background");
-            Tilemap wall = TilemapObject("Wall", root.transform, LayerMask.NameToLayer("Wall"), "Wall");
-            Tilemap hole = TilemapObject("Hole", root.transform, LayerMask.NameToLayer("HoleTrap"), "Background");
-            Tilemap underFloor = VisualLayer("UnderFloor", root.transform, "Background", -1, template.BuildData.underFloorTiles);
-            Tilemap floorDetail = VisualLayer("FloorDetail", root.transform, "Background", 1, template.BuildData.floorDetailTiles);
-            Tilemap decoration = VisualLayer("GroundDecoration", root.transform, "GroundAOE", 0, template.BuildData.groundDecorationTiles);
-            Tilemap wallDetail = VisualLayer("WallDetail", root.transform, "Wall", 1, template.BuildData.wallDetailTiles);
-            Tilemap foreground = VisualLayer("Foreground", root.transform, "ForeGround", 0, template.BuildData.foregroundTiles);
-            Tilemap overlay = VisualLayer("OverlayFX", root.transform, "FloatingAOE", 0, template.BuildData.overlayFxTiles);
-            PutTiles(floor, template.BuildData.floorTiles); PutTiles(wall, template.BuildData.wallTiles); PutTiles(hole, template.BuildData.holeTiles);
-            wall.gameObject.AddComponent<TilemapCollider2D>();
-            hole.gameObject.AddComponent<TilemapCollider2D>().isTrigger = true;
-            var trigger = root.AddComponent<BoxCollider2D>(); trigger.isTrigger = true; trigger.size = bounds.size; trigger.offset = bounds.center;
-            root.AddComponent<MonsterRoomArea2D>().Configure(trigger);
-            root.AddComponent<MonsterSpawnRoomGroup>();
-            var author = root.AddComponent<RoomPieceAuthoring>();
-            author.EditorAssignTilemaps(grid, underFloor, floor, floorDetail, decoration, wall, wallDetail, foreground, overlay, hole);
-            author.EditorAssignSourceTemplate(template);
-            var authorData = new SerializedObject(author);
-            authorData.FindProperty("roomId").stringValue = template.LayoutData.roomId;
-            authorData.FindProperty("roomType").enumValueIndex = (int)RoomType.Event;
-            authorData.FindProperty("size").vector2IntValue = bounds.size;
-            authorData.ApplyModifiedPropertiesWithoutUndo();
-            if (template.BuildData.objectPlacements != null)
-                foreach (var placement in template.BuildData.objectPlacements)
-                {
-                    if (placement.prefab == null) continue;
-                    var instance = (GameObject)PrefabUtility.InstantiatePrefab(placement.prefab, root.transform);
-                    instance.transform.localPosition = new Vector3(placement.localCell.x + placement.localOffset.x, placement.localCell.y + placement.localOffset.y, 0);
-                    instance.transform.localRotation = Quaternion.Euler(0, 0, placement.localRotationDegrees);
-                    if (placement.localScale != Vector3.zero) instance.transform.localScale = placement.localScale;
-                    if (placement.childPoseOverrides != null && placement.childPoseOverrides.Count > 0)
-                    {
-                        var composite = instance.GetComponent<RoomCompositePoseAuthoring>();
-                        if (composite == null || !composite.TryApplyPoseOverrides(placement.childPoseOverrides, out _))
-                            throw new InvalidOperationException("Invalid authored child poses in " + template.name + "/" + placement.placementId);
-                    }
-                }
-            var prefab = PrefabUtility.SaveAsPrefabAsset(root, EventFolder + "/" + template.name + ".prefab");
-            UnityEngine.Object.DestroyImmediate(root);
-            result.Add(prefab);
+            Tilemap map = TilemapObject(name, root.transform, physicsLayer, sorting);
+            map.GetComponent<TilemapRenderer>().sortingOrder = order;
+            return map;
         }
-        return result.ToArray();
+        Tilemap floor = Layer("Ground", "Background", physicsLayer: LayerMask.NameToLayer("Ground"));
+        Tilemap wall = Layer("Wall", "Wall", physicsLayer: LayerMask.NameToLayer("Wall"));
+        Tilemap hole = Layer("Hole", "Background", physicsLayer: LayerMask.NameToLayer("HoleTrap"));
+        wall.gameObject.AddComponent<TilemapCollider2D>();
+        hole.gameObject.AddComponent<TilemapCollider2D>().isTrigger = true;
+        var trigger = root.AddComponent<BoxCollider2D>();
+        trigger.isTrigger = true;
+        root.AddComponent<MonsterRoomArea2D>().Configure(trigger);
+        root.AddComponent<MonsterSpawnRoomGroup>();
+        var author = root.AddComponent<RoomPieceAuthoring>();
+        author.EditorAssignTilemaps(root.GetComponent<Grid>(),
+            Layer("UnderFloor", "Background", -1), floor, Layer("FloorDetail", "Background", 1),
+            Layer("GroundDecoration", "GroundAOE"), wall, Layer("WallDetail", "Wall", 1),
+            Layer("Foreground", "ForeGround"), Layer("OverlayFX", "FloatingAOE"), hole);
+        return author;
     }
 
-    private static GameObject BuildDemonKingRig(Scene targetScene)
+    private static void BuildDemonKingRig(Scene targetScene)
     {
         // Demon King deliberately consumes a scene-authored sword and boss camera.
         // Package that companion only in a test prefab; the production prefab is untouched.
@@ -306,31 +306,19 @@ public static partial class TestSceneBuilder
         camera.GetComponent<CinemachineCamera>().LookAt = null;
         camera.GetComponent<CinemachineCamera>().Priority = 0;
         SceneManager.SetActiveScene(targetScene);
-        var demon = (GameObject)PrefabUtility.InstantiatePrefab(Load<GameObject>("Assets/_Project/Prefabs/Bosses/DemonKing/DemonKing.prefab"), targetScene);
+        var demon = (GameObject)PrefabUtility.InstantiatePrefab(Load<GameObject>(DemonKingPath), targetScene);
         demon.name = "DemonKing_TestRig";
         sword.name = "EgoSword";
         sword.transform.SetParent(demon.transform, false);
         Set(demon.GetComponent<DemonKingController>(), "egoSword", sword.GetComponent<EgoSwordActor>());
         Directory.CreateDirectory("Assets/_Project/Prefabs/Testing/Bosses");
-        var result = PrefabUtility.SaveAsPrefabAsset(demon, "Assets/_Project/Prefabs/Testing/Bosses/DemonKing_TestRig.prefab");
+        if (PrefabUtility.SaveAsPrefabAsset(demon, DemonRigPath) == null)
+            throw new InvalidOperationException("Could not save the Demon King test rig.");
         UnityEngine.Object.DestroyImmediate(demon);
         EditorSceneManager.CloseScene(source, true);
         SceneManager.SetActiveScene(targetScene);
-        return result;
     }
 
-    private static void PutTiles(Tilemap map, List<RoomTileData> tiles)
-    {
-        if (tiles == null) return;
-        foreach (var tile in tiles) map.SetTile(new Vector3Int(tile.localCell.x, tile.localCell.y, 0), tile.tile);
-    }
-    private static Tilemap VisualLayer(string name, Transform parent, string sorting, int order, List<RoomTileData> tiles)
-    {
-        Tilemap map = TilemapObject(name, parent, 0, sorting);
-        map.GetComponent<TilemapRenderer>().sortingOrder = order;
-        PutTiles(map, tiles);
-        return map;
-    }
     private static TileBase MostCommonTile(Tilemap map)
     {
         var counts = new Dictionary<TileBase, int>();
@@ -353,7 +341,7 @@ public static partial class TestSceneBuilder
         go.GetComponent<TilemapRenderer>().sortingLayerName = sorting; return go.GetComponent<Tilemap>();
     }
     private static T Load<T>(string path) where T : UnityEngine.Object => AssetDatabase.LoadAssetAtPath<T>(path) ?? throw new InvalidOperationException("Missing asset: " + path);
-    private static GameObject[] FindPrefabs(string path, Func<GameObject, bool> predicate) => AssetDatabase.FindAssets("t:Prefab", new[] { path }).Select(AssetDatabase.GUIDToAssetPath).OrderBy(x => x).Select(AssetDatabase.LoadAssetAtPath<GameObject>).Where(predicate).ToArray();
+    private static GameObject[] FindPrefabs(string path, Func<GameObject, bool> predicate) => AssetDatabase.FindAssets("t:Prefab", new[] { path }).Select(AssetDatabase.GUIDToAssetPath).OrderBy(x => x, StringComparer.Ordinal).Select(AssetDatabase.LoadAssetAtPath<GameObject>).Where(predicate).ToArray();
     private static void Set(UnityEngine.Object target, string field, UnityEngine.Object value)
     {
         var data = new SerializedObject(target); var property = data.FindProperty(field) ?? throw new InvalidOperationException("Missing field: " + field);

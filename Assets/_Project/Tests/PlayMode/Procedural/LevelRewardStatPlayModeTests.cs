@@ -297,7 +297,7 @@ public sealed class LevelRewardStatRuntimePlayModeTests
         for (int i = 0; i < 40; i++) Assert.That(RunLevelRewards.TrySelect(Reward("Evasion", 3), out var error), Is.True, error);
         var provider = AbilityStatProviderFactory.Create(system);
         Assert.That(provider.Get(StatId.CritChanceFinal), Is.GreaterThan(1.2f));
-        Assert.That(provider.Get(StatId.EvasionFinal), Is.GreaterThan(1.3f));
+        Assert.That(provider.Get(StatId.EvasionFinal), Is.EqualTo(.02f + 40 * .03f).Within(.0001f));
         Assert.That(Reward("CritChance", 3).CanSelect(new LevelRewardEligibilityContext(player, data.levelProgression), out _), Is.True);
         RunLevelRewards.RebuildActiveEffects();
         Assert.That(provider.Get(StatId.CritChanceFinal), Is.GreaterThan(1.2f));

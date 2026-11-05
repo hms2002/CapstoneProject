@@ -45,38 +45,23 @@ public static class TestSceneValidation
         };
     }
 
-    public static void Run()
-    {
-        TestSceneBuilder.Build();
-        BeginValidation(false);
-    }
+    public static void Run() => BeginValidation(false);
 
-    [MenuItem("Tools/Testing/Update and Validate TestScene Catalog Grid")]
-    public static void RunCatalogGrid()
-    {
-        if (EditorApplication.isPlayingOrWillChangePlaymode)
-            throw new InvalidOperationException("Stop Play Mode before validating the catalog grid.");
-        if (Application.isBatchMode)
-            EditorSceneManager.OpenScene(TestSceneBuilder.ScenePath, OpenSceneMode.Single);
-        TestSceneBuilder.UpdateCatalogGrid();
-        BeginValidation(true);
-    }
+    [MenuItem("Tools/Testing/Validate TestScene Catalog Grid")]
+    public static void RunCatalogGrid() => BeginValidation(true);
 
     [MenuItem("Tools/Testing/Validate TestScene Boss Combat")]
-    public static void RunBossCombat()
-    {
-        if (EditorApplication.isPlayingOrWillChangePlaymode)
-            throw new InvalidOperationException("Stop Play Mode before validating boss combat.");
-        if (Application.isBatchMode)
-            EditorSceneManager.OpenScene(TestSceneBuilder.ScenePath, OpenSceneMode.Single);
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().path != TestSceneBuilder.ScenePath)
-            throw new InvalidOperationException("Open TestScene before validating boss combat.");
-        TestSceneBuilder.ValidateScene();
-        BeginValidation(true);
-    }
+    public static void RunBossCombat() => BeginValidation(true);
 
     private static void BeginValidation(bool gridOnly)
     {
+        if (EditorApplication.isPlayingOrWillChangePlaymode)
+            throw new InvalidOperationException("Stop Play Mode before validating TestScene.");
+        if (Application.isBatchMode)
+            EditorSceneManager.OpenScene(TestSceneBuilder.ScenePath, OpenSceneMode.Single);
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().path != TestSceneBuilder.ScenePath)
+            throw new InvalidOperationException("Open TestScene before validation.");
+        TestSceneBuilder.ValidateScene();
         checks.Clear(); errors.Clear(); stage = 0; waitFrame = 0; started = 0; catalogChecks = null;
         SessionState.SetBool(Pending, true);
         SessionState.SetBool(Finished, false);
@@ -111,15 +96,16 @@ public static class TestSceneValidation
                 Check(GameDataStore.IsAvailable && RunSessionStore.IsRunActive, "Scene runtime and disposable profile are ready");
                 VerifyGridControls();
                 TestSceneCatalogGrid grid = Get<TestSceneCatalogGrid>("catalogGrid");
-                Check(grid.Count(TestSceneCatalogGrid.WeaponCategory) == 6, "All six ItemDatabase weapons are listed");
+                var weapons = Get<ItemDatabase>("itemDatabase").allWeapons.Where(x => x != null).ToArray();
+                Check(grid.Count(TestSceneCatalogGrid.WeaponCategory) == weapons.Length, "All ItemDatabase weapons are listed");
                 Check(grid.Count(TestSceneCatalogGrid.BossCategory) >= 4, "Boss catalog populated");
                 Check(grid.Count(TestSceneCatalogGrid.MonsterCategory) >= 10, "Monster catalog populated");
                 Check(Get<TMP_Dropdown>("eventDropdown").options.Count > 0, "Event room catalog populated");
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < weapons.Length; i++)
                 {
                     grid.Open(TestSceneCatalogGrid.WeaponCategory); grid.Select(TestSceneCatalogGrid.WeaponCategory, i);
                     GridField<UnityEngine.UI.Button>(grid, "executeButton").onClick.Invoke();
-                    Check(PlayerRuntimeRegistry.CurrentPlayer.GetComponent<WeaponInventory2D>().GetWeaponInSlot(0) == Get<ItemDatabase>("itemDatabase").allWeapons[i], "Icon-grid weapon grant " + i);
+                    Check(PlayerRuntimeRegistry.CurrentPlayer.GetComponent<WeaponInventory2D>().GetWeaponInSlot(0) == weapons[i], "Icon-grid weapon grant " + i);
                 }
                 grid.Open(TestSceneCatalogGrid.RelicCategory); grid.Select(TestSceneCatalogGrid.RelicCategory, 0);
                 GridField<UnityEngine.UI.Button>(grid, "executeButton").onClick.Invoke();
@@ -179,7 +165,7 @@ public static class TestSceneValidation
                 Check(UnityEngine.Object.FindObjectsByType<RoomPieceAuthoring>(FindObjectsInactive.Exclude).Length > 0, "Event room built and bound");
                 panel.ClearSpawned(); panel.Heal();
                 var database = Get<ItemDatabase>("itemDatabase");
-                int spear = database.allWeapons.FindIndex(x => x.weaponId == "Weapon.LightningSpear");
+                int spear = database.allWeapons.Where(x => x != null).ToList().FindIndex(x => x.weaponId == "Weapon.LightningSpear");
                 Get<TestSceneCatalogGrid>("catalogGrid").Select(TestSceneCatalogGrid.WeaponCategory, spear); panel.GiveWeapon();
                 panel.TogglePanel(); panel.TogglePanel();
                 Check(GameDataStore.IsAvailable && RunSessionStore.IsRunActive, "Panel hide does not release scene ownership");
@@ -305,7 +291,7 @@ public static class TestSceneValidation
         panel.RemoveReward();
         Check(RunLevelProgression.State.selectedRewards.Count == 0 && attributes.GetCurrentValue(soul.GrantedAttribute) == before, "Instant soul-heart resource safely reverted");
         var database = Get<ItemDatabase>("itemDatabase");
-        int relicIndex = database.allRelics.FindIndex(x => x != null && x.maxLevel > 1);
+        int relicIndex = database.allRelics.Where(x => x != null).ToList().FindIndex(x => x.maxLevel > 1);
         Get<TestSceneCatalogGrid>("catalogGrid").Select(TestSceneCatalogGrid.RelicCategory, relicIndex); panel.GiveRelic();
         var inventory = PlayerRuntimeRegistry.CurrentPlayer.GetComponent<RelicInventory>();
         int[] levels = Enumerable.Range(0, inventory.Capacity).Select(inventory.GetRelicLevelInSlot).ToArray();
@@ -387,6 +373,11 @@ public static class TestSceneValidation
         ItemDatabase database = Get<ItemDatabase>("itemDatabase");
         Check(grid.IsOpen && grid.Count(0) == database.allWeapons.Count(x => x != null) &&
             grid.Count(1) == database.allRelics.Count(x => x != null), "Centered grid starts open with complete ItemDatabase catalogs");
+        UnityEngine.Object[][] expected = {
+            database.allWeapons.Where(x => x != null).Cast<UnityEngine.Object>().ToArray(),
+            database.allRelics.Where(x => x != null).Cast<UnityEngine.Object>().ToArray(),
+            Get<GameObject[]>("mobPrefabs"), Get<GameObject[]>("bossPrefabs")
+        };
         string[] cellFields = { "weaponCells", "relicCells", "monsterCells", "bossCells" };
         string[] openFields = { "openWeaponsButton", "openRelicsButton", "openMonstersButton", "openBossesButton" };
         var tabs = GridField<UnityEngine.UI.Button[]>(grid, "categoryButtons");
@@ -401,7 +392,9 @@ public static class TestSceneValidation
             Check(GridField<GameObject>(grid, "monsterOptions").activeSelf == (category == TestSceneCatalogGrid.MonsterCategory),
                 "Quantity input belongs only to monsters " + category);
             TestSceneCatalogCell[] cells = GridField<TestSceneCatalogCell[]>(grid, cellFields[category]);
-            Check(cells.All(x => x.Icon != null && !string.IsNullOrWhiteSpace(x.DisplayName)), "Every catalog card has an authored icon and name " + category);
+            Check(cells.Select(x => x.Target).SequenceEqual(expected[category]), "Displayed cards bind current catalog assets in order " + category);
+            Check(cells.All(x => x.Target != null && !string.IsNullOrWhiteSpace(x.DisplayName)), "Every catalog card has a target and name " + category);
+            if (cells.Length == 0) continue;
             int selected = cells.Length - 1;
             GridField<UnityEngine.UI.Button>(cells[selected], "button").onClick.Invoke();
             Check(grid.GetSelectedIndex(category) == selected && GridField<TMP_Text>(grid, "selectionText").text.Contains(cells[selected].DisplayName.Replace("\n", " · ")),

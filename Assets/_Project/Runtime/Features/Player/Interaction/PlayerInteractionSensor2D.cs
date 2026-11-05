@@ -11,6 +11,8 @@ public sealed class PlayerInteractionSensor2D : MonoBehaviour
 {
     [SerializeField] private PlayerInteractableTracker2D tracker;
 
+    internal Collider2D TriggerCollider { get; private set; }
+
     public static PlayerInteractionSensor2D EnsureFor(Transform playerRoot, Collider2D sourceCollider, PlayerInteractableTracker2D tracker)
     {
         PlayerInteractionSensor2D misplacedRootSensor = playerRoot.GetComponent<PlayerInteractionSensor2D>();
@@ -34,7 +36,7 @@ public sealed class PlayerInteractionSensor2D : MonoBehaviour
         }
 
         sensor.tracker = tracker;
-        sensor.SyncColliderFrom(sourceCollider);
+        sensor.TriggerCollider = sensor.SyncColliderFrom(sourceCollider);
         return sensor;
     }
 
@@ -77,7 +79,7 @@ public sealed class PlayerInteractionSensor2D : MonoBehaviour
             collider2D.isTrigger = true;
     }
 
-    private void SyncColliderFrom(Collider2D sourceCollider)
+    private Collider2D SyncColliderFrom(Collider2D sourceCollider)
     {
         Collider2D sensorCollider = GetComponent<Collider2D>();
 
@@ -87,7 +89,7 @@ public sealed class PlayerInteractionSensor2D : MonoBehaviour
                 sensorCollider = gameObject.AddComponent<CircleCollider2D>();
 
             sensorCollider.isTrigger = true;
-            return;
+            return sensorCollider;
         }
 
         if (sourceCollider is BoxCollider2D sourceBox)
@@ -105,7 +107,7 @@ public sealed class PlayerInteractionSensor2D : MonoBehaviour
             targetBox.size = sourceBox.size;
             targetBox.edgeRadius = sourceBox.edgeRadius;
             targetBox.isTrigger = true;
-            return;
+            return targetBox;
         }
 
         if (sourceCollider is CircleCollider2D sourceCircle)
@@ -122,7 +124,7 @@ public sealed class PlayerInteractionSensor2D : MonoBehaviour
             targetCircle.offset = sourceCircle.offset;
             targetCircle.radius = sourceCircle.radius;
             targetCircle.isTrigger = true;
-            return;
+            return targetCircle;
         }
 
         if (sourceCollider is CapsuleCollider2D sourceCapsule)
@@ -140,12 +142,13 @@ public sealed class PlayerInteractionSensor2D : MonoBehaviour
             targetCapsule.size = sourceCapsule.size;
             targetCapsule.direction = sourceCapsule.direction;
             targetCapsule.isTrigger = true;
-            return;
+            return targetCapsule;
         }
 
         if (sensorCollider == null)
             sensorCollider = gameObject.AddComponent<CircleCollider2D>();
 
         sensorCollider.isTrigger = true;
+        return sensorCollider;
     }
 }

@@ -10,8 +10,8 @@ namespace CapstonePresentation
         [SerializeField] private Transform warning;
         [SerializeField] private SpriteRenderer innerCircle;
         [SerializeField] private SpriteRenderer outerCircle;
-        [SerializeField] private SpriteRenderer centerCircle;
-        [SerializeField] private float circleRotationSpeed = 37.5f;
+        [SerializeField] private Sprite relicContour;
+        [SerializeField] private float circleRotationSpeed = 24f;
         [SerializeField] private float warningFadeSeconds = 0.25f;
         [SerializeField] private ChargeGaugePresentation chargeGauge;
 
@@ -35,9 +35,10 @@ namespace CapstonePresentation
         [SerializeField] private float impactLifetime = 2.1f;
 
         private CrimsonBoundaryRuntimeState owner;
+        private bool showsGauge = true;
         private float phaseTime;
         private float circleAngle;
-        private float centerCircleAngle;
+        private float rotationDirection = -1f;
         private Phase phase;
         private enum Phase { Charge, Flight, Impact }
 
@@ -45,32 +46,36 @@ namespace CapstonePresentation
         {
             innerCircle.enabled = false;
             outerCircle.enabled = false;
-            centerCircle.enabled = false;
             innerCircle.transform.localScale = Vector3.zero;
             outerCircle.transform.localScale = Vector3.zero;
-            centerCircle.transform.localScale = Vector3.zero;
             meteor.gameObject.SetActive(false);
             impact.gameObject.SetActive(false);
         }
 
-        public void BindOwner(CrimsonBoundaryRuntimeState value) => owner = value;
+        public void BindOwner(CrimsonBoundaryRuntimeState value, bool showGauge = true, Vector2 outward = default)
+        {
+            owner = value;
+            showsGauge = showGauge;
+            if (!showsGauge) chargeGauge.Hide();
+            if (outward == Vector2.zero) return;
+
+            circleAngle = Vector2.SignedAngle(Vector2.up, outward);
+            rotationDirection = outward.x < 0f ? 1f : -1f;
+            outerCircle.sprite = relicContour;
+            outerCircle.transform.localRotation = Quaternion.Euler(0f, 0f, circleAngle);
+            innerCircle.transform.localRotation = outerCircle.transform.localRotation;
+        }
 
         public void ShowCharge(Vector3 ownerPosition, Vector3 target, float ratio, float diameter)
         {
             warning.position = target;
-            innerCircle.color = outerCircle.color = centerCircle.color = Color.white;
-            chargeGauge.ShowCharge(ownerPosition, ratio);
-            float progress = Mathf.Clamp01(ratio);
-            float innerFraction = CrimsonBoundaryChargeData.InnerCircleFraction;
-            float rangeFraction = progress <= 0.5f ? innerFraction * progress * 2f
-                : Mathf.Lerp(innerFraction, 1f, progress * 2f - 1f);
-            float maximumDiameter = rangeFraction > 0f ? diameter / rangeFraction : 0f;
-            // The 192px artwork has a 128px visible inner diameter; gameplay keeps its original range ratio.
-            SetCircleDiameter(innerCircle, maximumDiameter * innerFraction * Mathf.Clamp01(progress * 2f), 128f / 192f);
-            // Both first-stage layers share a centered 192px canvas, preserving their tangent outlines.
-            centerCircle.transform.localScale = innerCircle.transform.localScale;
-            centerCircle.enabled = innerCircle.enabled;
-            SetCircleDiameter(outerCircle, progress > 0.5f ? diameter : 0f, 1f);
+            innerCircle.color = outerCircle.color = Color.white;
+            if (showsGauge) chargeGauge.ShowCharge(ownerPosition, ratio);
+            // The outline and trim share the centered 192px canvas and attack diameter.
+            float sourceDiameter = outerCircle.sprite.rect.width / outerCircle.sprite.pixelsPerUnit;
+            Vector3 scale = Vector3.one * (diameter / sourceDiameter);
+            innerCircle.transform.localScale = outerCircle.transform.localScale = scale;
+            innerCircle.enabled = outerCircle.enabled = diameter > 0f;
         }
 
         public void BeginFlight(Vector3 start, Vector3 target)
@@ -78,7 +83,7 @@ namespace CapstonePresentation
             phase = Phase.Flight;
             phaseTime = 0f;
             warning.position = target;
-            innerCircle.color = outerCircle.color = centerCircle.color = Color.white;
+            innerCircle.color = outerCircle.color = Color.white;
             chargeGauge.Hide();
             meteor.position = start;
             Vector3 direction = target - start;
@@ -117,15 +122,12 @@ namespace CapstonePresentation
             phaseTime += deltaTime;
             if (warning.gameObject.activeSelf)
             {
-                circleAngle = Mathf.Repeat(circleAngle + circleRotationSpeed * deltaTime, 360f);
+                circleAngle = Mathf.Repeat(circleAngle + rotationDirection * circleRotationSpeed * deltaTime, 360f);
                 innerCircle.transform.localRotation = Quaternion.Euler(0f, 0f, circleAngle);
-                outerCircle.transform.localRotation = Quaternion.Euler(0f, 0f, -circleAngle);
-                centerCircleAngle = Mathf.Repeat(centerCircleAngle - circleRotationSpeed * 1.5f * deltaTime, 360f);
-                centerCircle.transform.localRotation = Quaternion.Euler(0f, 0f, centerCircleAngle);
                 if (phase == Phase.Impact)
                 {
                     float warningAlpha = Mathf.Clamp01(1f - phaseTime / Mathf.Max(0.01f, warningFadeSeconds));
-                    innerCircle.color = outerCircle.color = centerCircle.color = new Color(1f, 1f, 1f, warningAlpha);
+                    innerCircle.color = outerCircle.color = new Color(1f, 1f, 1f, warningAlpha);
                     if (warningAlpha <= 0f) warning.gameObject.SetActive(false);
                 }
             }
@@ -148,13 +150,6 @@ namespace CapstonePresentation
                 scorch.color = new Color(1f, 1f, 1f, alpha);
                 if (phaseTime >= impactLifetime) Destroy(gameObject);
             }
-        }
-
-        private static void SetCircleDiameter(SpriteRenderer circle, float diameter, float visibleFraction)
-        {
-            float sourceDiameter = circle.sprite.rect.width / circle.sprite.pixelsPerUnit * visibleFraction;
-            circle.transform.localScale = Vector3.one * (Mathf.Max(0f, diameter) / sourceDiameter);
-            circle.enabled = diameter > 0f;
         }
 
 #if UNITY_EDITOR

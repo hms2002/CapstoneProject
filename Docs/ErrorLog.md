@@ -2208,6 +2208,8 @@ Settings rows combined fixed widths with left alignment, and gameplay scene inst
 
 When replacing an authored layout driver with anchors, inspect scene overrides on the affected RectTransforms. Remove only obsolete layout properties so the instance inherits the updated prefab; preserve gameplay, reference and unrelated presentation overrides. This task migrated enabled build scenes only. See [SettingsPanelLayout](./StructureMemory/SettingsPanelLayout.md) and the [session log](./SessionLogs/2026-09-17.md). Static asset/geometry checks passed; Unity/player visual confirmation remains pending.
 
+On 2026-11-04, merge `45d4b28a` brought ten old layout properties on the hub's `KeyMapping_Layout` and `OptionTitle` back from the second parent. The first parent already inherited the prefab. When the defect recurs after a merge, compare the scene instance in both parents and the merge result. Older scenes also pinned geometry on the rendered button and label below the slot. See the [settings scene repair](SessionLogs/2026-11-05-nadoman354-settings-scene-layout.md).
+
 ## 2026-09-17 - Title Overlay obscured software cursor after display-mode change
 
 Evidence: In the rebuilt player, Windowed 1280x1024 -> FullScreenWindow 1920x1080 changed the title Canvas from ScreenSpaceCamera/UI/0 to ScreenSpaceOverlay/UI/0. CursorDiagnostic showed the cursor still enabled/active/opaque, not culled, inside the screen and without a hidden owner, but on Default/32767. The existing UI sorting layer is above Default. Returning to Windowed restored the camera-rendered title and cursor visibility; the user also observed visibility return after game start.
@@ -2604,6 +2606,8 @@ Suggested Later: expanded validation found `CombatFeelLootQuestPlayModeTests.Imp
 - Candidate filtering alone leaves old maximum-level relic shop offers intact. Existing per-slot stock reconciliation now uses the common level rule and reacts to relic restore/changes, while deferred notifications preserve purchase-before-SOLD ordering. [Source review, compile evidence and pending runtime checks](SessionLogs/2026-11-01-chest-shop-policy/README.md). No runtime test reproduction is claimed.
 
 ## 2026-11-02 — UI prefab geometry shadowed by scene and nested-prefab overrides
+
+- 2026-11-05 호감도·업그레이드 공용 보상 창에서도 같은 문제가 재현되었다. 빌드 대상 게임 씬 12개가 중앙 앵커를 사용하는 `RewardUI`에 X=960과 상단 Y 앵커를 저장하고 있었다. 해당 RectTransform의 위치·크기 오버라이드 5개씩을 제거하고 실제 씬의 상속값을 대조했다. [수정 범위와 검증 기록](SessionLogs/2026-11-05-nadoman354-reward-popup-centering.md).
 
 - 실제 화면 후속 확인: 전용 TMP OutlineWidth를 0.5로 올린 이전 보정은 글자 내부와 강조색을 덮어 검은 덩어리처럼 보였다. Computer Use로 실제 허브에서 관찰한 뒤 OutlineWidth/FaceDilate를 0.18로 균형 조정했다. 또한 슬롯 스킨 작업에서 Button의 루트 Image까지 Raycast Target을 꺼 클릭 대상이 사라졌다. 루트만 켠 후 실제 선택/탭/페이지/스크롤/유물 레벨 표시를 확인했다. 장식 Image의 입력 비활성화를 클릭 표면까지 일괄 적용하지 않는다. [최종 화면 및 수정 기록](../outputs/encyclopedia-live-ui-fix-2026-11-02/README.md).
 

@@ -35,6 +35,8 @@ namespace UnityGAS
         public bool IsOverflowing { get; private set; }
         public bool IsDraining { get; private set; }
         public bool HasAlcoholContact => contactingPuddles.Count > 0;
+        public bool HasActiveConfusion => HasOwnedEffect(confusionDefinition);
+        public bool HasActiveSpeedBuff => HasOwnedEffect(alcoholBuffDefinition);
 
         private void Awake()
         {
@@ -52,7 +54,7 @@ namespace UnityGAS
             drainElapsed = 0f;
             if (IsOverflowing)
                 RefreshOverflowEffect();
-            else if (HasOwnedAlcoholBuff())
+            else if (HasActiveSpeedBuff)
                 ApplyEffect(alcoholBuffDefinition);
         }
 
@@ -85,7 +87,7 @@ namespace UnityGAS
                     deltaTime = Mathf.Max(0f, deltaTime - timeToOverflow);
                 }
 
-                if (IsOverflowing || HasOwnedAlcoholBuff())
+                if (IsOverflowing || HasActiveSpeedBuff)
                     TickRefresh(deltaTime);
                 return;
             }
@@ -96,7 +98,7 @@ namespace UnityGAS
             float drainStep = Mathf.Min(deltaTime, DrainSeconds - drainElapsed);
             drainElapsed += drainStep;
             chargedSeconds = Mathf.Max(0f, drainStartCharge * (1f - drainElapsed / DrainSeconds));
-            if (IsOverflowing || HasOwnedAlcoholBuff())
+            if (IsOverflowing || HasActiveSpeedBuff)
                 TickRefresh(drainStep);
 
             if (drainElapsed >= DrainSeconds)
@@ -155,7 +157,7 @@ namespace UnityGAS
 
         private void CompleteDrain()
         {
-            if (IsOverflowing || HasOwnedAlcoholBuff())
+            if (IsOverflowing || HasActiveSpeedBuff)
             {
                 // The final refresh aligns the GE and its five-second attribute
                 // modifiers. Confusion instead ends with the empty glass.
@@ -189,13 +191,13 @@ namespace UnityGAS
                 runner.EndEffectsBySourceObject(gameObject, definition.GameplayEffect, this);
         }
 
-        private bool HasOwnedAlcoholBuff()
+        private bool HasOwnedEffect(CombatBuffDebuffApplicationDefinition definition)
         {
-            if (runner == null || alcoholBuffDefinition == null)
+            if (runner == null || definition == null || definition.GameplayEffect == null)
                 return false;
 
-            ActiveGameplayEffect active = runner.FindActiveEffect(alcoholBuffDefinition.GameplayEffect, gameObject);
-            return active != null && active.SourceObject == this && active.TimeRemaining > 0f;
+            ActiveGameplayEffect active = runner.FindActiveEffect(definition.GameplayEffect, gameObject, this);
+            return active != null && active.TimeRemaining > 0f;
         }
 
         internal bool OwnsSceneLocalEffect(string effectId) =>

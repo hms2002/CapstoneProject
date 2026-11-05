@@ -181,6 +181,7 @@ public sealed class AlcoholExposurePlayerVisualPlayModeTests
     public IEnumerator OverflowAnimatesWithScaledTimePausesAndStopsOnDrain()
     {
         float previousScale = Time.timeScale;
+        Vector3 restPosition = mug.transform.localPosition;
         try
         {
             Time.timeScale = 1f;
@@ -188,14 +189,18 @@ public sealed class AlcoholExposurePlayerVisualPlayModeTests
             TickExposure(3.1f);
             yield return null;
             yield return null;
-            Quaternion firstRotation = mug.transform.localRotation;
+            float firstX = mug.transform.localPosition.x;
             Vector3 firstDrop = drops[0].transform.localPosition;
             bool sawSway = false;
             bool sawDropTravel = false;
             for (int sample = 0; sample < 3; sample++)
             {
                 yield return new WaitForSecondsRealtime(0.06f);
-                sawSway |= Quaternion.Angle(firstRotation, mug.transform.localRotation) > 0.2f;
+                float x = mug.transform.localPosition.x;
+                float pixelOffset = (x - restPosition.x) * 32f;
+                Assert.That(pixelOffset, Is.EqualTo(Mathf.Round(pixelOffset)).Within(0.0001f));
+                Assert.That(mug.transform.localRotation, Is.EqualTo(Quaternion.identity));
+                sawSway |= x != firstX;
                 sawDropTravel |= Vector3.Distance(firstDrop, drops[0].transform.localPosition) > 0.0001f;
             }
             Assert.That(sawSway, Is.True, "The overflow mug sways across native frames.");
@@ -205,11 +210,11 @@ public sealed class AlcoholExposurePlayerVisualPlayModeTests
             Time.timeScale = 0f;
             yield return null;
             yield return null;
-            Quaternion pausedRotation = mug.transform.localRotation;
+            Vector3 pausedMug = mug.transform.localPosition;
             Vector3 pausedDrop = drops[0].transform.localPosition;
             Color pausedColor = drops[0].color;
             yield return new WaitForSecondsRealtime(0.08f);
-            Assert.That(Quaternion.Angle(pausedRotation, mug.transform.localRotation), Is.LessThan(0.0001f));
+            Assert.That(mug.transform.localPosition, Is.EqualTo(pausedMug));
             Assert.That(Vector3.Distance(pausedDrop, drops[0].transform.localPosition), Is.LessThan(0.0001f));
             Assert.That(drops[0].color, Is.EqualTo(pausedColor), "Pause freezes the drop fade too.");
 
@@ -217,7 +222,7 @@ public sealed class AlcoholExposurePlayerVisualPlayModeTests
             TickExposure(0.2f);
             TickView();
             Assert.That(mug.enabled, Is.True, "Drain remains visible while its fill is nonzero.");
-            Assert.That(mug.transform.localRotation, Is.EqualTo(Quaternion.identity));
+            Assert.That(mug.transform.localPosition, Is.EqualTo(restPosition));
             foreach (SpriteRenderer drop in drops) Assert.That(drop.enabled, Is.False);
         }
         finally { Time.timeScale = previousScale; }

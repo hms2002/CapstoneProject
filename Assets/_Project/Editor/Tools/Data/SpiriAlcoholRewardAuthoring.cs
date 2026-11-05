@@ -19,6 +19,7 @@ public static class SpiriAlcoholRewardAuthoring
     private const string RewardPath = "Assets/_Project/Data/Dialogue/Affection/SpiriAlcoholPuddleReward.asset";
     private const string RewardIconPath = "Assets/_Project/Art/Sprites/UI/ApprovedUiSkin/Icon_SpiriAlcoholReward.png";
     private const string SpritePath = "Assets/_Project/Art/Sprites/Monsters/DragonLevel_BeerMonster/Drink.png";
+    private const string HeadMugPath = "Assets/_Project/Art/Sprites/UI/StatusIcons/AlcoholMonsterMug.png";
     private const string CsvPath = "DataSheets/Localization/GameText.csv";
     private const string InventoryPath = "DataSheets/Localization/AssetInventory.json";
     private const string KeyMapPath = "Assets/_Project/Runtime/Core/Presentation/GameTextAssetKeys.g.cs";
@@ -198,7 +199,8 @@ public static class SpiriAlcoholRewardAuthoring
             root.localPosition = new Vector3(0f, 1.8f, 0f);
             root.localScale = new Vector3(.8f, .8f, 1f);
             root.gameObject.SetActive(true);
-            var mug = Renderer(root, "Mug", sprite, mugMaterial, new Vector3(0f, -.36f, 0f), Vector3.one, 30);
+            var poses = AssetDatabase.LoadAllAssetsAtPath(HeadMugPath).OfType<Sprite>().ToDictionary(pose => pose.name);
+            var mug = Renderer(root, "Mug", poses["Mug_Charging"], mugMaterial, new Vector3(0f, -.36f, 0f), Vector3.one, 30);
             var drops = new[]
             {
                 Renderer(root, "OverflowDropLeft", sprite, dropMaterial, new Vector3(-.19f, .06f, 0f), new Vector3(.14f, .14f, 1f), 31),
@@ -211,6 +213,8 @@ public static class SpiriAlcoholRewardAuthoring
             Property(viewData, "exposure").objectReferenceValue = exposure;
             Property(viewData, "visualRoot").objectReferenceValue = root;
             Property(viewData, "mug").objectReferenceValue = mug;
+            Property(viewData, "confusedMug").objectReferenceValue = poses["Mug_Confused"];
+            Property(viewData, "buffedMug").objectReferenceValue = poses["Mug_Buffed"];
             var dropReferences = Property(viewData, "overflowDroplets");
             dropReferences.arraySize = drops.Length;
             for (int i = 0; i < drops.Length; i++) dropReferences.GetArrayElementAtIndex(i).objectReferenceValue = drops[i];

@@ -1596,7 +1596,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 30
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -6033280328393917619, guid: 6381a51d56edf6c4089caf6be074034b, type: 3}
+  m_Sprite: {fileID: 21300002, guid: 336a58d5d6a94ef7a971543d845e6225, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3146,6 +3146,8 @@ MonoBehaviour:
   exposure: {fileID: 7436655395938053280}
   visualRoot: {fileID: 1671493772222593769}
   mug: {fileID: 5949460399850869468}
+  confusedMug: {fileID: 21300004, guid: 336a58d5d6a94ef7a971543d845e6225, type: 3}
+  buffedMug: {fileID: 21300006, guid: 336a58d5d6a94ef7a971543d845e6225, type: 3}
   overflowDroplets:
   - {fileID: 1123783305086844902}
   - {fileID: 1090180717652503801}

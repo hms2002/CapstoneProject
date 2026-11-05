@@ -144,9 +144,9 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -1039746825
-  m_SortingLayer: 5
-  m_SortingOrder: 1
+  m_SortingLayerID: 1874529036
+  m_SortingLayer: 7
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &983406618
@@ -448,9 +448,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -1039746825
-  m_SortingLayer: 5
-  m_SortingOrder: 1
+  m_SortingLayerID: 1874529036
+  m_SortingLayer: 7
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7124369960627298605, guid: 18d964c917812d04982e285e007fac25, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -694,9 +694,9 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -1039746825
-  m_SortingLayer: 5
-  m_SortingOrder: 1
+  m_SortingLayerID: 1874529036
+  m_SortingLayer: 7
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &8320783691894468505
@@ -708,7 +708,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 753368140993654173}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
+  m_Script: {fileID: 11500000, guid: 68f0b49c8bf14beaab3af1c6a86de478, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -907,9 +907,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -1039746825
-  m_SortingLayer: 5
-  m_SortingOrder: 0
+  m_SortingLayerID: 1874529036
+  m_SortingLayer: 7
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300001, guid: 45f4bd88e4a44522bd9f660b794565bb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1003,9 +1003,9 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -1039746825
-  m_SortingLayer: 5
-  m_SortingOrder: 1
+  m_SortingLayerID: 1874529036
+  m_SortingLayer: 7
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &7164575622983046217

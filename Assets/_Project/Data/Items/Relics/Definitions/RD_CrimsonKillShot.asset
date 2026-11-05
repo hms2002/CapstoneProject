@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: "한계선의 잔불 추격"
   icon: {fileID: 21300000, guid: d37464f1928f44fab39518a3553403c9, type: 3}
   rarity: 2
-  description: "● {em:홍련의 한계선} 전용 유물\n● {em:점화!}로 적 처치 시 해당 위치에서 {em:추적 화염탄} {val:1개} 생성\n● 화염탄은 가까운 적을 추적\n● 추적할 적이 없으면 생성되지 않으며, 추적 화염탄으로는 {neg:추가 생성 불가}"
+  description: "● {em:홍련의 한계선} 전용 유물\n● {em:점화!}를 차징하면 마법진 {val:3개}가 서로 겹쳐 자랍니다.\n● 버튼을 놓으면 세 마법진에 운석이 동시에 떨어집니다.\n● 겹친 곳의 적은 마법진마다 피해와 [[화상]]을 받습니다."
   maxLevel: 1
   dropLevel: 1
   logic: {fileID: 11400000, guid: 08badb6a48354e7897a2d10a379c625d, type: 2}

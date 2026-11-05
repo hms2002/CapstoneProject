@@ -8,6 +8,22 @@ public sealed class AbilityLogic_CrimsonBoundaryCharge : AbilityLogic
 {
     private const float CursorFollowSeconds = 0.06f;
     private const float MaximumCursorLag = 0.75f;
+    // Equilateral triangle with one radius between centers, expressed in units of circle radius.
+    private static readonly float TriangleHeight = Mathf.Sqrt(3f) * 0.5f;
+    private static readonly Vector3[] RelicOffsets =
+    {
+        Vector3.up * (2f * TriangleHeight / 3f),
+        new(-0.5f, -TriangleHeight / 3f, 0f),
+        new(0.5f, -TriangleHeight / 3f, 0f)
+    };
+
+    private struct ChargeCircle
+    {
+        public GameObject Instance;
+        public ICrimsonBoundaryChargePresentation View;
+        public Vector3 Target;
+        public Vector3 FlightStart;
+    }
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -24,28 +40,42 @@ public sealed class AbilityLogic_CrimsonBoundaryCharge : AbilityLogic
             yield break;
         }
 
-        GameObject instance = Object.Instantiate(data.presentationPrefab);
-        runtime.TrackChargePresentation(instance);
-        var presentation = instance.GetComponent<ICrimsonBoundaryChargePresentation>();
+        bool triple = WeaponExclusiveRelics.Has(system.gameObject, WeaponExclusiveRelics.CrimsonKillShot);
+        var circles = new ChargeCircle[triple ? RelicOffsets.Length : 1];
         bool handedOff = false;
+        runtime.CancelChargePresentation();
         try
         {
-            if (presentation == null)
+            for (int i = 0; i < circles.Length; i++)
             {
-                Debug.LogError("[CrimsonCharge] Prefab must implement ICrimsonBoundaryChargePresentation.");
-                yield break;
+                var instance = Object.Instantiate(data.presentationPrefab);
+                circles[i].Instance = instance;
+                runtime.TrackChargePresentation(instance);
+                var view = instance.GetComponent<ICrimsonBoundaryChargePresentation>();
+                if (view == null)
+                {
+                    Debug.LogError("[CrimsonCharge] Prefab must implement ICrimsonBoundaryChargePresentation.");
+                    yield break;
+                }
+                view.BindOwner(runtime, i == 0, triple ? (Vector2)RelicOffsets[i] : Vector2.zero);
+                circles[i].View = view;
             }
-            presentation.BindOwner(runtime);
             float charge = 0f;
-            Vector3 impact = ResolveTarget(system, Camera.main);
+            float diameter;
+            Vector3 aim = ResolveTarget(system, Camera.main);
             while (true)
             {
-                if (Cancelled(system, spec, runtime, instance)) yield break;
+                if (Cancelled(system, spec, runtime, circles)) yield break;
                 Camera camera = Camera.main;
-                // One gameplay-owned center drives the warning, released meteor and damage query.
-                impact = ClampTargetToViewport(DampChargeTarget(impact, ResolveTarget(system, camera), Time.deltaTime), camera);
-                presentation.ShowCharge(system.transform.position, impact, data.ChargeRatio(charge),
-                    data.ChargeDiameter(charge));
+                aim = ClampTargetToViewport(DampChargeTarget(aim, ResolveTarget(system, camera), Time.deltaTime), camera);
+                diameter = data.ChargeDiameter(charge);
+                float ratio = data.ChargeRatio(charge);
+                for (int i = 0; i < circles.Length; i++)
+                {
+                    Vector3 center = triple ? aim + RelicOffsets[i] * (diameter * 0.5f) : aim;
+                    circles[i].Target = center;
+                    circles[i].View.ShowCharge(system.transform.position, center, ratio, diameter);
+                }
                 if (InputActionQuery.WasReleasedThisFrame(InputActionId.Skill1) ||
                     !InputActionQuery.IsPressed(InputActionId.Skill1)) break;
                 yield return null;
@@ -59,31 +89,43 @@ public sealed class AbilityLogic_CrimsonBoundaryCharge : AbilityLogic
             }
             if (!system.CommitDeferredCooldown(spec)) yield break;
             bool full = data.IsFull(charge);
-            float diameter = data.ChargeDiameter(charge);
-            Vector3 start = ResolveFlightStart(impact, Camera.main);
-            presentation.BeginFlight(start, impact);
+            Camera releaseCamera = Camera.main;
+            for (int i = 0; i < circles.Length; i++)
+            {
+                circles[i].FlightStart = ResolveFlightStart(circles[i].Target, releaseCamera);
+                circles[i].View.BeginFlight(circles[i].FlightStart, circles[i].Target);
+            }
             var shared = data.weaponData;
-            AbilityAudioRouter.PlayOneShotAtPosition(shared.lavaBallSummonSound, system, spec, impact, data);
+            AbilityAudioRouter.PlayOneShotAtPosition(shared.lavaBallSummonSound, system, spec, aim, data);
             float flight = 0f;
             while (flight < data.flightSeconds)
             {
-                if (Cancelled(system, spec, runtime, instance)) yield break;
-                presentation.MoveMeteor(Vector3.Lerp(start, impact, flight / data.flightSeconds));
+                if (Cancelled(system, spec, runtime, circles)) yield break;
+                float progress = flight / data.flightSeconds;
+                foreach (var circle in circles)
+                    circle.View.MoveMeteor(Vector3.Lerp(circle.FlightStart, circle.Target, progress));
                 yield return null;
                 flight += Time.deltaTime;
             }
-            if (Cancelled(system, spec, runtime, instance)) yield break;
-            presentation.MoveMeteor(impact);
-            presentation.PlayImpact(impact, diameter);
+            if (Cancelled(system, spec, runtime, circles)) yield break;
+            foreach (var circle in circles)
+            {
+                circle.View.MoveMeteor(circle.Target);
+                circle.View.PlayImpact(circle.Target, diameter);
+            }
             handedOff = true;
-            AbilityAudioRouter.PlayOneShotAtPosition(shared.lavaBallHitSound, system, spec, impact, data);
+            AbilityAudioRouter.PlayOneShotAtPosition(shared.lavaBallHitSound, system, spec, aim, data);
             shared.lavaBallHitShake.TryPlay(system.gameObject, Vector3.down, debugReason: "Crimson charged impact");
-            ApplyImpact(system, spec, data, runtime, impact, diameter, full);
+            foreach (var circle in circles)
+                ApplyImpact(system, spec, data, circle.Target, diameter, full);
         }
         finally
         {
-            if (runtime != null) runtime.ReleaseChargePresentation(instance);
-            if (!handedOff && instance != null) Object.Destroy(instance);
+            foreach (var circle in circles)
+            {
+                if (runtime != null) runtime.ReleaseChargePresentation(circle.Instance);
+                if (!handedOff && circle.Instance != null) Object.Destroy(circle.Instance);
+            }
         }
     }
 
@@ -92,9 +134,14 @@ public sealed class AbilityLogic_CrimsonBoundaryCharge : AbilityLogic
         CrimsonBoundaryUtility.ResolveRuntimeState(system)?.CancelChargePresentation();
     }
 
-    private static bool Cancelled(AbilitySystem system, AbilitySpec spec, CrimsonBoundaryRuntimeState runtime, GameObject instance)
-        => system == null || !system.isActiveAndEnabled || IsAbilityCancelled(spec) ||
-           runtime == null || !runtime.isActiveAndEnabled || instance == null;
+    private static bool Cancelled(AbilitySystem system, AbilitySpec spec, CrimsonBoundaryRuntimeState runtime, ChargeCircle[] circles)
+    {
+        if (system == null || !system.isActiveAndEnabled || IsAbilityCancelled(spec) ||
+            runtime == null || !runtime.isActiveAndEnabled) return true;
+        foreach (var circle in circles)
+            if (circle.Instance == null || !circle.Instance.activeSelf) return true;
+        return false;
+    }
 
     public static Vector3 ResolveTarget(AbilitySystem system, Camera camera)
         => ClampTargetToViewport(CrimsonBoundaryUtility.ResolveCursor(system), camera);
@@ -132,7 +179,7 @@ public sealed class AbilityLogic_CrimsonBoundaryCharge : AbilityLogic
     }
 
     private static void ApplyImpact(AbilitySystem system, AbilitySpec spec, CrimsonBoundaryChargeData data,
-        CrimsonBoundaryRuntimeState runtime, Vector2 center, float diameter, bool full)
+        Vector2 center, float diameter, bool full)
     {
         var shared = data.weaponData;
         // A real circle matching the warning. No wall raycast and no projectile hit callbacks.
@@ -142,9 +189,7 @@ public sealed class AbilityLogic_CrimsonBoundaryCharge : AbilityLogic
         {
             GameObject target = CombatTargetResolver2D.ResolveDamageTarget(hit);
             if (target == null || target == system.gameObject || !seen.Add(target)) continue;
-            Enemy enemy = target.GetComponent<Enemy>();
-            bool wasAlive = enemy != null && !enemy.IsDead;
-            Vector3 position = target.transform.position;
+            if (target.TryGetComponent(out Enemy enemy) && enemy.IsDead) continue;
             float damage = CrimsonBoundaryUtility.CalculateDirectDamage(system,
                 full ? data.fullDamageMultiplier : data.partialDamageMultiplier, out bool critical,
                 out ElementDamageResult[] elementDamage);
@@ -152,9 +197,6 @@ public sealed class AbilityLogic_CrimsonBoundaryCharge : AbilityLogic
                 critical, system.gameObject, elementDamage);
             BurnStatus2D.Apply(target, system, shared.damageEffect, system.gameObject,
                 full ? data.fullBurnStacks : data.partialBurnStacks, shared.burnTickPrefab, shared.burnSustainPrefab);
-            if (wasAlive && enemy != null && enemy.IsDead &&
-                WeaponExclusiveRelics.Has(system.gameObject, WeaponExclusiveRelics.CrimsonKillShot))
-                CrimsonBoundaryUtility.SpawnRelicKillShot(system, spec, shared, runtime, position, target);
         }
     }
 }

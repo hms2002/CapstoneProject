@@ -11,6 +11,19 @@ public sealed class TestSceneCatalogCell : MonoBehaviour
     [SerializeField] private TMP_Text label;
     [SerializeField] private UnityEngine.UI.Image selectionBorder;
 
+    [SerializeField] private UnityEngine.Object target;
+    public UnityEngine.Object Target => target;
+
+#if UNITY_EDITOR
+    public void EditorSetContent(UnityEngine.Object asset, string caption, Sprite sprite)
+    {
+        target = asset;
+        label.text = string.IsNullOrWhiteSpace(caption) ? asset.name : caption;
+        icon.sprite = sprite;
+        icon.enabled = sprite != null;
+    }
+#endif
+
     private Action<int, int> selected;
     private int category;
     private int index;

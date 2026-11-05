@@ -3726,3 +3726,11 @@ Core의 `CombatHitPrevention`은 대상 소유의 disposable 등록만 보관하
 ## 2026-11-05 — Melta/Chloe tier-two relics and earned unlock restoration
 
 멜타 호감도 2는 병 속의 슬라임(RD_SlimeBottle), 클로에 호감도 2는 클로에의 등불(RD_ChloeLantern)을 각각 하나씩 영구 등장 해금한다. 기존 UnlockItemAffectionEffect를 사용하고 현물 지급이나 강제 드롭은 추가하지 않는다. 두 유물은 이미 기본 해금에서 제외되어 있어 DB는 수정하지 않는다. 이전에 2단계를 넘긴 프로필에서도 빠진 해금이 복원되어야 하므로 ItemManager는 committed 호감도와 현재 NPC 보상 데이터를 조회해 이미 획득한 item-unlock 효과의 ID만 기존 해금 set에 추가한다. 준비되지 않은 소스는 건너뛰고 이후 조회에서 재시도하며, 기존 save collector/readiness guard를 유지한다. 보상 팝업과 다른 효과를 소급 재생하지 않는다. 취룡 1단계 아이콘은 제공된 초상화로 바꾸며 기존 문구/효과/술잔 HUD 아트는 유지한다. [범위](ActiveTasks/melta-chloe-tier-two-unlocks.md).
+
+## 2026-11-05 — 술장판 머리 위 상태 피드백
+
+플레이어 머리 위에는 참나무와 황동 테로 된 잔을 사용한다. 세 상태는 Aseprite의 32×32 캔버스에 각각 그린다. 1× 가로 시트로 내보내 32 PPU로 표시하고 충전량은 잔 앞면에 차오르는 금빛으로 보여 준다. 실제 혼란 효과에는 소용돌이 눈과 좌우 흔들림을, 속도 버프에는 웃는 눈과 상승 화살표를 사용한다. 잔이 비는 시점과 효과 종료 시점이 다를 수 있어 표정은 이 플레이어에게 적용된 술장판 효과의 수명을 따른다. [구조](StructureMemory/AlcoholExposure.md) · [작업 기록](SessionLogs/2026-11-05-nadoman354-alcohol-head-feedback.md)
+
+## 2026-11-05 — 홍련의 한계선 기본·잔불 추격 마법진
+
+기본 ‘점화!’는 원 하나, 잔불 추격은 원 세 개로 착탄 범위를 표시한다. 중앙은 비워 두고 연꽃 테두리 장식만 각 착탄점 주위에서 초당 24°로 회전한다. 이웃 원의 중심을 지날 때에도 범위선을 이어 그리고 장식의 불투명도를 유지한다. [무기 구조](StructureMemory/ScriptSystems/BurnStatusAndCrimsonBoundaryWeapon.md#ember-pursuit-2026-11-05) · [작업 기록](SessionLogs/2026-11-05-nadoman354-crimson-ember-pursuit.md)

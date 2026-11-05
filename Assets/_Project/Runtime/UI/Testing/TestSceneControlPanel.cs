@@ -25,7 +25,10 @@ public sealed class TestSceneControlPanel : MonoBehaviour
     [SerializeField] private GameObject[] bossPrefabs;
     [SerializeField] private GameObject[] mobPrefabs;
     [SerializeField] private GameObject[] chestPrefabs;
-    [SerializeField] private GameObject[] eventRoomPrefabs;
+    // Older saved scenes contain snapshot prefabs. Drop their build dependencies when preparing the copy.
+    [SerializeField, HideInInspector] private GameObject[] eventRoomPrefabs;
+    [SerializeField] private RoomTemplateSO[] eventTemplates;
+    [SerializeField] private RoomPieceAuthoring eventRoomShell;
 
     [Header("Scene")]
     [SerializeField] private GameObject arenaRoot;
@@ -62,8 +65,6 @@ public sealed class TestSceneControlPanel : MonoBehaviour
     [SerializeField] private Button healButton;
     [SerializeField] private Button resetPlayerButton;
 
-    private readonly List<WeaponDefinition> weapons = new();
-    private readonly List<RelicDefinition> relics = new();
     private readonly List<LevelRewardDefinitionSO> rewards = new();
     private readonly List<LevelRewardSelectionState> selectedRewards = new();
     private readonly List<GameObject> spawned = new();
@@ -85,6 +86,7 @@ public sealed class TestSceneControlPanel : MonoBehaviour
     private IRunSessionStoreBackend originalRun;
     private string originalRunJson;
     private GameObject activeEvent;
+    private RoomTemplateSO activeEventTemplate;
     private bool originalGroundActive;
     private bool originalArenaActive;
     private TilemapPathfinder2D eventPathfinder;
@@ -134,6 +136,20 @@ public sealed class TestSceneControlPanel : MonoBehaviour
         GuardTimer(RunTimeLimitSystem.Instance);
         PopulateChoices();
     }
+
+#if UNITY_EDITOR
+    // Scene processing can finish after OnEnable in Editor Play. Bind the resized grids
+    // and dropdowns again if this instance has already subscribed to its controls.
+    public void EditorCatalogPrepared()
+    {
+        if (eventRoomPrefabs != null && eventRoomPrefabs.Length > 0)
+            eventRoomPrefabs = Array.Empty<GameObject>();
+
+        if (!isTestScene || !isActiveAndEnabled) return;
+        if (catalogGrid != null && catalogGrid.isActiveAndEnabled) catalogGrid.BindCatalogCells();
+        PopulateChoices();
+    }
+#endif
 
     private void Start()
     {
@@ -228,7 +244,7 @@ public sealed class TestSceneControlPanel : MonoBehaviour
     public void GiveWeapon()
     {
         if (!TryGetPlayer(out PlayerInteractor2D player)) return;
-        WeaponDefinition weapon = GetCatalogChoice(weapons, TestSceneCatalogGrid.WeaponCategory);
+        WeaponDefinition weapon = catalogGrid?.SelectedTarget<WeaponDefinition>(TestSceneCatalogGrid.WeaponCategory);
         WeaponInventory2D inventory = player.GetComponent<WeaponInventory2D>();
         int slot = weaponSlotDropdown != null ? weaponSlotDropdown.value : 0;
         if (weapon == null || inventory == null || !inventory.TrySetWeaponSlot(slot, weapon))
@@ -240,7 +256,7 @@ public sealed class TestSceneControlPanel : MonoBehaviour
     public void GiveRelic()
     {
         if (!TryGetPlayer(out PlayerInteractor2D player)) return;
-        RelicDefinition relic = GetCatalogChoice(relics, TestSceneCatalogGrid.RelicCategory);
+        RelicDefinition relic = catalogGrid?.SelectedTarget<RelicDefinition>(TestSceneCatalogGrid.RelicCategory);
         RelicInventory inventory = player.GetComponent<RelicInventory>();
         if (relic == null || inventory == null) { SetStatus("유물 또는 인벤토리가 없습니다."); return; }
         RelicInventory.AcquireResult result = inventory.TryAcquireOrUpgradeDetailed(relic);
@@ -253,13 +269,13 @@ public sealed class TestSceneControlPanel : MonoBehaviour
     public void OpenMonsters() => catalogGrid?.Open(TestSceneCatalogGrid.MonsterCategory);
     public void OpenBosses() => catalogGrid?.Open(TestSceneCatalogGrid.BossCategory);
 
-    public void SpawnBoss() => SpawnActors(bossPrefabs, TestSceneCatalogGrid.BossCategory, false);
-    public void SpawnMonster() => SpawnActors(mobPrefabs, TestSceneCatalogGrid.MonsterCategory, true);
+    public void SpawnBoss() => SpawnActors(TestSceneCatalogGrid.BossCategory, false);
+    public void SpawnMonster() => SpawnActors(TestSceneCatalogGrid.MonsterCategory, true);
 
-    private void SpawnActors(GameObject[] catalog, int category, bool useMonsterSpawner)
+    private void SpawnActors(int category, bool useMonsterSpawner)
     {
         if (!TryGetPlayer(out PlayerInteractor2D player)) return;
-        GameObject prefab = GetCatalogChoice(catalog, category);
+        GameObject prefab = catalogGrid?.SelectedTarget<GameObject>(category);
         if (prefab == null) { SetStatus("생성할 프리팹이 없습니다."); return; }
         int count = 1;
         if (useMonsterSpawner && spawnCountInput != null) int.TryParse(spawnCountInput.text, out count);
@@ -349,27 +365,34 @@ public sealed class TestSceneControlPanel : MonoBehaviour
     public void SpawnEvent()
     {
         if (!TryGetPlayer(out PlayerInteractor2D player)) return;
-        GameObject prefab = GetChoice(eventRoomPrefabs, eventDropdown);
-        if (prefab == null) { SetStatus("이벤트 방 프리팹이 없습니다."); return; }
+        RoomTemplateSO template = GetChoice(eventTemplates, eventDropdown);
+        if (template == null || eventRoomShell == null) { SetStatus("이벤트 방이 없습니다."); return; }
         ClearOwnedInstances();
-        activeEvent = Instantiate(prefab, arenaRoot != null ? arenaRoot.transform.position : Vector3.zero,
-            Quaternion.identity);
-        activeEvent.SetActive(false);
+        // The authored shell is inactive. Populate and bind the whole room before any placed actor wakes.
+        RoomPieceAuthoring authoring = Instantiate(eventRoomShell);
+        activeEvent = authoring.gameObject;
+        activeEventTemplate = template;
+        activeEvent.name = template.name;
         SceneManager.MoveGameObjectToScene(activeEvent, gameObject.scene);
-        DisableTestTravel(activeEvent);
-        RoomPieceAuthoring authoring = activeEvent.GetComponentInChildren<RoomPieceAuthoring>(true);
-        if (authoring != null && authoring.SourceTemplate != null && authoring.Grid != null)
+        RectInt bounds = template.LayoutData.localBounds;
+        var areaCollider = activeEvent.GetComponent<BoxCollider2D>();
+        areaCollider.size = bounds.size;
+        areaCollider.offset = bounds.center;
+        Vector3 origin = arenaRoot != null ? arenaRoot.transform.position : Vector3.zero;
+        activeEvent.transform.position = origin - (Vector3)bounds.center;
+        if (!PopulateEventRoom(authoring, template, out string failure))
         {
-            Vector2 localCenter = authoring.SourceTemplate.LayoutData.localBounds.center;
-            Vector3 center = authoring.Grid.CellToWorld(Vector3Int.zero) + new Vector3(localCenter.x, localCenter.y, 0f);
-            activeEvent.transform.position += (arenaRoot != null ? arenaRoot.transform.position : Vector3.zero) - center;
+            ClearOwnedInstances();
+            SetStatus($"이벤트 방 구성 실패: {template.name} / {failure}");
+            return;
         }
+        DisableTestTravel(activeEvent);
         MonsterSpawnRoomGroup eventGroup = activeEvent.GetComponentInChildren<MonsterSpawnRoomGroup>(true);
         MonsterRoomArea2D eventArea = activeEvent.GetComponentInChildren<MonsterRoomArea2D>(true);
         var anchors = new Dictionary<string, Transform>(StringComparer.Ordinal);
         foreach (ProceduralRoomAnchor anchor in activeEvent.GetComponentsInChildren<ProceduralRoomAnchor>(true))
             if (!string.IsNullOrWhiteSpace(anchor.SlotId)) anchors.TryAdd(anchor.SlotId, anchor.Target);
-        var context = new ProceduralRoomRuntimeContext(0, authoring != null ? authoring.SourceTemplate : null,
+        var context = new ProceduralRoomRuntimeContext(0, template,
             anchors, anchors, roomGroup: eventGroup != null ? eventGroup : roomGroup,
             roomArea: eventArea != null ? eventArea : roomArea);
         foreach (MonoBehaviour component in activeEvent.GetComponentsInChildren<MonoBehaviour>(true))
@@ -401,7 +424,36 @@ public sealed class TestSceneControlPanel : MonoBehaviour
             : GetSpawnPosition();
         if (player.TryGetComponent(out MovementMotor2D motor)) motor.WarpTo(destination, true, true);
         RefreshSafetyTracking();
-        SetStatus($"이벤트 방 생성: {prefab.name}. 생성물 정리로 기본 방에 복귀합니다.");
+        SetStatus($"이벤트 방 생성: {template.name}. 생성물 정리로 기본 방에 복귀합니다.");
+    }
+
+    private static bool PopulateEventRoom(RoomPieceAuthoring room, RoomTemplateSO template, out string failure)
+    {
+        RoomBuildData build = template.BuildData;
+        foreach (RoomTileLayerKind layer in RoomTileLayerContract.OrderedLayers)
+        {
+            var tiles = build.GetTiles(layer);
+            if (tiles == null) continue;
+            Tilemap map = room.GetTilemap(layer);
+            foreach (RoomTileData tile in tiles)
+                map.SetTile((Vector3Int)tile.localCell, tile.tile);
+        }
+
+        failure = null;
+        if (build.objectPlacements == null) return true;
+        foreach (var placement in build.objectPlacements)
+        {
+            if (placement.prefab == null) continue;
+            var instance = Instantiate(placement.prefab, room.transform, false);
+            instance.transform.localPosition = (Vector2)placement.localCell + placement.localOffset;
+            instance.transform.localRotation = Quaternion.Euler(0, 0, placement.localRotationDegrees);
+            if (placement.localScale != Vector3.zero) instance.transform.localScale = placement.localScale;
+            if (placement.childPoseOverrides == null || placement.childPoseOverrides.Count == 0) continue;
+            var composite = instance.GetComponent<RoomCompositePoseAuthoring>();
+            if (composite == null) { failure = placement.placementId; return false; }
+            if (!composite.TryApplyPoseOverrides(placement.childPoseOverrides, out failure)) return false;
+        }
+        return true;
     }
 
     public void LevelUp()
@@ -501,6 +553,7 @@ public sealed class TestSceneControlPanel : MonoBehaviour
 
     private void ClearOwnedInstances()
     {
+        activeEventTemplate = null;
         if (!Application.isPlaying)
         {
             spawned.Clear();
@@ -666,18 +719,11 @@ public sealed class TestSceneControlPanel : MonoBehaviour
 
     private void PopulateChoices()
     {
-        weapons.Clear(); relics.Clear(); rewards.Clear();
-        if (itemDatabase != null)
-        {
-            if (itemDatabase.allWeapons != null) foreach (WeaponDefinition weapon in itemDatabase.allWeapons)
-                if (weapon != null) weapons.Add(weapon);
-            if (itemDatabase.allRelics != null) foreach (RelicDefinition relic in itemDatabase.allRelics)
-                if (relic != null) relics.Add(relic);
-        }
+        rewards.Clear();
         if (rewardCatalog != null) foreach (LevelRewardDefinitionSO reward in rewardCatalog.Rewards)
             if (reward != null) rewards.Add(reward);
         Populate(rewardDropdown, rewards.ConvertAll(x => x.DisplayName));
-        Populate(chestDropdown, Names(chestPrefabs)); Populate(eventDropdown, Names(eventRoomPrefabs));
+        Populate(chestDropdown, Names(chestPrefabs)); Populate(eventDropdown, Names(eventTemplates));
         Populate(weaponSlotDropdown, new List<string> { "슬롯 1", "슬롯 2" });
         RefreshSelectedRewards();
     }
@@ -732,11 +778,10 @@ public sealed class TestSceneControlPanel : MonoBehaviour
             ? PlayerRuntimeRegistry.CurrentPlayer.transform.position + Vector3.up * 4f : Vector3.zero;
     }
 
-    private static Vector3 FindEventLandingPosition(RoomPieceAuthoring authoring)
+    private Vector3 FindEventLandingPosition(RoomPieceAuthoring authoring)
     {
         Tilemap floor = authoring.FloorTilemap;
-        RectInt bounds = authoring.SourceTemplate != null ? authoring.SourceTemplate.LayoutData.localBounds :
-            new RectInt(Vector2Int.zero, authoring.Size);
+        RectInt bounds = activeEventTemplate.LayoutData.localBounds;
         Vector3 preferred = floor.GetCellCenterWorld(new Vector3Int(
             Mathf.FloorToInt(bounds.center.x), Mathf.FloorToInt(bounds.center.y), 0));
         Vector3 best = preferred;
@@ -768,12 +813,6 @@ public sealed class TestSceneControlPanel : MonoBehaviour
         return entries != null && index >= 0 && index < entries.Count ? entries[index] : null;
     }
 
-    private T GetCatalogChoice<T>(IReadOnlyList<T> entries, int category) where T : class
-    {
-        int index = catalogGrid != null ? catalogGrid.GetSelectedIndex(category) : -1;
-        return entries != null && index >= 0 && index < entries.Count ? entries[index] : null;
-    }
-
     private void ExecuteCatalogChoice(int category)
     {
         switch (category)
@@ -785,10 +824,10 @@ public sealed class TestSceneControlPanel : MonoBehaviour
         }
     }
 
-    private static List<string> Names(GameObject[] prefabs)
+    private static List<string> Names(UnityEngine.Object[] assets)
     {
         var names = new List<string>();
-        if (prefabs != null) foreach (GameObject prefab in prefabs) names.Add(prefab != null ? prefab.name : "(미설정)");
+        if (assets != null) foreach (var asset in assets) names.Add(asset != null ? asset.name : "(미설정)");
         return names;
     }
 

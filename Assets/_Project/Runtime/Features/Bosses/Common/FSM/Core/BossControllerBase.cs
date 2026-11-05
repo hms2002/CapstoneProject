@@ -94,6 +94,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBoss
     protected override void Awake()
     {
         base.Awake();
+        IgnorePlayerContactForces();
 
         CacheComponents();
         speechController = GetComponent<IBossSpeechPlayback>();

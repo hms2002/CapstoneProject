@@ -83,6 +83,7 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
     private bool storedCanvasBlocksRaycasts = true;
     private int pendingWindowModeIndex;
     private int pendingResolutionIndex;
+    private ButtonNavigationGroup keyboardNavigation;
 
     public bool IsActive => gameObject.activeSelf && !isClosing;
     public bool CanCloseOnEscape => true;
@@ -119,6 +120,12 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
 
     private void Awake()
     {
+        keyboardNavigation = new ButtonNavigationGroup(Navigation.Mode.Automatic,
+            windowModeStepper?.PreviousButton, windowModeStepper?.NextButton,
+            resolutionStepper?.PreviousButton, resolutionStepper?.NextButton, applyDisplayButton,
+            screenShakeStepper?.PreviousButton, screenShakeStepper?.NextButton,
+            masterSlider, musicSlider, sfxSlider, keyMappingButton,
+            languageStepper?.PreviousButton, languageStepper?.NextButton, closeButton);
         if (IsTitleSceneLocalPanel)
         {
             ResolveReferences();
@@ -160,10 +167,19 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
 
     private void OnDisable()
     {
+        keyboardNavigation?.Reset();
         UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
         ApplyTemporaryHiddenState(false);
         isClosing = false;
         MouseCursorService.Instance?.ClearDomain(this);
+    }
+
+    private void LateUpdate()
+    {
+        bool inputAllowed = IsActive && !hasStoredTemporaryCanvasState &&
+            !SceneTransitionPlayback.IsTransitionActive && !LoadingPresentationQuery.IsActiveLoadingPresentation &&
+            (IsTitleSceneLocalPanel || UIManager.Instance == null || UIManager.Instance.CanProcessNavigationInput(this));
+        keyboardNavigation.Refresh(inputAllowed);
     }
 
     public void OpenUI()
@@ -197,6 +213,7 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
         }
 
         isClosing = true;
+        keyboardNavigation?.Suspend();
         dropPresentation.PlayClose(FinalizeClose);
     }
 
@@ -214,6 +231,7 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
 
         if (hidden)
         {
+            keyboardNavigation?.Suspend();
             isClosing = false;
             dropPresentation?.SnapOpen();
             ApplyTemporaryHiddenState(true);

@@ -7,8 +7,9 @@
   `TitleLanguageMenuUI` owns only transient open/focus state. Selection calls the
   existing `GameSettingsService.SetLanguage`; no separate language owner is added.
 - `TitleMenuController.languageMenu` coordinates keyboard navigation, Escape and
-  visibility during settings/profile/intro/loading locks. Closing the list restores
-  focus to the button; main-menu navigation is suspended while the list is open.
+  visibility during settings/profile/intro/loading locks. Opening shows the current
+  language checkmark. The first vertical navigation press focuses that language.
+  Main-menu navigation resumes on directional input after the list closes.
 - Native names deliberately retain the matching locale's pixel font rather than
   following the selected locale, so all five scripts remain readable together.
   The selected marker reads `CurrentLanguage` when the list opens.

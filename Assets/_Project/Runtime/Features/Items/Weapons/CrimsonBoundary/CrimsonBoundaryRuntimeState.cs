@@ -7,7 +7,7 @@ using UnityGAS;
 public sealed class CrimsonBoundaryRuntimeState : WeaponAbilityRuntimeState
 {
     private readonly List<GameObject> transients = new();
-    private GameObject chargePresentation;
+    private readonly List<GameObject> chargePresentations = new(3);
 
     [Header("Basic attack motion")]
     [SerializeField] private Transform motionRoot;
@@ -113,20 +113,24 @@ public sealed class CrimsonBoundaryRuntimeState : WeaponAbilityRuntimeState
 
     public void TrackChargePresentation(GameObject instance)
     {
-        CancelChargePresentation();
-        chargePresentation = instance;
+        chargePresentations.Add(instance);
         Register(instance);
     }
 
     public void ReleaseChargePresentation(GameObject instance)
     {
-        if (chargePresentation == instance) chargePresentation = null;
+        chargePresentations.Remove(instance);
     }
 
     public void CancelChargePresentation()
     {
-        if (chargePresentation != null) Destroy(chargePresentation);
-        chargePresentation = null;
+        foreach (var instance in chargePresentations)
+        {
+            if (instance == null) continue;
+            instance.SetActive(false);
+            Destroy(instance);
+        }
+        chargePresentations.Clear();
     }
 
     public void Forget(GameObject transient)
@@ -140,6 +144,6 @@ public sealed class CrimsonBoundaryRuntimeState : WeaponAbilityRuntimeState
         for (int i = transients.Count - 1; i >= 0; i--)
             if (transients[i] != null) Destroy(transients[i]);
         transients.Clear();
-        chargePresentation = null;
+        chargePresentations.Clear();
     }
 }

@@ -5201,10 +5201,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 50606298271765
-    m_Localized: "\u25CF Exclusive relic for {em:Crimson Limit}\r\n\u25CF Kills with
-      {em:Ignite!} create {val:1} {em:Homing Fireball} at the target's location\r\n\u25CF
-      The fireball tracks a nearby enemy\r\n\u25CF No target means no fireball; homing
-      fireballs {neg:cannot create further fireballs}"
+    m_Localized: "\u25CF Exclusive relic for {em:Crimson Limit}\r\n\u25CF Charging {em:Ignite!} grows {val:3} overlapping magic circles.\r\n\u25CF Release to land a meteor in each circle at the same time.\r\n\u25CF Enemies in overlapping circles take damage and gain [[\uD654\uC0C1]] from each circle."
     m_Metadata:
       m_Items: []
   - m_Id: 50606298271766

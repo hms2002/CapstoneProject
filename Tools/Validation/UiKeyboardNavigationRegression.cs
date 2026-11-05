@@ -149,15 +149,24 @@ public static class UiKeyboardNavigationRegression
         Check(eventSystem.currentSelectedGameObject == button.gameObject,
             reason + $" Selected={eventSystem.currentSelectedGameObject?.name}, moveEnabled={inputModule.move.action.enabled}, move={inputModule.move.action.ReadValue<Vector2>()}, keyPressed={keyboard.sKey.isPressed}");
 
+    private static IEnumerator BeginNavigation(object group, Key direction)
+    {
+        Check(eventSystem.currentSelectedGameObject == null, "The group preselected a control before navigation.");
+        yield return Press(direction);
+        Call(group, "Refresh", true);
+    }
+
     private static IEnumerator TestMenuNavigation()
     {
         GameObject root = new GameObject("Menu", typeof(RectTransform), typeof(CanvasGroup));
         Button first = Button("Continue", root.transform);
         Button middle = Button("Settings", root.transform);
         Button last = Button("Quit", root.transform);
+        Color pointerColor = first.colors.highlightedColor;
         object group = Group(false, first, middle, last);
         Call(group, "Refresh", true);
-        Selected(first, "Menu did not select the first button.");
+        yield return BeginNavigation(group, Key.DownArrow);
+        Selected(first, "The first move skipped the first menu button.");
         yield return Press(Key.S); Selected(middle, "S did not move down.");
         yield return Press(Key.DownArrow); Selected(last, "Down arrow did not move down.");
         yield return Press(Key.S); Selected(last, "Navigation escaped the last menu button.");
@@ -180,10 +189,19 @@ public static class UiKeyboardNavigationRegression
         Call(group, "Refresh", false);
         Selected(overlay, "Suspension cleared another screen's focus.");
         Call(group, "Refresh", true);
-        Selected(middle, "Closing the overlay did not restore the prior menu button.");
+        Selected(overlay, "Resuming without input stole the overlay's focus.");
         eventSystem.SetSelectedGameObject(null);
+        yield return BeginNavigation(group, Key.DownArrow);
+        Selected(middle, "Closing the overlay did not restore the prior menu button.");
+        Check(first.colors.highlightedColor == first.colors.normalColor, "A stationary pointer could still tint the first button.");
+        Mouse mouse = InputSystem.AddDevice<Mouse>();
+        InputSystem.QueueStateEvent(mouse, new MouseState { position = new Vector2(120, 80) });
+        yield return null;
         Call(group, "Refresh", true);
-        Selected(middle, "Background click permanently lost menu focus.");
+        Check(first.colors.highlightedColor == pointerColor, "Mouse input did not restore the authored hover color.");
+        InputSystem.RemoveDevice(mouse);
+        yield return BeginNavigation(group, Key.DownArrow);
+        Selected(middle, "Switching back to navigation lost the last focused menu button.");
 
         middle.interactable = false;
         Call(group, "Refresh", true);
@@ -199,7 +217,8 @@ public static class UiKeyboardNavigationRegression
         root.GetComponent<CanvasGroup>().interactable = true;
         Call(first, "OnCanvasGroupChanged");
         Call(group, "Refresh", true);
-        Selected(first, "Focus did not appear after the animation unlocked.");
+        yield return BeginNavigation(group, Key.S);
+        Selected(first, "The first move after unlock did not focus the menu.");
         Call(group, "Reset");
     }
 
@@ -208,6 +227,7 @@ public static class UiKeyboardNavigationRegression
         Button first = Button("Card1"), second = Button("Card2"), third = Button("Card3");
         object group = Group(true, first, second, third);
         Call(group, "Refresh", true);
+        yield return BeginNavigation(group, Key.RightArrow);
         Selected(first, "Card offer did not select its first card.");
         yield return Press(Key.D); Selected(second, "D did not select the next card.");
         yield return Press(Key.RightArrow); Selected(third, "Right arrow did not select the next card.");
@@ -220,12 +240,14 @@ public static class UiKeyboardNavigationRegression
         yield return Press(Key.Enter);
         Check(picked == 0, "Enter selected a card while its group was suspended.");
         Call(group, "Refresh", true);
+        yield return BeginNavigation(group, Key.A);
         yield return Press(Key.Enter);
         Check(picked == 1, "Enter did not select the focused card.");
         second.gameObject.SetActive(false);
         Call(group, "Refresh", true);
         yield return Press(Key.D); Selected(third, "A smaller offer did not skip an absent card.");
         Call(group, "Reset"); Call(group, "Refresh", true);
+        yield return BeginNavigation(group, Key.D);
         Selected(first, "A refreshed offer did not reset selection.");
         Call(group, "Reset");
     }
@@ -244,6 +266,8 @@ public static class UiKeyboardNavigationRegression
         State(Key.Space); yield return null; Call(group, "Refresh", true);
         Check(submissions == 0, "An inherited Space hold submitted on the following frame.");
         State(); yield return null; Call(group, "Refresh", true);
+        Key direction = horizontal ? Key.D : Key.S;
+        yield return BeginNavigation(group, direction);
         State(Key.Space); yield return null; Call(group, "Refresh", true);
         Check(submissions == 1, "A fresh Space press did not submit the selected control exactly once.");
         Call(group, "Refresh", true);
@@ -262,6 +286,8 @@ public static class UiKeyboardNavigationRegression
         Selected(overlay, "Space suspension stole the overlay's focus.");
         Call(group, "Refresh", true);
         Check(submissions == 1, "Resuming while Space was held submitted immediately.");
+        eventSystem.SetSelectedGameObject(null);
+        yield return BeginNavigation(group, direction);
         State(); yield return null; Call(group, "Refresh", true);
         State(Key.Space); yield return null; Call(group, "Refresh", true);
         Check(submissions == 2, "Space release/repress after overlay return did not submit.");
@@ -275,6 +301,7 @@ public static class UiKeyboardNavigationRegression
         canvasGroup.interactable = true;
         Call(button, "OnCanvasGroupChanged"); Call(group, "Refresh", true);
         Check(submissions == 2, "Unlocking while Space was held submitted immediately.");
+        yield return BeginNavigation(group, direction);
         State(); yield return null; Call(group, "Refresh", true);
         State(Key.Space); yield return null; Call(group, "Refresh", true);
         Check(submissions == 3, "Space did not submit after animation unlock and release.");
@@ -284,6 +311,7 @@ public static class UiKeyboardNavigationRegression
         Check(submissions == 4, "Simultaneous Enter and Space submitted twice.");
         Call(group, "Reset"); Call(group, "Refresh", true);
         Check(submissions == 4, "A new offer inherited the prior Space press.");
+        yield return BeginNavigation(group, direction);
         State(); yield return null; Call(group, "Refresh", true);
         State(Key.Space); yield return null; Call(group, "Refresh", true);
         Check(submissions == 5, "Space did not submit after the new offer's release guard.");

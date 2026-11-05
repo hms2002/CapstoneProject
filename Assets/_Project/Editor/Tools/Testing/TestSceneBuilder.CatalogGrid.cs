@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEditor;
@@ -7,7 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public static partial class TestSceneBuilder
+public sealed partial class TestSceneBuilder
 {
     [MenuItem("Tools/Testing/Update TestScene Catalog Grid")]
     public static void UpdateCatalogGrid()
@@ -31,8 +32,7 @@ public static partial class TestSceneBuilder
             var existingData = new SerializedObject(existingGrid);
             RectTransform footer = (RectTransform)existingGrid.transform.Find("CatalogOverlay/CatalogWindow/Selection");
             if (existingData.FindProperty("feedbackText").objectReferenceValue == null) BuildGridFeedback(existingGrid, footer);
-            RefreshActorLabels(existingData, "monsterCells", PrefabReferences(data, "mobPrefabs"));
-            RefreshActorLabels(existingData, "bossCells", PrefabReferences(data, "bossPrefabs"));
+            PrepareCatalogs(controls);
             ValidateScene(); EditorSceneManager.MarkSceneDirty(scene);
             if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("TestScene UI save failed.");
             return;
@@ -52,6 +52,7 @@ public static partial class TestSceneBuilder
             Set(controls, fields[i], buttons[i]);
         }
         BuildCatalogGrid(controls);
+        PrepareCatalogs(controls);
         foreach (string name in new[] { "Weapon", "Relic", "Monster", "Boss", "Weapon slot", "Spawn Count" })
         {
             Transform obsolete = content.Find(name);
@@ -65,10 +66,6 @@ public static partial class TestSceneBuilder
 
     private static void BuildCatalogGrid(TestSceneControlPanel controls)
     {
-        var data = new SerializedObject(controls);
-        var database = (ItemDatabase)data.FindProperty("itemDatabase").objectReferenceValue;
-        GameObject[] mobs = PrefabReferences(data, "mobPrefabs");
-        GameObject[] bosses = PrefabReferences(data, "bossPrefabs");
         RectTransform host = Rect("CatalogHost", controls.transform);
         Stretch(host);
         var grid = host.gameObject.AddComponent<TestSceneCatalogGrid>();
@@ -100,12 +97,10 @@ public static partial class TestSceneBuilder
         Button[] categoryButtons = names.Select(name => Button(tabs, name)).ToArray();
         SetArray(grid, "categoryButtons", categoryButtons);
         GameObject[] roots = new GameObject[4];
-        roots[0] = BuildCategory(window, "Weapons", database.allWeapons.Where(x => x != null)
-            .Select(x => (x.displayName, x.icon)).ToArray(), grid, "weaponCells");
-        roots[1] = BuildCategory(window, "Relics", database.allRelics.Where(x => x != null)
-            .Select(x => (x.displayName, x.icon)).ToArray(), grid, "relicCells");
-        roots[2] = BuildCategory(window, "Monsters", ActorEntries(mobs), grid, "monsterCells");
-        roots[3] = BuildCategory(window, "Bosses", ActorEntries(bosses), grid, "bossCells");
+        roots[0] = BuildCategory(window, "Weapons");
+        roots[1] = BuildCategory(window, "Relics");
+        roots[2] = BuildCategory(window, "Monsters");
+        roots[3] = BuildCategory(window, "Bosses");
         for (int i = 0; i < roots.Length; i++) roots[i].SetActive(i == 0);
         SetArray(grid, "categoryRoots", roots);
 
@@ -147,8 +142,7 @@ public static partial class TestSceneBuilder
         Set(controls, "catalogGrid", grid);
     }
 
-    private static GameObject BuildCategory(Transform window, string name, (string label, Sprite icon)[] entries,
-        TestSceneCatalogGrid catalog, string field)
+    private static GameObject BuildCategory(Transform window, string name)
     {
         RectTransform root = Rect(name, window);
         root.anchorMin = Vector2.zero; root.anchorMax = Vector2.one;
@@ -177,33 +171,70 @@ public static partial class TestSceneBuilder
         handle.gameObject.AddComponent<Image>().color = new Color(.3f, .58f, .7f);
         scrollbar.handleRect = handle; scrollbar.targetGraphic = handle.GetComponent<Image>(); scrollbar.direction = Scrollbar.Direction.BottomToTop;
         scroll.verticalScrollbar = scrollbar; scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
-        TestSceneCatalogCell[] cells = new TestSceneCatalogCell[entries.Length];
-        for (int i = 0; i < entries.Length; i++)
-        {
-            (string label, Sprite icon) entry = entries[i];
-            if (entry.icon == null) throw new InvalidOperationException("Catalog icon is missing: " + entry.label);
-            RectTransform card = Rect($"{i:D2} {entry.label}", content);
-            card.gameObject.AddComponent<Image>().color = new Color(.085f, .12f, .18f);
-            var button = card.gameObject.AddComponent<Button>();
-            RectTransform selection = Rect("Selected", card); Stretch(selection);
-            var border = selection.gameObject.AddComponent<Image>();
-            border.color = new Color(.15f, .6f, .8f, .4f); border.raycastTarget = false;
-            border.enabled = i == 0;
-            RectTransform iconRect = Rect("Icon", card);
-            Place(iconRect, new Vector2(.5f, 1), new Vector2(.5f, 1), new Vector2(0, -8), new Vector2(116, 88));
-            var image = iconRect.gameObject.AddComponent<Image>(); image.sprite = entry.icon; image.preserveAspect = true; image.raycastTarget = false;
-            RectTransform caption = Rect("Name", card);
-            caption.anchorMin = Vector2.zero; caption.anchorMax = new Vector2(1, 0);
-            caption.pivot = new Vector2(.5f, 0); caption.sizeDelta = new Vector2(-6, 46); caption.anchoredPosition = new Vector2(0, 4);
-            TMP_Text label = Text("Label", caption, entry.label, 17); label.overflowMode = TextOverflowModes.Ellipsis;
-            cells[i] = card.gameObject.AddComponent<TestSceneCatalogCell>();
-            Set(cells[i], "button", button); Set(cells[i], "icon", image); Set(cells[i], "label", label); Set(cells[i], "selectionBorder", border);
-        }
-        SetArray(catalog, field, cells);
         return root.gameObject;
     }
 
-    private static (string label, Sprite icon) ActorEntry(GameObject prefab)
+    private static TestSceneCatalogCell CreateCard(RectTransform content)
+    {
+        if (font == null) font = Load<TMP_FontAsset>("Assets/_Project/Art/Font/Galmuri9 SDF.asset");
+        RectTransform card = Rect("Catalog card", content);
+        card.gameObject.AddComponent<Image>().color = new Color(.085f, .12f, .18f);
+        var button = card.gameObject.AddComponent<Button>();
+        RectTransform selection = Rect("Selected", card); Stretch(selection);
+        var border = selection.gameObject.AddComponent<Image>();
+        border.color = new Color(.15f, .6f, .8f, .4f); border.raycastTarget = false;
+        border.enabled = false;
+        RectTransform iconRect = Rect("Icon", card);
+        Place(iconRect, new Vector2(.5f, 1), new Vector2(.5f, 1), new Vector2(0, -8), new Vector2(116, 88));
+        var image = iconRect.gameObject.AddComponent<Image>(); image.preserveAspect = true; image.raycastTarget = false;
+        RectTransform caption = Rect("Name", card);
+        caption.anchorMin = Vector2.zero; caption.anchorMax = new Vector2(1, 0);
+        caption.pivot = new Vector2(.5f, 0); caption.sizeDelta = new Vector2(-6, 46); caption.anchoredPosition = new Vector2(0, 4);
+        TMP_Text label = Text("Label", caption, string.Empty, 17); label.overflowMode = TextOverflowModes.Ellipsis;
+        var cell = card.gameObject.AddComponent<TestSceneCatalogCell>();
+        Set(cell, "button", button); Set(cell, "icon", image); Set(cell, "label", label); Set(cell, "selectionBorder", border);
+        return cell;
+    }
+
+    private static void RefreshCards(TestSceneCatalogGrid grid, ItemDatabase database, GameObject[] mobs, GameObject[] bosses)
+    {
+        var data = new SerializedObject(grid);
+        var roots = data.FindProperty("categoryRoots");
+        var weapons = (database.allWeapons ?? new List<WeaponDefinition>()).Where(x => x != null)
+            .Select(x => ((UnityEngine.Object)x, x.displayName, x.icon)).ToArray();
+        var relics = (database.allRelics ?? new List<RelicDefinition>()).Where(x => x != null)
+            .Select(x => ((UnityEngine.Object)x, x.displayName, x.icon)).ToArray();
+
+        Sync(TestSceneCatalogGrid.WeaponCategory, "weaponCells", weapons);
+        Sync(TestSceneCatalogGrid.RelicCategory, "relicCells", relics);
+        Sync(TestSceneCatalogGrid.MonsterCategory, "monsterCells", ActorEntries(mobs));
+        Sync(TestSceneCatalogGrid.BossCategory, "bossCells", ActorEntries(bosses));
+
+        void Sync(int category, string field, (UnityEngine.Object target, string label, Sprite icon)[] entries)
+        {
+            var root = (GameObject)roots.GetArrayElementAtIndex(category).objectReferenceValue;
+            RectTransform content = root.GetComponent<ScrollRect>().content;
+            var existing = content.GetComponentsInChildren<TestSceneCatalogCell>(true);
+            var cells = new TestSceneCatalogCell[entries.Length];
+            for (int i = 0; i < entries.Length; i++)
+            {
+                var entry = entries[i];
+                TestSceneCatalogCell cell;
+                if (i < existing.Length) cell = existing[i];
+                else if (i == 0) cell = CreateCard(content);
+                else cell = UnityEngine.Object.Instantiate(cells[0], content, false);
+                cell.EditorSetContent(entry.target, entry.label, entry.icon);
+                cell.name = $"{i:D2} {cell.DisplayName}";
+                cell.SetSelected(i == 0);
+                cells[i] = cell;
+            }
+            for (int i = entries.Length; i < existing.Length; i++)
+                UnityEngine.Object.DestroyImmediate(existing[i].gameObject);
+            SetArray(grid, field, cells);
+        }
+    }
+
+    private static (UnityEngine.Object target, string label, Sprite icon) ActorEntry(GameObject prefab)
     {
         Enemy enemy = prefab.GetComponent<Enemy>();
         var serialized = new SerializedObject(enemy);
@@ -215,27 +246,16 @@ public static partial class TestSceneBuilder
             if (animator == null) animator = prefab.GetComponent<Animator>();
             if (animator != null) body = animator.GetComponentInChildren<SpriteRenderer>(true);
         }
-        return (string.IsNullOrWhiteSpace(enemy.EnemyName) ? prefab.name : enemy.EnemyName, body != null ? body.sprite : null);
+        return (prefab, string.IsNullOrWhiteSpace(enemy.EnemyName) ? prefab.name : enemy.EnemyName, body != null ? body.sprite : null);
     }
 
-    private static (string label, Sprite icon)[] ActorEntries(GameObject[] prefabs)
+    private static (UnityEngine.Object target, string label, Sprite icon)[] ActorEntries(GameObject[] prefabs)
     {
         var entries = prefabs.Select(ActorEntry).ToArray();
         var duplicates = entries.GroupBy(x => x.label).Where(x => x.Count() > 1).Select(x => x.Key).ToHashSet();
         for (int i = 0; i < entries.Length; i++)
             if (duplicates.Contains(entries[i].label)) entries[i].label += "\n" + prefabs[i].name;
         return entries;
-    }
-    private static void RefreshActorLabels(SerializedObject grid, string field, GameObject[] prefabs)
-    {
-        var entries = ActorEntries(prefabs);
-        SerializedProperty cells = grid.FindProperty(field);
-        if (cells.arraySize != entries.Length) throw new InvalidOperationException("Catalog count changed. Rebuild TestScene or author matching cards first.");
-        for (int i = 0; i < cells.arraySize; i++)
-        {
-            var cell = new SerializedObject(cells.GetArrayElementAtIndex(i).objectReferenceValue);
-            ((TMP_Text)cell.FindProperty("label").objectReferenceValue).text = entries[i].label;
-        }
     }
     private static void BuildGridFeedback(TestSceneCatalogGrid grid, RectTransform footer)
     {
@@ -248,11 +268,6 @@ public static partial class TestSceneBuilder
         Set(grid, "feedbackText", label);
     }
 
-    private static GameObject[] PrefabReferences(SerializedObject data, string field)
-    {
-        SerializedProperty array = data.FindProperty(field);
-        return Enumerable.Range(0, array.arraySize).Select(i => (GameObject)array.GetArrayElementAtIndex(i).objectReferenceValue).ToArray();
-    }
     private static void Stretch(RectTransform rect)
     {
         rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one; rect.offsetMin = rect.offsetMax = Vector2.zero;
@@ -265,22 +280,16 @@ public static partial class TestSceneBuilder
     {
         var data = new SerializedObject(controls);
         var grid = (TestSceneCatalogGrid)data.FindProperty("catalogGrid").objectReferenceValue;
-        var database = (ItemDatabase)data.FindProperty("itemDatabase").objectReferenceValue;
         var serialized = new SerializedObject(grid);
-        int[] counts = { database.allWeapons.Count(x => x != null), database.allRelics.Count(x => x != null),
-            data.FindProperty("mobPrefabs").arraySize, data.FindProperty("bossPrefabs").arraySize };
         string[] fields = { "weaponCells", "relicCells", "monsterCells", "bossCells" };
         for (int i = 0; i < fields.Length; i++)
         {
             var cells = serialized.FindProperty(fields[i]);
-            if (cells.arraySize != counts[i]) throw new InvalidOperationException("Catalog grid count mismatch: " + fields[i]);
             for (int j = 0; j < cells.arraySize; j++)
             {
                 var cell = new SerializedObject(cells.GetArrayElementAtIndex(j).objectReferenceValue);
                 foreach (string field in new[] { "button", "icon", "label", "selectionBorder" })
                     if (cell.FindProperty(field).objectReferenceValue == null) throw new InvalidOperationException("Missing catalog cell reference: " + field);
-                var icon = (Image)cell.FindProperty("icon").objectReferenceValue;
-                if (icon.sprite == null) throw new InvalidOperationException("Catalog cell sprite is missing.");
             }
         }
         foreach (string field in new[] { "panelRoot", "closeButton", "executeButton", "selectionText", "feedbackText", "executeLabel", "weaponOptions", "monsterOptions" })

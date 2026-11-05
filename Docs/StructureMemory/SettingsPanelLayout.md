@@ -7,7 +7,7 @@
 
 The existing language stepper now selects Korean, English, Japanese, Simplified Chinese and Traditional Chinese. Korean retains persisted value 0; Auto is not an enum or setting option. A missing/invalid saved choice is initialized once from the OS, with English fallback, then saved. Unity Localization owns runtime locale state; active value labels update on locale changes without resetting pending display choices. No scene/prefab layout or serialized bindings changed. See [LocalizationFlow](LocalizationFlow.md) for the current translation scope and remaining font/Play Mode checks.
 
-Current map: 2026-11-02. This document is context, not an Architecture/Contracts authority.
+Current map: 2026-11-05. This document is context, not an Architecture/Contracts authority.
 
 ## Purpose and key assets
 
@@ -30,7 +30,7 @@ Settings-to-keys navigation now replaces the page immediately. KeyBindingPanelUI
 ## Known pitfalls and verification limits
 
 - Scene prefab overrides can retain positions previously written by layout groups. On 2026-11-02, user screenshots and source inspection found stale overrides still present in all 12 enabled scenes containing the main GlobalUIRoot: settings rows were bottom-anchored at Y=0, with misplaced footer/confirmation controls. Those conflicting geometry overrides now inherit the approved main prefab. This supersedes the earlier claim that scene overrides were already cleared. Inactive scrollbar geometry and unrelated overrides remain unchanged. See [repair evidence](../../outputs/ui-layout-normalization-2026-11-02/README.md); this repair was inspected at source level only, without tests or Unity visual execution.
-- Disabled/legacy scenes and alternate GlobalUIRoot prefabs were not migrated. If made active, inspect their settings layout and overrides first.
+- All 38 scene instances of the main GlobalUIRoot, including build-excluded scenes and recovery copies, now resolve the settings page to the same authored layout as TitleScene. The key mapping button sits 32 reference units above the footer divider and the title is centered in its plaque. After merging scenes, inspect the layout slot **and** the rendered button and label for old geometry overrides. The five alternate GlobalUIRoot prefabs have no scene instances in this inventory. See the [2026-11-05 scene inventory and repair](../SessionLogs/2026-11-05-nadoman354-settings-scene-layout.md).
 - [SettingsSkinValidation](../../Assets/_Project/Editor/Tools/Validation/SettingsSkinValidation.cs) exercises actual presenters from both authored sources in disposable Play Mode fixtures, five locales, repeated opening, interaction unlock, hit targets, rebinding/conflict/discard and native captures. It does not apply display settings or save bindings. Full-scene manual acceptance, display transitions and player-build visuals remain separate checks. Historical pre-skin geometry measurements are superseded.
 - This local authoring map is not currently an Architecture/Contracts promotion candidate.
 
