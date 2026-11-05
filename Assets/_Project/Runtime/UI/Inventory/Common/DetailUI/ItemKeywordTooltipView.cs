@@ -84,17 +84,17 @@ public class ItemKeywordTooltipView : MonoBehaviour
                 break;
         }
 
-        SetText(electrocutedTitle, GameText.Get("term.감전", "감전"));
-        SetText(electrocutedBody, GameText.Get("ui.item_keyword.electrocuted.description", ElectrocutedDescription));
-        SetText(burnTitle, GameText.Get("term.화상", "화상"));
-        SetText(burnBody, GameText.Get("ui.item_keyword.burn.description", BurnDescription));
+        bool layoutChanged = SetText(electrocutedTitle, GameText.Get("term.감전", "감전"));
+        layoutChanged |= SetText(electrocutedBody, GameText.Get("ui.item_keyword.electrocuted.description", ElectrocutedDescription));
+        layoutChanged |= SetText(burnTitle, GameText.Get("term.화상", "화상"));
+        layoutChanged |= SetText(burnBody, GameText.Get("ui.item_keyword.burn.description", BurnDescription));
 
         bool showElectrocuted = hasElectrocuted && electrocutedCard != null;
         bool showBurn = hasBurn && burnCard != null;
-        SetVisible(electrocutedCard, showElectrocuted);
-        SetVisible(burnCard, showBurn);
-        SetVisible(stackRoot, showElectrocuted || showBurn);
-        if (stackRoot.gameObject.activeInHierarchy)
+        layoutChanged |= SetVisible(electrocutedCard, showElectrocuted);
+        layoutChanged |= SetVisible(burnCard, showBurn);
+        layoutChanged |= SetVisible(stackRoot, showElectrocuted || showBurn);
+        if (layoutChanged && stackRoot.gameObject.activeInHierarchy)
             LayoutRebuilder.ForceRebuildLayoutImmediate(stackRoot);
         dirty = false;
     }
@@ -194,15 +194,19 @@ public class ItemKeywordTooltipView : MonoBehaviour
     private static bool IsLatinWordCharacter(char character) =>
         character is >= 'a' and <= 'z' or >= 'A' and <= 'Z' or >= '0' and <= '9' or '_';
 
-    private static void SetText(TMP_Text text, string content)
+    private static bool SetText(TMP_Text text, string content)
     {
-        if (text != null && text.text != content)
-            text.text = content;
+        if (text == null || text.text == content)
+            return false;
+        text.text = content;
+        return true;
     }
 
-    private static void SetVisible(RectTransform rect, bool visible)
+    private static bool SetVisible(RectTransform rect, bool visible)
     {
-        if (rect != null && rect.gameObject.activeSelf != visible)
-            rect.gameObject.SetActive(visible);
+        if (rect == null || rect.gameObject.activeSelf == visible)
+            return false;
+        rect.gameObject.SetActive(visible);
+        return true;
     }
 }

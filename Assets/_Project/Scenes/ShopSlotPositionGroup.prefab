@@ -133,6 +133,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1423540194334553645}
+  - component: {fileID: 7109423651984205151}
   m_Layer: 0
   m_Name: ShopSlotPositionGroup
   m_TagString: Untagged
@@ -159,3 +160,15 @@ Transform:
   - {fileID: 5946858513994318214}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!210 &7109423651984205151
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8480025799060872522}
+  m_Enabled: 1
+  m_SortingLayerID: -1039746825
+  m_SortingLayer: 5
+  m_SortingOrder: -10
+  m_SortAtRoot: 0
