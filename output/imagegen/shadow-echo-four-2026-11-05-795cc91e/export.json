@@ -1,0 +1,98 @@
+[
+  {
+    "key": "01-round-795cc91e",
+    "name": "둥근 혼령",
+    "native": "01-round-795cc91e-32x32.png",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\shadow-echo-four-2026-11-05-795cc91e\\01-round-795cc91e-source.png",
+    "sourceMaterialBounds": [
+      214,
+      189,
+      1001,
+      1055
+    ],
+    "materialSize": [
+      22,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#9D5789",
+      "#BE8EC1",
+      "#F1E5F8"
+    ]
+  },
+  {
+    "key": "02-flame-795cc91e",
+    "name": "불꽃 혼령",
+    "native": "02-flame-795cc91e-32x32.png",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\shadow-echo-four-2026-11-05-795cc91e\\02-flame-795cc91e-source.png",
+    "sourceMaterialBounds": [
+      282,
+      266,
+      927,
+      1021
+    ],
+    "materialSize": [
+      21,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#9D5789",
+      "#BE8EC1",
+      "#F1E5F8"
+    ]
+  },
+  {
+    "key": "03-hood-795cc91e",
+    "name": "후드 같은 혼령",
+    "native": "03-hood-795cc91e-32x32.png",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\shadow-echo-four-2026-11-05-795cc91e\\03-hood-795cc91e-source.png",
+    "sourceMaterialBounds": [
+      275,
+      239,
+      952,
+      1060
+    ],
+    "materialSize": [
+      20,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#9D5789",
+      "#BE8EC1",
+      "#F1E5F8"
+    ]
+  },
+  {
+    "key": "04-curled-795cc91e",
+    "name": "꼬리가 감긴 혼령",
+    "native": "04-curled-795cc91e-32x32.png",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\shadow-echo-four-2026-11-05-795cc91e\\04-curled-795cc91e-source.png",
+    "sourceMaterialBounds": [
+      231,
+      165,
+      980,
+      1102
+    ],
+    "materialSize": [
+      19,
+      24
+    ],
+    "samplingPhaseY": 0.5,
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#9D5789",
+      "#BE8EC1",
+      "#F1E5F8"
+    ]
+  }
+]

@@ -1,0 +1,78 @@
+[
+  {
+    "key": "01-round-795cc91e",
+    "name": "둥근 혼령",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\shadow-echo-four-2026-11-05-795cc91e\\01-round-795cc91e-source.png",
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#9D5789",
+      "#BE8EC1",
+      "#F1E5F8"
+    ],
+    "material_bbox": [
+      214,
+      189,
+      1001,
+      1055
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "02-flame-795cc91e",
+    "name": "불꽃 혼령",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\shadow-echo-four-2026-11-05-795cc91e\\02-flame-795cc91e-source.png",
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#9D5789",
+      "#BE8EC1",
+      "#F1E5F8"
+    ],
+    "material_bbox": [
+      282,
+      266,
+      927,
+      1021
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "03-hood-795cc91e",
+    "name": "후드 같은 혼령",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\shadow-echo-four-2026-11-05-795cc91e\\03-hood-795cc91e-source.png",
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#9D5789",
+      "#BE8EC1",
+      "#F1E5F8"
+    ],
+    "material_bbox": [
+      275,
+      239,
+      952,
+      1060
+    ],
+    "preserve_alpha_holes": []
+  },
+  {
+    "key": "04-curled-795cc91e",
+    "name": "꼬리가 감긴 혼령",
+    "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\shadow-echo-four-2026-11-05-795cc91e\\04-curled-795cc91e-source.png",
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#9D5789",
+      "#BE8EC1",
+      "#F1E5F8"
+    ],
+    "material_bbox": [
+      231,
+      165,
+      980,
+      1102
+    ],
+    "preserve_alpha_holes": []
+  }
+]

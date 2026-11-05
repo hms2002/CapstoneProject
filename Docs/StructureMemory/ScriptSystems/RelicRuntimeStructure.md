@@ -16,10 +16,75 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - `RelicDefinition` assets hold player-facing relic identity: `relicId`, display name, icon, rarity, short description, level/drop settings, and a `RelicLogic` reference.
 - `RelicLogic` assets own runtime behavior and tooltip body generation through `BuildTooltip(...)`.
 - `ItemDatabase.asset.allRelics` retains registered definitions for ID lookup, including retired content. `defaultUnlockedRelics` supplies initial unlocks; loot eligibility is filtered separately.
-- `RD_SlimeBottle` and `RD_ChloeLantern` are unlocked by Melta/Chloe affection level 2 through their one-relic UnlockItemAffectionEffect assets. They were already absent from defaults; this slice did not change ItemDatabase or relic definitions. `ItemManager.RestoreEarnedAffectionUnlocks` adds missing item-unlock entitlements from committed profile affection on initialization and unlock-state/list queries. It waits for item/NPC database readiness, retries on later queries, adds through existing validated UnlockWeapon/UnlockRelic methods, and never clears old unlocks, calls other reward effects or opens UI. Existing ready-manager SaveData collection persists the resulting sets without a new save schema or forced save. [Scope](../../ActiveTasks/melta-chloe-tier-two-unlocks.md).
+- Melta affection level 2 unlocks `RD_SlimeBottle`; Chloe affection level 2 unlocks `RD_ChloeLantern`, `RD_ShadowEcho`, and `RD_ShadowWisp` through their existing UnlockItemAffectionEffect assets. All four are absent from defaults and registered in allRelics; reward updates do not change their definitions or the database. `ItemManager.RestoreEarnedAffectionUnlocks` adds every missing referenced entitlement from committed profile affection on initialization and unlock-state/list queries. It waits for item/NPC database readiness, retries on later queries, adds through existing validated UnlockWeapon/UnlockRelic methods, and never clears old unlocks, calls other reward effects or opens UI. Existing ready-manager SaveData collection persists the resulting sets without a new save schema or forced save. [Scope](../../ActiveTasks/melta-chloe-tier-two-unlocks.md).
 - Spiri affection level 2 unlocks `RD_ScorchingSong` (Fire Dragon's Fang), `RD_SunFragment`, and `RD_DrunkenRush` through `SpiriRelicUnlockReward`, an existing `UnlockItemAffectionEffect` instance. These three remain registered in `allRelics` but are absent from `defaultUnlockedRelics`. `ItemManager` merges saved unlock IDs with defaults, so old saved unlocks remain valid; fresh profiles earn them at the threshold. Unlocks affect subsequent eligible chest/shop rolls, not already generated rewards. See [scope and compatibility](../../ActiveTasks/spiri-tier-two-relic-unlocks.md).
 - `RelicDefinition.IsRetiredId` is the shared, nonserialized predicate for the seven relics excluded from acquisition and the encyclopedia on 2026-11-04. Inventory restore and existing effects do not consult it, so previously owned relics retain their identity/level/behavior. Source boundaries and the seven IDs are mapped in [LootRewardStructure](LootRewardStructure.md#retired-relics-2026-11-04).
 - Common always-on stat relics use `RelicLogic_StatModifiers`.
+- `그림자 잔향` (`RD_ShadowEcho`, 전설/maximum level 1) uses
+  `RelicLogic_ShadowEcho`, `ShadowEchoController`, and `ShadowEchoActor` under
+  `Assets/_Project/Runtime/Features/Items/Relics/`. The controller subscribes only
+  to the owner's actual execution lifecycle for the exact global `AD_Dash` asset.
+  It snapshots the departure position/body sprite, flip, world transform and
+  AttackFinal at execution start, then confirms the actor only when the dash ends
+  normally with `Dash2D.Completed=1`. A cancelled/invalid dash removes its actor;
+  if dash execution outlasts the configured delay, damage waits for confirmation.
+  `PlayerAnimatorController2D.PrimaryVisualRenderer` is a read-only view of the
+  existing authored body-renderer reference, avoiding weapons/shadows during capture.
+  The detached actor owns a 0.7-second warning and one area submission, followed by
+  a 0.35-second visual fade.
+  `RelicLogic_ShadowEcho.ExplosionSound` selects `sound_goblinGunner_GunShot`;
+  the actor requests it once at confirmed detonation at the fixed echo position,
+  including when the blast has no targets. Cancelled echoes do not play it.
+  Its static dashed-ring and burst-disc meshes use the
+  same radius 1.5 / Y scale 0.7 as `TopDownEllipseHitUtility2D.ContainsCollider`.
+  This is a full ellipse, not a wall-clipped area. Living enemy hurtboxes are
+  queried at detonation and deduplicated by root. CombatHitPayload carries the
+  creation-time AttackFinal, critical=false and empty elemental arrays through
+  the shared combat route; it adds no custom knockback/stagger or weapon scaling.
+  `PF_ShadowEcho.prefab` contains the frozen-player SpriteRenderer, dashed range,
+  filled/ring burst renderers and two authored ParticleSystems. Runtime creates
+  only instances of that prefab; gameplay elapsed time drives display/fade.
+  There is no runtime UI hierarchy, sprite, mesh, material or ParticleSystem
+  construction. MaterialPropertyBlock allocation occurs in Awake.
+  The attachment token owns live actors and event subscriptions. Unequip/reapply,
+  restore-detach, owner disable/death/destruction and scene teardown cancel them.
+  Re-enable/restoration reconnect future dash hooks without replaying an echo;
+  pending actors and timers are not saved. The effect is independent of weapons.
+  `ShadowEchoAuthoring.Apply` authors three static meshes in `Art/Meshes`,
+  `Art/Materials/VFX/M_ShadowEcho.mat`, the prefab, and the definition/strategy.
+  `RD_ShadowEcho` is registered only in `ItemDatabase.allRelics`; reward unlock
+  wiring is separate. Its icon uses the supplied `Icon_ShadowEcho.png` under
+  `Art/Sprites/Items/RelicIcon`, copied unchanged with Point/Single import settings.
+  `ApplyIcon` updates only that binding; the full authoring entry point uses the
+  same icon default. `Localize` imports three keys
+  for the name, description and formatted effect in five locales.
+- `그림자 혼불` (`RD_ShadowWisp`, 전설/maximum level 1) uses
+  `RelicLogic_ShadowWisp` and owner-local `ShadowWispController`, with a token-owned
+  `IRelicProc` registered in the existing `RelicProcManager`. Owner kill events
+  spawn one shot at the killed enemy's projectile aim point. The nearest living
+  other enemy is selected by distance from that origin among camera-visible
+  hurtboxes with an unblocked wall ray; no eligible target means no shot. Repeated
+  kill notifications for the same still-present victim are coalesced.
+  The shot is the existing `PF_ChloeLanternProjectile` / `ChloeLanternProjectile2D`
+  with AttackFinal captured at creation, no critical roll, and explicit empty
+  elemental damage/build-up arrays. Speed multiplier 1.4, lifetime 5 seconds,
+  homing 1080 degrees/second, size/animation and contact policy match the lantern.
+  Its payload causer is the actual spawned projectile. During the synchronous
+  kill event the controller recognizes that projectile in its owned list and
+  suppresses only its own re-trigger. Lantern/weapon kills remain eligible and
+  other relics still receive ordinary hit/kill events.
+  The token owns all launched shots. Unequip/reapply/restore-detach/owner disable,
+  death and destruction clear them; restore reattaches without replaying kills.
+  Targets, death-coalescing state and in-flight shots are not persisted.
+  `ShadowWispAuthoring.Apply` authors
+  `Assets/_Project/Data/Items/Relics/Definitions/RD_ShadowWisp.asset` and
+  `RL_ShadowWisp.asset`, registering only in `ItemDatabase.allRelics`. Affection
+  reward wiring is separate. The icon uses the supplied purple flame PNG at
+  `Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_ShadowWisp.png`, imported with
+  Point filtering and no pixel changes. The authoring default references that
+  same icon. Projectile art still shares the lantern prefab; a future wisp-only
+  projectile art swap needs a separate authored prefab reference on this strategy
+  so the lantern remains intact. `Localize` imports the three-key content CSV subset.
 - `병 속의 슬라임` (`RD_SlimeBottle`, 전설/maximum level 1) uses
   `RelicLogic_SlimeBottle` and the existing `RelicProcManager`. Its token-owned
   proc registers a player-filtered callback in Core `CombatHitPrevention` and
@@ -60,6 +125,19 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
   living Enemy hurtboxes every two game-time seconds. It selects by distance from
   the player, requiring clear wall rays from the player and the summon. A summon
   separated from its owner by a wall cannot fire.
+  `ChloeLanternOrbitController.IsDialogueBlockingCombat` reads the existing
+  `DialoguePlayback.IsPlaying` and the owner's `PlayerInteractor2D.Talking` state.
+  The latter spans boss camera lead-in, dialogue and camera return. While blocked,
+  the summon keeps orbiting, owned shots are deactivated/destroyed, and the fire
+  timer resets without detaching the relic token. After release, a full normal
+  fire interval elapses before the next shot. `ChloeLanternProjectile2D` also
+  checks this gate in movement and both trigger callbacks, discarding without
+  damage even if physics runs before the controller's Update. This contact guard
+  also applies to Shadow Wisp shots because they share the projectile type.
+  `RelicLogic_ChloeLantern.ShotSound` selects `sound_goblinGunner_GunShot`;
+  the orbit controller requests it once after each launch at the summon position.
+  The shared projectile has no launch-audio hook, so Shadow Wisp shots do not
+  acquire this sound just by sharing the projectile prefab.
   Launch snapshots AttackFinal directly into CombatHitPayload with critical=false
   and explicit empty element damage/build-up arrays; the shared combat application
   still owns protection, shields, outgoing modifiers and hit events. No weapon
@@ -82,8 +160,14 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - Critical-hit movement stacking uses the existing `RelicLogic_MoveSpeedStackOnCriticalHit_Managed`.
 - Event-timed stat buffs use `RelicLogic_TimedStatOnGameplayEvent_Managed`.
 - `RelicLogic_MoveSpeedOnKill_Managed` registers separate token-owned temporary
-  modifiers for its attack and movement attributes. `회전하는 철구` grants AttackAdd
+  modifiers for its attack and movement attributes. `광전사의 보석` (`RD_RedContract`)
+  uses the existing `Relic Logic_Move Speed On Kill_Managed` strategy and grants AttackAdd
   +2 and movement speed +10% for four seconds, refreshing without stacking.
+  `회전하는 철구` (`RD_RotatingIornBall`) instead uses the existing
+  `Relic Logic_Common_RedContract` timed-event strategy: AttackAdd +2 for four
+  seconds, refreshing without stacking, with no movement bonus. The historical
+  strategy filenames/identities are retained; definition bindings distinguish
+  the rare combined buff from the common attack-only buff.
   The serialized `attackPercentBonus` name remains for compatibility but stores
   a flat value. `MoveSpeedOnKillProc` receives Flat only for the attack branch;
   its optional modifier type defaults to Percent for existing movement callers.

@@ -32,8 +32,7 @@ public sealed class DemonKingDialogueStartKnotSelector : MonoBehaviour, IDialogu
             }
         }
 
-        return eligibleStartKnots.Count > 0
-            ? eligibleStartKnots[Random.Range(0, eligibleStartKnots.Count)]
-            : null;
+        return BossDialogueRepeatSelection.Select(
+            eligibleStartKnots, BossDialogueProgressStore.GetLastPrimaryStartPath(npcData.id));
     }
 }

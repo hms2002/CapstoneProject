@@ -21,7 +21,7 @@ public sealed class AbilityLogic_LizardWarriorCharge : AbilityLogic
     [SerializeField, Min(0.1f)] private float attackRange = 3.74f;
     [SerializeField, Min(0.1f)] private float warningSeconds = 0.8f;
     [SerializeField, Min(0.1f)] private float chaseSeconds = 2.2f;
-    [SerializeField, Min(0.1f)] private float chaseSpeedMultiplier = 1.4f;
+    [SerializeField, Min(0.1f)] private float chaseSpeedMultiplier = 1.3f;
     [SerializeField, Range(0f, 1f)] private float warningSpeedMultiplier = 0.75f;
     [SerializeField, Min(1f)] private float turnDegreesPerSecond = 270f;
     [SerializeField, Min(0.1f)] private float rearmSeconds = 1f;

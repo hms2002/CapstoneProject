@@ -2706,3 +2706,37 @@ Suggested Later: expanded validation found `CombatFeelLootQuestPlayModeTests.Imp
 - Cause: AffectionRewardProcessor는 이번 상승 구간(fromLevel < targetLevel <= toLevel)의 보상만 실행한다. 기본 해금에 없던 신규 유물은 과거 저장 ID에도 없을 수 있으므로 NPCData 연결만으로 기존 프로필을 지원할 수 없다.
 - Current handling: ItemManager 초기화/해금 조회에서 준비된 item DB와 NPC 보상 데이터, committed profile affection을 사용해 획득된 UnlockItemAffectionEffect의 ID만 기존 set에 더한다. NPC DB가 아직 없으면 이후 조회에서 재시도한다. 다른 보상 효과/팝업/인벤토리 지급은 재실행하지 않고, 기존 SaveData ready guard와 commit 타이밍은 유지한다.
 - Prevention: 이후 단계별 해금 콘텐츠 추가 시 새 프로필뿐 아니라 이미 임계값을 넘긴 프로필의 소급 권한과 source readiness를 소스 검토에 포함한다. 이번 작업에서는 자동 테스트/Unity Play Mode를 실행하지 않았다. [작업 범위](ActiveTasks/melta-chloe-tier-two-unlocks.md).
+
+## 2026-11-05 — 멜타 조건형 인사가 완전 첫 조우에 출력됨
+
+- 증상: 멜타를 처음 만나도 전기창 인사가 첫 조우 본대사보다 먼저 출력됐다. 시간 부족·저체력·기본 인사도 같은 위험이 있었다.
+- 원인: BossDialogueRunner는 조건형 인사를 고른 뒤 본대사를 이어 붙이며, 첫 조우 여부는 각 조우 항목의 조건이 제한한다. 멜타의 9개 항목 중 일반 재조우 항목에만 HasMetBoss가 있었고 나머지 8개에는 없었다. 본대사 선택기가 첫 조우를 유지하는 것만으로는 앞에 붙는 인사를 막을 수 없다.
+- 수정: SlimeQueenBossNpc.asset의 누락된 8개 항목에 현재 NPC 대상 HasMetBoss == true 조건을 추가했다. 기본 인사의 Always 조건에도 같은 선행 조건을 붙였다. 9개 인사 모두 현재 멜타의 누적 조우 기록이 1 이상일 때만 후보가 된다.
+- 확인: 저장 데이터를 실행하거나 변경하지 않고 조건 목록, AND 평가 코드, 첫 조우 본대사 선택과 변경 내역을 검토했다. 승인한 8개 조건 추가 외의 대상 데이터는 보존됐으며 다른 NPC 데이터·멜타 Ink/JSON·선택기·공통 runner·보스 씬·meta 해시도 작업 전후 동일하다. 자동 테스트·Unity 실행 검증은 하지 않았다.
+- 예방: 첫 조우가 별도로 있는 보스의 모든 조건형 인사에 HasMetBoss를 포함한다. 특히 무기/체력/시간 조건과 기본 fallback을 함께 검토하고, 조우 기록은 현재 런이 아닌 저장 슬롯의 누적 기록임을 구분한다.
+
+
+## 2026-11-05 — MaterialPropertyBlock in a MonoBehaviour field initializer
+
+- Context: importing the new `ShadowEchoActor` prefab logged `CreateImpl is not allowed to be called from a MonoBehaviour constructor (or instance field initializer)`, even though the authoring batch ultimately returned exit code 0.
+- Cause: `new MaterialPropertyBlock()` ran in an instance field initializer. Unity can construct/deserialise MonoBehaviours outside the normal main-thread runtime lifecycle while loading prefabs.
+- Fix: keep the field declaration managed-only and create the MaterialPropertyBlock in `Awake`, before runtime initialization projects colors into the authored renderers. Re-author/import the prefab after the fix.
+- Prevention: native batch exit code alone does not establish a clean import; inspect exceptions and compiler errors too. Unity rendering-object allocation belongs in an appropriate lifecycle callback, not a MonoBehaviour constructor/field initializer. Plain managed collections remain safe in initializers.
+- Related source: [ShadowEchoActor.cs](../Assets/_Project/Runtime/Features/Items/Relics/ShadowEchoActor.cs).
+
+## 2026-11-05 — Field item shadows hidden after icon references change
+
+- Symptom: field relic/item shadows appeared to be missing after committing/pulling changes, although the runtime shadow component, its GUID and the authored Shadow renderer remained present.
+- Cause: the pickup prefab's baked `contacts` still referenced earlier icon sprites. Of 74 current active relic/consumable definitions, 37 icon references were absent. `WorldItemShadowPresenter2D.RefreshShadow` enables the renderer only when a matching sprite contact exists, so an intact component alone cannot display those shadows.
+- Fix: refresh the prefab's contact list from current source PNG contours and sprite references. Keep the approved 75% width, 25% height, 34% alpha and -4px visible-contour spacing. Current coverage is 74 definitions / 74 distinct sprites.
+- Prevention: include the pickup prefab contact rebake when icon references or alpha contours change, including during branch integration. The existing **Tools > Items > Bake Approved Field Item Shadows** authoring menu performs the rebake; its separate validation/test menu requires an explicit test request under current project rules.
+- Verification: source/reference/diff inspection; no automated tests or Unity Play Mode execution. [Recovery log](SessionLogs/2026-11-05-CubeHood-field-item-shadow-rebind.md), [structure map](StructureMemory/WorldItemShadows.md).
+
+
+## 2026-11-05 — Autonomous relic fire bypassed boss dialogue input locks
+
+- Symptom: Chloe's Lantern shot and reduced boss HP during the encounter dialogue.
+- Cause: blocking player input did not stop the relic controller's independent Update or already launched projectiles. The boss dialogue flow does not globally pause game time.
+- Fix: read DialoguePlayback.IsPlaying plus the owner's Talking interaction state (held through camera lead-in/return); block firing, clear owned shots and reset the interval. The shared projectile independently discards without applying damage in TickAttack and Enter/Stay contact handling.
+- Prevention: an input lock alone does not suppress autonomous gameplay. Guard both the producer and detached attack's contact path; physics can run before the producer's Update. Deactivate before delayed destruction, retain attachment ownership, and resume from a fresh interval after the flow releases its state.
+- Verification: source/diff review and Gameplay MSBuild passed. Automated tests and actual dialogue/combat acceptance were not executed. [Session](SessionLogs/2026-11-05-CubeHood-chloe-lantern-dialogue-guard.md), [structure](StructureMemory/ScriptSystems/RelicRuntimeStructure.md).

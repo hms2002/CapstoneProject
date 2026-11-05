@@ -108,6 +108,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBoss
 
     protected override void Start()
     {
+        ApplyEncounterHealthScaling();
         base.Start();
 
         RegisterConfiguredPatternAbilities();
@@ -148,6 +149,38 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBoss
         if (abilitySystem == null) abilitySystem = GetComponent<AbilitySystem>();
         if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
         if (attributeSet == null) attributeSet = GetComponent<AttributeSet>();
+    }
+
+    /// <summary>Normal boss HP follows encounter order, independently of boss species.</summary>
+    protected virtual float ResolveEncounterHealthMultiplier()
+    {
+        int stageIndex = RunRoutePlayback.HasActivePlan ? RunRoutePlayback.CurrentStageIndexOrInvalid : 0;
+        return Mathf.Clamp(stageIndex, 0, 2) switch
+        {
+            0 => 2f,
+            1 => 2.5f,
+            _ => 3f
+        };
+    }
+
+    /// <summary>Scale this instance once in Start, after attribute initialization and before combat/HUD setup.</summary>
+    private void ApplyEncounterHealthScaling()
+    {
+        // The tutorial's real-combat encounter retains its separately authored difficulty.
+        if (gameObject.scene.name == "DarkLord_Tutorial") return;
+
+        AttributeDefinition currentHealth = ResolveHealthAttribute();
+        AttributeDefinition maximumHealth = ResolveMaxHealthAttribute();
+        if (attributeSet == null || currentHealth == null || maximumHealth == null) return;
+
+        float baseMaximumHealth = attributeSet.GetBaseValue(maximumHealth);
+        float baseCurrentHealth = attributeSet.GetBaseValue(currentHealth);
+        if (baseMaximumHealth <= 0f || baseCurrentHealth <= 0f) return;
+
+        float multiplier = ResolveEncounterHealthMultiplier();
+        // Raising MaxHealth first prevents the existing MaxLink from clamping the scaled Health.
+        attributeSet.TrySetBaseValue(maximumHealth, baseMaximumHealth * multiplier, this);
+        attributeSet.TrySetBaseValue(currentHealth, baseCurrentHealth * multiplier, this);
     }
 
     public void SetCombatTarget(Transform newTarget)

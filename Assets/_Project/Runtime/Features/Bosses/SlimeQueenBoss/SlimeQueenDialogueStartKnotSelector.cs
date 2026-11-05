@@ -44,16 +44,18 @@ public sealed class SlimeQueenDialogueStartKnotSelector : MonoBehaviour, IDialog
             if (string.IsNullOrWhiteSpace(startKnot))
                 continue;
 
-            if (startKnot == "MELTA_CITIZENSHIP_IDENTITY_FOLLOWUP" && !CanPlayCitizenshipFollowup(npcData))
+            string normalizedStartKnot = startKnot.Trim();
+            if (normalizedStartKnot == "MELTA_CITIZENSHIP_IDENTITY_FOLLOWUP" && !CanPlayCitizenshipFollowup(npcData))
                 continue;
 
-            eligibleStartKnots.Add(startKnot);
+            eligibleStartKnots.Add(normalizedStartKnot);
         }
 
         if (eligibleStartKnots.Count == 0)
             return firstEncounterStartKnot;
 
-        return eligibleStartKnots[Random.Range(0, eligibleStartKnots.Count)];
+        return BossDialogueRepeatSelection.Select(
+            eligibleStartKnots, BossDialogueProgressStore.GetLastPrimaryStartPath(npcData.id));
     }
 
     private static bool CanPlayCitizenshipFollowup(NPCData npcData)

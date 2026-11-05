@@ -31,7 +31,13 @@ public sealed class ChloeLanternProjectile2D : AttackBase
 
     protected override void TickAttack(float deltaTime)
     {
-        if (consumed || deltaTime <= 0f) return;
+        if (consumed) return;
+        if (ChloeLanternOrbitController.IsDialogueBlockingCombat(OwnerSystem))
+        {
+            DiscardWithoutHit();
+            return;
+        }
+        if (deltaTime <= 0f) return;
         if (OwnerSystem == null || !OwnerSystem.gameObject.activeInHierarchy ||
             CombatTargetDeathUtility.IsPlayerDeathSequenceRunning(OwnerSystem.transform))
         {
@@ -86,10 +92,24 @@ public sealed class ChloeLanternProjectile2D : AttackBase
 
     private void ConsumeContact(Collider2D other)
     {
-        if (consumed || !IsContact(other)) return;
+        if (consumed) return;
+        // Physics callbacks can precede the owner's Update; do not rely only on the firing gate.
+        if (ChloeLanternOrbitController.IsDialogueBlockingCombat(OwnerSystem))
+        {
+            DiscardWithoutHit();
+            return;
+        }
+        if (!IsContact(other)) return;
         consumed = true; // Guard before applying damage: multiple hurtboxes may report in the same physics step.
         if ((WallLayers.value & (1 << other.gameObject.layer)) == 0)
             TryApplyHit(CombatTargetResolver2D.ResolveDamageTarget(other), other);
+        DestroySelf();
+    }
+
+    private void DiscardWithoutHit()
+    {
+        consumed = true;
+        gameObject.SetActive(false);
         DestroySelf();
     }
 

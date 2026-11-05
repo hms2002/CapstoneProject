@@ -2494,7 +2494,7 @@
       "type": "RelicDefinition",
       "owner": "RD_RedContract",
       "field": "description",
-      "text": "적 처치 시 4초 동안 공격력이 2 증가합니다."
+      "text": "적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다."
     },
     {
       "key": "asset.1a3c46c0c9914eea8cdcba66be7916eb.displayName",
@@ -2526,7 +2526,7 @@
       "type": "RelicDefinition",
       "owner": "RD_RotatingIornBall",
       "field": "description",
-      "text": "적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다."
+      "text": "적 처치 시 4초 동안 공격력이 2 증가합니다."
     },
     {
       "key": "asset.3f678aae4cb94331bd3caeb317c659ce.displayName",
@@ -6278,7 +6278,39 @@
       "type": "UnlockItemAffectionEffect",
       "owner": "ChloeRelicUnlockReward",
       "field": "rewardText",
-      "text": "클로에의 등불이 해금되었습니다.\n이제 상자와 상점에서 발견할 수 있습니다."
+      "text": "클로에의 등불, 그림자 잔향, 그림자 혼불이 해금되었습니다.\n이제 상자와 상점에서 발견할 수 있습니다."
+    },
+    {
+      "key": "asset.f69eef658a84b8a45b7ddb92035b3268.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ShadowWisp.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ShadowWisp",
+      "field": "displayName",
+      "text": "그림자 혼불"
+    },
+    {
+      "key": "asset.f69eef658a84b8a45b7ddb92035b3268.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ShadowWisp.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ShadowWisp",
+      "field": "description",
+      "text": "적을 처치하면 다른 적을 추적하는 혼불이 피어납니다."
+    },
+    {
+      "key": "asset.a5cecab656637cc469fdf02706fcd3b1.displayName",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ShadowEcho.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ShadowEcho",
+      "field": "displayName",
+      "text": "그림자 잔향"
+    },
+    {
+      "key": "asset.a5cecab656637cc469fdf02706fcd3b1.description",
+      "path": "Assets/_Project/Data/Items/Relics/Definitions/RD_ShadowEcho.asset",
+      "type": "RelicDefinition",
+      "owner": "RD_ShadowEcho",
+      "field": "description",
+      "text": "대시 출발점에 남은 잔향이 잠시 후 폭발합니다."
     }
   ]
 }

@@ -1,0 +1,24 @@
+{
+  "key": "shadow-echo-3305afce",
+  "name": "그림자 잔향",
+  "native": "shadow-echo-3305afce-32x32.png",
+  "source": "C:\\Users\\user\\Desktop\\CapstoneProject\\output\\imagegen\\chloe-shadow-echo-2026-11-05-3305afce\\shadow-echo-3305afce-source.png",
+  "sourceMaterialBounds": [
+    282,
+    209,
+    945,
+    1013
+  ],
+  "materialSize": [
+    20,
+    24
+  ],
+  "samplingPhaseY": 0.5,
+  "palette": [
+    "#363232",
+    "#75656A",
+    "#9D5789",
+    "#BE8EC1",
+    "#F1E5F8"
+  ]
+}

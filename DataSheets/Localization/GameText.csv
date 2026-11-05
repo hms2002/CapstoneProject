@@ -461,11 +461,11 @@ asset.ddead4c1dd0048d8a332a78cd84cc690.displayName,추격 명령,Pursuit Order,�
 asset.ddead4c1dd0048d8a332a78cd84cc690.description,적을 처치하면 잠시 이동속도가 증가합니다.,Defeating an enemy briefly increases movement speed.,敵を倒すと、一時的に移動速度が増加する。,击败敌人后短暂提高移动速度。,擊敗敵人後短暫提高移動速度。
 asset.b7ac0f2e281a44768c35210163fd6aba.displayName,회복의 팬턴트,Healing Pendant,回復のペンダント,治愈吊坠,治癒吊墜
 asset.6e61f67002664297a735902776929cf5.displayName,광전사의 보석,Berserker's Gem,狂戦士の宝石,狂战士宝石,狂戰士寶石
-asset.6e61f67002664297a735902776929cf5.description,적 처치 시 4초 동안 공격력이 2 증가합니다.,Killing an enemy increases Attack by 2 for 4 seconds.,敵を倒すと4秒間攻撃力が2増加します。,击杀敌人后，攻击力增加2，持续4秒。,擊殺敵人後，攻擊力增加2，持續4秒。
+asset.6e61f67002664297a735902776929cf5.description,적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다.,Killing an enemy increases Attack by 2 and movement speed by 10% for 4 seconds.,敵を倒すと4秒間攻撃力が2、移動速度が10%増加します。,击杀敌人后，攻击力增加2，移动速度增加10%，持续4秒。,擊殺敵人後，攻擊力增加2，移動速度增加10%，持續4秒。
 asset.1a3c46c0c9914eea8cdcba66be7916eb.displayName,균열석,Rift Stone,亀裂石,裂隙石,裂隙石
 asset.1a3c46c0c9914eea8cdcba66be7916eb.description,최종 피해가 증가합니다.,Increases final damage.,最終ダメージが増加する。,提高最终伤害。,提高最終傷害。
 asset.d492a6f1c1a7fc84bb3b44a619dcfd4f.displayName,회전하는 철구,Spinning Iron Ball,回転する鉄球,旋转铁球,旋轉鐵球
-asset.d492a6f1c1a7fc84bb3b44a619dcfd4f.description,적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다.,Killing an enemy increases Attack by 2 and movement speed by 10% for 4 seconds.,敵を倒すと4秒間攻撃力が2、移動速度が10%増加します。,击杀敌人后，攻击力增加2，移动速度增加10%，持续4秒。,擊殺敵人後，攻擊力增加2，移動速度增加10%，持續4秒。
+asset.d492a6f1c1a7fc84bb3b44a619dcfd4f.description,적 처치 시 4초 동안 공격력이 2 증가합니다.,Killing an enemy increases Attack by 2 for 4 seconds.,敵を倒すと4秒間攻撃力が2増加します。,击杀敌人后，攻击力增加2，持续4秒。,擊殺敵人後，攻擊力增加2，持續4秒。
 asset.3f678aae4cb94331bd3caeb317c659ce.displayName,도망자의 신발,Fugitive's Shoes,逃亡者の靴,逃亡者之靴,逃亡者之靴
 asset.3f678aae4cb94331bd3caeb317c659ce.description,피해를 받으면 잠시 회피율이 증가합니다.,Taking damage briefly increases evasion.,ダメージを受けると、一時的に回避率が増加する。,受到伤害后短暂提高闪避率。,受到傷害後短暫提高閃避率。
 asset.c0e9e82eb0ce4caa9efb337cb57764ff.displayName,달리는 장부,Running Ledger,走る帳簿,奔跑账簿,奔跑帳簿
@@ -3046,9 +3046,40 @@ You can now find it in chests and shops.","瓶詰めスライムが解放され�
 宝箱やショップで見つけられるようになります。","瓶中史莱姆已解锁。
 现在可以在宝箱和商店中发现它。","瓶中史萊姆已解鎖。
 現在可以在寶箱和商店中發現它。"
-asset.98bab4e87b4e423483f4b55d17eee8b5.rewardText,"클로에의 등불이 해금되었습니다.
-이제 상자와 상점에서 발견할 수 있습니다.","Chloe's Lantern has been unlocked.
-You can now find it in chests and shops.","クロエのランタンが解放されました。
-宝箱やショップで見つけられるようになります。","克洛艾的提灯已解锁。
-现在可以在宝箱和商店中发现它。","克洛艾的提燈已解鎖。
-現在可以在寶箱和商店中發現它。"
+asset.98bab4e87b4e423483f4b55d17eee8b5.rewardText,"클로에의 등불, 그림자 잔향, 그림자 혼불이 해금되었습니다.
+이제 상자와 상점에서 발견할 수 있습니다.","Chloe's Lantern, Shadow Echo, and Shadow Wisp have been unlocked.
+You can now find them in chests and shops.","クロエのランタン、影の残響、影の鬼火が解放されました。
+宝箱やショップで見つけられるようになります。","克洛艾的提灯、暗影余响和暗影灵火已解锁。
+现在可以在宝箱和商店中发现它们。","克洛艾的提燈、暗影餘響和暗影靈火已解鎖。
+現在可以在寶箱和商店中發現它們。"
+asset.f69eef658a84b8a45b7ddb92035b3268.displayName,그림자 혼불,Shadow Wisp,影の鬼火,暗影灵火,暗影靈火
+asset.f69eef658a84b8a45b7ddb92035b3268.description,적을 처치하면 다른 적을 추적하는 혼불이 피어납니다.,Defeated enemies release a wisp that seeks another foe.,敵を倒すと、別の敵を追尾する鬼火が生まれます。,击败敌人时，会诞生追踪其他敌人的灵火。,擊敗敵人時，會誕生追蹤其他敵人的靈火。
+relic.shadow_wisp.effect,"● 적 처치 시 그 자리에서 다른 적을 추적하는 혼불 {{val:1발}} 생성
+● 화면 안에서 벽에 가리지 않은 가장 가까운 적을 조준
+● 생성 시점 공격력의 {{val:100%}} 피해 · 치명타와 속성 효과 없음
+● 혼불의 처치로는 재발동하지 않음","● On kill, release {{val:1}} wisp from the defeated enemy to seek another foe
+● Targets the nearest enemy on screen with a clear line of sight from the wisp
+● Deals {{val:100%}} of your Attack at creation · No critical hits or elemental effects
+● Kills by this wisp do not trigger another wisp","● 敵を倒すと、その場から別の敵を追尾する鬼火を{{val:1発}}生成
+● 画面内で壁に遮られていない最も近い敵を狙う
+● 生成時の攻撃力の{{val:100%}}のダメージ · クリティカル・属性効果なし
+● この鬼火による撃破では再発動しない","● 击败敌人时，在原地生成{{val:1发}}追踪其他敌人的灵火
+● 瞄准画面内从灵火处看未被墙壁遮挡的最近敌人
+● 造成生成时攻击力{{val:100%}}的伤害 · 无暴击或属性效果
+● 此灵火击败敌人时不会再次触发","● 擊敗敵人時，在原地生成{{val:1發}}追蹤其他敵人的靈火
+● 瞄準畫面內從靈火處看未被牆壁遮擋的最近敵人
+● 造成生成時攻擊力{{val:100%}}的傷害 · 無暴擊或屬性效果
+● 此靈火擊敗敵人時不會再次觸發"
+asset.a5cecab656637cc469fdf02706fcd3b1.displayName,그림자 잔향,Shadow Echo,影の残響,暗影余响,暗影餘響
+asset.a5cecab656637cc469fdf02706fcd3b1.description,대시 출발점에 남은 잔향이 잠시 후 폭발합니다.,Your dash leaves an echo that explodes a moment later.,ダッシュの出発点に残した影が、少し後に爆発します。,冲刺起点留下的残影会在片刻后爆炸。,衝刺起點留下的殘影會在片刻後爆炸。
+relic.shadow_echo.effect,"● 대시 출발점에 잔향을 남기고 {{val:{0:0.##}초}} 후 범위 폭발
+● 생성 시점 공격력의 {{val:100%}} 피해 · 치명타와 속성 효과 없음
+● 가로 반경 {{val:{1:0.##}}} · 표시된 범위의 적을 한 번 공격","● Leave an echo at your dash origin that explodes after {{val:{0:0.##} s}}
+● Deals {{val:100%}} of your Attack at creation · No critical hits or elemental effects
+● Horizontal radius {{val:{1:0.##}}} · Hits enemies in the displayed area once","● ダッシュの出発点に残響を残し、{{val:{0:0.##}秒}}後に範囲爆発
+● 生成時の攻撃力の{{val:100%}}のダメージ · クリティカル・属性効果なし
+● 横方向の半径{{val:{1:0.##}}} · 表示範囲内の敵を1回攻撃","● 在冲刺起点留下残影，{{val:{0:0.##}秒}}后造成范围爆炸
+● 造成生成时攻击力{{val:100%}}的伤害 · 无暴击或属性效果
+● 水平半径{{val:{1:0.##}}} · 对显示范围内的敌人攻击一次","● 在衝刺起點留下殘影，{{val:{0:0.##}秒}}後造成範圍爆炸
+● 造成生成時攻擊力{{val:100%}}的傷害 · 無暴擊或屬性效果
+● 水平半徑{{val:{1:0.##}}} · 對顯示範圍內的敵人攻擊一次"

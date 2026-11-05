@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -17,6 +18,14 @@ public sealed class ChloeLanternOrbitController : MonoBehaviour
     private GameObject summon;
     private float elapsed;
     private float angle;
+
+    internal static bool IsDialogueBlockingCombat(AbilitySystem ownerSystem)
+    {
+        // The encounter holds Talking through the camera lead-in and return, outside actual dialogue playback.
+        return DialoguePlayback.IsPlaying ||
+            (ownerSystem != null && ownerSystem.TryGetComponent(out PlayerInteractor2D interactor) &&
+             interactor.CurrentState == InteractState.Talking);
+    }
 
     public void Attach(UnityEngine.Object token, AbilitySystem ownerSystem, RelicLogic_ChloeLantern data)
     {
@@ -54,6 +63,13 @@ public sealed class ChloeLanternOrbitController : MonoBehaviour
         summon.transform.position = center + new Vector3(Mathf.Cos(radians), Mathf.Sin(radians)) * settings.orbitRadius;
         for (int i = projectiles.Count - 1; i >= 0; i--)
             if (projectiles[i] == null) projectiles.RemoveAt(i);
+
+        if (IsDialogueBlockingCombat(system))
+        {
+            ClearProjectiles();
+            elapsed = 0f;
+            return;
+        }
 
         elapsed = Mathf.Min(elapsed + Time.deltaTime, settings.fireInterval);
         if (Time.deltaTime <= 0f || elapsed < settings.fireInterval) return;
@@ -136,6 +152,8 @@ public sealed class ChloeLanternOrbitController : MonoBehaviour
                 hasResolvedElementBuildUps = true
             }
         }, target, settings.homingTurnRate);
+        SoundPlaybackUtility.Play(RelicLogic_ChloeLantern.ShotSound,
+            causer: gameObject, position: origin, sourceObject: settings);
     }
 
     private void ClearObjects()
@@ -146,12 +164,17 @@ public sealed class ChloeLanternOrbitController : MonoBehaviour
             Destroy(summon);
             summon = null;
         }
-        foreach (ChloeLanternProjectile2D projectile in projectiles)
-            if (projectile != null) { projectile.gameObject.SetActive(false); Destroy(projectile.gameObject); }
-        projectiles.Clear();
+        ClearProjectiles();
         candidates.Clear();
         seenTargets.Clear();
         elapsed = 0f;
+    }
+
+    private void ClearProjectiles()
+    {
+        foreach (ChloeLanternProjectile2D projectile in projectiles)
+            if (projectile != null) { projectile.gameObject.SetActive(false); Destroy(projectile.gameObject); }
+        projectiles.Clear();
     }
 
     // Keep the attachment on a temporary disable; a later enable recreates only the authored visuals.

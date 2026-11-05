@@ -39,6 +39,10 @@ public sealed class PlayerAnimatorController2D : MonoBehaviour
 
     private bool IsCinematicFacingLocked => cinematicFacingLockOwners.Count > 0;
 
+    // Read the authored body renderer without mistaking a weapon or shadow for the player.
+    public SpriteRenderer PrimaryVisualRenderer => visualRenderers != null && visualRenderers.Length > 0
+        ? visualRenderers[0] : null;
+
     public static PlayerAnimatorController2D GetOrAdd(Transform owner)
     {
         if (owner == null)

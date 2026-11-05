@@ -24,6 +24,21 @@ MonoBehaviour:
     inkJSON: {fileID: 0}
     priority: 1000
     conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue:
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
     - type: 6
       comparison: 3
       expectedBool: 0
@@ -44,6 +59,21 @@ MonoBehaviour:
     inkJSON: {fileID: 0}
     priority: 900
     conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue:
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
     - type: 10
       comparison: 3
       expectedBool: 0
@@ -64,6 +94,21 @@ MonoBehaviour:
     inkJSON: {fileID: 0}
     priority: 800
     conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue:
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
     - type: 14
       comparison: 0
       expectedBool: 1
@@ -84,6 +129,21 @@ MonoBehaviour:
     inkJSON: {fileID: 0}
     priority: 700
     conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue:
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
     - type: 3
       comparison: 5
       expectedBool: 0
@@ -104,6 +164,21 @@ MonoBehaviour:
     inkJSON: {fileID: 0}
     priority: 650
     conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue:
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
     - type: 4
       comparison: 5
       expectedBool: 0
@@ -124,6 +199,21 @@ MonoBehaviour:
     inkJSON: {fileID: 0}
     priority: 600
     conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue:
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
     - type: 21
       comparison: 0
       expectedBool: 1
@@ -144,6 +234,21 @@ MonoBehaviour:
     inkJSON: {fileID: 0}
     priority: 500
     conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue:
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
     - type: 5
       comparison: 5
       expectedBool: 0
@@ -184,6 +289,21 @@ MonoBehaviour:
     inkJSON: {fileID: 0}
     priority: 0
     conditions:
+    - type: 2
+      comparison: 0
+      expectedBool: 1
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue:
+      targetNpcOverride: {fileID: 0}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
     - type: 0
       comparison: 0
       expectedBool: 0

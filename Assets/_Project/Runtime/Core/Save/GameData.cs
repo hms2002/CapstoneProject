@@ -159,6 +159,9 @@ public class BossDialogueRecord
     public float lastEncounterTotalPlaySeconds;
     // 가장 최근에 완료된 해당 보스전의 결과다. 누적 승패 카운트와 별개로 조우 대사에 사용한다.
     public BossDialogueOutcome lastEncounterOutcome;
+    // 조우 인사와 본대사의 연속 출현 방지에 사용하는 원본 Ink 경로다.
+    public string lastGreetingStartPath = string.Empty;
+    public string lastPrimaryStartPath = string.Empty;
     // 선택 기반 후속 대사에 사용하는 NPC별 영구 플래그다.
     public List<string> dialogueFlags = new List<string>();
 
@@ -171,6 +174,9 @@ public class BossDialogueRecord
     {
         if (!System.Enum.IsDefined(typeof(BossDialogueOutcome), lastEncounterOutcome))
             lastEncounterOutcome = BossDialogueOutcome.None;
+
+        lastGreetingStartPath = lastGreetingStartPath?.Trim() ?? string.Empty;
+        lastPrimaryStartPath = lastPrimaryStartPath?.Trim() ?? string.Empty;
 
         dialogueFlags ??= new List<string>();
         dialogueFlags.RemoveAll(string.IsNullOrWhiteSpace);

@@ -3726,3 +3726,20 @@ Core의 `CombatHitPrevention`은 대상 소유의 disposable 등록만 보관하
 ## 2026-11-05 — Melta/Chloe tier-two relics and earned unlock restoration
 
 멜타 호감도 2는 병 속의 슬라임(RD_SlimeBottle), 클로에 호감도 2는 클로에의 등불(RD_ChloeLantern)을 각각 하나씩 영구 등장 해금한다. 기존 UnlockItemAffectionEffect를 사용하고 현물 지급이나 강제 드롭은 추가하지 않는다. 두 유물은 이미 기본 해금에서 제외되어 있어 DB는 수정하지 않는다. 이전에 2단계를 넘긴 프로필에서도 빠진 해금이 복원되어야 하므로 ItemManager는 committed 호감도와 현재 NPC 보상 데이터를 조회해 이미 획득한 item-unlock 효과의 ID만 기존 해금 set에 추가한다. 준비되지 않은 소스는 건너뛰고 이후 조회에서 재시도하며, 기존 save collector/readiness guard를 유지한다. 보상 팝업과 다른 효과를 소급 재생하지 않는다. 취룡 1단계 아이콘은 제공된 초상화로 바꾸며 기존 문구/효과/술잔 HUD 아트는 유지한다. [범위](ActiveTasks/melta-chloe-tier-two-unlocks.md).
+
+## 2026-11-05 — 보스 조우 인사 가중 추첨과 본대사 연속 방지
+
+사용자 확정: 조건형 조우 인사는 최고 우선순위를 확정 선택하는 대신, 조건을 만족하는 후보의 기존 Priority를 가중치로 사용한다. 0 이하는 최소 가중치 1로 둔다. 직전 인사와 다른 경로의 적격 후보가 있으면 직전 것을 제외하며, 직전 것 하나만 적격이면 다시 출력한다. 반복 방지를 이유로 인사를 생략하지 않는다. 완전 첫 조우는 기존 첫 조우 본대사와 인사 제한을 유지한다.
+
+재조우 본대사도 보스별 직전 경로를 제외한 후보에서 균등 추첨하고, 다른 후보가 없을 때만 반복을 허용한다. 멜타 시민권 후속담 등 해금·열람 조건은 먼저 적용한다. 두 후보만 남은 경우에는 자연스럽게 교대로 출력된다.
+
+기존 BossDialogueRecord에 lastGreetingStartPath/lastPrimaryStartPath를 추가해 인사·본대사를 별도로 기억한다. 이 기록은 기존 조우 진행 등록 시점에 갱신하고 기존 프로필/런 저장 정책을 따른다. 기존 저장의 누락 필드는 빈 값으로 정상화하며 이번 적용 이후부터 기록을 쌓는다. 기존 필드·저장 ID·NPCData 스키마·씬·Ink 문구는 변경하지 않는다. [현재 구조](StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md).
+
+
+## 2026-11-05 — Chloe tier-two unlock reward expanded to three relics
+
+CubeHood는 클로에 호감도 2단계의 기존 클로에의 등불에 그림자 잔향(RD_ShadowEcho), 그림자 혼불(RD_ShadowWisp)을 더해 총 3종을 해금하도록 요청했다. 같은 효과/단계/지역화 키를 유지하고 유물 참조와 설명만 확장한다. 멜타 보상 및 다른 단계는 유지한다. 기존 ItemManager의 committed affection 기반 복원이 새 참조도 포함하므로 고호감도 프로필의 기존 해금을 지우거나 팝업을 소급 재생하지 않는다. [작성자별 작업 기록](SessionLogs/2026-11-05-CubeHood-melta-chloe-tier-two-unlocks.md).
+
+## 2026-11-05 — 처치 유물의 일반/희귀 효과 배치 교정
+
+사용자가 일반 회전하는 철구가 희귀 광전사의 보석보다 이동속도 효과를 더 가진 역전을 지적하여 두 기존 전략 연결을 교환했다. 회전하는 철구(`RD_RotatingIornBall`, 일반)는 처치 시 4초간 공격력 +2, 광전사의 보석(`RD_RedContract`, 희귀)은 같은 조건/시간에 공격력 +2와 이동속도 +10%를 준다. ID/등급/아이콘/최대 레벨/기존 전략의 GUID와 스키마는 유지한다. 내부 전략 파일명은 과거 명칭이므로 실제 소유 유물은 definition.logic으로 판단한다. 이전 공격력 고정값 결정의 수치/갱신 정책은 유지하며 이동속도 보너스의 소유 유물만 교정한다. [작업 기록](SessionLogs/2026-11-05-CubeHood-kill-relic-effect-swap.md).

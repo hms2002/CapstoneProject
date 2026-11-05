@@ -55,7 +55,7 @@ public sealed class BossEncounterDialogueEntry
 
     [SerializeField, HideInInspector] private TextAsset inkJSON;
 
-    [Tooltip("여러 조우 대사 룰이 동시에 만족될 때 더 높은 우선순위의 룰이 선택됩니다.")]
+    [Tooltip("조건을 만족한 후보의 추첨 가중치입니다. 높을수록 자주 선택되며, 0 이하는 가중치 1로 처리합니다. 다른 후보가 있으면 직전 인사는 제외합니다.")]
     [SerializeField] private int priority;
 
     [Tooltip("이 룰이 선택되기 위해 만족해야 하는 조건 목록입니다. 비어 있으면 항상 참으로 처리됩니다.")]
@@ -628,7 +628,7 @@ public static class BossEncounterDialogueSelector
             return false;
 
         BossEncounterDialogueContext context = new BossEncounterDialogueContext(npcData);
-        int selectedPriority = int.MinValue;
+        List<BossEncounterDialogueEntry> candidates = new List<BossEncounterDialogueEntry>();
 
         for (int i = 0; i < entries.Count; i++)
         {
@@ -639,13 +639,36 @@ public static class BossEncounterDialogueSelector
             if (!entry.IsMatch(context))
                 continue;
 
-            if (selectedEntry != null && entry.Priority <= selectedPriority)
+            candidates.Add(entry);
+        }
+
+        if (candidates.Count == 0)
+            return false;
+
+        string previousStartPath = BossDialogueProgressStore.GetLastGreetingStartPath(npcData.id);
+        bool excludePrevious = !string.IsNullOrEmpty(previousStartPath)
+            && candidates.Exists(entry => !string.Equals(entry.StartPath, previousStartPath, StringComparison.Ordinal));
+
+        double totalWeight = 0;
+        foreach (BossEncounterDialogueEntry entry in candidates)
+        {
+            if (!excludePrevious || !string.Equals(entry.StartPath, previousStartPath, StringComparison.Ordinal))
+                totalWeight += Mathf.Max(1, entry.Priority);
+        }
+
+        double remainingWeight = UnityEngine.Random.value * totalWeight;
+        foreach (BossEncounterDialogueEntry entry in candidates)
+        {
+            if (excludePrevious && string.Equals(entry.StartPath, previousStartPath, StringComparison.Ordinal))
                 continue;
 
             selectedEntry = entry;
-            selectedPriority = entry.Priority;
+            remainingWeight -= Mathf.Max(1, entry.Priority);
+            if (remainingWeight < 0)
+                return true;
         }
 
+        // Random.value는 1을 반환할 수도 있으므로 마지막 후보를 유지한다.
         return selectedEntry != null;
     }
 }

@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -5,6 +6,8 @@ using UnityGAS;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Chloe Lantern")]
 public sealed class RelicLogic_ChloeLantern : RelicLogic
 {
+    public static readonly SoundRef ShotSound = SoundRef.FromKey("sound_goblinGunner_GunShot");
+
     public GameObject summonPrefab;
     public ChloeLanternProjectile2D projectilePrefab;
     public GameplayEffect damageEffect;
