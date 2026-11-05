@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -20,7 +21,7 @@ public sealed class DragonDialogueStartKnotSelector : MonoBehaviour, IDialogueSt
             ? BossDialogueProgressStore.GetEncounterCount(npcData.id)
             : 0;
         string selectedStartKnot = encounterCount > 0
-            ? SelectRepeatStartKnot()
+            ? SelectRepeatStartKnot(npcData)
             : defaultStartKnot;
 
         return string.IsNullOrWhiteSpace(selectedStartKnot)
@@ -28,12 +29,19 @@ public sealed class DragonDialogueStartKnotSelector : MonoBehaviour, IDialogueSt
             : selectedStartKnot.Trim();
     }
 
-    private string SelectRepeatStartKnot()
+    private string SelectRepeatStartKnot(NPCData npcData)
     {
         if (repeatStartKnots == null || repeatStartKnots.Length == 0)
             return defaultStartKnot;
 
-        int repeatIndex = Random.Range(0, repeatStartKnots.Length);
-        return repeatStartKnots[repeatIndex];
+        List<string> candidates = new List<string>(repeatStartKnots.Length);
+        foreach (string startKnot in repeatStartKnots)
+        {
+            if (!string.IsNullOrWhiteSpace(startKnot))
+                candidates.Add(startKnot.Trim());
+        }
+
+        return BossDialogueRepeatSelection.Select(
+            candidates, BossDialogueProgressStore.GetLastPrimaryStartPath(npcData.id)) ?? defaultStartKnot;
     }
 }

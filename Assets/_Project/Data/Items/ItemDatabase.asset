@@ -102,6 +102,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 875bf515b62c5bf44a0f67ab48330b66, type: 2}
   - {fileID: 11400000, guid: ddf04bff7fe8b144580e25eb7b52a207, type: 2}
   - {fileID: 11400000, guid: c6b658f2b5f61af438415d4d0fb6c848, type: 2}
+  - {fileID: 11400000, guid: f69eef658a84b8a45b7ddb92035b3268, type: 2}
+  - {fileID: 11400000, guid: a5cecab656637cc469fdf02706fcd3b1, type: 2}
   defaultUnlockedRelics:
   - {fileID: 11400000, guid: b7ac0f2e281a44768c35210163fd6aba, type: 2}
   - {fileID: 11400000, guid: f36d5720370d475cb8ad55ee5b68c27c, type: 2}

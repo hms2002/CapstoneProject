@@ -1432,7 +1432,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337645
-    m_Localized: Killing an enemy increases Attack by 2 for 4 seconds.
+    m_Localized: Killing an enemy increases Attack by 2 and movement speed by 10%
+      for 4 seconds.
     m_Metadata:
       m_Items: []
   - m_Id: 46294717337646
@@ -1448,8 +1449,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531906
-    m_Localized: Killing an enemy increases Attack by 2 and movement speed by 10%
-      for 4 seconds.
+    m_Localized: Killing an enemy increases Attack by 2 for 4 seconds.
     m_Metadata:
       m_Items: []
   - m_Id: 46294721531907
@@ -9189,7 +9189,38 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 11841048591966208
-    m_Localized: "Chloe's Lantern has been unlocked.\nYou can now find it in chests and shops."
+    m_Localized: "Chloe's Lantern, Shadow Echo, and Shadow Wisp have been unlocked.\nYou can now find them in chests and shops."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11994643412795392
+    m_Localized: Shadow Wisp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11994643538624512
+    m_Localized: Defeated enemies release a wisp that seeks another foe.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11994643538624513
+    m_Localized: "\u25CF On kill, release {{val:1}} wisp from the defeated enemy
+      to seek another foe\n\u25CF Targets the nearest enemy on screen with a clear
+      line of sight from the wisp\n\u25CF Deals {{val:100%}} of your Attack at creation
+      \xB7 No critical hits or elemental effects\n\u25CF Kills by this wisp do not
+      trigger another wisp"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12066096472637440
+    m_Localized: Shadow Echo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12066096581689344
+    m_Localized: Your dash leaves an echo that explodes a moment later.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12066096581689345
+    m_Localized: "\u25CF Leave an echo at your dash origin that explodes after {{val:{0:0.##}
+      s}}\n\u25CF Deals {{val:100%}} of your Attack at creation \xB7 No critical
+      hits or elemental effects\n\u25CF Horizontal radius {{val:{1:0.##}}} \xB7 Hits
+      enemies in the displayed area once"
     m_Metadata:
       m_Items: []
   references:

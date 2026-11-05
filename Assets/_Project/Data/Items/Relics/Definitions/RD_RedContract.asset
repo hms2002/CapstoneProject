@@ -17,8 +17,8 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 52aad4bfdb8f4b65a49b9d43566781d0, type: 3}
   rarity: 1
   description: "\uC801 \uCC98\uCE58 \uC2DC 4\uCD08 \uB3D9\uC548 \uACF5\uACA9\uB825\uC774
-    2 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+    2 \uC99D\uAC00\uD558\uACE0 \uC774\uB3D9\uC18D\uB3C4\uAC00 10% \uC99D\uAC00\uD569\uB2C8\uB2E4."
   maxLevel: 1
   dropLevel: 1
-  logic: {fileID: 11400000, guid: 44860a1e49e148fa8cdb24678044cc9e, type: 2}
+  logic: {fileID: 11400000, guid: 24602c35b51a9f64f8622e1094c8f5b2, type: 2}
   param: {fileID: 0}

@@ -1,0 +1,25 @@
+{
+  "generation_id": "3305afce-4c05-4075-9786-0221b8da0410",
+  "native": "32x32",
+  "palette": [
+    "#363232",
+    "#75656A",
+    "#9D5789",
+    "#BE8EC1",
+    "#F1E5F8"
+  ],
+  "margins_ltrb": [
+    4,
+    2,
+    4,
+    2
+  ],
+  "binary_alpha": true,
+  "preview_exact_8x": true,
+  "source_raw_byte_exact": true,
+  "native_sha256": "de611665cfdc3355df934d8a1476c4aaeaa0fac52ade0ecf952ded53be1e8197",
+  "game_assets": "not modified",
+  "Unity_and_tests": "not executed",
+  "doc_impact": "No project document update needed; draft outputs only",
+  "SessionLogs_ErrorLog_DecisionLog_PresentationHTML": "unchanged; no new stale candidate"
+}

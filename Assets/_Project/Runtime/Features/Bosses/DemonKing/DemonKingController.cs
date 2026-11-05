@@ -176,6 +176,8 @@ public sealed class DemonKingController : BossControllerBase
         ApplyPermanentKnockbackImmunity();
     }
 
+    protected override float ResolveEncounterHealthMultiplier() => 5f;
+
     protected override void Start()
     {
         if (ShouldConfigureRuntimePatterns())

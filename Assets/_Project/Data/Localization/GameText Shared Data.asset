@@ -15,6 +15,30 @@ MonoBehaviour:
   m_TableCollectionName: GameText
   m_TableCollectionNameGuidString: 6e6eece5703a7af49ae3c7212669274b
   m_Entries:
+  - m_Id: 12066096472637440
+    m_Key: asset.a5cecab656637cc469fdf02706fcd3b1.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12066096581689344
+    m_Key: asset.a5cecab656637cc469fdf02706fcd3b1.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12066096581689345
+    m_Key: relic.shadow_echo.effect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11994643412795392
+    m_Key: asset.f69eef658a84b8a45b7ddb92035b3268.displayName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11994643538624512
+    m_Key: asset.f69eef658a84b8a45b7ddb92035b3268.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11994643538624513
+    m_Key: relic.shadow_wisp.effect
+    m_Metadata:
+      m_Items: []
   - m_Id: 11832946039439360
     m_Key: asset.c6b658f2b5f61af438415d4d0fb6c848.displayName
     m_Metadata:

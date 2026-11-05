@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 129bb3e33ed94334e9a1d8e580750eea, type: 3}
   m_Name: ChloeRelicUnlockReward
   m_EditorClassIdentifier: 
-  rewardText: "\ud074\ub85c\uc5d0\uc758 \ub4f1\ubd88\uc774 \ud574\uae08\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\n\uc774\uc81c \uc0c1\uc790\uc640 \uc0c1\uc810\uc5d0\uc11c \ubc1c\uacac\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4."
+  rewardText: "\ud074\ub85c\uc5d0\uc758 \ub4f1\ubd88, \uadf8\ub9bc\uc790 \uc794\ud5a5, \uadf8\ub9bc\uc790 \ud63c\ubd88\uc774 \ud574\uae08\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\n\uc774\uc81c \uc0c1\uc790\uc640 \uc0c1\uc810\uc5d0\uc11c \ubc1c\uacac\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4."
   rewardIcon: {fileID: 0}
   weapons: []
   relics:
   - {fileID: 11400000, guid: ddf04bff7fe8b144580e25eb7b52a207, type: 2}
+  - {fileID: 11400000, guid: a5cecab656637cc469fdf02706fcd3b1, type: 2}
+  - {fileID: 11400000, guid: f69eef658a84b8a45b7ddb92035b3268, type: 2}

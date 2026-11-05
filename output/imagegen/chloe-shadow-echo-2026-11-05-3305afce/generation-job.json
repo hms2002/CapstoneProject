@@ -1,0 +1,14 @@
+{
+  "key": "shadow-echo-3305afce",
+  "name": "그림자 잔향",
+  "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-3305afce-4c05-4075-9786-0221b8da0410.png",
+  "palette": [
+    "#363232",
+    "#75656A",
+    "#9D5789",
+    "#BE8EC1",
+    "#F1E5F8"
+  ],
+  "prompt": "Use case: stylized-concept. Create ONE fantasy roguelike inventory PIXEL ART sprite called \"Shadow Echo\", exclusive to Chloe.\nReference roles: image 1 SUBJECT IDENTITY ONLY: use the little rounded purple ghost companions floating NEXT TO the hooded woman, NOT the woman herself. Image 2 PRIMARY STYLE ONLY: user-approved chunky stone/crown/bandage/flag inventory illustrations. Image 3 the ONLY allowed color palette.\nDesign: TWO OVERLAPPING PURPLE GHOST SHAPES, a large plump lavender-purple wisp in the foreground slightly right, and a smaller DARKER PURPLE echo offset behind it to upper-left. Only TWO forms. Foreground ghost is a compact rounded teardrop/bean body, two large simple pale-lavender eyes, no mouth, no eyelashes. A short thick curved flame-tail at top or lower end recalls Chloe's ghost companions, not a human silhouette. The smaller rear shape repeats the foreground's contour, mostly obscured with its rounded head/one pale eye and short tail peeking out to communicate an afterimage. Rear is about two thirds foreground size and darker; keep visible enough to read as a second overlapping echo, not an ear or wing. The combined silhouette is a cohesive chunky physical-inventory relic icon, not two separate scattered objects. No container, pedestal, badge, crystal, chains, stars, extra sparks, tiny wisps or aura. No long thin tails. All purple, NOT white ghosts.\nStyle: match image 2's charming soft plump hand-authored pixel illustration; broad simple base shapes plus one shadow plane, sparse details. Logical 32x32 grid, crisp UNIFORM square pixel clusters, TWO logical-pixel rounded charcoal exterior outline, at least TWO transparent logical-pixel margins on ALL four canvas edges INCLUDING outline. Subject material footprint at most about 24x24 logical pixels. Genuinely transparent background, no drop shadow. No gradients, soft glow, antialiasing, dithering, texture, glossy trims, fine linework, typography, UI or background. Single sprite only.\nExact palette ONLY, five colors total: #363232 charcoal outline; #75656A dark muted violet rear echo; #9D5789 medium purple shadow; #BE8EC1 lavender-purple main body; #F1E5F8 pale lavender eyes. Keep eyes clear and body mass prominent.",
+  "generation": "built-in image_gen"
+}

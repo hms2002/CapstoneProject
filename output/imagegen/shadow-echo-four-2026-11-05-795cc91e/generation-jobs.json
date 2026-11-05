@@ -1,0 +1,78 @@
+[
+  {
+    "key": "01-round-795cc91e",
+    "name": "둥근 혼령",
+    "subject": "Foreground is a PLUMP ROUND TEARDROP ghost with a domed smooth head and very short wide tail flicking down-right. No tall flame spike, no hood. Large simple oval pale eyes. Rear echo is a smaller round teardrop shifted visibly up-left. Quiet cute round silhouette.",
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#9D5789",
+      "#BE8EC1",
+      "#F1E5F8"
+    ],
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/Normal.png"
+    ],
+    "prompt": "Use case: stylized-concept. ONE hand-authored PIXEL ART fantasy roguelike inventory icon for Chloe's dedicated relic \"Shadow Echo\". The sprite is a compact OVERLAPPING PAIR of PURPLE SPIRITS: one large lavender foreground ghost, one smaller dark muted-purple echo ghost partly visible BEHIND it, offset to upper-left. Only TWO spirits and their shapes physically overlap, no scattered effects.\nReference roles: image 1 PRIMARY STYLE (the user's favorite chunky stone, crown, bandage, flag icons). Image 2 is ONLY allowed palette. Image 3 CHARACTER IDENTITY: use ONLY the tiny shadow-spirit companions floating beside Chloe; NOT Chloe's human figure, portrait, costume or ears.\nBoth spirits should recall her cute shadow companions: chunky soft masses, simple expressive pale eyes, short substantial flame tails, a slightly shy/mysterious mood, no horror. Foreground dominates, rear echo clearly visible as a second rounded head and a hint of one pale eye. ONE smaller rear ghost, not just a generic drop shadow. Avoid squeezing two equal small ghosts side by side. No mouth necessary, no hands, arms, torso, costume accessories, transparent gradients, motion lines, glitters, extra sparks, text, frame or ground shadow.\n32x32 logical pixel grid, same pixel size throughout; truly crisp uniform hard square pixels and broad flat color clusters. TWO logical-pixel charcoal #363232 rounded EXTERIOR outline, carefully stepped curves, maximum combined material footprint ~24x24 logical pixels. Minimum TWO transparent logical-pixel margin on ALL edges INCLUDING outline. Preserve useful hollow openings. Transparent background. Physical illustrated icon clarity like reference 1; only a broad base-color plane and one clear shadow plane per spirit. Do not make glossy jewels or many shaded bands. No gradients, dithering, texture, blur, antialiasing, tiny noise or white specular dots.\nColor palette ONLY: #363232 charcoal outline; #75656A muted dark shadow; #9D5789 deeper purple; #BE8EC1 lavender-purple; #F1E5F8 pale lavender eyes. Five colors total maximum. Most visible area PURPLE, eye shapes simple and substantial. Single icon, not a sheet.\nVariant design: Foreground is a PLUMP ROUND TEARDROP ghost with a domed smooth head and very short wide tail flicking down-right. No tall flame spike, no hood. Large simple oval pale eyes. Rear echo is a smaller round teardrop shifted visibly up-left. Quiet cute round silhouette.",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-26679a94-0054-4cb1-bae3-fce605b3ca3d.png"
+  },
+  {
+    "key": "02-flame-795cc91e",
+    "name": "불꽃 혼령",
+    "subject": "Foreground is a FAT UPRIGHT WISP with a single broad curved FLAME TIP at the upper-right and a rounded belly. Two pale drop-shaped eyes look forward. Short blunt lower tail, no long tendrils. Rear echo has its own smaller curved flame tip emerging at upper-left. Both forms clearly evoke Chloe's tiny flame ghost companions.",
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#9D5789",
+      "#BE8EC1",
+      "#F1E5F8"
+    ],
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/Normal.png"
+    ],
+    "prompt": "Use case: stylized-concept. ONE hand-authored PIXEL ART fantasy roguelike inventory icon for Chloe's dedicated relic \"Shadow Echo\". The sprite is a compact OVERLAPPING PAIR of PURPLE SPIRITS: one large lavender foreground ghost, one smaller dark muted-purple echo ghost partly visible BEHIND it, offset to upper-left. Only TWO spirits and their shapes physically overlap, no scattered effects.\nReference roles: image 1 PRIMARY STYLE (the user's favorite chunky stone, crown, bandage, flag icons). Image 2 is ONLY allowed palette. Image 3 CHARACTER IDENTITY: use ONLY the tiny shadow-spirit companions floating beside Chloe; NOT Chloe's human figure, portrait, costume or ears.\nBoth spirits should recall her cute shadow companions: chunky soft masses, simple expressive pale eyes, short substantial flame tails, a slightly shy/mysterious mood, no horror. Foreground dominates, rear echo clearly visible as a second rounded head and a hint of one pale eye. ONE smaller rear ghost, not just a generic drop shadow. Avoid squeezing two equal small ghosts side by side. No mouth necessary, no hands, arms, torso, costume accessories, transparent gradients, motion lines, glitters, extra sparks, text, frame or ground shadow.\n32x32 logical pixel grid, same pixel size throughout; truly crisp uniform hard square pixels and broad flat color clusters. TWO logical-pixel charcoal #363232 rounded EXTERIOR outline, carefully stepped curves, maximum combined material footprint ~24x24 logical pixels. Minimum TWO transparent logical-pixel margin on ALL edges INCLUDING outline. Preserve useful hollow openings. Transparent background. Physical illustrated icon clarity like reference 1; only a broad base-color plane and one clear shadow plane per spirit. Do not make glossy jewels or many shaded bands. No gradients, dithering, texture, blur, antialiasing, tiny noise or white specular dots.\nColor palette ONLY: #363232 charcoal outline; #75656A muted dark shadow; #9D5789 deeper purple; #BE8EC1 lavender-purple; #F1E5F8 pale lavender eyes. Five colors total maximum. Most visible area PURPLE, eye shapes simple and substantial. Single icon, not a sheet.\nVariant design: Foreground is a FAT UPRIGHT WISP with a single broad curved FLAME TIP at the upper-right and a rounded belly. Two pale drop-shaped eyes look forward. Short blunt lower tail, no long tendrils. Rear echo has its own smaller curved flame tip emerging at upper-left. Both forms clearly evoke Chloe's tiny flame ghost companions.",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-90ee657e-25f0-4e9e-ae9f-6d0ee87e300b.png"
+  },
+  {
+    "key": "03-hood-795cc91e",
+    "name": "후드 같은 혼령",
+    "subject": "Foreground is a broad pointed-arch HOODED GHOST SHAPE, an empty spirit mass with two large pale eyes inside a simple darker purple face hollow. Head dome mildly pointed like a hood, but NO cloth character, limbs or human face; bottom ends in two short soft lobes. Rear ghost is a small pointed-arch echo peeking behind upper-left, making a distinctive nested spectral silhouette. Large simple filled regions, no little folds.",
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#9D5789",
+      "#BE8EC1",
+      "#F1E5F8"
+    ],
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/Normal.png"
+    ],
+    "prompt": "Use case: stylized-concept. ONE hand-authored PIXEL ART fantasy roguelike inventory icon for Chloe's dedicated relic \"Shadow Echo\". The sprite is a compact OVERLAPPING PAIR of PURPLE SPIRITS: one large lavender foreground ghost, one smaller dark muted-purple echo ghost partly visible BEHIND it, offset to upper-left. Only TWO spirits and their shapes physically overlap, no scattered effects.\nReference roles: image 1 PRIMARY STYLE (the user's favorite chunky stone, crown, bandage, flag icons). Image 2 is ONLY allowed palette. Image 3 CHARACTER IDENTITY: use ONLY the tiny shadow-spirit companions floating beside Chloe; NOT Chloe's human figure, portrait, costume or ears.\nBoth spirits should recall her cute shadow companions: chunky soft masses, simple expressive pale eyes, short substantial flame tails, a slightly shy/mysterious mood, no horror. Foreground dominates, rear echo clearly visible as a second rounded head and a hint of one pale eye. ONE smaller rear ghost, not just a generic drop shadow. Avoid squeezing two equal small ghosts side by side. No mouth necessary, no hands, arms, torso, costume accessories, transparent gradients, motion lines, glitters, extra sparks, text, frame or ground shadow.\n32x32 logical pixel grid, same pixel size throughout; truly crisp uniform hard square pixels and broad flat color clusters. TWO logical-pixel charcoal #363232 rounded EXTERIOR outline, carefully stepped curves, maximum combined material footprint ~24x24 logical pixels. Minimum TWO transparent logical-pixel margin on ALL edges INCLUDING outline. Preserve useful hollow openings. Transparent background. Physical illustrated icon clarity like reference 1; only a broad base-color plane and one clear shadow plane per spirit. Do not make glossy jewels or many shaded bands. No gradients, dithering, texture, blur, antialiasing, tiny noise or white specular dots.\nColor palette ONLY: #363232 charcoal outline; #75656A muted dark shadow; #9D5789 deeper purple; #BE8EC1 lavender-purple; #F1E5F8 pale lavender eyes. Five colors total maximum. Most visible area PURPLE, eye shapes simple and substantial. Single icon, not a sheet.\nVariant design: Foreground is a broad pointed-arch HOODED GHOST SHAPE, an empty spirit mass with two large pale eyes inside a simple darker purple face hollow. Head dome mildly pointed like a hood, but NO cloth character, limbs or human face; bottom ends in two short soft lobes. Rear ghost is a small pointed-arch echo peeking behind upper-left, making a distinctive nested spectral silhouette. Large simple filled regions, no little folds.",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-c85d4771-1e71-4cfe-94e1-70a4fb326e98.png"
+  },
+  {
+    "key": "04-curled-795cc91e",
+    "name": "꼬리가 감긴 혼령",
+    "subject": "Foreground is a rounded asymmetrical GHOST with a VERY THICK SHORT COMMA TAIL curling inward under its belly, creating one small intentional open notch at lower-right. Head tilted slightly right; two expressive pale eyes. Rear echo is a smaller dark ghost peeking behind upper-left with its own short curving tail. Compact coiled silhouette, no long thin spiral or ring of smoke.",
+    "palette": [
+      "#363232",
+      "#75656A",
+      "#9D5789",
+      "#BE8EC1",
+      "#F1E5F8"
+    ],
+    "refs": [
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/rift-crown-bandage-flag-2026-11-04/four-relics-preview.png",
+      "C:/Users/user/Desktop/CapstoneProject/output/imagegen/style-calibrated-four-relics-test-2026-11-04/reference-allowed-palette.png",
+      "C:/Users/user/Desktop/CapstoneProject/Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/Normal.png"
+    ],
+    "prompt": "Use case: stylized-concept. ONE hand-authored PIXEL ART fantasy roguelike inventory icon for Chloe's dedicated relic \"Shadow Echo\". The sprite is a compact OVERLAPPING PAIR of PURPLE SPIRITS: one large lavender foreground ghost, one smaller dark muted-purple echo ghost partly visible BEHIND it, offset to upper-left. Only TWO spirits and their shapes physically overlap, no scattered effects.\nReference roles: image 1 PRIMARY STYLE (the user's favorite chunky stone, crown, bandage, flag icons). Image 2 is ONLY allowed palette. Image 3 CHARACTER IDENTITY: use ONLY the tiny shadow-spirit companions floating beside Chloe; NOT Chloe's human figure, portrait, costume or ears.\nBoth spirits should recall her cute shadow companions: chunky soft masses, simple expressive pale eyes, short substantial flame tails, a slightly shy/mysterious mood, no horror. Foreground dominates, rear echo clearly visible as a second rounded head and a hint of one pale eye. ONE smaller rear ghost, not just a generic drop shadow. Avoid squeezing two equal small ghosts side by side. No mouth necessary, no hands, arms, torso, costume accessories, transparent gradients, motion lines, glitters, extra sparks, text, frame or ground shadow.\n32x32 logical pixel grid, same pixel size throughout; truly crisp uniform hard square pixels and broad flat color clusters. TWO logical-pixel charcoal #363232 rounded EXTERIOR outline, carefully stepped curves, maximum combined material footprint ~24x24 logical pixels. Minimum TWO transparent logical-pixel margin on ALL edges INCLUDING outline. Preserve useful hollow openings. Transparent background. Physical illustrated icon clarity like reference 1; only a broad base-color plane and one clear shadow plane per spirit. Do not make glossy jewels or many shaded bands. No gradients, dithering, texture, blur, antialiasing, tiny noise or white specular dots.\nColor palette ONLY: #363232 charcoal outline; #75656A muted dark shadow; #9D5789 deeper purple; #BE8EC1 lavender-purple; #F1E5F8 pale lavender eyes. Five colors total maximum. Most visible area PURPLE, eye shapes simple and substantial. Single icon, not a sheet.\nVariant design: Foreground is a rounded asymmetrical GHOST with a VERY THICK SHORT COMMA TAIL curling inward under its belly, creating one small intentional open notch at lower-right. Head tilted slightly right; two expressive pale eyes. Rear echo is a smaller dark ghost peeking behind upper-left with its own short curving tail. Compact coiled silhouette, no long thin spiral or ring of smoke.",
+    "source": "C:/Users/user/.codex/generated_images/01a17b9a-dd0d-7952-934c-baa8ac291ab7/exec-1c7db6ca-0d81-4684-916f-b23f9e49da5a.png"
+  }
+]

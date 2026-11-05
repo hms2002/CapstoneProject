@@ -1,0 +1,93 @@
+{
+  "date": "2026-11-05",
+  "records": [
+    {
+      "number": 1,
+      "name": "둥근 혼령",
+      "png": "01-round-795cc91e-32x32.png",
+      "sha256": "1ea8f8e8960e7b5907d63e9e66ba5b8118f04d332ddd570d4f03cce79f8c8a7d",
+      "colors": [
+        "#363232",
+        "#75656A",
+        "#9D5789",
+        "#BE8EC1",
+        "#F1E5F8"
+      ],
+      "margins_ltrb": [
+        3,
+        2,
+        3,
+        2
+      ]
+    },
+    {
+      "number": 2,
+      "name": "불꽃 혼령",
+      "png": "02-flame-795cc91e-32x32.png",
+      "sha256": "331f219562adde2de4f3fddb26fabaaf6a7b42b908e33e445d83ca1919e2bf91",
+      "colors": [
+        "#363232",
+        "#75656A",
+        "#9D5789",
+        "#BE8EC1",
+        "#F1E5F8"
+      ],
+      "margins_ltrb": [
+        3,
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "number": 3,
+      "name": "후드 같은 혼령",
+      "png": "03-hood-795cc91e-32x32.png",
+      "sha256": "8290653bba65062c3bebcf53dfae06acfc02b3615a51b4f8bb4537a431b4fb18",
+      "colors": [
+        "#363232",
+        "#75656A",
+        "#9D5789",
+        "#BE8EC1",
+        "#F1E5F8"
+      ],
+      "margins_ltrb": [
+        4,
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "number": 4,
+      "name": "꼬리가 감긴 혼령",
+      "png": "04-curled-795cc91e-32x32.png",
+      "sha256": "a0c566afa208dfcf050b316a3e911cf3a77a03216d5d1c693ac0ba0e6a184090",
+      "colors": [
+        "#363232",
+        "#75656A",
+        "#9D5789",
+        "#BE8EC1",
+        "#F1E5F8"
+      ],
+      "margins_ltrb": [
+        4,
+        2,
+        5,
+        2
+      ]
+    }
+  ],
+  "dimensions": "32x32 each",
+  "native_sheet_individual_preview_consistency": "pixel exact",
+  "previews": "nearest-neighbor 8x",
+  "binary_alpha": true,
+  "palette_only": true,
+  "minimum_margin": 2,
+  "visual_review": "all four inspected at native export enlargement",
+  "unique_version_folder": "shadow-echo-four-2026-11-05-795cc91e",
+  "game_assets": "not modified",
+  "Unity_and_automated_tests": "not executed",
+  "doc_impact": "no project document update needed; draft output only",
+  "SessionLogs_ErrorLog_DecisionLog_PresentationHTML": "unchanged; no new stale candidate"
+}

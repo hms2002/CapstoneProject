@@ -19,7 +19,7 @@ public static class FixedAttackRelicAuthoring
     private static readonly string[] StrategyNames =
     {
         "Relic Logic_Common_WornWhetstone", "Relic Logic_Common_MasterWhetstone", "Relic Logic_Common_HeavyBracelet",
-        "Relic Logic_Common_LastBreath", "Relic Logic_Common_RedContract", "Relic Logic_Move Speed On Kill_Managed", "Relic Logic_Feather Orbit_Managed"
+        "Relic Logic_Common_LastBreath", "Relic Logic_Move Speed On Kill_Managed", "Relic Logic_Common_RedContract", "Relic Logic_Feather Orbit_Managed"
     };
     private static readonly string[] DefinitionGuids =
     {
@@ -29,7 +29,7 @@ public static class FixedAttackRelicAuthoring
     private static readonly string[] StrategyGuids =
     {
         "348ad3a604f1416bad4cdbf897ace578", "c09af03ddc034e87b1f9044305ef296b", "f6f4ed2e6a75450a9200b6c6db29ef75",
-        "fbdac07eef844692b91bd97f7db59ce3", "44860a1e49e148fa8cdb24678044cc9e", "24602c35b51a9f64f8622e1094c8f5b2", "74bcbc64a07fc854ca2dade608e8c24c"
+        "fbdac07eef844692b91bd97f7db59ce3", "24602c35b51a9f64f8622e1094c8f5b2", "44860a1e49e148fa8cdb24678044cc9e", "74bcbc64a07fc854ca2dade608e8c24c"
     };
     private static readonly string[] Descriptions =
     {
@@ -37,15 +37,15 @@ public static class FixedAttackRelicAuthoring
         "공격력이 고정 수치로 증가하고, 기본공격 피해가 비율로 증가합니다.",
         "이동속도가 비율로 감소하고, 공격력이 고정 수치로 증가합니다.",
         "체력이 50% 이하일 때 공격력이 3 증가합니다.",
-        "적 처치 시 4초 동안 공격력이 2 증가합니다.",
         "적 처치 시 4초 동안 공격력이 2 증가하고 이동속도가 10% 증가합니다.",
+        "적 처치 시 4초 동안 공격력이 2 증가합니다.",
         "플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 고정 피해 3/4/5/6/7을 주며, 이동속도가 높을수록 더 빠르게 회전합니다."
     };
     private static readonly string[] Templates =
     {
         "● 체력이 {max_ratio} 이하일 때 [[{stat}]] {value}",
-        "● {trigger} {duration} 동안 [[{stat}]] {value}",
         "● 적 처치 시 {duration} 동안 [[공격력]] {attack_bonus}\n● [[이동속도]] {move_speed_bonus}",
+        "● {trigger} {duration} 동안 [[{stat}]] {value}",
         "● 깃털 {feather_count}개가 주위를 회전하며 적을 공격\n● 깃털 피해 {damage_coef}\n● 회전 반경 {radius}\n● 같은 적을 다시 공격하는 기본 간격 {hit_cooldown}"
     };
 
@@ -92,7 +92,7 @@ public static class FixedAttackRelicAuthoring
                     if (i == 1) ValidateOtherEntry(serialized, 1, "f412c7da2733d71489ec2687fd2f7134", 0.03f, new[] { 0.03f, 0.05f, 0.08f });
                     if (i == 2) ValidateOtherEntry(serialized, 0, "23db6468e859c6f42b0230a5af7ca81c", -0.02f, new[] { -0.04f, -0.03f, -0.02f });
                 }
-                else if (i < 5)
+                else if (i == 3 || i == 5)
                 {
                     Require(i == 3 ? logic is RelicLogic_StatWhileHealthRatio_Managed : logic is RelicLogic_TimedStatOnGameplayEvent_Managed,
                         "Unexpected conditional strategy type.");
@@ -107,12 +107,12 @@ public static class FixedAttackRelicAuthoring
                         && Mathf.Approximately(serialized.FindProperty("value").floatValue, i == 3 ? 3f : 2f), "Conditional attack mismatch: " + Names[i]);
                     if (i == 3) Require(serialized.FindProperty("minHealthRatioInclusive").floatValue == 0f
                         && serialized.FindProperty("maxHealthRatioInclusive").floatValue == 0.5f, "Health condition changed.");
-                    if (i == 4) Require(serialized.FindProperty("durationSeconds").floatValue == 4f
-                        && serialized.FindProperty("refreshDuration").boolValue, "Red Contract duration policy changed.");
+                    if (i == 5) Require(serialized.FindProperty("durationSeconds").floatValue == 4f
+                        && serialized.FindProperty("refreshDuration").boolValue, "Iron ball duration policy changed.");
                 }
-                else if (i == 5)
+                else if (i == 4)
                 {
-                    Require(logic is RelicLogic_MoveSpeedOnKill_Managed, "Unexpected iron ball strategy type.");
+                    Require(logic is RelicLogic_MoveSpeedOnKill_Managed, "Unexpected Berserker's Gem strategy type.");
                     if (apply)
                     {
                         serialized.FindProperty("attackAttribute").objectReferenceValue = attackAdd;
@@ -122,7 +122,7 @@ public static class FixedAttackRelicAuthoring
                         && serialized.FindProperty("attackPercentBonus").floatValue == 2f
                         && serialized.FindProperty("percentBonus").floatValue == 0.1f
                         && serialized.FindProperty("durationSeconds").floatValue == 4f
-                        && serialized.FindProperty("refreshDuration").boolValue, "Iron ball attack or retained movement policy mismatch.");
+                        && serialized.FindProperty("refreshDuration").boolValue, "Berserker's Gem attack or retained movement policy mismatch.");
                 }
                 else
                 {

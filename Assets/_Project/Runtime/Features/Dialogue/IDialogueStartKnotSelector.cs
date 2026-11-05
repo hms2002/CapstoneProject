@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,4 +9,34 @@ using UnityEngine;
 public interface IDialogueStartKnotSelector
 {
     string SelectStartKnot(NPCData npcData, TextAsset inkJSON);
+}
+
+// 재조우 본대사는 다른 후보가 있을 때만 직전 경로를 제외하고 균등 추첨한다.
+internal static class BossDialogueRepeatSelection
+{
+    public static string Select(IReadOnlyList<string> candidates, string previousStartPath)
+    {
+        if (candidates == null || candidates.Count == 0)
+            return null;
+
+        int alternativeCount = 0;
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            if (!string.Equals(candidates[i], previousStartPath, System.StringComparison.Ordinal))
+                alternativeCount++;
+        }
+
+        bool excludePrevious = alternativeCount > 0;
+        int selectedIndex = Random.Range(0, excludePrevious ? alternativeCount : candidates.Count);
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            if (excludePrevious && string.Equals(candidates[i], previousStartPath, System.StringComparison.Ordinal))
+                continue;
+
+            if (selectedIndex-- == 0)
+                return candidates[i];
+        }
+
+        return null;
+    }
 }

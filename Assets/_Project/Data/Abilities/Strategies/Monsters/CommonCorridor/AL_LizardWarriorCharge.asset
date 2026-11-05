@@ -20,7 +20,7 @@ MonoBehaviour:
   attackRange: 3.74
   warningSeconds: 0.8
   chaseSeconds: 2.2
-  chaseSpeedMultiplier: 1.4
+  chaseSpeedMultiplier: 1.3
   warningSpeedMultiplier: 0.75
   turnDegreesPerSecond: 270
   rearmSeconds: 1

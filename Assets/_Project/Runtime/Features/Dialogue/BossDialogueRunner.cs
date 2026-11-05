@@ -63,7 +63,10 @@ public class BossDialogueRunner : MonoBehaviour
         yield return WaitForDialogueToFinish();
 
         if (recordEncounterProgress)
-            BossDialogueProgressStore.RegisterEncounter(npcData);
+            BossDialogueProgressStore.RegisterEncounter(
+                npcData,
+                encounterInk != null ? encounterStartPath ?? string.Empty : null,
+                playPrimaryDialogueAfterEncounter && primaryInk != null ? primaryStartPath ?? string.Empty : null);
     }
 
     private List<DialogueStorySegment> BuildStorySegments(

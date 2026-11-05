@@ -15,6 +15,8 @@ using UnityGAS;
 public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
     private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
+    private const float WallImpactStaggerRatio = 0.5f;
+    private const float WallImpactProbeDistance = 0.08f;
     private static readonly SoundRef RushSound = SoundRef.FromKey("sound_rook_Rush");
     private static readonly SoundRef WallCollisionSound = SoundRef.FromKey("sound_rook_CollisionWall");
 
@@ -46,10 +48,14 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         minIntervalSeconds: 0.08f);
 
     private AbilityMotionController2D motionController;
+    private StaggerGaugeSystem staggerGauge;
+    private AttributeSet attributes;
+    private Rigidbody2D ownBody;
     private AttackTelegraphStyle warningStyle;
     private IAttackTelegraphPresenter telegraphPresenter;
     private IAttackTelegraphHandle warningTelegraphView;
     private Rook.ChargeContext currentContext;
+    private AbilitySpec currentSpec;
     private bool isRunning;
     private bool isDashing;
     private bool cancelRequested;
@@ -60,6 +66,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     private float dashEndTime;
     private readonly List<Collider2D> chargeBodies = new();
     private readonly List<Collider2D> targetBodies = new();
+    private readonly RaycastHit2D[] wallImpactProbeHits = new RaycastHit2D[16];
 
     public bool IsRunning => isRunning;
 
@@ -112,6 +119,9 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
             staggerImmuneTag = Resources.Load<GameplayTag>(StaggerImmuneTagResourcePath);
 
         motionController = GetComponent<AbilityMotionController2D>();
+        staggerGauge = GetComponent<StaggerGaugeSystem>();
+        attributes = GetComponent<AttributeSet>();
+        ownBody = GetComponent<Rigidbody2D>();
         warningStyle = MakeWarningStyle();
         EnsureContactTriggerCollider();
     }
@@ -126,8 +136,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
     private void OnDisable()
     {
-        HideWarning();
-        StopDash();
+        Cancel();
     }
 
     /// <summary>룩 돌진 패턴의 전체 시퀀스를 실행합니다.</summary>
@@ -137,6 +146,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         if (abilityCoordinator != null && !abilityCoordinator.TryBeginRunner(this)) yield break;
         if (!owner.TryBuildChargeContext(system, spec, initialTarget, out currentContext)) yield break;
 
+        currentSpec = spec;
         isRunning = true;
         cancelRequested = false;
         hitWall = false;
@@ -152,13 +162,13 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
             if (warningSeconds > 0f)
                 yield return AbilityTasks.WaitDelay(system, spec, warningSeconds);
 
-            if (cancelRequested || owner.IsDead)
+            if (IsExecutionCancelled || owner.IsDead)
                 yield break;
 
             HideWarning();
             BeginDash(currentContext);
 
-            while (!cancelRequested &&
+            while (!IsExecutionCancelled &&
                    !owner.IsDead &&
                    !hitWall &&
                    CombatHitPause2D.GetActionTime(gameObject) < dashEndTime)
@@ -166,7 +176,11 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
                 yield return null;
             }
 
-            PlayWallImpactCameraShakeIfDashReachedDestination();
+            // Paralysis can start on the last yielded frame; defer terminal gameplay work too.
+            while (!IsExecutionCancelled && !owner.IsDead && CombatHitPause2D.IsParalyzedOn(gameObject))
+                yield return null;
+
+            TryHandleWallImpactAtDashEnd();
 
         }
         finally
@@ -174,6 +188,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
             HideWarning();
             StopDash();
             currentContext = default;
+            currentSpec = null;
             cancelRequested = false;
             hitWall = false;
             hitPlayer = false;
@@ -201,9 +216,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
         if (!HasChargeBlocker(collision)) return;
 
-        hitWall = true;
-        PlayWallImpactCameraShake();
-        StopDash();
+        HandleWallImpact();
     }
 
     /// <summary>룩 돌진 중 플레이어 trigger 접촉을 처리합니다.</summary>
@@ -360,21 +373,65 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
     /// <summary>
     /// 책임:
-    /// - 룩 돌진이 물리 충돌 이벤트 없이 사전 계산된 벽 목적지에 도착해 끝난 경우에도 충돌 피드백을 보장한다.
-    /// - cast 기반 dash와 collision 기반 dash가 서로 다른 종료 경로를 타더라도 연출 결과가 같게 만든다.
+    /// - 물리 충돌 콜백 없이 벽 직전에 멈춘 경우 현재 몸체 앞의 실제 차단물을 확인한다.
+    /// - 안전 시간 초과나 사라진 벽을 도착 시간만으로 충돌 처리하지 않는다.
     /// </summary>
-    private void PlayWallImpactCameraShakeIfDashReachedDestination()
+    private void TryHandleWallImpactAtDashEnd()
     {
-        if (!isDashing)
-            return;
-
-        if (cancelRequested || owner == null || owner.IsDead || hitWall)
+        if (!CanHandleWallImpact())
             return;
 
         if (CombatHitPause2D.GetActionTime(gameObject) < dashEndTime)
             return;
 
+        Vector2 direction = currentContext.Direction.normalized;
+        if (direction.sqrMagnitude <= 0.0001f || ownBody == null) return;
+
+        GetComponentsInChildren(false, chargeBodies);
+        ContactFilter2D filter = ContactFilter2D.noFilter;
+        filter.useTriggers = true;
+        foreach (Collider2D body in chargeBodies)
+        {
+            if (body == null || !body.enabled || body.isTrigger || body.attachedRigidbody != ownBody)
+                continue;
+
+            int count = body.Cast(direction, filter, wallImpactProbeHits, WallImpactProbeDistance, true);
+            for (int i = 0; i < count; i++)
+            {
+                RaycastHit2D hit = wallImpactProbeHits[i];
+                if (hit.collider == null || hit.collider.attachedRigidbody == ownBody ||
+                    Vector2.Dot(hit.normal, direction) >= -0.01f || !owner.IsChargeBlocker(hit.collider))
+                    continue;
+
+                HandleWallImpact();
+                return;
+            }
+        }
+    }
+
+    private bool IsExecutionCancelled => cancelRequested ||
+        (currentSpec != null && currentSpec.Token != null && currentSpec.Token.IsCancelled);
+
+    private bool CanHandleWallImpact() =>
+        isRunning && isDashing && !hitWall && !IsExecutionCancelled && isActiveAndEnabled &&
+        owner != null && owner.isActiveAndEnabled && !owner.IsDead &&
+        !CombatHitPause2D.IsParalyzedOn(owner.gameObject);
+
+    /// <summary>Consume one impact before callbacks, release only charge-owned immunity, then use the common gauge.</summary>
+    private void HandleWallImpact()
+    {
+        if (!CanHandleWallImpact()) return;
+
+        hitWall = true;
+        StopDash();
         PlayWallImpactCameraShake();
+
+        if (staggerGauge == null || !staggerGauge.isActiveAndEnabled || attributes == null ||
+            staggerGauge.maxGaugeAttribute == null) return;
+
+        float maximum = attributes.GetAttributeValue(staggerGauge.maxGaugeAttribute);
+        if (maximum > 0f)
+            staggerGauge.AddBuildUp(maximum * WallImpactStaggerRatio, gameObject, gameObject);
     }
 
     /// <summary>

@@ -9,6 +9,16 @@ public static class BossDialogueProgressStore
         return record != null ? Mathf.Max(0, record.encounterCount) : 0;
     }
 
+    public static string GetLastGreetingStartPath(int npcId)
+    {
+        return GetRecord(npcId)?.lastGreetingStartPath ?? string.Empty;
+    }
+
+    public static string GetLastPrimaryStartPath(int npcId)
+    {
+        return GetRecord(npcId)?.lastPrimaryStartPath ?? string.Empty;
+    }
+
     public static int GetVictoryCount(int npcId)
     {
         BossDialogueRecord record = GetRecord(npcId);
@@ -56,7 +66,10 @@ public static class BossDialogueProgressStore
         RequestSaveIfSafe();
     }
 
-    public static void RegisterEncounter(NPCData npcData)
+    public static void RegisterEncounter(
+        NPCData npcData,
+        string greetingStartPath = null,
+        string primaryStartPath = null)
     {
         if (npcData == null)
             return;
@@ -67,6 +80,11 @@ public static class BossDialogueProgressStore
 
         record.encounterCount = Mathf.Max(0, record.encounterCount) + 1;
         record.lastEncounterTotalPlaySeconds = GetCurrentTotalPlaySeconds();
+        // null은 해당 구간 미재생, 빈 문자열은 Ink 루트 재생을 뜻한다.
+        if (greetingStartPath != null)
+            record.lastGreetingStartPath = greetingStartPath.Trim();
+        if (primaryStartPath != null)
+            record.lastPrimaryStartPath = primaryStartPath.Trim();
         RequestSaveIfSafe();
     }
 
