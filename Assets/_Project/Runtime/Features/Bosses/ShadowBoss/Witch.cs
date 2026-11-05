@@ -185,6 +185,30 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
 
     public override BossState GetPatternState(BossPatternEntry patternEntry)
     {
+        if (IsSealedCandleRampagePattern(patternEntry) && !HasAnySealedCandles())
+        {
+            // 소등은 전용 state가 실행하므로 Ability logic만 바꾸지 않고 예약 패턴도 교체한다.
+            IReadOnlyList<BossPatternEntry> patterns = GetCurrentPhase()?.Patterns;
+            if (patterns != null)
+            {
+                for (int i = 0; i < patterns.Count; i++)
+                {
+                    BossPatternEntry extinguishPattern = patterns[i];
+                    if (!IsExtinguishPattern(extinguishPattern) || !EvaluatePattern(extinguishPattern).CanUse)
+                        continue;
+
+                    PatternRuntime.ReservePattern(extinguishPattern);
+                    CapstoneDiagnostics.EditorOnlyLog.Log(
+                        $"[BossFSM] {name}: 꺼진 촛대가 없어 촛대 폭주를 촛불 끄기 패턴으로 대체합니다.",
+                        this);
+                    return extinguishState;
+                }
+            }
+
+            PatternRuntime.ClearReservedPattern();
+            return GetCombatIdleState();
+        }
+
         if (IsExtinguishPattern(patternEntry)) return extinguishState;
         if (IsNormal1Pattern(patternEntry)) return normalAttack1State;
         if (IsRetreatPattern(patternEntry)) return retreatState;
