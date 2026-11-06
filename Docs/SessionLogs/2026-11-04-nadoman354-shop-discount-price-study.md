@@ -31,3 +31,9 @@ Aseprite 1.3.18.6에서 두 원본을 다시 열어 레이어와 15개 슬라이
 - 격리된 Unity 6000.4.2f1 편집 모드에서 두 프리팹을 임포트하고 한국어 글꼴로 렌더링했다. 기존 1280×720 캡처와 비교해 정가 950의 취소선이 화면 y=376에서 y=370으로 올라갔다. 숫자 위·아래는 y=359~380이다. [겹침 확인 이미지](../../outputs/shop-discount-preview-2026-11-04/applied-b1/b1-price-overlap.png)는 비교용으로 첫 번째 검만 내려서 양피지가 칼날을 가리는 모습을 보여 준다. 실제 슬롯의 상품 위치는 유지했다.
 - 새 스크립트를 임시 MSBuild 대상으로 포함해 UI 어셈블리 빌드에 성공했다. 두 프리팹의 로컬 참조, 정가 필드 연결, 각 렌더러의 순서와 렌더에 사용한 네 파일의 일치를 대조했다. 자동 테스트와 실제 Play Mode는 실행하지 않았다.
 - 문서 영향은 SessionLog와 [RunGoldAndShop](../StructureMemory/RunGoldAndShop.md)이다. ErrorLog·DecisionLog 및 Presentation HTML 갱신 사항은 없다.
+
+## 2026-11-05 플레이어가 가격표 앞에 표시되도록 조정
+
+- [공용 진열대 프리팹](../../Assets/_Project/Scenes/ShopSlotPositionGroup.prefab)의 루트에 `SortingGroup`을 추가해 진열대 전체를 `Entity` 순서 −10에 배치했다. 진열대 안에서는 일반 상품과 번개창보다 양피지·가격 숫자·통화 아이콘이 앞에 그려지고, 밖에서는 플레이어의 몸체(순서 0)와 그림자(−1)가 진열대보다 앞에 그려진다.
+- 허브 씬과 런 상인 프리팹의 상품 앵커 각 네 개가 공용 진열대의 자식을 참조하는지 대조했다. 문서 영향은 SessionLog와 [RunGoldAndShop](../StructureMemory/RunGoldAndShop.md)이며, ErrorLog·DecisionLog 및 Presentation HTML 갱신 사항은 없다.
+- [Unity 편집 모드 캡처](../../outputs/shop-discount-preview-2026-11-04/applied-b1/b1-player-in-front.png)에서 실제 플레이어 대기 스프라이트와 검을 첫 가격표에 겹쳤다. 같은 구도에서 정렬 그룹을 켜고 끈 화면을 비교해 양피지가 칼날을 가리고 플레이어가 양피지와 글자를 가리는 것을 확인했다. 실제 Play Mode와 자동 테스트는 실행하지 않았다.

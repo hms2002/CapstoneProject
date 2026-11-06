@@ -5,6 +5,8 @@ using TMPro;
 
 public class HoverUIController : MonoBehaviour
 {
+    private const float ExtendedPanelSwitchMargin = 12f; // Canvas units of overlap.
+
     [Header("References")]
     [SerializeField] private Canvas canvas;
 
@@ -23,6 +25,9 @@ public class HoverUIController : MonoBehaviour
     private IHoverView _currentView;
     private RectTransform _targetSlotRect;
     private bool _isHovering;
+    private bool _hasExtendedPlacement;
+    private bool _placeLeft;
+    private bool _alignBottom;
 
     private Coroutine _hideRoutine;
     private Coroutine _repositionRoutine;
@@ -88,6 +93,7 @@ public class HoverUIController : MonoBehaviour
             return;
 
         _serial++;
+        _hasExtendedPlacement = false;
         _isHovering = true;
         _targetSlotRect = targetRect;
 
@@ -288,9 +294,11 @@ public class HoverUIController : MonoBehaviour
 
         Vector2 size = viewRect.rect.size;
         Vector2 pivot = viewRect.pivot;
+        bool hasExtendedBounds = false;
         if (_currentView is IHoverBoundsProvider boundsProvider)
         {
             Rect visualBounds = boundsProvider.GetHoverLocalBounds();
+            hasExtendedBounds = visualBounds.size != size;
             size = visualBounds.size;
             // anchoredPosition remains the panel origin when cards extend its bounds.
             if (size.x > 0f) pivot.x = -visualBounds.xMin / size.x;
@@ -303,10 +311,12 @@ public class HoverUIController : MonoBehaviour
         float leftRightEdge = leftLocal.x - offset;
         Vector2 posLeft = new Vector2(leftRightEdge - (1f - pivot.x) * size.x, leftLocal.y);
 
-        Vector2 chosen = ChoosePosAvoidOverlap(canvasLocalRect, targetLocalRect, size, pivot, posRight, posLeft);
+        bool keepPlacementOnTie = hasExtendedBounds && _hasExtendedPlacement;
+        Vector2 chosen = ChoosePosAvoidOverlap(canvasLocalRect, targetLocalRect, size, pivot, posRight, posLeft, keepPlacementOnTie);
 
         float chosenX = chosen.x;
-        float y = ChooseYAlignSlot(canvasLocalRect, targetLocalRect, size, pivot, chosenX);
+        float y = ChooseYAlignSlot(canvasLocalRect, targetLocalRect, size, pivot, chosenX, keepPlacementOnTie);
+        _hasExtendedPlacement = hasExtendedBounds;
         Vector2 presentationOffset = _currentView is IHoverPositionOffsetProvider offsetProvider
             ? offsetProvider.HoverPositionOffset
             : Vector2.zero;
@@ -352,7 +362,7 @@ public class HoverUIController : MonoBehaviour
 #endif
     }
 
-    private Vector2 ChoosePosAvoidOverlap(Rect canvasLocalRect, Rect targetRect, Vector2 panelSize, Vector2 pivot, Vector2 rightPos, Vector2 leftPos)
+    private Vector2 ChoosePosAvoidOverlap(Rect canvasLocalRect, Rect targetRect, Vector2 panelSize, Vector2 pivot, Vector2 rightPos, Vector2 leftPos, bool keepPlacementOnTie)
     {
         Rect targetExpanded = Expand(targetRect, 6f);
         Vector2 rightClamped = ClampToCanvas(canvasLocalRect, rightPos, panelSize, pivot);
@@ -360,22 +370,11 @@ public class HoverUIController : MonoBehaviour
         Rect rightPanel = PanelRectAt(rightClamped, panelSize, pivot);
         Rect leftPanel = PanelRectAt(leftClamped, panelSize, pivot);
 
-        bool rightOverlap = Intersects(targetExpanded, rightPanel);
-        bool leftOverlap = Intersects(targetExpanded, leftPanel);
-
-        if (!rightOverlap && leftOverlap)
-            return rightClamped;
-
-        if (!leftOverlap && rightOverlap)
-            return leftClamped;
-
-        if (!rightOverlap && !leftOverlap)
-            return rightClamped;
-
         float rightArea = OverlapArea(targetExpanded, rightPanel);
         float leftArea = OverlapArea(targetExpanded, leftPanel);
-
-        return rightArea <= leftArea ? rightClamped : leftClamped;
+        if (!keepPlacementOnTie || Mathf.Abs(rightArea - leftArea) > ExtendedPanelSwitchMargin * targetExpanded.height)
+            _placeLeft = leftArea < rightArea;
+        return _placeLeft ? leftClamped : rightClamped;
     }
 
     private float OverlapArea(Rect a, Rect b)
@@ -420,11 +419,6 @@ public class HoverUIController : MonoBehaviour
         return new Rect(left, bottom, size.x, size.y);
     }
 
-    private bool Intersects(Rect a, Rect b)
-    {
-        return a.Overlaps(b);
-    }
-
     private Rect Expand(Rect rect, float amount)
     {
         return new Rect(rect.xMin - amount, rect.yMin - amount, rect.width + amount * 2f, rect.height + amount * 2f);
@@ -441,7 +435,7 @@ public class HoverUIController : MonoBehaviour
         return pos;
     }
 
-    private float ChooseYAlignSlot(Rect canvasRect, Rect targetRect, Vector2 panelSize, Vector2 panelPivot, float xFixed)
+    private float ChooseYAlignSlot(Rect canvasRect, Rect targetRect, Vector2 panelSize, Vector2 panelPivot, float xFixed, bool keepPlacementOnTie)
     {
         float targetTop = targetRect.yMax - targetRect.height / 2f;
         float targetBottom = targetRect.yMin + targetRect.height / 2f;
@@ -458,13 +452,9 @@ public class HoverUIController : MonoBehaviour
         float topOverlap = OverlapArea(targetExpanded, panelTopRect);
         float bottomOverlap = OverlapArea(targetExpanded, panelBottomRect);
 
-        if (topOverlap < bottomOverlap)
-            return yTopClamped;
-
-        if (bottomOverlap < topOverlap)
-            return yBottomClamped;
-
-        return yTopClamped;
+        if (!keepPlacementOnTie || Mathf.Abs(topOverlap - bottomOverlap) > ExtendedPanelSwitchMargin * targetExpanded.width)
+            _alignBottom = bottomOverlap < topOverlap;
+        return _alignBottom ? yBottomClamped : yTopClamped;
     }
 
     private float ClampY(Rect canvasRect, Vector2 size, Vector2 pivot, float y)
